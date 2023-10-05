@@ -17,10 +17,10 @@ This repo contains my .dotfiles, which additionally defines the operating system
 Since we are using a Flake-based .dotfiles config...
 
 Ensure that you have enabled Flakes:
-<pre>
+```bash
 nix-env --version  # Ensure that you have Nix 2.4 or newer
 nix --experimental-features 'nix-command flakes'  # Enable flakes
-</pre>
+```
 
 - [ ] **TODO:** Check if I need to install home-manager first!
 
@@ -31,10 +31,10 @@ You're gonna need ssh keys stored in ~/.ssh on your local machine. The public ss
 Now, you'll need to run a quick series of commands.
 
 Clone the .dotfiles repo:
-<pre>
+```bash
 git clone git@github.com:aspauldingcode/.dotfiles.git ~/.dotfiles 
 # Be sure to enter ssh dotfiles-keys passphrase! 
-</pre>
+```
 
 ### INSTALLING DOTFILES
 We can install our configurations, based on the hostname of the computer.
@@ -42,58 +42,51 @@ NOTE: if adding a new computer, it's required to modify the "``flake.nix``" in o
 
 **IMPORTANT**
 - Navigate to the Repository Directory:
-<pre>
+```bash 
 cd ~/.dotfiles
-</pre>
-
+```
 **Install based on Hostname:**
-- NIXSTATION64(x86_64-linux)
-<pre>
+```bash
+# NIXSTATION64(x86_64-linux)
 sudo nixos-rebuild switch --flake .#NIXSTATION64 
 home-manager switch --flake .#alex@NIXSTATION64
-</pre>
-- NIXEDUP(aarch64-linux)
-<pre>
+```
+```basH
+# NIXEDUP(aarch64-linux)
 sudo nixos-rebuild switch --flake .#NIXEDUP 
 home-manager switch --flake .#alex@NIXEDUP
-</pre>
-- NIXY(aarch64-darwin)
-<pre>
-#NEEDED for FIRST INSTALL
+```
+```bash 
+# NIXY(aarch64-darwin)
+#NEEDED for FIRST INSTALL (LIKELY TO CHANGE IN THE FUTURE)
 darwin-rebuild switch -I ~/.dotfiles/system/NIXY/darwin-configuration.nix
 home-manager build --flake .#alex@NIXY
 
 #rebuild existing
 darwin-rebuild switch --flake .#NIXY
 home-manager switch --flake .#alex@NIXY
-</pre>
-
+```
 ## Updating the Repository
 We want to keep all our software, user profile settings, and operating systems environments in sync. Github and git-cli just happens to offer the most convenient tools to do so.
 
-- Navigate to the Repository Directory:
-<pre>
-cd ~/.dotfiles
-</pre>
-- Fetch the Latest Changes:
-<pre>
-git fetch
-</pre>
-
-- Update Your Local Branch:
 ```bash
+# Navigate to the Repository Directory:
+cd ~/.dotfiles
+- Fetch the Latest Changes:
+git fetch
+
+# Update Your Local Branch:
+
 git checkout main
 git merge origin/main
-```
-- Commit Your Changes (if needed):
-<pre>
+
+# Commit Your Changes (if needed):
 git add .
 git commit -m "Updating .dotfiles"
-</pre>
-- Push the Changes to the Remote Repository:
-<pre>
+
+# Push the Changes to the Remote Repository:
 git push origin main
-</pre>
+```
 
 ## Extra 
 The install can be configured through the flake.nix.
