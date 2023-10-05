@@ -81,10 +81,10 @@ git fetch
 </pre>
 
 - Update Your Local Branch:
-<pre>
+```bash
 git checkout main
 git merge origin/main
-</pre>
+```
 - Commit Your Changes (if needed):
 <pre>
 git add .
