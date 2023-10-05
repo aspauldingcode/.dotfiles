@@ -1,0 +1,26 @@
+name: Update README with Last Commit Date
+
+on:
+  push:
+    branches:
+      - main  # Change this to your default branch name
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v2
+
+      - name: Generate and update date
+        run: |
+          echo -e "## Last Commit Date\n\nLast commit: $(git log -1 --format='%cI')" > README.md
+          git config user.name 'GitHub Action'
+          git config user.email 'action@github.com'
+          git add README.md
+          git commit -m "Update README with last commit date" || exit 0
+          git push
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
