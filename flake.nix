@@ -1,15 +1,11 @@
 {
   description = "Universal Flake by Alex - macOS and NixOS";
 
-  # Universal inputs for NixOS and Darwin
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     darwin.url = "github:lnl7/nix-darwin";
     home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
-
   };
-
 
   outputs = { self, nixpkgs, home-manager, darwin }: 
     let
@@ -50,6 +46,7 @@
           specialArgs = commonSpecialArgs;
           modules = [ ./system/NIXY/darwin-configuration.nix ];
         };
+        # Define more macOS configurations here
       };
     in {
       # Return all the configurations
@@ -58,4 +55,3 @@
       darwinConfigurations = darwinConfigurations;
     };
 }
-
