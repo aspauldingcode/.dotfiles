@@ -72,6 +72,7 @@ We want to keep all our software, user profile settings, and operating systems e
 ```bash
 # Navigate to the Repository Directory:
 cd ~/.dotfiles
+
 #Fetch the Latest Changes:
 git fetch
 
