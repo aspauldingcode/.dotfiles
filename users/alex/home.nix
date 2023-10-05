@@ -3,11 +3,13 @@
 { inputs, lib, config, pkgs, specialArgs, ... }: 
 
 {
-  home = {
-    username = "alex";
-    homeDirectory = if pkgs.stdenv.isDarwin then "/Users/alex" else "/home/alex";
-    # Other home-related settings
-  };
+	home = {
+		username = "alex";
+		homeDirectory = if pkgs.stdenv.isDarwin then "/Users/alex" else "/home/alex";
+		stateVersion = "23.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+			file = { # MANAGE DOTFILES?
+			};
+	};
 
 # You can import other home-manager modules here
 	imports = [
@@ -41,20 +43,13 @@
 		};
 	};
 
-
-	home = {
-		stateVersion = "23.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-			file = { # MANAGE DOTFILES?
-			};
-	};
-
 # Configure programs
 	programs = {
 		home-manager.enable = true;
 		git = {
 			enable = true;
-    userName  = "aspauldingcode";
-    userEmail = "aspauldingcode@gmail.com";			
+			userName  = "aspauldingcode";
+			userEmail = "aspauldingcode@gmail.com";			
 		};
 		fish.enable = true;
 		neovim = { # TODO: IMPORT from ./nvim.nix!! CREATE SEPERATE NIX MODULE!

@@ -18,10 +18,8 @@ Since we are using a Flake-based .dotfiles config...
 
 Ensure that you have enabled Flakes:
 <pre>
-``` bash
 nix-env --version  # Ensure that you have Nix 2.4 or newer
 nix --experimental-features 'nix-command flakes'  # Enable flakes
-```
 </pre>
 
 - [ ] **TODO:** Check if I need to install home-manager first!
@@ -34,75 +32,67 @@ Now, you'll need to run a quick series of commands.
 
 Clone the .dotfiles repo:
 <pre>
-``` bash
 git clone git@github.com:aspauldingcode/.dotfiles.git ~/.dotfiles 
 # Be sure to enter ssh dotfiles-keys passphrase! 
-```
 </pre>
 
 ### INSTALLING DOTFILES
 We can install our configurations, based on the hostname of the computer.
 NOTE: if adding a new computer, it's required to modify the "``flake.nix``" in order to support the new device, including the architecture and device hostname, as well as the desired users. In addition, you will need to add your device to a folder under "``system/hostname/``," which will contain your system "``configuration.nix``," and "``hardware-configuration.nix``."
 
-Install based on Hostname:
+**IMPORTANT**
+- Navigate to the Repository Directory:
+<pre>
+cd ~/.dotfiles
+</pre>
+
+**Install based on Hostname:**
 - NIXSTATION64(x86_64-linux)
 <pre>
-``` bash 
 sudo nixos-rebuild switch --flake .#NIXSTATION64 
 home-manager switch --flake .#alex@NIXSTATION64
-```
 </pre>
 - NIXEDUP(aarch64-linux)
 <pre>
-``` bash
 sudo nixos-rebuild switch --flake .#NIXEDUP 
 home-manager switch --flake .#alex@NIXEDUP
-```
 </pre>
 - NIXY(aarch64-darwin)
 <pre>
-``` bash
-sudo darwin-rebuild switch --flake .#NIXY
-home-manager switch --flake .#alex@NIXY
-```
-</pre>
+#NEEDED for FIRST INSTALL
+darwin-rebuild switch -I ~/.dotfiles/system/NIXY/darwin-configuration.nix
+home-manager build --flake .#alex@NIXY
 
+#rebuild existing
+darwin-rebuild switch --flake .#NIXY
+home-manager switch --flake .#alex@NIXY
+</pre>
 
 ## Updating the Repository
 We want to keep all our software, user profile settings, and operating systems environments in sync. Github and git-cli just happens to offer the most convenient tools to do so.
 
 - Navigate to the Repository Directory:
 <pre>
-``` bash
 cd ~/.dotfiles
-```
 </pre>
 - Fetch the Latest Changes:
 <pre>
-``` bash
 git fetch
-```
 </pre>
 
 - Update Your Local Branch:
 <pre>
-``` bash
 git checkout main
 git merge origin/main
-```
 </pre>
 - Commit Your Changes (if needed):
 <pre>
-``` bash
 git add .
 git commit -m "Updating .dotfiles"
-```
 </pre>
 - Push the Changes to the Remote Repository:
 <pre>
-``` bash
 git push origin main
-```
 </pre>
 
 ## Extra 
@@ -112,7 +102,6 @@ Home-Manager Configuration is done per-user under Users/{user}/home.nix
 As of <!-- LAST_COMMIT_DATE -->, the repo layout is as follows;
 
 <pre>
-``` bash
 ~/.dotfiles> tree
 .
 ├── README.md
@@ -122,7 +111,7 @@ As of <!-- LAST_COMMIT_DATE -->, the repo layout is as follows;
 ├── flake.lock
 ├── flake.nix
 ├── system
-│   ├── NIXSTATION62
+│   ├── NIXSTATION64
 │   │   ├── configuration.nix
 │   │   ├── hardware-configuration.nix
 │   │   ├── packages-configuration.nix
@@ -137,6 +126,5 @@ As of <!-- LAST_COMMIT_DATE -->, the repo layout is as follows;
         ├── home.nix
         └── packages.nix
 
-7 directories, 13 files
-```
+9 directories, 13 files
 </pre>

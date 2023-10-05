@@ -64,9 +64,9 @@
 
 # macOS - NIXY (aarch64-darwin)
 		darwinConfigurations = {
-			NIXY = darwin.lib.nixosSystem {
+			NIXY = darwin.lib.darwinSystem {
 				specialArgs = commonSpecialArgs;
-				modules = [ ./system/NIXY/configuration.nix ];
+				modules = [ ./system/NIXY/darwin-configuration.nix ];
 			};
 		};
 
