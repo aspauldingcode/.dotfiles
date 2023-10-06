@@ -1,12 +1,33 @@
 # Configure included packages for NixOS.
 
-{ config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 
 {
+nixpkgs.config = {
+  allowUnfreePredicate = pkg:
+    builtins.elem (
+      lib.getName pkg
+    ) (
+      map lib.getName [
+        pkgs.corefonts
+        pkgs.discord
+        #pkgs.jetbrains.idea-ultimate
+        #pkgs.spotify-unwrapped
+        pkgs.unrar
+	pkgs.checkra1n
+	pkgs.beeper
+	pkgs.zoom-us
+	pkgs.android-studio
+      ]
+    ); 
+    android_sdk.accept_license = true;
+
+
+    };
 		environment.systemPackages = with pkgs; [
-		checkra1n autotiling neovim
+		autotiling neovim
 			waydroid wl-clipboard
-			neofetch brave zoom-us
+			neofetch brave
 			lf ranger pcmanfm			
 			wofi-emoji htop fim
 			gparted killall tree
@@ -29,12 +50,12 @@
 			nodePackages_latest.pyright
 			openrazer-daemon
 			jdk20
-			nodejs spotify
+			nodejs
 			idevicerestore usbmuxd libusbmuxd
 			libimobiledevice
 			avahi flex bison
 			sshfs pciutils socat
-			pmbootstrap android-studio
+			pmbootstrap
 			gnumake gcc libusb1
 			openssl dtc gnome-themes-extra
 			cargo nodePackages_latest.npm
