@@ -3,7 +3,10 @@
 { config, pkgs, ... }:
 
 {
-	environment.systemPackages = with pkgs; [
+	config = {
+	  allowUnfree = true;
+	  allowUnfreePredictate = _: true;   
+		environment.systemPackages = with pkgs; [
 		checkra1n autotiling neovim
 			waydroid wl-clipboard
 			neofetch brave zoom-us
@@ -13,7 +16,7 @@
 			zsh curl lazygit
 			wget git w3m obs-studio
 			docker home-manager
-			android-tools xz 
+		android-tools xz 
 			element appimage-run
 			networkmanagerapplet
 			blueman jq
@@ -57,5 +60,6 @@
 			 '';
 			 }
 			)
-			];
+			]; 
+			};
 }

@@ -8,6 +8,9 @@
   # Configure your nixpkgs instance
   config = {
     allowUnfree = true; # Enable Unfree
+    # Workaround for https://github.com/nix-community/home-manager/issues/2942
+    allowUnfreePredicate = _: true; # Still open ticket as of: 10/04/23.
+
 
     # You can place the 'home' and 'programs' sections within the 'config' attribute as follows:
     home = {

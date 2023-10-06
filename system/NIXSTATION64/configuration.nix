@@ -30,11 +30,11 @@
 
 
 # time settings
-	time.timeZone = "America/Denver";
+	time.timeZone = "America/Denver"; # FIXME
 
 # Enable Bluetooth
 	hardware.bluetooth.enable = true;
-	services.blueman.enable = true;
+	services.blueman.enable = true; # FIXME
 
 # Select internationalisation properties.
 	i18n = {
