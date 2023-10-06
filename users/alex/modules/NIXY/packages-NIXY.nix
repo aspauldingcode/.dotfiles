@@ -20,7 +20,6 @@
     # xinit?
     # xorg-server?
     # XQuartz?
-    ];
-  };
+  ];
 }
 

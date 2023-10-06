@@ -1,8 +1,15 @@
 { config, pkgs, ... }:
 
+# TODO: Implement an import system-universal.nix MODULE
 {
 
-	nixpkgs.hostPlatform = "aarch64-darwin";
+	nixpkgs = {
+	  hostPlatform = "aarch64-darwin";
+	  config = {
+	    allowUnfree = true;
+	    allowUnfreePredictate = (_: true);
+	  };
+	};
 
 # List packages installed in system profile. To search by name, run:
 # $ nix-env -qaP | grep wget
@@ -10,23 +17,22 @@
 	environment.systemPackages = with pkgs; [ 
 		## macosINSTANTView?
 		neovim
-		home-manager
+		neofetch
+		htop
 		git
 		tree
 		hexedit
 		alacritty
 #obs-studio
 #pkgs.brave
-		jdk20
-		python311
-		python311Packages.pygame
+		jdk11
+		#python311
+		#python311Packages.pygame
 		oh-my-zsh
 		skhd
 		dmenu
 		dwm
 #xvkbd
-		neofetch
-		htop
 		docker
 		zoom-us
 		android-tools
@@ -235,9 +241,6 @@
 			echo "spacebar configuration loaded.."
 			'';
 	};
-# Enable unfree:
-	nixpkgs.config.allowUnfree = true;
-
 #enable brew packages just in case
 	homebrew.enable = true;
 

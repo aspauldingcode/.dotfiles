@@ -5,13 +5,7 @@
   imports = [
     ./modules/NIXY/packages-NIXY.nix
   ];
-  # Configure your nixpkgs instance
-  config = {
-    allowUnfree = true; # Enable Unfree
-    # Workaround for https://github.com/nix-community/home-manager/issues/2942
-    allowUnfreePredicate = _: true; # Still open ticket as of: 10/04/23.
-
-    # You can place the 'home' and 'programs' sections within the 'config' attribute as follows:
+      # You can place the 'home' and 'programs' sections within the 'config' attribute as follows:
     home = {
       username = "alex";
       homeDirectory = "/Users/alex";
@@ -36,6 +30,5 @@
 
     # Nicely reload system units when changing configs
     systemd.user.startServices = "sd-switch"; # TODO: UPDATE IF USING DIFFERENT BOOTLOADER!
-  };
-}
+  }
 
