@@ -16,11 +16,13 @@
 
       # Define NixOS configurations
       nixosConfigurations = {
-        NIXSTATION64 = nixpkgs.legacyPackages.x86_64-linux.lib.nixosSystem {
+        NIXSTATION64 = nixpkgs.lib.nixosSystem {
+	  pkgs = nixpkgs.legacyPackages.x86_64-linux;
           specialArgs = commonSpecialArgs;
           modules = [ ./system/NIXSTATION64/configuration.nix ];
         };
-        NIXEDUP = nixpkgs.legacyPackages.aarch64-linux.lib.nixosSystem {
+        NIXEDUP = nixpkgs.lib.nixosSystem {
+	  pkgs = nixpkgs.legacyPackages.aarch64-linux;
           specialArgs = commonSpecialArgs;
           modules = [ ./system/NIXEDUP/configuration.nix ];
         };
@@ -53,7 +55,7 @@
         "alex@NIXSTATION64" = home-manager.lib.homeManagerConfiguration {
 	  pkgs = nixpkgs.legacyPackages.x86_64-linux;
 	  extraSpecialArgs = commonSpecialArgs;
-	  modules = [ ./users/alex/home-NIXSTATION64 ];
+	  modules = [ ./users/alex/home-NIXSTATION64.nix ];
 	};
 
 	# User: Su Su
@@ -62,16 +64,11 @@
           extraSpecialArgs = commonSpecialArgs;
           modules = [ ./users/susu/home-NIXY.nix ];
         };
-	"susu@NIXEDUP" = home-manager.lib.homeManagerConfiguration { 
-	  pkgs = nixpkgs.legacyPackages.aarch64-linux;
-	  extraSpecialArgs = commonSpecialArgs;
-	  modules = [ ./users/susu/home-NIXEDUP.nix];
-	};
- 
-        "susu@NIXSTATION64" = home-manager.lib.homeManagerConfiguration {
+
+	"susu@NIXSTATION64" = home-manager.lib.homeManagerConfiguration {
 	  pkgs = nixpkgs.legacyPackages.x86_64-linux;
 	  extraSpecialArgs = commonSpecialArgs;
-	  modules = [ ./users/susu/home-NIXSTATION64 ];
+	  modules = [ ./users/susu/home-NIXSTATION64.nix ];
 	};
       };
     in {

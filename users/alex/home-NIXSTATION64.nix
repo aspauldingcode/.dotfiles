@@ -3,11 +3,8 @@
 {
   #You can import other home-manager modules here
   imports = [
-    ./modules/NIXSTATION/packages-NIXSTATION64.nix  
+    ./modules/NIXSTATION64/packages-NIXSTATION64.nix  
   ];
-  config = {
-    allowUnfree = true; # Enable Unfree
-
     # You can place the 'home' and 'programs' sections within the 'config' attribute as follows:
     home = {
       username = "alex";
@@ -33,6 +30,4 @@
 
     # Nicely reload system units when changing configs
     systemd.user.startServices = "sd-switch"; # TODO: UPDATE IF USING DIFFERENT BOOTLOADER!
-  };
-}
-
+  }

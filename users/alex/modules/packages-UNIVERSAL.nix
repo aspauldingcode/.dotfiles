@@ -14,7 +14,11 @@
       gnupg
       audacity
       pinentry
+<<<<<<< HEAD
       #beeper #broken atm
+=======
+      #beeper
+>>>>>>> origin/main
       libusbmuxd
       sshpass
       gnumake
@@ -23,5 +27,10 @@
       # qemu?
       # docker?
       # build-tools? (python311, jdk20, etc.)
+<<<<<<< HEAD
   ];
 }
+=======
+    ];
+  }
+>>>>>>> origin/main
