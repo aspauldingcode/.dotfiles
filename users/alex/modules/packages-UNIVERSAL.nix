@@ -25,5 +25,3 @@
       # build-tools? (python311, jdk20, etc.)
   ];
 }
-    ];
-  }
