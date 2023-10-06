@@ -55,7 +55,7 @@
         "alex@NIXSTATION64" = home-manager.lib.homeManagerConfiguration {
 	  pkgs = nixpkgs.legacyPackages.x86_64-linux;
 	  extraSpecialArgs = commonSpecialArgs;
-	  modules = [ ./users/alex/home-NIXSTATION64 ];
+	  modules = [ ./users/alex/home-NIXSTATION64.nix ];
 	};
 
 	# User: Su Su
@@ -68,7 +68,7 @@
 	"susu@NIXSTATION64" = home-manager.lib.homeManagerConfiguration {
 	  pkgs = nixpkgs.legacyPackages.x86_64-linux;
 	  extraSpecialArgs = commonSpecialArgs;
-	  modules = [ ./users/susu/home-NIXSTATION64 ];
+	  modules = [ ./users/susu/home-NIXSTATION64.nix ];
 	};
       };
     in {

@@ -3,9 +3,6 @@
 { config, pkgs, ... }:
 
 {
-	config = {
-	  allowUnfree = true;
-	  allowUnfreePredictate = _: true;   
 		environment.systemPackages = with pkgs; [
 		checkra1n autotiling neovim
 			waydroid wl-clipboard
@@ -24,7 +21,7 @@
 			tree-sitter fd ripgrep
 			linuxKernel.packages.linux_latest_libre.openrazer
 			razergenie
-			python311
+			python312
 			python311Packages.openrazer
 			python311Packages.tree-sitter
 			python311Packages.pynvim
@@ -61,5 +58,4 @@
 			 }
 			)
 			]; 
-			};
 }

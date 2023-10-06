@@ -8,7 +8,7 @@
       gnupg
       audacity
       pinentry
-      beeper
+      #beeper
       libusbmuxd
       sshpass
       gnumake
@@ -18,6 +18,4 @@
       # docker?
       # build-tools? (python311, jdk20, etc.)
     ];
-  };
-}
-
+  }
