@@ -4,18 +4,18 @@
 {
 
 	nixpkgs = {
-	  hostPlatform = "aarch64-darwin";
-	  config = {
-	    allowUnfree = true;
-	    allowUnfreePredictate = (_: true);
-	  };
+		hostPlatform = "aarch64-darwin";
+		config = {
+			allowUnfree = true;
+			allowUnfreePredictate = (_: true);
+		};
 	};
 
 # List packages installed in system profile. To search by name, run:
 # $ nix-env -qaP | grep wget
 
 	environment.systemPackages = with pkgs; [ 
-		## macosINSTANTView?
+## macosINSTANTView?
 		neovim
 		neofetch
 		htop
@@ -23,33 +23,27 @@
 		tree
 		hexedit
 		alacritty
-#obs-studio
-#pkgs.brave
 		jdk11
-		#python311
-		#python311Packages.pygame
+		python311
+		python311Packages.pygame
 		oh-my-zsh
-		skhd
 		dmenu
 		dwm
-#xvkbd
 		docker
 		zoom-us
 		android-tools
 		jq
-#orbstack
-#pkgs.xorg 
-		];
+	];
 
 	services.yabai = {
-		enable = true;
+		enable = false;
 		package = pkgs.yabai;
 		enableScriptingAddition = true;
 		config = {
 			focus_follows_mouse          = "autoraise";
 			mouse_follows_focus          = "off";
 			window_placement             = "second_child";
-			window_opacity               = "on";
+			window_opacity               = "off";
 			window_opacity_duration      = "0.1";
 			window_topmost               = "off";
 			window_shadow                = "float";
@@ -74,14 +68,13 @@
 			yabai -m rule --add app='zoom.us' manage=off
 # Any other arbitrary config here
 
-			yabai -m config window_border				 on
-			yabai -m config window_border_blur			 on
-			yabai -m window_border_radius				 0
-			yabai -m config window_border_width          0.1
-#yabai -m config active_window_border_color   0xff25B2BC
-#yabai -m config normal_window_border_color   0xff555555
-#yabai -m config insert_feedback_color        0xffd75f5f
-#yabai -m config window_origin_display        default
+			yabai -m window_border	              on
+			yabai -m window_border_blur   	      on
+			yabai -m window_border_radius	      0
+			yabai -m window_border_width   	      0
+			#yabai -m active_window_border_color   0x0000000000
+			#yabai -m normal_window_border_color   0xff555555
+			#yabai -m window_origin_display        default
 
 # Toggle test
 #yabai -m query --windows --space |
@@ -93,17 +86,14 @@
 	};
 
 	services.skhd = {
-		enable = true;
+		enable = false;
 		package = pkgs.skhd;
 		skhdConfig = ''
-			alt - return : open -n /Applications/Alacritty.app;
-# Add more hotkey configurations as needed
-# change focus
-		alt - h : yabai -m window --focus west
+			alt - return : open -n /Applications/Alacritty.app
+			alt - h : yabai -m window --focus west
 			alt - j : yabai -m window --focus south
 			alt - k : yabai -m window --focus north
 			alt - l : yabai -m window --focus east
-# (alt) change focus (using arrow keys)
 			alt - left  : yabai -m window --focus west
 			alt - down  : yabai -m window --focus south
 			alt - up    : yabai -m window --focus north
@@ -114,7 +104,6 @@
 			alt + shift - j : yabai -m window --swap south || $(yabai -m window --display south; yabai -m display --focus south)
 			alt + shift - k : yabai -m window --swap north || $(yabai -m window --display north; yabai -m display --focus north)
 			alt + shift - l : yabai -m window --swap east || $(yabai -m window --display east; yabai -m display --focus east)
-# alternatively, use the arrow keys
 			alt + shift - left : yabai -m window --swap west || $(yabai -m window --display west; yabai -m display --focus west)
 			alt + shift - down : yabai -m window --swap south || $(yabai -m window --display south; yabai -m display --focus south)
 			alt + shift - up : yabai -m window --swap north || $(yabai -m window --display north; yabai -m display --focus north)
@@ -124,7 +113,6 @@
 			alt + ctrl - j : yabai -m window --insert south
 			alt + ctrl - k : yabai -m window --insert north
 			alt + ctrl - l : yabai -m window --insert east
-# (alt) set insertion point in focused container using arrows
 			alt + ctrl - left  : yabai -m window --insert west
 			alt + ctrl - down  : yabai -m window --insert south
 			alt + ctrl - up    : yabai -m window --insert north
@@ -147,25 +135,20 @@
 			alt + shift - 7 : yabai -m window --space 7
 			alt + shift - 8 : yabai -m window --space 8
 			alt + shift - 9 : yabai -m window --space 9
-#alt + shift - 0 : yabai -m window --space 10
+			alt + shift - 0 : yabai -m window --space 10
 
-# # mirror tree y-axis
 			alt + shift - y : yabai -m space --mirror y-axis
-
-# # mirror tree x-axis
 			alt + shift - x : yabai -m space --mirror x-axis
 
 # balance size of windows
 			alt + shift - 0 : yabai -m space --balance
-
-# change layout of desktop
 			alt - e : yabai -m space --layout bsp
 			alt - l : yabai -m space --layout float
 			alt - s : yabai -m space --layout stack
 
 # cycle through stack windows
-# alt - p : yabai -m window --focus stack.next || yabai -m window --focus south
-# alt - n : yabai -m window --focus stack.prev || yabai -m window --focus north
+			alt - p : yabai -m window --focus stack.next || yabai -m window --focus south
+			alt - n : yabai -m window --focus stack.prev || yabai -m window --focus north
 
 # forwards
 			alt - p : yabai -m query --spaces --space \
@@ -181,27 +164,14 @@
 			| jq -sre "add | map(select(.minimized != 1)) | sort_by(.display, .frame.y, .frame.y, .id) | nth(index(map(select(.focused == 1))) - 1).id" \
 			| xargs -I{} yabai -m window --focus {}
 
-# close focused window
 		alt + shift - q : yabai -m window --close
-
-# enter fullscreen mode for the focused container
 			alt - f : yabai -m window --toggle zoom-fullscreen
-
-# toggle window native fullscreen
 			alt + shift - f : yabai -m window --toggle native-fullscreen
-
-##FIXME toggle floating window NOT WORKING YET
-			alt + shift - space : yabai -m window --toggle native-fullscreen
-
-# Launch Brave
-#alt + control - space : yabai -m window --togge native-fullscreen
-
-#alt + control - space : open -a "Applications/Brave Browser.app"
-
+			echo "skhd config loaded...
 			'';
 	};
 	services.spacebar = {
-		enable = true;
+		enable = false;
 		package = pkgs.spacebar;
 		config = {
 
@@ -220,7 +190,7 @@
 			spacebar -m config spacing_right               15
 			spacebar -m config text_font                   "Helvetica Neue:Bold:12.0"
 			spacebar -m config icon_font                   "Font Awesome 5 Free:Solid:12.0"
-			spacebar -m config background_color            0xff202020
+			spacebar -m config background_color            0x00000000
 			spacebar -m config foreground_color            0xffa8a8a8
 			spacebar -m config power_icon_color            0xffcd950c
 			spacebar -m config battery_icon_color          0xffd75f5f
@@ -276,7 +246,7 @@
 	  ];*/
 
 #allow broken packages
-	nixpkgs.config.allowBroken = true;
+#nixpkgs.config.allowBroken = true;
 # Use a custom configuration.nix location.
 # $ darwin-rebuild switch -I darwin-config=$HOME/.config/nixpkgs/darwin/configuration.nix
 # environment.darwinConfig = "$HOME/.config/nixpkgs/darwini/configuration.nix";

@@ -24,7 +24,7 @@
       fish.enable = true;
       neovim = {
         enable = true;
-        extraConfig = lib.fileContents ../../extraConfig/nvim/init.lua;
+        #extraConfig = lib.fileContents ./modules/extraConfig/nvim/init.lua;
       };
     };
 

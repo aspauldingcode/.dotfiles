@@ -1,7 +1,3 @@
-
--- Fix stupid wl-clipboard problems.
-vim.cmd('set clipboard+=unnamedplus')
-
 -- Map Ctrl+C to copy (yank) assuming you're in visual or visual line mode
 vim.api.nvim_set_keymap('x', '<C-c>', '"+y', { noremap = false })
 
