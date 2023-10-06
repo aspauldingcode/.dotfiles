@@ -7,7 +7,7 @@
     home-manager.url = "github:nix-community/home-manager";
   };
 
-  outputs = { self, nixpkgs, home-manager, darwin }: 
+  outputs = { self, nixpkgs, darwin, home-manager }: 
     let
       inherit (self) inputs;
 
@@ -16,27 +16,13 @@
 
       # Define NixOS configurations
       nixosConfigurations = {
-        NIXSTATION64 = nixpkgs.lib.nixosSystem {
+        NIXSTATION64 = nixpkgs.legacyPackages.x86_64-linux.lib.nixosSystem {
           specialArgs = commonSpecialArgs;
           modules = [ ./system/NIXSTATION64/configuration.nix ];
         };
-        NIXEDUP = nixpkgs.lib.nixosSystem {
+        NIXEDUP = nixpkgs.legacyPackages.aarch64-linux.lib.nixosSystem {
           specialArgs = commonSpecialArgs;
           modules = [ ./system/NIXEDUP/configuration.nix ];
-        };
-      };
-
-      # Define home-manager configurations for NIXY (aarch64-darwin)
-      homeConfigurations = {
-        "alex@NIXY" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs;
-          extraSpecialArgs = commonSpecialArgs;
-          modules = [ ./users/alex/home.nix ];
-        };
-        "susu@NIXY" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs;
-          extraSpecialArgs = commonSpecialArgs;
-          modules = [ ./users/susu/home.nix ];
         };
       };
 
@@ -46,7 +32,47 @@
           specialArgs = commonSpecialArgs;
           modules = [ ./system/NIXY/darwin-configuration.nix ];
         };
-        # Define more macOS configurations here
+      };
+
+      # Define home-manager configurations for Users
+      homeConfigurations = {
+
+      	# User: Alex
+        "alex@NIXY" = home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.aarch64-darwin;
+          extraSpecialArgs = commonSpecialArgs;
+          modules = [ ./users/alex/home-NIXY.nix ];
+        };
+	
+	"alex@NIXEDUP" = home-manager.lib.homeManagerConfiguration { 
+	  pkgs = nixpkgs.legacyPackages.aarch64-linux;
+	  extraSpecialArgs = commonSpecialArgs;
+	  modules = [ ./users/alex/home-NIXEDUP.nix];
+	};
+ 
+        "alex@NIXSTATION64" = home-manager.lib.homeManagerConfiguration {
+	  pkgs = nixpkgs.legacyPackages.x86_64-linux;
+	  extraSpecialArgs = commonSpecialArgs;
+	  modules = [ ./users/alex/home-NIXSTATION64 ];
+	};
+
+	# User: Su Su
+	"susu@NIXY" = home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.aarch64-darwin;
+          extraSpecialArgs = commonSpecialArgs;
+          modules = [ ./users/susu/home-NIXY.nix ];
+        };
+	"susu@NIXEDUP" = home-manager.lib.homeManagerConfiguration { 
+	  pkgs = nixpkgs.legacyPackages.aarch64-linux;
+	  extraSpecialArgs = commonSpecialArgs;
+	  modules = [ ./users/susu/home-NIXEDUP.nix];
+	};
+ 
+        "susu@NIXSTATION64" = home-manager.lib.homeManagerConfiguration {
+	  pkgs = nixpkgs.legacyPackages.x86_64-linux;
+	  extraSpecialArgs = commonSpecialArgs;
+	  modules = [ ./users/susu/home-NIXSTATION64 ];
+	};
       };
     in {
       # Return all the configurations
@@ -55,3 +81,4 @@
       darwinConfigurations = darwinConfigurations;
     };
 }
+

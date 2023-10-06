@@ -95,7 +95,6 @@ Home-Manager Configuration is done per-user under Users/{user}/home.nix
 As of <!-- LAST_COMMIT_DATE -->, the repo layout is as follows;
 
 <pre>
-~/.dotfiles> tree
 .
 ├── README.md
 ├── extraConfig
@@ -104,6 +103,7 @@ As of <!-- LAST_COMMIT_DATE -->, the repo layout is as follows;
 ├── flake.lock
 ├── flake.nix
 ├── system
+│   ├── NIXEDUP
 │   ├── NIXSTATION64
 │   │   ├── configuration.nix
 │   │   ├── hardware-configuration.nix
@@ -113,11 +113,26 @@ As of <!-- LAST_COMMIT_DATE -->, the repo layout is as follows;
 │       └── darwin-configuration.nix
 └── users
     ├── alex
-    │   ├── home.nix
-    │   └── packages.nix
+    │   ├── home-NIXEDUP.nix
+    │   ├── home-NIXSTATION64.nix
+    │   ├── home-NIXY.nix
+    │   └── modules
+    │       ├── NIXEDUP
+    │       │   └── packages-NIXEDUP.nix
+    │       ├── NIXSTATION64
+    │       │   └── packages-NIXSTATION64.nix
+    │       ├── NIXY
+    │       │   └── packages-NIXY.nix
+    │       └── packages-UNIVERSAL.nix
     └── susu
-        ├── home.nix
-        └── packages.nix
+        ├── home-NIXSTATION64.nix
+        ├── home-NIXY.nix
+        └── modules
+            ├── NIXSTATION64
+            │   └── packages-NIXSTATION64.nix
+            ├── NIXY
+            │   └── packages-NIXY.nix
+            └── packages-UNIVERSAL.nix
 
-9 directories, 13 files
+17 directories, 21 files
 </pre>
