@@ -11,6 +11,7 @@
 		./hardware-configuration.nix
 		./sway-configuration.nix
 		./packages-configuration.nix
+		./nixos-mobile-configuration.nix
 	];
 
 # Bootloader.
