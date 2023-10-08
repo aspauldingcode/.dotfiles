@@ -2,6 +2,10 @@
 
 # UNIVERSAL packages
 {
+  #imports = [
+    #./extraConfig/git.nix
+    #./extraConfig/fish.nix
+  #];
   nixpkgs = {
     config = {
       allowUnfree = true;
@@ -14,7 +18,7 @@
       gnupg
       audacity
       pinentry
-      #beeper #broken atm
+      beeper
       libusbmuxd
       sshpass
       gnumake
