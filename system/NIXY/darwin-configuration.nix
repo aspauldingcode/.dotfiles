@@ -29,14 +29,15 @@
 		oh-my-zsh
 		dmenu
 		dwm
-		docker
 		zoom-us
 		android-tools
 		jq
+		skhd
+		libusb
 	];
 
 	services.yabai = {
-		enable = false;
+		enable = true;
 		package = pkgs.yabai;
 		enableScriptingAddition = true;
 		config = {
@@ -86,10 +87,10 @@
 	};
 
 	services.skhd = {
-		enable = false;
-		package = pkgs.skhd;
+		enable = true;
 		skhdConfig = ''
-			alt - return : open -n /Applications/Alacritty.app
+			alt - return : open -n /Applications/Alacritty.app;
+			/*
 			alt - h : yabai -m window --focus west
 			alt - j : yabai -m window --focus south
 			alt - k : yabai -m window --focus north
@@ -166,12 +167,12 @@
 
 		alt + shift - q : yabai -m window --close
 			alt - f : yabai -m window --toggle zoom-fullscreen
-			alt + shift - f : yabai -m window --toggle native-fullscreen
+			alt + shift - f : yabai -m window --toggle native-fullscreen */
 			echo "skhd config loaded...
 			'';
 	};
 	services.spacebar = {
-		enable = false;
+		enable = true;
 		package = pkgs.spacebar;
 		config = {
 
