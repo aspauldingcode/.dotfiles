@@ -13,6 +13,10 @@
       size = 22;
     };
     packages = with pkgs; [
+    checkra1n
+    android-studio
+    corefonts
+    beeper
     swayfx
     ];
   };

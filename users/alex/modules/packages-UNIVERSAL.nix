@@ -18,19 +18,19 @@
       gnupg
       audacity
       pinentry
-      beeper
+      #beeper NOT FOR aarch64-DARWIN!
       libusbmuxd
       sshpass
       gnumake
       git-crypt
       cowsay
       discord
-      checkra1n
+      #checkra1n NOT FOR aarch64-DARWIN
       zoom-us
-      android-studio
+      #android-studio NOT FOR aarch64 DARWIN
       spotify-unwrapped
       jetbrains.idea-ultimate
-      corefonts
+      #corefonts FAILED TO BUILD on aarch-DARWIN
       # qemu?
       # docker?
       # build-tools? (python311, jdk20, etc.)
