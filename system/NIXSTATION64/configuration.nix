@@ -94,7 +94,7 @@
 			fish = {
 				enable = true;
 				interactiveShellInit = ''
-					set fish_greeting # Disable greeting
+					set -U fish_greeting (cowsay "you must be tired.\n")
 					'';
 				#plugins = [
 # Enable a plugin (here grc for colorized command output) from nixpkgs
@@ -152,10 +152,11 @@
 #   });
 # })
 			];
-			config = { # Configure your nixpkgs instance
-				allowUnfree = true; # Allow unfree packages #FIXME: DOES THIS EVEN WORK?
 
-			};
+			#config = { # Configure your nixpkgs instance
+				#allowUnfree = true; # Allow unfree packages #FIXME: DOES THIS EVEN WORK?
+
+			#};
 		};
 
 # nix

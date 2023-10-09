@@ -1,30 +1,9 @@
 # Configure included packages for NixOS.
 
-{ lib, config, pkgs, ... }:
+{ lib, config, nixpkgs, pkgs, ... }:
 
 {
-nixpkgs.config = {
-  allowUnfreePredicate = pkg:
-    builtins.elem (
-      lib.getName pkg
-    ) (
-      map lib.getName [
-        pkgs.corefonts
-        pkgs.discord
-        #pkgs.jetbrains.idea-ultimate
-        #pkgs.spotify-unwrapped
-        pkgs.unrar
-	pkgs.checkra1n
-	pkgs.beeper
-	pkgs.zoom-us
-	pkgs.android-studio
-      ]
-    ); 
-    android_sdk.accept_license = true;
-
-
-    };
-		environment.systemPackages = with pkgs; [
+    		environment.systemPackages = with pkgs; [
 		autotiling neovim
 			waydroid wl-clipboard
 			neofetch brave
@@ -60,9 +39,11 @@ nixpkgs.config = {
 			openssl dtc gnome-themes-extra
 			cargo nodePackages_latest.npm
 			xarchiver logseq perl 
-			hexedit
+			hexedit sway-contrib.grimshot
 			gimp virt-manager
-
+			
+			#UNFREE BROKEN WITH NIX FLAKES RN
+			#discord zoom-us 
 			(
 			 pkgs.writeTextFile {
 			 name = "startsway";
