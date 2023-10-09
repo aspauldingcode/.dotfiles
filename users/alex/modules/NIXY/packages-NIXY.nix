@@ -20,6 +20,31 @@
     # xinit?
     # xorg-server?
     # XQuartz?
+
+    			#hello
+                        (pkgs.writeShellScriptBin "my-hello" ''
+                         echo "Hello, ${config.home.username}!"
+                         '')
+			#silly
+                        (pkgs.writeShellScriptBin "silly" ''
+                         what=$(cat cowsayhi.log)
+                         sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText "$what"
+                         '')
+			#lockscreen-motd
+                        (pkgs.writeShellScriptBin "lockscreen-motd" ''
+                         class_directory="/Users/alex/"
+
+# Run the Java program with the classpath option and capture its output in the 'what' variable
+                         what=$(java -cp "$class_directory" SineWaveASCII)
+
+# Use the captured output as 'LoginwindowText' directly
+                         sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText "$what"
+                         '')
+			#fix-skhd
+			(pkgs.writeShellScriptBin "fix-skhd" ''
+			nohup sudo pkill skhd && skhd &
+			'')
+
   ];
 }
 

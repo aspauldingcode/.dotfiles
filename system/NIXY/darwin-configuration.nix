@@ -32,8 +32,8 @@
 		zoom-us
 		android-tools
 		jq
-		skhd
 		libusb
+		skhd
 	];
 
 	services.yabai = {
@@ -85,10 +85,10 @@
 			echo "yabai config loaded...
 			'';
 	};
-
-	services.skhd = {
-		enable = true;
-		skhdConfig = ''
+services.skhd = {
+    enable = true;
+    package = pkgs.skhd;
+    skhdConfig = ''
 			alt - return : open -n /Applications/Alacritty.app;
 			/*
 			alt - h : yabai -m window --focus west
@@ -171,6 +171,7 @@
 			echo "skhd config loaded...
 			'';
 	};
+
 	services.spacebar = {
 		enable = true;
 		package = pkgs.spacebar;
