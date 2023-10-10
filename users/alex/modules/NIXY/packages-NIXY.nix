@@ -42,7 +42,7 @@
                          '')
 			#fix-skhd
 			(pkgs.writeShellScriptBin "fix-skhd" ''
-			nohup sudo pkill skhd && skhd &
+			sudo pkill skhd && skhd &
 			'')
 
   ];
