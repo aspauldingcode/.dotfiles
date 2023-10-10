@@ -44,7 +44,7 @@
 			focus_follows_mouse          = "autoraise";
 			mouse_follows_focus          = "off";
 			window_placement             = "second_child";
-			window_opacity               = "off";
+			window_opacity               = "on";
 			window_opacity_duration      = "0.1";
 			window_topmost               = "off";
 			window_shadow                = "float";
@@ -71,7 +71,7 @@
 
 			yabai -m window_border	              on
 			yabai -m window_border_blur   	      on
-			yabai -m window_border_radius	      0
+			yabai -m window_border_radius	      -1.0
 			yabai -m window_border_width   	      0
 			#yabai -m active_window_border_color   0x0000000000
 			#yabai -m normal_window_border_color   0xff555555
@@ -90,7 +90,6 @@ services.skhd = {
     package = pkgs.skhd;
     skhdConfig = ''
 			alt - return : open -n /Applications/Alacritty.app;
-			/*
 			alt - h : yabai -m window --focus west
 			alt - j : yabai -m window --focus south
 			alt - k : yabai -m window --focus north
@@ -167,7 +166,7 @@ services.skhd = {
 
 		alt + shift - q : yabai -m window --close
 			alt - f : yabai -m window --toggle zoom-fullscreen
-			alt + shift - f : yabai -m window --toggle native-fullscreen */
+			alt + shift - f : yabai -m window --toggle native-fullscreen
 			echo "skhd config loaded...
 			'';
 	};
