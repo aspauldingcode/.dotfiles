@@ -22,7 +22,8 @@ nix-env --version  # Ensure that you have Nix 2.4 or newer
 nix --experimental-features 'nix-command flakes'  # Enable flakes
 ```
 
-- [ ] **TODO:** Check if I need to install home-manager first!
+- [x] **TODO:** Check if I need to install home-manager first!
+- [ ] **TODO** Figure out how to FIRST TIME install on ALL systems
 
 #### SSH Keys
 You're gonna need ssh keys stored in ~/.ssh on your local machine. The public ssh key that syncs from this repo is "``.dotfiles-keys.pub``," and the private ssh key that syncs to this repo is "``.dotfiles-keys``." These files are responsible for allowing new git clones. Check BitWarden if you forget the passphrase.
@@ -40,29 +41,33 @@ git clone git@github.com:aspauldingcode/.dotfiles.git ~/.dotfiles
 We can install our configurations, based on the hostname of the computer.
 NOTE: if adding a new computer, it's required to modify the "``flake.nix``" in order to support the new device, including the architecture and device hostname, as well as the desired users. In addition, you will need to add your device to a folder under "``system/hostname/``," which will contain your system "``configuration.nix``," and "``hardware-configuration.nix``."
 
-**IMPORTANT**
-- Navigate to the Repository Directory:
-```bash 
-cd ~/.dotfiles
-```
-**Install based on Hostname:**
-```bash
-# NIXSTATION64(x86_64-linux)
-sudo nixos-rebuild switch --flake .#NIXSTATION64 
-home-manager switch --flake .#alex@NIXSTATION64
-```
-```basH
-# NIXEDUP(aarch64-linux)
-sudo nixos-rebuild switch --flake .#NIXEDUP 
-home-manager switch --flake .#alex@NIXEDUP
-```
+#### Needed for first-time install(?)
+
+**FIRST INSTALL based on Hostname**
 ```bash 
 # NIXY(aarch64-darwin)
 #NEEDED for FIRST INSTALL (LIKELY TO CHANGE IN THE FUTURE)
 darwin-rebuild switch -I ~/.dotfiles/system/NIXY/darwin-configuration.nix
 home-manager build --flake .#alex@NIXY
+```
+#### Rebuild Existing
 
-#rebuild existing
+**REBUILD EXISITNG based on Hostname:**
+```bash
+# NIXSTATION64(x86_64-linux)
+cd ~/.dotfiles
+sudo nixos-rebuild switch --flake .#NIXSTATION64 
+home-manager switch --flake .#alex@NIXSTATION64
+```
+```bash
+# NIXEDUP(aarch64-linux)
+cd ~/.dotfiles
+sudo nixos-rebuild switch --flake .#NIXEDUP 
+home-manager switch --flake .#alex@NIXEDUP
+```
+```bash
+# NIXY(aarch64-darwin)
+cd ~/.dotfiles
 darwin-rebuild switch --flake .#NIXY
 home-manager switch --flake .#alex@NIXY
 ```
