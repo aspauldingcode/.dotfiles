@@ -41,21 +41,29 @@
 		package = pkgs.yabai;
 		enableScriptingAddition = true;
 		config = {
-			focus_follows_mouse          = "autoraise";
-			mouse_follows_focus          = "of";
+			focus_follows_mouse          = "autofocus";
+			mouse_follows_focus          = "off";
 			window_placement             = "second_child";
 			window_opacity               = "off";
 			window_border                = "on";
 			window_border_placement      = "inset";
+			#window_border_radius	     = 1;
 			window_border_width          = 1;
+			window_border_blur	     = "on";
+			#window_border_blur_radius    = "10";
 			active_window_border_color   = "0xffffffff";
 			normal_window_border_color   = "0x00000000";
 			insert_feedback_color	     = "0x00000000";
+			
+			#TEST
+			#window_blur		= "on";
+			#window_blur_radius	= "4";
+
 			window_opacity_duration      = "0.1";
 			window_topmost               = "off";
 			window_shadow                = "float";
-			#active_window_opacity        = "1.0";
-			#normal_window_opacity        = "0.3";
+			active_window_opacity        = "1.0";
+			normal_window_opacity        = "0.3";
 			split_ratio                  = "0.50";
 			auto_balance                 = "off";
 			mouse_modifier               = "alt";
@@ -73,12 +81,15 @@
 		extraConfig = ''
 # rules
 			yabai -m rule --add app='System Settings' manage=off
+			yabai -m rule --add app='System Information' manage=off
 			yabai -m rule --add app='zoom.us' manage=off
+			yabai -m rule --add app='Dock' manage=off
+			yabai -m rule --add app='Finder' manage=off
+			yabai -m rule --add app='Alacritty' opacity=0.8
+			yabai -m rule --add app='Alacritty' window_opacity='on'
 # Any other arbitrary config here
 			#yabai -m config window_border     on
 			#echo "yabai config loaded..."
-			
-
 			'';
 	};
 services.skhd = {
@@ -86,6 +97,7 @@ services.skhd = {
     package = pkgs.skhd;
     skhdConfig = ''
 			alt - return : open -n /Applications/Alacritty.app;
+
 			alt - h : yabai -m window --focus west
 			alt - j : yabai -m window --focus south
 			alt - k : yabai -m window --focus north
@@ -139,7 +151,7 @@ services.skhd = {
 # balance size of windows
 			alt + shift - 0 : yabai -m space --balance
 			alt - e : yabai -m space --layout bsp
-			alt - l : yabai -m space --layout float
+			alt - m : yabai -m window --toggle float
 			alt - s : yabai -m space --layout stack
 			
 # toggle borders

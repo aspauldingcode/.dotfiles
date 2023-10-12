@@ -1,9 +1,18 @@
 { lib, config, pkgs, ... }:
 
 # NIXY-specific packages
+
+
 {
   imports = [
   ];
+  
+  nixpkgs = {
+    config = {
+      allowUnfree = true;
+    };
+  };
+
   home.packages = with pkgs; [
   	calcurse
 	delta
@@ -56,6 +65,11 @@
 			(pkgs.writeShellScriptBin "fix-skhd" ''
 			sudo pkill skhd && skhd &
 			'')
+			#reboot without params
+			(pkgs.writeShellScriptBin "reboot" ''
+			sudo reboot -h now
+			'');
+
 
   ];
 }
