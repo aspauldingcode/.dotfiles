@@ -29,6 +29,5 @@
 			cargo nodePackages_latest.npm
 			perl 
 			hexedit virt-manager
-			zoom-us
 			]; 
 }

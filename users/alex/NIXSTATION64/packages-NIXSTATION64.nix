@@ -1,12 +1,11 @@
+
 { lib, config, pkgs, ... }:
 
 # NIXSTATION-specific packages
 {
   imports = [
-    #../packages-UNIVERSAL.nix
-  ];
-
-
+    #../packages-UNIVERSAL.nix #get rid of this!
+  ]; 
       gtk.enable = true;
       qt.enable = false;
 
@@ -28,7 +27,6 @@
   nixpkgs = {
     config = {
       allowUnfree = true;
-      #allowUnfreePredicate = (_: true); #fixed with home-manager, needs fixing for configuration.nix system.
     };
   };
 
@@ -43,9 +41,13 @@
     };
     packages = with pkgs; [
     checkra1n
+    zoom-us
+    spotify-unwrapped
+    jetbrains.idea-ultimate
     android-studio
     corefonts
     beeper
+    brave
     transmission-gtk
     calcurse
     delta gnupg audacity
@@ -64,7 +66,7 @@
     linuxKernel.packages.linux_latest_libre.openrazer
     openrazer-daemon
     idevicerestore usbmuxd libusbmuxd libimobiledevice
-    avahi sshfs pcituis socat lolcat
+    avahi sshfs pciutils socat lolcat
     pmbootstrap libusb1 xarchiver logseq gimp zip
     sway-contrib.grimshot
 
@@ -75,4 +77,3 @@
     ];
   };
 }
-
