@@ -4,23 +4,16 @@
 
 {
     		environment.systemPackages = with pkgs; [
-		autotiling neovim
-			waydroid wl-clipboard
-			neofetch brave
+			neovim
+			wl-clipboard
+			neofetch
 			lf ranger pcmanfm			
 			wofi-emoji htop fim
 			gparted killall tree
 			zsh curl lazygit
-			wget git w3m obs-studio
-			docker home-manager
-		android-tools xz 
+			wget git
 			element appimage-run
-			networkmanagerapplet
-			blueman jq
-			flameshot
-			tree-sitter fd ripgrep
-			linuxKernel.packages.linux_latest_libre.openrazer
-			razergenie
+			tree-sitter
 			python312
 			python311Packages.openrazer
 			python311Packages.tree-sitter
@@ -30,34 +23,11 @@
 			openrazer-daemon
 			jdk20
 			nodejs
-			idevicerestore usbmuxd libusbmuxd
-			libimobiledevice
-			avahi flex bison
-			sshfs pciutils socat
-			pmbootstrap
-			gnumake gcc libusb1
+			flex bison
+			gnumake gcc
 			openssl dtc gnome-themes-extra
 			cargo nodePackages_latest.npm
-			xarchiver logseq perl 
-			hexedit sway-contrib.grimshot
-			gimp virt-manager
-			
-			#UNFREE BROKEN WITH NIX FLAKES RN
-			#discord zoom-us 
-			(
-			 pkgs.writeTextFile {
-			 name = "startsway";
-			 destination = "/bin/startsway";
-			 executable = true;
-			 text = ''
-#! ${pkgs.bash}/bin/bash
-
-# first import environment variables from the login manager
-			 systemctl --user import-environment
-# then start the service
-			 exec systemctl --user start sway.service
-			 '';
-			 }
-			)
+			perl 
+			hexedit virt-manager
 			]; 
 }

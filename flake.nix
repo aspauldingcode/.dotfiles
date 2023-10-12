@@ -43,19 +43,19 @@
         "alex@NIXY" = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.aarch64-darwin;
           extraSpecialArgs = commonSpecialArgs;
-          modules = [ ./users/alex/home-NIXY.nix ];
+          modules = [ ./users/alex/NIXY/home-NIXY.nix ];
         };
 	
 	"alex@NIXEDUP" = home-manager.lib.homeManagerConfiguration { 
 	  pkgs = nixpkgs.legacyPackages.aarch64-linux;
 	  extraSpecialArgs = commonSpecialArgs;
-	  modules = [ ./users/alex/home-NIXEDUP.nix];
+	  modules = [ ./users/alex/NIXEDUP/home-NIXEDUP.nix];
 	};
  
         "alex@NIXSTATION64" = home-manager.lib.homeManagerConfiguration {
 	  pkgs = nixpkgs.legacyPackages.x86_64-linux;
 	  extraSpecialArgs = commonSpecialArgs;
-	  modules = [ ./users/alex/home-NIXSTATION64.nix ];
+	  modules = [ ./users/alex/NIXSTATION64/home-NIXSTATION64.nix ];
 	};
 
 	# User: Su Su

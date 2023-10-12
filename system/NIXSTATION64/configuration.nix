@@ -11,6 +11,8 @@
 		./hardware-configuration.nix
 		./sway-configuration.nix
 		./packages-configuration.nix
+		./virtual-machines.nix
+		#./sddm-themes.nix
 	];
 
 # Bootloader.
@@ -35,6 +37,9 @@
 # Enable Bluetooth
 		hardware.bluetooth.enable = true;
 	services.blueman.enable = true; # FIXME
+
+#add opengl (to fix Qemu)
+	hardware.opengl.enable = true;
 
 # Select internationalisation properties.
 		i18n = {
@@ -70,7 +75,18 @@
 
 			openFirewall = true;
 		};
-		getty.autologinUser = "alex"; # Enable automatic login for the user.
+		# PRETTY LOGIN SCREEN!
+		
+		xserver = {
+    			enable = true;
+    			layout = "us";
+    			libinput.enable = true;  # Enable this if using libinput for input device management.
+			displayManager.sddm = {
+				enable = true;
+				#anything else?
+			};
+		};
+		#getty.autologinUser = "alex"; # Enable automatic login for the user.
 
 # This setups a SSH server. Very important if you're setting up a headless system.
 			openssh = {
@@ -82,8 +98,18 @@
 	};
 
 
-
-
+security.sudo = {
+wheelNeedsPassword = false;
+extraRules= [
+  {  users = [ "privileged_user" ];
+    commands = [
+       { command = "ALL" ;
+         options= [ "NOPASSWD" ]; # "SETENV" # Adding the following could be a good idea
+      }
+    ];
+  }
+];
+};
 #programs 
 	programs = {
 		neovim = { # Configure neovim
@@ -179,7 +205,10 @@
 		virtualisation = { # enable virtualization support
 			docker.enable = true;
 			libvirtd.enable = true;
+			waydroid.enable = true;
+			lxd.enable = true;
 		};
+		
 		system = {
 			autoUpgrade = {
 				enable = true;
