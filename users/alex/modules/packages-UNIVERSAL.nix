@@ -19,7 +19,7 @@
       })
       
       calcurse
-      galculator
+      #galculator
       delta
       gnupg
       audacity

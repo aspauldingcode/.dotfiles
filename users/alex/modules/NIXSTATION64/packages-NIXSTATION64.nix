@@ -18,6 +18,7 @@
     corefonts
     beeper
     swayfx
+    galculator
     ];
   };
 }

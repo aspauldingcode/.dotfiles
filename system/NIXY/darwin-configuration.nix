@@ -42,16 +42,22 @@
 		enableScriptingAddition = true;
 		config = {
 			focus_follows_mouse          = "autoraise";
-			mouse_follows_focus          = "off";
+			mouse_follows_focus          = "of";
 			window_placement             = "second_child";
-			window_opacity               = "on";
+			window_opacity               = "off";
+			window_border                = "on";
+			window_border_placement      = "inset";
+			window_border_width          = 1;
+			active_window_border_color   = "0xffffffff";
+			normal_window_border_color   = "0x00000000";
+			insert_feedback_color	     = "0x00000000";
 			window_opacity_duration      = "0.1";
 			window_topmost               = "off";
 			window_shadow                = "float";
-			active_window_opacity        = "1.0";
-			normal_window_opacity        = "0.3";
+			#active_window_opacity        = "1.0";
+			#normal_window_opacity        = "0.3";
 			split_ratio                  = "0.50";
-			auto_balance                 = "on";
+			auto_balance                 = "off";
 			mouse_modifier               = "alt";
 			mouse_action1                = "move";
 			mouse_action2                = "resize";
@@ -61,28 +67,18 @@
 			left_padding                 = 10;
 			right_padding                = 10;
 			window_gap                   = 10;
+
 		};
 
 		extraConfig = ''
 # rules
-			yabai -m rule --add app='System Preferences' manage=off
+			yabai -m rule --add app='System Settings' manage=off
 			yabai -m rule --add app='zoom.us' manage=off
 # Any other arbitrary config here
+			#yabai -m config window_border     on
+			#echo "yabai config loaded..."
+			
 
-			yabai -m window_border	              on
-			yabai -m window_border_blur   	      on
-			yabai -m window_border_radius	      -1.0
-			yabai -m window_border_width   	      0
-			#yabai -m active_window_border_color   0x0000000000
-			#yabai -m normal_window_border_color   0xff555555
-			#yabai -m window_origin_display        default
-
-# Toggle test
-#yabai -m query --windows --space |
-#jq '.[].id' |
-#xargs -I{} yabai -m window {} --toggle border
-
-			echo "yabai config loaded...
 			'';
 	};
 services.skhd = {
@@ -145,6 +141,9 @@ services.skhd = {
 			alt - e : yabai -m space --layout bsp
 			alt - l : yabai -m space --layout float
 			alt - s : yabai -m space --layout stack
+			
+# toggle borders
+	#alt - y : yabai -m window --toggle border
 
 # cycle through stack windows
 			alt - p : yabai -m window --focus stack.next || yabai -m window --focus south
@@ -164,7 +163,7 @@ services.skhd = {
 			| jq -sre "add | map(select(.minimized != 1)) | sort_by(.display, .frame.y, .frame.y, .id) | nth(index(map(select(.focused == 1))) - 1).id" \
 			| xargs -I{} yabai -m window --focus {}
 
-		alt + shift - q : yabai -m window --close
+			alt + shift - q : yabai -m window --close
 			alt - f : yabai -m window --toggle zoom-fullscreen
 			alt + shift - f : yabai -m window --toggle native-fullscreen
 			echo "skhd config loaded...
@@ -301,6 +300,13 @@ services.skhd = {
 	system.defaults.loginwindow.SleepDisabled = false;
 #Whether to enable smooth scrolling. The default is true.
 	system.defaults.NSGlobalDomain.NSScrollAnimationEnabled = false;
+
+
+
+
+
+
+
 
 # system.build = builtins.exec "echo 'hello, world.'";
 
