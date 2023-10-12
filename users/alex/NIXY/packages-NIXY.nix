@@ -3,9 +3,21 @@
 # NIXY-specific packages
 {
   imports = [
-    ../packages-UNIVERSAL.nix
   ];
-  home.packages = with pkgs; [ 
+  home.packages = with pkgs; [
+  	calcurse
+	delta
+	sshpass
+	git-crypt
+	cowsay
+	discord
+	zoom-us
+	spotify-unwrapped
+	jetbrains.idea-ultimate
+	(prismlauncher.override {
+      		jdks = [ jdk8 jdk17 jdk19 ]; 
+      	})
+
     # dmenu-mac
     # yabai?
     # skhd?

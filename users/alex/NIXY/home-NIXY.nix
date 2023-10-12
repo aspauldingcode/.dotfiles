@@ -3,7 +3,7 @@
 {
   #You can import other home-manager modules here
   imports = [
-    ./modules/NIXY/packages-NIXY.nix #which also calls the universal packages.
+    ./packages-NIXY.nix
     #./modules/NIXY/yabai.nix
     #./modules/NIXY/skhd.nix
     #./modules/NIXY/spacebar.nix
