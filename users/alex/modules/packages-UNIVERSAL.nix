@@ -17,9 +17,8 @@
       (prismlauncher.override {
       jdks = [ jdk8 jdk17 jdk19 ]; 
       })
-      
+      #transmission-gtk
       calcurse
-      galculator
       delta
       gnupg
       audacity
@@ -36,7 +35,7 @@
       #android-studio NOT FOR aarch64 DARWIN
       spotify-unwrapped
       jetbrains.idea-ultimate
-      #corefonts FAILED TO BUILD on aarch-DARWIN
+      #qtemu # works on windows!!!
       # qemu?
       # docker?
       # build-tools? (python311, jdk20, etc.)
