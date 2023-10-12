@@ -68,9 +68,7 @@
 			#reboot without params
 			(pkgs.writeShellScriptBin "reboot" ''
 			sudo reboot -h now
-			'');
-
-
+			'')
   ];
 }
 
