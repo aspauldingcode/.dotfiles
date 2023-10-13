@@ -108,7 +108,6 @@ As of <!-- LAST_COMMIT_DATE -->, the repo layout is as follows;
 <pre>
 .
 ├── README.md
-├── ]
 ├── flake.lock
 ├── flake.nix
 ├── system
