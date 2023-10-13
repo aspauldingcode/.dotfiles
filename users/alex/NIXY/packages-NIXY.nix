@@ -15,11 +15,13 @@
 
   home.packages = with pkgs; [
   	calcurse
+	ncdu
 	delta
 	sshpass
 	git-crypt
 	cowsay
 	discord
+	davinci-resolve
 	zoom-us
 	spotify-unwrapped
 	jetbrains.idea-ultimate

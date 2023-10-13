@@ -39,13 +39,16 @@
       size = 22;
     };
     packages = with pkgs; [
+    ncdu
     checkra1n
     zoom-us
     spotify-unwrapped
-    jetbrains.idea-ultimate
     android-studio
     corefonts
     beeper
+    davinci-resolve
+    blender
+    openscad
     brave
     transmission-gtk
     calcurse
