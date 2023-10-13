@@ -52,6 +52,9 @@ home-manager build --flake .#alex@NIXY
 ```
 #### Rebuild Existing
 
+it is now possible to rebuild using ONLY the following command:
+``rebuild``
+
 **REBUILD EXISITNG based on Hostname:**
 ```bash
 # NIXSTATION64(x86_64-linux)
@@ -73,6 +76,9 @@ home-manager switch --flake .#alex@NIXY
 ```
 ## Updating the Repository
 We want to keep all our software, user profile settings, and operating systems environments in sync. Github and git-cli just happens to offer the most convenient tools to do so.
+
+It is now possible to update the repo using ONLY the following command:
+``update``
 
 ```bash
 # Navigate to the Repository Directory:
@@ -102,9 +108,7 @@ As of <!-- LAST_COMMIT_DATE -->, the repo layout is as follows;
 <pre>
 .
 ├── README.md
-├── extraConfig
-│   └── nvim
-│       └── init.lua
+├── ]
 ├── flake.lock
 ├── flake.nix
 ├── system
@@ -113,22 +117,29 @@ As of <!-- LAST_COMMIT_DATE -->, the repo layout is as follows;
 │   │   ├── configuration.nix
 │   │   ├── hardware-configuration.nix
 │   │   ├── packages-configuration.nix
-│   │   └── sway-configuration.nix
+│   │   ├── sddm-themes.nix
+│   │   ├── sway-configuration.nix
+│   │   └── virtual-machines.nix
 │   └── NIXY
 │       └── darwin-configuration.nix
 └── users
     ├── alex
-    │   ├── home-NIXEDUP.nix
-    │   ├── home-NIXSTATION64.nix
-    │   ├── home-NIXY.nix
-    │   └── modules
-    │       ├── NIXEDUP
-    │       │   └── packages-NIXEDUP.nix
-    │       ├── NIXSTATION64
-    │       │   └── packages-NIXSTATION64.nix
-    │       ├── NIXY
-    │       │   └── packages-NIXY.nix
-    │       └── packages-UNIVERSAL.nix
+    │   ├── NIXEDUP
+    │   │   ├── home-NIXEDUP.nix
+    │   │   └── packages-NIXEDUP.nix
+    │   ├── NIXSTATION64
+    │   │   ├── home-NIXSTATION64.nix
+    │   │   ├── packages-NIXSTATION64.nix
+    │   │   └── synthwave-night-skyscrapers.jpg
+    │   ├── NIXY
+    │   │   ├── home-NIXY.nix
+    │   │   ├── packages-NIXY.nix
+    │   │   └── yabai.nix
+    │   └── extraConfig
+    │       ├── fish.nix
+    │       ├── git.nix
+    │       └── nvim
+    │           └── init.lua
     └── susu
         ├── home-NIXSTATION64.nix
         ├── home-NIXY.nix
@@ -139,5 +150,5 @@ As of <!-- LAST_COMMIT_DATE -->, the repo layout is as follows;
             │   └── packages-NIXY.nix
             └── packages-UNIVERSAL.nix
 
-17 directories, 21 files
+16 directories, 27 files
 </pre>

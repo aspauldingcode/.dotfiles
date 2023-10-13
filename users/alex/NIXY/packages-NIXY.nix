@@ -65,10 +65,10 @@
 			(pkgs.writeShellScriptBin "fix-skhd" ''
 			sudo pkill skhd && skhd &
 			'')
-			#shutdown without params
+			/*#shutdown without params
 			(pkgs.writeShellScriptBin "shutdown" ''
 			sudo shutdown -h now
-			'')
+			'')*/
 			#rebuild
 			(pkgs.writeShellScriptBin "rebuild" ''
 			# NIXY(aarch64-darwin)
