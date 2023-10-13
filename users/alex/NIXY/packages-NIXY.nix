@@ -69,32 +69,6 @@
 			(pkgs.writeShellScriptBin "shutdown" ''
 			sudo shutdown -h now
 			'')*/
-			#rebuild
-			(pkgs.writeShellScriptBin "rebuild" ''
-			# NIXY(aarch64-darwin)
-			cd ~/.dotfiles
-			darwin-rebuild switch --flake .#NIXY
-			home-manager switch --flake .#alex@NIXY
-			'')
-			#update
-			(pkgs.writeShellScriptBin "update" ''
-			# Navigate to the Repository Directory:
-			cd ~/.dotfiles
-
-			#Fetch the Latest Changes:
-			git fetch
-
-			# Update Your Local Branch:
-			git checkout main
-			git merge origin/main
-
-			# Commit Your Changes (if needed):
-			git add .
-			git commit -m "Updating .dotfiles"
-
-			# Push the Changes to the Remote Repository:
-			git push origin main
-			'')
-  ];
+			];
 }
 

@@ -34,6 +34,36 @@
 		jq
 		libusb
 		skhd
+		#rebuild
+		(pkgs.writeShellScriptBin "rebuild" ''
+		# NIXY(aarch64-darwin)
+		cd ~/.dotfiles
+		darwin-rebuild switch --flake .#NIXY
+		home-manager switch --flake .#alex@NIXY
+		'')
+		#update
+		(pkgs.writeShellScriptBin "update" ''
+		# Navigate to the Repository Directory:
+		cd ~/.dotfiles
+
+		#Fetch the Latest Changes:
+		git fetch
+
+		# Update Your Local Branch:
+		git checkout main
+		git merge origin/main
+
+		# Commit Your Changes (if needed):
+		git add .
+		git commit -m "Updating .dotfiles from NIXY"
+
+		# Push the Changes to the Remote Repository:
+		git push origin main
+		'')
+
+
+
+
 	];
 	services.yabai = {
 		enable = true;
@@ -321,13 +351,10 @@ services.skhd = {
 	system.defaults.loginwindow.SleepDisabled = false;
 #Whether to enable smooth scrolling. The default is true.
 	system.defaults.NSGlobalDomain.NSScrollAnimationEnabled = false;
-
-
-
-
-
-
-
+#Whether to animate opening and closing of windows and popovers. The default is true.
+	system.defaults.NSGlobalDomain.NSAutomaticWindowAnimationsEnabled = false;
+#Sets the speed speed of window resizing. The default is given in the example.
+	system.defaults.NSGlobalDomain.NSWindowResizeTime = 0.0;
 
 # system.build = builtins.exec "echo 'hello, world.'";
 
