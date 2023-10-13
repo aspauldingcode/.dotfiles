@@ -54,11 +54,6 @@
 			active_window_border_color   = "0xffffffff";
 			normal_window_border_color   = "0x00000000";
 			insert_feedback_color	     = "0x00000000";
-			
-			#TEST
-			#window_blur		= "on";
-			#window_blur_radius	= "4";
-
 			window_opacity_duration      = "0.1";
 			window_topmost               = "off";
 			window_shadow                = "float";
@@ -89,6 +84,8 @@
 			yabai -m rule --add app='Alacritty' window_opacity='on'
 # Any other arbitrary config here
 			#yabai -m config window_border     on
+			yabai -m config active_window_border_topmost on
+
 			#echo "yabai config loaded..."
 			'';
 	};
@@ -151,7 +148,7 @@ services.skhd = {
 # balance size of windows
 			alt + shift - 0 : yabai -m space --balance
 			alt - e : yabai -m space --layout bsp
-			alt - m : yabai -m window --toggle float
+			alt - l : yabai -m space --layout float
 			alt - s : yabai -m space --layout stack
 			
 # toggle borders
@@ -253,7 +250,7 @@ services.skhd = {
 	};
 
 	/*homebrew.whalebrews = [
-	  "whalebrew/wget"
+	   f"whalebrew/wget"
 	  "whalebrew/whalesay"
 	  ];*/
 

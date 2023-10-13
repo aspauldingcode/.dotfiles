@@ -65,9 +65,9 @@
 			(pkgs.writeShellScriptBin "fix-skhd" ''
 			sudo pkill skhd && skhd &
 			'')
-			#reboot without params
-			(pkgs.writeShellScriptBin "reboot" ''
-			sudo reboot -h now
+			#shutdown without params
+			(pkgs.writeShellScriptBin "shutdown" ''
+			sudo shutdown -h now
 			'')
   ];
 }
