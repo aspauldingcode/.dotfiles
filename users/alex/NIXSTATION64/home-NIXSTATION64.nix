@@ -3,7 +3,7 @@
 {
 #import other home-manager modules which are NIXSTATION64-specific
 	imports = [
-		./modules/NIXSTATION64/packages-NIXSTATION64.nix 
+		./packages-NIXSTATION64.nix 
 #./modules/extraConfig/git.nix
 	];
 	home = {

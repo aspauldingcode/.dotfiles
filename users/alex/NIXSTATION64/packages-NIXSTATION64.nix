@@ -4,7 +4,6 @@
 # NIXSTATION-specific packages
 {
   imports = [
-    #../packages-UNIVERSAL.nix #get rid of this!
   ]; 
       gtk.enable = true;
       qt.enable = false;
