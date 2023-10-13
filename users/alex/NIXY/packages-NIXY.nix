@@ -69,6 +69,13 @@
 			(pkgs.writeShellScriptBin "shutdown" ''
 			sudo shutdown -h now
 			'')
+			#rebuild
+			(pkgs.writeShellScriptBin "rebuild" ''
+			# NIXY(aarch64-darwin)
+			cd ~/.dotfiles
+			darwin-rebuild switch --flake .#NIXY
+			home-manager switch --flake .#alex@NIXY
+			'')
   ];
 }
 

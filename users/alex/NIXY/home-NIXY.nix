@@ -37,8 +37,8 @@
             settings = {
                 window = {
                     padding.x = 0;
-                    padding.y = 10;
-                    opacity   = 0.8;
+                    padding.y = 20;
+                    opacity   = 0.5;
                     class.instance = "Alacritty";
                     class.general  = "Alacritty";
 		    decorations = "buttonless";
@@ -49,12 +49,12 @@
                     multiplier = 3;
                 };
 
-                font.size = 13.0;
+                font.size = 15.0;
 
                 colors = {
                     primary = {
-                        background = "0x262626";
-                        foreground = "0xEBEBEB";
+                        background = "0x101010";
+                        foreground = "0xC470F7";
                     };
                     cursor = {
                         text    ="0xEBEBEB";
