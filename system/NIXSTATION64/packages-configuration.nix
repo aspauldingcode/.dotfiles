@@ -7,7 +7,8 @@
 			neovim
 			wl-clipboard
 			neofetch
-			lf ranger pcmanfm			
+			yazi ueberzugpp 
+			pcmanfm			
 			wofi-emoji htop fim
 			gparted killall tree
 			zsh curl lazygit

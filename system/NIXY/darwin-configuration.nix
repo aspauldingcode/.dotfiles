@@ -34,6 +34,7 @@
 		jq
 		libusb
 		skhd
+		yazi
 		#rebuild
 		(pkgs.writeShellScriptBin "rebuild" ''
 		# NIXY(aarch64-darwin)
@@ -60,10 +61,6 @@
 		# Push the Changes to the Remote Repository:
 		git push origin main
 		'')
-
-
-
-
 	];
 	services.yabai = {
 		enable = true;

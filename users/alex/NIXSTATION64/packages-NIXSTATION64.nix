@@ -46,9 +46,8 @@
     android-studio
     corefonts
     beeper
-    davinci-resolve
+    davinci-resolve ocl-icd 
     blender
-    openscad
     brave
     transmission-gtk
     calcurse
