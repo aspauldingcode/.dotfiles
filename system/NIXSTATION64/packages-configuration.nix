@@ -4,7 +4,6 @@
 
 {
     		environment.systemPackages = with pkgs; [
-			x11_ssh_askpass
 			neovim
 			wl-clipboard
 			neofetch
