@@ -98,17 +98,15 @@
 			};
 	};
 
-security.sudo = {
-wheelNeedsPassword = false;
-extraRules= [
-  {  users = [ "privileged_user" ];
-    commands = [
-       { command = "ALL" ;
-         options= [ "NOPASSWD" ]; # "SETENV" # Adding the following could be a good idea
-      }
-    ];
-  }
-];
+security = { 
+	sudo = {
+		wheelNeedsPassword = false;
+		extraRules= [{  users = [ "privileged_user" ];
+   			commands = [{ command = "ALL" ;
+				options= [ "NOPASSWD" ]; # "SETENV" # 
+			}];}];
+	};
+	polkit.enable = true;
 };
 #programs 
 	programs = {

@@ -14,6 +14,7 @@
 			zsh curl lazygit
 			wget git
 			dnsmasq
+			udftools
 			element appimage-run
 			tree-sitter
 			python312
