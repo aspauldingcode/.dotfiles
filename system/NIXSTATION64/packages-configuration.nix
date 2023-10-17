@@ -13,6 +13,7 @@
 			gparted killall tree
 			zsh curl lazygit
 			wget git
+			dnsmasq
 			element appimage-run
 			tree-sitter
 			python312

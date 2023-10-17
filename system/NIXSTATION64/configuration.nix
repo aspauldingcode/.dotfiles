@@ -83,6 +83,7 @@
     			libinput.enable = true;  # Enable this if using libinput for input device management.
 			displayManager.sddm = {
 				enable = true;
+				theme = "abstractdark-sddm-theme";
 				#anything else?
 			};
 		};
@@ -96,7 +97,6 @@
 				};
 			};
 	};
-
 
 security.sudo = {
 wheelNeedsPassword = false;
@@ -209,7 +209,7 @@ extraRules= [
 			waydroid.enable = true;
 			lxd.enable = true;
 		};
-		
+
 		system = {
 			autoUpgrade = {
 				enable = true;
