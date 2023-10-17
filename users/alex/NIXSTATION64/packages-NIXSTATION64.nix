@@ -47,6 +47,7 @@
     corefonts
     beeper
     davinci-resolve ocl-icd 
+    #etcher
     blender
     brave
     transmission-gtk
