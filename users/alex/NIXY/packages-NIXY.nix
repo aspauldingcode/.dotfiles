@@ -10,6 +10,8 @@
   nixpkgs = {
     config = {
       allowUnfree = true;
+      allowUnsupportedSystem = false;
+
     };
   };
 
@@ -21,14 +23,14 @@
 	git-crypt
 	cowsay
 	discord
-	davinci-resolve
+	#davinci-resolve NEEDS TO BE MAS APP?
 	zoom-us
 	spotify-unwrapped
 	jetbrains.idea-ultimate
 	(prismlauncher.override {
       		jdks = [ jdk8 jdk17 jdk19 ]; 
       	})
-
+    # #TODO
     # dmenu-mac
     # yabai?
     # skhd?
@@ -37,12 +39,13 @@
     # UTM? 
     # xCode?
     # x-code-cli?
-    # Townscraper?
+    # Townscraper? 
     # homebrew?
     # sketchybar?
     # xinit?
     # xorg-server?
     # XQuartz?
+    # davinci-resolve?
 
     			#hello
                         (pkgs.writeShellScriptBin "my-hello" ''
@@ -73,4 +76,5 @@
 			'')*/
 			];
 }
+
 
