@@ -81,12 +81,14 @@ imports = [
 	homebrew = {
 		brews = [
 			"xinit"
-				"xorg-server"
+			"xorg-server"
+			"choose-gui"
 		];
 
 		casks = [
 			"xquartz"
-				"dmenu-mac"
+			"dmenu-mac"
+			"hiddenbar"
 		];
 
 #masApps = [
