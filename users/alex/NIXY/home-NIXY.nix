@@ -10,6 +10,7 @@
     #./modules/NIXY/git.nix
     #./modules/NIXY/fish.nix
     #./modules/NIXY/sketchybar.nix
+    ./neovim.nix
   ];
       # You can place the 'home' and 'programs' sections within the 'config' attribute as follows:
     home = {
@@ -32,13 +33,14 @@
         enable = true;
         #extraConfig = lib.fileContents ./extraConfig/nvim/init.lua;
       };
+    
     alacritty = {
             enable = true;
             settings = {
                 window = {
                     padding.x = 0;
-                    padding.y = 20;
-                    opacity   = 0.5;
+                    padding.y = 10;
+                    opacity   = 1;
                     class.instance = "Alacritty";
                     class.general  = "Alacritty";
 		    decorations = "buttonless";
@@ -49,7 +51,7 @@
                     multiplier = 3;
                 };
 
-                font.size = 15.0;
+                font.size = 16.0;
 
                 colors = {
                     primary = {
@@ -90,14 +92,27 @@
 
                 draw_bold_text_with_bright_colors = true;
                 live_config_reload = true;
+
+		key_bindings = [
+  			{
+    				key = "C";
+    				mods = "Control";
+    				action = "Copy";
+  			}
+  			{
+    				key = "V";
+    				mods = "Control";
+   				action = "Paste";
+  			}
+			{
+				key = "C"; 
+				mods = "Control|Shift";
+				chars = "\\x03";
+			}
+		];
             };
         };
-
-
     };
-
-    # Nicely reload system units when changing configs
-    systemd.user.startServices = "sd-switch"; # TODO: UPDATE IF USING DIFFERENT BOOTLOADER!
-  }
+}
 
 

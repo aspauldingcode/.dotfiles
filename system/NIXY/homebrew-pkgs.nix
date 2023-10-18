@@ -9,6 +9,7 @@
 			"xinit"
 			"xorg-server"
 			"choose-gui"
+			"yazi"
 		];
 
 		casks = [

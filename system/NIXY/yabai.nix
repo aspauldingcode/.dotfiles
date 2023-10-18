@@ -5,20 +5,20 @@ services.yabai = {
 		package = pkgs.yabai;
 		enableScriptingAddition = true;
 		config = {
-			focus_follows_mouse          = "autofocus";
-			mouse_follows_focus          = "off";
+			focus_follows_mouse          = "autofocus"; # <- autofocus | autoraise
+			mouse_follows_focus          = "off"; #FIXME: Configure apps so I can turn this on.
 			window_placement             = "second_child";
 			window_opacity               = "off";
 			window_border                = "on";
 			window_border_placement      = "inset";
-			window_border_blur	     = "on";
+			window_border_blur	     = "off"; 	# <- on | off
 			#window_border_blur_radius    = "10";
 
 			# OPTIONS for BORDERS
-			# Coffee active, Brown inactive
+			# Coffee active, Gray inactive
 			active_window_border_color   = "0xffA34A28";
-			normal_window_border_color   = "0xff211717";
-			insert_feedback_color	     = "0xff211717";
+			normal_window_border_color   = "0xff808080";
+			insert_feedback_color	     = "0xff808080";
 			window_border_width	     = 1;
 			#window_border_radius	     = 10; #keep commented
 			

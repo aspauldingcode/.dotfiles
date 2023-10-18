@@ -31,8 +31,9 @@ nixpkgs = {
 		android-tools
 		jq
 		libusb
-		skhd
-		#yazi #NOTWORKINGONDARWIN
+		skhd 
+		lolcat
+		#yazi # FIXME: NOTWORKINGONDARWIN. TRY BREW!
 		#rebuild
 		(pkgs.writeShellScriptBin "rebuild" ''
 		# NIXY(aarch64-darwin)
