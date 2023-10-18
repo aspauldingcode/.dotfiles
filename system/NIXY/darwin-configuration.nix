@@ -52,7 +52,7 @@ imports = [
 		home-manager switch --flake .#alex@NIXY
 		'')
 		#update
-sp		(pkgs.writeShellScriptBin "update" ''
+		(pkgs.writeShellScriptBin "update" ''
 		# Navigate to the Repository Directory:
 		cd ~/.dotfiles
 
