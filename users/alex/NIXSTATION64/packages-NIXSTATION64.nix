@@ -26,6 +26,9 @@
   nixpkgs = {
     config = {
       allowUnfree = true;
+      permittedInsecurePackages = [
+	"electron-19.1.9"
+	];
     };
   };
 
@@ -40,6 +43,7 @@
     };
     packages = with pkgs; [
     ncdu
+    etcher
     checkra1n
     zoom-us
     spotify-unwrapped
