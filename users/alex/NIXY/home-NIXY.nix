@@ -4,8 +4,8 @@
   #You can import other home-manager modules here
   imports = [
     ./packages-NIXY.nix
-    ./modules/NIXY/yabai.nix
-    #./modules/NIXY/skhd.nix
+    #./yabai.nix # FIXME UGH how do I home manager this?
+    #./skhd.nix
     #./modules/NIXY/spacebar.nix
     #./modules/NIXY/git.nix
     #./modules/NIXY/fish.nix

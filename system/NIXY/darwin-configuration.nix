@@ -1,8 +1,10 @@
-{ config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 
 # TODO: Implement an import system-universal.nix MODULE
 {
-
+imports = [ 
+./yabai.nix
+];
 	nixpkgs = {
 		hostPlatform = "aarch64-darwin";
 		config = {
