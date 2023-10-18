@@ -60,4 +60,4 @@ nixpkgs = {
 		git push origin main
 		'')
 	];
-};
+}
