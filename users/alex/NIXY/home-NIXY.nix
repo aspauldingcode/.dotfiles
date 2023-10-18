@@ -4,7 +4,7 @@
   #You can import other home-manager modules here
   imports = [
     ./packages-NIXY.nix
-    #./modules/NIXY/yabai.nix
+    ./modules/NIXY/yabai.nix
     #./modules/NIXY/skhd.nix
     #./modules/NIXY/spacebar.nix
     #./modules/NIXY/git.nix
