@@ -3,10 +3,8 @@
 {
 services.skhd = {
     enable = true;
-    package = pkgs.skhd;
     skhdConfig = ''
-			#alt - return : open -n /Applications/Alacritty.app;
-			#alt - return : open -n /Applications/iTerm2.app;
+			alt - return : open -na iTerm2
 			
 			alt - h : yabai -m window --focus west
 			alt - j : yabai -m window --focus south
@@ -64,13 +62,10 @@ services.skhd = {
 			alt - l : yabai -m space --layout float
 			alt - s : yabai -m space --layout stack
 			
-			# toggle borders
-			#alt - y : yabai -m window --toggle border
-
 			# cycle through stack windows
 			alt - p : yabai -m window --focus stack.next || yabai -m window --focus south
 			alt - n : yabai -m window --focus stack.prev || yabai -m window --focus north
-
+	
 			# forwards
 			alt - p : yabai -m query --spaces --space \
 			| jq -re ".index" \
@@ -88,8 +83,6 @@ services.skhd = {
 			alt + shift - q : yabai -m window --close
 			alt - f : yabai -m window --toggle zoom-fullscreen
 			alt + shift - f : yabai -m window --toggle native-fullscreen
-			echo "skhd config loaded...
 			'';
 	};
-
 }

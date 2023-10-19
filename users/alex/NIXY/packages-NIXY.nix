@@ -1,12 +1,7 @@
 { lib, config, pkgs, ... }:
-
 # NIXY-specific packages
 
-
 {
-  imports = [
-  ];
-  
   nixpkgs = {
     config = {
       allowUnfree = true;
@@ -68,7 +63,8 @@
                          '')
 			#fix-skhd
 			(pkgs.writeShellScriptBin "fix-skhd" ''
-			sudo pkill skhd && skhd &
+			sudo pkill skhd && skhd -c /etc/skhdrc -V
+			echo "To run this fix in the background, run \nfix-skhd &"
 			'')
 			/*#shutdown without params
 			(pkgs.writeShellScriptBin "shutdown" ''

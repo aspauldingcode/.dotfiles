@@ -4,7 +4,7 @@
 imports = [
 ./packages.nix
 ./yabai.nix
-./skhd.nix
+./skhd.nix #FIXME: not working. try using the config at /Users/alex/.skhdrc
 ./spacebar.nix
 ./defaults-macos.nix
 ./homebrew-pkgs.nix
@@ -16,7 +16,8 @@ imports = [
 	fonts.fontDir.enable = true;
 	fonts.fonts = with pkgs; [
 		dejavu_fonts
-			font-awesome_5
+		font-awesome_5
+		(nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
 	];
 
 

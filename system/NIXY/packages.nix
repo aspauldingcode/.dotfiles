@@ -12,9 +12,9 @@ nixpkgs = {
 	# $ nix-env -qaP | grep wget
 	environment.systemPackages = with pkgs; [ 
 		## macosINSTANTView?
+		skhd
 		neovim
 		neofetch
-		skhd
 		htop
 		git
 		tree
