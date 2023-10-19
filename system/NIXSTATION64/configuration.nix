@@ -1,7 +1,7 @@
 # This is your system's configuration file.
 # Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
 
-{ lib, config, pkgs, ... }: 
+{ inputs, lib, config, pkgs, ... }: 
 
 {
 	imports = [ # Include the results of the hardware scan
@@ -35,7 +35,7 @@
 	time.timeZone = "America/Denver"; # FIXME
 
 # Enable Bluetooth
-		hardware.bluetooth.enable = true;
+	hardware.bluetooth.enable = true;
 	services.blueman.enable = true; # FIXME
 
 #add opengl (to fix Qemu)
