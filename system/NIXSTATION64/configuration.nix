@@ -59,6 +59,18 @@
 
 # services
 	services = {
+		mako = {
+			enable = true;
+			maxVisible = -1;
+			output = "DP-2";
+			layer = "overlay";
+			ancor = "top-right";
+			#font = 
+			borderSize = 2;
+			boderColor = "#A34A28";
+			borderRadius = 10;
+		};
+		#sway #FIXME: CONFIGURE SWAY HERE
 		pipewire = { # fix for pipewire audio:
 			enable = true;
 			alsa.enable = true;
@@ -108,18 +120,20 @@ security = {
 	};
 	polkit.enable = true;
 };
-#programs 
+
 	programs = {
+	mako.enable = true;
 		neovim = { # Configure neovim
 			enable = true; 
 			defaultEditor = true; # Set default editor
+
 		};
 		adb.enable = true; # Enable Android De-Bugging.
-			fish = {
-				enable = true;
-				interactiveShellInit = ''
-					set -U fish_greeting (cowsay "you must be tired.\n")
-					'';
+		fish = {
+			enable = true;
+			interactiveShellInit = ''
+				you must be tired.
+			'';
 				#plugins = [
 # Enable a plugin (here grc for colorized command output) from nixpkgs
 				#{ name = "grc"; src = pkgs.fishPlugins.grc.src; }
@@ -134,10 +148,10 @@ security = {
 				  };*/
 				#];
 
-			};
-			};
+		};
+	};
 
-
+		
 # Define a user account. Don't forget to set a password with ‘passwd’.
 		users.users = {
 			alex = {

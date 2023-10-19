@@ -15,10 +15,6 @@
 	};
 
 	programs = {
-		#neovim = { #already configured in systemconfig.
-		#	enable = true;
-		#	extraConfig = lib.fileContents ./modules/extraConfig/nvim/init.lua;
-		#};
 		git = {
 			enable = true;
 			userName  = "aspauldingcode";
