@@ -5,9 +5,10 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     darwin.url = "github:lnl7/nix-darwin";
     home-manager.url = "github:nix-community/home-manager";
+    nixvim.url = "github:nix-community/nixvim";
   };
 
-  outputs = { self, nixpkgs, darwin, home-manager }: 
+  outputs = { self, nixpkgs, darwin, home-manager, nixvim }: 
     let
       inherit (self) inputs;
 

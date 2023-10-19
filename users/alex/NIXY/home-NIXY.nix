@@ -1,16 +1,16 @@
 { lib, config, pkgs, ... }: 
 
 {
-  #You can import other home-manager modules here
   imports = [
     ./packages-NIXY.nix
+    #nixvim.homeManagerModules.nixvim
     #./yabai.nix # FIXME UGH how do I home manager this?
     #./skhd.nix
     #./modules/NIXY/spacebar.nix
     #./modules/NIXY/git.nix
     #./modules/NIXY/fish.nix
     #./modules/NIXY/sketchybar.nix
-    ./neovim.nix
+    #./neovim.nix
   ];
       # You can place the 'home' and 'programs' sections within the 'config' attribute as follows:
     home = {
@@ -29,11 +29,7 @@
         userEmail = "aspauldingcode@gmail.com";
       };
       fish.enable = true;
-      neovim = {
-        enable = true;
-        #extraConfig = lib.fileContents ./extraConfig/nvim/init.lua;
-      };
-    
+         
     alacritty = {
             enable = true;
             settings = {
