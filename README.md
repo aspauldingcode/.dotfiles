@@ -87,6 +87,9 @@ cd ~/.dotfiles
 #Fetch the Latest Changes:
 git fetch
 
+#Pull the changes:
+git pull
+
 # Update Your Local Branch:
 git checkout main
 git merge origin/main
