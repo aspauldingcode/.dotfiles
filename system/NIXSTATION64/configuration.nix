@@ -10,7 +10,7 @@
 # inputs.hardware.nixosModules.common-ssd
 		./hardware-configuration.nix
 		./sway-configuration.nix
-		./packages-configuration.nix
+		./packages.nix
 		./virtual-machines.nix
 		#./sddm-themes.nix
 	];

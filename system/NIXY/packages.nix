@@ -14,11 +14,14 @@ nixpkgs = {
 		## macosINSTANTView?
 		neovim
 		neofetch
+		skhd
 		htop
 		git
 		tree
+		ranger
 		hexedit
 		alacritty
+		iterm2
 		jdk11
 		python311
 		python311Packages.pygame
@@ -30,10 +33,8 @@ nixpkgs = {
 		zoom-us
 		android-tools
 		jq
-		libusb
-		skhd 
+		libusb 
 		lolcat
-		#yazi # FIXME: NOTWORKINGONDARWIN. TRY BREW!
 		#rebuild
 		(pkgs.writeShellScriptBin "rebuild" ''
 		# NIXY(aarch64-darwin)
@@ -48,6 +49,9 @@ nixpkgs = {
 
 		#Fetch the Latest Changes:
 		git fetch
+
+		#Pull the changes:
+		git pull
 
 		# Update Your Local Branch:
 		git checkout main

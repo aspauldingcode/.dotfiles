@@ -10,6 +10,7 @@
 			"xorg-server"
 			"choose-gui"
 			"yazi"
+			#"skhd"
 		];
 
 		casks = [
