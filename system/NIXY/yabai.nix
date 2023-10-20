@@ -12,15 +12,14 @@ services.yabai = {
 			window_border                = "on";
 			window_border_placement      = "inset";
 			window_border_blur	     = "off"; 	# <- on | off
-			#window_border_blur_radius    = "10";
 
 			# OPTIONS for BORDERS
 			# Coffee active, Gray inactive
 			active_window_border_color   = "0xffA34A28";
 			normal_window_border_color   = "0xff808080";
 			insert_feedback_color	     = "0xff808080";
-			window_border_width	     = 1;
-			#window_border_radius	     = 10; #keep commented
+			window_border_width	     = 3;
+			window_border_radius	     = 11;
 			
 			/*
 			# Try to hide borders!
@@ -55,12 +54,8 @@ services.yabai = {
 			yabai -m rule --add app='System Settings' manage=off
 			yabai -m rule --add app='System Information' manage=off
 			yabai -m rule --add app='zoom.us' manage=off
-			yabai -m rule --add app='Dock' manage=off
 			yabai -m rule --add app='Finder' manage=off
-			yabai -m rule --add app='Alacritty' opacity=0.8
-			yabai -m rule --add app='Alacritty' window_opacity='on'
 # Any other arbitrary config here
-			#yabai -m config window_border     on
 			yabai -m config active_window_border_topmost on
 
 			#echo "yabai config loaded..."

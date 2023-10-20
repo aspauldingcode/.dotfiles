@@ -13,6 +13,11 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v2
 
+      - name: Create temporary branch
+        run: |
+          git checkout -b temp-branch
+        continue-on-error: true
+
       - name: Generate and update date
         run: |
           echo -e "## Last Commit Date\n\nLast commit: $(git log -1 --format='%cI')" > README.md
@@ -20,7 +25,16 @@ jobs:
           git config user.email 'action@github.com'
           git add README.md
           git commit -m "Update README with last commit date" || exit 0
-          git push
+          git push origin temp-branch
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge temporary branch
+        run: |
+          git fetch
+          git checkout main
+          git merge temp-branch --no-commit
+          git commit --amend --no-edit
+          git push origin main
+        if: success()  # This step will only run if the previous steps were successful
 

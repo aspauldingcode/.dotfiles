@@ -41,6 +41,7 @@ nixpkgs = {
 		cd ~/.dotfiles
 		darwin-rebuild switch --flake .#NIXY
 		home-manager switch --flake .#alex@NIXY
+		#defaults write com.apple.dock ResetLaunchPad -bool true
 		'')
 		#update
 		(pkgs.writeShellScriptBin "update" ''

@@ -47,8 +47,10 @@ system.defaults = {
 		NSAutomaticWindowAnimationsEnabled = false;
 		#Sets the speed speed of window resizing. The default is given in the example.
 		NSWindowResizeTime = 0.0;
-
 	};
-
+	spaces = {
+	# Displays have separate Spaces (note a logout is required before this setting will take effect).
+	spans-displays = true;
+	};
 };
 }

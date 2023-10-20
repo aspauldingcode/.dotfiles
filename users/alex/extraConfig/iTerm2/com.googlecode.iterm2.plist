@@ -369,6 +369,8 @@
 	<string>74EA0282-3B29-4A29-ADB4-46692F24CA8D</string>
 	<key>DisableFullscreenTransparency</key>
 	<false/>
+	<key>HapticFeedbackForEsc</key>
+	<false/>
 	<key>HideScrollbar</key>
 	<true/>
 	<key>HotkeyChar</key>
@@ -1262,7 +1264,11 @@
 	<true/>
 	<key>ShowMetalFPSmeter</key>
 	<false/>
+	<key>SoundForEsc</key>
+	<false/>
 	<key>UseLionStyleFullscreen</key>
 	<true/>
+	<key>VisualIndicatorForEsc</key>
+	<false/>
 </dict>
 </plist>
