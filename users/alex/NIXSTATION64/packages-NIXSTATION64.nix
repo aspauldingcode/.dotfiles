@@ -33,7 +33,6 @@
   };
 
   home = {
-
     pointerCursor = {
       gtk.enable = true;
       # cursor theme

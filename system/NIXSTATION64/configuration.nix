@@ -150,6 +150,7 @@ security = {
 				''ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINKfaO41wp3p/dkpuqIP6tj78SCrn2RSQUG2OSiHAv7j aspauldingcode@gmail.com''
 # TODO: Add your SSH public key(s) here, if you plan on using SSH to connect
 				];
+				shell = pkgs.fish;
 			};
 
 			susu = {

@@ -4,7 +4,7 @@
 #import other home-manager modules which are NIXSTATION64-specific
 	imports = [
 		./packages-NIXSTATION64.nix 
-#./modules/extraConfig/git.nix
+		./nvim.nix
 	];
 	home = {
 		username = "alex";

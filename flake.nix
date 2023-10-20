@@ -5,10 +5,9 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     darwin.url = "github:lnl7/nix-darwin";
     home-manager.url = "github:nix-community/home-manager";
-    nixvim.url = "github:nix-community/nixvim";    
   };
 
-  outputs = { self, nixpkgs, darwin, home-manager, nixvim }: 
+  outputs = { self, nixpkgs, darwin, home-manager }: 
     let
       inherit (self) inputs;
 
@@ -44,10 +43,7 @@
         "alex@NIXY" = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.aarch64-darwin;
           extraSpecialArgs = commonSpecialArgs;
-          modules = [ 
-	  	./users/alex/NIXY/home-NIXY.nix 
-      		nixvim.homeManagerModules.nixvim	  	
-	  ];
+          modules = [ ./users/alex/NIXY/home-NIXY.nix ];
         };
 	
 	"alex@NIXEDUP" = home-manager.lib.homeManagerConfiguration { 
@@ -59,10 +55,7 @@
         "alex@NIXSTATION64" = home-manager.lib.homeManagerConfiguration {
 	  pkgs = nixpkgs.legacyPackages.x86_64-linux;
 	  extraSpecialArgs = commonSpecialArgs;
-	  modules = [ 
-	  	./users/alex/NIXSTATION64/home-NIXSTATION64.nix
-		nixvim.homeManagerModules.nixvim	
-	  ];
+	  modules = [ ./users/alex/NIXSTATION64/home-NIXSTATION64.nix ];
 	};
 
 	# User: Su Su
