@@ -59,17 +59,6 @@
 
 # services
 	services = {
-		mako = {
-			enable = true;
-			maxVisible = -1;
-			output = "DP-2";
-			layer = "overlay";
-			ancor = "top-right";
-			#font = 
-			borderSize = 2;
-			boderColor = "#A34A28";
-			borderRadius = 10;
-		};
 		#sway #FIXME: CONFIGURE SWAY HERE
 		pipewire = { # fix for pipewire audio:
 			enable = true;
@@ -122,7 +111,6 @@ security = {
 };
 
 	programs = {
-	mako.enable = true;
 		neovim = { # Configure neovim
 			enable = true; 
 			defaultEditor = true; # Set default editor

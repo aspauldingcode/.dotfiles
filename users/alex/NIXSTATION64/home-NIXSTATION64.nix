@@ -14,6 +14,20 @@
 			};
 	};
 
+	services = {
+		mako = {
+			enable = true;
+			maxVisible = -1;
+			output = "DP-2";
+			layer = "overlay";
+			anchor = "top-right";
+			#font = 
+			borderSize = 2;
+			borderColor = "#A34A28";
+			borderRadius = 10;
+		};
+		
+	};
 	programs = {
 		git = {
 			enable = true;
