@@ -4,8 +4,8 @@
 #import other home-manager modules which are NIXSTATION64-specific
 	imports = [
 		./packages-NIXSTATION64.nix 
-		./nvim.nix
-	];
+		./nvim.nix #FIXME not working?!!??!
+	]; 
 	home = {
 		username = "alex";
 		homeDirectory = "/home/alex";
