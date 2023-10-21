@@ -4,7 +4,7 @@
 #import other home-manager modules which are NIXSTATION64-specific
 	imports = [
 		./packages-NIXSTATION64.nix 
-		./nvim.nix #FIXME not working?!!??!
+		./nvim.nix
 	]; 
 	home = {
 		username = "alex";
@@ -25,6 +25,8 @@
 			borderSize = 2;
 			borderColor = "#A34A28";
 			borderRadius = 10;
+			defaultTimeout = 5000;
+			ignoreTimeout = false;
 		};
 		
 	};
