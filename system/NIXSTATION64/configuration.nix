@@ -110,12 +110,13 @@ security = {
 	polkit.enable = true;
 };
 
+# programs
 	programs = {
 		neovim = { # Configure neovim
 			enable = true; 
 			defaultEditor = true; # Set default editor
-
-		};
+          };
+        ssh.enableAskPassword = false;
 		adb.enable = true; # Enable Android De-Bugging.
 		fish = {
 			enable = true;

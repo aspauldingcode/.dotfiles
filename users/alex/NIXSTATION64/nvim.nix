@@ -23,7 +23,7 @@ windows-nvim
 nvim-lspconfig
 nvim-treesitter.withAllGrammars
 mini-nvim
-eim-nix
+vim-nix
 
 
 {
