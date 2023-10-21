@@ -120,7 +120,7 @@ security = {
 		fish = {
 			enable = true;
 			interactiveShellInit = ''
-				you must be tired.
+				echo you must be tired.
 			'';
 				#plugins = [
 # Enable a plugin (here grc for colorized command output) from nixpkgs

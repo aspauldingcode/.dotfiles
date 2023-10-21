@@ -12,6 +12,11 @@
     plugins = with pkgs.vimPlugins; [
       nvim-tree-lua
       zoxide-vim
+      vim-pathogen
+      {
+	plugin = pkgs.vimPlugins.vim-numbertoggle;
+      	config = "set number relativenumber";
+      }
       # nerdtree
       # vim-nerdtree-syntax-highlight
       windows-nvim
