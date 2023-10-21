@@ -19,8 +19,6 @@ imports = [
 		font-awesome_5
 		(nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
 	];
-
-
 # system.build = builtins.exec "echo 'hello, world.'";
 
 # Auto upgrade nix package and the daemon service.
@@ -29,14 +27,15 @@ imports = [
 
 # Create /etc/zshrc that loads the nix-darwin environment.
 	programs.zsh.enable = true;  # default shell on catalina
-# programs.fish.enable = true;
-
-nix.settings.auto-optimise-store = true;
-
-		nix.extraOptions = ''
-		extra-platforms = aarch64-darwin x86_64-darwin
-		experimental-features = nix-command flakes
+	programs.fish.enable = true;
+	
+	nix = { 
+		settings.auto-optimise-store = true;
+		extraOptions = ''
+			extra-platforms = aarch64-darwin x86_64-darwin
+			experimental-features = nix-command flakes
 		'';
+	};
 
 # Used for backwards compatibility, please read the changelog before changing.
 # $ darwin-rebuild changelog

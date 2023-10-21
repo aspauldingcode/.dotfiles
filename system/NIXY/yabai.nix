@@ -50,7 +50,7 @@ services.yabai = {
 		};
 
 		extraConfig = ''
-# rules
+			# rules
 			yabai -m rule --add app='System Settings' manage=off
 			yabai -m rule --add app='System Information' manage=off
 			yabai -m rule --add app='zoom.us' manage=off

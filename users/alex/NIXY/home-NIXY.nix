@@ -28,9 +28,8 @@
         userName  = "aspauldingcode";
         userEmail = "aspauldingcode@gmail.com";
       };
-      fish.enable = true;
-         
-    alacritty = {
+
+      alacritty = {
             enable = true;
             settings = {
                 window = {

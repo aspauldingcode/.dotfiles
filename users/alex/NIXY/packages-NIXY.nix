@@ -20,8 +20,8 @@
 	discord
 	#davinci-resolve NEEDS TO BE MAS APP?
 	zoom-us
+#python311Packages.pyautogui
 	spotify-unwrapped
-	jetbrains.idea-ultimate
 	(prismlauncher.override {
       		jdks = [ jdk8 jdk17 jdk19 ]; 
       	})

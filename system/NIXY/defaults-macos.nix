@@ -50,7 +50,7 @@ system.defaults = {
 	};
 	spaces = {
 	# Displays have separate Spaces (note a logout is required before this setting will take effect).
-	spans-displays = true;
+	spans-displays = false;
 	};
 };
 }
