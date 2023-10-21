@@ -59,17 +59,6 @@
 
 # services
 	services = {
-		mako = {
-			enable = true;
-			maxVisible = -1;
-			output = "DP-2";
-			layer = "overlay";
-			ancor = "top-right";
-			#font = 
-			borderSize = 2;
-			boderColor = "#A34A28";
-			borderRadius = 10;
-		};
 		#sway #FIXME: CONFIGURE SWAY HERE
 		pipewire = { # fix for pipewire audio:
 			enable = true;
@@ -121,18 +110,18 @@ security = {
 	polkit.enable = true;
 };
 
+# programs
 	programs = {
-	mako.enable = true;
 		neovim = { # Configure neovim
 			enable = true; 
 			defaultEditor = true; # Set default editor
-
-		};
+          };
+        ssh.enableAskPassword = false;
 		adb.enable = true; # Enable Android De-Bugging.
 		fish = {
 			enable = true;
 			interactiveShellInit = ''
-				you must be tired.
+				echo you must be tired.
 			'';
 				#plugins = [
 # Enable a plugin (here grc for colorized command output) from nixpkgs
@@ -162,6 +151,7 @@ security = {
 				''ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINKfaO41wp3p/dkpuqIP6tj78SCrn2RSQUG2OSiHAv7j aspauldingcode@gmail.com''
 # TODO: Add your SSH public key(s) here, if you plan on using SSH to connect
 				];
+				shell = pkgs.fish;
 			};
 
 			susu = {

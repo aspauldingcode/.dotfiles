@@ -5,52 +5,51 @@
 {
   imports = [
   ]; 
-      gtk.enable = true;
-      qt.enable = false;
+  gtk.enable = true;
+  qt.enable = false;
 
       # QT theme
       qt.platformTheme = "gtk";
 
       # name of gtk theme
       qt.style.name = "adwaita-dark";
-      
-     
+
+
       # cursor theme
       #package = pkgs.bibata-cursors;
       #name = "Bibata-Modern-Ice";
       #size = 22;
-      
+
       # package to use
       qt.style.package = pkgs.adwaita-qt;
 
-  nixpkgs = {
-    config = {
-      allowUnfree = true;
-      permittedInsecurePackages = [
-	"electron-19.1.9"
-	];
-    };
-  };
+      nixpkgs = {
+        config = {
+          allowUnfree = true;
+          permittedInsecurePackages = [
+            "electron-19.1.9"
+            ];
+            };
+            };
 
-  home = {
-
-    pointerCursor = {
-      gtk.enable = true;
+            home = {
+              pointerCursor = {
+                gtk.enable = true;
       # cursor theme
       package = pkgs.bibata-cursors;
       name = "Bibata-Modern-Ice";
       size = 22;
     };
     packages = with pkgs; [
-    ncdu
-    etcher
-    checkra1n
-    zoom-us
-    spotify-unwrapped
-    android-studio
-    corefonts
-    beeper
-    davinci-resolve ocl-icd 
+      ncdu
+      etcher
+      checkra1n
+      zoom-us
+      spotify-unwrapped
+      android-studio
+      corefonts
+      beeper
+      davinci-resolve ocl-icd 
     #etcher
     blender
     brave
@@ -77,9 +76,9 @@
     sway-contrib.grimshot
 
     (prismlauncher.override {
-	jdks = [ jdk8 jdk17 jdk19 ]; 
+      jdks = [ jdk8 jdk17 jdk19 ]; 
     })
 
-    ];
-  };
+  ];
+};
 }

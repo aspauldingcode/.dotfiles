@@ -13,6 +13,7 @@
 		gparted killall tree
 		zsh curl lazygit
 		wget git
+		zoxide
 		dnsmasq
 		udftools
 		element appimage-run
