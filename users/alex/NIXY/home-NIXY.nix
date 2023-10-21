@@ -3,7 +3,6 @@
 {
   imports = [
     ./packages-NIXY.nix
-    vimPlugins.vim-nix
     #./yabai.nix # FIXME UGH how do I home manager this?
     #./skhd.nix
     #./modules/NIXY/spacebar.nix
@@ -27,7 +26,6 @@
         userName  = "aspauldingcode";
         userEmail = "aspauldingcode@gmail.com";
       };
-<<<<<<< HEAD
 
       alacritty = {
             enable = true;
@@ -40,9 +38,7 @@
                     class.general  = "Alacritty";
 		    decorations = "buttonless";
                 };
-=======
       fish.enable = true;
->>>>>>> ea09f6c630538dd493bade6a5bbd7ad071be0156
 
       alacritty = {
         enable = true;
