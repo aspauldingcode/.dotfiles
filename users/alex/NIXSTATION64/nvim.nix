@@ -24,8 +24,9 @@ nvim-lspconfig
 nvim-treesitter.withAllGrammars
 mini-nvim
 vim-nix
-
-
+vim-lsp-ultisnips
+snippets-nvim
+vim-snippets
 {
   plugin = pkgs.vimPlugins.gruvbox-nvim;
   config = ''
