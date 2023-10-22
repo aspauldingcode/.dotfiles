@@ -6,6 +6,8 @@
 	<array/>
 	<key>AdjustWindowForFontSizeChange</key>
 	<false/>
+	<key>CommandSelection</key>
+	<true/>
 	<key>CopyLastNewline</key>
 	<false/>
 	<key>Custom Color Presets</key>
@@ -390,6 +392,8 @@
 		<dict>
 			<key>ASCII Anti Aliased</key>
 			<true/>
+			<key>ASCII Ligatures</key>
+			<false/>
 			<key>Allow Paste Bracketing</key>
 			<true/>
 			<key>Allow Title Reporting</key>
@@ -1253,13 +1257,10 @@
 	<false/>
 	<key>PerPaneBackgroundImage</key>
 	<true/>
+	<key>PerformDictionaryLookupOnQuickLook</key>
+	<false/>
 	<key>PointerActions</key>
 	<dict>
-		<key>Button,1,1,,</key>
-		<dict>
-			<key>Action</key>
-			<string>kContextMenuPointerAction</string>
-		</dict>
 		<key>Button,2,1,,</key>
 		<dict>
 			<key>Action</key>

@@ -29,7 +29,7 @@ vim-nix
   plugin = pkgs.vimPlugins.gruvbox-nvim;
   config = ''
         set background=dark
-	colorscheme gruvbox
+    colorscheme gruvbox
   '';
 }
 {
@@ -88,6 +88,7 @@ vim-nix
         vim.api.nvim_set_keymap('n', '<C-S-Z>', ':redo<CR>', { noremap = true })
         vim.api.nvim_set_keymap('i', '<C-S-Z>', '<C-o>:redo<CR>', { noremap = true })
 
+ 
         -- Move to the window above the current one using Ctrl+Up
         vim.api.nvim_set_keymap('n', '<C-Up>', '<C-W><Up>', { noremap = true })
 
