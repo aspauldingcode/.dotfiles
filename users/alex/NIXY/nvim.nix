@@ -23,14 +23,13 @@ windows-nvim
 nvim-lspconfig
 nvim-treesitter.withAllGrammars
 mini-nvim
-eim-nix
-
+vim-nix
 
 {
   plugin = pkgs.vimPlugins.gruvbox-nvim;
   config = ''
-                set background=dark " or light if you want light mode
-            colorscheme gruvbox
+        set background=dark
+	colorscheme gruvbox
   '';
 }
 {

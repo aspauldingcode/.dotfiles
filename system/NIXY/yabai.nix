@@ -18,7 +18,7 @@ services.yabai = {
 			active_window_border_color   = "0xffA34A28";
 			normal_window_border_color   = "0xff808080";
 			insert_feedback_color	     = "0xff808080";
-			window_border_width	     = 3;
+			window_border_width	     = 2;
 			window_border_radius	     = 11;
 			
 			/*

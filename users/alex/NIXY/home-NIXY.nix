@@ -3,6 +3,7 @@
 {
   imports = [
     ./packages-NIXY.nix
+    ./nvim.nix
     #./yabai.nix # FIXME UGH how do I home manager this?
     #./skhd.nix
     #./modules/NIXY/spacebar.nix
@@ -27,17 +28,6 @@
         userEmail = "aspauldingcode@gmail.com";
       };
 
-      alacritty = {
-            enable = true;
-            settings = {
-                window = {
-                    padding.x = 0;
-                    padding.y = 10;
-                    opacity   = 1;
-                    class.instance = "Alacritty";
-                    class.general  = "Alacritty";
-		    decorations = "buttonless";
-                };
       fish.enable = true;
 
       alacritty = {
@@ -120,5 +110,3 @@
     };
   };
 }
-
-

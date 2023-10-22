@@ -11,7 +11,6 @@
   };
 
   home.packages = with pkgs; [
-<<<<<<< HEAD
   	calcurse
 	ncdu
 	delta
@@ -26,22 +25,7 @@
 	(prismlauncher.override {
       		jdks = [ jdk8 jdk17 jdk19 ]; 
       	})
-=======
-    calcurse
-    ncdu
-    delta
-    sshpass
-    git-crypt
-    cowsay
-    discord
-    #davinci-resolve NEEDS TO BE MAS APP?
-    zoom-us
-    spotify-unwrapped
-    jetbrains.idea-ultimate
-    (prismlauncher.override {
-      jdks = [ jdk8 jdk17 jdk19 ]; 
-    })
->>>>>>> ea09f6c630538dd493bade6a5bbd7ad071be0156
+
     # #TODO
     # dmenu-mac
     # yabai?

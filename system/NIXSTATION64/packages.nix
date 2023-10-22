@@ -19,12 +19,6 @@
 		element appimage-run
 		tree-sitter
 		python312
-		python311Packages.openrazer
-		python311Packages.tree-sitter
-		python311Packages.pynvim
-		python311Packages.pip
-		nodePackages_latest.pyright
-		openrazer-daemon
 		jdk20
 		nodejs
 		flex bison
