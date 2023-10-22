@@ -12,6 +12,6 @@
     borderRadius = 10;
     defaultTimeout = 5000;
     ignoreTimeout = false;
-    background-color = "#282828";
-  }
+    backgroundColor = "#282828";
+  };
 }

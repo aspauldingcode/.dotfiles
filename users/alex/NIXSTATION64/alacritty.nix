@@ -18,7 +18,7 @@
         multiplier = 3;
       };
 
-      font.size = 16.0;
+      font.size = 13.0;
 
       colors = {
         primary = {

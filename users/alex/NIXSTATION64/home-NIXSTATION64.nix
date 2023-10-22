@@ -8,6 +8,7 @@ imports = [
   ./git.nix
   ./alacritty.nix
   ./mako.nix
+  ./fish.nix
 ]; 
 home = {
   username = "alex";
