@@ -11,7 +11,8 @@ nixpkgs = {
 	# List packages installed in system profile. To search by name, run:
 	# $ nix-env -qaP | grep wget
 	environment.systemPackages = with pkgs; [ 
-		## macosINSTANTView?
+        ## macosINSTANTView?
+        home-manager
 		skhd
 		neovim
 		neofetch
@@ -20,7 +21,7 @@ nixpkgs = {
 		tree
 		ranger
 		hexedit
-		alacritty
+        #alacritty
 		iterm2
 		jdk11
 		python311
