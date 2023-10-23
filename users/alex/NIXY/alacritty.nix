@@ -21,25 +21,24 @@
       font = {
         normal = {
           family = "DejaVu Sans Mono";
-          style = "normal";
+          style = "Book";
         };
         bold = {
           family = "DejaVu Sans Mono";
-          style = "bold";
+          style = "Bold";
         };
         italic = {
           family = "DejaVu Sans Mono";
-          style = "italic";
+          style = "Oblique";
         };
+        size = 16.0;
       };
-      size = 16.0;
-    };
 
-    colors = {
-      primary = {
-        background = "0x282828";
-        foreground = "0xEBDBB2";
-      };
+      colors = {
+        primary = {
+          background = "0x282828";
+          foreground = "0xEBDBB2";
+        };
       #cursor = {
       #text    ="0xEBEBEB";
       #cursor  ="0xEBEBEB";
@@ -109,4 +108,5 @@
         #- { key: End,       mods: Shift,   mode: ~Alt,        action: ScrollToBottom }
       ];
     };
-  }
+  };
+}

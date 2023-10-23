@@ -77,4 +77,18 @@ git commit -m "Updating .dotfiles"
 # Push the Changes to the Remote Repository:
 git push origin main
 ```
+## Darwin - Specific
+While many things have been implemented into nix-darwin, there are many features left to be functional.
+One of them is setting the default shell on macos.
+How to add Fish Shell as default on mac?
+`which fish`
+for me, my fish was installed to: /Users/alex/.nix-profile/bin/fish
 
+`sudo nvim /etc/shells`
+Requires sudo. add your output from which fish command above to the end of the file.
+
+`chsh -s /Users/alex/.nix-profile/bin/fish`
+Since my path to my Fish shell was /Users/alex/.nix-profile/bin/fish. Put yours.
+
+`sudo reboot`
+reboot for changes to take effect.
