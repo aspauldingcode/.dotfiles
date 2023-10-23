@@ -5,7 +5,7 @@
   nixpkgs = {
     config = {
       allowUnfree = true;
-      allowUnsupportedSystem = false;
+      allowUnsupportedSystem = true;
 
     };
   };
@@ -17,7 +17,8 @@
 	sshpass
 	git-crypt
 	cowsay
-	discord
+    discord
+    matrixcli
 	#davinci-resolve NEEDS TO BE MAS APP?
 	zoom-us
 #python311Packages.pyautogui

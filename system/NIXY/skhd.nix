@@ -4,8 +4,9 @@
 services.skhd = {
     enable = true;
     skhdConfig = ''
-			alt - return : open -na iTerm2
-			
+			alt - return : open -na alacritty
+            alt - d : open -a dmenu-mac
+
 			alt - h : yabai -m window --focus west
 			alt - j : yabai -m window --focus south
 			alt - k : yabai -m window --focus north
