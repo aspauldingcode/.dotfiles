@@ -1,11 +1,13 @@
 { config, lib, pkgs, ... }:
 
+# GOAL: Generate 1:1 keybinds with Swaywm config.
 {
 services.skhd = {
     enable = true;
     skhdConfig = ''
 			alt - return : open -na alacritty
             alt - d : open -a dmenu-mac
+            alt + cmd - space : open -na "Brave Browser"
 
 			alt - h : yabai -m window --focus west
 			alt - j : yabai -m window --focus south
