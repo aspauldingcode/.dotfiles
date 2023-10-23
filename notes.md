@@ -92,3 +92,6 @@ Since my path to my Fish shell was /Users/alex/.nix-profile/bin/fish. Put yours.
 
 `sudo reboot`
 reboot for changes to take effect.
+
+Silence "Last login: tty000" motd: 
+`touch ~/.hushlogin`

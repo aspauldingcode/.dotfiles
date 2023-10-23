@@ -8,6 +8,7 @@ services.skhd = {
 			alt - return : open -na alacritty
             alt - d : open -a dmenu-mac
             alt + cmd - space : open -na "Brave Browser"
+            
 
 			alt - h : yabai -m window --focus west
 			alt - j : yabai -m window --focus south
@@ -18,7 +19,7 @@ services.skhd = {
 			alt - up    : yabai -m window --focus north
 			alt - right : yabai -m window --focus east
 
-			# shift window in current workspace
+			# shift window in current workspace FIXME NOT WORKING
 			alt + shift - h : yabai -m window --swap west || $(yabai -m window --display west; yabai -m display --focus west)
 			alt + shift - j : yabai -m window --swap south || $(yabai -m window --display south; yabai -m display --focus south)
 			alt + shift - k : yabai -m window --swap north || $(yabai -m window --display north; yabai -m display --focus north)
@@ -85,7 +86,7 @@ services.skhd = {
 
 			alt + shift - q : yabai -m window --close
 			alt - f : yabai -m window --toggle zoom-fullscreen
-			alt + shift - f : yabai -m window --toggle native-fullscreen
+            #alt + shift - f : yabai -m window --toggle native-fullscreen #DON'T that thing SUCKS
 			'';
 	};
 }

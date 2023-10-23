@@ -76,6 +76,11 @@
 
   key_bindings = [
     {
+      key = "F";
+      mods = "Alt|Shift";
+      action = "ToggleSimpleFullscreen";
+    }
+    {
       key = "C";
       mods = "Control";
       action = "Copy";
