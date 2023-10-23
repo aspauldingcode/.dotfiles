@@ -23,6 +23,7 @@ windows-nvim
 nvim-lspconfig
 nvim-treesitter.withAllGrammars
 mini-nvim
+vim-visual-multi
 vim-nix
 vim-lsp-ultisnips
 snippets-nvim

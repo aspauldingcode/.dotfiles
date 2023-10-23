@@ -18,13 +18,28 @@
         multiplier = 3;
       };
 
-      font.size = 16.0;
-
-      colors = {
-        primary = {
-          background = "0x282828";
-          foreground = "0xEBDBB2";
+      font = {
+        normal = {
+          family = "DejaVu Sans Mono";
+          style = "normal";
         };
+        bold = {
+          family = "DejaVu Sans Mono";
+          style = "bold";
+        };
+        italic = {
+          family = "DejaVu Sans Mono";
+          style = "italic";
+        };
+      };
+      size = 16.0;
+    };
+
+    colors = {
+      primary = {
+        background = "0x282828";
+        foreground = "0xEBDBB2";
+      };
       #cursor = {
       #text    ="0xEBEBEB";
       #cursor  ="0xEBEBEB";
@@ -65,17 +80,17 @@
       key = "C";
       mods = "Control";
       action = "Copy";
-      }
-      {
+    }
+    {
       key = "V";
-          mods = "Control";
-          action = "Paste";
-        }
-        {
-          key = "C"; 
-          mods = "Control|Shift";
-          chars = "\\x03";
-        }
+      mods = "Control";
+      action = "Paste";
+    }
+    {
+      key = "C"; 
+      mods = "Control|Shift";
+      chars = "\\x03";
+    }
 #- { key: L,         mods: Control,                    action: ClearLogNotice }
   #- { key: L,         mods: Control, mode: ~Vi|~Search, chars: "\x0c"          }
   {
@@ -94,5 +109,4 @@
         #- { key: End,       mods: Shift,   mode: ~Alt,        action: ScrollToBottom }
       ];
     };
-  };
-}
+  }

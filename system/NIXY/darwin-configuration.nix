@@ -28,7 +28,7 @@ imports = [
 # Create /etc/zshrc that loads the nix-darwin environment.
 	programs.zsh.enable = true;  # default shell on catalina
 	programs.fish.enable = true;
-
+    users.users.alex.shell = pkgs.fish;
 
 	nix = { 
 		settings.auto-optimise-store = true;

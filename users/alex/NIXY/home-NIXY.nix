@@ -6,6 +6,7 @@
     ./nvim.nix
     ./alacritty.nix
     ./git.nix
+    ./fish
     #./yabai.nix # FIXME UGH how do I home manager this?
     #./skhd.nix
     #./modules/NIXY/spacebar.nix
