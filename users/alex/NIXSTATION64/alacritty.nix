@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
+  # Configure Alacritty Terminal.
   programs.alacritty = {
     enable = true;
     settings = {
@@ -18,9 +19,23 @@
         multiplier = 3;
       };
 
-      font.size = 13.0;
-
-      colors = {
+      font = {
+        normal = {
+          family = "DejaVu Sans Mono";
+          style = "normal";
+        };
+        bold = {
+          family = "DejaVu Sans Mono";
+          style = "bold";
+        };
+        italic = {
+          family = "DejaVu Sans Mono";
+          style = "italic";
+        };
+        size = 13.0;
+      };
+       
+       colors = {
         primary = {
           background = "0x282828";
           foreground = "0xEBDBB2";

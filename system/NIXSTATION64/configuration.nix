@@ -102,6 +102,7 @@ openssh = {
 
 # programs
 programs = {
+  fish.enable = true;
   ssh.enableAskPassword = false;
   adb.enable = true; # Enable Android De-Bugging.
 
@@ -134,9 +135,10 @@ fonts.packages = with pkgs; [
   powerline-fonts
   powerline-symbols
   (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
-  ];
+  dejavu_fonts
+];
 
-  nixpkgs = { 
+nixpkgs = { 
   overlays = [ # You can add overlays here
 # If you want to use overlays exported from other flakes:
 # neovim-nightly-overlay.overlays.default
@@ -153,7 +155,7 @@ fonts.packages = with pkgs; [
                 #allowUnfree = true; # Allow unfree packages #FIXME: DOES THIS EVEN WORK?
 
             #};
-            };
+          };
 
 # nix
 nix = {
@@ -166,9 +168,9 @@ nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.
 settings = { # Nix Settings
 auto-optimise-store = true; # Auto Optimize nix store.
 experimental-features = [ 
-"nix-command" "flakes" 
-]; # Enable experimental features.
-};
+        "nix-command" "flakes" 
+      ]; # Enable experimental features.
+    };
 #trusted-users = [ "root" "alex" "susu"]; #fix trusted user issue
 };
 
@@ -180,10 +182,10 @@ lxd.enable = true;
 };
 
 system = {
-autoUpgrade = {
-enable = true;
-allowReboot = false; 
-};
+  autoUpgrade = {
+    enable = true;
+    allowReboot = false; 
+  };
 # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
 stateVersion = "23.05"; # Did you read the comment? 
 };
