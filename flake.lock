@@ -81,11 +81,28 @@
         "type": "github"
       }
     },
+    "plugin-onedark": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1697730516,
+        "narHash": "sha256-X7eMzQXtUEpU3uAfTgJrPIwYiGPDFnPc1Cg0iHEVRA0=",
+        "owner": "navarasu",
+        "repo": "onedark.nvim",
+        "rev": "b9acd92ded2ba155867ca5af9d618e933d96e3b0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "navarasu",
+        "repo": "onedark.nvim",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "darwin": "darwin",
         "home-manager": "home-manager",
-        "nixpkgs": "nixpkgs_3"
+        "nixpkgs": "nixpkgs_3",
+        "plugin-onedark": "plugin-onedark"
       }
     }
   },

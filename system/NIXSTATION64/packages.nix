@@ -71,7 +71,7 @@
           grim -o $output_name "$output_file"
           done
         '')
-        #maximize
+        #maximize (maximize sway windows to window size rather than fullscreen)
         (pkgs.writeShellScriptBin "maximize" ''
           # un/maximize script for i3 and sway
           # bindsym $mod+m exec ~/.config/i3/maximize.sh

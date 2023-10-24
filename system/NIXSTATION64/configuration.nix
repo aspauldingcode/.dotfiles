@@ -134,6 +134,7 @@ fonts.packages = with pkgs; [
   font-awesome
   powerline-fonts
   powerline-symbols
+  jetbrains-mono
   (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
   dejavu_fonts
 ];

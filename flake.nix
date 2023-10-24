@@ -5,9 +5,12 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     darwin.url = "github:lnl7/nix-darwin";
     home-manager.url = "github:nix-community/home-manager";
+
+    plugin-onedark.url = "github:navarasu/onedark.nvim";
+    plugin-onedark.flake = false;
   };
 
-  outputs = { self, nixpkgs, darwin, home-manager }: 
+  outputs = { self, nixpkgs, darwin, home-manager, plugin-onedark }: 
     let
       inherit (self) inputs;
 
