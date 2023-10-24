@@ -5,7 +5,8 @@ imports = [
 ./packages.nix
 ./yabai.nix
 ./skhd.nix #FIXME: not working. try using the config at /Users/alex/.skhdrc
-./spacebar.nix
+#./spacebar.nix
+./sketchybar.nix
 ./defaults-macos.nix
 ./homebrew-pkgs.nix
 
