@@ -80,9 +80,9 @@
         lualine-nvim
         nvim-web-devicons
         vim-nix
-
-        { 
-          plugin = vimPlugins.own-onedark-nvim;
+        vim-autoswap
+        { # Using a github repo theme (imported through flake.nix)
+          plugin = own-onedark-nvim;
           config = "colorscheme onedark";
         }
 
