@@ -4,6 +4,7 @@
 #import other home-manager modules which are NIXSTATION64-specific
 imports = [
   ./packages-NIXSTATION64.nix 
+  ./sway.nix
   ./nvim.nix
   ./git.nix
   ./alacritty.nix

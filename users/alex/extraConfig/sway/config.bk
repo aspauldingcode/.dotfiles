@@ -21,8 +21,8 @@ exec hash dbus-update-activation-environment 2>/dev/null && \
 # on the original workspace that the command was run on.
 
 
-		set $menu dmenu_path | dmenu | xargs swaymsg exec --
-		#set $menu wofi
+		 set $menu dmenu_path | dmenu | xargs swaymsg exec --
+#set $menu wofi
 
 ### Output configuration
 #
@@ -156,8 +156,8 @@ exec hash dbus-update-activation-environment 2>/dev/null && \
 			 bindsym $mod+e layout toggle split
 
 # Make the current focus fullscreen
-			 bindsym $mod+f fullscreen
-
+			 bindsym $mod+Shift+f fullscreen
+			 bindsym $mod+f exec maximize
 # Toggle the current focus between tiling and floating mode
 			 bindsym $mod+Shift+space floating toggle
 
@@ -216,13 +216,10 @@ exec blueman-applet
 # Delayed launch of the bluetooth applet
 exec "sleep 5 && blueman-applet"
 
-# Launch flameshot capture software!
-exec flameshot
-# Grimshot, since flameshot no worky.
-bindsym $mod+p       exec grimshot --notify save active
-bindsym $mod+Shift+p exec grimshot --notify save area
-bindsym $mod+Mod1+p  exec grimshot --notify save output
-bindsym $mod+Ctrl+p  exec grimshot --notify save window
+# Screenshots
+bindsym Mod1+Shift+3	exec screenshot # my script that screenshots all outputs seperately.
+bindsym Mod1+Shift+4		exec grimshot --notify save area
+bindsym Mod1+Shift+4+Space	exec grimshot --notify save window
 
 # autotile!
 exec autotiling

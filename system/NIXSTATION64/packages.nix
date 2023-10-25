@@ -36,24 +36,15 @@
         '')
         #update
         (pkgs.writeShellScriptBin "update" ''
-        # Navigate to the Repository Directory:
           cd ~/.dotfiles
-
-        #Fetch the Latest Changes:
           git fetch
-
-        #Pull the changes:
           git pull
-
-        # Update Your Local Branch:
-          git checkout main
           git merge origin/main
-
-        # Commit Your Changes (if needed):
+          # Prompt the user for a commit message
+          echo "Enter a commit message:"
+          read commit_message
           git add .
-          git commit -m "Updating .dotfiles from NIXSTATION64"
-
-        # Push the Changes to the Remote Repository:
+          git commit -m "$commit_message"
           git push origin main
         '')
         #screenshot
