@@ -11,8 +11,8 @@
   };
 
   outputs = { self, nixpkgs, darwin, home-manager, plugin-onedark }: 
-    let
-      inherit (self) inputs;
+  let
+    inherit (self) inputs;
 
       # Define common specialArgs for nixosConfigurations and homeConfigurations
       commonSpecialArgs = { inherit inputs self; };
@@ -20,12 +20,12 @@
       # Define NixOS configurations
       nixosConfigurations = {
         NIXSTATION64 = nixpkgs.lib.nixosSystem {
-	  pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
           specialArgs = commonSpecialArgs;
           modules = [ ./system/NIXSTATION64/configuration.nix ];
         };
         NIXEDUP = nixpkgs.lib.nixosSystem {
-	  pkgs = nixpkgs.legacyPackages.aarch64-linux;
+          pkgs = nixpkgs.legacyPackages.aarch64-linux;
           specialArgs = commonSpecialArgs;
           modules = [ ./system/NIXEDUP/configuration.nix ];
         };
@@ -42,43 +42,55 @@
       # Define home-manager configurations for Users
       homeConfigurations = {
 
-      	# User: Alex
+        # User: "Alex"
         "alex@NIXY" = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.aarch64-darwin;
           extraSpecialArgs = commonSpecialArgs;
           modules = [ ./users/alex/NIXY/home-NIXY.nix ];
         };
-	
-	"alex@NIXEDUP" = home-manager.lib.homeManagerConfiguration { 
-	  pkgs = nixpkgs.legacyPackages.aarch64-linux;
-	  extraSpecialArgs = commonSpecialArgs;
-	  modules = [ ./users/alex/NIXEDUP/home-NIXEDUP.nix];
-	};
- 
-        "alex@NIXSTATION64" = home-manager.lib.homeManagerConfiguration {
-	  pkgs = nixpkgs.legacyPackages.x86_64-linux;
-	  extraSpecialArgs = commonSpecialArgs;
-	  modules = [ ./users/alex/NIXSTATION64/home-NIXSTATION64.nix ];
-	};
 
-	# User: Su Su
-	"susu@NIXY" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.aarch64-darwin;
+        "alex@NIXEDUP" = home-manager.lib.homeManagerConfiguration { 
+          pkgs = nixpkgs.legacyPackages.aarch64-linux;
           extraSpecialArgs = commonSpecialArgs;
-          modules = [ ./users/susu/home-NIXY.nix ];
+          modules = [ ./users/alex/NIXEDUP/home-NIXEDUP.nix];
         };
 
-	"susu@NIXSTATION64" = home-manager.lib.homeManagerConfiguration {
-	  pkgs = nixpkgs.legacyPackages.x86_64-linux;
-	  extraSpecialArgs = commonSpecialArgs;
-	  modules = [ ./users/susu/home-NIXSTATION64.nix ];
-	};
-      };
-    in {
+        "alex@NIXSTATION64" = home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          extraSpecialArgs = commonSpecialArgs;
+          modules = [ ./users/alex/NIXSTATION64/home-NIXSTATION64.nix ];
+        };
+
+    # User: "Su Su"
+    "susu@NIXY" = home-manager.lib.homeManagerConfiguration {
+      pkgs = nixpkgs.legacyPackages.aarch64-darwin;
+      extraSpecialArgs = commonSpecialArgs;
+      modules = [ ./users/susu/home-NIXY.nix ];
+    };
+
+    "susu@NIXSTATION64" = home-manager.lib.homeManagerConfiguration {
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      extraSpecialArgs = commonSpecialArgs;
+      modules = [ ./users/susu/home-NIXSTATION64.nix ];
+    };
+    defaultPackage.x86_64-linux = with nixpkgs.legacyPackages.x86_64-linux;
+    mkShell {
+      buildInputs = [
+        python311
+        python311Packages.numpy
+        python311Packages.matplotlib
+      ];
+
+      shellHook = ''
+      echo "Environment with Python, NumPy, and Matplotlib activated!"
+      '';
+    };    
+  };
+  in {
       # Return all the configurations
       nixosConfigurations = nixosConfigurations;
       homeConfigurations = homeConfigurations;
       darwinConfigurations = darwinConfigurations;
     };
-}
+  }
 
