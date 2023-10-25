@@ -73,18 +73,30 @@
       extraSpecialArgs = commonSpecialArgs;
       modules = [ ./users/susu/home-NIXSTATION64.nix ];
     };
-    defaultPackage.x86_64-linux = with nixpkgs.legacyPackages.x86_64-linux;
-    mkShell {
-      buildInputs = [
-        python311
-        python311Packages.numpy
-        python311Packages.matplotlib
+    devShells = self (pkgs: {
+      default = pkgs.mkShell {
+        buildInputs = with pkgs; [
+          cargo
+          clang-tools
+          cmake
+          corrosion
+          extra-cmake-modules
+          rustc
+          iconv
+          python311
+          python311Packages.numpy
+          python311Packages.matplotlib
       ];
-
-      shellHook = ''
-      echo "Environment with Python, NumPy, and Matplotlib activated!"
-      '';
-    };    
+      RUST_SRC_PATH = "${pkgs.rustPlatform.rustLibSrc}";
+        # Workaround for https://github.com/NixOS/nixpkgs/issues/76486
+        # when clang is the stdenv (i.e. on Darwin)
+        shellHook = ''
+        PATH="${pkgs.clang-tools}/bin:$PATH"
+        echo "Environment with Python, NumPy, and Matplotlib activated!"  
+        echo "Also working with cmake, and some extras.."
+        '';
+      };
+    }); 
   };
   in {
       # Return all the configurations
