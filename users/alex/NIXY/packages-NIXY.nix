@@ -44,10 +44,10 @@ spotify-unwrapped
     # XQuartz?
     # davinci-resolve?
 
-                #hello
-                (pkgs.writeShellScriptBin "my-hello" ''
-                  echo "Hello, ${config.home.username}!"
-                '')
+            #hello
+            (pkgs.writeShellScriptBin "my-hello" ''
+              echo "Hello, ${config.home.username}!"
+            '')
             #lockscreen-motd
             (pkgs.writeShellScriptBin "lockscreen-motd" ''
               class_directory="/Users/alex/"
@@ -63,6 +63,10 @@ spotify-unwrapped
             (pkgs.writeShellScriptBin "fix-skhd" ''
               sudo pkill skhd && skhd -c /etc/skhdrc -V
               echo "To run this fix in the background, run \nfix-skhd &"
+            '')
+            #fix-bar
+            (pkgs.writeShellScriptBin "fix-bar" ''
+              sudo pkill sketchybar && sketchybar & 
             '')
             /*#shutdown without params FIXME
             (pkgs.writeShellScriptBin "shutdown" ''

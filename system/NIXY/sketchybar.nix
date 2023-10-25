@@ -9,7 +9,7 @@
       # SketchyBar configuration
 
       # Basic configuration
-      sketchybar --bar height=24
+      #sketchybar --bar height=27
       sketchybar --update
 
       # Plugin directory
@@ -22,7 +22,7 @@
         sticky=off
         padding_left=10
         padding_right=10
-        color=0x15ffffff
+        color=0x10282828
 
       # Changing Defaults
       sketchybar --default icon.font="Hack Nerd Font:Bold:17.0"
@@ -45,8 +45,8 @@
         sketchybar --add space space.$sid left
           --set space.$sid space=$sid
           icon=$i
-          background.color=0x44ffffff
-          background.corner_radius=5
+          background.color=0x10282828
+          background.corner_radius=2
           background.height=20
           background.drawing=off
           label.drawing=off

@@ -81,10 +81,11 @@
         nvim-web-devicons
         vim-nix
         vim-autoswap
-        { # Using a github repo theme (imported through flake.nix)
-          plugin = own-onedark-nvim;
-          config = "colorscheme onedark";
-        }
+        
+        #{ # Using a github repo theme (imported through flake.nix)
+          #plugin = own-onedark-nvim;
+          #config = "colorscheme onedark";
+        #}
 
         {
           plugin = (nvim-treesitter.withPlugins (p: [
