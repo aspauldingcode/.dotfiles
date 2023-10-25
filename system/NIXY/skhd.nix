@@ -10,6 +10,7 @@ services.skhd = {
             alt + cmd - space : open -na "Brave Browser"
             alt + ctrl - 0x33 : sudo reboot
             alt + shift + ctrl - 0x33 : sudo shutdown -h now
+            alt + shift - space : yabai -m window --toggle float
 
 			alt - h : yabai -m window --focus west
 			alt - j : yabai -m window --focus south

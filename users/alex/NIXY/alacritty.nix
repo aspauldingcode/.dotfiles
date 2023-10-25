@@ -82,7 +82,7 @@
     }
     {
       key = "C";
-      mods = "Control";
+      mods = "Control|Shift";
       action = "Copy";
     }
     {
