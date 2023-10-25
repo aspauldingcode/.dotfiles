@@ -33,38 +33,64 @@ If you're lost, please [read the Notes](notes.md) to follow setup.
 A preview of the repo layout:
 <pre>
 .
-├── README.md
 ├── flake.lock
 ├── flake.nix
+├── notes.md
+├── README.md
 ├── system
 │   ├── NIXEDUP
 │   ├── NIXSTATION64
 │   │   ├── configuration.nix
 │   │   ├── hardware-configuration.nix
-│   │   ├── packages-configuration.nix
+│   │   ├── packages.nix
 │   │   ├── sddm-themes.nix
 │   │   ├── sway-configuration.nix
 │   │   └── virtual-machines.nix
 │   └── NIXY
-│       └── darwin-configuration.nix
+│       ├── darwin-configuration.nix
+│       ├── defaults-macos.nix
+│       ├── homebrew-pkgs.nix
+│       ├── packages.nix
+│       ├── sketchybar.nix
+│       ├── skhd.nix
+│       ├── spacebar.nix
+│       └── yabai.nix
 └── users
     ├── alex
+    │   ├── extraConfig
+    │   │   ├── iTerm2
+    │   │   │   └── com.googlecode.iterm2.plist
+    │   │   ├── nvim
+    │   │   │   ├── options.lua
+    │   │   │   └── plugin
+    │   │   │       ├── cmp.lua
+    │   │   │       ├── lsp.lua
+    │   │   │       ├── other.lua
+    │   │   │       ├── telescope.lua
+    │   │   │       └── treesitter.lua
+    │   │   ├── sway
+    │   │   │   └── config.bk
+    │   │   └── wallpapers
+    │   │       └── synthwave-night-skyscrapers.jpg
     │   ├── NIXEDUP
     │   │   ├── home-NIXEDUP.nix
     │   │   └── packages-NIXEDUP.nix
     │   ├── NIXSTATION64
+    │   │   ├── alacritty.nix
+    │   │   ├── fish.nix
+    │   │   ├── git.nix
     │   │   ├── home-NIXSTATION64.nix
+    │   │   ├── mako.nix
+    │   │   ├── nvim.nix
     │   │   ├── packages-NIXSTATION64.nix
-    │   │   └── synthwave-night-skyscrapers.jpg
-    │   ├── NIXY
-    │   │   ├── home-NIXY.nix
-    │   │   ├── packages-NIXY.nix
-    │   │   └── yabai.nix
-    │   └── extraConfig
+    │   │   └── sway.nix
+    │   └── NIXY
+    │       ├── alacritty.nix
     │       ├── fish.nix
     │       ├── git.nix
-    │       └── nvim
-    │           └── init.lua
+    │       ├── home-NIXY.nix
+    │       ├── nvim.nix
+    │       └── packages-NIXY.nix
     └── susu
         ├── home-NIXSTATION64.nix
         ├── home-NIXY.nix
@@ -75,5 +101,5 @@ A preview of the repo layout:
             │   └── packages-NIXY.nix
             └── packages-UNIVERSAL.nix
 
-16 directories, 27 files
+20 directories, 48 files
 </pre>
