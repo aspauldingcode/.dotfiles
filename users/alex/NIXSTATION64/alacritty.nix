@@ -78,17 +78,22 @@
   key_bindings = [
     {
       key = "C";
+      mods = "Control|Shift";
+      action = "Copy";
+    }
+    {
+      key = "C";
       mods = "Control";
       action = "Copy";
-      }
+    }
       {
       key = "V";
           mods = "Control";
           action = "Paste";
         }
         {
-          key = "C"; 
-          mods = "Control|Shift";
+          key = "Period"; 
+          mods = "Control";
           chars = "\\x03";
         }
 #- { key: L,         mods: Control,                    action: ClearLogNotice }

@@ -55,7 +55,7 @@
       menu = "bemenu-run";
 
       keybindings = {
-        "${modifier}+f" = "exec maximize";
+        "${modifier}+f" = "exec maximize"; #custom script for zoom-fullscreen NOTWORKING?
         "${modifier}+Shift+f" = "fullscreen toggle";
         "${modifier}+Return" = "exec ${terminal}";
         "${modifier}+Alt+Space" = "exec brave";
@@ -100,8 +100,8 @@
               
               # Screenshot
               "Alt+Shift+3" = "exec screenshot"; # All visible outputs
-              "Alt+Shift+4" = "exec grimshot --notify save area";
-              "Alt+Shift+4+Space" = "exec grimshot --notify save window";
+              "Alt+Shift+4" = "exec screenshot-selection-toggle";
+              #"Alt+Shift+4" = "exec grimshot --notify save window";
               
               # Screen recording
               #"${modifier}+Print" = "exec wayrecorder --notify screen";
@@ -125,14 +125,13 @@
 
               #"${modifier}+Shift+minus" = "exec ${outputScale} -.1";
               #"${modifier}+Shift+equal" = "exec ${outputScale} +.1";
-              "${modifier}+Shift+Ctrl+minus" = "move scratchpad";
-              "${modifier}+Shift+Ctrl+equal" = "scratchpad show";
+              "${modifier}+Shift+Ctrl+minus" = "move scratchpad"; # Change to control alt down
+              "${modifier}+Shift+Ctrl+equal" = "scratchpad show"; # change to control alt up
 
               "${modifier}+r" = "mode resize"; #??? or resize mode
 
               "${modifier}+Shift+Space" = "floating toggle";
-              "${modifier}+Shift+Return" = "focus mode_toggle";
-
+              "${modifier}+Space" = "focus mode_toggle";
               "${modifier}+u" = "focus parent";
 
               "${modifier}+w" = "layout toggle split";
@@ -248,7 +247,6 @@ exec "sleep 5 && blueman-applet"
 exec autotiling
 
 #exec "mako --config ~/.mako"
-
 
 # STYLIZE!
 gaps inner 10

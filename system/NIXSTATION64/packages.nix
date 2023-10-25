@@ -131,28 +131,8 @@
             '')
 
             (pkgs.writeShellScriptBin  "screenshot-selection-toggle" ''
-              # Set an initial flag
-              toggle=false
-              # Function to toggle between the two commands
-              toggle_command() {
-                if [ "$toggle" = false ]; then
-              # Run the first command
-              exec grimshot --notify save area
-              toggle=true
-              else
-              # Run the second command
-              exec grimshot --notify save window
-              toggle=false
-              fi
-            }
-
-              # Listen for key events
-              while true; do
-              # Check for the spacebar keypress
-              if xev | grep -q 'keycode 65'; then
-              toggle_command
-              fi
-              done
-              '')
-            ]; 
-          }
+            nohup python3 ~/.dotfiles/users/alex/extraConfig/grimshot/screenshot-helper.py > script.log 2>&1 &
+            echo "Python script is now running in the background."
+            '')
+  ]; 
+}
