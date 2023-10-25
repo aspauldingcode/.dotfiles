@@ -9,7 +9,7 @@
 # inputs.hardware.nixosModules.common-cpu-amd
 # inputs.hardware.nixosModules.common-ssd
 ./hardware-configuration.nix
-./sway-configuration.nix
+./sway-configuration.nix #FIXME: NOT USING!
 ./packages.nix
 ./virtual-machines.nix
         #./sddm-themes.nix
@@ -105,7 +105,6 @@ programs = {
   fish.enable = true;
   ssh.enableAskPassword = false;
   adb.enable = true; # Enable Android De-Bugging.
-
 };
 
 
@@ -169,8 +168,8 @@ nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.
 settings = { # Nix Settings
 auto-optimise-store = true; # Auto Optimize nix store.
 experimental-features = [ 
-        "nix-command" "flakes" 
-      ]; # Enable experimental features.
+  "nix-command" "flakes" 
+]; # Enable experimental features.
     };
 #trusted-users = [ "root" "alex" "susu"]; #fix trusted user issue
 };

@@ -11,7 +11,7 @@
     latitude = "46.87";
     longitude = "113.99";
     temperature = {
-      day = 6500;
+      day = 6500; 
       night = 3500;
     };
   };
@@ -20,6 +20,9 @@
     enable = true;
     package = pkgs.swayfx;
     config = rec {
+      bars = [
+        {command = "${pkgs.waybar}/bin/waybar";}
+      ];
       modifier = "Mod4";
       left = "h";
       down = "j";
@@ -55,39 +58,36 @@
         "${modifier}+f" = "exec maximize";
         "${modifier}+Shift+f" = "fullscreen toggle";
         "${modifier}+Return" = "exec ${terminal}";
+        "${modifier}+Alt+Space" = "exec brave";
+
         "${modifier}+Shift+q" = "kill";
         "${modifier}+q" = "exec kill-windows";
         "${modifier}+a" = "exec show-all-windows";
         "${modifier}+d" = "exec ${menu}";
         "${modifier}+m" = "exec docker start -ai 8b83fcdf83af"; # MacOS VM
-      };
-            # FIX KEYBINDS!!!
-           /*keybindings = {
-              # "${modifier}+End" = "";
-              # implement window switcher based on wofi
-              "${modifier}+Tab" = "exec ${wofiWindowJump}";
-
-              # power menu
-              "${modifier}+F1" = "exec ${wofiPower}";
-
-              # # clipboard history
-              # "${modifier}+c" = "exec ${pkgs.clipman}/bin/clipman pick --tool wofi";
-
-              ## Output pressed keycode using xev:
-              ## nix-shell -p xorg.xev --run "xev | grep -A2 --line-buffered '^KeyRelease' | sed -n '/keycode /s/^.*keycode \([0-9]*\).* (.*, \(.*\)).*$/\1 \2/p'"
-              ## fn+F1    c:121   XF86AudioMute
-              "XF86AudioMute" = ''exec ${pamixer} --toggle-mute && ( ${pamixer} --get-mute && ${mywob} 0 ) || ${mywob} $(${pamixer} --get-volume)'';
-              ## fn+F2    c:122   XF86AudioLowerVolume
-              "XF86AudioLowerVolume" = ''exec ${pamixer} --allow-boost --unmute --decrease 2 && ${mywob} $(${pamixer} --get-volume)'';
-              ## fn+F3    c:123   XF86AudioRaiseVolume
-              "XF86AudioRaiseVolume" = ''exec ${pamixer} --allow-boost --unmute --increase 2 && ${mywob} $(${pamixer} --get-volume)'';
-              ## fn+F4    c:198   XF86AudioMicMute
-              "XF86AudioMicMute" = ''exec ${pamixer} --default-source --toggle-mute && ( ${pamixer} --default-source --get-mute && ${mywob} 0 ) || ${mywob} $(${pamixer} --default-source --get-volume)'';
-              ## fn+F5    c:232   XF86MonBrightnessDown
-              "--locked XF86MonBrightnessDown" = ''exec ${mywob} $(${brightnessctl} set 5%- | ${sed} -En 's/.*\(([0-9]+)%\).*/#\1/p')'';
-              ## fn+F6    c:233   XF86MonBrightnessUp
-             # "--locked XF86MonBrightnessUp" = ''exec ${mywob} $(${brightnessctl} set +5% | ${sed} -En 's/.*\(([0-9]+)%\).*/\1/p')'';
-              ## fn+F7    c:235   XF86Display
+        "Control+Alt+Delete" = "exec sudo reboot";
+        "Control+Shift+Alt+Delete" = "exec sudo shutdown now";
+        # implement window switcher based on wofi
+        #"${modifier}+Tab" = "exec ${wofiWindowJump}";
+        # power menu
+        #"${modifier}+Insert" = "exec ${wofiPower}";
+        # clipboard history
+        #"${modifier}+v" = "exec ${pkgs.clipman}/bin/clipman pick --tool wofi";
+        # Output pressed keycode using xev:
+        # nix-shell -p xorg.xev --run "xev | grep -A2 --line-buffered '^KeyRelease' | sed -n '/keycode /s/^.*keycode \([0-9]*\).* (.*, \(.*\)).*$/\1 \2/p'"
+        # fn+F1    c:121   XF86AudioMute
+        #"XF86AudioMute" = ''exec ${pamixer} --toggle-mute && ( ${pamixer} --get-mute && ${mywob} 0 ) || ${mywob} $(${pamixer} --get-volume)'';
+        # fn+F2    c:122   XF86AudioLowerVolume
+        #"XF86AudioLowerVolume" = ''exec ${pamixer} --allow-boost --unmute --decrease 2 && ${mywob} $(${pamixer} --get-volume)'';
+        # fn+F3    c:123   XF86AudioRaiseVolume
+        #"XF86AudioRaiseVolume" = ''exec ${pamixer} --allow-boost --unmute --increase 2 && ${mywob} $(${pamixer} --get-volume)'';
+        # fn+F4    c:198   XF86AudioMicMute
+        #"XF86AudioMicMute" = ''exec ${pamixer} --default-source --toggle-mute && ( ${pamixer} --default-source --get-mute && ${mywob} 0 ) || ${mywob} $(${pamixer} --default-source --get-volume)'';
+        # fn+F5    c:232   XF86MonBrightnessDown
+        # "--locked XF86MonBrightnessDown" = ''exec ${mywob} $(${brightnessctl} set 5%- | ${sed} -En 's/.*\(([0-9]+)%\).*/#\1/p')'';
+        ## fn+F6    c:233   XF86MonBrightnessUp
+        # "--locked XF86MonBrightnessUp" = ''exec ${mywob} $(${brightnessctl} set +5% | ${sed} -En 's/.*\(([0-9]+)%\).*/\1/p')'';
+        # fn+F7    c:235   XF86Display
               ## fn+F8    c:246   XF86WLAN
               ## fn+F9    c:179   XF86Tools
               ## fn+F10   c:225   XF86Search
@@ -97,25 +97,21 @@
               # "XF86???Lock" = "";
               #"XF86HomePage" = "exec ${pkgs.firefox-wayland}/bin/firefox";
               # "XF86???FOLDER" = "";
-
-              ## Screenshot
-              /*"Print" = "exec ${grimshot} --notify save screen $(${xdg-user-dir} PICTURES)/$(TZ=utc date +'screenshot_%Y-%m-%d-%H%M%S.%3N.png')"; # All visible outputs
-              "Shift+Print" = "exec ${grimshot} --notify save area $(${xdg-user-dir} PICTURES)/$(TZ=utc date +'screenshot_%Y-%m-%d-%H%M%S.%3N.png')"; # Manually select a region
-              "Alt+Print" = "exec ${grimshot} --notify save active $(${xdg-user-dir} PICTURES)/$(TZ=utc date +'screenshot_%Y-%m-%d-%H%M%S.%3N.png')"; # Currently active window
-              "Shift+Alt+Print" = "exec ${grimshot} --notify save window $(${xdg-user-dir} PICTURES)/$(TZ=utc date +'screenshot_%Y-%m-%d-%H%M%S.%3N.png')"; # Manually select a window
-              "Ctrl+Print" = "exec ${grimshot} --notify copy screen";
-              "Ctrl+Shift+Print" = "exec ${grimshot} --notify copy area";
-              "Ctrl+Alt+Print" = "exec ${grimshot} --notify copy active";
-              "Ctrl+Shift+Alt+Print" = "exec ${grimshot} --notify copy window";
-              ## Screen recording
-              "${modifier}+Print" = "exec wayrecorder --notify screen";
-              "${modifier}+Shift+Print" = "exec wayrecorder --notify --input area";
-              "${modifier}+Alt+Print" = "exec wayrecorder --notify --input active";
-              "${modifier}+Shift+Alt+Print" = "exec wayrecorder --notify --input window";
-              "${modifier}+Ctrl+Print" = "exec wayrecorder --notify --clipboard --input screen";
-              "${modifier}+Ctrl+Shift+Print" = "exec wayrecorder --notify --clipboard --input area";
-              "${modifier}+Ctrl+Alt+Print" = "exec wayrecorder --notify --clipboard --input active";
-              "${modifier}+Ctrl+Shift+Alt+Print" = "exec wayrecorder --notify --clipboard --input window";
+              
+              # Screenshot
+              "Alt+Shift+3" = "exec screenshot"; # All visible outputs
+              "Alt+Shift+4" = "exec grimshot --notify save area";
+              "Alt+Shift+4+Space" = "exec grimshot --notify save window";
+              
+              # Screen recording
+              #"${modifier}+Print" = "exec wayrecorder --notify screen";
+              #"${modifier}+Shift+Print" = "exec wayrecorder --notify --input area";
+              #"${modifier}+Alt+Print" = "exec wayrecorder --notify --input active";
+              #"${modifier}+Shift+Alt+Print" = "exec wayrecorder --notify --input window";
+              #"${modifier}+Ctrl+Print" = "exec wayrecorder --notify --clipboard --input screen";
+              #"${modifier}+Ctrl+Shift+Print" = "exec wayrecorder --notify --clipboard --input area";
+              #"${modifier}+Ctrl+Alt+Print" = "exec wayrecorder --notify --clipboard --input active";
+              #"${modifier}+Ctrl+Shift+Alt+Print" = "exec wayrecorder --notify --clipboard --input window";
 
               # "XF86AudioPrev" = "exec ${pkgs.playerctl}/bin/playerctl -s previous";
               # "XF86AudioNext" = "exec ${pkgs.playerctl}/bin/playerctl -s next";
@@ -125,39 +121,29 @@
               # "Control+XF86AudioNext" = "exec ${pkgs.playerctl}/bin/playerctl -s position 30+";
               # "Control+XF86AudioPlay" = "exec ${pkgs.playerctl}/bin/playerctl -s stop";
 
-              "${modifier}+Escape" = "exec ${locksway}";
-              "${modifier}+Shift+Escape" = "exec ${locksway}";
-              "${modifier}+Shift+F1" = "exec ${pkgs.sway}/bin/swaynag -t warning -f 'Myosevka Proportional' -m 'Exit sway?' -b 'Yes' '${swaymsg} exit'";
-              "${modifier}+Shift+F2" = "reload";
+              #"${modifier}+l" = "exec ${locksway}";
 
-              "${modifier}+Shift+minus" = "exec ${outputScale} -.1";
-              "${modifier}+Shift+equal" = "exec ${outputScale} +.1";
+              #"${modifier}+Shift+minus" = "exec ${outputScale} -.1";
+              #"${modifier}+Shift+equal" = "exec ${outputScale} +.1";
               "${modifier}+Shift+Ctrl+minus" = "move scratchpad";
               "${modifier}+Shift+Ctrl+equal" = "scratchpad show";
 
-              "${modifier}+Space" = "exec ${terminal}";
-              "${modifier}+s" = "exec ${menu}";
-
-              "${modifier}+Shift+q" = "kill";
               "${modifier}+r" = "mode resize"; #??? or resize mode
 
-              "${modifier}+Shift+Return" = "floating toggle";
-              "${modifier}+Return" = "focus mode_toggle";
+              "${modifier}+Shift+Space" = "floating toggle";
+              "${modifier}+Shift+Return" = "focus mode_toggle";
 
               "${modifier}+u" = "focus parent";
-              "${modifier}+t" = "fullscreen toggle";
-              "${modifier}+d" = "splith";
-              "${modifier}+v" = "splitv";
 
               "${modifier}+w" = "layout toggle split";
-              "${modifier}+f" = "layout stacking";
-              "${modifier}+p" = "layout tabbed";
+              "${modifier}+s" = "layout stacking";
+              "${modifier}+t" = "layout tabbed";
 
-              "${modifier}+o" = "inhibit_idle open; border normal; mark --add inhibiting_idle";
-              "${modifier}+Shift+o" = "inhibit_idle none; border pixel; unmark inhibiting_idle";
+              #"${modifier}+o" = "inhibit_idle open; border normal; mark --add inhibiting_idle";
+              #"${modifier}+Shift+o" = "inhibit_idle none; border pixel; unmark inhibiting_idle";
 
-              "${modifier}+j" = "exec ${pkgs.mako}/bin/makoctl invoke"; # Invoke default action on top notification.
-              "${modifier}+Shift+t" = "exec ${pkgs.flashfocus}/bin/flash_window";
+              #"${modifier}+j" = "exec ${pkgs.mako}/bin/makoctl invoke"; # Invoke default action on top notification.
+              #"${modifier}+Shift+t" = "exec ${pkgs.flashfocus}/bin/flash_window";
 
               "${modifier}+${left}" = "focus left";
               "${modifier}+${down}" = "focus down";
@@ -177,11 +163,11 @@
               "${modifier}+Shift+Up" = "move up";
               "${modifier}+Shift+Right" = "move right";
 
-              "${modifier}+a" = "workspace back_and_forth";
-              "${modifier}+l" = "workspace prev";
-              "${modifier}+y" = "workspace next";
-              "${modifier}+Prior" = "workspace prev"; # PgUp
-              "${modifier}+Next" = "workspace next"; # PgDown
+              #"${modifier}+a" = "workspace back_and_forth";
+              #"${modifier}+l" = "workspace prev";
+              #"${modifier}+y" = "workspace next";
+              #"${modifier}+Prior" = "workspace prev"; # PgUp
+              #"${modifier}+Next" = "workspace next"; # PgDown
               "${modifier}+Ctrl+${left}" = "workspace prev";
               "${modifier}+Ctrl+${right}" = "workspace next";
               "${modifier}+Ctrl+Left" = "workspace prev";
@@ -218,12 +204,12 @@
               "${modifier}+Shift+8" = "move container to workspace number 8";
               "${modifier}+Shift+9" = "move container to workspace number 9";
               "${modifier}+Shift+0" = "move container to workspace number 10";
-            };*/
+            };
     };
       extraConfig = ''
         
                  set $mod Mod4
-                 ### Idle configuration
+                 # Idle configuration
 #
 # Example configuration:
 #
@@ -249,12 +235,6 @@
 #
 # You can get the names of your inputs by running: swaymsg -t get_inputs
 # Read `man 5 sway-input` for more information about this section.
-
-
-        # Status Bar:
-# USE WAYBAR ONLY
-exec "waybar --config ~/.config/waybar/config"
-
 # Launch the network manager widget!
 exec nm-applet
 
@@ -264,18 +244,11 @@ exec blueman-applet
 # Delayed launch of the bluetooth applet
 exec "sleep 5 && blueman-applet"
 
-# Screenshots
-bindsym Mod1+Shift+3    exec screenshot # my script that screenshots all outputs seperately.
-bindsym Mod1+Shift+4            exec grimshot --notify save area
-bindsym Mod1+Shift+4+Space      exec grimshot --notify save window
-
 # autotile!
 exec autotiling
 
 #exec "mako --config ~/.mako"
 
-# OPEN BRAVE FAST
-bindsym $mod+Mod1+Space exec brave
 
 # STYLIZE!
 gaps inner 10

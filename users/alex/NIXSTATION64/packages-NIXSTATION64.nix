@@ -51,6 +51,10 @@
       beeper
       davinci-resolve ocl-icd
       rofi-wayland-unwrapped
+      #wofiPower
+      #wofiWindowJump
+      #wayrecorder
+      clipman
     #etcher
     blender
     brave
