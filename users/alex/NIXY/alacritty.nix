@@ -92,7 +92,7 @@
     }
     {
       key = "C"; 
-      mods = "Control|Shift";
+      mods = "Control";
       chars = "\\x03";
     }
 #- { key: L,         mods: Control,                    action: ClearLogNotice }

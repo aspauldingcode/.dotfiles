@@ -8,8 +8,8 @@ services.skhd = {
 			alt - return : open -na alacritty
             alt - d : open -a dmenu-mac
             alt + cmd - space : open -na "Brave Browser"
-            alt + ctrl - 0x33 : sudo reboot
-            alt + shift + ctrl - 0x33 : sudo shutdown -h now
+            alt + cmd - 0x33 : sudo reboot
+            alt + shift + cmd - 0x33 : sudo shutdown -h now
             alt + shift - space : yabai -m window --toggle float
 
 			alt - h : yabai -m window --focus west
