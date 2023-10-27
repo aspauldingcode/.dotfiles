@@ -39,11 +39,18 @@
         #rebuild
         (pkgs.writeShellScriptBin "rebuild" ''
         # NIXY(aarch64-darwin)
+        if [[ "$1" == "-r" ]]; then
+          # Run your command here
+          echo "User entered -r argument.\nResetting Launchpad!"
+          defaults write com.apple.dock ResetLaunchPad -bool true
+        else
+          echo "No -r argument provided\nRebuilding..."
+        fi
         cd ~/.dotfiles
         darwin-rebuild switch --flake .#NIXY
         home-manager switch --flake .#alex@NIXY
-        #defaults write com.apple.dock ResetLaunchPad -bool true
-        '')
+
+        #        '')
         #update
         (pkgs.writeShellScriptBin "update" ''
         cd ~/.dotfiles
@@ -67,8 +74,6 @@
           sketchybar -m --set mic icon=
           fi 
           '')
-
-
           #mic_click (for sketchybar!)
           (pkgs.writeShellScriptBin "mic_click" ''MIC_VOLUME=$(osascript -e 'input volume of (get volume settings)')
 

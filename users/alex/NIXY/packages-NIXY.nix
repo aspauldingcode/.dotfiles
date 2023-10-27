@@ -5,8 +5,8 @@
   nixpkgs = {
     config = {
       allowUnfree = true;
-      allowUnsupportedSystem = true;
-
+      allowUnsupportedSystem = false;
+      allowBroken = false;
     };
   };
 
@@ -18,9 +18,11 @@
     git-crypt
     cowsay
     discord
-    matrixcli
-    #davinci-resolve NEEDS TO BE MAS APP?
+    #matrixcli #Unsupported System?
+    rnix-lsp
+    #davinci-resolve # Mesa 23.1.7 marked broken - NEEDS TO BE MAS APP? 
     zoom-us
+    openjdk20
 #python311Packages.pyautogui
 spotify-unwrapped
 (prismlauncher.override {

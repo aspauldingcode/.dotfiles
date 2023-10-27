@@ -9,13 +9,13 @@
 			"xinit"
 			"xorg-server"
 			"choose-gui"
-			"yazi"
+            "yazi"
 		];
 
 		casks = [
 			"xquartz"
-			"dmenu-mac"
-			"hiddenbar"
+            "dmenu-mac"
+            "alfred"
 		];
 
 #masApps = [
