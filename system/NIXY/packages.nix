@@ -21,6 +21,7 @@
         tree
         ranger
         hexedit
+        virt-manager
         #alacritty
         iterm2
         jdk11
@@ -36,6 +37,10 @@
         jq
         libusb 
         lolcat
+        tree-sitter
+        nodejs_20
+        fd #find tool
+        ripgrep
         #rebuild
         (pkgs.writeShellScriptBin "rebuild" ''
         # NIXY(aarch64-darwin)

@@ -16,27 +16,20 @@
 			"xquartz"
             "dmenu-mac"
             "alfred"
+            "brave-browser"
 		];
 
-#masApps = [
-#"123456789"  # Mac App Store app ID
-#"987654321"
-#];
-
-#whalebrews = [
-#	"wget"
-#		"whalesay"
-#];
-
-#taps = [
-#"user/repo"  # Additional Homebrew tap
-#];
+        #masApps = [ #FAILS
+          #497799835 #Xcode 
+        #];
+        whalebrews = [
+          #"wget" #FAILS
+          #"whalesay" #FAILS
+        ];
+        taps = [
+          #"user/repo"  # Additional Homebrew tap
+        ];
 	};
-
-	/*homebrew.whalebrews = [
-	   f"whalebrew/wget"
-	  "whalebrew/whalesay"
-	  ];*/
 
 #allow broken packages
 #nixpkgs.config.allowBroken = true;
