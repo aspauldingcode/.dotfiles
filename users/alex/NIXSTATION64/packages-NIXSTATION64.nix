@@ -56,6 +56,7 @@
       #wayrecorder
       clipman
     #etcher
+    element-desktop
     blender
     brave
     transmission-gtk
@@ -79,7 +80,17 @@
     avahi sshfs pciutils socat lolcat
     pmbootstrap libusb1 xarchiver logseq gimp zip
     sway-contrib.grimshot
-
+    (python311.withPackages(ps: with ps; [
+      toml
+      python-lsp-server
+      pyls-isort
+      flake8
+      evdev
+      pynput
+      pygame
+      matplotlib
+      libei
+    ]))
     (prismlauncher.override {
       jdks = [ jdk8 jdk17 jdk19 ]; 
     })

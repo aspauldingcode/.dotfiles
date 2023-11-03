@@ -86,6 +86,7 @@
           python311
           python311Packages.numpy
           python311Packages.matplotlib
+          python311Packages.keyboard
       ];
       RUST_SRC_PATH = "${pkgs.rustPlatform.rustLibSrc}";
         # Workaround for https://github.com/NixOS/nixpkgs/issues/76486
