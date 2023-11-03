@@ -7,7 +7,7 @@ This repo contains my .dotfiles, which additionally defines the operating system
 ### FRESH INSTALL
 
 #### NIX Installer
-- If you just set up a new mac, you are going to need both Nix, and [Nix-Darwin](https://github.com/LnL7/nix-darwin). You should install Nix using the [Determinite Nix Installer](https://github.com/DeterminateSystems/nix-installer) which automatically enables Nix Flakes for us.
+- If you just set up a new mac, you are going to need both Nix, and [Nix-Darwin](https://github.com/LnL7/nix-darwin). However, since we are using Nix Flakes, do not run the darwin-installer (See: NOTE: Using darwin-installer is no longer necessary on flake based systems.). You should install Nix using the [Determinite Nix Installer](https://github.com/DeterminateSystems/nix-installer) which automatically enables Nix Flakes for us.
 
 - If you just set up NixOS, you already have Nix, NixOS configuration.nix, and you'll need to enable flakes and home-manager.
 

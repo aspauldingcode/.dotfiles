@@ -17,6 +17,7 @@
     sshpass
     git-crypt
     cowsay
+    qemu
     #discord # not installed?!?!??
     utm 
     mas

@@ -10,6 +10,7 @@
 			"xorg-server"
 			"choose-gui"
             "yazi"
+            "virt-manager"
 		];
 
 		casks = [
