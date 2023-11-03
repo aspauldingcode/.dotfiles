@@ -5,8 +5,8 @@
   nixpkgs = {
     config = {
       allowUnfree = true;
-      allowUnsupportedSystem = true;
-
+      allowUnsupportedSystem = false;
+      allowBroken = false;
     };
   };
 
@@ -17,28 +17,29 @@
     sshpass
     git-crypt
     cowsay
-    discord
-    matrixcli
-    #davinci-resolve NEEDS TO BE MAS APP?
+    qemu
+    #discord # not installed?!?!??
+    utm 
+    mas
+    #virt-manager #omg it installs? (crashes tho...)
+    rnix-lsp
+    #davinci-resolve # Mesa 23.1.7 marked broken - NEEDS TO BE MAS APP? 
     zoom-us
-#python311Packages.pyautogui
-spotify-unwrapped
-(prismlauncher.override {
-  jdks = [ jdk8 jdk17 jdk19 ]; 
-})
+    (pkgs.python311.withPackages(ps: [ 
+      ps.pygame 
+      ps.matplotlib 
+    ]))
+    spotify-unwrapped # Not working on darwin?
+    (prismlauncher.override { # Darwin?
+      jdks = [ jdk8 jdk17 jdk19 ]; 
+    })
 
     # #TODO
-    # dmenu-mac
-    # yabai?
-    # skhd?
     # macports?
     # orbstack?
-    # UTM? 
-    # xCode?
+    # xcode?  (MAS: 497799835  Xcode)
     # x-code-cli?
     # Townscraper? 
-    # homebrew?
-    # sketchybar?
     # xinit?
     # xorg-server?
     # XQuartz?

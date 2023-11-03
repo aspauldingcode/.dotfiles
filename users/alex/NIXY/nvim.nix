@@ -81,7 +81,8 @@
         nvim-web-devicons
         vim-nix
         vim-autoswap
-        
+        nvim-jdtls
+
         #{ # Using a github repo theme (imported through flake.nix)
           #plugin = own-onedark-nvim;
           #config = "colorscheme onedark";

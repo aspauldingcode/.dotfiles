@@ -6,11 +6,13 @@
     darwin.url = "github:lnl7/nix-darwin";
     home-manager.url = "github:nix-community/home-manager";
 
+    language-servers.url = git+https://git.sr.ht/~bwolf/language-servers.nix;
+    #language-servers.flake = false;
     plugin-onedark.url = "github:navarasu/onedark.nvim";
     plugin-onedark.flake = false;
   };
 
-  outputs = { self, nixpkgs, darwin, home-manager, plugin-onedark }: 
+  outputs = { self, nixpkgs, darwin, home-manager, language-servers, plugin-onedark }: 
   let
     inherit (self) inputs;
 
@@ -73,6 +75,7 @@
       extraSpecialArgs = commonSpecialArgs;
       modules = [ ./users/susu/home-NIXSTATION64.nix ];
     };
+<<<<<<< HEAD
     devShells = self (pkgs: {
       default = pkgs.mkShell {
         buildInputs = with pkgs; [
@@ -87,17 +90,40 @@
           python311Packages.numpy
           python311Packages.matplotlib
           python311Packages.keyboard
+=======
+
+    devShell = pkgs: self: {
+      devShells.aarch64-darwin.default = self.devShell;
+      devShells.x86_64-linux.default = self.devShell;  # Add any other architectures you need
+
+      buildInputs = with pkgs; [
+        cargo
+        clang-tools
+        cmake
+        corrosion
+        extra-cmake-modules
+        rustc
+        iconv
+        python311
+        python311Packages.numpy
+        python311Packages.matplotlib
+        nodejs-18_x
+        (language-servers.packages.x86_64-linux.angular-language-server)
+        (language-servers.packages.x86_64-linux.typescript-language-server)
+        (language-servers.packages.x86_64-linux.vscode-langservers-extracted)
+        (language-servers.packages.x86_64-linux.svelte-language-server)
+        (language-servers.packages.x86_64-linux.jdt-language-server)
+>>>>>>> 6183b2707b730103bcab024d7611b9f030645a67
       ];
-      RUST_SRC_PATH = "${pkgs.rustPlatform.rustLibSrc}";
-        # Workaround for https://github.com/NixOS/nixpkgs/issues/76486
-        # when clang is the stdenv (i.e. on Darwin)
-        shellHook = ''
-        PATH="${pkgs.clang-tools}/bin:$PATH"
-        echo "Environment with Python, NumPy, and Matplotlib activated!"  
-        echo "Also working with cmake, and some extras.."
-        '';
-      };
-    }); 
+
+      # Workaround for https://github.com/NixOS/nixpkgs/issues/76486
+      # when clang is the stdenv (i.e. on Darwin)
+      shellHook = ''
+      PATH="${pkgs.clang-tools}/bin:$PATH"
+      echo "Environment with Python, NumPy, and Matplotlib activated!"
+      echo "Also working with cmake, and some extras.."
+      '';
+    };
   };
   in {
       # Return all the configurations

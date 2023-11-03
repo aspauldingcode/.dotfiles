@@ -19,4 +19,11 @@ vim.o.termguicolors = true
 vim.opt.autoindent = true
 vim.opt.smartindent = true
 vim.opt.wrap = true
+<<<<<<< HEAD
 vim.cmd('filetype plugin indent on')
+=======
+
+vim.o.textwidth = 80
+vim.o.formatoptions = t
+
+>>>>>>> 6183b2707b730103bcab024d7611b9f030645a67

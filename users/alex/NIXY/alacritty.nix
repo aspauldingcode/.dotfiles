@@ -86,12 +86,17 @@
       action = "Copy";
     }
     {
+      key = "C";
+      mods = "Control";
+      action = "Copy";
+    }
+    {
       key = "V";
       mods = "Control";
       action = "Paste";
     }
     {
-      key = "C"; 
+      key = "Period"; 
       mods = "Control";
       chars = "\\x03";
     }

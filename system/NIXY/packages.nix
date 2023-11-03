@@ -19,8 +19,10 @@
         htop
         git
         tree
+        discord
         ranger
         hexedit
+        virt-manager
         #alacritty
         iterm2
         jdk11
@@ -36,13 +38,28 @@
         jq
         libusb 
         lolcat
+        tree-sitter
+        nodejs_20
+        fd #find tool
+        ripgrep
         #rebuild
         (pkgs.writeShellScriptBin "rebuild" ''
         # NIXY(aarch64-darwin)
+        if [[ "$1" == "-r" ]]; then
+          echo "User entered -r argument."
+          echo "Will reset Launchpad after rebuild."
+        else
+          echo "No -r argument provided."
+          echo "Rebuilding..."
+        fi
         cd ~/.dotfiles
         darwin-rebuild switch --flake .#NIXY
         home-manager switch --flake .#alex@NIXY
-        #defaults write com.apple.dock ResetLaunchPad -bool true
+        if [[ "$1" == "-r" ]]; then
+          echo "Resetting Launchpad!"
+          defaults write com.apple.dock ResetLaunchPad -bool true
+        fi 
+        echo "Done."
         '')
         #update
         (pkgs.writeShellScriptBin "update" ''
@@ -67,8 +84,6 @@
           sketchybar -m --set mic icon=
           fi 
           '')
-
-
           #mic_click (for sketchybar!)
           (pkgs.writeShellScriptBin "mic_click" ''MIC_VOLUME=$(osascript -e 'input volume of (get volume settings)')
 
