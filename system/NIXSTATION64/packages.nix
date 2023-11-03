@@ -18,8 +18,7 @@
     udftools
     element appimage-run
     tree-sitter
-    python312
-    jdk20
+    python311
     nodejs
     flex bison
     gnumake gcc

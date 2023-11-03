@@ -19,6 +19,7 @@
         htop
         git
         tree
+        discord
         ranger
         hexedit
         virt-manager

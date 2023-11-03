@@ -17,14 +17,13 @@
     sshpass
     git-crypt
     cowsay
-    discord
-    utm
+    #discord # not installed?!?!??
+    utm 
     mas
     #virt-manager #omg it installs? (crashes tho...)
     rnix-lsp
     #davinci-resolve # Mesa 23.1.7 marked broken - NEEDS TO BE MAS APP? 
     zoom-us
-    openjdk20
     (pkgs.python311.withPackages(ps: [ 
       ps.pygame 
       ps.matplotlib 
