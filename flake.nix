@@ -75,22 +75,6 @@
       extraSpecialArgs = commonSpecialArgs;
       modules = [ ./users/susu/home-NIXSTATION64.nix ];
     };
-<<<<<<< HEAD
-    devShells = self (pkgs: {
-      default = pkgs.mkShell {
-        buildInputs = with pkgs; [
-          cargo
-          clang-tools
-          cmake
-          corrosion
-          extra-cmake-modules
-          rustc
-          iconv
-          python311
-          python311Packages.numpy
-          python311Packages.matplotlib
-          python311Packages.keyboard
-=======
 
     devShell = pkgs: self: {
       devShells.aarch64-darwin.default = self.devShell;
@@ -113,7 +97,6 @@
         (language-servers.packages.x86_64-linux.vscode-langservers-extracted)
         (language-servers.packages.x86_64-linux.svelte-language-server)
         (language-servers.packages.x86_64-linux.jdt-language-server)
->>>>>>> 6183b2707b730103bcab024d7611b9f030645a67
       ];
 
       # Workaround for https://github.com/NixOS/nixpkgs/issues/76486
@@ -132,4 +115,3 @@
       darwinConfigurations = darwinConfigurations;
     };
   }
-

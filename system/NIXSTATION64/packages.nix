@@ -19,8 +19,6 @@
     udftools
     element appimage-run
     tree-sitter
-<<<<<<< HEAD
-    python312
     jdk20
     libsForQt5.dolphin
     cinnamon.nemo
@@ -33,9 +31,7 @@
     libsForQt5.breeze-icons
     libsForQt5.breeze-plymouth
     libsForQt5.breeze-grub
-=======
     python311
->>>>>>> 6183b2707b730103bcab024d7611b9f030645a67
     nodejs
     flex bison
     gnumake gcc

@@ -85,7 +85,8 @@
               
               # Screenshot
               "Alt+Shift+3" = "exec screenshot"; # All visible outputs
-              "Alt+Shift+4" = "exec screenshot-selection-toggle";
+              "Alt+Shift+4" = "exec grimshot --notify save area"; # Temporary 
+              #"Alt+Shift+4" = "exec screenshot-selection-toggle";
               #"Alt+Shift+4" = "exec grimshot --notify save window";
               
               # Screen recording
