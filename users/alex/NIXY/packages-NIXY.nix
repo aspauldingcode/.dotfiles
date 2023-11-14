@@ -18,20 +18,20 @@
     #git-crypt
     cowsay
     qemu
-    #discord # not installed?!?!??
+    emacsPackages.macports
+    discord
     utm  
     mas
-    #virt-manager #omg it installs? (crashes tho...)
-    rnix-lsp
-    #davinci-resolve # Mesa 23.1.7 marked broken - NEEDS TO BE MAS APP? 
+    nil #rnix-lsp apparently is vulnerable? 
     zoom-us
     (pkgs.python311.withPackages(ps: [ 
       ps.pygame 
       ps.matplotlib 
     ]))
+
 # #TODO
 # macports?
-# orbstack?
+
 #hello
 (pkgs.writeShellScriptBin "my-hello" ''
 echo "Hello, ${config.home.username}!"

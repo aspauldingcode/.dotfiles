@@ -10,11 +10,10 @@ in
       ./alacritty.nix
       ./git.nix
       ./fish.nix
-    #./yabai.nix # FIXME UGH how do I home manager this?
+      #./zellij
+      ./yabai.nix # FIXME UGH how do I home manager this?
     #./skhd.nix
-    #./modules/NIXY/spacebar.nix
-    #./modules/NIXY/fish.nix
-    #./modules/NIXY/sketchybar.nix
+    #./sketchybar.nix
   ];
   home = {
     username = "alex";

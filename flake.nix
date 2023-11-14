@@ -6,7 +6,7 @@
     darwin.url = "github:lnl7/nix-darwin";
     home-manager.url = "github:nix-community/home-manager";
 
-    language-servers.url = git+https://git.sr.ht/~bwolf/language-servers.nix;
+    language-servers.url = "git+https://git.sr.ht/~bwolf/language-servers.nix";
     #language-servers.flake = false;
     plugin-onedark.url = "github:navarasu/onedark.nvim";
     plugin-onedark.flake = false;
