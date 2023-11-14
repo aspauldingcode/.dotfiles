@@ -1,21 +1,6 @@
 { lib, config, pkgs, ...}:
 
 {
-  services.redshift = {
-    enable = true;
-    #package = pkgs.redshift-wlr;
-    settings.redshift = {
-      brightness-day = "1";
-      brightness-night = "1";
-    };
-    latitude = "46.87";
-    longitude = "113.99";
-    temperature = {
-      day = 6500; 
-      night = 3500;
-    };
-  };
-
   wayland.windowManager.sway = {
     enable = true;
     package = pkgs.swayfx;
@@ -100,7 +85,8 @@
               
               # Screenshot
               "Alt+Shift+3" = "exec screenshot"; # All visible outputs
-              "Alt+Shift+4" = "exec screenshot-selection-toggle";
+              "Alt+Shift+4" = "exec grimshot --notify save area"; # Temporary 
+              #"Alt+Shift+4" = "exec screenshot-selection-toggle";
               #"Alt+Shift+4" = "exec grimshot --notify save window";
               
               # Screen recording
@@ -213,8 +199,8 @@
 # Example configuration:
 #
                  exec swayidle -w \
-                         timeout 300 'swaylock -f -c 000000' \
-                         timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+                         timeout 7320 'swaylock -f -c 000000' \
+                         timeout 8000 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
                          before-sleep 'swaylock -f -c 000000'
 
 # This will lock your screen after 300 seconds of inactivity, then turn off

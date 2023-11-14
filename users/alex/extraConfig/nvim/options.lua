@@ -16,8 +16,10 @@ vim.o.updatetime = 300
 
 vim.o.termguicolors = true
 
+vim.opt.autoindent = true
 vim.opt.smartindent = true
 vim.opt.wrap = true
+vim.cmd('filetype plugin indent on')
 
 vim.o.textwidth = 80
 vim.o.formatoptions = t

@@ -1,24 +1,45 @@
+# Script to switch between screenshot window and screenshot area with grimshot linux by pressing spacebar.
+from pynput import keyboard
 
-import subprocess
+def on_press(key):
+    if key == keyboard.Key.esc:
+        return False  # stop listener
+    try:
+        k = key.char  # single-char keys
+    except:
+        k = key.name  # other keys
+    if k in ['1', '2', 'left', 'right']:  # keys of interest
+        # self.keys.append(k)  # store it in global-like variable
+        print('Key pressed: ' + k)
+        return False  # stop listener; remove this if want more keys
 
-def command1():
-    print("Select Area")
-    subprocess.run(["grimshot", "--notify", "save", "area"])
+listener = keyboard.Listener(on_press=on_press)
+listener.start()  # start to listen on a separate thread
+listener.join()  # remove if main thread is polling self.keys
 
-def command2():
-    print("Select Window")
-    subprocess.run(["grimshot", "--notify", "save", "window"])
 
-toggle = 1
-
-# Open the named pipe (FIFO) for reading
-with open('~/.dotfiles/users/alex/extraConfig/grimshot/fifo', 'r') as fifo:
-    while True:
-        input_char = fifo.read(1)
-        if input_char == " ":
-            if toggle == 1:
-                command1()
-                toggle = 2
-            else:
-                command2()
-                toggle = 1
+# import keyboard
+# import subprocess
+#
+# # List of commands to toggle between
+# commands = [
+#     "grimshot --notify save area",
+#     "grimshot --notify save window"
+# ]
+# current_command_index = 0  # Index of the current command
+#
+# while True:
+#     try:
+#         if keyboard.is_pressed(' '):
+#             # Wait for the spacebar to be released
+#             while keyboard.is_pressed(' '):
+#                 pass
+#
+#             # Execute the current command
+#             subprocess.run(commands[current_command_index], shell=True)
+#
+#             # Toggle to the next command
+#             current_command_index = (current_command_index + 1) % len(commands)
+#     except KeyboardInterrupt:
+#         break
+#

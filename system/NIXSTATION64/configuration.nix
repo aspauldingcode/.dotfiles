@@ -12,7 +12,7 @@
 ./sway-configuration.nix #FIXME: NOT USING!
 ./packages.nix
 ./virtual-machines.nix
-        #./sddm-themes.nix
+#./sddm-themes.nix
       ];
 
 # Bootloader.
@@ -23,6 +23,13 @@ boot = {
   efi.canTouchEfiVariables = true;
 };
     };
+
+# Enable auto-mounting for my USBC drive:
+#fileSystems = { 
+#		"/mnt/USBCTHUMB" =
+#		{ device = "/dev/disk/by-uuid/C365-14E8";
+#			fsType = "vfat";
+#		};
 
 # Enable networking
 networking = {
@@ -59,7 +66,6 @@ i18n = {
 
 # services
 services = {
-        #sway #FIXME: CONFIGURE SWAY HERE
         pipewire = { # fix for pipewire audio:
         enable = true;
         alsa.enable = true;
@@ -70,26 +76,27 @@ services = {
         # PRETTY LOGIN SCREEN! (FIXME needs to be configured with osx sddm theme)
         xserver = {
           enable = true;
-          layout = "us";
-          libinput.enable = true;  # Enable this if using libinput for input device management.
           displayManager.sddm = {
             enable = true;
-            theme = "abstractdark-sddm-theme"; #FIXME NOTWORKING?
-                #anything else?
-              };
-            };
-        #getty.autologinUser = "alex"; # Enable automatic login for the user.
-
-# This setups a SSH server. Very important if you're setting up a headless system.
-openssh = {
-  enable = true;
-  settings = {PermitRootLogin = "no"; # Forbid root login through SSH.
-  PasswordAuthentication = false; # Use keys only. Remove if you want to SSH using password (not recommended)
-};
-            };
+            wayland.enable = true;
+            theme = "maldives";
           };
+        };
+        
+        #getty.autologinUser = "alex"; # Enable automatic login for the user.
+        udisks2.enable = true;
+        
+        # This setups a SSH server. Very important if you're setting up a headless system.
+        openssh = {
+          enable = true;
+          settings = {
+            PermitRootLogin = "no"; # Forbid root login through SSH.
+            PasswordAuthentication = false; # Use keys only. Remove if you want to SSH using password (not recommended)
+          };
+        };
+      };
 
-          security = { 
+      security = { 
             sudo = {
               wheelNeedsPassword = false;
               extraRules= [{  users = [ "privileged_user" ];
@@ -105,6 +112,8 @@ programs = {
   fish.enable = true;
   ssh.enableAskPassword = false;
   adb.enable = true; # Enable Android De-Bugging.
+  gnome-disks.enable = true; # GNOME Disks daemon, UDisks2 GUI
+  xwayland.enable = false;
 };
 
 

@@ -54,7 +54,8 @@ in
 			dracula-theme # gtk theme
 			gnome3.adwaita-icon-theme  # default gnome cursors
 			swaylock
-			swayidle
+            swayidle
+            waybar
 			grim # screenshot functionality
 			slurp # screenshot functionality
 			wl-clipboard # wl-copy and wl-paste for copy/paste from stdin / stdout
@@ -92,6 +93,6 @@ in
 	};
 
 # enable waybar
-	programs.waybar.enable = true;
+    #programs.waybar.enable = true;
 }
 

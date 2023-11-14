@@ -28,12 +28,7 @@
       viAlias = true;
       vimAlias = true;
       vimdiffAlias = true;
-      plugins = with pkgs.vimPlugins; [
-        #{
-        #  plugin = vim-numbertoggle;
-        #  config = "set number relativenumber";
-        #}
-        
+      plugins = with pkgs.vimPlugins; [      
         {
           plugin = nvim-lspconfig;
           config = toLuaFile ../extraConfig/nvim/plugin/lsp.lua;
@@ -81,6 +76,13 @@
         nvim-web-devicons
         vim-nix
         vim-autoswap
+        nvim-jdtls
+        lsp-status-nvim
+        lazy-lsp-nvim #LEARN MORE
+        asyncomplete-lsp-vim # Learn more
+        cmp-nvim-lsp # Learn more
+        cmp-nvim-lsp-document-symbol 
+        cmp-nvim-lsp-signature-help
         
         #{ # Using a github repo theme (imported through flake.nix)
         #  plugin = own-onedark-nvim;
