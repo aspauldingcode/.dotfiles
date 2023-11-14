@@ -82,12 +82,12 @@
     }
     {
       key = "C";
-      mods = "Control|Shift";
+      mods = "Command|Shift";
       action = "Copy";
     }
     {
       key = "C";
-      mods = "Control";
+      mods = "Command";
       action = "Copy";
     }
     {
@@ -100,7 +100,7 @@
       mods = "Control";
       chars = "\\x03";
     }
-#- { key: L,         mods: Control,                    action: ClearLogNotice }
+  #- { key: L,         mods: Control,                    action: ClearLogNotice }
   #- { key: L,         mods: Control, mode: ~Vi|~Search, chars: "\x0c"          }
   {
     key = "PageUp";

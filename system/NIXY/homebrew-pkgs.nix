@@ -8,16 +8,15 @@
 		brews = [
 			"xinit"
 			"xorg-server"
-			"choose-gui"
-            "yazi"
-            "virt-manager"
+            "choose-gui"
 		];
 
 		casks = [
-			"xquartz"
+            #"xquartz" #what an ugly app
             "dmenu-mac"
-            "alfred"
             "brave-browser"
+            "alt-tab"
+            "orbstack"
 		];
 
         #masApps = [ #FAILS
@@ -31,11 +30,4 @@
           #"user/repo"  # Additional Homebrew tap
         ];
 	};
-
-#allow broken packages
-#nixpkgs.config.allowBroken = true;
-# Use a custom configuration.nix location.
-# $ darwin-rebuild switch -I darwin-config=$HOME/.config/nixpkgs/darwin/configuration.nix
-# environment.darwinConfig = "$HOME/.config/nixpkgs/darwini/configuration.nix";
-
 }

@@ -32,7 +32,7 @@ services.yabai = {
 
 			window_opacity_duration      = "0.1";
 			window_topmost               = "off";
-			window_shadow                = "float";
+			window_shadow                = "off"; #float | off?
 			active_window_opacity        = "1.0";
 			normal_window_opacity        = "0.3";
 			split_ratio                  = "0.50";
@@ -56,6 +56,7 @@ services.yabai = {
 			yabai -m rule --add app='zoom.us' manage=off
             yabai -m rule --add app='Finder' manage=off
             yabai -m rule --add app='Archive Utility' manage=off
+            yabai -m rule --add app='Display Calibrator' manage = off
 # Any other arbitrary config here
 			yabai -m config active_window_border_topmost on
 

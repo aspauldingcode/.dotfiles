@@ -12,14 +12,14 @@
 
   home.packages = with pkgs; [
     calcurse
-    ncdu
-    delta
-    sshpass
-    git-crypt
+    chatgpt-cli
+    #delta
+    #sshpass
+    #git-crypt
     cowsay
     qemu
     #discord # not installed?!?!??
-    utm 
+    utm  
     mas
     #virt-manager #omg it installs? (crashes tho...)
     rnix-lsp
@@ -29,29 +29,16 @@
       ps.pygame 
       ps.matplotlib 
     ]))
-    spotify-unwrapped # Not working on darwin?
-    (prismlauncher.override { # Darwin?
-      jdks = [ jdk8 jdk17 jdk19 ]; 
-    })
-
-    # #TODO
-    # macports?
-    # orbstack?
-    # xcode?  (MAS: 497799835  Xcode)
-    # x-code-cli?
-    # Townscraper? 
-    # xinit?
-    # xorg-server?
-    # XQuartz?
-    # davinci-resolve?
-
-            #hello
-            (pkgs.writeShellScriptBin "my-hello" ''
-            echo "Hello, ${config.home.username}!"
-            '')
-            #lockscreen-motd
-            (pkgs.writeShellScriptBin "lockscreen-motd" ''
-            class_directory="/Users/alex/"
+# #TODO
+# macports?
+# orbstack?
+#hello
+(pkgs.writeShellScriptBin "my-hello" ''
+echo "Hello, ${config.home.username}!"
+'')
+    #lockscreen-motd
+    (pkgs.writeShellScriptBin "lockscreen-motd" ''
+    class_directory="/Users/alex/"
 
             # Run the Java program with the classpath option and 
             # capture its output in the 'what' variable
@@ -74,5 +61,3 @@
             '')*/
           ];
         }
-
-
