@@ -90,12 +90,41 @@
     text = let yabai = "/opt/homebrew/bin/yabai"; in
       ''
         # alt + a / u / o / s are blocked due to umlaute
+        
+        # Launch shortcuts
+        alt - return : open -na alacritty
+        alt - d : open -a dmenu-mac
+        alt + cmd - space : open -na "Brave Browser"
+        ctrl + cmd - 0x33 : sudo reboot
+        ctrl + shift + cmd - 0x33 : sudo shutdown -h now
+        ctrl + cmd - delete : sudo reboot
+        ctrl + shift + cmd - delete : sudo shutdown -h now
+        alt + shift - space : yabai -m window --toggle float
+
+        alt + shift - q : yabai -m window --close
+		alt - f : yabai -m window --toggle zoom-fullscreen
+        #alt + shift - f : yabai -m window --toggle native-fullscreen #DON'T that thing SUCKS
 
         # workspaces
         ctrl + alt - j : ${yabai} -m space --focus prev
         ctrl + alt - k : ${yabai} -m space --focus next
         cmd + alt - j : ${yabai} -m space --focus prev
         cmd + alt - k : ${yabai} -m space --focus next
+
+        # move focused window to next/prev workspace
+        alt + shift - 1 : ${yabai} -m window --space 1
+        alt + shift - 2 : ${yabai} -m window --space 2
+        alt + shift - 3 : ${yabai} -m window --space 3
+        alt + shift - 4 : ${yabai} -m window --space 4
+        alt + shift - 5 : ${yabai} -m window --space 5
+        alt + shift - 6 : ${yabai} -m window --space 6
+        alt + shift - 7 : ${yabai} -m window --space 7
+        alt + shift - 8 : ${yabai} -m window --space 8
+        alt + shift - 9 : ${yabai} -m window --space 9
+        alt + shift - 0 : ${yabai} -m window --space 10
+
+        alt + shift - y : ${yabai} -m space --mirror y-axis
+        alt + shift - x : ${yabai} -m space --mirror x-axis
 
         # send window to space and follow focus
         ctrl + alt - l : ${yabai} -m window --space prev; ${yabai} -m space --focus prev

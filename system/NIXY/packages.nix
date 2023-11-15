@@ -13,17 +13,16 @@
     environment.systemPackages = with pkgs; [ 
         ## macosINSTANTView?
         home-manager
-        skhd
         neovim
         neofetch
         htop
         git
+        skhd 
+        yabai #FIXME
         tree
         discord
         ranger
         hexedit
-        #alacritty
-        iterm2
         python311
         python311Packages.pygame
         oh-my-zsh #zsh shell framework
@@ -35,7 +34,6 @@
         android-tools
         jq
         libusb
-        asdf-vm
         lolcat
         tree-sitter
         nodejs_20

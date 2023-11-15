@@ -10,6 +10,7 @@ in
       ./alacritty.nix
       ./git.nix
       ./fish.nix
+      ./karabiner.nix
       #./zellij
       ./yabai.nix # FIXME UGH how do I home manager this?
     #./skhd.nix

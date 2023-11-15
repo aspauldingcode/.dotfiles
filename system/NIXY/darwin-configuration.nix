@@ -3,13 +3,9 @@
 {
 imports = [
 ./packages.nix
-#./yabai.nix #FIXME: Migrating to Home-manager!
-#./skhd.nix #FIXME: not working. try using the config at /Users/alex/.skhdrc
-#./spacebar.nix
 ./sketchybar.nix
 ./defaults-macos.nix
 ./homebrew-pkgs.nix
-
 ];
 # Allow Unfree
 	nixpkgs.config.allowUnsupportedSystem = true;
