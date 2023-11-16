@@ -2,7 +2,8 @@
   description = "Universal Flake by Alex - macOS and NixOS";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    #nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:aspauldingcode/nixpkgs/nixos-unstable";
     darwin.url = "github:lnl7/nix-darwin";
     home-manager.url = "github:nix-community/home-manager";
 
@@ -75,42 +76,6 @@
       extraSpecialArgs = commonSpecialArgs;
       modules = [ ./users/susu/home-NIXSTATION64.nix ];
     };
-<<<<<<< HEAD
-
-    devShell = pkgs: self: { # NOT WORKING! FIXME
-      devShells.aarch64-darwin.default = self.devShell;
-      devShells.x86_64-linux.default = self.devShell;  # Add any other architectures you need
-
-      buildInputs = with pkgs; [
-        cargo
-        clang-tools
-        cmake
-        corrosion
-        extra-cmake-modules
-        rustc
-        iconv
-        python311
-        python311Packages.numpy
-        python311Packages.matplotlib
-        python311Packages.keyboard
-        nodejs-18_x
-        (language-servers.packages.x86_64-linux.angular-language-server)
-        (language-servers.packages.x86_64-linux.typescript-language-server)
-        (language-servers.packages.x86_64-linux.vscode-langservers-extracted)
-        (language-servers.packages.x86_64-linux.svelte-language-server)
-        (language-servers.packages.x86_64-linux.jdt-language-server)
-      ];
-
-      # Workaround for https://github.com/NixOS/nixpkgs/issues/76486
-      # when clang is the stdenv (i.e. on Darwin)
-      shellHook = ''
-      PATH="${pkgs.clang-tools}/bin:$PATH"
-      echo "Environment with Python, NumPy, and Matplotlib activated!"
-      echo "Also working with cmake, and some extras.."
-      '';
-    };
-=======
->>>>>>> 4649f12f8cad59904d0997bec7067e7f1aba80e4
   };
   in {
       # Return all the configurations
