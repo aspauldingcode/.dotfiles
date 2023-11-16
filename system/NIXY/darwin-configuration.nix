@@ -6,6 +6,7 @@ imports = [
 ./sketchybar.nix
 ./defaults-macos.nix
 ./homebrew-pkgs.nix
+./zsh.nix
 ];
 # Allow Unfree
 	nixpkgs.config.allowUnsupportedSystem = true;

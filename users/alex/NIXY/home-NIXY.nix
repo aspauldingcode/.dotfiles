@@ -10,7 +10,6 @@ in
       ./alacritty.nix
       ./git.nix
       ./fish.nix
-      ./zsh.nix
       ./karabiner.nix
       #./zellij
       ./yabai.nix
