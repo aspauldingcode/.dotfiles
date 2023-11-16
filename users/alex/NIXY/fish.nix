@@ -12,6 +12,6 @@
       # Manually packaging and enable a plugin
       { name = "bass"; src = pkgs.fishPlugins.bass.src; }
     ];
-    #Oh-My-Fish?
+    #Oh-My-Fish?   
   };
 }

@@ -6,7 +6,7 @@
     darwin.url = "github:lnl7/nix-darwin";
     home-manager.url = "github:nix-community/home-manager";
 
-    language-servers.url = git+https://git.sr.ht/~bwolf/language-servers.nix;
+    language-servers.url = "git+https://git.sr.ht/~bwolf/language-servers.nix";
     #language-servers.flake = false;
     plugin-onedark.url = "github:navarasu/onedark.nvim";
     plugin-onedark.flake = false;
@@ -75,6 +75,7 @@
       extraSpecialArgs = commonSpecialArgs;
       modules = [ ./users/susu/home-NIXSTATION64.nix ];
     };
+<<<<<<< HEAD
 
     devShell = pkgs: self: { # NOT WORKING! FIXME
       devShells.aarch64-darwin.default = self.devShell;
@@ -108,6 +109,8 @@
       echo "Also working with cmake, and some extras.."
       '';
     };
+=======
+>>>>>>> 4649f12f8cad59904d0997bec7067e7f1aba80e4
   };
   in {
       # Return all the configurations

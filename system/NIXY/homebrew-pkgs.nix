@@ -2,40 +2,51 @@
 
 {
 #enable brew packages just in case
-	homebrew.enable = true;
+homebrew = {
+  enable = true;
+  onActivation = {
+    # "zap" removes manually installed brews and casks
+      cleanup = "zap";
+      autoUpdate = true;
+      upgrade = true;
+    };
+  brews = [
+    "xinit"
+    "xorg-server"
+    "choose-gui"
+    "skhd"
+    "yabai"
+    #"jankyborders" Sonoma ONLY
+  ];
 
-	homebrew = {
-		brews = [
-			"xinit"
-			"xorg-server"
-			"choose-gui"
-            "yazi"
-            "virt-manager"
-		];
+  casks = [
+   #"xquartz" #what an ugly app
+   "dmenu-mac"
+   "brave-browser"
+   "alt-tab"
+   "orbstack"
+   "karabiner-elements" # remap keyboard
+ ];
 
-		casks = [
-			"xquartz"
-            "dmenu-mac"
-            "alfred"
-            "brave-browser"
-		];
+  #masApps = [ #FAILS
+    #497799835 #Xcode 
+  #];
 
-        #masApps = [ #FAILS
-          #497799835 #Xcode 
-        #];
-        whalebrews = [
-          #"wget" #FAILS
-          #"whalesay" #FAILS
-        ];
-        taps = [
-          #"user/repo"  # Additional Homebrew tap
-        ];
-	};
+  whalebrews = [
+    #"wget" #FAILS
+    #"whalesay" #FAILS
+  ];
 
-#allow broken packages
-#nixpkgs.config.allowBroken = true;
-# Use a custom configuration.nix location.
-# $ darwin-rebuild switch -I darwin-config=$HOME/.config/nixpkgs/darwin/configuration.nix
-# environment.darwinConfig = "$HOME/.config/nixpkgs/darwini/configuration.nix";
-
+  taps = [
+    #"user/repo"  # Additional Homebrew tap
+    # default
+    "homebrew/bundle"
+    "homebrew/cask"
+    "homebrew/cask-fonts"
+    "homebrew/core"
+    "homebrew/services"
+    # custom
+    "koekeishiya/formulae"
+  ];
+};
 }

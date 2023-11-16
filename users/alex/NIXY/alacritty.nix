@@ -80,27 +80,27 @@
       mods = "Alt|Shift";
       action = "ToggleSimpleFullscreen";
     }
-    {
-      key = "C";
-      mods = "Control|Shift";
-      action = "Copy";
-    }
-    {
-      key = "C";
-      mods = "Control";
-      action = "Copy";
-    }
-    {
-      key = "V";
-      mods = "Control";
-      action = "Paste";
-    }
-    {
-      key = "Period"; 
-      mods = "Control";
-      chars = "\\x03";
-    }
-#- { key: L,         mods: Control,                    action: ClearLogNotice }
+    # {
+    #   key = "C";
+    #   mods = "Command|Shift";
+    #   action = "Copy";
+    # }
+    # {
+    #   key = "C";
+    #   mods = "Command";
+    #   action = "Copy";
+    # }
+    # {
+    #   key = "V";
+    #   mods = "Control";
+    #   action = "Paste";
+    # }
+    # {
+    #   key = "Period"; 
+    #   mods = "Control";
+    #   chars = "\\x03";
+    # }
+  #- { key: L,         mods: Control,                    action: ClearLogNotice }
   #- { key: L,         mods: Control, mode: ~Vi|~Search, chars: "\x0c"          }
   {
     key = "PageUp";

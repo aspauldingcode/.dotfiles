@@ -13,19 +13,16 @@
     environment.systemPackages = with pkgs; [ 
         ## macosINSTANTView?
         home-manager
-        skhd
         neovim
         neofetch
         htop
+        btop
         git
         tree
         discord
         ranger
+        ncurses6
         hexedit
-        virt-manager
-        #alacritty
-        iterm2
-        jdk11
         python311
         python311Packages.pygame
         oh-my-zsh #zsh shell framework
@@ -36,7 +33,7 @@
         zoom-us
         android-tools
         jq
-        libusb 
+        libusb
         lolcat
         tree-sitter
         nodejs_20
@@ -95,6 +92,5 @@
           sketchybar -m --set mic icon=
           fi 
           '')
-
         ];
       }

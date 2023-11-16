@@ -3,13 +3,9 @@
 {
 imports = [
 ./packages.nix
-./yabai.nix
-./skhd.nix #FIXME: not working. try using the config at /Users/alex/.skhdrc
-#./spacebar.nix
 ./sketchybar.nix
 ./defaults-macos.nix
 ./homebrew-pkgs.nix
-
 ];
 # Allow Unfree
 	nixpkgs.config.allowUnsupportedSystem = true;
@@ -27,9 +23,9 @@ imports = [
 # nix.package = pkgs.nix;
 
 # Create /etc/zshrc that loads the nix-darwin environment.
-	programs.zsh.enable = true;  # default shell on catalina
-	programs.fish.enable = true;
-    users.users.alex.shell = pkgs.fish;
+    programs.zsh.enable = true;  # default shell on catalina
+    #programs.fish.enable = true; #NOT Borne COMPAT? 
+    users.users.alex.shell = pkgs.zsh; 
 
 	nix = { 
 		settings.auto-optimise-store = true;

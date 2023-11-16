@@ -10,11 +10,11 @@ in
       ./alacritty.nix
       ./git.nix
       ./fish.nix
-    #./yabai.nix # FIXME UGH how do I home manager this?
-    #./skhd.nix
-    #./modules/NIXY/spacebar.nix
-    #./modules/NIXY/fish.nix
-    #./modules/NIXY/sketchybar.nix
+      ./zsh.nix
+      ./karabiner.nix
+      #./zellij
+      ./yabai.nix
+    #./sketchybar.nix
   ];
   home = {
     username = "alex";
@@ -24,17 +24,9 @@ in
       python3 = "python3.11"; 
     };
     file = { # MANAGE DOTFILES?
-  # Stable SDK symlinks
-  #"SDKs/Android".source = "${android-sdk}/share/android-sdk";
-  "SDKs/Java/20".source = pkgs.jdk20.home;
-  "SDKs/Java/17".source = pkgs.jdk17.home;
-  "SDKs/Java/11".source = pkgs.jdk11.home;
-  "SDKs/Java/8".source = pkgs.jdk8.home;
-};
-
-
-};
-programs = {
-  home-manager.enable = true; 
-};
+    };
+  };
+  programs = {
+    home-manager.enable = true; 
+  };
 }

@@ -12,46 +12,26 @@
 
   home.packages = with pkgs; [
     calcurse
-    ncdu
-    delta
-    sshpass
-    git-crypt
+    chatgpt-cli
     cowsay
     qemu
-    #discord # not installed?!?!??
-    utm 
+    discord
+    utm  
     mas
-    #virt-manager #omg it installs? (crashes tho...)
-    rnix-lsp
-    #davinci-resolve # Mesa 23.1.7 marked broken - NEEDS TO BE MAS APP? 
+    nil #rnix-lsp apparently is vulnerable? 
     zoom-us
     (pkgs.python311.withPackages(ps: [ 
       ps.pygame 
       ps.matplotlib 
     ]))
-    spotify-unwrapped # Not working on darwin?
-    (prismlauncher.override { # Darwin?
-      jdks = [ jdk8 jdk17 jdk19 ]; 
-    })
 
-    # #TODO
-    # macports?
-    # orbstack?
-    # xcode?  (MAS: 497799835  Xcode)
-    # x-code-cli?
-    # Townscraper? 
-    # xinit?
-    # xorg-server?
-    # XQuartz?
-    # davinci-resolve?
-
-            #hello
-            (pkgs.writeShellScriptBin "my-hello" ''
-            echo "Hello, ${config.home.username}!"
-            '')
-            #lockscreen-motd
-            (pkgs.writeShellScriptBin "lockscreen-motd" ''
-            class_directory="/Users/alex/"
+#hello
+(pkgs.writeShellScriptBin "my-hello" ''
+echo "Hello, ${config.home.username}!"
+'')
+    #lockscreen-motd
+    (pkgs.writeShellScriptBin "lockscreen-motd" ''
+    class_directory="/Users/alex/"
 
             # Run the Java program with the classpath option and 
             # capture its output in the 'what' variable
@@ -74,5 +54,3 @@
             '')*/
           ];
         }
-
-
