@@ -16,9 +16,8 @@
         neovim
         neofetch
         htop
+        btop
         git
-        skhd 
-        yabai #FIXME
         tree
         discord
         ranger
@@ -92,6 +91,5 @@
           sketchybar -m --set mic icon=
           fi 
           '')
-
         ];
       }

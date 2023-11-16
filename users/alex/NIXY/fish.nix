@@ -2,7 +2,7 @@
 
 {
   programs.fish = {
-    enable = true;
+    enable = false;
     interactiveShellInit = ''
       set fish_greeting "you must be tired."
     '';    
@@ -12,6 +12,6 @@
       # Manually packaging and enable a plugin
       { name = "bass"; src = pkgs.fishPlugins.bass.src; }
     ];
-    #Oh-My-Fish?
+    #Oh-My-Fish?   
   };
 }

@@ -13,12 +13,8 @@
   home.packages = with pkgs; [
     calcurse
     chatgpt-cli
-    #delta
-    #sshpass
-    #git-crypt
     cowsay
     qemu
-    emacsPackages.macports
     discord
     utm  
     mas
@@ -28,9 +24,6 @@
       ps.pygame 
       ps.matplotlib 
     ]))
-
-# #TODO
-# macports?
 
 #hello
 (pkgs.writeShellScriptBin "my-hello" ''

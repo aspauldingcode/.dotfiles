@@ -10,10 +10,10 @@ in
       ./alacritty.nix
       ./git.nix
       ./fish.nix
+      ./zsh.nix
       ./karabiner.nix
       #./zellij
-      ./yabai.nix # FIXME UGH how do I home manager this?
-    #./skhd.nix
+      ./yabai.nix
     #./sketchybar.nix
   ];
   home = {

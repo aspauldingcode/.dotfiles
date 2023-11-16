@@ -14,8 +14,9 @@ homebrew = {
     "xinit"
     "xorg-server"
     "choose-gui"
-    #"yabai"
-    #"skhd"
+    "skhd"
+    "yabai"
+    #"jankyborders" Sonoma ONLY
   ];
 
   casks = [
@@ -30,10 +31,12 @@ homebrew = {
   #masApps = [ #FAILS
     #497799835 #Xcode 
   #];
+
   whalebrews = [
     #"wget" #FAILS
     #"whalesay" #FAILS
   ];
+
   taps = [
     #"user/repo"  # Additional Homebrew tap
     # default
@@ -43,9 +46,7 @@ homebrew = {
     "homebrew/core"
     "homebrew/services"
     # custom
-    #"cmacrae/formulae" # spacebar
-    #"koekeishiya/formulae" # yabai
-    #"FelixKratz/formulae" # sketchybar
+    "koekeishiya/formulae"
   ];
 };
 }
