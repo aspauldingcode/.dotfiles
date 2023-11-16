@@ -3,7 +3,7 @@
 {
   wayland.windowManager.sway = {
     enable = true;
-    package = pkgs.swayfx;
+    package = null;
     config = rec {
       bars = [
         {command = "${pkgs.waybar}/bin/waybar";}
@@ -86,7 +86,7 @@
               # Screenshot
               "Alt+Shift+3" = "exec screenshot"; # All visible outputs
               "Alt+Shift+4" = "exec grimshot --notify save area"; # Temporary 
-              #"Alt+Shift+4" = "exec screenshot-selection-toggle";
+              "Alt+Shift+5" = "exec grimshot --notify save window";
               #"Alt+Shift+4" = "exec grimshot --notify save window";
               
               # Screen recording

@@ -7,7 +7,8 @@
     neovim
     wl-clipboard
     neofetch
-    yazi ueberzugpp 
+    ueberzugpp #replacement for depricated inline terminal image previewer
+    swayfx
     pcmanfm			
     wofi-emoji htop fim
     gparted killall tree
@@ -33,6 +34,7 @@
     libsForQt5.breeze-grub
     python311
     nodejs
+    ncurses6
     flex bison
     gnumake gcc
     openssl dtc gnome-themes-extra

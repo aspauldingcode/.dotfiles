@@ -40,7 +40,6 @@ configure-gtk = pkgs.writeTextFile {
 		'';
 };
 
-
 in
 {
 	environment.systemPackages = with pkgs; [
@@ -48,15 +47,14 @@ in
 			dbus-sway-environment
 			configure-gtk
 			wayland
-			swayfx
-			xdg-utils # for opening default programs when clicking links
+            xdg-utils # for opening default programs when clicking links
 			glib # gsettings
 			dracula-theme # gtk theme
 			gnome3.adwaita-icon-theme  # default gnome cursors
 			swaylock
             swayidle
             waybar
-			grim # screenshot functionality
+            grim # screenshot functionality
 			slurp # screenshot functionality
 			wl-clipboard # wl-copy and wl-paste for copy/paste from stdin / stdout
 			bemenu # wayland clone of dmenu
@@ -64,13 +62,11 @@ in
 			wdisplays # tool to configure displays
 	];
 
-
 	services.pipewire = {
 		enable = true;
 		alsa.enable = true;
 		pulse.enable = true;
 	};
-
 
 # xdg-desktop-portal works by exposing a series of D-Bus interfaces
 # known as portals under a well-known name
@@ -87,12 +83,8 @@ in
 	};
 
 # enable sway window manager
-	programs.sway = {
-		enable = true;
-		wrapperFeatures.gtk = true;
-	};
-
-# enable waybar
-    #programs.waybar.enable = true;
+  programs.sway = {
+    enable = true;
+      wrapperFeatures.gtk = true;
+    };
 }
-

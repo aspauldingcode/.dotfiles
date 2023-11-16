@@ -76,7 +76,7 @@
       modules = [ ./users/susu/home-NIXSTATION64.nix ];
     };
 
-    devShell = pkgs: self: {
+    devShell = pkgs: self: { # NOT WORKING! FIXME
       devShells.aarch64-darwin.default = self.devShell;
       devShells.x86_64-linux.default = self.devShell;  # Add any other architectures you need
 
@@ -91,6 +91,7 @@
         python311
         python311Packages.numpy
         python311Packages.matplotlib
+        python311Packages.keyboard
         nodejs-18_x
         (language-servers.packages.x86_64-linux.angular-language-server)
         (language-servers.packages.x86_64-linux.typescript-language-server)

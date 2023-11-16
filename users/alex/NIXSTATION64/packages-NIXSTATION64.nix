@@ -40,6 +40,7 @@
       size = 22;
     };
     packages = with pkgs; [
+      lsof
       etcher
       checkra1n
       zoom-us
@@ -51,8 +52,64 @@
       rofi-wayland-unwrapped
       #wofiPower
       #wofiWindowJump
-      #wayrecorder
-      clipman
+      #aml
+      #cage
+      #drm_info
+      #dunst
+      #eww
+      eww-wayland
+#foot
+#freerdp3
+#gebaar-libinput
+glpaper
+#grim
+gtk-layer-shell
+i3status-rust
+imv
+#kanshi
+lavalauncher
+#libvncserver_master
+#mako
+neatvnc
+#new-wayland-protocols
+obs-studio-plugins.wlrobs
+obs-studio-plugins.obs-vkcapture
+rootbar
+#salut
+#shotman
+#sirula
+#slurp
+#sway-unwrapped
+swaybg
+#swayidle
+#swaylock
+swaylock-effects
+#swww
+#waybar
+waypipe
+#wayprompt
+wayvnc
+wbg
+#wdisplays
+wev
+#wf-recorder
+wl-clipboard
+wl-gammactl
+#wl-gammarelay-rs
+wl-screenrec
+#wlay
+#wldash
+wlogout
+#wlr-randr
+wlroots
+wlsunset
+#wlvncc
+#wob
+wofi
+wshowkeys
+wtype
+
+clipman
     #etcher
     element-desktop
     blender
@@ -65,17 +122,15 @@
     discord
     cowsay
     spotify-unwrapped
-    swayfx 
     autotiling waydroid
     pcmanfm w3m obs-studio
     audacity razergenie
     docker home-manager
     android-tools xz element
-
     OVMF
     edk2
-
-    #LSP PACKAGES for NVIM
+    #LSP PACKAGES for NVIM 
+    ##NOTWORKING?!!?!?!?!? FIXME
     rnix-lsp
     nodePackages_latest.typescript-language-server
     nodePackages_latest.typescript
@@ -109,11 +164,11 @@
       pygame
       matplotlib
       libei
+      keyboard
     ]))
     (prismlauncher.override {
       jdks = [ jdk8 jdk17 jdk19 ]; 
     })
-
   ];
 };
 }
