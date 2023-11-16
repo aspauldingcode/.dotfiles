@@ -21,6 +21,7 @@
         tree
         discord
         ranger
+        ncurses6
         hexedit
         python311
         python311Packages.pygame
