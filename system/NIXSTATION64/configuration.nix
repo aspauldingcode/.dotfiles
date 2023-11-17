@@ -9,7 +9,7 @@
 # inputs.hardware.nixosModules.common-cpu-amd
 # inputs.hardware.nixosModules.common-ssd
 ./hardware-configuration.nix
-./sway-configuration.nix #FIXME: NOT USING!
+#./sway-configuration.nix #FIXME: NOT USING!
 ./packages.nix
 ./virtual-machines.nix
 #./sddm-themes.nix
@@ -63,29 +63,39 @@ i18n = {
     LC_TIME = "en_US.UTF-8";
   }; 
 };
-
 # services
 services = {
-        pipewire = { # fix for pipewire audio:
-        enable = true;
-        alsa.enable = true;
-        pulse.enable = true;
-        jack.enable = true;
-      };
+  pipewire = { # fix for pipewire audio:
+  enable = true;
+  alsa.enable = true;
+  pulse.enable = true;
+  jack.enable = true;
+};
 
         # PRETTY LOGIN SCREEN! (FIXME needs to be configured with osx sddm theme)
         xserver = {
           enable = true;
-          displayManager.sddm = {
-            enable = true;
-            wayland.enable = true;
-            theme = "maldives";
-          };
+          displayManager = { 
+            sddm = {
+              enable = true;
+              wayland.enable = true;
+              theme = "maldives";
+            };
+          #find swayfx binary with: ls /nix/store | grep swayfx
         };
-        
+        windowManager = {
+          session = [{
+            name = "swayfx";
+            start = ''
+            systemd-cat -t sway-x86_64-linux -- /nix/store/8qdp8r1bafgz4g1rxwn0fc2im15adsly-swayfx-0.3.2/bin/sway & waitPID=$!
+            '';
+          }];
+        };
+      };
+
         #getty.autologinUser = "alex"; # Enable automatic login for the user.
         udisks2.enable = true;
-        
+
         # This setups a SSH server. Very important if you're setting up a headless system.
         openssh = {
           enable = true;
@@ -97,15 +107,15 @@ services = {
       };
 
       security = { 
-            sudo = {
-              wheelNeedsPassword = false;
-              extraRules= [{  users = [ "privileged_user" ];
-              commands = [{ command = "ALL" ;
-              options= [ "NOPASSWD" ]; # "SETENV" # 
-            }];}];
-          };
-          polkit.enable = true;
-        };
+        sudo = {
+          wheelNeedsPassword = false;
+          extraRules= [{  users = [ "privileged_user" ];
+          commands = [{ command = "ALL" ;
+          options= [ "NOPASSWD" ]; # "SETENV" # 
+        }];}];
+      };
+      polkit.enable = true;
+    };
 
 # programs
 programs = {

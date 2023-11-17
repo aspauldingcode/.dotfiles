@@ -2,7 +2,8 @@
   description = "Universal Flake by Alex - macOS and NixOS";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    #nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:aspauldingcode/nixpkgs/nixos-unstable";
     darwin.url = "github:lnl7/nix-darwin";
     home-manager.url = "github:nix-community/home-manager";
 
