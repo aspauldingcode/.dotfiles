@@ -8,7 +8,6 @@
     wl-clipboard
     neofetch
     ueberzugpp #replacement for depricated inline terminal image previewer
-    swayfx
     pcmanfm			
     wofi-emoji htop fim
     gparted killall tree

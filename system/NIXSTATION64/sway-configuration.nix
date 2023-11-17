@@ -86,6 +86,6 @@ in
   programs.sway = {
     enable = true;
     wrapperFeatures.gtk = true;
-    package = pkgs.sway.override { sway-unwrapper = pkgs.swayfx; };
+    package = pkgs.sway;
   };
 }
