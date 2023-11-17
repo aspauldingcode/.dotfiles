@@ -24,7 +24,7 @@ imports = [
 
 # Create /etc/zshrc that loads the nix-darwin environment.
     programs.zsh.enable = true;  # default shell on catalina
-    #programs.fish.enable = true; #NOT Borne COMPAT? 
+    programs.fish.enable = false; #NOT Borne COMPAT? 
     users.users.alex.shell = pkgs.zsh; 
 
 	nix = { 

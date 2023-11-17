@@ -23,6 +23,7 @@
         ranger
         ncurses6
         hexedit
+        jdk
         python311
         python311Packages.pygame
         oh-my-zsh #zsh shell framework

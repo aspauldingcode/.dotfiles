@@ -14,8 +14,6 @@ homebrew = {
     "xinit"
     "xorg-server"
     "choose-gui"
-    "skhd"
-    "yabai"
     #"jankyborders" Sonoma ONLY
   ];
 
@@ -45,8 +43,6 @@ homebrew = {
     "homebrew/cask-fonts"
     "homebrew/core"
     "homebrew/services"
-    # custom
-    "koekeishiya/formulae"
   ];
 };
 }

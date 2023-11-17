@@ -14,14 +14,21 @@ in
       ./karabiner.nix
       #./zellij
       ./yabai.nix
-    #./sketchybar.nix
+      #./sketchybar.nix
   ];
   home = {
     username = "alex";
     homeDirectory = "/Users/alex";
     stateVersion = "23.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
     shellAliases = { 
-      python3 = "python3.11"; 
+      python = "python3.11";
+      vim = "nvim";
+      vi = "nvim";
+      reboot = "sudo reboot now";
+      rb = "sudo reboot now";
+      shutdown = "sudo shutdown -h now";
+      sd = "sudo shutdown -h now";
+      l = "ls";
     };
     file = { # MANAGE DOTFILES?
     };

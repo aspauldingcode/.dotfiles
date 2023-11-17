@@ -170,7 +170,7 @@
                   ${yabai} -m window --toggle pip
 
         # reload
-        shift + alt - r : brew services restart skhd; brew services restart yabai; brew services restart sketchybar
+        #shift + alt - r : brew services restart skhd; brew services restart yabai; brew services restart sketchybar
       '';
   };
 }

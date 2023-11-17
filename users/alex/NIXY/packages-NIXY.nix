@@ -11,6 +11,8 @@
   };
 
   home.packages = with pkgs; [
+    yabai
+    skhd
     calcurse
     chatgpt-cli
     cowsay
