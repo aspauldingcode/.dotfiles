@@ -4,7 +4,7 @@
 {
   services.sketchybar = {
     enable = true;
-    package = pkgs.sketchybar;
+    #package = pkgs.sketchybar;
     config = ''
       sketchybar --update
       sketchybar --bar height=32 

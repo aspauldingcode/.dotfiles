@@ -11,8 +11,6 @@
   };
 
   home.packages = with pkgs; [
-    yabai
-    skhd
     calcurse
     chatgpt-cli
     cowsay
@@ -44,15 +42,15 @@ echo "Hello, ${config.home.username}!"
             '')
             #fix-skhd
             (pkgs.writeShellScriptBin "fix-skhd" ''
-            sudo pkill skhd && skhd -c /etc/skhdrc -V 
+            sudo pkill skhd && skhd #-c ~/.config/skhd/skhdrc & 
+            '')
+            #fix-yabai
+            (pkgs.writeShellScriptBin "fix-yabai" '' 
+            sudo pkill yabai && yabai #-c ~/.config/yabai/yabairc &
             '')
             #fix-bar
             (pkgs.writeShellScriptBin "fix-bar" ''
-            sudo pkill sketchybar && sketchybar &
+            sudo pkill sketchybar && sketchybar #-c ~/.config/sketchybar/sketchybarrc &
             '')
-            /*#shutdown without params FIXME
-            (pkgs.writeShellScriptBin "shutdown" ''
-            sudo shutdown -h now
-            '')*/
           ];
         }

@@ -1,4 +1,4 @@
-{ lib, pkgs, config,  ... }:
+{ lib, pkgs, config, inputs, ... }:
 
 {
   nixpkgs = {
@@ -12,6 +12,7 @@
     # $ nix-env -qaP | grep wget
     environment.systemPackages = with pkgs; [ 
         ## macosINSTANTView?
+        zellij
         home-manager
         neovim
         neofetch
@@ -23,7 +24,7 @@
         ranger
         ncurses6
         hexedit
-        jdk
+        #inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk20
         python311
         python311Packages.pygame
         oh-my-zsh #zsh shell framework
@@ -44,18 +45,18 @@
         (pkgs.writeShellScriptBin "rebuild" ''
         # NIXY(aarch64-darwin)
         if [[ "$1" == "-r" ]]; then
-          echo "User entered -r argument."
-          echo "Will reset Launchpad after rebuild."
+        echo "User entered -r argument."
+        echo "Will reset Launchpad after rebuild."
         else
-          echo "No -r argument provided."
-          echo "Rebuilding..."
+        echo "No -r argument provided."
+        echo "Rebuilding..."
         fi
         cd ~/.dotfiles
         darwin-rebuild switch --flake .#NIXY
         home-manager switch --flake .#alex@NIXY
         if [[ "$1" == "-r" ]]; then
-          echo "Resetting Launchpad!"
-          defaults write com.apple.dock ResetLaunchPad -bool true
+        echo "Resetting Launchpad!"
+        defaults write com.apple.dock ResetLaunchPad -bool true
         fi 
         echo "Done."
         '')
@@ -94,4 +95,7 @@
           fi 
           '')
         ];
+        system.activationScripts.extraActivation.text = '' 
+        ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk20}/zulu-20.jdk" "/Library/Java/JavaVirtualMachines/"
+        '';
       }

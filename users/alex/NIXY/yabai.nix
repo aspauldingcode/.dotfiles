@@ -16,37 +16,44 @@
       yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
 
       # move/resize windows with mouse
-      yabai -m config mouse_modifier             alt
-	  yabai -m config mouse_action1              move
-	  yabai -m config mouse_action2              resize
+      yabai -m config mouse_modifier              alt
+	  yabai -m config mouse_action1               move
+      yabai -m config mouse_action2               resize
+      yabai -m config focus_follows_mouse         autofocus
+      yabai -m config mouse_follows_focus         off #FIXME: configure apps so I can turn this on.
 
+      # borders #REMOVED, upgrading to Sonoma with JANKYBARS!
+      # yabai -m config window_border               on
+      # yabai -m config window_border_placement     inset
+      # yabai -m config window_border_width         2
+      # yabai -m config window_border_radius        11
+      # yabai -m config window_border_blur          off
+      # yabai -m config active_window_border_color  0xffA34A28
+      # yabai -m config normal_window_border_color  0xff808080
+      # yabai -m config insert_feedback_color       0xff808080
 
-      # borders
-      yabai -m config window_border              on
-      yabai -m config window_border_width        2
-      yabai -m config window_border_radius       0
-      yabai -m config window_border_blur         off
-      yabai -m config active_window_border_color 0xFF40FF00
-      yabai -m config normal_window_border_color 0x00FFFFFF
-      yabai -m config insert_feedback_color      0xffd75f5f
-
-      yabai -m config window_shadow off
-
+      # window appearance
+      yabai -m config window_shadow               off
+      yabai -m config window_opacity              on
+      yabai -m config window_opacity_duration     0.1
+      
       # layout
-      yabai -m config layout bsp
-      yabai -m config auto_balance off
+      yabai -m config layout                      bsp
+      yabai -m config auto_balance                off
+      yabai -m config split_ratio                 0.50
+      yabai -m config window_placement            second_child
 
       # floating windows are always on top
       # when enabling this option, overlays in chrome are hidden
       # this affects popups like site search or bitwarden extension
-      yabai -m config window_topmost off
+      #yabai -m config window_topmost off
 
       # gaps
-      yabai -m config top_padding    0
-      yabai -m config bottom_padding 0
-      yabai -m config left_padding   0
-      yabai -m config right_padding  0
-      yabai -m config window_gap     0
+      yabai -m config top_padding    40
+      yabai -m config bottom_padding 10
+      yabai -m config left_padding   10
+      yabai -m config right_padding  10
+      yabai -m config window_gap     10
 
       # rules
       yabai -m rule --add app="^System Settings$"    manage=off
@@ -86,6 +93,20 @@
       yabai -m rule --add app="Google Chrome" space=eight
 
       yabai -m rule --add app="Microsoft Teams" space=nine
+
+
+
+
+      yabai -m rule --add app='System Settings' manage=off
+	  yabai -m rule --add app='System Information' manage=off
+	  yabai -m rule --add app='zoom.us' manage=off
+      yabai -m rule --add app='Finder' manage=off
+      yabai -m rule --add app='Archive Utility' manage=off
+      yabai -m rule --add app='Display Calibrator' manage=off
+      # Any other arbitrary config here
+      #yabai -m config active_window_border_topmost on
+
+
 
       echo "yabai configuration loaded.."
     '';
@@ -170,7 +191,7 @@
                   ${yabai} -m window --toggle pip
 
         # reload
-        #shift + alt - r : brew services restart skhd; brew services restart yabai; brew services restart sketchybar
+        shift + alt - r : brew services restart skhd; brew services restart yabai; brew services restart sketchybar
       '';
   };
 }
