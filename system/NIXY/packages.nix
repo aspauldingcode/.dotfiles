@@ -20,6 +20,7 @@
         btop
         git
         tree
+        ifstat-legacy 
         discord
         ranger
         ncurses6

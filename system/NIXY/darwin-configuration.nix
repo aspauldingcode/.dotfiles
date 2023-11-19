@@ -3,7 +3,6 @@
 {
 imports = [
 ./packages.nix
-./sketchybar.nix
 ./defaults-macos.nix
 ./homebrew-pkgs.nix
 ];

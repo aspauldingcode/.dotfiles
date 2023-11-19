@@ -13,8 +13,8 @@ in
       ./zsh.nix
       ./karabiner.nix
       #./zellij
-      ./yabai.nix
-      #./sketchybar.nix
+      ./sketchybar.nix 
+      ./yabai.nix # contains skhd and borders config.
   ];
   home = {
     username = "alex";
