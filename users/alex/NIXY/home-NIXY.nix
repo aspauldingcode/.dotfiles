@@ -13,7 +13,7 @@ in
       ./zsh.nix
       ./karabiner.nix
       #./zellij
-      ./sketchybar.nix 
+      ./sketchybar/sketchybar.nix 
       ./yabai.nix # contains skhd and borders config.
   ];
   home = {
