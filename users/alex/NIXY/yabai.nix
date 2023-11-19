@@ -22,7 +22,7 @@
       yabai -m config focus_follows_mouse         autofocus
       yabai -m config mouse_follows_focus         off #FIXME: configure apps so I can turn this on.
 
-      # borders #REMOVED, upgrading to Sonoma with JANKYBARS!
+      # borders #REMOVED, upgrading to Sonoma with JANKYBORDERS!
       # yabai -m config window_border               on
       # yabai -m config window_border_placement     inset
       # yabai -m config window_border_width         2
@@ -32,7 +32,10 @@
       # yabai -m config normal_window_border_color  0xff808080
       # yabai -m config insert_feedback_color       0xff808080
 
-      # window appearance
+      #UPGRADED to Sonoma. JankyBorders installed
+      borders active_color=0xffA34A28 inactive_color=0xff808080 width=5.0 2>/dev/null 1>&2 &
+
+      e window appearance
       yabai -m config window_shadow               off
       yabai -m config window_opacity              on
       yabai -m config window_opacity_duration     0.1
@@ -113,6 +116,7 @@
   };
 
   home.file.skhd = {
+    executable = true;
     target = ".config/skhd/skhdrc";
     text = let yabai = "/opt/homebrew/bin/yabai"; in
       ''
@@ -133,7 +137,7 @@
         #alt + shift - f : yabai -m window --toggle native-fullscreen #DON'T that thing SUCKS
 
         # workspaces
-        ctrl + alt - j : ${yabai} -m space --focus prev
+        # ctrl + alt - j : ${yabai} -m space --focus prev
         ctrl + alt - k : ${yabai} -m space --focus next
         cmd + alt - j : ${yabai} -m space --focus prev
         cmd + alt - k : ${yabai} -m space --focus next
@@ -159,19 +163,29 @@
         cmd + alt - l : ${yabai} -m window --space prev; ${yabai} -m space --focus prev
         cmd + alt - h : ${yabai} -m window --space next; ${yabai} -m space --focus next
 
-        # focus window
-        alt - h : ${yabai} -m window --focus west
-        alt - l : ${yabai} -m window --focus east
-
         # focus window in stacked
         alt - j : if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus south; fi
         alt - k : if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus north; fi
+        
+        # focus window
+        alt - h :     ${yabai} -m window --focus west
+        alt - j :     ${yabai} -m window --focus south
+        alt - k :     ${yabai} -m window --focus north
+        alt - l :     ${yabai} -m window --focus east
+        alt - left :  ${yabai} -m window --fpcus west
+        alt - down :  ${yabai} -m window --focus south
+        alt - up :    ${yabai} -m window --focus north
+        alt - right : ${yabai} -m window --focus east
 
         # swap managed window
-        shift + alt - h : ${yabai} -m window --swap west
-        shift + alt - j : ${yabai} -m window --swap south
-        shift + alt - k : ${yabai} -m window --swap north
-        shift + alt - l : ${yabai} -m window --swap east
+        shift + alt - h :     ${yabai} -m window --swap west
+        shift + alt - j :     ${yabai} -m window --swap south
+        shift + alt - k :     ${yabai} -m window --swap north
+        shift + alt - l :     ${yabai} -m window --swap east
+        shift + alt - left :  ${yabai} -m window --swap west
+        shift + alt - down :  ${yabai} -m window --swap south
+        shift + alt - up :    ${yabai} -m window --swap north
+        shift + alt - right : ${yabai} -m window --swap east
 
         # increase window size
         shift + alt - a : ${yabai} -m window --resize left:-20:0
@@ -191,7 +205,7 @@
                   ${yabai} -m window --toggle pip
 
         # reload
-        shift + alt - r : brew services restart skhd; brew services restart yabai; brew services restart sketchybar
+        shift + alt - r : skhd --restart-service; yabai --restart-service; brew services restart sketchybar
       '';
   };
 }

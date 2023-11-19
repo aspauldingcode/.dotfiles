@@ -3,7 +3,7 @@
 
 {
   services.sketchybar = {
-    enable = true;
+    #enable = true;
     #package = pkgs.sketchybar;
     config = ''
       sketchybar --update

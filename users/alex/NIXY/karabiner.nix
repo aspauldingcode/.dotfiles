@@ -15,7 +15,7 @@ let
         "^com\\.utmapp\\.utm$"
         "^org\\.alacritty$"
       ];
-      file_paths = [ "/etc/profiles/per-user/felix/bin/alacritty" ];
+      file_paths = [ "~/.nix-profile/bin/alacritty" ];
     }];
   };
 in {

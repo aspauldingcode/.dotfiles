@@ -17,7 +17,7 @@ homebrew = {
     "yabai"
     "skhd"
     "sketchybar"
-    #"jankyborders" Sonoma ONLY
+    "borders"
   ];
 
   casks = [
