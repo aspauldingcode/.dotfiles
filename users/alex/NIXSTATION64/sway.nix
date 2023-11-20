@@ -1,6 +1,20 @@
 { lib, config, pkgs, ...}:
 
 {
+  imports = [
+    #./hyprland-vnc.nix
+    #./gammastep.nix
+    #./kitty.nix
+    #./mako.nix
+    #./qutebrowser.nix
+    #./swayidle.nix
+    #./swaylock.nix
+    ./waybar.nix
+    #./wofi.nix
+    #./zathura.nix
+  ];
+
+
   home.packages = with pkgs; [
     bemenu
             #dbus-sway-environment

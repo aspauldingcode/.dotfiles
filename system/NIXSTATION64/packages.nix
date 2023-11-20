@@ -5,9 +5,16 @@
 {
   environment.systemPackages = with pkgs; [
     neovim
+    zellij
+    ranger
     wl-clipboard
     neofetch
     ueberzugpp #replacement for depricated inline terminal image previewer
+    yazi
+    krita
+    xdg-desktop-portal-wlr
+    libsForQt5.kdialog
+    gtkdialog
     pcmanfm			
     wofi-emoji htop fim
     gparted killall tree
@@ -21,11 +28,7 @@
     tree-sitter
     jdk20
     libsForQt5.dolphin
-    cinnamon.nemo
-    xfce.thunar
-    gnome.gnome-disk-utility
-    gnome.nautilus
-    gnome.sushi
+    libsForQt5.qt5ct
     libsForQt5.breeze-qt5
     libsForQt5.breeze-gtk
     libsForQt5.breeze-icons

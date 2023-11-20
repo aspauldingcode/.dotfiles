@@ -24,12 +24,25 @@ boot = {
 };
     };
 
-# Enable auto-mounting for my USBC drive:
-#fileSystems = { 
-#		"/mnt/USBCTHUMB" =
-#		{ device = "/dev/disk/by-uuid/C365-14E8";
-#			fsType = "vfat";
-#		};
+    # This is using a rec (recursive) expression to set and access XDG_BIN_HOME within the expression
+    # For more on rec expressions see https://nix.dev/tutorials/first-steps/nix-language#recursive-attribute-set-rec
+    # environment.sessionVariables = rec {
+    #   XDG_CACHE_HOME  = "$HOME/.cache";
+    #   XDG_CONFIG_HOME = "$HOME/.config";
+    #   XDG_DATA_HOME   = "$HOME/.local/share";
+    #   XDG_STATE_HOME  = "$HOME/.local/state";
+    #   
+    #   # Not officially in the specification
+    #   XDG_BIN_HOME    = "$HOME/.local/bin";
+    #   PATH = [ 
+    #     "${XDG_BIN_HOME}"
+    #   ];
+    # };
+
+    environment.variables = rec {
+      QT_QPA_PLATFORMTHEME  = "qt5ct";
+      #QT_STYLE_OVERRIDE     = "qt5ct";
+    };
 
 # Enable networking
 networking = {
@@ -87,7 +100,8 @@ services = {
           session = [{
             name = "swayfx";
             start = ''
-            systemd-cat -t sway-x86_64-linux -- /nix/store/8qdp8r1bafgz4g1rxwn0fc2im15adsly-swayfx-0.3.2/bin/sway & waitPID=$!
+            systemd-cat -t sway-x86_64-linux -- /nix/store/8qdp8r1bafgz4g1rxwn0fc2im15adsly-swayfx-0.3.2/bin/sway & 
+            waitPID=$!
             '';
           }];
         };
