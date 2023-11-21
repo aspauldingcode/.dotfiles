@@ -11,9 +11,11 @@
     #language-servers.flake = false;
     plugin-onedark.url = "github:navarasu/onedark.nvim";
     plugin-onedark.flake = false;
+
+    nix-colors.url = "github:misterio77/nix-colors"; 
   };
 
-  outputs = { self, nixpkgs, darwin, home-manager, language-servers, plugin-onedark }: 
+  outputs = { self, nixpkgs, darwin, home-manager, language-servers, plugin-onedark, nix-colors }: 
   let
     inherit (self) inputs;
 
@@ -60,7 +62,7 @@
 
         "alex@NIXSTATION64" = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
-          extraSpecialArgs = commonSpecialArgs;
+          extraSpecialArgs = commonSpecialArgs // { inherit nix-colors; };
           modules = [ ./users/alex/NIXSTATION64/home-NIXSTATION64.nix ];
         };
 

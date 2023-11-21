@@ -1,8 +1,9 @@
-{ lib, config, pkgs, ... }: 
+{ lib, config, pkgs, nix-colors, ... }: 
 
 {
 #import other home-manager modules which are NIXSTATION64-specific
 imports = [
+  nix-colors.homeManagerModules.default
   ./packages-NIXSTATION64.nix 
   ./sway.nix
   ./nvim.nix
@@ -11,6 +12,9 @@ imports = [
   ./mako.nix
   ./fish.nix
 ]; 
+
+colorScheme = nix-colors.colorSchemes.dracula;
+
 home = {
   username = "alex";
   homeDirectory = "/home/alex";

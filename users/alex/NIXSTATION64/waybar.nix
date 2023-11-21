@@ -71,14 +71,14 @@ in
           "battery"
           "clock"
           "custom/unread-mail"
-          "custom/gpg-agent"
+          #"custom/gpg-agent"
         ];
 
         modules-right = [
           "network"
           "custom/tailscale-ping"
           # TODO: currently broken for some reason
-          # "custom/gammastep"
+          "custom/gammastep"
           "tray"
           "custom/hostname"
         ];
@@ -133,32 +133,32 @@ in
             Down: {bandwidthDownBits}'';
           on-click = "";
         };
-        "custom/tailscale-ping" = {
-          interval = 10;
-          return-type = "json";
-          exec =
-            let
-              inherit (builtins) concatStringsSep attrNames;
-              hosts = attrNames outputs.nixosConfigurations;
-              homeMachine = "merope";
-              remoteMachine = "alcyone";
-            in
-            jsonOutput "tailscale-ping" {
-              # Build variables for each host
-              pre = ''
-                set -o pipefail
-                ${concatStringsSep "\n" (map (host: ''
-                  ping_${host}="$(${timeout} 2 ${ping} -c 1 -q ${host} 2>/dev/null | ${tail} -1 | ${cut} -d '/' -f5 | ${cut} -d '.' -f1)ms" || ping_${host}="Disconnected"
-                '') hosts)}
-              '';
-              # Access a remote machine's and a home machine's ping
-              text = "  $ping_${remoteMachine} /  $ping_${homeMachine}";
-              # Show pings from all machines
-              tooltip = concatStringsSep "\n" (map (host: "${host}: $ping_${host}") hosts);
-            };
-          format = "{}";
-          on-click = "";
-        };
+        # "custom/tailscale-ping" = {
+        #   interval = 10;
+        #   return-type = "json";
+        #   exec =
+        #     let
+        #       inherit (builtins) concatStringsSep attrNames;
+        #       hosts = attrNames outputs.nixosConfigurations;
+        #       homeMachine = "merope";
+        #       remoteMachine = "alcyone";
+        #     in
+        #     jsonOutput "tailscale-ping" {
+        #       # Build variables for each host
+        #       pre = ''
+        #         set -o pipefail
+        #         ${concatStringsSep "\n" (map (host: ''
+        #           ping_${host}="$(${timeout} 2 ${ping} -c 1 -q ${host} 2>/dev/null | ${tail} -1 | ${cut} -d '/' -f5 | ${cut} -d '.' -f1)ms" || ping_${host}="Disconnected"
+        #         '') hosts)}
+        #       '';
+        #       # Access a remote machine's and a home machine's ping
+        #       text = "  $ping_${remoteMachine} /  $ping_${homeMachine}";
+        #       # Show pings from all machines
+        #       tooltip = concatStringsSep "\n" (map (host: "${host}: $ping_${host}") hosts);
+        #     };
+        #   format = "{}";
+        #   on-click = "";
+        # };
         "custom/menu" = {
           return-type = "json";
           exec = jsonOutput "menu" {
@@ -201,24 +201,24 @@ in
             "syncing" = "󰁪";
           };
         };
-        "custom/gpg-agent" = {
-          interval = 2;
-          return-type = "json";
-          exec =
-            let gpgCmds = import ../../../cli/gpg-commands.nix { inherit pkgs; };
-            in
-            jsonOutput "gpg-agent" {
-              pre = ''status=$(${gpgCmds.isUnlocked} && echo "unlocked" || echo "locked")'';
-              alt = "$status";
-              tooltip = "GPG is $status";
-            };
-          format = "{icon}";
-          format-icons = {
-            "locked" = "";
-            "unlocked" = "";
-          };
-          on-click = "";
-        };
+        #"custom/gpg-agent" = {
+        #  interval = 2;
+        #  return-type = "json";
+        #  exec =
+        #    let gpgCmds = import ../../../cli/gpg-commands.nix { inherit pkgs; };
+        #     in
+        #     jsonOutput "gpg-agent" {
+        #       pre = ''status=$(${gpgCmds.isUnlocked} && echo "unlocked" || echo "locked")'';
+        #       alt = "$status";
+        #       tooltip = "GPG is $status";
+        #     };
+        #   format = "{icon}";
+        #   format-icons = {
+        #     "locked" = "";
+        #     "unlocked" = "";
+        #   };
+        #   on-click = "";
+        # };
         "custom/gammastep" = {
           interval = 5;
           return-type = "json";
@@ -306,7 +306,7 @@ in
     # w x y z -> top, right, bottom, left
     style = let inherit (config.colorscheme) colors; in /* css */ ''
       * {
-        font-family: ${config.fontProfiles.regular.family}, ${config.fontProfiles.monospace.family};
+        font-family: 'DejaVu Sans', 'DejaVu Sans Mono', monospace;
         font-size: 12pt;
         padding: 0 8px;
       }

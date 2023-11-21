@@ -222,8 +222,7 @@
               "${modifier}+Shift+0" = "move container to workspace number 10";
             };
     };
-      extraConfig = ''
-        
+      extraConfig = let inherit (config.colorscheme) colors; in /* swayfx specific config */ ''
                  set $mod Mod4
                  # Idle configuration
 #
@@ -293,7 +292,7 @@ seat * hide_cursor 8000
 default_border pixel 2
 default_floating_border pixel 2
 client.unfocused "#808080" "#808080" "#808080" "#808080" "#808080"
-client.focused   "#A34A28" "#A34A28" "#A34A28" "#A34A28" "#A34A28"
+client.focused ${colors.base0C} ${colors.base0C} ${colors.base0C} ${colors.base0C}
 
 exec {
         gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
