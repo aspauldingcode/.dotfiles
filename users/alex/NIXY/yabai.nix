@@ -52,11 +52,11 @@
       #yabai -m config window_topmost off
 
       # gaps
-      yabai -m config top_padding    40
-      yabai -m config bottom_padding 10
-      yabai -m config left_padding   10
-      yabai -m config right_padding  10
-      yabai -m config window_gap     10
+      yabai -m config top_padding    60
+      yabai -m config bottom_padding 15
+      yabai -m config left_padding   15
+      yabai -m config right_padding  15
+      yabai -m config window_gap     15
 
       # rules
       yabai -m rule --add app="^System Settings$"    manage=off
@@ -97,9 +97,6 @@
 
       yabai -m rule --add app="Microsoft Teams" space=nine
 
-
-
-
       yabai -m rule --add app='System Settings' manage=off
 	  yabai -m rule --add app='System Information' manage=off
 	  yabai -m rule --add app='zoom.us' manage=off
@@ -107,11 +104,6 @@
       yabai -m rule --add app='Archive Utility' manage=off
       yabai -m rule --add app='Display Calibrator' manage=off
       yabai -m rule --add app='Installer' manage=off
-      # Any other arbitrary config here
-      #yabai -m config active_window_border_topmost on
-
-
-
       echo "yabai configuration loaded.."
     '';
   };
@@ -173,7 +165,7 @@
         alt - j :     ${yabai} -m window --focus south
         alt - k :     ${yabai} -m window --focus north
         alt - l :     ${yabai} -m window --focus east
-        alt - left :  ${yabai} -m window --fpcus west
+        alt - left :  ${yabai} -m window --focus west
         alt - down :  ${yabai} -m window --focus south
         alt - up :    ${yabai} -m window --focus north
         alt - right : ${yabai} -m window --focus east

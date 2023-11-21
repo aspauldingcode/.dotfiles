@@ -19,7 +19,12 @@ properties=(
   width=175
 )
 
-sketchybar --add item apple.popup.activity popup.apple \
+sketchybar --add item apple.popup.settings popup.apple \
+  --set apple.popup.settings label="System Preferences" \
+  icon=$PREFERENCES "${properties[@]}" \
+  click_script="open -a 'System Preferences'" \
+  \
+  --add item apple.popup.activity popup.apple \
   --set apple.popup.activity label="Activity Monitor" \
   icon=$ACTIVITY "${properties[@]}" \
   click_script="open -a 'Activity Monitor'" \
@@ -33,17 +38,12 @@ sketchybar --add item apple.popup.activity popup.apple \
   icon=$LOCK "${properties[@]}" \
   click_script="pmset displaysleepnow" \
   \
-  --add item apple.popup.settings popup.apple \
-  --set apple.popup.settings label="System Preferences" \
-  icon=$PREFERENCES "${properties[@]}" \
-  click_script="open -a 'System Preferences'" \
-  \
   --add item apple.popup.restart popup.apple \
   --set apple.popup.restart label="Restart" \
   icon=$RESTART "${properties[@]}" \
   click_script="reboot" \
   \
   --add item apple.popup.shutdown popup.apple \
-  --set apple.popup.shutdown label="Shut down" \
+  --set apple.popup.shutdown label="Shutdown" \
   icon=$OFF "${properties[@]}" \
-  click_script="halt"
+  click_script="shutdown"

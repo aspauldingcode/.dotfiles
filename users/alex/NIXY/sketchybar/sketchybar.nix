@@ -5,7 +5,7 @@
   xdg.configFile."sketchybar/sketchybarrc".source = ./sketchybarrc;
   xdg.configFile."sketchybar/colors.sh".source = ./colors.sh;
   xdg.configFile."sketchybar/icons.sh".source = ./icons.sh;
-  xdg.configFile."sketchybar/plugins/apple.sh".source = ./plugins/apple/.sh;
+  xdg.configFile."sketchybar/plugins/apple.sh".source = ./plugins/apple.sh;
   xdg.configFile."sketchybar/plugins/battery.sh".source = ./plugins/battery.sh;
   xdg.configFile."sketchybar/plugins/cpu.sh".source = ./plugins/cpu.sh;
   xdg.configFile."sketchybar/plugins/date.sh".source = ./plugins/date.sh;

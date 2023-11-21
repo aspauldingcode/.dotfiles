@@ -18,14 +18,16 @@ ACTIVE_SPACE=$(yabai -m query --spaces --space | jq '.index')
 SPACE_ICONS=("$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GHOST")
 
 bar=(
-  height=30
-  margin=5
+  height=40
   corner_radius=10
   position=top
-  color=$TRANSPARENT
-  border_color=$PURPLE
-  y_offset=4
+  color=$STATUS
+  border_color=$GREY # why didn't that work?
+  border_width=2
+  y_offset=5
   sticky=off
+  margin=13 # Margin around the bar
+  notch_width 200
 )
 
 sketchybar --bar "${bar[@]}"
@@ -40,7 +42,7 @@ defaults=(
   label.color=$WHITE
   popup.background.color=$BLUE
   popup.background.corner_radius=10
-  popup.background.border_width=3
+  popup.background.border_width=2
   popup.background.border_color=$PURPLE
   popup.blur_radius=100
 )
@@ -57,7 +59,7 @@ time=(
   background.corner_radius=10
   background.color=$TEMPUS
   background.height=19
-  background.padding_left=-10
+  background.padding_left=3
   background.padding_right=3
   background.border_color=$PURPLE
 )
@@ -110,7 +112,7 @@ volume=(
   updates=on
   label.drawing=off
   icon.drawing=off
-  slider.highlight_color=$PURPLE
+  slider.highlight_color=$GREY
   slider.background.height=5
   slider.background.corner_radius=3
   slider.background.color=$GREY
@@ -124,7 +126,7 @@ volume=(
   background.height=10
   background.corner_radius=10
   background.border_width=2
-  background.border_color=$PURPLE
+  background.border_color=$GREY
   background.padding_right=7
 )
 
@@ -147,8 +149,8 @@ mail=(
   background.height=25
   background.corner_radius=10
   background.padding_right=10
-  background.border_color=$PURPLE
-  background.border_width=3
+  background.border_color=$GREY
+  background.border_width=2
   script="$PLUGIN_DIR/mail.sh"
   click_script="$POPUP_CLICK_SCRIPT"
   icon.padding_left=15
@@ -281,11 +283,11 @@ done
 current_space=(
   icon.padding_left=15
   icon.padding_right=15
-  background.color=$MIDNIGHT
+  background.color=$TEMPUS
   background.height=25
   background.corner_radius=10
   background.border_color=$PURPLE
-  background.border_width=3
+  background.border_width=2
   background.padding_left=10
   click_script="$POPUP_CLICK_SCRIPT"
 )
@@ -298,7 +300,7 @@ brackets=(
   background.height=25
   background.corner_radius=10
   background.border_color=$PURPLE
-  background.border_width=3
+  background.border_width=2
 )
 
 sketchybar --add bracket status time date wifi battery volume_icon right \
