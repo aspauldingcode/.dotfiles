@@ -18,7 +18,7 @@
 
 
   programs.neovim = 
-    let 
+    let
       toLua = str: "lua << EOF\n${str}\nEOF\n";
       toLuaFile = file: "lua << EOF\n${builtins.readFile file}\nEOF\n";
     in 
@@ -44,10 +44,10 @@
           config = toLua "require(\"Comment\").setup()";
         }
 
-        {
-          plugin = gruvbox-nvim;
-          config = "colorscheme gruvbox";
-        }
+        #{
+          #plugin = gruvbox-nvim;
+          #config = "colorscheme gruvbox";
+        #}
 
         {
           plugin = vim-startify;

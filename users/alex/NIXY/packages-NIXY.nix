@@ -40,17 +40,11 @@ echo "Hello, ${config.home.username}!"
             # Use the captured output as 'LoginwindowText' directly
             sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText "$what"
             '')
-            #fix-skhd
-            (pkgs.writeShellScriptBin "fix-skhd" ''
-            sudo pkill skhd && skhd #-c ~/.config/skhd/skhdrc & 
-            '')
-            #fix-yabai
-            (pkgs.writeShellScriptBin "fix-yabai" '' 
-            sudo pkill yabai && yabai #-c ~/.config/yabai/yabairc &
-            '')
-            #fix-bar
-            (pkgs.writeShellScriptBin "fix-bar" ''
-            sudo pkill sketchybar && sketchybar #-c ~/.config/sketchybar/sketchybarrc &
+            #fix-wm
+            (pkgs.writeShellScriptBin "fix-wm" ''
+              yabai --restart-service
+              skhd --restart-service
+              brew services restart felixkratz/formulae/sketchybar 
             '')
           ];
         }

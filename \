@@ -1,22 +1,22 @@
+#Must add a sketchybar dotfile config under home-manager for alex
 { config, pkgs, lib, ... }: 
 
-let 
-  inherit (config.colorScheme) colors;
-  nixy-colors = pkgs.writeShellScript "nixy-colors" ''
-      export PURPLE="0xff${colors.base0C}" # Border color.
-      export GREY="0xff${colors.base0C}"  # idk what this is for
-      export TRANSPARENT=0x00000000
-      export WHITE=0xFFFFFFFF
-      export BLUE="0x74${colors.base00}" # Changes background of drop-down windows 
-      export MAGENTA=0xFF007CFF # Changed border color? NO
-      export ORANGE=0xFF966CFF
-      export TEMPUS="0xff${colors.base05}" # backgrounds of RAM, spotify, apple logo, time and date
-      export STATUS="0xff${colors.base00}" #BACKGROUND of bar. make same as allacritty.
-      export SPACEBG=0xFF808080 #Didn't change much?
-      export MIDNIGHT="0xff${colors.base05}" # Only worked on the mail icon?
-      '';
+{ # xdg.configFile."foo/bar".source = ./file/path; will symlink ./file/path to .config/foo/bar
 
-in {
+  home.packages = let inherit (config.colorScheme) colors; in [
+(pkgs.writeShellScriptBin "nixy-colors" ''
+export PURPLE="0xff${colors.base0C}" # Border color.
+export GREY=0xFFA34A28  # idk what this is for
+export TRANSPARENT=0x00000000
+export WHITE=0xFFFFFFFF
+export BLUE="0x74${colors.base00}" # Changes background of drop-down windows 
+export MAGENTA=0xFF007CFF # Changed border color? NO
+export ORANGE=0xFF966CFF
+export TEMPUS="0xff${colors.base05}" # backgrounds of RAM, spotify, apple logo, time and date
+export STATUS="0xff${colors.base00}" #BACKGROUND of bar. make same as allacritty.
+export SPACEBG=0xFF808080 #Didn't change much?
+export MIDNIGHT=0xFFa89984 # Only worked on the mail icon?
+'') ];
   xdg.configFile."sketchybar/sketchybarrc".source = ./sketchybarrc;
   xdg.configFile."sketchybar/colors.sh".source = nixy-colors;
   xdg.configFile."sketchybar/icons.sh".source = ./icons.sh;

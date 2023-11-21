@@ -36,8 +36,8 @@
 
       colors = {
         primary = {
-          background = "0x282828";
-          foreground = "0xEBDBB2";
+          foreground = "#${config.colorScheme.colors.base05}";
+          background = "#${config.colorScheme.colors.base00}";
         };
       #cursor = {
       #text    ="0xEBEBEB";

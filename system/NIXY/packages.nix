@@ -59,8 +59,11 @@
         echo "Resetting Launchpad!"
         defaults write com.apple.dock ResetLaunchPad -bool true
         fi 
-        echo "Done."
+        echo "Done. Running 'fix-wm'..."
+        fix-wm
+        echo "Completed."
         '')
+
         #update
         (pkgs.writeShellScriptBin "update" ''
         cd ~/.dotfiles

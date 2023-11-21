@@ -50,13 +50,13 @@
         # User: "Alex"
         "alex@NIXY" = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.aarch64-darwin;
-          extraSpecialArgs = commonSpecialArgs;
+          extraSpecialArgs = commonSpecialArgs // { inherit nix-colors; };
           modules = [ ./users/alex/NIXY/home-NIXY.nix ];
         };
 
         "alex@NIXEDUP" = home-manager.lib.homeManagerConfiguration { 
           pkgs = nixpkgs.legacyPackages.aarch64-linux;
-          extraSpecialArgs = commonSpecialArgs;
+          extraSpecialArgs = commonSpecialArgs // { inherit nix-colors; };
           modules = [ ./users/alex/NIXEDUP/home-NIXEDUP.nix];
         };
 

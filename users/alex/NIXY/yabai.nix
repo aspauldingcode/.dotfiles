@@ -2,7 +2,7 @@
   home.file.yabai = {
     executable = true;
     target = ".config/yabai/yabairc";
-    text = ''
+    text = let inherit (config.colorScheme) colors; in ''
       #!/usr/bin/env sh
 
       # load scripting addition
@@ -33,7 +33,7 @@
       # yabai -m config insert_feedback_color       0xff808080
 
       #UPGRADED to Sonoma. JankyBorders installed
-      borders active_color=0xffA34A28 inactive_color=0xff808080 width=5.0 2>/dev/null 1>&2 &
+      borders active_color=0xff"${colors.base0C}" inactive_color=0xff808080 width=5.0 2>/dev/null 1>&2 &
 
       e window appearance
       yabai -m config window_shadow               off
