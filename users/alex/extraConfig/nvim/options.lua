@@ -1,26 +1,72 @@
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
+local o = vim.opt
+local g = vim.g
 
-vim.o.clipboard = 'unnamedplus'
+-- disable netrw at the very start of your init.lua
+g.loaded_netrw = 1
+g.loaded_netrwPlugin = 1
 
-vim.o.number = true
-vim.o.relativenumber = false
+-- empty setup using defaults
+--require("nvim-tree").setup()
 
-vim.o.signcolumn = 'yes'
+-- OR setup with some options
+-- require("nvim-tree").setup({
+--   sort = {
+--     sorter = "case_sensitive",
+--   },
+--   view = {
+--     width = 30,
+--   },
+--   renderer = {
+--     group_empty = true,
+--   },
+--   filters = {
+--     dotfiles = true,
+--   },
+-- })
+--
+g.mapleader = ' '
+g.maplocalleader = ' '
+o.showcmd = true
 
-vim.o.tabstop = 4
-vim.o.shiftwidth = 4
-vim.opt.softtabstop = 4
+-- Undo files
+o.undofile = true
+o.undodir = "/home/alex/.cache/" -- now we can disable the swap file thing
 
-vim.o.updatetime = 300
+-- set clipboard to use system clipboard
+o.clipboard = 'unnamedplus'
 
-vim.o.termguicolors = true
+-- Indentation
+o.smartindent = true
+o.autoindent = true
+o.tabstop = 4
+o.shiftwidth = 4
+o.softtabstop = 4
+o.expandtab = true
+o.signcolumn = 'yes'
+o.wrap = true
+o.textwidth = 80
+o.formatoptions = t
 
-vim.opt.autoindent = true
-vim.opt.smartindent = true
-vim.opt.wrap = true
+-- Use mouse
+o.mouse = "a"
+
+-- UI settings
+o.number = true
+o.relativenumber = true
+o.termguicolors = true
+o.updatetime = 300
+o.cursorline = true
 vim.cmd('filetype plugin indent on')
 
-vim.o.textwidth = 80
-vim.o.formatoptions = t
+-- Get rid of annoying viminfo file
+o.viminfo = ""
+o.viminfofile = "NONE"
 
+-- Misc Improvements
+o.smartcase = true
+o.ttimeoutlen = 5
+o.compatible = false
+o.autoread = true
+o.incsearch = true
+o.hidden = true
+o.shortmess = "atI"

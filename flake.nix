@@ -2,20 +2,15 @@
   description = "Universal Flake by Alex - macOS and NixOS";
 
   inputs = {
-    #nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs.url = "github:aspauldingcode/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    #nixpkgs.url = "github:aspauldingcode/nixpkgs/nixos-unstable";
     darwin.url = "github:lnl7/nix-darwin";
     home-manager.url = "github:nix-community/home-manager";
-
-    language-servers.url = "git+https://git.sr.ht/~bwolf/language-servers.nix";
-    #language-servers.flake = false;
-    plugin-onedark.url = "github:navarasu/onedark.nvim";
-    plugin-onedark.flake = false;
 
     nix-colors.url = "github:misterio77/nix-colors"; 
   };
 
-  outputs = { self, nixpkgs, darwin, home-manager, language-servers, plugin-onedark, nix-colors }: 
+  outputs = { self, nixpkgs, darwin, home-manager, nix-colors }: 
   let
     inherit (self) inputs;
 

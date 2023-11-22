@@ -1,9 +1,11 @@
 require('nvim-treesitter.configs').setup {
-    ensure_installed = {},
-
-    auto_install = false,
-
-    highlight = { enable = true },
-
-    indent = { enable = true },
+    ensure_installed = "maintained", -- "all" || "maintained"
+    auto_install = true,
+    highlight = { 
+        enable = true                -- false disables the entire extension.
+    },
+    indent = { 
+        enable = true 
+    },
 }
+

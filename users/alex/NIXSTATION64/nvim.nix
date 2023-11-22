@@ -1,22 +1,7 @@
 
 { pkgs, config, lib, inputs, ... }:
 
-# MY NIX CONFIG
 {
-   nixpkgs = {
-    overlays = [
-      (final: prev: {
-        vimPlugins = prev.vimPlugins // {
-          own-onedark-nvim = prev.vimUtils.buildVimPlugin {
-            name = "onedark";
-            src = inputs.plugin-onedark;
-          };
-        };
-      })
-    ];
-  };
-
-
   programs.neovim = 
     let 
       toLua = str: "lua << EOF\n${str}\nEOF\n";
@@ -29,20 +14,30 @@
       vimAlias = true;
       vimdiffAlias = true;
       plugins = with pkgs.vimPlugins; [      
+        
+        # LSP Related
         {
           plugin = nvim-lspconfig;
           config = toLuaFile ../extraConfig/nvim/plugin/lsp.lua;
         }
+        # nvim-jdtls # FIXME: y u no worky? >:(
+        # lsp-status-nvim # FIXME: What about lspinfo?
+        # lazy-lsp-nvim # FIXME: LEARN MORE
+        # asyncomplete-lsp-vim # FIXME: Learn more
 
+        # Auto-Completion
+        {
+          plugin = nvim-cmp;
+          config = toLuaFile ../extraConfig/nvim/plugin/cmp.lua;
+        }
+        # cmp-nvim-lsp # FIXME: Learn more
+        # cmp-nvim-lsp-document-symbol 
+        # cmp-nvim-lsp-signature-help
+        
         {
           plugin = comment-nvim;
           config = toLua "require(\"Comment\").setup()";
         }
-
-        # {
-        #   plugin = gruvbox-nvim;
-        #   config = "colorscheme gruvbox";
-        # }
 
         {
           plugin = vim-startify;
@@ -50,45 +45,46 @@
         }
 
         {
-          plugin = nvim-colorizer-lua;
+          plugin = nvim-colorizer-lua; # relies on AutoCmd
           config = ''
             packadd! nvim-colorizer.lua
-            lua require 'colorizer'.setup()
+            lua require 'colorizer'.setup(})
           '';
-        }
-        
-        {
-          plugin = nvim-cmp;
-          config = toLuaFile ../extraConfig/nvim/plugin/cmp.lua;
         }
         
         {
           plugin = telescope-nvim;
           config = toLuaFile ../extraConfig/nvim/plugin/telescope.lua;
         }
-        neodev-nvim
-        telescope-fzf-native-nvim
-        cmp_luasnip
-        cmp-nvim-lsp
-        luasnip
-        friendly-snippets
-        lualine-nvim
-        nvim-web-devicons
-        vim-nix
-        vim-autoswap
-        nvim-jdtls
-        lsp-status-nvim
-        lazy-lsp-nvim #LEARN MORE
-        asyncomplete-lsp-vim # Learn more
-        cmp-nvim-lsp # Learn more
-        cmp-nvim-lsp-document-symbol 
-        cmp-nvim-lsp-signature-help
-        
-        #{ # Using a github repo theme (imported through flake.nix)
-        #  plugin = own-onedark-nvim;
-        #  config = "colorscheme onedark";
-        #}
 
+        # File Tree
+        {
+          plugin = nvim-tree-lua;
+          config = toLuaFile ../extraConfig/nvim/plugin/nvim-tree.lua;
+        }
+        nvim-web-devicons # optional, for file icons
+
+        # Code Snippits
+        luasnip # FIXME: Do I need this too? NEEDED
+        cmp-nvim-lsp # FIXME: What's this? NEEDED
+        friendly-snippets 
+        cmp_luasnip # completion for lua snippits
+
+        # Visual Fixes
+        lualine-nvim # FIXME: https://github.com/nvim-lualine/lualine.nvim
+        indentLine # lines to identify codeblocks
+
+        # Behavior Fixes
+        vim-autoswap
+
+        neodev-nvim # FIXME: WTF is neodev-nvim? NEEDED
+        
+        # Fuzzy Search Tool
+        telescope-fzf-native-nvim # FIXME: How do I use?
+
+        # Syntax Highlighting
+        vim-nix # better highlighting for nix files
+        
         {
           plugin = (nvim-treesitter.withPlugins (p: [
             p.tree-sitter-nix

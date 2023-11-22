@@ -46,13 +46,12 @@ boot = {
 
 # Enable networking
 networking = {
-  hostName = "NIXSTATION64"; # Which machine are we on?
+  hostName = "NIXSTATION64";
   networkmanager.enable = true;
 };
 
-
 # time settings
-time.timeZone = "America/Denver"; # FIXME
+time.timeZone = "America/Denver";
 
 # Enable Bluetooth
 hardware.bluetooth.enable = true;
@@ -76,6 +75,7 @@ i18n = {
     LC_TIME = "en_US.UTF-8";
   }; 
 };
+
 # services
 services = {
   pipewire = { # fix for pipewire audio:
@@ -139,7 +139,6 @@ programs = {
   gnome-disks.enable = true; # GNOME Disks daemon, UDisks2 GUI
   xwayland.enable = false;
 };
-
 
 # Define a user account. Don't forget to set a password with ‘passwd’.
 users.users = {

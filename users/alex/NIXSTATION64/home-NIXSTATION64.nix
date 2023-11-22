@@ -14,8 +14,8 @@ imports = [
 ]; 
 
     #colorScheme = nix-colors.colorSchemes.dracula;
-    colorScheme = nix-colors.colorSchemes.paraiso;
-    #colorScheme = nix-colors.colorSchemes.gruvbox-dark-soft;
+    #colorScheme = nix-colors.colorSchemes.paraiso;
+    colorScheme = nix-colors.colorSchemes.gruvbox-dark-soft;
 
 
 home = {
