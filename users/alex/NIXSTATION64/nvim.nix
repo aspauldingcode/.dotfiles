@@ -39,10 +39,10 @@
           config = toLua "require(\"Comment\").setup()";
         }
 
-        {
-          plugin = gruvbox-nvim;
-          config = "colorscheme gruvbox";
-        }
+        # {
+        #   plugin = gruvbox-nvim;
+        #   config = "colorscheme gruvbox";
+        # }
 
         {
           plugin = vim-startify;

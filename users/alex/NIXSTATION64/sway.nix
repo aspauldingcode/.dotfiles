@@ -220,6 +220,8 @@
               "${modifier}+Shift+8" = "move container to workspace number 8";
               "${modifier}+Shift+9" = "move container to workspace number 9";
               "${modifier}+Shift+0" = "move container to workspace number 10";
+
+              "${modifier}+Shift+R" = "reload";
             };
     };
       extraConfig = let inherit (config.colorscheme) colors; in /* swayfx specific config */ ''

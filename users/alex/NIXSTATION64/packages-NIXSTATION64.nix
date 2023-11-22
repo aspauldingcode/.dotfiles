@@ -169,6 +169,9 @@ clipman
     (prismlauncher.override {
       jdks = [ jdk8 jdk17 jdk19 ]; 
     })
-  ];
+    #fix-wm
+    (pkgs.writeShellScriptBin "fix-wm" ''
+      pkill waybar && sway reload
+    '')];
 };
 }
