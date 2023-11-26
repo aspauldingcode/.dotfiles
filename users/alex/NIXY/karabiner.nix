@@ -14,17 +14,18 @@ let
         "^com\\.apple\\.Terminal$"
         "^com\\.utmapp\\.utm$"
         "^org\\.alacritty$"
+        "com\\.brave\\.Browser"
       ];
       file_paths = [ "~/.nix-profile/bin/alacritty" ];
     }];
   };
 in {
   home.file.karabiner = {
-    target = ".config/karabiner/assets/complex_modifications/control-command.json";
+    target = ".config/karabiner/assets/complex_modifications/windows-shortcuts.json";
     text = builtins.toJSON {
-      title = "Control <-> Command";
+      title = "Windows Shortcuts";
       rules = [{
-        description = "Swap Command and Control";
+        description = "Windows Keyboard Shortcuts for mac.";
         manipulators = [
           (swap "left_command" "left_control")
           (swap "left_control" "left_command")
@@ -33,3 +34,4 @@ in {
     };
   };
 }
+

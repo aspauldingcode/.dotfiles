@@ -10,7 +10,7 @@
       yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
 
       # bar configuration
-      yabai -m config external_bar all:0:45
+      yabai -m config external_bar all:45:0
       yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
       yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces"
       yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
@@ -52,18 +52,28 @@
       #yabai -m config window_topmost off
 
       # gaps
-      yabai -m config top_padding    60
-      yabai -m config bottom_padding 15
-      yabai -m config left_padding   15
-      yabai -m config right_padding  15
-      yabai -m config window_gap     15
+      yabai -m config top_padding     15
+      yabai -m config bottom_padding  15
+      yabai -m config left_padding    15
+      yabai -m config right_padding   15
+      yabai -m config window_gap      15
 
       # rules
-      yabai -m rule --add app="^System Settings$"    manage=off
-      yabai -m rule --add app="^System Information$" manage=off
-      yabai -m rule --add app="^System Preferences$" manage=off
-      yabai -m rule --add title="Preferences$"       manage=off
-      yabai -m rule --add title="Settings$"          manage=off
+      yabai -m rule --add app="^System Settings$"     manage=off
+      yabai -m rule --add app="^System Information$"  manage=off
+      yabai -m rule --add app="^System Preferences$"  manage=off
+      yabai -m rule --add title="Preferences$"        manage=off
+      yabai -m rule --add title="Settings$"           manage=off
+      yabai -m rule --add app='System Settings'       manage=off
+	  yabai -m rule --add app='System Information'    manage=off
+	  yabai -m rule --add app='zoom.us'               manage=off
+      yabai -m rule --add app='Finder'                manage=off
+      yabai -m rule --add app='Archive Utility'       manage=off
+      yabai -m rule --add app='Display Calibrator'    manage=off
+      yabai -m rule --add app='Installer'             manage=off
+      yabai -m rule --add app='Karabiner-EventViewer' manage=off
+      yabai -m rule --add app='Karabiner-Elements'    manage=off
+
 
       # workspace management
       yabai -m space 1  --label term
@@ -78,33 +88,27 @@
       yabai -m space 10 --label ten
 
       # assign apps to spaces
-      yabai -m rule --add app="Alacritty" space=code
-      yabai -m rule --add app="Visual Studio Code" space=code
+      #yabai -m rule --add app="Alacritty"           space=code
+      #yabai -m rule --add app="Visual Studio Code"  space=code
 
-      yabai -m rule --add app="Vivaldi" space=www
-      yabai -m rule --add app="Arc" space=www
+      #yabai -m rule --add app="Vivaldi"             space=www
+      #yabai -m rule --add app="Arc"                 space=www
 
-      yabai -m rule --add app="Slack" space=chat
-      yabai -m rule --add app="Signal" space=chat
+      #yabai -m rule --add app="Slack"               space=chat
+      #yabai -m rule --add app="Signal"              space=chat
 
-      yabai -m rule --add app="Todoist" space=todo
+      #yabai -m rule --add app="Todoist"             space=todo
 
-      yabai -m rule --add app="Spotify" space=music
+      #yabai -m rule --add app="Spotify"             space=music
 
-      yabai -m rule --add app="Mumble" space=voice
+      #yabai -m rule --add app="Mumble"              space=voice
 
-      yabai -m rule --add app="Google Chrome" space=eight
+      #yabai -m rule --add app="Google Chrome"       space=eight
 
-      yabai -m rule --add app="Microsoft Teams" space=nine
+      #yabai -m rule --add app="Microsoft Teams"     space=nine
 
-      yabai -m rule --add app='System Settings' manage=off
-	  yabai -m rule --add app='System Information' manage=off
-	  yabai -m rule --add app='zoom.us' manage=off
-      yabai -m rule --add app='Finder' manage=off
-      yabai -m rule --add app='Archive Utility' manage=off
-      yabai -m rule --add app='Display Calibrator' manage=off
-      yabai -m rule --add app='Installer' manage=off
       echo "yabai configuration loaded.."
+
     '';
   };
 
@@ -118,13 +122,13 @@
         # Launch shortcuts
         alt - return : open -na alacritty
         alt - d : open -a dmenu-mac
+        alt + ctrl - space : open -na "Brave Browser"
         alt + cmd - space : open -na "Brave Browser"
         ctrl + cmd - 0x33 : sudo reboot
         ctrl + shift + cmd - 0x33 : sudo shutdown -h now
         ctrl + cmd - delete : sudo reboot
         ctrl + shift + cmd - delete : sudo shutdown -h now
         alt + shift - space : yabai -m window --toggle float
-
         alt + shift - q : yabai -m window --close
 		alt - f : yabai -m window --toggle zoom-fullscreen
         #alt + shift - f : yabai -m window --toggle native-fullscreen #DON'T that thing SUCKS

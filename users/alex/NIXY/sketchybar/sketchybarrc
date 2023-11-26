@@ -15,7 +15,7 @@ PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
 POPUP_CLICK_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
 ACTIVE_SPACE=$(yabai -m query --spaces --space | jq '.index')
-SPACE_ICONS=("$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GHOST")
+SPACE_ICONS=("1" "2" "3" "4" "5" "6" "7" "8" "9" "10")
 
 bar=(
   height=40

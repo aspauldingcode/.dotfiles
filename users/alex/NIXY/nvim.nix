@@ -83,11 +83,6 @@
         vim-autoswap
         nvim-jdtls
 
-        #{ # Using a github repo theme (imported through flake.nix)
-          #plugin = own-onedark-nvim;
-          #config = "colorscheme onedark";
-        #}
-
         {
           plugin = (nvim-treesitter.withPlugins (p: [
             p.tree-sitter-nix
