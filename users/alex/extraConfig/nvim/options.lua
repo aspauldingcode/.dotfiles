@@ -5,25 +5,6 @@ local g = vim.g
 g.loaded_netrw = 1
 g.loaded_netrwPlugin = 1
 
--- empty setup using defaults
---require("nvim-tree").setup()
-
--- OR setup with some options
--- require("nvim-tree").setup({
---   sort = {
---     sorter = "case_sensitive",
---   },
---   view = {
---     width = 30,
---   },
---   renderer = {
---     group_empty = true,
---   },
---   filters = {
---     dotfiles = true,
---   },
--- })
---
 g.mapleader = ' '
 g.maplocalleader = ' '
 o.showcmd = true
@@ -43,7 +24,7 @@ o.shiftwidth = 4
 o.softtabstop = 4
 o.expandtab = true
 o.signcolumn = 'yes'
-o.wrap = true
+o.wrap = false
 o.textwidth = 80
 o.formatoptions = t
 

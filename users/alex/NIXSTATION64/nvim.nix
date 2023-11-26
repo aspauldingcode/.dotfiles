@@ -48,7 +48,7 @@
           plugin = nvim-colorizer-lua; # relies on AutoCmd
           config = ''
             packadd! nvim-colorizer.lua
-            lua require 'colorizer'.setup(})
+            lua require 'colorizer'.setup()
           '';
         }
         
@@ -58,10 +58,11 @@
         }
 
         # File Tree
-        {
-          plugin = nvim-tree-lua;
-          config = toLuaFile ../extraConfig/nvim/plugin/nvim-tree.lua;
-        }
+        #{
+        #  plugin = nvim-tree-lua;
+        #  config = toLuaFile ../extraConfig/nvim/plugin/nvim-tree.lua;
+        #}
+        nerdtree
         nvim-web-devicons # optional, for file icons
 
         # Code Snippits

@@ -50,6 +50,7 @@
       beeper
       davinci-resolve ocl-icd
       rofi-wayland-unwrapped
+      vscode
       #wofiPower
       #wofiWindowJump
       #aml

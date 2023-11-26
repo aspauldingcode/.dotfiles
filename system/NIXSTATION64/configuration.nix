@@ -84,7 +84,6 @@ services = {
   pulse.enable = true;
   jack.enable = true;
 };
-
         # PRETTY LOGIN SCREEN! (FIXME needs to be configured with osx sddm theme)
         xserver = {
           enable = true;
@@ -100,8 +99,8 @@ services = {
           session = [{
             name = "swayfx";
             start = ''
-            systemd-cat -t sway-x86_64-linux -- /nix/store/8qdp8r1bafgz4g1rxwn0fc2im15adsly-swayfx-0.3.2/bin/sway & 
-            waitPID=$!
+              systemd-cat -t sway-x86_64-linux -- /nix/store/8qdp8r1bafgz4g1rxwn0fc2im15adsly-swayfx-0.3.2/bin/sway & 
+              waitPID=$!
             '';
           }];
         };
@@ -118,6 +117,23 @@ services = {
             PasswordAuthentication = false; # Use keys only. Remove if you want to SSH using password (not recommended)
           };
         };
+
+        avahi = {
+          enable = true;
+          nssmdns = true;
+          openFirewall = true;
+          publish = {
+            enable = true;
+            userServices = true;
+          };
+        };
+        printing = {
+          listenAddresses = [ "*:631" ];
+          allowFrom = [ "all" ];
+          browsing = true;
+          defaultShared = true;
+        };
+
       };
 
       security = { 
@@ -130,7 +146,11 @@ services = {
       };
       polkit.enable = true;
     };
-
+    # allow AirPrinter through firewall
+networking.firewall = {
+  allowedTCPPorts = [ 631 ];
+  allowedUDPPorts = [ 631 ];
+};
 # programs
 programs = {
   fish.enable = true;
