@@ -14,7 +14,6 @@ let
         "^com\\.apple\\.Terminal$"
         "^com\\.utmapp\\.utm$"
         "^org\\.alacritty$"
-        "com\\.brave\\.Browser"
       ];
       file_paths = [ "~/.nix-profile/bin/alacritty" ];
     }];
@@ -34,4 +33,3 @@ in {
     };
   };
 }
-
