@@ -5,6 +5,7 @@ source "$HOME/.config/sketchybar/icons.sh"
 
 POPUP_OFF="sketchybar --set apple.logo popup.drawing=off"
 POPUP_CLICK_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
+
 COUNT=$(brew outdated | wc -l | tr -d ' ')
 
 properties=(
@@ -22,28 +23,29 @@ properties=(
 sketchybar --add item apple.popup.settings popup.apple \
   --set apple.popup.settings label="System Preferences" \
   icon=$PREFERENCES "${properties[@]}" \
-  click_script="open -a 'System Preferences'" \
+  click_script="open -a 'System Preferences' && $POPUP_OFF" \
   \
   --add item apple.popup.activity popup.apple \
   --set apple.popup.activity label="Activity Monitor" \
   icon=$ACTIVITY "${properties[@]}" \
-  click_script="open -a 'Activity Monitor'" \
+  click_script="open -a 'Activity Monitor' && $POPUP_OFF" \
   \
   --add item apple.popup.brew popup.apple \
   --set apple.popup.brew label="Homebrew ($COUNT)" \
   icon=$BREW "${properties[@]}" \
+  click_script="$POPUP_OFF" \
   \
   --add item apple.popup.lock popup.apple \
   --set apple.popup.lock label="Lock Screen" \
   icon=$LOCK "${properties[@]}" \
-  click_script="pmset displaysleepnow" \
+  click_script="pmset displaysleepnow && $POPUP_OFF" \
   \
   --add item apple.popup.restart popup.apple \
   --set apple.popup.restart label="Restart" \
   icon=$RESTART "${properties[@]}" \
-  click_script="reboot" \
+  click_script="reboot && $POPUP_OFF" \
   \
   --add item apple.popup.shutdown popup.apple \
   --set apple.popup.shutdown label="Shutdown" \
   icon=$OFF "${properties[@]}" \
-  click_script="shutdown"
+  click_script="shutdown && $POPUP_OFF"

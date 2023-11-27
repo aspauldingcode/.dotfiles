@@ -16,6 +16,8 @@
     cowsay
     qemu
     discord
+    spotify
+    vscode
     utm  
     mas
     nil #rnix-lsp apparently is vulnerable? 
