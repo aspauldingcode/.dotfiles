@@ -6,14 +6,14 @@ let
       export PURPLE="0xff${colors.base0C}" # Border color.
       export GREY="0xff${colors.base0C}"  # idk what this is for
       export TRANSPARENT=0x00000000
-      export WHITE=0xFFFFFFFF
-      export BLUE="0x74${colors.base00}" # Changes background of drop-down windows 
-      export MAGENTA=0xFF007CFF # Changed border color? NO
+      export WHITE="0xff${colors.base05}"
+      export BLUE="0x74${colors.base0D}"  # Changes background of drop-down windows 
+      export MAGENTA="0xff${colors.base0E}" # Changed border color? NO
       export ORANGE=0xFF966CFF
-      export TEMPUS="0xff${colors.base05}" # backgrounds of RAM, spotify, apple logo, time and date
+      export TEMPUS="0xff${colors.base03}" # backgrounds of RAM, spotify, apple logo, time and date
       export STATUS="0xff${colors.base00}" #BACKGROUND of bar. make same as allacritty.
       export SPACEBG=0xFF808080 #Didn't change much?
-      export MIDNIGHT="0xff${colors.base05}" # Only worked on the mail icon?
+      export MIDNIGHT="0x74${colors.base03}" # Only worked on the mail icon?
       '';
 
 in {

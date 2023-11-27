@@ -17,25 +17,15 @@
 
       # move/resize windows with mouse
       yabai -m config mouse_modifier              alt
-	  yabai -m config mouse_action1               move
+      yabai -m config mouse_action1               move
       yabai -m config mouse_action2               resize
       yabai -m config focus_follows_mouse         autofocus
       yabai -m config mouse_follows_focus         off #FIXME: configure apps so I can turn this on.
 
-      # borders #REMOVED, upgrading to Sonoma with JANKYBORDERS!
-      # yabai -m config window_border               on
-      # yabai -m config window_border_placement     inset
-      # yabai -m config window_border_width         2
-      # yabai -m config window_border_radius        11
-      # yabai -m config window_border_blur          off
-      # yabai -m config active_window_border_color  0xffA34A28
-      # yabai -m config normal_window_border_color  0xff808080
-      # yabai -m config insert_feedback_color       0xff808080
-
       #UPGRADED to Sonoma. JankyBorders installed
-      borders active_color=0xff"${colors.base0C}" inactive_color=0xff808080 width=5.0 2>/dev/null 1>&2 &
+      borders active_color=0xff"${colors.base0C}" inactive_color=0xff"${colors.base03}"width=5.0 2>/dev/null 1>&2 &
 
-      e window appearance
+      # window appearance
       yabai -m config window_shadow               off
       yabai -m config window_opacity              on
       yabai -m config window_opacity_duration     0.1
@@ -49,7 +39,7 @@
       # floating windows are always on top
       # when enabling this option, overlays in chrome are hidden
       # this affects popups like site search or bitwarden extension
-      #yabai -m config window_topmost off
+      # yabai -m config window_topmost off
 
       # gaps
       yabai -m config top_padding     15
@@ -65,15 +55,14 @@
       yabai -m rule --add title="Preferences$"        manage=off
       yabai -m rule --add title="Settings$"           manage=off
       yabai -m rule --add app='System Settings'       manage=off
-	  yabai -m rule --add app='System Information'    manage=off
-	  yabai -m rule --add app='zoom.us'               manage=off
+      yabai -m rule --add app='System Information'    manage=off
+      yabai -m rule --add app='zoom.us'               manage=off
       yabai -m rule --add app='Finder'                manage=off
       yabai -m rule --add app='Archive Utility'       manage=off
       yabai -m rule --add app='Display Calibrator'    manage=off
       yabai -m rule --add app='Installer'             manage=off
       yabai -m rule --add app='Karabiner-EventViewer' manage=off
       yabai -m rule --add app='Karabiner-Elements'    manage=off
-
 
       # workspace management
       yabai -m space 1  --label term
@@ -128,18 +117,21 @@
         ctrl + shift + cmd - 0x33 : sudo shutdown -h now
         ctrl + cmd - delete : sudo reboot
         ctrl + shift + cmd - delete : sudo shutdown -h now
-        alt + shift - space : yabai -m window --toggle float
         alt + shift - q : yabai -m window --close
-		alt - f : yabai -m window --toggle zoom-fullscreen
-        #alt + shift - f : yabai -m window --toggle native-fullscreen #DON'T that thing SUCKS
+	alt - f : yabai -m window --toggle zoom-fullscreen
+        alt + shift - f : yabai -m window --toggle native-fullscreen #DON'T that thing SUCKS
 
         # workspaces
-        # ctrl + alt - j : ${yabai} -m space --focus prev
+        ctrl + alt - j : ${yabai} -m space --focus prev
         ctrl + alt - k : ${yabai} -m space --focus next
         cmd + alt - j : ${yabai} -m space --focus prev
         cmd + alt - k : ${yabai} -m space --focus next
+        ctrl + alt - down : ${yabai} -m space --focus prev
+        ctrl + alt - up : ${yabai} -m space --focus next
+        cmd + alt - down : ${yabai} -m space --focus prev
+        cmd + alt - up : ${yabai} -m space --focus next
 
-        # move focused window to next/prev workspace
+        # move focused window to workspace n
         alt + shift - 1 : ${yabai} -m window --space 1
         alt + shift - 2 : ${yabai} -m window --space 2
         alt + shift - 3 : ${yabai} -m window --space 3
@@ -150,6 +142,18 @@
         alt + shift - 8 : ${yabai} -m window --space 8
         alt + shift - 9 : ${yabai} -m window --space 9
         alt + shift - 0 : ${yabai} -m window --space 10
+        
+        # move focused space to workspace n
+        alt - 1 : ${yabai} -m window --space 1
+        alt - 2 : ${yabai} -m window --space 2
+        alt - 3 : ${yabai} -m window --space 3
+        alt - 4 : ${yabai} -m window --space 4
+        alt - 5 : ${yabai} -m window --space 5
+        alt - 6 : ${yabai} -m window --space 6
+        alt - 7 : ${yabai} -m window --space 7
+        alt - 8 : ${yabai} -m window --space 8
+        alt - 9 : ${yabai} -m window --space 9
+        alt - 0 : ${yabai} -m window --space 10
 
         alt + shift - y : ${yabai} -m space --mirror y-axis
         alt + shift - x : ${yabai} -m space --mirror x-axis
@@ -190,10 +194,10 @@
 
         # toggle layout
         alt - t : ${yabai} -m space --layout bsp
-        alt - d : ${yabai} -m space --layout stack
+        alt - s : ${yabai} -m space --layout stack
 
         # float / unfloat window and center on screen
-        alt - n : ${yabai} -m window --toggle float; \
+        alt + shift - space : ${yabai} -m window --toggle float; \
                   ${yabai} -m window --grid 4:4:1:1:2:2
 
         # toggle sticky(+float), topmost, picture-in-picture
@@ -202,7 +206,7 @@
                   ${yabai} -m window --toggle pip
 
         # reload
-        shift + alt - r : skhd --restart-service; yabai --restart-service; brew services restart sketchybar
+        # shift + alt - r : skhd --restart-service; yabai --restart-service; brew services restart sketchybar
       '';
   };
 }

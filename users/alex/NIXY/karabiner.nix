@@ -1039,25 +1039,6 @@
       ];
     }
     {
-      description = "Win [Open Spotlight]";
-      manipulators = [
-        {
-          from."key_code" = "left_command";
-          to = [
-            {
-              "key_code" = "left_command";
-            }
-          ];
-          "to_if_alone" = [
-            {
-              "apple_vendor_keyboard_key_code" = "spotlight";
-            }
-          ];
-          type = "basic";
-        }
-      ];
-    }
-    {
       description = "A (Ctrl)";
       manipulators = [
         {

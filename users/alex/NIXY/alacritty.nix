@@ -34,6 +34,9 @@
         size = 16.0;
       };
 
+        # Becomes either 'dark' or 'light', based on your colors! (in qutebrowser)
+        #webppage.preferred_color_scheme = "${config.colorScheme.kind}";
+
       colors = {
         primary = {
           foreground = "#${config.colorScheme.colors.base05}";
@@ -44,28 +47,28 @@
       #cursor  ="0xEBEBEB";
       #};
       normal = {#TRYING TO GRUVBOX IT
-      black   ="0x0d0d0d";
-      red     ="0xCC241D";
-      green   ="0x98971A";
-      yellow  ="0xD79921";
-      blue    ="0x458588";
-      purple  ="0xB16286";
-      aqua    ="0x689D6A";
-      gray    ="0xa89984";
+      black   ="#${config.colorScheme.colors.base00}";
+      red     ="#${config.colorScheme.colors.base08}";
+      green   ="#${config.colorScheme.colors.base0B}";
+      yellow  ="#${config.colorScheme.colors.base0A}";
+      blue    ="#${config.colorScheme.colors.base0D}";
+      purple  ="#${config.colorScheme.colors.base0E}";
+      aqua    ="#${config.colorScheme.colors.base0C}";
+      gray    ="#${config.colorScheme.colors.base05}";
     };
     bright = {
-      black   ="0x6D7070";
-      red     ="0xFB4934";
-      green   ="0xB8BB26";
-      yellow  ="0xFABD2F";
-      blue    ="0x83A598";
-      purple  ="0xD3869B";
-      aqua    ="0x8EC07C";
-      gray    ="0x928374";
+      black   ="#${config.colorScheme.colors.base03}";
+      red     ="#${config.colorScheme.colors.base08}";
+      green   ="#${config.colorScheme.colors.base0B}";
+      yellow  ="#${config.colorScheme.colors.base0A}";
+      blue    ="#${config.colorScheme.colors.base0D}";
+      purple  ="#${config.colorScheme.colors.base0E}";
+      aqua    ="#${config.colorScheme.colors.base0C}";
+      gray    ="#${config.colorScheme.colors.base07}";
     };
-  };
-
-  cursor = {
+    };
+  
+ cursor = {
     style = "Beam";
     blinking = "On";
     blink_interval = 750;
@@ -80,11 +83,11 @@
       mods = "Alt|Shift";
       action = "ToggleSimpleFullscreen";
     }
-    {
-       key = "C";
-       mods = "Control|Shift";
-       chars = "\\x03";
-    }
+    # {
+       # key = "C";
+       # mods = "Control|Shift";
+       # chars = "\\x03";
+    # }
     # {
     #   key = "C";
     #   mods = "Command";
@@ -99,8 +102,8 @@
     #   key = "Period"; 
     #   mods = "Control";
     # }
-  #- { key: L,         mods: Control,                    action: ClearLogNotice }
-  #- { key: L,         mods: Control, mode: ~Vi|~Search, chars: "\x0c"          }
+    #- { key: L,         mods: Control,                    action: ClearLogNotice }
+    #- { key: L,         mods: Control, mode: ~Vi|~Search, chars: "\x0c"          }
   {
     key = "PageUp";
           #mods = "Shift";   
