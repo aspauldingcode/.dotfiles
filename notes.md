@@ -95,3 +95,115 @@ reboot for changes to take effect.
 
 Silence "Last login: tty000" motd: 
 `touch ~/.hushlogin`
+
+
+
+
+QUICK INFO DUMP:
+As of 11/30/23, I've reinstalled macos.
+I first started by opening safari, and navigating to my dotfiles repo.
+Then, I installed Nix with Nix-Determinate Installer.
+Then, I opened terminal, and typed "git". This prompts xcode-tools install, for git command.
+Then, I git cloned the repo to my home directory.
+Then, I cd into my local repo clone, and I ran nix flake update.
+Then, I tried to use the nix flakes. I ran into problem, so I think I need nix-darwin.
+So, I know I need `nix run nix-darwin -- switch --flake ~/.dotfiles/`. 
+Then, I have access to nix-darwin.
+But, I hit error: 
+```
+error: Unexpected files in /etc, aborting activation
+The following files have unrecognized content and would be overwritten:
+
+  /etc/zshenv
+
+Please check there is nothing critical in these files, rename them by adding .before-nix-darwin to the end, and then try again.
+```
+
+I beleive it's fixable with: `sudo mv /etc/zshenv /etc/zshenv.before-nix-darwin`
+
+So, I think I need to run that before I run the nix run nix-darwin -- switch --flake ~/.dotfiles/`
+
+We face a problem with homebrew not being installed. 
+I should install homebrew before I run the nix run command above.
+`/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
+
+Warning: /opt/homebrew/bin is not in your PATH.
+
+```
+==> Next steps:
+- Run these two commands in your terminal to add Homebrew to your PATH:
+    (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/alex/.zprofile
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+```
+
+I run that command.
+Then, I run Nix Run Nix-darwin thing again above.
+This time, It uses homebrew and installs some extra things.
+Now, I should be able to use nix-darwin..
+
+Now, I'm curious if rebuild works. So I try rebuild. If that doesn't work..
+So I try the initial rebuild commands: 
+```
+#NEEDED for FIRST INSTALL (LIKELY TO CHANGE IN THE FUTURE)
+darwin-rebuild switch -I ~/.dotfiles/system/NIXY/darwin-configuration.nix
+home-manager build --flake .#alex@NIXY
+```. 
+zsh: command not found: darwin-rebuild
+zsh: command not found: home-manager
+
+So, I just use the regular non-flake nix-darwin installer:
+nix-build https://github.com/LnL7/nix-darwin/archive/master.tar.gz -A installer
+./result/bin/darwin-installer
+But that throws error AND I DON'T NEED TO INSTALL IT BECAUSE  nix-determinate installer says do not use the nix-darwin installer on a flake system, which is enabled by default by determinite-installer...
+
+
+So, I run:
+
+```
+darwin-rebuild switch -I ~/.dotfiles/system/NIXY/darwin-configuration.nix                                               ~/.dotfiles
+home-manager build --flake .#alex@NIXY
+```
+
+To which I get:
+```darwin-rebuild switch -I ~/.dotfiles/system/NIXY/darwin-configuration.nix                                               ~/.dotfiles
+home-manager build --flake .#alex@NIXY
+building the system configuration...
+warning: Nix search path entry '/nix/var/nix/profiles/per-user/root/channels' does not exist, ignoring
+error: file 'darwin' was not found in the Nix search path (add it using $NIX_PATH or -I)
+
+       at «none»:0: (source not available)
+warning: Git tree '/Users/alex/.dotfiles' is dirty
+trace: warning: optionsDocBook is deprecated since 23.11 and will be removed in 24.05
+trace: warning: optionsDocBook is deprecated since 23.11 and will be removed in 24.05
+trace: warning: optionsDocBook is deprecated since 23.11 and will be removed in 24.05
+[1/83/96 built, 364 copied (3020.9 MiB), 533.7 MiB DL] building SpotifyARM64.dmg:                                  
+```
+
+Suggesting that home-manager switch worked, but I probably need to re-run the regular commands with darwin-rebuild switch --flake .#NIXY or somemthing.. for the system build inside the dotfiles local repo again. Not sure why the nix home-manager already went. 
+
+So, I run "rebuild" command, which is a script I wrote in bash as a nix expression to scriptBinary, and it seems to have rebuilt everything.
+
+I can't remember if I specifically mentioned it somewhere, but the system wouldn't do much until I went to System Settings -> General -> About -> Name -> Alex's Macbook Air 2020
+and rename it to 'NIXY' because our Flake specifies a hostname of NIXY.
+
+It should be noted the following:
+Brave browser doesn't ship a aarch64 package through nixpkgs.. so we've got it installed through homebrew. Don't install it manually.
+
+Running rebuild -r to rebuild icon cache in Launchpad, to see available apps.
+Dock shows by default? I thought my darwin-defaults.nix hid that. Also, is there a way to disable wallpaper click on macos Sonoma? It's a Widget thing.
+
+Disable/reduce motion on macos.. Currently, everything is glitchy and ugly otherwise.
+Disable hotcorners/remove quicknote corner shortcut mouseover. It's annoying.
+Reduce transparency. ## WHY WASN'T THIS DEFAULT? EWW...
+
+Switch default browser to brave. Why isn't this automatic?
+Disable "Reopen Windows after Shutdown" option in menubar apple -> Shutdown menu
+
+Sync Brave Browser to my Sync Chain.. Turn on Chrome mem management, and enable extensions "keep it" prompts
+
+Change macos highlight color.
+
+Petty sh*t:
+Install Macos Instant View usb display driver by silicon Motion.
+Sign into appleid.
+Sign out of iMessage
