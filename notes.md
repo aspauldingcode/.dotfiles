@@ -206,4 +206,29 @@ Change macos highlight color.
 Petty sh*t:
 Install Macos Instant View usb display driver by silicon Motion.
 Sign into appleid.
-Sign out of iMessage
+Sign out of iMessage 
+
+
+If 2fa is enabled on github switch to ssh instead of https on linux/macos
+
+1. generate an ssh keypair on your linux/macos
+ssh-keygen -t ed25519
+
+2. add the public key to github: profile - settings - ssh keys
+
+3. switch from https to ssh
+
+Check your repo remote:
+git remote -v
+should show:
+origin  https://github.com/aspauldingcode/.dotfiles.git (fetch)
+origin  https://github.com/aspauldingcode/.dotfiles.git (push)
+
+Change the remote:
+git remote set-url origin git@github.com:aspauildingcode/.dotfiles.git
+
+verify:
+git remote -v
+should show:
+origin  https://github.com/aspauldingcode/.dotfiles.git (fetch)
+origin  https://github.com/aspauldingcode/.dotfiles.git (push)
