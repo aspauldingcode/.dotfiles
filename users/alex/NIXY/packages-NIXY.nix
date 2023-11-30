@@ -18,7 +18,7 @@
     discord
     spotify
     vscode
-    utm  
+    utm 
     mas
     yazi #somehow it's back? what?
     nil #rnix-lsp apparently is vulnerable? 

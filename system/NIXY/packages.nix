@@ -98,6 +98,33 @@
           sketchybar -m --set mic icon=
           fi 
           '')
+
+
+#singleusermode on
+(pkgs.writeShellScriptBin "sumode" ''
+  if [[ "$1" == "on" ]]; then
+    echo "User entered 'on' argument."
+    echo "Turning on Single User Mode..."
+    sudo nvram boot-args="-arm64e_preview_abi -v -s"
+  elif [[ "$1" == "off" ]]; then
+    echo "User entered 'off' argument."
+    echo "Turning off Single User Mode..."
+    sudo nvram boot-args="-arm64e_preview_abi -v"
+  fi
+
+  if [[ "$1" == "on" || "$1" == "off" ]]; then
+    echo "Completed. Your boot args are listed below:"
+    nvram -p | grep boot-args
+    echo "Done. Rebooting..."
+    sleep 2
+    sudo reboot
+  else
+    echo "No argument provided. Please add arguments 'on' or 'off' for this command."
+    echo "Your current boot args are listed below:"
+    nvram -p | grep boot-args
+            fi
+'')
+
         ];
         system.activationScripts.extraActivation.text = '' 
         ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk20}/zulu-20.jdk" "/Library/Java/JavaVirtualMachines/"

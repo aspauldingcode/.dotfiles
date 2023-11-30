@@ -121,6 +121,8 @@ Please check there is nothing critical in these files, rename them by adding .be
 
 I beleive it's fixable with: `sudo mv /etc/zshenv /etc/zshenv.before-nix-darwin`
 
+EDIT: `sudo mv /etc/bashrc /etc/bashrc.before-nix-darwin && sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin && sudo mv /etc/zshenv /etc/zshenv.before-nix-darwin`
+
 So, I think I need to run that before I run the nix run nix-darwin -- switch --flake ~/.dotfiles/`
 
 We face a problem with homebrew not being installed. 
@@ -232,3 +234,4 @@ git remote -v
 should show:
 origin  git@github.com:aspauldingcode/.dotfiles.git (fetch)
 origin  git@github.com:aspauldingcode/.dotfiles.git (push)
+

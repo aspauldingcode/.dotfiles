@@ -27,6 +27,7 @@ homebrew = {
    "alt-tab"
    "orbstack"
    "karabiner-elements" # remap keyboard
+   "unnaturalscrollwheels"
  ];
 
   #masApps = [ #FAILS
