@@ -230,5 +230,5 @@ git remote set-url origin git@github.com:aspauildingcode/.dotfiles.git
 verify:
 git remote -v
 should show:
-origin  https://github.com/aspauldingcode/.dotfiles.git (fetch)
-origin  https://github.com/aspauldingcode/.dotfiles.git (push)
+origin  git@github.com:aspauldingcode/.dotfiles.git (fetch)
+origin  git@github.com:aspauldingcode/.dotfiles.git (push)
