@@ -20,7 +20,7 @@
           plugin = nvim-lspconfig;
           config = toLuaFile ../extraConfig/nvim/plugin/lsp.lua;
         }
-        # nvim-jdtls # FIXME: y u no worky? >:(
+        nvim-jdtls # FIXME: y u no worky? >:(
         # lsp-status-nvim # FIXME: What about lspinfo?
         # lazy-lsp-nvim # FIXME: LEARN MORE
         # asyncomplete-lsp-vim # FIXME: Learn more
@@ -58,11 +58,11 @@
         }
 
         # File Tree
-        #{
-        #  plugin = nvim-tree-lua;
-        #  config = toLuaFile ../extraConfig/nvim/plugin/nvim-tree.lua;
-        #}
-        nerdtree
+        {
+         plugin = nvim-tree-lua;
+         config = toLuaFile ../extraConfig/nvim/plugin/nvim-tree.lua;
+        }
+        # nerdtree
         nvim-web-devicons # optional, for file icons
 
         # Code Snippits

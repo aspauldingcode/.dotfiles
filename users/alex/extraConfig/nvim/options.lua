@@ -26,7 +26,7 @@ o.expandtab = true
 o.signcolumn = 'yes'
 o.wrap = false
 o.textwidth = 80
-o.formatoptions = t
+o.formatoptions = "t"
 
 -- Use mouse
 o.mouse = "a"
@@ -42,6 +42,18 @@ vim.cmd('filetype plugin indent on')
 -- Get rid of annoying viminfo file
 o.viminfo = ""
 o.viminfofile = "NONE"
+
+-- Keybinds
+local function map(mode, combo, mapping, opts)
+    local options = {noremap = true}
+    if opts then
+        options = vim.tbl_extend('force', options, opts)
+    end
+    vim.api.nvim_set_keymap(mode, combo, mapping, options)
+end
+map('n', '<C-p>', ':NvimTreeToggle <CR>', {noremap = true})
+map('n', '<C-f>', ':Telescope find_files <CR>', {noremap = true})
+map('n', '<C-n>', ':Telescope live_grep <CR>', {noremap = true})
 
 -- Misc Improvements
 o.smartcase = true

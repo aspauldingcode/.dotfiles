@@ -18,13 +18,23 @@ imports = [
     colorScheme = nix-colors.colorSchemes.gruvbox-dark-soft;
 
 
-home = {
-  username = "alex";
-  homeDirectory = "/home/alex";
-  stateVersion = "23.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-  file = { # MANAGE DOTFILES?
-};
-};
+    home = {
+      username = "alex";
+      homeDirectory = "/home/alex";
+      stateVersion = "23.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+      shellAliases = { 
+        python = "python3.11";
+        vim = "nvim";
+        vi = "nvim";
+        reboot = "sudo reboot now";
+        rb = "sudo reboot now";
+        shutdown = "sudo shutdownnow";
+        sd = "sudo shutdown now";
+        l = "ls";
+      };
+      file = { # MANAGE DOTFILES?
+    };
+  };
 
 # Decoratively fix virt-manager error: "Could not detect a default hypervisor" instead of imperitively through virt-manager's menubar > file > Add Connection
 dconf.settings = {

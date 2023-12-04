@@ -78,7 +78,7 @@ in
           "network"
           "custom/tailscale-ping"
           # TODO: currently broken for some reason
-          #"custom/gammastep"
+          "custom/gammastep"
           "tray"
           #"custom/hostname"
         ];
@@ -201,6 +201,7 @@ in
             "syncing" = "󰁪";
           };
         };
+        
         #"custom/gpg-agent" = {
         #  interval = 2;
         #  return-type = "json";
@@ -219,36 +220,39 @@ in
         #   };
         #   on-click = "";
         # };
-        # "custom/gammastep" = {
-        #   interval = 5;
-        #   return-type = "json";
-        #   exec = jsonOutput "gammastep" {
-        #     pre = ''
-        #       if unit_status="$(${systemctl} --user is-active gammastep)"; then
-        #         status="$unit_status ($(${journalctl} --user -u gammastep.service -g 'Period: ' | ${tail} -1 | ${cut} -d ':' -f6 | ${xargs}))"
-        #       else
-        #         status="$unit_status"
-        #       fi
-        #     '';
-        #     alt = "\${status:-inactive}";
-        #     tooltip = "Gammastep is $status";
-        #   };
-        #   format = "{icon}";
-        #   format-icons = {
-        #     "activating" = "󰁪 ";
-        #     "deactivating" = "󰁪 ";
-        #     "inactive" = "? ";
-        #     "active (Night)" = " ";
-        #     "active (Nighttime)" = " ";
-        #     "active (Transition (Night)" = " ";
-        #     "active (Transition (Nighttime)" = " ";
-        #     "active (Day)" = " ";
-        #     "active (Daytime)" = " ";
-        #     "active (Transition (Day)" = " ";
-        #     "active (Transition (Daytime)" = " ";
-        #   };
-        #   on-click = "${systemctl} --user is-active gammastep && ${systemctl} --user stop gammastep || ${systemctl} --user start gammastep";
-        # };
+
+        "custom/gammastep" = {
+          interval = 5;
+          return-type = "json";
+          exec = jsonOutput "gammastep" {
+            pre = ''
+              if unit_status="$(${systemctl} --user is-active gammastep)"; then
+                status="$unit_status ($(${journalctl} --user -u gammastep.service -g 'Period: ' | ${tail} -1 | ${cut} -d ':' -f6 | ${xargs}))"
+              else
+                status="$unit_status"
+              fi
+            '';
+            alt = "\${status:-inactive}";
+            tooltip = "Gammastep is $status";
+          };
+          format = "{icon}";
+          format-icons = {
+            "activating" = "󰁪 ";
+            "deactivating" = "󰁪 ";
+            "inactive" = "? ";
+            "active (Night)" = " ";
+            "active (Nighttime)" = " ";
+            "active (Transition (Night)" = " ";
+            "active (Transition (Nighttime)" = " ";
+            "active (Day)" = " ";
+            "active (Daytime)" = " ";
+            "active (Transition (Day)" = " ";
+            "active (Transition (Daytime)" = " ";
+          };
+          on-click = "${systemctl} --user is-active gammastep && ${systemctl} --user stop gammastep || ${systemctl} --user start gammastep";
+        };
+
+
         "custom/currentplayer" = {
           interval = 2;
           return-type = "json";
@@ -297,7 +301,6 @@ in
           on-click = "${playerctl} play-pause";
         };
       };
-
     };
     # Cheatsheet:
     # x -> all sides
@@ -326,12 +329,6 @@ in
         border: 2px solid #${colors.base0C};
         border-radius: 10px;
       }
-      window#waybar.bottom {
-        opacity: 0.90;
-        background-color: #${colors.base00};
-        border: 2px solid #${colors.base0C};
-        border-radius: 10px;
-      }
 
       window#waybar {
         color: #${colors.base05};
@@ -347,10 +344,12 @@ in
         background-color: #${colors.base00};
         color: #${colors.base04};
       }
+      
       #workspaces button.focused,
       #workspaces button.active {
         background-color: #${colors.base0A};
         color: #${colors.base00};
+        padding: 5px;
       }
 
       #clock {
