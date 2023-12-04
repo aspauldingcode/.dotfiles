@@ -13,14 +13,12 @@
       viAlias = true;
       vimAlias = true;
       vimdiffAlias = true;
-      plugins = with pkgs.vimPlugins; [      
-        
+      plugins = with pkgs.vimPlugins; [
         # LSP
         {
           plugin = nvim-lspconfig;
           config = toLuaFile ../extraConfig/nvim/plugin/lsp.lua;
         }
-
 
         nvim-jdtls # FIXME: y u no worky? >:(
         # lsp-status-nvim # FIXME: What about lspinfo?
@@ -59,8 +57,8 @@
         
         # File Tree
         {
-         plugin = nvim-tree-lua;
-         config = toLuaFile ../extraConfig/nvim/plugin/nvim-tree.lua;
+          plugin = nvim-tree-lua;
+          config = toLuaFile ../extraConfig/nvim/plugin/nvim-tree.lua;
         }
         nvim-web-devicons # optional, for file icons
 
@@ -81,9 +79,21 @@
         }
         
         # Visual Fixes
-        lualine-nvim # FIXME: https://github.com/nvim-lualine/lualine.nvim
-        indentLine # lines to identify codeblocks
+        {
+          plugin = feline-nvim;
+          config = let inherit (config.colorscheme) colors; in
+          toLuaFile ../extraConfig/nvim/plugin/feline.lua;
+        }
 
+        {
+          plugin = winbar-nvim;
+          config = toLuaFile ../extraConfig/nvim/plugin/winbar.lua;
+        }
+
+        {
+          plugin = indent-blankline-nvim; # lines to identify codeblocks
+          config = toLuaFile ../extraConfig/nvim/plugin/indent-blankline.lua;
+        }
         # Behavior Fixes
         vim-autoswap
 
@@ -101,17 +111,6 @@
           config = toLuaFile ../extraConfig/nvim/plugin/neorg.lua;
         }
         neorg-telescope
- 
-        {
-          plugin = feline-nvim;
-          config = let inherit (config.colorscheme) colors; in
-          toLuaFile ../extraConfig/nvim/plugin/feline.lua;
-        }
-
-        {
-          plugin = winbar-nvim;
-          config = toLuaFile ../extraConfig/nvim/plugin/winbar.lua;
-        }
 
         {
           plugin = (nvim-treesitter.withPlugins (p: [
