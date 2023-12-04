@@ -137,7 +137,6 @@
       arduino-language-server
       nodePackages_latest.vim-language-server
       #python311Packages.python-lsp-server
-
       blueman 
       jq 
       flameshot 

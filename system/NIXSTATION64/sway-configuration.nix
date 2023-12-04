@@ -47,14 +47,14 @@ in
 			dbus-sway-environment
 			configure-gtk
 			wayland
-            xdg-utils # for opening default programs when clicking links
+      xdg-utils # for opening default programs when clicking links
 			glib # gsettings
 			dracula-theme # gtk theme
 			gnome3.adwaita-icon-theme  # default gnome cursors
 			swaylock
-            swayidle
-            waybar
-            grim # screenshot functionality
+      swayidle
+      waybar
+      grim # screenshot functionality
 			slurp # screenshot functionality
 			wl-clipboard # wl-copy and wl-paste for copy/paste from stdin / stdout
 			bemenu # wayland clone of dmenu

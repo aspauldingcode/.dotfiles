@@ -15,17 +15,20 @@
       vimdiffAlias = true;
       plugins = with pkgs.vimPlugins; [      
         
-        # LSP Related
+        # LSP
         {
           plugin = nvim-lspconfig;
           config = toLuaFile ../extraConfig/nvim/plugin/lsp.lua;
         }
+
+
         nvim-jdtls # FIXME: y u no worky? >:(
         # lsp-status-nvim # FIXME: What about lspinfo?
         # lazy-lsp-nvim # FIXME: LEARN MORE
         # asyncomplete-lsp-vim # FIXME: Learn more
 
         # Auto-Completion
+        #FIXME: CHECKOUT COMPE?
         {
           plugin = nvim-cmp;
           config = toLuaFile ../extraConfig/nvim/plugin/cmp.lua;
@@ -56,13 +59,14 @@
           plugin = telescope-nvim;
           config = toLuaFile ../extraConfig/nvim/plugin/telescope.lua;
         }
+        
+
 
         # File Tree
         {
          plugin = nvim-tree-lua;
          config = toLuaFile ../extraConfig/nvim/plugin/nvim-tree.lua;
         }
-        # nerdtree
         nvim-web-devicons # optional, for file icons
 
         # Code Snippits
@@ -85,7 +89,14 @@
 
         # Syntax Highlighting
         vim-nix # better highlighting for nix files
-        
+
+        # Emacs Org for nvim
+        {
+          plugin = neorg;
+          config = toLuaFile ../extraConfig/nvim/plugin/neorg.lua;
+        }
+        neorg-telescope
+    
         {
           plugin = (nvim-treesitter.withPlugins (p: [
             p.tree-sitter-nix

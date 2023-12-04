@@ -53,7 +53,7 @@ local function map(mode, combo, mapping, opts)
 end
 map('n', '<C-p>', ':NvimTreeToggle <CR>', {noremap = true})
 map('n', '<C-f>', ':Telescope find_files <CR>', {noremap = true})
-map('n', '<C-n>', ':Telescope live_grep <CR>', {noremap = true})
+map('n', '<C-n>', ':Telescope find_files <CR>', {noremap = true})
 
 -- Misc Improvements
 o.smartcase = true
