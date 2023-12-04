@@ -6,7 +6,7 @@ RUNNING=$(osascript -e 'if application "Mail" is running then return 0')
 COUNT=0
 
 mail_popup=(
-  sticky=on
+  sticky=on#WTF doesn't change anything?
   icon=$MAIL_UNREAD
   icon.padding_left=10
   label.y_offset=0
@@ -18,7 +18,7 @@ mail_popup=(
 )
 
 sketchybar --add item mail.popup popup.mail \
-  --set mail.popup "${mail_popup[@]}"
+  --set mail.popup "${mail_popup[@]}" \
 
 if [ "$RUNNING" = "0" ]; then
   COUNT=$(osascript -e 'tell application "Mail" to return the unread count of inbox')

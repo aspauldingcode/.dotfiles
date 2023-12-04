@@ -16,8 +16,11 @@
     cowsay
     qemu
     discord
-    utm  
+    spotify
+    vscode
+    utm 
     mas
+    yazi #somehow it's back? what?
     nil #rnix-lsp apparently is vulnerable? 
     zoom-us
     (pkgs.python311.withPackages(ps: [ 
@@ -50,8 +53,8 @@ echo "Hello, ${config.home.username}!"
             '')
             #fix-wm
             (pkgs.writeShellScriptBin "fix-wm" ''
-              yabai --restart-service
-              skhd --restart-service
+              yabai --stop-service && yabai --start-service #helps with adding initial service
+              skhd --stop-service && skhd --start-service #otherwise, I have to run manually first time.
               brew services restart felixkratz/formulae/sketchybar 
             '')
           ];

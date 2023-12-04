@@ -82,6 +82,7 @@
         vim-nix
         vim-autoswap
         nvim-jdtls
+        indentLine # lines to identify codeblocks
 
         {
           plugin = (nvim-treesitter.withPlugins (p: [

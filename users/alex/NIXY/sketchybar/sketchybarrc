@@ -1,13 +1,5 @@
 #!/bin/sh
 
-#                      _ _
-#                     (_) |
-#  _ __ _____   ___ __ _| |_ ____           github:     https://github.com/mvritz
-# | '_ ` _ \ \ / / '__| | __|_  /           twitter:    https://twitter.com/meshtonight
-# | | | | | \ V /| |  | | |_ / /            instagram:  https://instagram.com/mo.drs
-# |_| |_| |_|\_/ |_|  |_|\__/___|
-#
-
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 
@@ -62,6 +54,8 @@ time=(
   background.padding_left=3
   background.padding_right=3
   background.border_color=$PURPLE
+  popup.y_offset=13
+  popup.align=right
 )
 
 sketchybar --add item time right \
@@ -77,6 +71,7 @@ date=(
   background.color=$TEMPUS
   background.height=19
   background.corner_radius=10
+  popup.y_offset=13
 )
 
 sketchybar --add item date right \
@@ -88,6 +83,7 @@ wifi=(
   click_script="$POPUP_CLICK_SCRIPT"
   label.padding_right=15
   update_freq=60
+  popup.y_offset=13
 )
 
 rm -f /tmp/sketchybar_speed
@@ -102,6 +98,7 @@ battery=(
   updates=on
   click_script="$POPUP_CLICK_SCRIPT"
   label.padding_left=15
+  popup.y_offset=13
 )
 
 sketchybar --add item battery right \
@@ -157,6 +154,7 @@ mail=(
   icon.padding_left=15
   icon.padding_right=15
   update_freq=60
+  popup.y_offset=13
 )
 
 sketchybar --add item mail right \
@@ -177,6 +175,7 @@ spotify=(
   background.padding_right=3
   script="$PLUGIN_DIR/spotify.sh"
   update_freq=5
+  popup.y_offset=13
 )
 
 sketchybar --add event spotify_change $SPOTIFY_EVENT \
@@ -238,6 +237,9 @@ apple=(
   background.corner_radius=10
   background.padding_left=3
   background.padding_right=3
+  popup.align=left
+  popup.y_offset=13
+  popup.x_offset=10  # Adjust this line to shift more left or right
 )
 
 sketchybar --add item apple left \

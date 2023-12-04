@@ -29,9 +29,21 @@
     "karabiner-elements" # remap keyboard
   ];
 
+<<<<<<< HEAD
     #masApps = [ #FAILS
       #497799835 #Xcode 
     #];
+=======
+  casks = [
+   #"xquartz" #what an ugly app
+   "dmenu-mac"
+   "brave-browser"
+   "alt-tab"
+   "orbstack"
+   "karabiner-elements" # remap keyboard
+   "unnaturalscrollwheels"
+ ];
+>>>>>>> f75894bc426fb7a61ad57f586d89b08cd27a8809
 
     whalebrews = [
       #"wget" #FAILS
