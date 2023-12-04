@@ -26,9 +26,6 @@
         # lsp-status-nvim # FIXME: What about lspinfo?
         # lazy-lsp-nvim # FIXME: LEARN MORE
         # asyncomplete-lsp-vim # FIXME: Learn more
-
-        # Auto-Completion
-        #FIXME: CHECKOUT COMPE?
         {
           plugin = nvim-cmp;
           config = toLuaFile ../extraConfig/nvim/plugin/cmp.lua;
@@ -72,7 +69,17 @@
         cmp-nvim-lsp # FIXME: What's this? NEEDED
         friendly-snippets 
         cmp_luasnip # completion for lua snippits
+        
+        {
+          plugin = pkgs.vimPlugins.cmp-nvim-tags;
+          config = toLuaFile ../extraConfig/nvim/plugin/cmp-tags.lua;
+        }
 
+        {
+          plugin = statuscol-nvim;
+          config = toLuaFile ../extraConfig/nvim/plugin/statuscol.lua;
+        }
+        
         # Visual Fixes
         lualine-nvim # FIXME: https://github.com/nvim-lualine/lualine.nvim
         indentLine # lines to identify codeblocks
@@ -95,11 +102,17 @@
         }
         neorg-telescope
  
-        { 
+        {
           plugin = feline-nvim;
-          config = toLuaFile ../extraConfig/nvim/plugin/feline.lua;
+          config = let inherit (config.colorscheme) colors; in
+          toLuaFile ../extraConfig/nvim/plugin/feline.lua;
         }
-        
+
+        {
+          plugin = winbar-nvim;
+          config = toLuaFile ../extraConfig/nvim/plugin/winbar.lua;
+        }
+
         {
           plugin = (nvim-treesitter.withPlugins (p: [
             p.tree-sitter-nix
