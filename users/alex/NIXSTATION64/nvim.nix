@@ -60,8 +60,6 @@
           config = toLuaFile ../extraConfig/nvim/plugin/telescope.lua;
         }
         
-
-
         # File Tree
         {
          plugin = nvim-tree-lua;
@@ -96,7 +94,12 @@
           config = toLuaFile ../extraConfig/nvim/plugin/neorg.lua;
         }
         neorg-telescope
-    
+ 
+        { 
+          plugin = feline-nvim;
+          config = toLuaFile ../extraConfig/nvim/plugin/feline.lua;
+        }
+        
         {
           plugin = (nvim-treesitter.withPlugins (p: [
             p.tree-sitter-nix
@@ -121,6 +124,7 @@
             p.tree-sitter-html
             p.tree-sitter-css
             p.tree-sitter-php
+            p.tree-sitter-norg
           ]));
           config = toLuaFile ../extraConfig/nvim/plugin/treesitter.lua;
         }
