@@ -62,6 +62,7 @@
       gtk-layer-shell
       i3status-rust
       imv
+      gpm
       lavalauncher
       obs-studio-plugins.wlrobs
       obs-studio-plugins.obs-vkcapture
@@ -83,6 +84,7 @@
       wl-clipboard
       wl-gammactl
       gammastep
+      geoclue2
       wl-screenrec
       wlogout
       wlroots

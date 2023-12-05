@@ -22,18 +22,21 @@
           res = "1920x1080";
           pos = "0,0"; 
           transform = "270";
+          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/BunnyCooks.jpg fill";
         };
         DP-3 = {
           res = "1920x1080";
           pos = "1080,450";
+          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ElkCooks.jpg fill";
         };
         DP-2 = {
           res = "1920x1080"; 
           pos = "3000,450";
+          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/TigerCooks.jpg fill";
         };
-        "*" = { # change background for all outputs
-          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/synthwave-night-skyscrapers.jpg fill";
-        };
+        # "*" = { # change background for all outputs
+        #   bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/synthwave-night-skyscrapers.jpg fill";
+        # };
       };
       # Use alacritty as default terminal
       terminal = "alacritty"; 

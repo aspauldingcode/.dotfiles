@@ -1,5 +1,5 @@
 
-{ pkgs, config, lib, inputs, ... }:
+{ pkgs, config, ... }:
 
 {
   programs.neovim = 
@@ -96,7 +96,6 @@
         }
         # Behavior Fixes
         vim-autoswap
-
         neodev-nvim # FIXME: WTF is neodev-nvim? NEEDED
         
         # Fuzzy Search Tool
@@ -111,6 +110,17 @@
           config = toLuaFile ../extraConfig/nvim/plugin/neorg.lua;
         }
         neorg-telescope
+        
+        {
+          plugin = guess-indent-nvim;
+          config = toLua "require(\"guess-indent\").setup()";
+        }
+
+        # Git Visual integration
+        {
+          plugin = gitsigns-nvim;
+          config = toLuaFile ../extraConfig/nvim/plugin/gitsigns.lua;
+        }
 
         {
           plugin = (nvim-treesitter.withPlugins (p: [

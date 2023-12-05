@@ -28,16 +28,16 @@ capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 require('neodev').setup()
 require('lspconfig').lua_ls.setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
+  on_attach = on_attach,
+  capabilities = capabilities,
 	root_dir = function()
         return vim.loop.cwd()
     end,
 	cmd = { "lua-language-server" },
     settings = {
-        Lua = {
-            workspace = { checkThirdParty = false },
-            telemetry = { enable = false },
+      Lua = {
+        workspace = { checkThirdParty = false },
+          telemetry = { enable = false },
         },
     }
 }
@@ -51,5 +51,3 @@ require('lspconfig').nil_ls.setup {
     on_attach = on_attach,
     capabilities = capabilities,
 }
-
-require("ibl").setup()

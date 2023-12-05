@@ -50,8 +50,10 @@ in
       primary = {
         mode = "dock";
         layer = "top";
-        height = 40;
-        margin = "6";
+        height = 30;
+        margin-top = 10;
+        margin-left = 10;
+        margin-right = 10;
         position = "top";
         modules-left = [
           "custom/menu"
@@ -99,7 +101,7 @@ in
             headphone = "󰋋";
             headset = "󰋎";
             portable = "";
-            default = [ "" "" "" ];
+            default = [ "󰋋" "󰋋" "󰋋" ];
           };
           on-click = pavucontrol;
         };
@@ -131,7 +133,7 @@ in
             {ipaddr}/{cidr}
             Up: {bandwidthUpBits}
             Down: {bandwidthDownBits}'';
-          on-click = "";
+          on-click = ""; #FIXME: Add on-click setup for preview like macos
         };
         # "custom/tailscale-ping" = {
         #   interval = 10;
@@ -311,7 +313,8 @@ in
       * {
         font-family: 'DejaVu Sans', 'DejaVu Sans Mono', monospace;
         font-size: 12pt;
-        padding: 0 8px;
+        padding: 0 6px;
+        margin: -2px 0px;
       }
 
       .modules-right {
@@ -322,66 +325,74 @@ in
         margin-left: -15px;
       }
 
-      window#waybar.top {
+      window#waybar {
         opacity: 0.95;
-        padding: 0;
         background-color: #${colors.base00};
         border: 2px solid #${colors.base0C};
         border-radius: 10px;
-      }
-
-      window#waybar {
         color: #${colors.base05};
       }
 
       #workspaces button {
-        background-color: #${colors.base01};
+        background-color: #${colors.base03};
         color: #${colors.base05};
-        padding: 5px 1px;
-        margin: 3px 0;
+        padding: 0px 0px;
+        margin: 10px 4px;
+        border: 2px solid #${colors.base02};
+        border-radius: 10px;
       }
+      
       #workspaces button.hidden {
         background-color: #${colors.base00};
-        color: #${colors.base04};
+        color: #${colors.base05};
       }
       
       #workspaces button.focused,
       #workspaces button.active {
         background-color: #${colors.base0A};
-        color: #${colors.base00};
-        padding: 5px;
+        color: #${colors.base01};
+        margin: 10px 4px;
+        border: 2px solid #${colors.base0C};
+        border-radius: 10px;
       }
 
       #clock {
-        background-color: #${colors.base0C};
-        color: #${colors.base00};
+        background-color: #${colors.base03};
+        color: #${colors.base05};
         padding-left: 15px;
         padding-right: 15px;
-        margin-top: 0;
-        margin-bottom: 0;
-        border-radius: 10px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border: 2px solid #${colors.base0C};
+        border-radius: 30px;
       }
 
       #custom-menu {
-        background-color: #${colors.base0C};
-        color: #${colors.base00};
-        padding-left: 15px;
-        padding-right: 22px;
-        margin: 0;
-        border-radius: 10px;
+        background-color: #${colors.base03};
+        color: #${colors.base05};
+        padding-left: 10px;
+        padding-right: 10px;
+        margin-left: 10px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border: 2px solid #${colors.base0C};
+        border-radius: 30px;
       }
       #custom-hostname {
         background-color: #${colors.base0C};
-        color: #${colors.base00};
+        color: #${colors.base05};
         padding-left: 15px;
-        padding-right: 18px;
+        padding-right: 15px;
         margin-right: 0;
         margin-top: 0;
         margin-bottom: 0;
         border-radius: 10px;
       }
+
       #custom-currentplayer {
         padding-right: 0;
+        color: #${colors.base05};
+
       }
       #tray {
         color: #${colors.base05};
