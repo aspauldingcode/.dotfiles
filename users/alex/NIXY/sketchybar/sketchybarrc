@@ -265,6 +265,7 @@ for i in "${!SPACE_ICONS[@]}"; do
 
   if [[ $sid -eq $ACTIVE_SPACE ]]; then
     CURRENT_ICON=$PACMAN
+    background.color=$TEMPUS
   else
     CURRENT_ICON=${SPACE_ICONS["$i"]}
   fi
@@ -293,6 +294,7 @@ current_space=(
   background.border_width=2
   background.padding_left=10
   click_script="$POPUP_CLICK_SCRIPT"
+  popup.y_offset=13
 )
 
 sketchybar --add item current_space left \

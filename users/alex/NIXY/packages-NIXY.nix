@@ -16,7 +16,7 @@
     cowsay
     qemu
     discord
-    spotify
+    #spotify # Not available anymore?
     vscode
     utm 
     mas
@@ -30,32 +30,17 @@
     
     #json2nix converter
     (pkgs.writeScriptBin "json2nix" ''
-  ${pkgs.python3}/bin/python ${pkgs.fetchurl {
-    url = "https://gist.githubusercontent.com/Scoder12/0538252ed4b82d65e59115075369d34d/raw/e86d1d64d1373a497118beb1259dab149cea951d/json2nix.py";
-    hash = "sha256-ROUIrOrY9Mp1F3m+bVaT+m8ASh2Bgz8VrPyyrQf9UNQ=";
-  }} $@
-'')
-
-#hello
-(pkgs.writeShellScriptBin "my-hello" ''
-echo "Hello, ${config.home.username}!"
-'')
-    #lockscreen-motd
-    (pkgs.writeShellScriptBin "lockscreen-motd" ''
-    class_directory="/Users/alex/"
-
-            # Run the Java program with the classpath option and 
-            # capture its output in the 'what' variable
-            what=$(java -cp "$class_directory" SineWaveASCII)
-
-            # Use the captured output as 'LoginwindowText' directly
-            sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText "$what"
-            '')
-            #fix-wm
-            (pkgs.writeShellScriptBin "fix-wm" ''
-              yabai --stop-service && yabai --start-service #helps with adding initial service
-              skhd --stop-service && skhd --start-service #otherwise, I have to run manually first time.
-              brew services restart felixkratz/formulae/sketchybar 
-            '')
-          ];
-        }
+      ${pkgs.python3}/bin/python ${pkgs.fetchurl {
+      url = "https://gist.githubusercontent.com/Scoder12/0538252ed4b82d65e59115075369d34d/raw/e86d1d64d1373a497118beb1259dab149cea951d/json2nix.py";
+      hash = "sha256-ROUIrOrY9Mp1F3m+bVaT+m8ASh2Bgz8VrPyyrQf9UNQ=";
+      }} $@
+    '')
+    
+    #fix-wm
+    (pkgs.writeShellScriptBin "fix-wm" ''
+      yabai --stop-service && yabai --start-service #helps with adding initial service
+      skhd --stop-service && skhd --start-service #otherwise, I have to run manually first time.
+      brew services restart felixkratz/formulae/sketchybar 
+    '')
+  ];
+}

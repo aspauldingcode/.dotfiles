@@ -23,7 +23,7 @@
       yabai -m config mouse_follows_focus         off #FIXME: configure apps so I can turn this on.
 
       #UPGRADED to Sonoma. JankyBorders installed
-      borders active_color=0xff"${colors.base0C}" inactive_color=0xff"${colors.base03}"width=5.0 2>/dev/null 1>&2 &
+      borders active_color=0xff"${colors.base0C}" inactive_color=0xff"${colors.base03}" width=5.0 &
 
       # window appearance
       yabai -m config window_shadow               off

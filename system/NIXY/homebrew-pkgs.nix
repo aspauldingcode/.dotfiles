@@ -5,11 +5,11 @@
   homebrew = {
     enable = true;
     onActivation = {
-      # "zap" removes manually installed brews and casks
-        cleanup = "zap";
-        autoUpdate = true;
-        upgrade = true;
-      };
+      #"zap" removes manually installed brews and casks
+      cleanup = "zap";
+      autoUpdate = true;
+      upgrade = true;
+    };
     brews = [
       "xinit"
       "xorg-server"
@@ -19,37 +19,23 @@
       "sketchybar"
       "borders"
     ];
-
-    casks = [
-    #"xquartz" #what an ugly app
-    "dmenu-mac"
-    "brave-browser"
-    "alt-tab"
-    "orbstack"
-    "karabiner-elements" # remap keyboard
-  ];
-
-<<<<<<< HEAD
     #masApps = [ #FAILS
       #497799835 #Xcode 
     #];
-=======
-  casks = [
-   #"xquartz" #what an ugly app
-   "dmenu-mac"
-   "brave-browser"
-   "alt-tab"
-   "orbstack"
-   "karabiner-elements" # remap keyboard
-   "unnaturalscrollwheels"
- ];
->>>>>>> f75894bc426fb7a61ad57f586d89b08cd27a8809
-
+    casks = [
+      #"xquartz" #what an ugly app
+      "dmenu-mac"
+      "brave-browser"
+      "alt-tab"
+      "orbstack"
+      "karabiner-elements" # remap keyboard
+      "unnaturalscrollwheels"
+      "beeper"
+    ];
     whalebrews = [
       #"wget" #FAILS
       #"whalesay" #FAILS
     ];
-
     taps = [
       #"user/repo"  # Additional Homebrew tap
       # default

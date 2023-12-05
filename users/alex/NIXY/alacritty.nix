@@ -7,7 +7,7 @@
       window = {
         padding.x = 0;
         padding.y = 10;
-        opacity   = 1;
+        opacity   = 0.9;
         class.instance = "Alacritty";
         class.general  = "Alacritty";
         decorations = "buttonless";

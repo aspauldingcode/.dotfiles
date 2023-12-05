@@ -4,7 +4,7 @@ source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 
 #SPACE_ICONS=("$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GHOST")
-CURRENT_SPACE_ICONS=("$WORK" "$BROWSER" "$MUSIC" "$UNI" "$MAIL" "$GENERAL" "$GENERAL" "$GENERAL" "$GENERAL")
+#CURRENT_SPACE_ICONS=("$WORK" "$BROWSER" "$MUSIC" "$UNI" "$MAIL" "$GENERAL" "$GENERAL" "$GENERAL" "$GENERAL")
 ACTIVE_SPACE=$(yabai -m query --spaces --space | jq '.index')
 CURRENT_APP_IN_SPACE=$(osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true')
 

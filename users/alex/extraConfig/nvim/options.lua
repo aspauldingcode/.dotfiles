@@ -9,10 +9,6 @@ g.mapleader = ' '
 g.maplocalleader = ' '
 o.showcmd = true
 
--- Undo files
-o.undofile = true
-o.undodir = "/home/alex/.cache/" -- now we can disable the swap file thing
-
 -- set clipboard to use system clipboard
 o.clipboard = 'unnamedplus'
 
