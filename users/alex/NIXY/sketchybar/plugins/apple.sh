@@ -26,7 +26,7 @@ properties=(
 sketchybar --add item apple.popup.settings popup.apple \
   --set apple.popup.settings label="System Preferences" \
   icon=$PREFERENCES "${properties[@]}" \
-  click_script="open -a 'System Preferences' && $POPUP_OFF" \
+  click_script="open -a 'System Preferences' && $(POPUP_OFF)" \
   \
   --add item apple.popup.activity popup.apple \
   --set apple.popup.activity label="Activity Monitor" \
