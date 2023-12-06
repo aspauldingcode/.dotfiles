@@ -42,6 +42,7 @@ defaults=(
 sketchybar --default "${defaults[@]}"
 
 datetime=(
+#FIXME: ONHOVER: https://github.com/FelixKratz/SketchyBar/discussions/12#discussioncomment-5328921
   update_freq=1
   label.font="DejaVu Mono:Bold:12.0"
   icon.padding_left=10
@@ -103,9 +104,9 @@ volume=(
 
 volume_icon=(
   script="$PLUGIN_DIR/volume_icon.sh"
-  click_script="$PLUGIN_DIR/volume_click.sh"
-  label.padding_right=8
-  label.padding_left=20
+  #click_script="$PLUGIN_DIR/volume_click.sh"
+  label.padding_right=10
+  label.padding_left=10
 )
 
 mail=(

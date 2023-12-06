@@ -1,4 +1,6 @@
 #!/bin/sh
+#FIXME: https://github.com/FelixKratz/SketchyBar/discussions/12#discussioncomment-1455842
+#Adds Spotify Player Controls
 
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"

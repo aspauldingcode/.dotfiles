@@ -1,5 +1,5 @@
 #!/bin/sh
-
+#FIXME: Add bluetooth headphone indicator with Battery:https://github.com/FelixKratz/SketchyBar/discussions/12#discussioncomment-1549450
 source "$HOME/.config/sketchybar/icons.sh"
 
 volume_change() {
