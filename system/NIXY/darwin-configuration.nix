@@ -12,8 +12,9 @@
 	fonts.fontDir.enable = true;
 	fonts.fonts = with pkgs; [
 		dejavu_fonts
-				font-awesome_5
-				(pkgs.callPackage ./apple-fonts.nix {})
+        font-awesome_5
+        jetbrains-mono
+		(pkgs.callPackage ./apple-fonts.nix {})
 		(nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
 	];
 	# system.build = builtins.exec "echo 'hello, world.'";

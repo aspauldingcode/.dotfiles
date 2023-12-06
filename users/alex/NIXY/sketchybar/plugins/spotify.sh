@@ -5,8 +5,6 @@
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 
-y_offset=10
-
 CURRENT_SONG=$(osascript -e 'tell application "Spotify" to return name of current track')
 CURRENT_ARTIST=$(osascript -e 'tell application "Spotify" to return artist of current track')
 CURRENT_ALBUM=$(osascript -e 'tell application "Spotify" to return album of current track')
@@ -47,7 +45,6 @@ spotify_title=(
   padding_left=0
   padding_right=0
   width=0
-  label.font="DejaVu Mono:Bold:15.0"
   y_offset=30
 )
 
