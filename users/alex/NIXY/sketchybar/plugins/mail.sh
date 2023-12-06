@@ -12,7 +12,7 @@ mail_popup=(
   label.y_offset=0
   label.padding_left=10
   label.padding_right=10
-  label.font="SF Pro:Bold:12.0"
+  label.font="DejaVu Mono:Bold:12.0"
   height=10
   blur_radius=100
 )

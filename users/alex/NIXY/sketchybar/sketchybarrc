@@ -16,7 +16,7 @@ bar=(
   color=$STATUS
   border_color=$GREY # why didn't that work?
   border_width=2
-  y_offset=5
+  y_offset=10
   sticky=off
   margin=13 # Margin around the bar
   notch_width=200
@@ -27,9 +27,9 @@ sketchybar --bar "${bar[@]}"
 defaults=(
   updates=when_shown
   icon.drawing=on
-  icon.font="SF Pro:Regular:12.0"
+  icon.font="DejaVu Mono:Regular:12.0"
   icon.color=$WHITE
-  label.font="SF Pro:Regular:12.0"
+  label.font="DejaVu Mono:Regular:12.0"
   label.drawing=on
   label.color=$WHITE
   popup.background.color=$BLUE
@@ -41,11 +41,10 @@ defaults=(
 
 sketchybar --default "${defaults[@]}"
 
-time=(
+datetime=(
   update_freq=1
-  script="$PLUGIN_DIR/time.sh"
-  click_script="$POPUP_CLICK_SCRIPT"
-  label.font="SF Pro:Bold:12.0"
+  label.font="DejaVu Mono:Bold:12.0"
+  icon.padding_left=10
   label.padding_left=10
   label.padding_right=10
   background.corner_radius=10
@@ -54,43 +53,20 @@ time=(
   background.padding_left=3
   background.padding_right=3
   background.border_color=$PURPLE
-  popup.y_offset=13
-  popup.align=right
-)
-
-sketchybar --add item time right \
-  --set time "${time[@]}" \
-  --subscribe time system_woke
-
-date=(
-  update_freq=30
+  popup.align=center
   script="$PLUGIN_DIR/date.sh"
   click_script="$POPUP_CLICK_SCRIPT"
-  label.padding_left=10
-  label.padding_right=10
-  background.color=$TEMPUS
-  background.height=19
-  background.corner_radius=10
-  popup.y_offset=13
+  popup.y_offset=10
 )
-
-sketchybar --add item date right \
-  --set date "${date[@]}" \
-  --subscribe date system_woke
 
 wifi=(
   script="$PLUGIN_DIR/wifi.sh"
   click_script="$POPUP_CLICK_SCRIPT"
   label.padding_right=15
   update_freq=60
-  popup.y_offset=13
+  popup.align=right
+  popup.y_offset=10
 )
-
-rm -f /tmp/sketchybar_speed
-rm -f /tmp/sketchybar_wifi
-sketchybar --add item wifi right \
-  --set wifi "${wifi[@]}" \
-  --subscribe wifi system_woke
 
 battery=(
   script="$PLUGIN_DIR/battery.sh"
@@ -98,12 +74,9 @@ battery=(
   updates=on
   click_script="$POPUP_CLICK_SCRIPT"
   label.padding_left=15
-  popup.y_offset=13
+  popup.align=right
+  popup.y_offset=10
 )
-
-sketchybar --add item battery right \
-  --set battery "${battery[@]}" \
-  --subscribe battery power_source_change system_woke
 
 volume=(
   script="$PLUGIN_DIR/volume.sh"
@@ -128,10 +101,6 @@ volume=(
   background.padding_right=7
 )
 
-sketchybar --add slider volume right \
-  --set volume "${volume[@]}" \
-  --subscribe volume volume_change mouse.clicked mouse.entered mouse.exited
-
 volume_icon=(
   script="$PLUGIN_DIR/volume_icon.sh"
   click_script="$PLUGIN_DIR/volume_click.sh"
@@ -139,11 +108,8 @@ volume_icon=(
   label.padding_left=20
 )
 
-sketchybar --add item volume_icon right \
-  --set volume_icon "${volume_icon[@]}"
-
 mail=(
-  background.color=$MIDNIGHT
+  background.color=$TEMPUS
   background.height=25
   background.corner_radius=10
   background.padding_right=10
@@ -154,11 +120,8 @@ mail=(
   icon.padding_left=15
   icon.padding_right=15
   update_freq=60
-  popup.y_offset=13
+  popup.y_offset=10
 )
-
-sketchybar --add item mail right \
-  --set mail "${mail[@]}"
 
 spotify=(
   click_script="$POPUP_CLICK_SCRIPT"
@@ -175,26 +138,17 @@ spotify=(
   background.padding_right=3
   script="$PLUGIN_DIR/spotify.sh"
   update_freq=5
-  popup.y_offset=13
+  popup.y_offset=10
 )
-
-sketchybar --add event spotify_change $SPOTIFY_EVENT \
-  --add item spotify e \
-  --set spotify "${spotify[@]}" \
-  --subscribe spotify mouse.entered mouse.exited \
-  mouse.exited.global
 
 spotify_label=(
   label="Spotify"
   label.padding_left=10
   label.padding_right=15
-  label.font="SF Pro:Bold:9.0"
+  label.font="DejaVu Mono:Bold:9.0"
   script="$PLUGIN_DIR/spotify.sh"
   update_freq=5
 )
-
-sketchybar --add item spotify_label e \
-  --set spotify_label "${spotify_label[@]}"
 
 ram=(
   icon=$RAM
@@ -211,9 +165,6 @@ ram=(
   background.border_color=$PURPLE
 )
 
-sketchybar --add item ram q \
-  --set ram "${ram[@]}"
-
 cpu=(
   icon=$CPU
   icon.padding_left=15
@@ -222,9 +173,6 @@ cpu=(
   label.padding_right=15
   update_freq=60
 )
-
-sketchybar --add item cpu q \
-  --set cpu "${cpu[@]}"
 
 apple=(
   script="$PLUGIN_DIR/apple.sh"
@@ -238,16 +186,14 @@ apple=(
   background.padding_left=3
   background.padding_right=3
   popup.align=left
-  popup.y_offset=13
+  popup.y_offset=10
   popup.x_offset=10  # Adjust this line to shift more left or right
 )
 
-sketchybar --add item apple left \
-  --set apple "${apple[@]}"
-
 space=(
   script="$PLUGIN_DIR/spaces.sh"
-  label.drawing=off
+  label.drawing=on
+  #icon.drawing=on
   icon.padding_left=15
   icon.padding_right=15
   update_freq=1
@@ -259,13 +205,31 @@ space_bg=(
   background.corner_radius=50
 )
 
+CURRENT_APP_IN_SPACE=$(osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true')
+active_app=(
+  icon.padding_left=15
+  icon.padding_right=15
+  background.color=$TEMPUS
+  background.height=25
+  background.corner_radius=10
+  background.border_color=$PURPLE
+  background.border_width=2
+  #background.padding_left=10
+  label="$CURRENT_APP_IN_SPACE"
+  #click_script="$POPUP_CLICK_SCRIPT"
+  #popup.y_offset=10
+)
+
+## Adding sketchybar Items:
+# Left Items
+sketchybar --add item apple left \
+  --set apple "${apple[@]}"
 declare -a spacesArray=()
 for i in "${!SPACE_ICONS[@]}"; do
   sid=$(($i + 1))
 
   if [[ $sid -eq $ACTIVE_SPACE ]]; then
     CURRENT_ICON=$PACMAN
-    background.color=$TEMPUS
   else
     CURRENT_ICON=${SPACE_ICONS["$i"]}
   fi
@@ -281,43 +245,56 @@ for i in "${!SPACE_ICONS[@]}"; do
   if [[ $sid -eq $ACTIVE_SPACE ]]; then
     sketchybar --set space.$sid "${space_bg[@]}"
   fi
-
 done
+sketchybar --add item active_app left \
+  --set active_app "${active_app[@]}"
 
-current_space=(
-  icon.padding_left=15
-  icon.padding_right=15
-  background.color=$TEMPUS
-  background.height=25
-  background.corner_radius=10
-  background.border_color=$PURPLE
-  background.border_width=2
-  background.padding_left=10
-  click_script="$POPUP_CLICK_SCRIPT"
-  popup.y_offset=13
-)
+# Center Items
 
-sketchybar --add item current_space left \
-  --set current_space "${current_space[@]}"
+sketchybar --add item volume_icon center \
+  --set volume_icon "${volume_icon[@]}"
+sketchybar --add slider volume center \
+  --set volume "${volume[@]}" \
+  --subscribe volume volume_change mouse.clicked mouse.entered mouse.exited
+sketchybar --add item datetime center \
+  --set datetime "${datetime[@]}" \
+  --subscribe time system_woke
+sketchybar --add item spotify_label center \
+  --set spotify_label "${spotify_label[@]}"
+sketchybar --add event spotify_change $SPOTIFY_EVENT \
+  --add item spotify center \
+  --set spotify "${spotify[@]}" \
+  --subscribe spotify mouse.entered mouse.exited \
+  mouse.exited.global
+# Right Items
+sketchybar --add item ram right \
+  --set ram "${ram[@]}"
+sketchybar --add item cpu right \
+  --set cpu "${cpu[@]}"
+sketchybar --add item battery right \
+  --set battery "${battery[@]}" \
+  --subscribe battery power_source_change system_woke
+rm -f /tmp/sketchybar_speed
+rm -f /tmp/sketchybar_wifi
+sketchybar --add item wifi right \
+  --set wifi "${wifi[@]}" \
+  --subscribe wifi system_woke
+sketchybar --add item mail right \
+  --set mail "${mail[@]}"
 
 brackets=(
   background.color=$STATUS
   background.height=25
-  background.corner_radius=10
+  background.corner_radius=20
   background.border_color=$PURPLE
   background.border_width=2
 )
 
-sketchybar --add bracket status time date wifi battery volume_icon right \
-  --set status "${brackets[@]}"
-
-sketchybar --add bracket music spotify spotify_label e \
-  --set music "${brackets[@]}"
-
-sketchybar --add bracket control apple "${spacesArray[@]}" center \
-  --set control "${brackets[@]}"
-
-sketchybar --add bracket utilis ram cpu q \
-  --set utilis "${brackets[@]}"
+sketchybar --add bracket lbracket apple "${spacesArray[@]}" left \
+  --set lbracket "${brackets[@]}"
+sketchybar --add bracket cbracket volume volume_icon datetime spotify center \
+  --set cbracket "${brackets[@]}"
+sketchybar --add bracket rbracket ram cpu right \
+  --set rbracket "${brackets[@]}"
 
 sketchybar --update
