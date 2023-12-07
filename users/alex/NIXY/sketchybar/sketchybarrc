@@ -32,11 +32,11 @@ defaults=(
   label.font="DejaVu Mono:Regular:12.0"
   label.drawing=on
   label.color=$WHITE
-  popup.background.color=$BLUE
+  popup.background.color=$TEMPUS
   popup.background.corner_radius=10
   popup.background.border_width=2
   popup.background.border_color=$PURPLE
-  popup.blur_radius=100
+  popup.y_offset=8
 )
 
 sketchybar --default "${defaults[@]}"
@@ -46,12 +46,10 @@ datetime=(
   background.color=$TEMPUS
   background.padding_left=3
   background.padding_right=3
-  # background.border_color=$PURPLE
   background.height=19
   background.corner_radius=10
   popup.horizontal=on
   popup.align=center
-  popup.y_offset=10
   icon.padding_right=10
   icon.padding_left=10
   label.padding_right=10
@@ -70,7 +68,6 @@ wifi=(
   label.padding_right=15
   update_freq=60
   popup.align=right
-  popup.y_offset=10
 )
 
 battery=(
@@ -80,7 +77,6 @@ battery=(
   click_script="$POPUP_CLICK_SCRIPT"
   label.padding_left=15
   popup.align=right
-  popup.y_offset=10
 )
 
 volume=(
@@ -125,7 +121,6 @@ mail=(
   icon.padding_left=15
   icon.padding_right=15
   update_freq=60
-  popup.y_offset=10
 )
 
 spotify=(
@@ -143,7 +138,6 @@ spotify=(
   background.padding_right=3
   script="$PLUGIN_DIR/spotify.sh"
   update_freq=5
-  popup.y_offset=10
 )
 
 spotify_label=(
@@ -191,8 +185,6 @@ apple=(
   background.padding_left=3
   background.padding_right=3
   popup.align=left
-  popup.y_offset=10
-  popup.x_offset=10  # Adjust this line to shift more left or right
 )
 
 space=(
@@ -219,10 +211,7 @@ active_app=(
   background.corner_radius=10
   background.border_color=$PURPLE
   background.border_width=2
-  #background.padding_left=10
   label="$CURRENT_APP_IN_SPACE"
-  #click_script="$POPUP_CLICK_SCRIPT"
-  #popup.y_offset=10
 )
 
 ## Adding sketchybar Items:

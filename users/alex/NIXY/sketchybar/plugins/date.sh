@@ -7,14 +7,14 @@ source "$HOME/.config/sketchybar/icons.sh"
 POPUP_OFF="sketchybar --set apple.logo popup.drawing=off"
 POPUP_CLICK_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
 
-LINE_1=$(cal -h | sed -n '1p')
-LINE_2=$(cal -h | sed -n '2p')
-LINE_3=$(cal -h | sed -n '3p')
-LINE_4=$(cal -h | sed -n '4p')
-LINE_5=$(cal -h | sed -n '5p')
-LINE_6=$(cal -h | sed -n '6p')
-LINE_7=$(cal -h | sed -n '7p')
-LINE_8=$(cal -h | sed -n '8p')
+LINE_1="︳  $(date '+%B%e %Y')    |"
+LINE_2="︳$(cal -h | sed -n '2p') |"
+LINE_3="︳$(cal -h | sed -n '3p') |"
+LINE_4="︳$(cal -h | sed -n '4p') |"
+LINE_5="︳$(cal -h | sed -n '5p') |"
+LINE_6="︳$(cal -h | sed -n '6p') |"
+LINE_7="︳$(cal -h | sed -n '7p') |"
+LINE_8="︳$(cal -h | sed -n '8p') |"
 
 function set_date_and_time {
   sketchybar --set $NAME label="$(date '+%a, %b %d   %r')"
@@ -37,9 +37,9 @@ function set_date_and_time {
 
 row_1=(
   label=$LINE_1
-  label.font="JetBrains Mono:Bold:15.0"
-  padding_left=10
-  padding_right=10
+  label.font="JetBrains Mono:Bold:12.0"
+  padding_left=-10
+  padding_right=-10
   icon.drawing=off
   #label.padding_right=10
   width=0
@@ -126,10 +126,10 @@ row_8=(
   label.font="JetBrains Mono:Regular:12.0"
   icon.drawing=off
   padding_left=0
-  padding_right=0
+  padding_right=10
   width=0
   y_offset=-56
-  background.padding_right=160
+  background.padding_right=185
 )
 sketchybar --add item datetime.popup.cal_8 popup.datetime \
   --set datetime.popup.cal_8 "${row_8[@]}" \
