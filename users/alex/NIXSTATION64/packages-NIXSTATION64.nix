@@ -172,6 +172,7 @@
         matplotlib
         libei
         keyboard
+        sympy
       ]))
       (prismlauncher.override {
         jdks = [ jdk8 jdk17 jdk19 ]; 

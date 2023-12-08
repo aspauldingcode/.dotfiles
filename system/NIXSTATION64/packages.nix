@@ -57,6 +57,7 @@
     perl 
     hexedit 
     virt-manager
+    uxplay
     #rebuild
     (pkgs.writeShellScriptBin "rebuild" ''
     # NIXSTATION64(x86_64-linux)
@@ -66,7 +67,7 @@
     echo "Done. Running 'fix-wm'..."
     fix-wm
     echo "Completed."
-    date +"%I:%M:%S %p"
+    date +"%r"
     '')
     #update
     (pkgs.writeShellScriptBin "update" ''

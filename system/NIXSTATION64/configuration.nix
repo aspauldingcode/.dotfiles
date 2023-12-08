@@ -118,15 +118,20 @@ services = {
           };
         };
 
+        # Network Discovery
         avahi = {
           enable = true;
-          nssmdns = true;
+          nssmdns = true; # Printing
           openFirewall = true;
           publish = {
             enable = true;
+            addresses = true;
+            workstation = true;
             userServices = true;
+            domain = true;
           };
         };
+
         printing = {
           listenAddresses = [ "*:631" ];
           allowFrom = [ "all" ];
@@ -146,10 +151,11 @@ services = {
       };
       polkit.enable = true;
     };
-    # allow AirPrinter through firewall
+
+# allow AirPrinter through firewall
 networking.firewall = {
-  allowedTCPPorts = [ 631 ];
-  allowedUDPPorts = [ 631 ];
+  allowedTCPPorts = [ 631 7000 7001 7100 ];
+  allowedUDPPorts = [ 631 5353 6000 6001 7011 ];
 };
 # programs
 programs = {

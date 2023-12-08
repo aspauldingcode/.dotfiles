@@ -55,6 +55,7 @@ in
         margin-left = 10;
         margin-right = 10;
         position = "top";
+        
         modules-left = [
           "custom/menu"
         ] ++ (lib.optionals hasSway [
@@ -87,11 +88,9 @@ in
 
         clock = {
           interval = 1;
-          format = "{:%d/%m %H:%M:%S}";
-          format-alt = "{:%Y-%m-%d %H:%M:%S %z}";
-          on-click-left = "mode";
+          format = "{:%a, %b %d   %r}";
+          # on-click = "mode";
           tooltip-format = ''
-            <big>{:%Y %B}</big>
             <tt><small>{calendar}</small></tt>'';
         };
         pulseaudio = {
@@ -318,11 +317,11 @@ in
       }
 
       .modules-right {
-        margin-right: -15px;
+        margin-right: -4px;
       }
 
       .modules-left {
-        margin-left: -15px;
+        margin-left: -4px;
       }
 
       window#waybar {
@@ -365,6 +364,12 @@ in
         margin-bottom: 10px;
         border: 2px solid #${colors.base0C};
         border-radius: 30px;
+      }
+
+      #clockpopup {
+        background-color: #${colors.base03};
+        border: 2px solid #${colors.base0C};
+        border-radius: 10px ;
       }
 
       #custom-menu {
