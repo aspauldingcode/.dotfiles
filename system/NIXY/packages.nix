@@ -41,9 +41,10 @@
     lolcat
     tree-sitter
     nodejs_20
-    lspconfig
+    #lspconfig
     fd #find tool
     ripgrep
+    
     #rebuild
     (pkgs.writeShellScriptBin "rebuild" ''
     # NIXY(aarch64-darwin)
@@ -66,30 +67,30 @@
     echo "Completed."
     date +"%I:%M:%S %p"
     '')
+    
     #update
     (pkgs.writeShellScriptBin "update" ''
     cd ~/.dotfiles
     git fetch
     git pull
     git merge origin/main
-    # Prompt the user for a commit message
     echo "Enter a commit message:"
     read commit_message
     git add .
     git commit -m "$commit_message"
     git push origin main
     '')
+    
     #mic (for sketchybar!)
     (pkgs.writeShellScriptBin "mic" ''
     MIC_VOLUME=$(osascript -e 'input volume of (get volume settings)')
-
-<<<<<<< HEAD
     if [[ $MIC_VOLUME -eq 0 ]]; then
     sketchybar -m --set mic icon=
     elif [[ $MIC_VOLUME -gt 0 ]]; then
     sketchybar -m --set mic icon=
     fi 
     '')
+    
     #mic_click (for sketchybar!)
     (pkgs.writeShellScriptBin "mic_click" ''
     MIC_VOLUME=$(osascript -e 'input volume of (get volume settings)')
@@ -101,59 +102,33 @@
     sketchybar -m --set mic icon=
     fi 
     '')
+    
+    # #singleusermode on
+    # (pkgs.writeShellScriptBin "sumode" ''
+    # if [[ "$1" == "on" ]]; then
+    #   echo "User entered 'on' argument."
+    #   echo "Turning on Single User Mode..."
+    #   sudo nvram boot-args="-arm64e_preview_abi -v -s"
+    # elif [[ "$1" == "off" ]]; then
+    #   echo "User entered 'off' argument."
+    #   echo "Turning off Single User Mode..."
+    #   sudo nvram boot-args="-arm64e_preview_abi -v"
+    # fi
+    # if [[ "$1" == "on" || "$1" == "off" ]]; then
+    #   echo "Completed. Your boot args are listed below:"
+    #   nvram -p | grep boot-args
+    #   echo "Done. Rebooting..."
+    #   sleep 2
+    #   sudo reboot
+    # else
+    #   echo "No argument provided. Please add arguments 'on' or 'off' for this command."
+    #   echo "Your current boot args are listed below:"
+    #   nvram -p | grep boot-args
+    # fi
+    # '')
   ];
+
   system.activationScripts.extraActivation.text = '' 
   ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk20}/zulu-20.jdk" "/Library/Java/JavaVirtualMachines/"
   '';
 }
-=======
-          if [[ $MIC_VOLUME -eq 0 ]]; then
-          sketchybar -m --set mic icon=
-          elif [[ $MIC_VOLUME -gt 0 ]]; then
-          sketchybar -m --set mic icon=
-          fi 
-          '')
-          #mic_click (for sketchybar!)
-          (pkgs.writeShellScriptBin "mic_click" ''MIC_VOLUME=$(osascript -e 'input volume of (get volume settings)')
-
-          if [[ $MIC_VOLUME -eq 0 ]]; then
-          osascript -e 'set volume input volume 25'
-          sketchybar -m --set mic icon=
-          elif [[ $MIC_VOLUME -gt 0 ]]; then
-          osascript -e 'set volume input volume 0'
-          sketchybar -m --set mic icon=
-          fi 
-          '')
-
-
-#singleusermode on
-(pkgs.writeShellScriptBin "sumode" ''
-  if [[ "$1" == "on" ]]; then
-    echo "User entered 'on' argument."
-    echo "Turning on Single User Mode..."
-    sudo nvram boot-args="-arm64e_preview_abi -v -s"
-  elif [[ "$1" == "off" ]]; then
-    echo "User entered 'off' argument."
-    echo "Turning off Single User Mode..."
-    sudo nvram boot-args="-arm64e_preview_abi -v"
-  fi
-
-  if [[ "$1" == "on" || "$1" == "off" ]]; then
-    echo "Completed. Your boot args are listed below:"
-    nvram -p | grep boot-args
-    echo "Done. Rebooting..."
-    sleep 2
-    sudo reboot
-  else
-    echo "No argument provided. Please add arguments 'on' or 'off' for this command."
-    echo "Your current boot args are listed below:"
-    nvram -p | grep boot-args
-            fi
-'')
-
-        ];
-        system.activationScripts.extraActivation.text = '' 
-        ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk20}/zulu-20.jdk" "/Library/Java/JavaVirtualMachines/"
-        '';
-      }
->>>>>>> f75894bc426fb7a61ad57f586d89b08cd27a8809

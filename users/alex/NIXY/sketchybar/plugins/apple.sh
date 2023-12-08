@@ -12,10 +12,11 @@ properties=(
   label.y_offset=0
   label.padding_left=10
   label.padding_right=10
-  label.font="SF Pro:Bold:12.0"
-  icon.font="SF Pro:Regular:14.0"
+  label.font="DejaVu Mono:Bold:12.0"
+  icon.font="DejaVu Mono:Regular:14.0"
   icon.padding_left=10
   height=10
+  background.margin=25
   blur_radius=100
   width=175
 )
@@ -23,7 +24,7 @@ properties=(
 sketchybar --add item apple.popup.settings popup.apple \
   --set apple.popup.settings label="System Preferences" \
   icon=$PREFERENCES "${properties[@]}" \
-  click_script="open -a 'System Preferences' && $POPUP_OFF" \
+  click_script="open -a 'System Preferences' && $(POPUP_OFF)" \
   \
   --add item apple.popup.activity popup.apple \
   --set apple.popup.activity label="Activity Monitor" \

@@ -1,9 +1,9 @@
 #!/bin/sh
+#FIXME: https://github.com/FelixKratz/SketchyBar/discussions/12#discussioncomment-1455842
+#Adds Spotify Player Controls
 
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
-
-y_offset=10
 
 CURRENT_SONG=$(osascript -e 'tell application "Spotify" to return name of current track')
 CURRENT_ARTIST=$(osascript -e 'tell application "Spotify" to return artist of current track')
@@ -39,13 +39,12 @@ sketchybar --add item spotify.cover popup.spotify \
   --set spotify.cover "${spotify_cover[@]}"
 
 spotify_title=(
-  label.font="SF Pro:Bold:15.0"
+  label.font="DejaVu Mono:Bold:15.0"
   label="$CURRENT_SONG"
   icon.drawing=off
   padding_left=0
   padding_right=0
   width=0
-  label.font="SF Pro:Bold:15.0"
   y_offset=30
 )
 
@@ -58,7 +57,7 @@ spotify_artist=(
   padding_left=0
   padding_right=0
   width=0
-  label.font="SF Pro:Regular:14.0"
+  label.font="DejaVu Mono:Regular:14.0"
   label="$CURRENT_ARTIST"
 )
 
@@ -71,7 +70,7 @@ spotify_album=(
   padding_right=0
   y_offset=-25
   width=0
-  label.font="SF Pro:Bold:11.0"
+  label.font="DejaVu Mono:Bold:11.0"
   label="$CURRENT_ALBUM"
   background.padding_right=235
 )
