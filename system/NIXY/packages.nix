@@ -53,6 +53,7 @@
     echo "Will reset Launchpad after rebuild."
     else
     echo "No -r argument provided."
+    sudo rm /etc/bashrc /etc/zshrc /etc/zshenv
     echo "Rebuilding..."
     fi
     cd ~/.dotfiles

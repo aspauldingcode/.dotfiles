@@ -204,14 +204,15 @@ space_bg=(
 
 CURRENT_APP_IN_SPACE=$(osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true')
 active_app=(
-  icon.padding_left=15
-  icon.padding_right=15
+  icon.drawing=off
   background.color=$TEMPUS
   background.height=25
   background.corner_radius=10
   background.border_color=$PURPLE
   background.border_width=2
-  label="$CURRENT_APP_IN_SPACE"
+  label.padding_left=10
+  label.padding_right=10
+  label="$CURRENT_APP_IN_SPACE" # HOW TO CONTINUOUSLY SET?
 )
 
 ## Adding sketchybar Items:

@@ -51,6 +51,35 @@ map('n', '<C-p>', ':NvimTreeToggle <CR>', {noremap = true})
 map('n', '<C-f>', ':Telescope find_files <CR>', {noremap = true})
 map('n', '<C-n>', ':Telescope live_grep <CR>', {noremap = true})
 
+-- Word Processor Mode
+local wordProcessorModeActive = false
+
+function ToggleWordProcessorMode()
+    if wordProcessorModeActive then
+        vim.bo.formatoptions = ''
+        vim.bo.textwidth = 0
+        vim.bo.smartindent = false
+        vim.wo.spell = false
+        vim.bo.spelllang = ''
+        vim.bo.expandtab = true
+        wordProcessorModeActive = false
+    else
+        vim.bo.formatoptions = 't1'
+        vim.bo.textwidth = 80
+        vim.api.nvim_set_keymap('n', 'j', 'gj', { noremap = true, silent = true })
+        vim.api.nvim_set_keymap('n', 'k', 'gk', { noremap = true, silent = true })
+        vim.bo.smartindent = true
+        vim.wo.spell = true
+        vim.bo.spelllang = 'en_us'
+        vim.bo.expandtab = false
+        -- Set custom status line hint
+        vim.wo.statusline = 'WordProcessorMode: Press z= for spellcheck suggestions'
+        wordProcessorModeActive = true
+    end
+end
+
+vim.cmd('command! WP lua ToggleWordProcessorMode()')
+
 -- Misc Improvements
 o.smartcase = true
 o.ttimeoutlen = 5
