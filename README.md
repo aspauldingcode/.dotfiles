@@ -2,10 +2,10 @@
 A personal, universal flake.nix-enabled .dotfiles system configuration - by Alex Spaulding 
 
 ## Getting Started
-This repo contains my .dotfiles, which additionally defines the operating system environment for NixOS and Darwin.
+This repo contains my ___nixified___ .dotfiles, which additionally defines the operating system environment for NixOS and Darwin.
 
 ### FRESH INSTALL
-please [read the Notes](notes.md) for info on what to do for a fresh install.
+Please [read the Notes](notes.md) for info on what to do for a fresh install.
 
 #### NIX Installer
 - If you just set up a new mac, you should install Nix using the [Determinite Nix Installer](https://github.com/DeterminateSystems/nix-installer) which automatically enables Nix Flakes for us.
@@ -22,24 +22,24 @@ nix --experimental-features 'nix-command flakes'  # Enable flakes
 ```
 
 - [ ] **TODO:** Fix nvim and LSP Configurations
-- [ ] **TODO** Figure out how to FIRST TIME install on ALL systems
-- [ ] **TODO** Build a mac FIRST-TIME install script with all my settings unrelated to nix
-- [ ] **TODO** Fix Waybar and Sketchybar Universal UX/UI Config
-- [ ] **TODO** Fix Karabiner Key Combos
-- [ ] **TODO** Fix skhd hotkeys
-- [ ] **TODO** learn direnv: https://direnv.net/
-- [ ] **TODO** Configure Zellij and plugins
-- [ ] **TODO** Fix SDDM HomeManager vs System config and login issues
-- [ ] **TODO** Fix SDDM Theme with a gitFetch derivation for Sonoma V2 Theme
-- [ ] **TODO** Universal UX for zsh/zshrc and bash/bashrc, maybe even for fish shell
-- [ ] **TODO** FIX mobile-nixos on NIXEDUP!
-- [ ] **TODO** Nixos NIXY configuration (for nixos on NIXY instead of macOS on NIXY) 
-- [ ] **TODO** Fix SSH configurations and setups!
-- [ ] **TODO** Fix Nix-Colors configurations!
-- [ ] **TODO** Nix-Colors scheme switcher for darkmode/lightmode!
-- [ ] **TODO** Get Su Su's account set up with plasma or gnome!
-- [ ] **TODO** Add and modify Sketchybar Plugins mentioned in Sketchybar configs!
-- [ ] **TODO** Clean up repo code 
+- [ ] **TODO:** Figure out how to FIRST TIME install on ALL systems
+- [ ] **TODO:** Build a mac FIRST-TIME install script with all my settings unrelated to nix
+- [ ] **TODO:** Fix Waybar and Sketchybar Universal UX/UI Config
+- [ ] **TODO:** Fix Karabiner Key Combos
+- [ ] **TODO:** Fix skhd hotkeys
+- [ ] **TODO:** learn direnv: https://direnv.net/
+- [ ] **TODO:** Configure Zellij and plugins
+- [ ] **TODO:** Fix SDDM HomeManager vs System config and login issues
+- [ ] **TODO:** Fix SDDM Theme with a gitFetch derivation for Sonoma V2 Theme
+- [ ] **TODO:** Universal UX for zsh/zshrc and bash/bashrc, maybe even for fish shell
+- [ ] **TODO:** FIX mobile-nixos on NIXEDUP!
+- [ ] **TODO:** Nixos NIXY configuration (for nixos on NIXY instead of macOS on NIXY) 
+- [ ] **TODO:** Fix SSH configurations and setups!
+- [ ] **TODO:** Fix Nix-Colors configurations!
+- [ ] **TODO:** Nix-Colors scheme switcher for darkmode/lightmode!
+- [ ] **TODO:** Get Su Su's account set up with plasma or gnome!
+- [ ] **TODO:** Add and modify Sketchybar Plugins mentioned in Sketchybar configs!
+- [ ] **TODO:** Clean up repo code 
 
 ## Extra 
 The install can be configured through the flake.nix.
