@@ -1,8 +1,9 @@
 # .dotfiles
-A personal, universal flake.nix-enabled .dotfiles system configuration - by Alex Spaulding 
+A personal, universal ___flake___-enabled .dotfiles system configuration - by Alex Spaulding 
 
 ## Getting Started
 This repo contains my ___nixified___ .dotfiles, which additionally defines the operating system environment for NixOS and Darwin.
+__Note:__ this repo was not designed to be installed for other interested users.
 
 ### FRESH INSTALL
 Please [read the Notes](notes.md) for info on what to do for a fresh install.
