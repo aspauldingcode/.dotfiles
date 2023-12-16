@@ -5,6 +5,7 @@
 
 {
   imports = [ # Include the results of the hardware scan
+    # (import <mobile-nixos/lib/configuration.nix> { device = "oneplus-fajita"; }) # Must have your NIX_PATH includes mobile-nixos=/path/to/mobile-nixos
 # If you want to use modules from other flakes (such as nixos-hardware):
 # inputs.hardware.nixosModules.common-cpu-amd
 # inputs.hardware.nixosModules.common-ssd

@@ -1,6 +1,6 @@
 # Configure included packages for NixOS.
 
-{ lib, config, nixpkgs, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   environment.systemPackages = with pkgs; [
@@ -12,6 +12,8 @@
     ueberzugpp #replacement for depricated inline terminal image previewer
     yazi
     krita
+    # libreoffice-fresh-unwrapped
+    libreoffice-fresh
     xdg-desktop-portal-wlr
     libsForQt5.kdialog
     gtkdialog

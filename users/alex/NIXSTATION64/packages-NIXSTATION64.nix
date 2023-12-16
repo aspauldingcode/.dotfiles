@@ -45,6 +45,7 @@
       lsof
       etcher
       checkra1n
+      pfetch
       zoom-us
       spotify-unwrapped
       android-studio
@@ -173,6 +174,7 @@
         libei
         keyboard
         sympy
+        numpy
       ]))
       (prismlauncher.override {
         jdks = [ jdk8 jdk17 jdk19 ]; 

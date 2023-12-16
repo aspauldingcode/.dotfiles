@@ -1,4 +1,4 @@
-{ outputs, config, lib, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   # Dependencies
@@ -10,8 +10,8 @@ let
   tail = "${pkgs.coreutils}/bin/tail";
   wc = "${pkgs.coreutils}/bin/wc";
   xargs = "${pkgs.findutils}/bin/xargs";
-  timeout = "${pkgs.coreutils}/bin/timeout";
-  ping = "${pkgs.iputils}/bin/ping";
+  # timeout = "${pkgs.coreutils}/bin/timeout";
+  # ping = "${pkgs.iputils}/bin/ping";
 
   jq = "${pkgs.jq}/bin/jq";
   systemctl = "${pkgs.systemd}/bin/systemctl";
@@ -52,8 +52,8 @@ in
         layer = "top";
         height = 30;
         margin-top = 10;
-        margin-left = 10;
-        margin-right = 10;
+        margin-left = 13;
+        margin-right = 13;
         position = "top";
         
         modules-left = [
@@ -75,15 +75,20 @@ in
           "clock"
           "custom/unread-mail"
           #"custom/gpg-agent"
+          "custom/spotify"
         ];
 
         modules-right = [
+          "tray"
           "network"
+          "battery"
           "custom/tailscale-ping"
           # TODO: currently broken for some reason
           "custom/gammastep"
-          "tray"
           #"custom/hostname"
+          "cpu"
+          "memory"
+          "backlight"
         ];
 
         clock = {
@@ -122,18 +127,43 @@ in
         "sway/window" = {
           max-length = 20;
         };
+        cpu = {
+          interval = 15;
+          format = " {}%";
+          max-length = 10;
+        };
+        memory = {
+          interval = 30;
+          format = " {}%";
+          max-length = 10;
+        };
         network = {
           interval = 3;
           format-wifi = "   {essid}";
           format-ethernet = "󰈁 Connected";
           format-disconnected = "";
           tooltip-format = ''
-            {ifname}
-            {ipaddr}/{cidr}
-            Up: {bandwidthUpBits}
-            Down: {bandwidthDownBits}'';
+          {ifname}
+          {ipaddr}/{cidr}
+          Up: {bandwidthUpBits}
+          Down: {bandwidthDownBits}'';
           on-click = ""; #FIXME: Add on-click setup for preview like macos
         };
+	      backlight = {
+          tooltip = false;
+          format = " {}%";
+          interval = 1;
+          on-scroll-up = "light -A 5";
+          on-scroll-down = "light -U 5";
+        };
+        "custom/spotify" = {
+          interval = 1;
+          return-type = "json";
+          exec = "~/.config/waybar/scripts/spotify.sh";
+          exec-if = "pgrep spotify";
+          escape = true;
+        };
+       
         # "custom/tailscale-ping" = {
         #   interval = 10;
         #   return-type = "json";
@@ -310,35 +340,76 @@ in
     # w x y z -> top, right, bottom, left
     style = let inherit (config.colorscheme) colors; in /* css */ ''
       * {
-        font-family: 'DejaVu Sans', 'DejaVu Sans Mono', monospace;
-        font-size: 12pt;
-        padding: 0 6px;
-        margin: -2px 0px;
-      }
-
-      .modules-right {
-        margin-right: -4px;
+        font-family: 'DejaVu Sans', 'DejaVu Sans Mono', Regular;
+        font-size: 8pt;
+        /* margin-top: -2px; */
+        /* margin-bottom: -2px; */
+        padding-top: 0px;
+        padding-bottom: 0px;
       }
 
       .modules-left {
-        margin-left: -4px;
+        padding: 1px;
+        margin-left: 21px;
+        margin-right: 0px;
+        /* margin-top: 8px; */
+        /* margin-bottom: 8px; */
+        border: 2px solid #${colors.base0C};
+        border-radius: 30px;
+      }
+      
+      .modules-center {
+        padding: 1px;
+        margin-left: 0px;
+        margin-right: 0px;
+        margin-top: 8px;
+        margin-bottom: 8px;
+        border: 2px solid #${colors.base0C};
+        border-radius: 30px;
+      }  
+ 
+      .modules-right {
+        padding: 1px;
+        margin-right: 21px;
+        margin-right: 0px;
+        margin-top: 8px;
+        margin-bottom: 8px;
+        border: 2px solid #${colors.base0C};
+        border-radius: 30px;
       }
 
       window#waybar {
-        opacity: 0.95;
+        opacity: 0.85;  /* change back to 0.95!!! */
         background-color: #${colors.base00};
         border: 2px solid #${colors.base0C};
         border-radius: 10px;
         color: #${colors.base05};
       }
 
-      #workspaces button {
+      #custom-menu {
         background-color: #${colors.base03};
         color: #${colors.base05};
-        padding: 0px 0px;
-        margin: 10px 4px;
-        border: 2px solid #${colors.base02};
-        border-radius: 10px;
+        
+        padding-left: 16px;
+        padding-right: 16px;
+        /* margin-top: 0px; */
+        /* margin-bottom: 0px; */
+        margin-left: 0px;
+        margin-right: 0px;
+        border-radius: 30px;
+      }
+
+       #workspaces button {
+        background-color: #${colors.base03};
+        color: #${colors.base05};
+        
+        /* padding-left: 2px; */
+        /* padding-right: 2px; */
+        /* margin-top: 0px; */
+        /* margin-bottom: 0px; */
+        /* margin-left: 8px; */
+        /* margin-right: 8px; */
+        border-radius: 30px;
       }
       
       #workspaces button.hidden {
@@ -350,57 +421,49 @@ in
       #workspaces button.active {
         background-color: #${colors.base0A};
         color: #${colors.base01};
-        margin: 10px 4px;
-        border: 2px solid #${colors.base0C};
-        border-radius: 10px;
       }
 
       #clock {
         background-color: #${colors.base03};
         color: #${colors.base05};
-        padding-left: 15px;
-        padding-right: 15px;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        border: 2px solid #${colors.base0C};
+        margin-top: 0px;
+        margin-bottom: 0px;
+        /* border: 2px solid #${colors.base0C}; */
         border-radius: 30px;
       }
 
-      #clockpopup {
+      #clock-popup {
         background-color: #${colors.base03};
         border: 2px solid #${colors.base0C};
         border-radius: 10px ;
       }
 
-      #custom-menu {
-        background-color: #${colors.base03};
-        color: #${colors.base05};
-        padding-left: 10px;
-        padding-right: 10px;
-        margin-left: 10px;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        border: 2px solid #${colors.base0C};
-        border-radius: 30px;
-      }
+      
       #custom-hostname {
         background-color: #${colors.base0C};
         color: #${colors.base05};
-        padding-left: 15px;
-        padding-right: 15px;
-        margin-right: 0;
-        margin-top: 0;
-        margin-bottom: 0;
-        border-radius: 10px;
+        border-radius: 30px;
       }
 
       #custom-currentplayer {
         padding-right: 0;
         color: #${colors.base05};
-
       }
+
       #tray {
         color: #${colors.base05};
+      }
+
+      #memory {
+        background-color: #${colors.base03};
+        color: #${colors.base05};
+        padding-left: 16px;
+        padding-right: 16px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        margin-left: 0px;
+        margin-right: 0px;
+        border-radius: 30px;
       }
     '';
   };

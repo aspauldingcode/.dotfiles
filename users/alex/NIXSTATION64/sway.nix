@@ -1,4 +1,4 @@
-{ lib, config, pkgs, ...}:
+{ config, pkgs, ...}:
 
 {
   imports = [
@@ -32,7 +32,7 @@
         DP-2 = {
           res = "1920x1080"; 
           pos = "3000,450";
-          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/TigerCooks.jpg fill";
+          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/reference.png fill";
         };
         # "*" = { # change background for all outputs
         #   bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/synthwave-night-skyscrapers.jpg fill";
