@@ -42,11 +42,6 @@ require('lspconfig').lua_ls.setup {
     }
 }
 
-require'lspconfig'.java_language_server.setup{
-    on_attach = on_attach,
-    capabilities = capabilities,
-}
-
 require('lspconfig').nil_ls.setup {
     on_attach = on_attach,
     capabilities = capabilities,

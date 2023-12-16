@@ -24,10 +24,10 @@
           plugin = nvim-jdtls;
           config = toLua ''
           local config = {
-            cmd = {'/home/alex/.config/nvim/jdt-language-server-1.9.0-202203031534/bin/jdtls'},
+            cmd = {'/home/alex/.nix-profile/bin/jdt-language-server'},
             root_dir = vim.fs.dirname(vim.fs.find({'gradlew', '.git', 'mvnw'}, { upward = true })[1]),
           }
-          require('jdtls').start_or_attach(config)
+          require('jdt-language-server').start_or_attach(config)
           '';
         }
 

@@ -132,8 +132,7 @@
       nodePackages_latest.bash-language-server
       nodePackages.yaml-language-server
       nodePackages_latest.dockerfile-language-server-nodejs
-      java-language-server
-      jdt-language-server #wtf is this
+      jdt-language-server
       kotlin-language-server
       lua-language-server
       cmake-language-server
