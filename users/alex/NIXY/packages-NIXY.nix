@@ -23,6 +23,8 @@
     vscode
     yazi #somehow it's back? what?
     nil #rnix-lsp apparently is vulnerable? 
+    thefuck
+    zsh-completions
     zoom-us
     (pkgs.python311.withPackages(ps: [ 
       ps.pygame 

@@ -1,4 +1,4 @@
-{ lib, config, pkgs, ... }:
+{ pkgs, ... }:
 ### System Configuration.nix for Darwin
 {
 	imports = [
@@ -16,7 +16,8 @@
         jetbrains-mono
 		(pkgs.callPackage ./apple-fonts.nix {})
 		(nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
-	];
+      ];
+
 	# system.build = builtins.exec "echo 'hello, world.'";
 	# Auto upgrade nix package and the daemon service.
 	services.nix-daemon.enable = true;
