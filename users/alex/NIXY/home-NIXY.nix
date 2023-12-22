@@ -13,6 +13,7 @@ in
       ./fish.nix
       ./zsh.nix
       ./karabiner.nix
+      ./cava.nix
       #./zellij
       ./sketchybar/sketchybar.nix 
       ./yabai.nix # contains skhd and borders config.

@@ -20,18 +20,18 @@
 
       font = {
         normal = {
-          family = "DejaVu Sans Mono";
-          style = "Book";
+          family = "JetBrains Mono";
+          style = "Regular";
         };
         bold = {
-          family = "DejaVu Sans Mono";
+          family = "JetBrains Mono";
           style = "Bold";
         };
         italic = {
-          family = "DejaVu Sans Mono";
-          style = "Oblique";
+          family = "JetBrains Mono";
+          style = "Italic";
         };
-        size = 16.0;
+        size = 12.0;
       };
 
         # Becomes either 'dark' or 'light', based on your colors! (in qutebrowser)

@@ -18,6 +18,15 @@
       "skhd"
       "sketchybar"
       "borders"
+      "cava"
+      "fftw" 
+      "ncurses" 
+      "libtool" 
+      "automake" 
+      "autoconf-archive" 
+      "pkgconf"
+      "portaudio"
+      "iniparser"
     ];
     #masApps = [ #FAILS
       #497799835 #Xcode 
@@ -31,6 +40,7 @@
       "karabiner-elements" # remap keyboard
       "unnaturalscrollwheels"
       "beeper"
+      "background-music"
     ];
     whalebrews = [
       #"wget" #FAILS

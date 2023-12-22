@@ -16,7 +16,7 @@
     cowsay
     qemu
     discord
-    spotify 
+    spotify
     vscode
     utm 
     mas

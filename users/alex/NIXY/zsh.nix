@@ -1,4 +1,4 @@
-{ config, ... }:
+{ ... }:
 
 {
   programs.zsh = {
@@ -19,17 +19,19 @@
     LANG = "en_US.UTF-8";
   };
 
-  home.file."zshrc".text = ''
-    # Add your custom Zsh configurations here
-    # For example, you can set aliases, customize prompts, etc.
+  home.file."zshrc" = {
+    text = ''
+      # Add your custom Zsh configurations here
+      # For example, you can set aliases, customize prompts, etc.
 
-    # Zsh history settings
-    HISTFILE=~/.zsh_history
-    HISTSIZE=1000
-    SAVEHIST=1000
-    setopt APPEND_HISTORY
+      # Zsh history settings
+      HISTFILE=~/.zsh_history
+      HISTSIZE=1000
+      SAVEHIST=1000
+      setopt APPEND_HISTORY
 
     # Add the mobile-nixos variable to $NIX_PATH
     # export NIX_PATH="$NIX_PATH:mobile-nixos=~/mobile-nixos"
-  '';
+    '';
+  };
 }
