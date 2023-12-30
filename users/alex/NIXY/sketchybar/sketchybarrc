@@ -43,7 +43,7 @@ defaults=(
 sketchybar --default "${defaults[@]}"
 
 datetime=(
-  background.color=$TEMPUS          # Set this color to your background color for popups!
+  background.color=$TEMPUS         # Set this color to your background color for popups!
   label.padding_left=15
   label.padding_right=15
   background.height=19 
@@ -52,7 +52,7 @@ datetime=(
   popup.align=center
   update_freq=60                    # required for datetime clock!
   script="$PLUGIN_DIR/datetime.sh"
-  popup.height=135                  # REQUIRED for popup to work properly.
+  popup.height=160                  # REQUIRED for popup to work properly.
   background.corner_radius=10
 )
 

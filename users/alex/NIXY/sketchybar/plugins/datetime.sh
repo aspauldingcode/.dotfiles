@@ -4,7 +4,7 @@
 source "$HOME/.config/sketchybar/colors.sh"
 
 # Calendar output with gcal. MUST INSTALL gcal! requires awk and sed. 
-CALENDAR=$(gcal | awk '{printf "%-21s\n", $0}' | sed -e 's|<|\[|g' -e 's|>|\]|g') 
+CALENDAR=$(gcal | awk '{printf "%-21s\n", $0}' | sed -e 's|<|\[|g' -e 's|>|\]|g' | sed -e '/^$/d' | sed -e 's/\]$/&/' -e '/\]$/!s/$/ /')
 
 LINE_1="| $(echo "$CALENDAR" | sed -n '2p') |"
 LINE_2="| $(echo "$CALENDAR" | sed -n '3p') |"
@@ -28,10 +28,10 @@ declare -a lines=(
 
 for (( i = 0; i < ${#lines[@]}; i++ )); do
   current_line="${lines[$i]}"
-  if [[ -n "${lines[$i]}" && "${lines[$i]}" =~ [^[:space:]] ]]; then #FIXME: CURRENTLY NOT WORKING!
+  if [[ -n "${lines[$i]}" && "${lines[$i]}" =~ [^[:space:]] ]]; then
     row=(
       icon="$current_line"
-      icon.padding_left=-3                    # set to -2 to hide behind border.
+      icon.padding_left=-3                    # set to -3 to hide behind border.
       icon.font="JetBrains Mono:Regular:12.0" # Non-negotiable!
       label.font="JetBrains Mono:Bold:12.0"   # Non-negotiable! 
       padding_left=0
@@ -40,7 +40,7 @@ for (( i = 0; i < ${#lines[@]}; i++ )); do
       y_offset=$(( 56 - 16 * i ))
       label="|"
       label.color=$GREY                       # Set this to your popup border color. Must be 2px at least!
-      label.padding_left=-175 # To overwrite the '|' character on the left of the line. Fixes graphical text issues. 
+      label.padding_left=-182                 # To overwrite the '|' character on the left of the line. Fixes graphical text issues. 
       label.drawing=on
     )
     item_name="datetime.popup.cal_$((i+1))"
