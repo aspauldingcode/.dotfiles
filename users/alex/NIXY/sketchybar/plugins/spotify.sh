@@ -5,15 +5,29 @@
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 
-CURRENT_SONG=$(osascript -e 'tell application "Spotify" to return name of current track')
-CURRENT_ARTIST=$(osascript -e 'tell application "Spotify" to return artist of current track')
-CURRENT_ALBUM=$(osascript -e 'tell application "Spotify" to return album of current track')
+# Function to truncate or append "..." to a string based on length
+truncate_or_append_ellipsis() {
+  local text="$1"
+  local max_length=31
+
+  if [ ${#text} -gt $max_length ]; then
+    echo "${text:0:$max_length}..."
+  else
+    echo "$text"
+  fi
+}
+
+# Fetching and processing values
+CURRENT_SONG=$(truncate_or_append_ellipsis "$(osascript -e 'tell application "Spotify" to return name of current track')")
+CURRENT_ARTIST=$(truncate_or_append_ellipsis "$(osascript -e 'tell application "Spotify" to return artist of current track')")
+CURRENT_ALBUM=$(truncate_or_append_ellipsis "$(osascript -e 'tell application "Spotify" to return album of current track')")
 CURRENT_COVER=$(osascript -e 'tell application "Spotify" to return artwork url of current track')
-DURATION_MS=$(osascript -e 'tell application "Spotify" to get duration of current track')
+DURATION_MS=$(truncate_or_append_ellipsis "$(osascript -e 'tell application "Spotify" to get duration of current track')")
 DURATION=$((DURATION_MS / 1000))
-FLOAT="$(osascript -e 'tell application "Spotify" to get player position')"
+FLOAT=$(truncate_or_append_ellipsis "$(osascript -e 'tell application "Spotify" to get player position')")
 TIME=${FLOAT%.*}
 
+# Download Album Cover without truncating its URL
 curl -s --max-time 20 "$CURRENT_COVER" -o /tmp/cover.jpg
 
 detail_on() {
@@ -57,7 +71,7 @@ spotify_artist=(
   padding_left=0
   padding_right=0
   width=0
-  label.font="DejaVu Mono:Regular:14.0"
+  label.font="JetBrains Mono:Italic:14.0"
   label="$CURRENT_ARTIST"
 )
 
@@ -70,7 +84,7 @@ spotify_album=(
   padding_right=0
   y_offset=-25
   width=0
-  label.font="DejaVu Mono:Bold:11.0"
+  label.font="JetBrains Mono:Bold:11.0"
   label="$CURRENT_ALBUM"
   background.padding_right=235
 )

@@ -19,7 +19,7 @@ bar=(
   y_offset=10
   sticky=off
   margin=13 # Margin around the bar
-  notch_width=200
+  # notch_width=200
 )
 
 sketchybar --bar "${bar[@]}"
@@ -27,9 +27,9 @@ sketchybar --bar "${bar[@]}"
 defaults=(
   updates=when_shown
   icon.drawing=on
-  icon.font="DejaVu Mono:Regular:12.0"
+  icon.font="JetBrains Mono:Regular:12.0"
   icon.color=$WHITE
-  label.font="DejaVu Mono:Regular:12.0"
+  label.font="JetBrains Mono:Regular:12.0"
   label.drawing=on
   label.color=$WHITE
   popup.background.color=$TEMPUS
@@ -52,9 +52,11 @@ datetime=(
   popup.align=center
   icon.padding_right=10
   icon.padding_left=10
+  icon=$TIME
+  icon.drawing=on
   label.padding_right=10
   update_freq=1
-  script="$PLUGIN_DIR/date.sh"
+  script="$PLUGIN_DIR/datetime.sh"
   click_script="$POPUP_CLICK_SCRIPT"
   popup.height=140
   background.corner_radius=10
@@ -123,6 +125,11 @@ mail=(
   update_freq=60
 )
 
+cava=(
+  update_freq=0
+  script="$PLUGIN_DIR/cava.sh"
+)
+
 spotify=(
   click_script="$POPUP_CLICK_SCRIPT"
   popup.horizontal=on
@@ -144,7 +151,7 @@ spotify_label=(
   label="Spotify"
   label.padding_left=10
   label.padding_right=15
-  label.font="DejaVu Mono:Bold:9.0"
+  label.font="JetBrains Mono:Bold:9.0"
   script="$PLUGIN_DIR/spotify.sh"
   update_freq=5
 )
@@ -190,7 +197,6 @@ apple=(
 space=(
   script="$PLUGIN_DIR/spaces.sh"
   label.drawing=on
-  #icon.drawing=on
   icon.padding_left=15
   icon.padding_right=15
   update_freq=1
@@ -205,13 +211,12 @@ space_bg=(
 CURRENT_APP_IN_SPACE=$(osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true')
 active_app=(
   icon.drawing=off
-  background.color=$TEMPUS
   background.height=25
   background.corner_radius=10
-  background.border_color=$PURPLE
-  background.border_width=2
   label.padding_left=10
   label.padding_right=10
+	padding_left=10
+  update_freq=0
   label="$CURRENT_APP_IN_SPACE" # HOW TO CONTINUOUSLY SET?
 )
 
@@ -245,7 +250,6 @@ sketchybar --add item active_app left \
   --set active_app "${active_app[@]}"
 
 # Center Items
-
 sketchybar --add item volume_icon center \
   --set volume_icon "${volume_icon[@]}"
 sketchybar --add slider volume center \
@@ -254,7 +258,9 @@ sketchybar --add slider volume center \
 sketchybar --add item datetime center \
   --set datetime "${datetime[@]}" \
   --subscribe time system_woke
-sketchybar --add item spotify_label center \
+sketchybar -sketchybar --add item cava center \
+  --set cava "${cava[@]}" \
+-add item spotify_label center \
   --set spotify_label "${spotify_label[@]}"
 sketchybar --add event spotify_change $SPOTIFY_EVENT \
   --add item spotify center \
@@ -287,7 +293,7 @@ brackets=(
 
 sketchybar --add bracket lbracket apple "${spacesArray[@]}" left \
   --set lbracket "${brackets[@]}"
-sketchybar --add bracket cbracket volume volume_icon datetime spotify center \
+sketchybar --add bracket cbracket volume volume_icon datetime cava spotify center \
   --set cbracket "${brackets[@]}"
 sketchybar --add bracket rbracket ram cpu right \
   --set rbracket "${brackets[@]}"

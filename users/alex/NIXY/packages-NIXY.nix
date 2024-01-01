@@ -1,4 +1,4 @@
-{ lib, config, pkgs, ... }:
+{ pkgs, ... }:
 # NIXY-specific packages
 
 {
@@ -12,6 +12,7 @@
 
   home.packages = with pkgs; [
     calcurse
+    pfetch
     chatgpt-cli
     cowsay
     qemu
