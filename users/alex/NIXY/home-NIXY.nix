@@ -14,7 +14,7 @@ in
       ./zsh.nix
       ./karabiner.nix
       ./cava.nix
-      # ./zellij.nix #try as an overlay?
+      ./zellij.nix #try as an overlay?
       ./sketchybar/sketchybar.nix 
       ./yabai.nix # contains skhd and borders config.
     ];

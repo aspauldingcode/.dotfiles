@@ -32,9 +32,6 @@
 
       # Add the mobile-nixos variable to $NIX_PATH
       # export NIX_PATH="$NIX_PATH:mobile-nixos=~/mobile-nixos"
-    
-      # Auto-start zellij cli-window-manager
-      eval "$(zellij setup --generate-auto-start zsh)"
     '';
   };
 }

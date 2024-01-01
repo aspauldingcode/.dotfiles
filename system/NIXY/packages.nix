@@ -45,27 +45,50 @@
     fd #find tool
     ripgrep
     
-    #rebuild
+    # rebuild
     (pkgs.writeShellScriptBin "rebuild" ''
     # NIXY(aarch64-darwin)
-    if [[ "$1" == "-r" ]]; then
-    echo "User entered -r argument."
-    echo "Will reset Launchpad after rebuild."
-    else
-    echo "No -r argument provided."
-    sudo rm /etc/bashrc /etc/zshrc /etc/zshenv
-    echo "Rebuilding..."
+    reset_launchpad=false
+    run_fix_wm=false
+
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        -r)
+          echo "User entered -r argument."
+          echo "Will reset Launchpad after rebuild."
+          reset_launchpad=true
+          ;;
+        -f)
+          echo "User entered -f argument."
+          echo "Will run 'fix-wm' after rebuild."
+          run_fix_wm=true
+          ;;
+        *)
+          echo "Unknown argument: $1"
+          ;;
+      esac
+      shift
+    done
+
+    if [ "$reset_launchpad" = true ]; then
+      echo "Resetting Launchpad!"
+      defaults write com.apple.dock ResetLaunchPad -bool true
     fi
+
+    echo "Rebuilding..."
     cd ~/.dotfiles
     darwin-rebuild switch --flake .#NIXY
     home-manager switch --flake .#alex@NIXY
-    if [[ "$1" == "-r" ]]; then
-    echo "Resetting Launchpad!"
-    defaults write com.apple.dock ResetLaunchPad -bool true
-    fi 
-    echo "Done. Running 'fix-wm'..."
-    fix-wm
-    echo "Completed."
+    echo "Done."
+
+    if [ "$run_fix_wm" = true ]; then
+      echo "Running 'fix-wm'..."
+      fix-wm
+      echo "Completed 'fix-wm'."
+    else
+      echo "Skipping 'fix-wm' as -f argument not provided."
+    fi
+
     date +"%I:%M:%S %p"
     '')
     
@@ -104,7 +127,7 @@
     fi 
     '')
     
-    # #singleusermode on
+    # #singleusermode on ##FIXME: Totally broken atm.
     # (pkgs.writeShellScriptBin "sumode" ''
     # if [[ "$1" == "on" ]]; then
     #   echo "User entered 'on' argument."
