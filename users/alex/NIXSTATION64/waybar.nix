@@ -129,17 +129,17 @@ in
         };
         cpu = {
           interval = 15;
-          format = " {}%";
+          format = "  {}%";
           max-length = 10;
         };
         memory = {
           interval = 30;
-          format = " {}%";
+          format = "  {}%";
           max-length = 10;
         };
         network = {
           interval = 3;
-          format-wifi = "   {essid}";
+          format-wifi = "  {essid}";
           format-ethernet = "󰈁 Connected";
           format-disconnected = "";
           tooltip-format = ''
@@ -346,7 +346,7 @@ in
 
       .modules-left {
         padding: 1px;
-        margin-left: 21px;
+        /* margin-left: 21px; */
         margin-right: 0px;
         /* margin-top: 8px; */
         /* margin-bottom: 8px; */
@@ -424,6 +424,8 @@ in
         color: #${colors.base05};
         margin-top: 0px;
         margin-bottom: 0px;
+        padding-left: 16px;
+        padding-right: 16px;
         /* border: 2px solid #${colors.base0C}; */
         border-radius: 30px;
       }
@@ -432,6 +434,7 @@ in
         background-color: #${colors.base03};
         border: 2px solid #${colors.base0C};
         border-radius: 10px ;
+  font-size: 16px;
       }
 
       
@@ -450,7 +453,12 @@ in
         color: #${colors.base05};
       }
 
+      #pulseaudio {
+        padding-left: 16px;
+      }
+
       #memory {
+        /* font-size: 16px; */
         background-color: #${colors.base03};
         color: #${colors.base05};
         padding-left: 16px;

@@ -1,0 +1,596 @@
+/home/alex/.nix-profile/share/fonts/truetype/Webdings.ttf: Webdings:style=Regular,Normal,obyčejné,Standard,Κανο
+νικά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta
+/nix/store/1cz50fywbvaq7lnwdli6113zr14qf2nd-unifont-15.1.04/share/fonts/unifont.otb: Unifont:style=Sans-Serif
+/home/alex/.nix-profile/share/fonts/truetype/Arial_Bold.ttf: Arial:style=Bold,Negreta,tučné,fed,Fett,Έντονα,N
+egrita,Lihavoitu,Gras,Félkövér,Grassetto,Vet,Halvfet,Pogrubiony,Negrito,Полужирный,Fet,Kalın,Krepko,đ�
+�̣m,Lodia
+/nix/store/vlpk16dyzbc2hbmpfm8shhmr2hg3z9k4-freefont-ttf-20120503/share/fonts/truetype/FreeSansOblique.ttf: FreeSans:
+style=Oblique,наклонен,negreta cursiva,kurzíva,kursiv,Πλάγια,Cursiva,Kursivoitu,Italique,Dőlt,Corsivo
+,Cursief,kursywa,Itálico,oblic,Курсив,İtalik,huruf miring,похилий,Ležeče,slīpraksts,pasvirasis,nghi
+êng,Etzana,तिरछा
+/home/alex/.nix-profile/share/fonts/truetype/Times_New_Roman_Bold_Italic.ttf: Times New Roman:style=Bold Italic,Negre
+ta cursiva,tučné kurzíva,fed kursiv,Fett Kursiv,Έντονα Πλάγια,Negrita Cursiva,Lihavoitu Kursivoi,Gras 
+Italique,Félkövér dőlt,Grassetto Corsivo,Vet Cursief,Halvfet Kursiv,Pogrubiona kursywa,Negrito Itálico,Полу�
+�ирный Курсив,Tučná kurzíva,Fet Kursiv,Kalın İtalik,Krepko poševno,nghiêng đậm,Lodi etzana
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSerifCondensed.ttf: DejaVu S
+erif,DejaVu Serif Condensed:style=Condensed,Book
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMonoNL-LightItalic.ttf
+: JetBrains Mono NL,JetBrains Mono NL Light:style=Light Italic,Italic
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyrecursor-bolditalic.otf: TeX G
+yre Cursor:style=Bold Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Tinos for Powerl
+ine.ttf: Tinos for Powerline:style=Regular
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMonoNL-Italic.ttf: Jet
+Brains Mono NL:style=Italic
+/nix/store/vlpk16dyzbc2hbmpfm8shhmr2hg3z9k4-freefont-ttf-20120503/share/fonts/truetype/FreeSerifItalic.ttf: FreeSerif
+:style=Italic,курсивен,cursiva,kurzíva,kursiv,Λειψίας,Kursivoitu,Italique,Dőlt,Corsivo,Cursief,kursy
+wa,Itálico,cursiv,Курсив,ตัวเอียง,İtalik,kursif,Ležeče,kursīvs,kursivas,nghiêng,Etzana,�
+�िरछा
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/DejaVu Sans Mono
+ Oblique for Powerline.ttf: DejaVu Sans Mono for Powerline:style=Oblique
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSans-ExtraLight.ttf: DejaVu 
+Sans,DejaVu Sans Light:style=ExtraLight
+/home/alex/.nix-profile/share/fonts/truetype/Andale_Mono.ttf: Andale Mono:style=Regular,Normal,obyčejné,Standard,Κ
+ανονικά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta
+/nix/store/m5r4k3aiwv3d8aq4hrha9gv1x5v6mr3y-font-awesome-6.4.2/share/fonts/opentype/Font Awesome 6 Brands-Regular-400
+.otf: Font Awesome 6 Brands,Font Awesome 6 Brands Regular:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/pcf/ter-powerline-x16n.pc
+f.gz: Terminess Powerline:style=Regular
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono[wght].ttf: JetBra
+ins Mono:style=Thin
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/bdf/ter-powerline-x20n.bd
+f: Terminess Powerline:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/opentype/Source Code Pro 
+Light for Powerline.otf: Source Code Pro for Powerline,Source Code Pro Light:style=Light,Regular
+/nix/store/m5r4k3aiwv3d8aq4hrha9gv1x5v6mr3y-font-awesome-6.4.2/share/fonts/opentype/Font Awesome 6 Free-Regular-400.o
+tf: Font Awesome 6 Free,Font Awesome 6 Free Regular:style=Regular
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSansMono-BoldOblique.ttf: De
+jaVu Sans Mono:style=Bold Oblique
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/bdf/ter-powerline-x22n.bd
+f: Terminess Powerline:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/bdf/ter-powerline-x24n.bd
+f: Terminess Powerline:style=Regular
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/7x13B.pcf.gz: Fixed:style=Bold
+/nix/store/f2h469rxgas0825pksag4laxa1ps0y6g-powerline-symbols-2.8.3/share/fonts/OTF/PowerlineSymbols.otf: PowerlineSy
+mbols:style=Medium
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono-ExtraLightItalic.
+ttf: JetBrains Mono,JetBrains Mono ExtraLight:style=ExtraLight Italic,Italic
+/home/alex/.nix-profile/share/fonts/truetype/Trebuchet_MS_Italic.ttf: Trebuchet MS:style=Bold Italic,Negreta cursiva,
+tučné kurzíva,fed kursiv,Fett Kursiv,Έντονα Πλάγια,Negrita Cursiva,Lihavoitu Kursivoi,Gras Italique,F�
+�lkövér dőlt,Grassetto Corsivo,Vet Cursief,Halvfet Kursiv,Pogrubiona kursywa,Negrito Itálico,Полужирный
+ Курсив,Tučná kurzíva,Fet Kursiv,Kalın İtalik,Krepko poševno,Lodi etzana
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/bdf/ter-powerline-x28n.bd
+f: Terminess Powerline:style=Regular
+/home/alex/.nix-profile/share/fonts/truetype/Impact.ttf: Impact:style=Regular,Normal,obyčejné,Standard,Κανονι
+κά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/pcf/ter-powerline-x24n.pc
+f.gz: Terminess Powerline:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/bdf/ter-powerline-x32n.bd
+f: Terminess Powerline:style=Regular
+/nix/store/gc5gyiwpahvwfggqj498if1m2mc7qhf9-liberation-fonts-2.1.5/share/fonts/truetype/LiberationSans-Bold.ttf: Libe
+ration Sans:style=Bold
+/nix/store/vlpk16dyzbc2hbmpfm8shhmr2hg3z9k4-freefont-ttf-20120503/share/fonts/truetype/FreeMonoBoldOblique.ttf: FreeM
+ono:style=Bold Oblique,получерен наклонен,Negreta cursiva,tučné kurzíva,fed kursiv,Fett-Kursiv,Έ
+ντονα Πλάγια,Negrita Cursiva,Lihavoitu Kursivoi,Gras Italique,Félkövér dőlt,Grassetto Corsivo,Vet Curs
+ief,Halvfet Kursiv,Pogrubiona kursywa,Negrito Itálico,gros oblic,Полужирный Курсив,Tučná kurzíva,
+Fet Kursiv,Kalın İtalik,huruf tebal miring,жирний похилий,polkrepko ležeče,treknais slīpraksts,pusj
+uodis pasvirasis,Lodi etzana,धृष्ट-तिरछा
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Literation Mono 
+Powerline.ttf: Liberation Mono for Powerline,Literation Mono Powerline:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Tinos Bold Itali
+c for Powerline.ttf: Tinos for Powerline:style=Bold Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Meslo LG S Itali
+c for Powerline.ttf: Meslo LG S for Powerline:style=Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/opentype/Inconsolata-g fo
+r Powerline.otf: Inconsolata\-g for Powerline:style=g
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/opentype/Inconsolata-dz f
+or Powerline.otf: Inconsolata\-dz for Powerline:style=dz
+/nix/store/gc5gyiwpahvwfggqj498if1m2mc7qhf9-liberation-fonts-2.1.5/share/fonts/truetype/LiberationSans-BoldItalic.ttf
+: Liberation Sans:style=Bold Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/opentype/Droid Sans Mono 
+for Powerline.otf: Droid Sans Mono for Powerline:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/pcf/ter-powerline-x14n.pc
+f.gz: Terminess Powerline:style=Regular
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/9x18B-ISO8859-1.pcf.gz: Fixed:sty
+le=Bold
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono[wght].ttf: JetBra
+ins Mono:style=SemiBold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Meslo LG M Bold 
+for Powerline.ttf: Meslo LG M for Powerline:style=Bold
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/6x13B.pcf.gz: Fixed:style=Bold Se
+miCondensed
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyreheros-italic.otf: TeX Gyre H
+eros:style=Italic
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/8x13O.pcf.gz: Fixed:style=Oblique
+
+/nix/store/sv49p953ai506n9k2kk0zpafmgjwdzhy-font-cursor-misc-1.0.4/lib/X11/fonts/misc/cursor.pcf.gz: cursor.pcf:style
+=Regular
+/home/alex/.nix-profile/share/fonts/truetype/Comic_Sans_MS_Bold.ttf: Comic Sans MS:style=Bold,Negreta,tučné,fed,Fet
+t,Έντονα,Negrita,Lihavoitu,Gras,Félkövér,Grassetto,Vet,Halvfet,Pogrubiony,Negrito,Полужирный,Fet,K
+alın,Krepko,Lodia
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Roboto Mono Thin
+ for Powerline.ttf: Roboto Mono Thin for Powerline:style=Thin,Regular
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSansMono-Bold.ttf: DejaVu Sa
+ns Mono:style=Bold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Monofur Bold for
+ Powerline.ttf: monofur for Powerline:style=bold
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono-Italic[wght].ttf:
+ JetBrains Mono:style=Light Italic
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/4x6-ISO8859-1.pcf.gz: Fixed:style
+=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Roboto Mono Ital
+ic for Powerline.ttf: Roboto Mono for Powerline:style=Italic
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMonoNL-Bold.ttf: JetBr
+ains Mono NL:style=Bold
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono-Italic[wght].ttf:
+ JetBrains Mono:style=SemiBold Italic
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSerifCondensed-BoldItalic.tt
+f: DejaVu Serif,DejaVu Serif Condensed:style=Condensed Bold Italic,Bold Italic
+/home/alex/.nix-profile/share/fonts/truetype/Verdana_Bold_Italic.ttf: Verdana:style=Bold Italic,Negreta cursiva,tučn
+é kurzíva,fed kursiv,Fett Kursiv,Έντονα Πλάγια,Negrita Cursiva,Lihavoitu Kursivoi,Gras Italique,Félkö
+vér dőlt,Grassetto Corsivo,Vet Cursief,Halvfet Kursiv,Pogrubiona kursywa,Negrito Itálico,Полужирный Ку
+рсив,Tučná kurzíva,Fet Kursiv,Kalın İtalik,Krepko poševno,Lodi etzana
+/home/alex/.nix-profile/share/fonts/truetype/Arial_Black.ttf: Arial Black:style=Regular,Normal,obyčejné,Standard,Κ
+ανονικά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Arimo Bold Itali
+c for Powerline.ttf: Arimo for Powerline:style=Bold Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/pcf/ter-powerline-x32n.pc
+f.gz: Terminess Powerline:style=Regular
+/home/alex/.nix-profile/share/fonts/truetype/Courier_New_Bold_Italic.ttf: Courier New:style=Bold Italic,Negreta cursi
+va,tučné kurzíva,fed kursiv,Fett Kursiv,Έντονα Πλάγια,Negrita Cursiva,Lihavoitu Kursivoi,Gras Italique
+,Félkövér dőlt,Grassetto Corsivo,Vet Cursief,Halvfet Kursiv,Pogrubiona kursywa,Negrito Itálico,Полужирн�
+�й Курсив,Tučná kurzíva,Fet Kursiv,Kalın İtalik,Krepko poševno,Lodi etzana
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono-LightItalic.ttf: 
+JetBrains Mono,JetBrains Mono Light:style=Light Italic,Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/bdf/ter-powerline-x18n.bd
+f: Terminess Powerline:style=Regular
+/home/alex/.nix-profile/share/fonts/truetype/Georgia_Italic.ttf: Georgia:style=Italic,Cursiva,kurzíva,kursiv,Πλά�
+�ια,Kursivoitu,Italique,Dőlt,Corsivo,Cursief,Kursywa,Itálico,Курсив,İtalik,Poševno,Etzana
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/9x15B-ISO8859-1.pcf.gz: Fixed:sty
+le=Bold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/pcf/ter-powerline-x22n.pc
+f.gz: Terminess Powerline:style=Regular
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono-Italic[wght].ttf:
+ JetBrains Mono:style=Bold Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Meslo LG S Bold 
+for Powerline.ttf: Meslo LG S for Powerline:style=Bold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Meslo LG S DZ It
+alic for Powerline.ttf: Meslo LG S DZ for Powerline:style=Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Space Mono for P
+owerline.ttf: Space Mono for Powerline:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Literation Mono 
+Powerline Italic.ttf: Liberation Mono for Powerline,Literation Mono Powerline:style=Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Cousine Italic f
+or Powerline.ttf: Cousine for Powerline:style=Italic
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/6x10.pcf.gz: Fixed:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/pcf/ter-powerline-x28b.pc
+f.gz: Terminess Powerline:style=Bold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/pcf/ter-powerline-x12n.pc
+f.gz: Terminess Powerline:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Inconsolata Bold
+ for Powerline.ttf: Inconsolata for Powerline:style=BoldForPowerline
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/bdf/ter-powerline-x12n.bd
+f: Terminess Powerline:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/bdf/ter-powerline-x14n.bd
+f: Terminess Powerline:style=Regular
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono-BoldItalic.ttf: J
+etBrains Mono:style=Bold Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Hack-Italic.ttf:
+ Hack:style=Italic
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSans-Bold.ttf: DejaVu Sans:s
+tyle=Bold
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyrechorus-mediumitalic.otf: TeX
+ Gyre Chorus:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/pcf/ter-powerline-x20b.pc
+f.gz: Terminess Powerline:style=Bold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Monofur Italic f
+or Powerline.ttf: monofur for Powerline:style=italic
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyrebonum-italic.otf: TeX Gyre B
+onum:style=Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/bdf/ter-powerline-x16n.bd
+f: Terminess Powerline:style=Regular
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuMathTeXGyre.ttf: DejaVu Math
+ TeX Gyre:style=Regular
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyrebonum-bold.otf: TeX Gyre Bon
+um:style=Bold
+/home/alex/.nix-profile/share/fonts/truetype/Arial_Italic.ttf: Arial:style=Italic,Cursiva,kurzíva,kursiv,Πλάγι�
+�,Kursivoitu,Italique,Dőlt,Corsivo,Cursief,Kursywa,Itálico,Курсив,İtalik,Poševno,nghiêng,Etzana
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyreschola-bold.otf: TeX Gyre Sc
+hola:style=Bold
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono-ExtraBold.ttf: Je
+tBrains Mono,JetBrains Mono ExtraBold:style=ExtraBold,Regular
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSerif.ttf: DejaVu Serif:styl
+e=Book
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/5x7-ISO8859-1.pcf.gz: Fixed:style
+=Regular
+/nix/store/m5r4k3aiwv3d8aq4hrha9gv1x5v6mr3y-font-awesome-6.4.2/share/fonts/opentype/Font Awesome 6 Free-Solid-900.otf
+: Font Awesome 6 Free,Font Awesome 6 Free Solid:style=Solid
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/7x14B-ISO8859-1.pcf.gz: Fixed:sty
+le=Bold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Go Mono for Powe
+rline.ttf: Go Mono for Powerline:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/pcf/ter-powerline-x28n.pc
+f.gz: Terminess Powerline:style=Regular
+/nix/store/gc5gyiwpahvwfggqj498if1m2mc7qhf9-liberation-fonts-2.1.5/share/fonts/truetype/LiberationSans-Italic.ttf: Li
+beration Sans:style=Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/pcf/ter-powerline-x20n.pc
+f.gz: Terminess Powerline:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/pcf/ter-powerline-x18b.pc
+f.gz: Terminess Powerline:style=Bold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/opentype/Source Code Pro 
+Bold for Powerline.otf: Source Code Pro for Powerline:style=Bold
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono[wght].ttf: JetBra
+ins Mono:style=ExtraLight
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/6x13O.pcf.gz: Fixed:style=Oblique
+ SemiCondensed
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSans-Oblique.ttf: DejaVu San
+s:style=Oblique
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyreheros-regular.otf: TeX Gyre 
+Heros:style=Regular
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/6x12-ISO8859-1.pcf.gz: Fixed:styl
+e=SemiCondensed
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/SpaceMono-Italic
+.ttf: Space Mono:style=Italic
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono-Italic[wght].ttf:
+ JetBrains Mono:style=Medium Italic
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono-ExtraBoldItalic.t
+tf: JetBrains Mono,JetBrains Mono ExtraBold:style=ExtraBold Italic,Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Meslo LG L DZ Bo
+ld for Powerline.ttf: Meslo LG L DZ for Powerline:style=Bold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/opentype/Source Code Pro 
+Powerline MediumItalic.otf: Source Code Pro for Powerline,Source Code Pro Medium:style=Medium Italic,Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/SpaceMono-Regula
+r.ttf: Space Mono:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Go Mono Bold for
+ Powerline.ttf: Go Mono for Powerline:style=Bold
+/nix/store/52qw2258vxk9aq7ahkxbg7bqbfy8k0pn-noto-fonts-emoji-2.038/share/fonts/noto/NotoColorEmoji.ttf: Noto Color Em
+oji:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/pcf/ter-powerline-x32b.pc
+f.gz: Terminess Powerline:style=Bold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/opentype/Source Code Pro 
+for Powerline.otf: Source Code Pro for Powerline:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/pcf/ter-powerline-x18n.pc
+f.gz: Terminess Powerline:style=Regular
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/7x13O.pcf.gz: Fixed:style=Oblique
+
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/18x18ja.pcf.gz: Fixed:style=ja
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/6x13-ISO8859-1.pcf.gz: Fixed:styl
+e=SemiCondensed
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/6x9.pcf.gz: Fixed:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/pcf/ter-powerline-x22b.pc
+f.gz: Terminess Powerline:style=Bold
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/5x8-ISO8859-1.pcf.gz: Fixed:style
+=Regular
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono-SemiBoldItalic.tt
+f: JetBrains Mono,JetBrains Mono SemiBold:style=SemiBold Italic,Italic
+/nix/store/vlpk16dyzbc2hbmpfm8shhmr2hg3z9k4-freefont-ttf-20120503/share/fonts/truetype/FreeMonoOblique.ttf: FreeMono:
+style=Oblique,наклонен,cursiva,kurzíva,kursiv,Πλάγια,Kursivoitu,Italique,Dőlt,Corsivo,Cursief,Kursywa
+,Itálico,oblic,Курсив,İtalik,huruf miring,похилий,ležeče,slīpraksts,pasvirasis,nghiêng,Etzana,त�
+��रछा
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono[wght].ttf: JetBra
+ins Mono:style=Bold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Meslo LG S DZ Bo
+ld Italic for Powerline.ttf: Meslo LG S DZ for Powerline:style=Bold Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Space Mono Bold 
+for Powerline.ttf: Space Mono for Powerline:style=Bold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Noto Mono for Po
+werline.ttf: Noto Mono for Powerline:style=Regular
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyreadventor-italic.otf: TeX Gyr
+e Adventor:style=Italic
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSansMono.ttf: DejaVu Sans Mo
+no:style=Book
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/SpaceMono-BoldIt
+alic.ttf: Space Mono:style=Bold Italic
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMonoNL-ExtraBoldItalic
+.ttf: JetBrains Mono NL,JetBrains Mono NL ExtraBold:style=ExtraBold Italic,Italic
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMonoNL-SemiBoldItalic.
+ttf: JetBrains Mono NL,JetBrains Mono NL SemiBold:style=SemiBold Italic,Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/pcf/ter-powerline-x12b.pc
+f.gz: Terminess Powerline:style=Bold
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/7x13O-ISO8859-1.pcf.gz: Fixed:sty
+le=Oblique
+/home/alex/.nix-profile/share/fonts/truetype/Arial.ttf: Arial:style=Regular,Normal,obyčejné,Standard,Κανονικ
+ά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,thường,Arrunta
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMonoNL-SemiBold.ttf: J
+etBrains Mono NL,JetBrains Mono NL SemiBold:style=SemiBold,Regular
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSans-BoldOblique.ttf: DejaVu
+ Sans:style=Bold Oblique
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSerifCondensed-Italic.ttf: D
+ejaVu Serif,DejaVu Serif Condensed:style=Condensed Italic,Italic
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyrecursor-bold.otf: TeX Gyre Cu
+rsor:style=Bold
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/9x18.pcf.gz: Fixed:style=Regular
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyretermes-bold.otf: TeX Gyre Te
+rmes:style=Bold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/SpaceMono-Bold.t
+tf: Space Mono:style=Bold
+/home/alex/.nix-profile/share/fonts/truetype/Georgia.ttf: Georgia:style=Regular,Normal,obyčejné,Standard,Κανον
+ικά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyreadventor-bolditalic.otf: TeX
+ Gyre Adventor:style=Bold Italic
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyretermes-italic.otf: TeX Gyre 
+Termes:style=Italic
+/home/alex/.nix-profile/share/fonts/truetype/Trebuchet_MS_Bold.ttf: Trebuchet MS:style=Bold,Negreta,tučné,fed,Fett,
+Έντονα,Negrita,Lihavoitu,Gras,Félkövér,Grassetto,Vet,Halvfet,Pogrubiony,Negrito,Полужирный,Fet,Kal
+ın,Krepko,Lodia
+/nix/store/vlpk16dyzbc2hbmpfm8shhmr2hg3z9k4-freefont-ttf-20120503/share/fonts/truetype/FreeSerif.ttf: FreeSerif:style
+=Regular,нормален,normal,obyčejné,Mittel,µεσαία,Normaali,Normál,Normale,Gemiddeld,odmiana zwykła,О
+бычный,Normálne,ปกติ,menengah,прямій,Navadno,vidējs,normalusis,عادی,vừa,Arrunta,साम
+ान्य
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSerif-Italic.ttf: DejaVu Ser
+if:style=Italic
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono[wght].ttf: JetBra
+ins Mono:style=ExtraBold
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/7x13.pcf.gz: Fixed:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/3270Medium.ttf: 
+IBM 3270:style=Medium
+/nix/store/vlpk16dyzbc2hbmpfm8shhmr2hg3z9k4-freefont-ttf-20120503/share/fonts/truetype/FreeMonoBold.ttf: FreeMono:sty
+le=Bold,получерен,negreta,tučné,fed,Fett,Έντονα,Negrita,Lihavoitu,Gras,Félkövér,Grassetto,Vet,Hal
+vfet,Pogrubiony,Negrito,gros,Полужирный,Fet,Kalın,huruf tebal,жирний,polkrepko,treknraksts,pusjuodis
+,đậm,Lodia,धृष्ट
+/nix/store/vlpk16dyzbc2hbmpfm8shhmr2hg3z9k4-freefont-ttf-20120503/share/fonts/truetype/FreeSerifBoldItalic.ttf: FreeS
+erif:style=Bold Italic,получерен курсивен,negreta cursiva,tučné kurzíva,fed kursiv,Fett-Kursiv,Ne
+grita Cursiva,Lihavoitu Kursivoi,Gras Italique,Félkövér dőlt,Grassetto Corsivo,Vet Cursief,Halvfet Kursiv,Pogrubi
+ona kursywa,Negrito Itálico,gros cursiv,Обычный Курсив,Tučná kurzíva,Fet Kursiv,ตัวเอี�
+�งหนา,Kalın İtalik,huruf tebal kursif,жирний курсив,Polkrepko Pežeče,treknais kursīvs,pusjuo
+dis kursyvas,nghiêng đậm,Lodi etzana,धृष्ट-तिरछा
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/opentype/FuraMono-Medium 
+Powerline.otf: Fira Mono for Powerline:style=Medium
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSans.ttf: DejaVu Sans:style=
+Book
+/home/alex/.nix-profile/share/fonts/truetype/Times_New_Roman_Bold.ttf: Times New Roman:style=Bold,Negreta,tučné,fed
+,Fett,Έντονα,Negrita,Lihavoitu,Gras,Félkövér,Grassetto,Vet,Halvfet,Pogrubiona,Negrito,Полужирный,F
+et,Kalın,Krepko,đậm,Lodia
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/pcf/ter-powerline-x24b.pc
+f.gz: Terminess Powerline:style=Bold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Arimo Italic for
+ Powerline.ttf: Arimo for Powerline:style=Italic
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/10x20.pcf.gz: Fixed:style=Regular
+
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyrepagella-bold.otf: TeX Gyre P
+agella:style=Bold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Roboto Mono Ligh
+t Italic for Powerline.ttf: Roboto Mono Light for Powerline:style=Light Italic,Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Monofur for Powe
+rline.ttf: monofur for Powerline:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/opentype/Source Code Pro 
+Powerline BoldItalic.otf: Source Code Pro for Powerline:style=Bold Italic
+/home/alex/.nix-profile/share/fonts/truetype/Courier_New_Italic.ttf: Courier New:style=Italic,Cursiva,kurzíva,kursiv
+,Πλάγια,Kursivoitu,Italique,Dőlt,Corsivo,Cursief,Kursywa,Itálico,Курсив,İtalik,Poševno,nghiêng,Etzan
+a
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/pcf/ter-powerline-x14b.pc
+f.gz: Terminess Powerline:style=Bold
+/home/alex/.nix-profile/share/fonts/truetype/Courier_New.ttf: Courier New:style=Regular,Normal,obyčejné,Standard,Κ
+ανονικά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,thường,Arrunta
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/9x15.pcf.gz: Fixed:style=Regular
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/8x13O-ISO8859-1.pcf.gz: Fixed:sty
+le=Oblique
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Hack-Bold.ttf: H
+ack:style=Bold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Roboto Mono Medi
+um for Powerline.ttf: Roboto Mono Medium for Powerline:style=Medium,Regular
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/6x12.pcf.gz: Fixed:style=SemiCond
+ensed
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/12x13ja.pcf.gz: Fixed:style=ja
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/3270SemiNarrow.t
+tf: IBM 3270 Semi\-Narrow:style=Medium
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Meslo LG M DZ Bo
+ld for Powerline.ttf: Meslo LG M DZ for Powerline:style=Bold
+/nix/store/vlpk16dyzbc2hbmpfm8shhmr2hg3z9k4-freefont-ttf-20120503/share/fonts/truetype/FreeSans.ttf: FreeSans:style=R
+egular,нормален,Normal,obyčejné,Mittel,µεσαία,Normaali,Normál,Medio,Gemiddeld,Odmiana Zwykła,Обы
+чный,Normálne,menengah,прямій,Navadno,vidējs,normalusis,vừa,Arrunta,सामान्य
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Hack-Regular.ttf
+: Hack:style=Regular
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMonoNL-Thin.ttf: JetBr
+ains Mono NL,JetBrains Mono NL Thin:style=Thin,Regular
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/9x15B.pcf.gz: Fixed:style=Bold
+/nix/store/1cz50fywbvaq7lnwdli6113zr14qf2nd-unifont-15.1.04/share/fonts/unifont.pcf.gz: Unifont:style=Sans-Serif
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSansCondensed-Bold.ttf: Deja
+Vu Sans,DejaVu Sans Condensed:style=Condensed Bold,Bold
+/home/alex/.nix-profile/share/fonts/truetype/Trebuchet_MS.ttf: Trebuchet MS:style=Regular,Normal,obyčejné,Standard,
+Κανονικά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta
+/nix/store/gc5gyiwpahvwfggqj498if1m2mc7qhf9-liberation-fonts-2.1.5/share/fonts/truetype/LiberationMono-Regular.ttf: L
+iberation Mono:style=Regular
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSansCondensed.ttf: DejaVu Sa
+ns,DejaVu Sans Condensed:style=Condensed,Book
+/nix/store/vlpk16dyzbc2hbmpfm8shhmr2hg3z9k4-freefont-ttf-20120503/share/fonts/truetype/FreeMono.ttf: FreeMono:style=R
+egular,нормален,normal,obyčejné,Standard,µεσαία,Normaali,Normál,Normale,Standaard,Normalny,Обыч�
+�ый,Normálne,menengah,прямій,navadno,vidējs,normalusis,thường,Arrunta,सामान्य
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Tinos Italic for
+ Powerline.ttf: Tinos for Powerline:style=Italic
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/6x13B-ISO8859-1.pcf.gz: Fixed:sty
+le=Bold SemiCondensed
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyrecursor-italic.otf: TeX Gyre 
+Cursor:style=Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Ubuntu Mono deri
+vative Powerline Bold.ttf: Ubuntu Mono derivative Powerline:style=Bold
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSansCondensed-BoldOblique.tt
+f: DejaVu Sans,DejaVu Sans Condensed:style=Condensed Bold Oblique,Bold Oblique
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/6x10-ISO8859-1.pcf.gz: Fixed:styl
+e=Regular
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyreschola-regular.otf: TeX Gyre
+ Schola:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/opentype/Source Code Pro 
+Powerline LightItalic.otf: Source Code Pro for Powerline,Source Code Pro Light:style=Light Italic,Italic
+/home/alex/.nix-profile/share/fonts/truetype/Georgia_Bold_Italic.ttf: Georgia:style=Bold Italic,Negreta cursiva,tučn
+é kurzíva,fed kursiv,Fett Kursiv,Έντονα Πλάγια,Negrita Cursiva,Lihavoitu Kursivoi,Gras Italique,Félkö
+vér dőlt,Grassetto Corsivo,Vet Cursief,Halvfet Kursiv,Pogrubiona kursywa,Negrito Itálico,Полужирный Ку
+рсив,Tučná kurzíva,Fet Kursiv,Kalın İtalik,Krepko poševno,Lodi etzana
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/NovaMono for Pow
+erline.ttf: NovaMono for Powerline:style=Regular
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSerifCondensed-Bold.ttf: Dej
+aVu Serif,DejaVu Serif Condensed:style=Condensed Bold,Bold
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/7x14-ISO8859-1.pcf.gz: Fixed:styl
+e=Regular
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyrebonum-bolditalic.otf: TeX Gy
+re Bonum:style=Bold Italic
+/nix/store/3xbmymcb6hkr5a3hvfsj3cb1cxqdbh9i-font-awesome-5.15.4/share/fonts/opentype/Font Awesome 5 Free-Regular-400.
+otf: Font Awesome 5 Free,Font Awesome 5 Free Regular:style=Regular
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/7x14.pcf.gz: Fixed:style=Regular
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono-Italic[wght].ttf:
+ JetBrains Mono:style=Thin Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Symbol Neu for P
+owerline.ttf: Symbol Neu for Powerline:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Hack-BoldItalic.
+ttf: Hack:style=Bold Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Arimo for Powerl
+ine.ttf: Arimo for Powerline:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Anonymice Powerl
+ine Bold Italic.ttf: Anonymous Pro for Powerline,Anonymice Powerline:style=Bold Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Meslo LG M Itali
+c for Powerline.ttf: Meslo LG M for Powerline:style=Italic
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/7x13-ISO8859-1.pcf.gz: Fixed:styl
+e=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/opentype/Source Code Pro 
+Powerline Italic.otf: Source Code Pro for Powerline:style=Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Meslo LG L Itali
+c for Powerline.ttf: Meslo LG L for Powerline:style=Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Meslo LG S DZ Re
+gular for Powerline.ttf: Meslo LG S DZ for Powerline:style=Regular
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono-ExtraLight.ttf: J
+etBrains Mono,JetBrains Mono ExtraLight:style=ExtraLight,Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/pcf/ter-powerline-x16b.pc
+f.gz: Terminess Powerline:style=Bold
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono[wght].ttf: JetBra
+ins Mono:style=Light
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMonoNL-BoldItalic.ttf:
+ JetBrains Mono NL:style=Bold Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Anonymice Powerl
+ine Italic.ttf: Anonymous Pro for Powerline,Anonymice Powerline:style=Italic
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono-Italic[wght].ttf:
+ JetBrains Mono
+/nix/store/bsi0s9arz3kss7m3x96pw5d09fynkd0w-nerdfonts-3.1.1/share/fonts/truetype/NerdFonts/SymbolsNerdFontMono-Regula
+r.ttf: Symbols Nerd Font Mono:style=Regular
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/5x7.pcf.gz: Fixed:style=Regular
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMonoNL-Regular.ttf: Je
+tBrains Mono NL:style=Regular
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono-ThinItalic.ttf: J
+etBrains Mono,JetBrains Mono Thin:style=Thin Italic,Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Anonymice Powerl
+ine Bold.ttf: Anonymous Pro for Powerline,Anonymice Powerline:style=Bold
+/nix/store/h1ywfapvs6jhz2zsq9yy6cyc9mky55ch-dejavu-fonts-minimal-2.37/share/fonts/truetype/DejaVuSans.ttf: DejaVu San
+s:style=Book
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/18x18ko.pcf.gz: Fixed:style=ko
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/opentype/Inconsolata for 
+Powerline.otf: Inconsolata for Powerline:style=Medium
+/home/alex/.nix-profile/share/fonts/truetype/Verdana.ttf: Verdana:style=Regular,Normal,obyčejné,Standard,Κανον
+ικά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,Arrunta
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Meslo LG S DZ Bo
+ld for Powerline.ttf: Meslo LG S DZ for Powerline:style=Bold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Meslo LG L Regul
+ar for Powerline.ttf: Meslo LG L for Powerline:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/DejaVu Sans Mono
+ for Powerline.ttf: DejaVu Sans Mono for Powerline:style=Book
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/9x15-ISO8859-1.pcf.gz: Fixed:styl
+e=Regular
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSerif-Bold.ttf: DejaVu Serif
+:style=Bold
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMonoNL-ExtraLight.ttf:
+ JetBrains Mono NL,JetBrains Mono NL ExtraLight:style=ExtraLight,Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Cousine Bold Ita
+lic for Powerline.ttf: Cousine for Powerline:style=Bold Italic
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono[wght].ttf: JetBra
+ins Mono:style=Medium
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyrecursor-regular.otf: TeX Gyre
+ Cursor:style=Regular
+/home/alex/.nix-profile/share/fonts/truetype/Verdana_Bold.ttf: Verdana:style=Bold,Negreta,tučné,fed,Fett,Έντον
+α,Negrita,Lihavoitu,Gras,Félkövér,Grassetto,Vet,Halvfet,Pogrubiony,Negrito,Полужирный,Fet,Kalın,Krepko
+,Lodia
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMonoNL-MediumItalic.tt
+f: JetBrains Mono NL,JetBrains Mono NL Medium:style=Medium Italic,Italic
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyreadventor-bold.otf: TeX Gyre 
+Adventor:style=Bold
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/8x13-ISO8859-1.pcf.gz: Fixed:styl
+e=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/ProFont For Powe
+rline.ttf: ProFont for Powerline:style=Regular
+/home/alex/.nix-profile/share/fonts/truetype/Arial_Bold_Italic.ttf: Arial:style=Bold Italic,Negreta cursiva,tučné k
+urzíva,fed kursiv,Fett Kursiv,Έντονα Πλάγια,Negrita Cursiva,Lihavoitu Kursivoi,Gras Italique,Félkövér
+ dőlt,Grassetto Corsivo,Vet Cursief,Halvfet Kursiv,Pogrubiona kursywa,Negrito Itálico,Полужирный Курс
+ив,Tučná kurzíva,Fet Kursiv,Kalın İtalik,Krepko poševno,nghiêng đậm,Lodi etzana
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Space Mono Bold 
+Italic for Powerline.ttf: Space Mono for Powerline:style=Bold Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/opentype/Source Code Pro 
+Black for Powerline.otf: Source Code Pro for Powerline,Source Code Pro Black:style=Black,Regular
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/5x8.pcf.gz: Fixed:style=Regular
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMonoNL-ThinItalic.ttf:
+ JetBrains Mono NL,JetBrains Mono NL Thin:style=Thin Italic,Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/opentype/FuraMono-Bold Po
+werline.otf: Fira Mono for Powerline:style=Bold
+/home/alex/.nix-profile/share/fonts/truetype/Times_New_Roman_Italic.ttf: Times New Roman:style=Italic,cursiva,kurzív
+a,kursiv,Πλάγια,Kursivoitu,Italique,Dőlt,Corsivo,Cursief,kursywa,Itálico,Курсив,İtalik,Poševno,nghiê
+ng,Etzana
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Droid Sans Mono 
+Slashed for Powerline.ttf: Droid Sans Mono Slashed for Powerline:style=Regular
+/home/alex/.nix-profile/share/fonts/truetype/Times_New_Roman.ttf: Times New Roman:style=Regular,Normal,obyčejné,Sta
+ndard,Κανονικά,Normaali,Normál,Normale,Standaard,Normalny,Обычный,Normálne,Navadno,thường,Arrunt
+a
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Meslo LG S Bold 
+Italic for Powerline.ttf: Meslo LG S for Powerline:style=Bold Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/opentype/Source Code Pro 
+Powerline SemiboldItalic.otf: Source Code Pro for Powerline,Source Code Pro Semibold:style=Semibold Italic,Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Roboto Mono Ligh
+t for Powerline.ttf: Roboto Mono Light for Powerline:style=Light,Regular
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSerif-BoldItalic.ttf: DejaVu
+ Serif:style=Bold Italic
+/home/alex/.nix-profile/share/fonts/truetype/Tahoma.ttf: Tahoma:style=Regular
+/home/alex/.nix-profile/share/fonts/truetype/Verdana_Italic.ttf: Verdana:style=Italic,Cursiva,kurzíva,kursiv,Πλά�
+�ια,Kursivoitu,Italique,Dőlt,Corsivo,Cursief,Kursywa,Itálico,Курсив,İtalik,Poševno,Etzana
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/opentype/Source Code Pro 
+Semibold for Powerline.otf: Source Code Pro for Powerline,Source Code Pro Semibold:style=Semibold,Regular
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMonoNL-Light.ttf: JetB
+rains Mono NL,JetBrains Mono NL Light:style=Light,Regular
+/nix/store/3xbmymcb6hkr5a3hvfsj3cb1cxqdbh9i-font-awesome-5.15.4/share/fonts/opentype/Font Awesome 5 Brands-Regular-40
+0.otf: Font Awesome 5 Brands,Font Awesome 5 Brands Regular:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Ubuntu Mono deri
+vative Powerline Bold Italic.ttf: Ubuntu Mono derivative Powerline:style=Bold Italic
+/nix/store/gc5gyiwpahvwfggqj498if1m2mc7qhf9-liberation-fonts-2.1.5/share/fonts/truetype/LiberationSerif-Bold.ttf: Lib
+eration Serif:style=Bold
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/7x13B-ISO8859-1.pcf.gz: Fixed:sty
+le=Bold
+/nix/store/gc5gyiwpahvwfggqj498if1m2mc7qhf9-liberation-fonts-2.1.5/share/fonts/truetype/LiberationMono-Bold.ttf: Libe
+ration Mono:style=Bold
+/nix/store/7asidy86rm4qp8l3lhc8nbdm1q75fcav-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSansCondensed-Oblique.ttf: D
+ejaVu Sans,DejaVu Sans Condensed:style=Condensed Oblique,Oblique
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/opentype/Source Code Pro 
+ExtraLight for Powerline.otf: Source Code Pro for Powerline,Source Code Pro ExtraLight:style=ExtraLight,Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Meslo LG M DZ Re
+gular for Powerline.ttf: Meslo LG M DZ for Powerline:style=Regular
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/8x13B-ISO8859-1.pcf.gz: Fixed:sty
+le=Bold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Meslo LG L Bold 
+for Powerline.ttf: Meslo LG L for Powerline:style=Bold
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/9x18-ISO8859-1.pcf.gz: Fixed:styl
+e=Regular
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono-SemiBold.ttf: Jet
+Brains Mono,JetBrains Mono SemiBold:style=SemiBold,Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/bdf/ter-powerline-x12b.bd
+f: Terminess Powerline:style=Bold
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyreadventor-regular.otf: TeX Gy
+re Adventor:style=Regular
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyreschola-italic.otf: TeX Gyre 
+Schola:style=Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Meslo LG L DZ Re
+gular for Powerline.ttf: Meslo LG L DZ for Powerline:style=Regular
+/nix/store/da20dkff6bggc1vmmgmaqy3rz2grhmsn-gyre-fonts-2.005/share/fonts/truetype/texgyrepagella-italic.otf: TeX Gyre
+ Pagella:style=Italic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Tinos Bold for P
+owerline.ttf: Tinos for Powerline:style=Bold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/3270Narrow.ttf: 
+IBM 3270 Narrow:style=Medium
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/bdf/ter-powerline-x14b.bd
+f: Terminess Powerline:style=Bold
+/nix/store/73zfdsjrd3dpj9c4nlinsdwqymcgpjxh-jetbrains-mono-2.304/share/fonts/truetype/JetBrainsMono-Italic[wght].ttf:
+ JetBrains Mono:style=ExtraBold Italic
+/nix/store/51433k4chdlaqs7i1yh5a8mvp3hvd961-font-misc-misc-1.1.3/lib/X11/fonts/misc/9x18B.pcf.gz: Fixed:style=Bold
+/nix/store/bsi0s9arz3kss7m3x96pw5d09fynkd0w-nerdfonts-3.1.1/share/fonts/truetype/NerdFonts/SymbolsNerdFont-Regular.tt
+f: Symbols Nerd Font:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Arimo Bold for P
+owerline.ttf: Arimo for Powerline:style=Bold
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/opentype/Source Code Pro 
+Powerline ExtraLightItalic.otf: Source Code Pro for Powerline,Source Code Pro ExtraLight:style=ExtraLight Italic,Ital
+ic
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Cousine for Powe
+rline.ttf: Cousine for Powerline:style=Regular
+/nix/store/z1y17cg6bklakm95gk64w2mlp9l8vibl-powerline-fonts-unstable-2018-11-11/share/fonts/truetype/Ubuntu Mono deri
+vative Powerline.ttf: Ubuntu Mono derivative Powerline:style=Regular

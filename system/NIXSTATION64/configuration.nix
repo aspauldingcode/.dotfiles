@@ -190,11 +190,12 @@ users.users = {
 
 # fonts
 fonts.packages = with pkgs; [
-  font-awesome
+  # font-awesome
   powerline-fonts
   powerline-symbols
   jetbrains-mono
-  (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
+  font-awesome_5
+  (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" "Hack" ]; })
   dejavu_fonts
 ];
 

@@ -121,6 +121,7 @@
       element
       OVMF
       edk2
+      busybox
       #LSP PACKAGES for NVIM 
       ##NOTWORKING?!!?!?!?!? FIXME
       #rnix-lsp
