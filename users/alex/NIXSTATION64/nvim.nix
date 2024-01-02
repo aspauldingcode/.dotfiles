@@ -22,13 +22,13 @@
 
         { 
           plugin = nvim-jdtls;
-          config = toLua ''
-          local config = {
-            cmd = {'/home/alex/.nix-profile/bin/jdt-language-server'},
-            root_dir = vim.fs.dirname(vim.fs.find({'gradlew', '.git', 'mvnw'}, { upward = true })[1]),
-          }
-          require('jdt-language-server').start_or_attach(config)
-          '';
+          #config = toLua ''
+          #local config = {
+          #  cmd = {'/home/alex/.nix-profile/bin/jdt-language-server'},
+          #  root_dir = vim.fs.dirname(vim.fs.find({'gradlew', '.git', 'mvnw'}, { upward = true })[1]),
+          #}
+          #require('jdt-language-server').start_or_attach(config)
+          #'';
         }
 
         # FIXME: y u no worky? >:(

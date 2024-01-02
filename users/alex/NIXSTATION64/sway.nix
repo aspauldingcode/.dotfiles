@@ -223,7 +223,7 @@
       #exec "mako --config ~/.mako"
 
       # STYLIZE!
-      gaps inner 10
+      gaps inner 13
       corner_radius 10
 
       # Window background blur
