@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, ... }:
 
 {
   # Configure Alacritty Terminal.
@@ -21,18 +21,18 @@
 
       font = {
         normal = {
-          family = "DejaVu Sans Mono";
+          family = "JetBrains Mono";
           style = "normal";
         };
         bold = {
-          family = "DejaVu Sans Mono";
+          family = "JetBrains Mono";
           style = "bold";
         };
         italic = {
-          family = "DejaVu Sans Mono";
+          family = "JetBrains Mono";
           style = "italic";
         };
-        size = 13.0;
+        size = 10.0;
       };
        
        colors = {

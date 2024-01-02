@@ -160,6 +160,7 @@
       xarchiver 
       gimp 
       zip
+      thefuck
       sway-contrib.grimshot
       (python311.withPackages(ps: with ps; [
         toml
