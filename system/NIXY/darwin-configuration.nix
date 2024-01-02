@@ -15,7 +15,7 @@
         font-awesome_5
         jetbrains-mono
 		(pkgs.callPackage ./apple-fonts.nix {})
-		(nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
+		(nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" "Hack" ]; })
       ];
 
 	# system.build = builtins.exec "echo 'hello, world.'";

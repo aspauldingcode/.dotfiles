@@ -65,16 +65,16 @@
       yabai -m rule --add app='Karabiner-Elements'    manage=off
 
       # workspace management
-      yabai -m space 1  --label term
-      yabai -m space 2  --label code
-      yabai -m space 3  --label www
-      yabai -m space 4  --label chat
-      yabai -m space 5  --label todo
-      yabai -m space 6  --label music
-      yabai -m space 7  --label voice
-      yabai -m space 8  --label eight
-      yabai -m space 9  --label nine
-      yabai -m space 10 --label ten
+      # yabai -m space 1  --label term
+      # yabai -m space 2  --label code
+      # yabai -m space 3  --label www
+      # yabai -m space 4  --label chat
+      # yabai -m space 5  --label todo
+      # yabai -m space 6  --label music
+      # yabai -m space 7  --label voice
+      # yabai -m space 8  --label eight
+      # yabai -m space 9  --label nine
+      # yabai -m space 10 --label ten
 
       # assign apps to spaces
       #yabai -m rule --add app="Alacritty"           space=code

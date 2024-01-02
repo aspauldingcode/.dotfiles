@@ -3,24 +3,35 @@
 
 {
   programs.neovim = 
-    let 
-      toLua = str: "lua << EOF\n${str}\nEOF\n";
-      toLuaFile = file: "lua << EOF\n${builtins.readFile file}\nEOF\n";
-    in 
-    {
-      enable = true;
-      defaultEditor = true;
-      viAlias = true;
-      vimAlias = true;
-      vimdiffAlias = true;
-      plugins = with pkgs.vimPlugins; [
+  let 
+    toLua = str: "lua << EOF\n${str}\nEOF\n";
+    toLuaFile = file: "lua << EOF\n${builtins.readFile file}\nEOF\n";
+  in 
+  {
+    enable = true;
+    defaultEditor = true;
+    viAlias = true;
+    vimAlias = true;
+    vimdiffAlias = true;
+    plugins = with pkgs.vimPlugins; [
         # LSP
         {
           plugin = nvim-lspconfig;
           config = toLuaFile ../extraConfig/nvim/plugin/lsp.lua;
         }
 
-        nvim-jdtls # FIXME: y u no worky? >:(
+        { 
+          plugin = nvim-jdtls;
+          #config = toLua ''
+          #local config = {
+          #  cmd = {'/home/alex/.nix-profile/bin/jdt-language-server'},
+          #  root_dir = vim.fs.dirname(vim.fs.find({'gradlew', '.git', 'mvnw'}, { upward = true })[1]),
+          #}
+          #require('jdt-language-server').start_or_attach(config)
+          #'';
+        }
+
+        # FIXME: y u no worky? >:(
         # lsp-status-nvim # FIXME: What about lspinfo?
         # lazy-lsp-nvim # FIXME: LEARN MORE
         # asyncomplete-lsp-vim # FIXME: Learn more
@@ -31,7 +42,7 @@
         # cmp-nvim-lsp # FIXME: Learn more
         # cmp-nvim-lsp-document-symbol 
         # cmp-nvim-lsp-signature-help
-        
+
         {
           plugin = comment-nvim;
           config = toLua "require(\"Comment\").setup()";
@@ -45,16 +56,16 @@
         {
           plugin = nvim-colorizer-lua; # relies on AutoCmd
           config = ''
-            packadd! nvim-colorizer.lua
-            lua require 'colorizer'.setup()
+          packadd! nvim-colorizer.lua
+          lua require 'colorizer'.setup()
           '';
         }
-        
+
         {
           plugin = telescope-nvim;
           config = toLuaFile ../extraConfig/nvim/plugin/telescope.lua;
         }
-        
+
         # File Tree
         {
           plugin = nvim-tree-lua;
@@ -67,7 +78,7 @@
         cmp-nvim-lsp # FIXME: What's this? NEEDED
         friendly-snippets 
         cmp_luasnip # completion for lua snippits
-        
+
         {
           plugin = pkgs.vimPlugins.cmp-nvim-tags;
           config = toLuaFile ../extraConfig/nvim/plugin/cmp-tags.lua;
@@ -77,7 +88,7 @@
           plugin = statuscol-nvim;
           config = toLuaFile ../extraConfig/nvim/plugin/statuscol.lua;
         }
-        
+
         # Visual Fixes
         {
           plugin = feline-nvim;
@@ -97,7 +108,7 @@
         # Behavior Fixes
         vim-autoswap
         neodev-nvim # FIXME: WTF is neodev-nvim? NEEDED
-        
+
         # Fuzzy Search Tool
         telescope-fzf-native-nvim # FIXME: How do I use?
 
@@ -110,7 +121,7 @@
           config = toLuaFile ../extraConfig/nvim/plugin/neorg.lua;
         }
         neorg-telescope
-        
+
         {
           plugin = guess-indent-nvim;
           config = toLua "require(\"guess-indent\").setup()";
@@ -120,6 +131,26 @@
         {
           plugin = gitsigns-nvim;
           config = toLuaFile ../extraConfig/nvim/plugin/gitsigns.lua;
+        }
+
+        { plugin = gruvbox-nvim;
+        config = "colorscheme gruvbox";
+      }
+
+      { 
+        plugin = lsp_lines-nvim;
+        config = toLua ''
+        require("lsp_lines").setup()
+        vim.diagnostic.config({
+          virtual_text = false,
+        })
+        vim.keymap.set(
+          "",
+          "<Leader>l",
+          require("lsp_lines").toggle,
+          { desc = "Toggle lsp_lines" }
+          )
+          '';        
         }
 
         {
@@ -150,10 +181,10 @@
           ]));
           config = toLuaFile ../extraConfig/nvim/plugin/treesitter.lua;
         }
-    ];
+      ];
 
-    extraLuaConfig = '' 
+      extraLuaConfig = '' 
       ${builtins.readFile ../extraConfig/nvim/options.lua}
-    '';
-  };
-}
+      '';
+    };
+  }

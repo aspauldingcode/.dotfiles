@@ -27,7 +27,7 @@ sketchybar --bar "${bar[@]}"
 defaults=(
   updates=when_shown
   icon.drawing=on
-  icon.font="JetBrains Mono:Regular:12.0"
+  # icon.font="Hack Nerd Font Mono:Regular:12.0"
   icon.color=$WHITE
   label.font="JetBrains Mono:Regular:12.0"
   label.drawing=on
