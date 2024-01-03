@@ -15,9 +15,9 @@ o.clipboard = 'unnamedplus'
 -- Indentation
 o.smartindent = true
 o.autoindent = true
-o.tabstop = 4
-o.shiftwidth = 4
-o.softtabstop = 4
+o.tabstop = 8
+o.shiftwidth = 8
+o.softtabstop = 8
 o.expandtab = true
 o.signcolumn = 'yes'
 o.wrap = false
@@ -50,6 +50,14 @@ end
 map('n', '<C-p>', ':NvimTreeToggle <CR>', {noremap = true})
 map('n', '<C-f>', ':Telescope find_files <CR>', {noremap = true})
 map('n', '<C-n>', ':Telescope live_grep <CR>', {noremap = true})
+
+-- Indent selected text right with Tab
+vim.api.nvim_set_keymap('x', '<Tab>', [[>gv]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<Tab>', [[>gv]], { noremap = true, silent = true })
+
+-- Indent selected text left with Shift + Tab
+vim.api.nvim_set_keymap('x', '<S-Tab>', [[<gv]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<S-Tab>', [[<gv]], { noremap = true, silent = true })
 
 -- Word Processor Mode
 local wordProcessorModeActive = false
