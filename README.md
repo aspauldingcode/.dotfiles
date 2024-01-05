@@ -22,25 +22,37 @@ nix-env --version  # Ensure that you have Nix 2.4 or newer
 nix --experimental-features 'nix-command flakes'  # Enable flakes
 ```
 
-- [ ] **TODO:** Fix nvim and LSP Configurations
-- [ ] **TODO:** Figure out how to FIRST TIME install on ALL systems
-- [ ] **TODO:** Build a mac FIRST-TIME install script with all my settings unrelated to nix
-- [ ] **TODO:** Fix Waybar and Sketchybar Universal UX/UI Config
-- [ ] **TODO:** Fix Karabiner Key Combos
-- [ ] **TODO:** Fix skhd hotkeys
-- [ ] **TODO:** learn direnv: https://direnv.net/
-- [ ] **TODO:** Configure Zellij and plugins
-- [ ] **TODO:** Fix SDDM HomeManager vs System config and login issues
-- [ ] **TODO:** Fix SDDM Theme with a gitFetch derivation for Sonoma V2 Theme
-- [ ] **TODO:** Universal UX for zsh/zshrc and bash/bashrc, maybe even for fish shell
-- [ ] **TODO:** FIX mobile-nixos on NIXEDUP!
-- [ ] **TODO:** Nixos NIXY configuration (for nixos on NIXY instead of macOS on NIXY) 
-- [ ] **TODO:** Fix SSH configurations and setups!
-- [ ] **TODO:** Fix Nix-Colors configurations!
-- [ ] **TODO:** Nix-Colors scheme switcher for darkmode/lightmode!
-- [ ] **TODO:** Get Su Su's account set up with plasma or gnome!
-- [ ] **TODO:** Add and modify Sketchybar Plugins mentioned in Sketchybar configs!
-- [ ] **TODO:** Clean up repo code 
+- [x] Fix Double Waybar Issue
+- [x] Fix SDDM HomeManager vs System config and login issues
+- [ ] Fix SDDM Theme with a gitFetch derivation for Sonoma V2 Theme
+- [x] Universal UX for zsh/zshrc
+- [x] Configure Zellij
+- [ ] Zellij plugins
+- [x] Fix zsh problems
+- [ ] Fix bash problems
+- [ ] Fix fish problems
+- [ ] Fix nvim and LSP Configurations
+- [ ] Figure out how to FIRST TIME install on ALL systems
+- [ ] Build a mac FIRST-TIME install script with all my settings unrelated to nix
+- [ ] Waybar and Sketchybar Universal UX/UI Config
+- [ ] Fix Karabiner Key Combos
+- [ ] Fix skhd hotkeys
+- [ ] Learn Kmonad and see if it's right for my usecase.
+- [ ] Learn direnv: https://direnv.net/
+- [ ] Learn LaTeX and vimtex plugin for nvim
+- [ ] Install mobile-nixos on NIXEDUP
+- [ ] Enable Flakes local config on NIXEDUP
+- [ ] NixOS NIXY configuration (for nixos on NIXY instead of macOS on NIXY)
+- [ ] Fix SSH configurations and setups!
+- [ ] Fix Nix-Colors configurations!
+- [ ] Nix-Colors scheme switcher for darkmode/lightmode!
+- [ ] Get Su Su's account set up with plasma or gnome!
+- [ ] Add and modify Sketchybar Plugins mentioned in Sketchybar configs!
+- [ ] Upgrade my Calendar Plugin for Sketchybar
+- [ ] Complete Sketchybar Config
+- [ ] Complete Waybar Config
+- [ ] Are we UNIVERSAL yet?
+- [ ] Clean up repo code 
 
 ## Extra 
 The install can be configured through the flake.nix.
