@@ -58,24 +58,18 @@ in
         
         modules-left = [
           "custom/menu"
-        ] ++ (lib.optionals hasSway [
           "sway/workspaces"
-          "sway/mode"
-        ]) ++ (lib.optionals hasHyprland [
-          "hyprland/workspaces"
-          "hyprland/submap"
-        ]) ++ [
-          "custom/currentplayer"
-          "custom/player"
+          # "custom/gleft"
         ];
 
         modules-center = [
           "pulseaudio"
-          #"battery"
           "clock"
           "custom/unread-mail"
           #"custom/gpg-agent"
           "custom/spotify"
+          "custom/currentplayer"
+          "custom/player"
         ];
 
         modules-right = [
@@ -90,6 +84,23 @@ in
           "memory"
           "backlight"
         ];
+        
+        # "custom/gleft" = {
+        #   content = [
+        #     "custom/menu"
+        #     {
+        #       class = "left-border-container";
+        #       content = [
+        #         "sway/workspaces"
+        #         "sway/mode"
+        #       ];
+        #     }
+        #   ];
+        # };
+
+        "custom/gright" = {
+
+        };
 
         clock = {
           interval = 1;
@@ -279,7 +290,6 @@ in
           on-click = "${systemctl} --user is-active gammastep && ${systemctl} --user stop gammastep || ${systemctl} --user start gammastep";
         };
 
-
         "custom/currentplayer" = {
           interval = 2;
           return-type = "json";
@@ -336,60 +346,76 @@ in
     # w x y z -> top, right, bottom, left
     style = let inherit (config.colorscheme) colors; in /* css */ ''
       * {
-        font-family: 'DejaVu Sans', 'DejaVu Sans Mono', Regular;
+        font-family: 'JetBrains Mono', Regular;
         font-size: 8pt;
-        /* margin-top: -2px; */
-        /* margin-bottom: -2px; */
+        /* margin-top: 0px; */
+        /* margin-bottom: 0px; */
         padding-top: 0px;
         padding-bottom: 0px;
       }
 
       .modules-left {
         padding: 1px;
-        /* margin-left: 21px; */
-        margin-right: 0px;
-        /* margin-top: 8px; */
-        /* margin-bottom: 8px; */
+        margin-left: 21px;
+        margin-top: 8px;
+        margin-bottom: 8px;
+        background-color: #${colors.base00};
         border: 2px solid #${colors.base0C};
         border-radius: 30px;
       }
-      
+
+      /* .left-border-container { */
+      /*   border: 2px solid #${colors.base0C}; */
+      /*   border-radius: 10px; */
+      /*   margin-bottom: 8px; */
+      /*   background-color: #${colors.base00}; */
+      /*   border: 2px solid #${colors.base0C}; */
+      /* } */
+
       .modules-center {
         padding: 1px;
         margin-left: 0px;
         margin-right: 0px;
         margin-top: 8px;
         margin-bottom: 8px;
+        background-color: #${colors.base00};
         border: 2px solid #${colors.base0C};
         border-radius: 30px;
       }  
- 
+
       .modules-right {
         padding: 1px;
         margin-right: 21px;
-        margin-right: 0px;
         margin-top: 8px;
         margin-bottom: 8px;
+        background-color: #${colors.base00};
         border: 2px solid #${colors.base0C};
         border-radius: 30px;
       }
 
       window#waybar {
-        opacity: 0.85;  /* change back to 0.95!!! */
+        color: #${colors.base05};
+        opacity: 0.85;
         background-color: #${colors.base00};
         border: 2px solid #${colors.base0C};
         border-radius: 10px;
-        color: #${colors.base05};
       }
 
       #custom-menu {
         background-color: #${colors.base03};
         color: #${colors.base05};
-        
+        padding-left: 16px;
+        padding-right: 19px;
+        margin-left: 0px;
+        margin-right: 0px;
+        border-radius: 30px;
+			}
+
+      #custom-currentplayer {
+        color: #${colors.base05};
+        background-color: #${colors.base03};
         padding-left: 16px;
         padding-right: 16px;
-        /* margin-top: 0px; */
-        /* margin-bottom: 0px; */
         margin-left: 0px;
         margin-right: 0px;
         border-radius: 30px;
@@ -398,13 +424,10 @@ in
        #workspaces button {
         background-color: #${colors.base03};
         color: #${colors.base05};
-        
-        /* padding-left: 2px; */
-        /* padding-right: 2px; */
-        /* margin-top: 0px; */
-        /* margin-bottom: 0px; */
-        /* margin-left: 8px; */
-        /* margin-right: 8px; */
+        margin-top: -8px;
+        margin-bottom: -8px;
+        /* padding-top: 0px; */
+        /* padding-bottom: 0px; */
         border-radius: 30px;
       }
       
@@ -434,19 +457,13 @@ in
         background-color: #${colors.base03};
         border: 2px solid #${colors.base0C};
         border-radius: 10px ;
-  font-size: 16px;
+        font-size: 16px;
       }
 
-      
       #custom-hostname {
         background-color: #${colors.base0C};
         color: #${colors.base05};
         border-radius: 30px;
-      }
-
-      #custom-currentplayer {
-        padding-right: 0;
-        color: #${colors.base05};
       }
 
       #tray {
