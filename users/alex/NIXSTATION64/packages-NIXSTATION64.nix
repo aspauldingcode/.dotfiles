@@ -51,7 +51,8 @@
       android-studio
       corefonts
       beeper
-      davinci-resolve ocl-icd
+      # davinci-resolve 
+      ocl-icd
       rofi-wayland-unwrapped
       vscode
       bemenu

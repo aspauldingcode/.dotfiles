@@ -7,7 +7,7 @@
 
   wayland.windowManager.sway = {
     enable = true;
-    package = pkgs.swayfx;
+    package = null;
     config = rec {
       bars = [
         {command = "${pkgs.waybar}/bin/waybar";}#FIXME: WHY ARE THERE TWO WAYBARS at launch?

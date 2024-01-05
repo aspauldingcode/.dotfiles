@@ -10,17 +10,16 @@
     #./sway-configuration.nix #FIXME: NOT USING!
     ./packages.nix
     ./virtual-machines.nix
-    #./sddm-themes.nix
   ];
 
   # Bootloader.
   boot = {
     kernelPackages = pkgs.linuxPackages_latest; # choose your kernel
     loader = { # TODO: Use whatever bootloader you prefer!
-      systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
-    };
+    systemd-boot.enable = true;
+    efi.canTouchEfiVariables = true;
   };
+};
 
   # This is using a rec (recursive) expression to set and access XDG_BIN_HOME within the expression
   # For more on rec expressions see https://nix.dev/tutorials/first-steps/nix-language#recursive-attribute-set-rec
@@ -37,11 +36,23 @@
   #   ];
   # };
 
-  environment.variables = rec {
-    QT_QPA_PLATFORMTHEME = "qt5ct";
-    #QT_STYLE_OVERRIDE     = "qt5ct";
+  environment = {
+    # systemPackages = with pkgs; [
+    #   # Get tokyo dark theme from github in sddm-themes.nix then call it here
+    #   # (callPackage ./sddm-themes.nix{}).tokyo-night-sddm
+    #   # (pkgs.callPackage ./sddm-themes.nix {})
+    #   (pkgs.libsForQt5.callPackage ./sddm_themes.nix {})
+    #   # libsForQt5.qt5.qtgraphicaleffects  # required for tokyo-night-sddm
+    #   # libsForQt5.qt5.qtsvg               # add qtsvg
+    #   # libsForQt5.qt5.qtbase              # add qtbase
+    #   # libsForQt5.qt5.qtquickcontrols2    # add qtquickcontrols2
+    #   # libsForQt5.qt5.qtdeclarative       # add qtdeclarative (for QML support)
+    # ];
+    variables = rec {
+      QT_QPA_PLATFORMTHEME = "qt5ct";
+      #QT_STYLE_OVERRIDE     = "qt5ct";
+    };
   };
-
   # Enable networking
   networking = {
     hostName = "NIXSTATION64";
@@ -74,14 +85,9 @@
     };
   };
 
-  # services
+
+# services
   services = {
-    pipewire = { # fix for pipewire audio:
-      enable = true;
-      alsa.enable = true;
-      pulse.enable = true;
-      jack.enable = true;
-    };
     # PRETTY LOGIN SCREEN! (FIXME needs to be configured with osx sddm theme)
     xserver = {
       enable = true;
@@ -89,19 +95,16 @@
         sddm = {
           enable = true;
           wayland.enable = true;
-          theme = "maldives";
+          theme = "tokyo-night-sddm";
         };
-        #find swayfx binary with: ls /nix/store | grep swayfx
       };
-      windowManager = {
-        session = [{
-          name = "swayfx";
-          start = ''
-            systemd-cat -t sway-x86_64-linux -- /nix/store/8qdp8r1bafgz4g1rxwn0fc2im15adsly-swayfx-0.3.2/bin/sway & 
-            waitPID=$!
-          '';
-        }];
-      };
+    };
+    
+    pipewire = { # fix for pipewire audio:
+      enable = true;
+      alsa.enable = true;
+      pulse.enable = true;
+      jack.enable = true;
     };
 
     #getty.autologinUser = "alex"; # Enable automatic login for the user.
@@ -114,13 +117,13 @@
         PermitRootLogin = "no"; # Forbid root login through SSH.
         PasswordAuthentication =
           false; # Use keys only. Remove if you want to SSH using password (not recommended)
+        };
       };
-    };
 
     # Network Discovery
     avahi = {
       enable = true;
-      nssmdns = true; # Printing
+      nssmdns4 = true; # Printing
       openFirewall = true;
       publish = {
         enable = true;
@@ -167,6 +170,10 @@
     adb.enable = true; # Enable Android De-Bugging.
     gnome-disks.enable = true; # GNOME Disks daemon, UDisks2 GUI
     xwayland.enable = false;
+    sway = {
+      enable = true;
+      package = pkgs.swayfx;
+    };
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
@@ -176,8 +183,8 @@
       description = "Alex Spaulding";
       extraGroups =
         [ "networkmanager" "wheel" "docker" "kvm" "libvirtd" "adbusers" ];
-      openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINKfaO41wp3p/dkpuqIP6tj78SCrn2RSQUG2OSiHAv7j aspauldingcode@gmail.com"
+        openssh.authorizedKeys.keys = [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINKfaO41wp3p/dkpuqIP6tj78SCrn2RSQUG2OSiHAv7j aspauldingcode@gmail.com"
         # TODO: Add your SSH public key(s) here, if you plan on using SSH to connect
       ];
       shell = pkgs.zsh;
@@ -228,27 +235,27 @@
     # This will additionally add your inputs to the system's legacy channels
     # Making legacy nix commands consistent as well, awesome!
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}")
-      config.nix.registry;
+    config.nix.registry;
     settings = { # Nix Settings
-      auto-optimise-store = true; # Auto Optimize nix store.
-      experimental-features =
-        [ "nix-command" "flakes" ]; # Enable experimental features.
+    auto-optimise-store = true; # Auto Optimize nix store.
+    experimental-features =
+      [ "nix-command" "flakes" ]; # Enable experimental features.
     };
     #trusted-users = [ "root" "alex" "susu"]; #fix trusted user issue
   };
 
   virtualisation = { # enable virtualization support
-    docker.enable = true;
-    libvirtd.enable = true;
-    waydroid.enable = true;
-    lxd.enable = true;
-  };
+  docker.enable = true;
+  libvirtd.enable = true;
+  waydroid.enable = true;
+  lxd.enable = true;
+};
 
-  system = {
-    autoUpgrade = {
-      enable = true;
-      allowReboot = false;
-    };
+system = {
+  autoUpgrade = {
+    enable = true;
+    allowReboot = false;
+  };
     # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
     stateVersion = "23.05"; # Did you read the comment?
   };
