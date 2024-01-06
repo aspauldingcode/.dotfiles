@@ -18,6 +18,7 @@ let
       '';
 
 in {
+  xdg.configFile."sketchybar/items/calendar.sh".source = ./items/calendar.sh;
   xdg.configFile."sketchybar/sketchybarrc".source = ./sketchybarrc;
   xdg.configFile."sketchybar/colors.sh".source = nixy-colors;
   xdg.configFile."sketchybar/icons.sh".source = ./icons.sh;

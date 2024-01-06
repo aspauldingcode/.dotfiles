@@ -4,6 +4,7 @@ source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+ITEM_DIR="$HOME/.config/sketchybar/items"
 SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
 POPUP_CLICK_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
 ACTIVE_SPACE=$(yabai -m query --spaces --space | jq '.index')
@@ -48,20 +49,19 @@ datetime=(
   background.padding_right=3
   background.height=19
   background.corner_radius=10
-  popup.horizontal=on
+  popup.horizontal=on # FIXME: FIGURE OUT HOW TO MAKE CALENDAR WITHOUT THIS!
   popup.align=center
   icon.padding_right=10
   icon.padding_left=10
   icon=$TIME
   icon.drawing=on
   label.padding_right=10
-  update_freq=1
+  update_freq=5
   script="$PLUGIN_DIR/datetime.sh"
   click_script="$POPUP_CLICK_SCRIPT"
-  popup.height=140
+  popup.height=135
+  popup.width=10
   background.corner_radius=10
-  background.padding_left=3
-  background.padding_right=3
 )
 
 wifi=(
