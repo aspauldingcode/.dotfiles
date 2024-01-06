@@ -95,9 +95,10 @@
         sddm = {
           enable = true;
           wayland.enable = true;
-          theme = "tokyo-night-sddm";
+          theme = "${import ./sddm-themes.nix {inherit pkgs; }}";
         };
       };
+      desktopManager.plasma5.enable = true;
     };
     
     pipewire = { # fix for pipewire audio:

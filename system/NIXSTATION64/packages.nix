@@ -6,16 +6,20 @@
   environment.systemPackages = with pkgs; [
     neovim
     zellij
+    libsForQt5.qt5.qtbase
+    libsForQt5.qt5.qtsvg
+    libsForQt5.qt5.qtquickcontrols2
+    libsForQt5.kdialog
+    libsForQt5.qt5.qtgraphicaleffects
+    louvre
     ranger
     wl-clipboard
     neofetch
     ueberzugpp #replacement for depricated inline terminal image previewer
     yazi
     krita
-    # libreoffice-fresh-unwrapped
     libreoffice-fresh
     xdg-desktop-portal-wlr
-    libsForQt5.kdialog
     gtkdialog
     pcmanfm			
     wofi-emoji 

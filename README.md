@@ -24,13 +24,18 @@ nix --experimental-features 'nix-command flakes'  # Enable flakes
 
 - [x] Fix Double Waybar Issue
 - [x] Fix SDDM HomeManager vs System config and login issues
-- [ ] Fix SDDM Theme with a gitFetch derivation for Sonoma V2 Theme
+- [x] Fix SDDM Theme with a gitFetch derivation for Sonoma V2 Theme
+- [ ] SDDM Background swap
+- [ ] SDDM buttons fix
+- [ ] Set Default xserver Session to SwayFX instead of Plasma Wayland or Plasma(x11)
 - [x] Universal UX for zsh/zshrc
 - [x] Configure Zellij
 - [ ] Zellij plugins
-- [x] Fix zsh problems
 - [ ] Fix bash problems
 - [ ] Fix fish problems
+- [x] Fix zsh problems
+- [ ] Fix zellij/sway  keybinds conflicts
+- [ ] Fix zellij/yabai keybinds conflicts
 - [ ] Fix nvim and LSP Configurations
 - [ ] Figure out how to FIRST TIME install on ALL systems
 - [ ] Build a mac FIRST-TIME install script with all my settings unrelated to nix
