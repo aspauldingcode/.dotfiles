@@ -50,9 +50,9 @@
       #"user/repo"  # Additional Homebrew tap
       # default
       "homebrew/bundle"
-      "homebrew/cask"
+      # "homebrew/cask"
       "homebrew/cask-fonts"
-      "homebrew/core"
+      # "homebrew/core"
       "homebrew/services"
       # Custom
       "koekeishiya/formulae"

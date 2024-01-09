@@ -20,7 +20,6 @@ bar=(
   y_offset=10
   sticky=off
   margin=13 # Margin around the bar
-  # notch_width=200
 )
 
 sketchybar --bar "${bar[@]}"
