@@ -1,5 +1,20 @@
 { config, lib, pkgs, ... }:
 
+/*Making Waybar follow the Gtk theme
+Gtk CSS has some global theme variables, and by using these instead of hardcoded values, Waybar will automatically follow your Gtk theme. An example:
+
+window#waybar {
+    background: @theme_base_color;
+    border-bottom: 1px solid @unfocused_borders;
+    color: @theme_text_color;
+}
+The Gtk theme variables can be further refined by using the shade, mix, and/or alpha modifiers. For example, if you want to make the bar 25 % lighter and 10 % transparent, you can style the background like this:
+
+window#waybar {
+    background: shade(alpha(@borders, 0.9), 1.25);
+}
+For a list of valid Gtk theme variables, check out Gnome's stylesheet on Gitlab.*/
+
 let
   # Dependencies
   cat = "${pkgs.coreutils}/bin/cat";
@@ -345,147 +360,109 @@ in
     # x y z -> top, horizontal, bottom
     # w x y z -> top, right, bottom, left
     style = let inherit (config.colorscheme) colors; in /* css */ ''
-      * {
-        font-family: 'JetBrains Mono', Regular;
-        font-size: 8pt;
-        /* margin-top: 0px; */
-        /* margin-bottom: 0px; */
-        padding-top: 0px;
-        padding-bottom: 0px;
-      }
 
-      .modules-left {
-        padding: 1px;
-        margin-left: 21px;
-        margin-top: 8px;
-        margin-bottom: 8px;
-        background-color: #${colors.base00};
-        border: 2px solid #${colors.base0C};
-        border-radius: 30px;
-      }
+* {
+  font-family: 'JetBrains Mono', Regular;
+  font-size: 8pt;
+  padding: 1px;
+}
 
-      /* .left-border-container { */
-      /*   border: 2px solid #${colors.base0C}; */
-      /*   border-radius: 10px; */
-      /*   margin-bottom: 8px; */
-      /*   background-color: #${colors.base00}; */
-      /*   border: 2px solid #${colors.base0C}; */
-      /* } */
+.modules-left,
+.modules-center,
+.modules-right,
+window#waybar,
+#custom-menu,
+#custom-currentplayer,
+#workspaces button,
+#workspaces button.hidden,
+#workspaces button.focused,
+#workspaces button.active,
+#clock,
+#clock-popup,
+#custom-hostname,
+#tray,
+#pulseaudio,
+#memory {
+  background-color: #${colors.base00};
+  border: 2px solid #${colors.base0C};
+  border-radius: 30px;
+  color: #${colors.base05};
+  padding-left: 16px;
+  padding-right: 16px;
+  margin: 0px;
+}
 
-      .modules-center {
-        padding: 1px;
-        margin-left: 0px;
-        margin-right: 0px;
-        margin-top: 8px;
-        margin-bottom: 8px;
-        background-color: #${colors.base00};
-        border: 2px solid #${colors.base0C};
-        border-radius: 30px;
-      }  
+.modules-left,
+.modules-center,
+.modules-right {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
 
-      .modules-right {
-        padding: 1px;
-        margin-right: 21px;
-        margin-top: 8px;
-        margin-bottom: 8px;
-        background-color: #${colors.base00};
-        border: 2px solid #${colors.base0C};
-        border-radius: 30px;
-      }
+.modules-left,
+.modules-center,
+.modules-right {
+  margin-top: -8px; /* Adjusted padding-top */
+	margin-bottom: -8px; /* Adjusted padding-bottom */
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
 
-      window#waybar {
-        color: #${colors.base05};
-        opacity: 0.85;
-        background-color: #${colors.base00};
-        border: 2px solid #${colors.base0C};
-        border-radius: 10px;
-      }
+window#waybar {
+  opacity: 0.85;
+  border-radius: 10px;
+	/* border-left: 0px solid #${colors.base0C}; */
+	/* border-right: 0px solid #${colors.base0C};	 */
+}
 
-      #custom-menu {
-        background-color: #${colors.base03};
-        color: #${colors.base05};
-        padding-left: 16px;
-        padding-right: 19px;
-        margin-left: 0px;
-        margin-right: 0px;
-        border-radius: 30px;
-			}
+#custom-menu {
+  background-color: #${colors.base03};
+  border-radius: 30px;
+  font-size: 8pt;
+  padding-left: 16px;
+  padding-right: 19px;
+}
 
-      #custom-currentplayer {
-        color: #${colors.base05};
-        background-color: #${colors.base03};
-        padding-left: 16px;
-        padding-right: 16px;
-        margin-left: 0px;
-        margin-right: 0px;
-        border-radius: 30px;
-      }
+#custom-currentplayer {
+  background-color: #${colors.base03};
+  border-radius: 30px;
+}
 
-       #workspaces button {
-        background-color: #${colors.base03};
-        color: #${colors.base05};
-        margin-top: -8px;
-        margin-bottom: -8px;
-        /* padding-top: 0px; */
-        /* padding-bottom: 0px; */
-        border-radius: 30px;
-      }
-      
-      #workspaces button.hidden {
-        background-color: #${colors.base00};
-        color: #${colors.base05};
-      }
-      
-      #workspaces button.focused,
-      #workspaces button.active {
-        background-color: #${colors.base0A};
-        color: #${colors.base01};
-      }
+#workspaces button {
+  background-color: #${colors.base00};
+  color: #${colors.base05};
+  padding-top: 4px;
+  padding-bottom: 4px;
+  font-size: 8pt;
+}
 
-      #clock {
-        background-color: #${colors.base03};
-        color: #${colors.base05};
-        margin-top: 0px;
-        margin-bottom: 0px;
-        padding-left: 16px;
-        padding-right: 16px;
-        /* border: 2px solid #${colors.base0C}; */
-        border-radius: 30px;
-      }
+#workspaces button.focused,
+#workspaces button.active {
+  background-color: #${colors.base0A};
+  color: #${colors.base01};
+}
 
-      #clock-popup {
-        background-color: #${colors.base03};
-        border: 2px solid #${colors.base0C};
-        border-radius: 10px ;
-        font-size: 16px;
-      }
+#clock,
+#memory {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
 
-      #custom-hostname {
-        background-color: #${colors.base0C};
-        color: #${colors.base05};
-        border-radius: 30px;
-      }
+#clock-popup {
+  background-color: #${colors.base03};
+  border: 2px solid #${colors.base0C};
+  border-radius: 10px;
+  font-size: 16px;
+}
 
-      #tray {
-        color: #${colors.base05};
-      }
+#custom-hostname {
+  background-color: #${colors.base0C};
+  border-radius: 30px;
+}
 
-      #pulseaudio {
-        padding-left: 16px;
-      }
-
-      #memory {
-        /* font-size: 16px; */
-        background-color: #${colors.base03};
-        color: #${colors.base05};
-        padding-left: 16px;
-        padding-right: 16px;
-        margin-top: 0px;
-        margin-bottom: 0px;
-        margin-left: 0px;
-        margin-right: 0px;
-        border-radius: 30px;
-      }
+#pulseaudio {
+  padding-left: 16px;
+}
     '';
   };
 }
