@@ -1,3 +1,4 @@
+local vim = vim
 local o = vim.opt
 local g = vim.g
 
@@ -86,7 +87,9 @@ function ToggleWordProcessorMode()
     end
 end
 
-vim.cmd('command! WP lua ToggleWordProcessorMode()')
+vim.cmd('command! -nargs=0 WP lua ToggleWordProcessorMode()')
+vim.cmd([[command! -nargs=0 -bar W :]])
+
 
 -- Misc Improvements
 o.smartcase = true

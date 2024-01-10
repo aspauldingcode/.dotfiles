@@ -71,7 +71,7 @@
     sudo nixos-rebuild switch --flake .#NIXSTATION64 
     home-manager switch --flake .#alex@NIXSTATION64
     echo "Done. Running 'fix-wm'..."
-    # fix-wm
+    fix-wm
     echo "Completed."
     date +"%r"
     '')

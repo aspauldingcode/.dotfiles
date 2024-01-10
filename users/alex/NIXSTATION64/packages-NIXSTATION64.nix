@@ -44,7 +44,9 @@
     packages = with pkgs; [
       lsof
       etcher
+      gcal
       checkra1n
+      cava
       pfetch
       zoom-us
       spotify-unwrapped

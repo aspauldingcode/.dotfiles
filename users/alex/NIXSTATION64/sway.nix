@@ -32,7 +32,7 @@
         DP-2 = {
           res = "1920x1080"; 
           pos = "3000,450";
-          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/reference.png fill";
+          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/sketchybarTODAY.png fill";
         };
         # "*" = { # change background for all outputs
         #   bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/synthwave-night-skyscrapers.jpg fill";
@@ -127,6 +127,7 @@
         "${modifier}+w" = "layout toggle split";
         "${modifier}+s" = "layout stacking";
         "${modifier}+t" = "layout tabbed";
+        "${modifier}+e" = "layout default";
 
         #"${modifier}+o" = "inhibit_idle open; border normal; mark --add inhibiting_idle";
         #"${modifier}+Shift+o" = "inhibit_idle none; border pixel; unmark inhibiting_idle";
@@ -220,10 +221,11 @@
       # autotile!
       exec autotiling
 
-      #exec "mako --config ~/.mako"
+      #exec "mako --config ~/.makoe"
 
       # STYLIZE!
       gaps inner 13
+      gaps top -2
       corner_radius 10
 
       # Window background blur
