@@ -38,21 +38,21 @@
         # Becomes either 'dark' or 'light', based on your colors! (in qutebrowser)
         #webppage.preferred_color_scheme = "${config.colorScheme.kind}";
 
-      colors = {
-        primary = {
-          foreground = "#${config.colorScheme.colors.base05}";
-          background = "#${config.colorScheme.colors.base00}";
-        };
+        colors = {
+          primary = {
+            foreground = "#${config.colorScheme.colors.base05}";
+            background = "#${config.colorScheme.colors.base00}";
+          };
         #cursor = {
         #text    ="0xEBEBEB";
         #cursor  ="0xEBEBEB";
         #};
         normal = {#TRYING TO GRUVBOX IT
-          black   ="#${config.colorScheme.colors.base00}";
-          red     ="#${config.colorScheme.colors.base08}";
-          green   ="#${config.colorScheme.colors.base0B}";
-          yellow  ="#${config.colorScheme.colors.base0A}";
-          blue    ="#${config.colorScheme.colors.base0D}";
+        black   ="#${config.colorScheme.colors.base00}";
+        red     ="#${config.colorScheme.colors.base08}";
+        green   ="#${config.colorScheme.colors.base0B}";
+        yellow  ="#${config.colorScheme.colors.base0A}";
+        blue    ="#${config.colorScheme.colors.base0D}";
           # purple  ="#${config.colorScheme.colors.base0E}";
           # aqua    ="#${config.colorScheme.colors.base0C}";
           # gray    ="#${config.colorScheme.colors.base05}";
@@ -69,20 +69,19 @@
         };
         draw_bold_text_with_bright_colors = true;
       };
-  
- cursor = {
-    style = "Beam";
-    # blinking = "On";
-    blink_interval = 750;
-  };
-  live_config_reload = true;
 
-  keyboard.bindings = [
-    {
-      key = "F";
-      mods = "Command|Shift";
-      action = "ToggleSimpleFullscreen";
-    }
+      cursor = {
+        style = "Beam";
+        blink_interval = 750;
+      };
+      live_config_reload = true;
+
+      keyboard.bindings = [
+        {
+          key = "F";
+          mods = "Command|Shift";
+          action = "ToggleSimpleFullscreen";
+        }
     # {
        # key = "C";
        # mods = "Control|Shift";
@@ -104,8 +103,8 @@
     # }
     #- { key: L,         mods: Control,                    action: ClearLogNotice }
     #- { key: L,         mods: Control, mode: ~Vi|~Search, chars: "\x0c"          }
-  {
-    key = "PageUp";
+    {
+      key = "PageUp";
           #mods = "Shift";   
           mode = "~Alt";
           action = "ScrollPageUp";

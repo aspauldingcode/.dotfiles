@@ -1,4 +1,4 @@
-{ lib, pkgs, config, ... }:
+{ ... }:
 
 {
   #enable brew packages just in case
@@ -33,6 +33,7 @@
     #];
     casks = [
       #"xquartz" #what an ugly app
+      "alacritty"
       "dmenu-mac"
       "brave-browser"
       "alt-tab"

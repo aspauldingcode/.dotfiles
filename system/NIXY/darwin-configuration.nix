@@ -20,7 +20,6 @@
 		(pkgs.callPackage ./apple-fonts.nix {})
 		(nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" "Hack" ]; })
       ];
-
 	# system.build = builtins.exec "echo 'hello, world.'";
 	# Auto upgrade nix package and the daemon service.
 	services.nix-daemon.enable = true;
@@ -41,4 +40,3 @@
 	# $ darwin-rebuild changelog
 	system.stateVersion = 4;
 }
-

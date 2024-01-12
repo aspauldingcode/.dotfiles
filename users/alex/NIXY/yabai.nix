@@ -39,7 +39,7 @@
       borders active_color=0xff"${colors.base0C}" inactive_color=0xff"${colors.base03}" width=5.0 &
 
       # window appearance
-      yabai -m config window_shadow               off
+      yabai -m config window_shadow               float
       yabai -m config window_opacity              on
       yabai -m config window_opacity_duration     0.1
       yabai -m config window_animation_duration		0.35
@@ -81,6 +81,7 @@
       yabai -m rule --add app='Installer'             manage=off
       yabai -m rule --add app='Karabiner-EventViewer' manage=off
       yabai -m rule --add app='Karabiner-Elements'    manage=off
+      yabai -m rule --add app='alacritty'    manage=on
 
       # workspace management
       # yabai -m space 1  --label term
@@ -127,9 +128,8 @@
         # alt + a / u / o / s are blocked due to umlaute
         
         # Launch shortcuts
-        # ${mod} - return :                 open -na alacritty
-        ${mod} - return :                 alacritty
-
+        ${mod} - return :                 open -na /opt/homebrew/bin/alacritty #FIXME: Alacritty is broken atm. Using homebrew. 
+        # ${mod} - return :                 alacritty
         ${mod} - d :                      open -a dmenu-mac
         ${mod} + ctrl - space :           open -na "Brave Browser"
         ${mod1} + ${mod4} - space :       open -na "Brave Browser"

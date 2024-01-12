@@ -23,7 +23,34 @@
               "basic.to_if_held_down_threshold_milliseconds": 500,
               "mouse_motion_to_scroll.speed": 100
             },
-            "rules": []
+            "rules": [
+              {
+                "description": "Change keybind for Alacritty",
+                "manipulators": [
+                  {
+                    "type": "basic",
+                    "from": {
+                      "key_code": "f",
+                      "modifiers": {
+                        "mandatory": ["left_option", "left_shift"]
+                      }
+                    },
+                    "to": [
+                      {
+                        "key_code": "f",
+                        "modifiers": ["left_command", "left_shift"]
+                      }
+                    ],
+                    "conditions": [
+                      {
+                        "type": "frontmost_application_if",
+                        "bundle_identifiers": ["^org\\.alacritty$"]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
           },
           "devices": [
             {
