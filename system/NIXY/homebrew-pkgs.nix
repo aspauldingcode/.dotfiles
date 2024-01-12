@@ -35,6 +35,7 @@
       #"xquartz" #what an ugly app
       "alacritty"
       "dmenu-mac"
+      "element"
       "brave-browser"
       "alt-tab"
       "orbstack"

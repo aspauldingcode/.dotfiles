@@ -41,8 +41,8 @@ nix --experimental-features 'nix-command flakes'  # Enable flakes
 - [ ] Figure out how to FIRST TIME install on ALL systems
 - [ ] Build a mac FIRST-TIME install script with all my settings unrelated to nix
 - [ ] Waybar and Sketchybar Universal UX/UI Config
-- [ ] Fix Karabiner Key Combos
-- [ ] Fix skhd hotkeys
+- [x] Fix Karabiner Key Combos
+- [x] Fix skhd hotkeys
 - [ ] Learn Kmonad and see if it's right for my usecase.
 - [ ] Learn direnv: https://direnv.net/
 - [ ] Learn LaTeX and vimtex plugin for nvim

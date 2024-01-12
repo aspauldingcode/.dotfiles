@@ -116,10 +116,9 @@ mail=(
   background.height=25
   corner_radius=8
   padding_right=10
-  # background.border_color=$GREY
-  # background.border_width=2
   icon.drawing=on
   icon="$MAIL"
+  icon.padding_left=15
   script="$PLUGIN_DIR/mail.sh"
   click_script="$POPUP_CLICK_SCRIPT"
   update_freq=60
@@ -200,17 +199,6 @@ space_bg=(
   background.corner_radius=50
 )
 
-CURRENT_APP_IN_SPACE=$(osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true')
-active_app=(
-  icon.drawing=off
-  background.height=25
-  background.corner_radius=10
-  label.padding_left=10
-  label.padding_right=10
-	padding_left=10
-  label="$CURRENT_APP_IN_SPACE"
-)
-
 ## Adding sketchybar Items:
 # Left Items
 sketchybar --add item apple left \
@@ -287,7 +275,7 @@ brackets=(
   background.border_width=2
 )
 
-sketchybar --add bracket lbracket apple space_seperator front_app active_app left \
+sketchybar --add bracket lbracket apple space_seperator front_app left \
   --set lbracket "${brackets[@]}"
 sketchybar --add bracket cbracket volume volume_icon datetime cava spotify center \
   --set cbracket "${brackets[@]}"

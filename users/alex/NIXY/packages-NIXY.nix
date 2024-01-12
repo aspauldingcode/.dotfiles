@@ -45,6 +45,7 @@
       yabai --stop-service && yabai --start-service #helps with adding initial service
       skhd --stop-service && skhd --start-service #otherwise, I have to run manually first time.
       brew services restart felixkratz/formulae/sketchybar 
+      launchctl stop org.pqrs.karabiner.karabiner_console_user_server && launchctl start org.pqrs.karabiner.karabiner_console_user_server
       '')
 
     #analyze-output
