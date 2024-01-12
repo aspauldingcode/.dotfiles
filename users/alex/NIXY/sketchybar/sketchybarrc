@@ -7,7 +7,8 @@ PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 ITEM_DIR="$HOME/.config/sketchybar/items"
 SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
 POPUP_CLICK_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
-ACTIVE_SPACE=$(yabai -m query --spaces --space | jq '.index')
+
+# ACTIVE_SPACE=$(yabai -m query --spaces --space | jq '.index')
 SPACE_ICONS=("1" "2" "3" "4" "5" "6" "7" "8" "9" "10")
 
 bar=(
@@ -55,7 +56,7 @@ datetime=(
   icon=$TIME
   icon.drawing=on
   label.padding_right=10
-  update_freq=5
+  update_freq=1
   script="$PLUGIN_DIR/datetime.sh"
   click_script="$POPUP_CLICK_SCRIPT"
   popup.height=135
@@ -66,9 +67,9 @@ datetime=(
 wifi=(
   script="$PLUGIN_DIR/wifi.sh"
   click_script="$POPUP_CLICK_SCRIPT"
-  label.padding_right=15
-  update_freq=60
-  popup.align=right
+  label.padding_right=10
+  update_freq=2
+  popup.align=center
 )
 
 battery=(
@@ -76,8 +77,8 @@ battery=(
   update_freq=120
   updates=on
   click_script="$POPUP_CLICK_SCRIPT"
-  label.padding_left=15
-  popup.align=right
+  label.padding_right=10
+  popup.align=center
 )
 
 volume=(
@@ -106,21 +107,19 @@ volume=(
 volume_icon=(
   script="$PLUGIN_DIR/volume_icon.sh"
   #click_script="$PLUGIN_DIR/volume_click.sh"
-  label.padding_right=10
-  label.padding_left=10
+  padding_right=10
+  padding_left=10
 )
 
 mail=(
-  background.color=$TEMPUS
+  # background.color=$TEMPUS
   background.height=25
-  background.corner_radius=10
-  background.padding_right=10
-  background.border_color=$GREY
-  background.border_width=2
+  corner_radius=8
+  padding_right=10
+  # background.border_color=$GREY
+  # background.border_width=2
   script="$PLUGIN_DIR/mail.sh"
   click_script="$POPUP_CLICK_SCRIPT"
-  icon.padding_left=15
-  icon.padding_right=15
   update_freq=60
 )
 
@@ -161,7 +160,7 @@ ram=(
   script="$PLUGIN_DIR/ram.sh"
   label.padding_right=15
   label.padding_left=10
-  update_freq=60
+  update_freq=4
   background.corner_radius=10
   background.color=$TEMPUS
   background.height=19
@@ -176,7 +175,7 @@ cpu=(
   script="$PLUGIN_DIR/cpu.sh"
   label.padding_left=10
   label.padding_right=15
-  update_freq=60
+  update_freq=4
 )
 
 apple=(
@@ -193,14 +192,6 @@ apple=(
   popup.align=left
 )
 
-space=(
-  script="$PLUGIN_DIR/spaces.sh"
-  label.drawing=on
-  icon.padding_left=15
-  icon.padding_right=15
-  update_freq=1
-)
-
 space_bg=(
   background.color=$SPACEBG
   background.height=19
@@ -215,38 +206,41 @@ active_app=(
   label.padding_left=10
   label.padding_right=10
 	padding_left=10
-  update_freq=0
-  label="$CURRENT_APP_IN_SPACE" # HOW TO CONTINUOUSLY SET?
+  label="$CURRENT_APP_IN_SPACE"
 )
 
 ## Adding sketchybar Items:
 # Left Items
 sketchybar --add item apple left \
   --set apple "${apple[@]}"
-declare -a spacesArray=()
-for i in "${!SPACE_ICONS[@]}"; do
-  sid=$(($i + 1))
-
-  if [[ $sid -eq $ACTIVE_SPACE ]]; then
-    CURRENT_ICON=$PACMAN
-  else
-    CURRENT_ICON=${SPACE_ICONS["$i"]}
-  fi
-
-  spacesArray+=("space.$sid")
-
-  sketchybar --add space space.$sid left \
-    --set space.$sid associated_space=$sid \
-    icon="$CURRENT_ICON" \
-    click_script="yabai -m space --focus $sid" \
-    "${space[@]}"
-
-  if [[ $sid -eq $ACTIVE_SPACE ]]; then
-    sketchybar --set space.$sid "${space_bg[@]}"
-  fi
+for i in "${!SPACE_ICONS[@]}"
+do
+  sid=$(($i+1))
+  sketchybar --add space space.$sid left                                 \
+             --set space.$sid space=$sid                                 \
+                              icon=${SPACE_ICONS[i]}                     \
+                              background.color=0x44ffffff                \
+                              background.corner_radius=5                 \
+                              padding_left=10                             \
+                              padding_right=10                            \
+                              background.height=20                       \
+                              background.drawing=off                     \
+                              label.drawing=off                          \
+                              script="$PLUGIN_DIR/space.sh"              \
+                              click_script="yabai -m space --focus $sid"
 done
+sketchybar --add item space_separator left                         \
+           --set space_separator icon=                            \
+                                 padding_left=10                   \
+                                 label.drawing=off                 \
+                                                                   \
+           --add item front_app left                               \
+           --set front_app       script="$PLUGIN_DIR/front_app.sh" \
+                                 icon.drawing=on                  \
+           --subscribe front_app front_app_switched
 sketchybar --add item active_app left \
-  --set active_app "${active_app[@]}"
+   --set active_app "${active_app[@]}" \ 
+   --subscribe front_app front_app_switched
 
 # Center Items
 sketchybar --add item volume_icon center \
@@ -266,6 +260,7 @@ sketchybar --add event spotify_change $SPOTIFY_EVENT \
   --set spotify "${spotify[@]}" \
   --subscribe spotify mouse.entered mouse.exited \
   mouse.exited.global
+
 # Right Items
 sketchybar --add item ram right \
   --set ram "${ram[@]}"
@@ -290,11 +285,11 @@ brackets=(
   background.border_width=2
 )
 
-sketchybar --add bracket lbracket apple "${spacesArray[@]}" left \
+sketchybar --add bracket lbracket apple space_seperator front_app active_app left \
   --set lbracket "${brackets[@]}"
 sketchybar --add bracket cbracket volume volume_icon datetime cava spotify center \
   --set cbracket "${brackets[@]}"
-sketchybar --add bracket rbracket ram cpu right \
+sketchybar --add bracket rbracket wifi battery mail ram cpu right \
   --set rbracket "${brackets[@]}"
 
 sketchybar --update

@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, ... }:
 
 {
   programs.alacritty = {
@@ -8,9 +8,10 @@
         padding.x = 0;
         padding.y = 10;
         opacity   = 0.9;
+        blur = true;
         class.instance = "Alacritty";
         class.general  = "Alacritty";
-        decorations = "buttonless";
+        decorations = "Buttonless";
       };
 
       scrolling = {
@@ -42,45 +43,44 @@
           foreground = "#${config.colorScheme.colors.base05}";
           background = "#${config.colorScheme.colors.base00}";
         };
-      #cursor = {
-      #text    ="0xEBEBEB";
-      #cursor  ="0xEBEBEB";
-      #};
-      normal = {#TRYING TO GRUVBOX IT
-      black   ="#${config.colorScheme.colors.base00}";
-      red     ="#${config.colorScheme.colors.base08}";
-      green   ="#${config.colorScheme.colors.base0B}";
-      yellow  ="#${config.colorScheme.colors.base0A}";
-      blue    ="#${config.colorScheme.colors.base0D}";
-      purple  ="#${config.colorScheme.colors.base0E}";
-      aqua    ="#${config.colorScheme.colors.base0C}";
-      gray    ="#${config.colorScheme.colors.base05}";
-    };
-    bright = {
-      black   ="#${config.colorScheme.colors.base03}";
-      red     ="#${config.colorScheme.colors.base08}";
-      green   ="#${config.colorScheme.colors.base0B}";
-      yellow  ="#${config.colorScheme.colors.base0A}";
-      blue    ="#${config.colorScheme.colors.base0D}";
-      purple  ="#${config.colorScheme.colors.base0E}";
-      aqua    ="#${config.colorScheme.colors.base0C}";
-      gray    ="#${config.colorScheme.colors.base07}";
-    };
-    };
+        #cursor = {
+        #text    ="0xEBEBEB";
+        #cursor  ="0xEBEBEB";
+        #};
+        normal = {#TRYING TO GRUVBOX IT
+          black   ="#${config.colorScheme.colors.base00}";
+          red     ="#${config.colorScheme.colors.base08}";
+          green   ="#${config.colorScheme.colors.base0B}";
+          yellow  ="#${config.colorScheme.colors.base0A}";
+          blue    ="#${config.colorScheme.colors.base0D}";
+          # purple  ="#${config.colorScheme.colors.base0E}";
+          # aqua    ="#${config.colorScheme.colors.base0C}";
+          # gray    ="#${config.colorScheme.colors.base05}";
+        };
+        bright = {
+          black   ="#${config.colorScheme.colors.base03}";
+          red     ="#${config.colorScheme.colors.base08}";
+          green   ="#${config.colorScheme.colors.base0B}";
+          yellow  ="#${config.colorScheme.colors.base0A}";
+          blue    ="#${config.colorScheme.colors.base0D}";
+          # purple  ="#${config.colorScheme.colors.base0E}";
+          # aqua    ="#${config.colorScheme.colors.base0C}";
+          # gray    ="#${config.colorScheme.colors.base07}";
+        };
+        draw_bold_text_with_bright_colors = true;
+      };
   
  cursor = {
     style = "Beam";
-    blinking = "On";
+    # blinking = "On";
     blink_interval = 750;
   };
-
-  draw_bold_text_with_bright_colors = true;
   live_config_reload = true;
 
-  key_bindings = [
+  keyboard.bindings = [
     {
       key = "F";
-      mods = "Alt|Shift";
+      mods = "Command|Shift";
       action = "ToggleSimpleFullscreen";
     }
     # {

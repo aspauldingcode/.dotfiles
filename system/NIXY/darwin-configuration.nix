@@ -4,7 +4,8 @@
 	imports = [
 	./packages.nix
 	./defaults-macos.nix
-	./homebrew-pkgs.nix
+        ./homebrew-pkgs.nix
+        ./yabai-sa.nix
 	];
 	# Allow Unfree
 	nixpkgs.config.allowUnsupportedSystem = true;
@@ -12,8 +13,10 @@
 	fonts.fontDir.enable = true;
 	fonts.fonts = with pkgs; [
 		dejavu_fonts
-        font-awesome_5
-        jetbrains-mono
+                powerline-fonts
+                powerline-symbols
+                font-awesome_5
+                jetbrains-mono
 		(pkgs.callPackage ./apple-fonts.nix {})
 		(nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" "Hack" ]; })
       ];

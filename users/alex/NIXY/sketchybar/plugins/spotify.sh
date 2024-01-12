@@ -27,7 +27,7 @@ DURATION=$((DURATION_MS / 1000))
 FLOAT=$(truncate_or_append_ellipsis "$(osascript -e 'tell application "Spotify" to get player position')")
 TIME=${FLOAT%.*}
 
-# Download Album Cover without truncating its URL
+# Download Album Cover
 curl -s --max-time 20 "$CURRENT_COVER" -o /tmp/cover.jpg
 
 detail_on() {

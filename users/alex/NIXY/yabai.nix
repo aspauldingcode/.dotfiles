@@ -1,9 +1,21 @@
-{ config, pkgs, lib, ... }: {
+{ config, ... }: 
+
+{
   home.file.yabai = {
     executable = true;
     target = ".config/yabai/yabairc";
     text = let inherit (config.colorScheme) colors; in ''
       #!/usr/bin/env sh
+
+      # update_sudoers() {
+      #   YABAI_PATH=$(which yabai)
+      #   USERNAME=$(whoami)
+      #   YABAI_HASH=$(shasum -a 256 $YABAI_PATH | awk '{print $1}')
+      #   # Update the sudoers file
+      #   echo "$USERNAME ALL=(root) NOPASSWD: sha256:$YABAI_HASH $YABAI_PATH --load-sa" | sudo tee -a /etc/sudoers
+      # }
+      #
+      # update_sudoers()
 
       # load scripting addition
       sudo yabai --load-sa
@@ -19,8 +31,9 @@
       yabai -m config mouse_modifier              alt
       yabai -m config mouse_action1               move
       yabai -m config mouse_action2               resize
+      yabai -m config mouse_drop_action           swap
       yabai -m config focus_follows_mouse         autofocus
-      yabai -m config mouse_follows_focus         off #FIXME: configure apps so I can turn this on.
+      yabai -m config mouse_follows_focus         on #FIXME: configure apps so I can turn this on.
 
       #UPGRADED to Sonoma. JankyBorders installed
       borders active_color=0xff"${colors.base0C}" inactive_color=0xff"${colors.base03}" width=5.0 &
@@ -29,12 +42,17 @@
       yabai -m config window_shadow               off
       yabai -m config window_opacity              on
       yabai -m config window_opacity_duration     0.1
+      yabai -m config window_animation_duration		0.35
+	    yabai -m config window_opacity_duration			0.35
+	    yabai -m config normal_window_opacity				0.95
+      yabai -m config active_window_opacity				1.0
       
       # layout
       yabai -m config layout                      bsp
       yabai -m config auto_balance                off
       yabai -m config split_ratio                 0.50
       yabai -m config window_placement            second_child
+      yabai -m config window_origin_display       default
 
       # floating windows are always on top
       # when enabling this option, overlays in chrome are hidden
@@ -100,113 +118,115 @@
 
     '';
   };
-
+  
   home.file.skhd = {
     executable = true;
     target = ".config/skhd/skhdrc";
-    text = let yabai = "/opt/homebrew/bin/yabai"; in
+    text = let yabai = "/opt/homebrew/bin/yabai"; mod1 = "alt"; mod4 = "cmd"; mod = mod1; in
       ''
         # alt + a / u / o / s are blocked due to umlaute
         
         # Launch shortcuts
-        alt - return : open -na alacritty
-        alt - d : open -a dmenu-mac
-        alt + ctrl - space : open -na "Brave Browser"
-        alt + cmd - space : open -na "Brave Browser"
-        ctrl + cmd - 0x33 : sudo reboot
-        ctrl + shift + cmd - 0x33 : sudo shutdown -h now
-        ctrl + cmd - delete : sudo reboot
-        ctrl + shift + cmd - delete : sudo shutdown -h now
-        alt + shift - q : yabai -m window --close
-	alt - f : yabai -m window --toggle zoom-fullscreen
-        alt + shift - f : yabai -m window --toggle native-fullscreen #DON'T that thing SUCKS
+        # ${mod} - return :                 open -na alacritty
+        ${mod} - return :                 alacritty
+
+        ${mod} - d :                      open -a dmenu-mac
+        ${mod} + ctrl - space :           open -na "Brave Browser"
+        ${mod1} + ${mod4} - space :       open -na "Brave Browser"
+        ctrl + ${mod4} - 0x33 :           sudo reboot
+        ctrl + shift + ${mod4} - 0x33 :   sudo shutdown -h now
+        ctrl + ${mod4} - delete :         sudo reboot
+        ctrl + shift + ${mod4} - delete : sudo shutdown -h now
+        ${mod} + shift - q :              ${yabai} -m window --close
+	      ${mod} - f :                      ${yabai} -m window --toggle zoom-fullscreen
+        ${mod} + shift - f :              ${yabai} -m window --toggle native-fullscreen #DON'T that thing SUCKS
 
         # workspaces
-        ctrl + alt - j : ${yabai} -m space --focus prev
-        ctrl + alt - k : ${yabai} -m space --focus next
-        cmd + alt - j : ${yabai} -m space --focus prev
-        cmd + alt - k : ${yabai} -m space --focus next
-        ctrl + alt - down : ${yabai} -m space --focus prev
-        ctrl + alt - up : ${yabai} -m space --focus next
-        cmd + alt - down : ${yabai} -m space --focus prev
-        cmd + alt - up : ${yabai} -m space --focus next
+        ${mod1} + ${mod4} - h :     ${yabai} -m space --focus prev
+        ${mod1} + ${mod4} - j :     ${yabai} -m space --focus prev
+        ${mod1} + ${mod4} - k :     ${yabai} -m space --focus next
+        ${mod1} + ${mod4} - l :     ${yabai} -m space --focus next
+        ${mod1} + ${mod4} - left :  ${yabai} -m space --focus prev
+        ${mod1} + ${mod4} - down :  ${yabai} -m space --focus prev
+        ${mod1} + ${mod4} - up :    ${yabai} -m space --focus next
+        ${mod1} + ${mod4} - right : ${yabai} -m space --focus next
 
         # move focused window to workspace n
-        alt + shift - 1 : ${yabai} -m window --space 1
-        alt + shift - 2 : ${yabai} -m window --space 2
-        alt + shift - 3 : ${yabai} -m window --space 3
-        alt + shift - 4 : ${yabai} -m window --space 4
-        alt + shift - 5 : ${yabai} -m window --space 5
-        alt + shift - 6 : ${yabai} -m window --space 6
-        alt + shift - 7 : ${yabai} -m window --space 7
-        alt + shift - 8 : ${yabai} -m window --space 8
-        alt + shift - 9 : ${yabai} -m window --space 9
-        alt + shift - 0 : ${yabai} -m window --space 10
+        ${mod} + shift - 1 : ${yabai} -m window --space 1
+        ${mod} + shift - 2 : ${yabai} -m window --space 2
+        ${mod} + shift - 3 : ${yabai} -m window --space 3
+        ${mod} + shift - 4 : ${yabai} -m window --space 4
+        ${mod} + shift - 5 : ${yabai} -m window --space 5
+        ${mod} + shift - 6 : ${yabai} -m window --space 6
+        ${mod} + shift - 7 : ${yabai} -m window --space 7
+        ${mod} + shift - 8 : ${yabai} -m window --space 8
+        ${mod} + shift - 9 : ${yabai} -m window --space 9
+        ${mod} + shift - 0 : ${yabai} -m window --space 10
         
         # move focused space to workspace n
-        alt - 1 : ${yabai} -m window --space 1
-        alt - 2 : ${yabai} -m window --space 2
-        alt - 3 : ${yabai} -m window --space 3
-        alt - 4 : ${yabai} -m window --space 4
-        alt - 5 : ${yabai} -m window --space 5
-        alt - 6 : ${yabai} -m window --space 6
-        alt - 7 : ${yabai} -m window --space 7
-        alt - 8 : ${yabai} -m window --space 8
-        alt - 9 : ${yabai} -m window --space 9
-        alt - 0 : ${yabai} -m window --space 10
+        ${mod} - 1 : ${yabai} -m space --focus 1
+        ${mod} - 2 : ${yabai} -m space --focus 2
+        ${mod} - 3 : ${yabai} -m space --focus 3
+        ${mod} - 4 : ${yabai} -m space --focus 4
+        ${mod} - 5 : ${yabai} -m space --focus 5
+        ${mod} - 6 : ${yabai} -m space --focus 6
+        ${mod} - 7 : ${yabai} -m space --focus 7
+        ${mod} - 8 : ${yabai} -m space --focus 8
+        ${mod} - 9 : ${yabai} -m space --focus 9
+        ${mod} - 0 : ${yabai} -m space --focus 10
 
-        alt + shift - y : ${yabai} -m space --mirror y-axis
-        alt + shift - x : ${yabai} -m space --mirror x-axis
+        ${mod} + shift - y : ${yabai} -m space --mirror y-axis
+        ${mod} + shift - x : ${yabai} -m space --mirror x-axis
 
-        # send window to space and follow focus
-        ctrl + alt - l : ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-        ctrl + alt - h : ${yabai} -m window --space next; ${yabai} -m space --focus next
-        cmd + alt - l : ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-        cmd + alt - h : ${yabai} -m window --space next; ${yabai} -m space --focus next
+        # send window to next/prev space and follow focus
+        ${mod1} + ${mod4} - h :     ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+        ${mod1} + ${mod4} - j :     ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+        ${mod1} + ${mod4} - k :     ${yabai} -m window --space next; ${yabai} -m space --focus next
+        ${mod1} + ${mod4} - l :     ${yabai} -m window --space next; ${yabai} -m space --focus next
+        ${mod1} + ${mod4} - left :  ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+        ${mod1} + ${mod4} - down :  ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+        ${mod1} + ${mod4} - up :    ${yabai} -m window --space next; ${yabai} -m space --focus next
+        ${mod1} + ${mod4} - right : ${yabai} -m window --space next; ${yabai} -m space --focus next
 
-        # focus window in stacked
-        alt - j : if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus south; fi
-        alt - k : if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus north; fi
+        # focus window in stacked, else in bsp
+        ${mod} - h :      if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus west; fi
+        ${mod} - j :      if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus south; fi
+        ${mod} - k :      if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus north; fi
+        ${mod} - l :      if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus east; fi
+        ${mod} - left :   if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus west; fi
+        ${mod} - down :   if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus south; fi
+        ${mod} - up :     if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus north; fi
+        ${mod} - right :  if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus east; fi
         
-        # focus window
-        alt - h :     ${yabai} -m window --focus west
-        alt - j :     ${yabai} -m window --focus south
-        alt - k :     ${yabai} -m window --focus north
-        alt - l :     ${yabai} -m window --focus east
-        alt - left :  ${yabai} -m window --focus west
-        alt - down :  ${yabai} -m window --focus south
-        alt - up :    ${yabai} -m window --focus north
-        alt - right : ${yabai} -m window --focus east
-
         # swap managed window
-        shift + alt - h :     ${yabai} -m window --swap west
-        shift + alt - j :     ${yabai} -m window --swap south
-        shift + alt - k :     ${yabai} -m window --swap north
-        shift + alt - l :     ${yabai} -m window --swap east
-        shift + alt - left :  ${yabai} -m window --swap west
-        shift + alt - down :  ${yabai} -m window --swap south
-        shift + alt - up :    ${yabai} -m window --swap north
-        shift + alt - right : ${yabai} -m window --swap east
+        ${mod} + shift - h :     ${yabai} -m window --swap west
+        ${mod} + shift - j :     ${yabai} -m window --swap south
+        ${mod} + shift - k :     ${yabai} -m window --swap north
+        ${mod} + shift - l :     ${yabai} -m window --swap east
+        ${mod} + shift - left :  ${yabai} -m window --swap west
+        ${mod} + shift - down :  ${yabai} -m window --swap south
+        ${mod} + shift - up :    ${yabai} -m window --swap north
+        ${mod} + shift - right : ${yabai} -m window --swap east
 
         # increase window size
-        shift + alt - a : ${yabai} -m window --resize left:-20:0
-        shift + alt - s : ${yabai} -m window --resize right:-20:0
+        ${mod} + shift - a : ${yabai} -m window --resize left:-20:0
+        ${mod} + shift - s : ${yabai} -m window --resize right:-20:0
 
         # toggle layout
-        alt - t : ${yabai} -m space --layout bsp
-        alt - s : ${yabai} -m space --layout stack
+        ${mod} - s : ${yabai} -m space --layout stack
+        ${mod} - e : ${yabai} -m space --layout bsp
 
         # float / unfloat window and center on screen
-        alt + shift - space : ${yabai} -m window --toggle float; \
+        ${mod} + shift - space : ${yabai} -m window --toggle float; \
                   ${yabai} -m window --grid 4:4:1:1:2:2
 
         # toggle sticky(+float), topmost, picture-in-picture
-        alt - p : ${yabai} -m window --toggle sticky; \
+        ${mod} - p : ${yabai} -m window --toggle sticky; \
                   ${yabai} -m window --toggle topmost; \
                   ${yabai} -m window --toggle pip
 
         # reload
-        # shift + alt - r : skhd --restart-service; yabai --restart-service; brew services restart sketchybar
+        ${mod} + shift - r : fix-wm
       '';
   };
 }

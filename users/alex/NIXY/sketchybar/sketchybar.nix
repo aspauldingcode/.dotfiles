@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }: 
+{ config, pkgs, ... }: 
 
 let 
   inherit (config.colorScheme) colors;
@@ -28,7 +28,8 @@ in {
   xdg.configFile."sketchybar/plugins/datetime.sh".source = ./plugins/datetime.sh;
   xdg.configFile."sketchybar/plugins/mail.sh".source = ./plugins/mail.sh;
   xdg.configFile."sketchybar/plugins/ram.sh".source = ./plugins/ram.sh;
-  xdg.configFile."sketchybar/plugins/spaces.sh".source = ./plugins/spaces.sh;
+  xdg.configFile."sketchybar/plugins/space.sh".source = ./plugins/space.sh;
+  xdg.configFile."sketchybar/plugins/front_app.sh".source = ./plugins/front_app.sh;
   xdg.configFile."sketchybar/plugins/speed.sh".source = ./plugins/speed.sh;
   xdg.configFile."sketchybar/plugins/spotify.sh".source = ./plugins/spotify.sh;
   xdg.configFile."sketchybar/plugins/cava.sh".source = ./plugins/cava.sh;
