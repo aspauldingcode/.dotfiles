@@ -222,7 +222,7 @@ do
                               label.drawing=off                          \
                               script="$PLUGIN_DIR/space.sh"              \
                               click_script="yabai -m space --focus $sid" \
-                              # icon.font="JetBrains Mono:Bold:12.0"
+                              icon.font="JetBrains Mono:Regular:12.0"
 done
 sketchybar --add item space_separator left                         \
            --set space_separator icon=                            \
