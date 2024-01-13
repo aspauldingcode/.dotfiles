@@ -229,10 +229,10 @@
       corner_radius 10
 
       # Window background blur
-      blur off
+      blur on #FIXME: TURN ON! Floating window loses its borders...
       #blur_xray on
-      blur_passes 4
-      blur_radius 2
+      blur_passes 2
+      blur_radius 5
 
       shadows on
       #shadows_on_csd disable
