@@ -9,7 +9,7 @@ let
       export WHITE="0xff${colors.base05}"
       export BLUE="0xE6${colors.base0D}"  # Changes background of drop-down windows 
       export MAGENTA="0xff${colors.base0E}" # Changed border color? NO
-      export ORANGE=0xFF966CFF
+      export ORANGE=0xff${colors.base0A}
       export TEMPUS="0xff${colors.base03}" # backgrounds of RAM, spotify, apple logo, time and date
       export STATUS="0xE6${colors.base00}" #BACKGROUND of bar. make same as alacritty.
       export SPACEBG=0xFF808080 #Didn't change much?

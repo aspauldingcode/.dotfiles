@@ -7,5 +7,5 @@
 
 if [ "$SENDER" = "front_app_switched" ]; then
   sketchybar --set $NAME label="$INFO"
-  say front_app_switched
+  # say front_app_switched
 fi

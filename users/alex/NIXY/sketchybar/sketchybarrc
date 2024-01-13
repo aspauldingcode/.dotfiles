@@ -127,6 +127,9 @@ mail=(
 cava=(
   update_freq=0
   script="$PLUGIN_DIR/cava.sh"
+  label.drawing=on
+  icon.drawing=off
+  label="cava"
 )
 
 spotify=(
@@ -146,14 +149,14 @@ spotify=(
   update_freq=5
 )
 
-spotify_label=(
-  label="Spotify"
-  label.padding_left=10
-  label.padding_right=15
-  label.font="JetBrains Mono:Bold:9.0"
-  script="$PLUGIN_DIR/spotify.sh"
-  update_freq=5
-)
+# spotify_label=(
+#   label="Spotify"
+#   label.padding_left=10
+#   label.padding_right=15
+#   label.font="JetBrains Mono:Bold:9.0"
+#   script="$PLUGIN_DIR/spotify.sh"
+#   update_freq=5
+# )
 
 ram=(
   icon=$RAM
@@ -210,6 +213,7 @@ do
              --set space.$sid space=$sid                                 \
                               icon=${SPACE_ICONS[i]}                     \
                               background.color=0x44ffffff                \
+                              icon.highlight_color=0x00000000             \
                               background.corner_radius=5                 \
                               padding_left=10                             \
                               padding_right=10                            \
@@ -217,7 +221,8 @@ do
                               background.drawing=off                     \
                               label.drawing=off                          \
                               script="$PLUGIN_DIR/space.sh"              \
-                              click_script="yabai -m space --focus $sid"
+                              click_script="yabai -m space --focus $sid" \
+                              # icon.font="JetBrains Mono:Bold:12.0"
 done
 sketchybar --add item space_separator left                         \
            --set space_separator icon=                            \
@@ -226,7 +231,9 @@ sketchybar --add item space_separator left                         \
                                                                    \
            --add item front_app left                               \
            --set front_app       script="$PLUGIN_DIR/front_app.sh" \
-                                 icon.drawing=on                  \
+                                 icon.drawing=on                   \
+                                 label.padding_left=15            \
+                                 label.padding_right=15            \
            --subscribe front_app front_app_switched
 sketchybar --add item active_app left \
    --set active_app "${active_app[@]}" \ 
@@ -241,10 +248,10 @@ sketchybar --add slider volume center \
 sketchybar --add item datetime center \
   --set datetime "${datetime[@]}" \
   --subscribe time system_woke
-sketchybar -sketchybar --add item cava center \
-  --set cava "${cava[@]}" \
--add item spotify_label center \
-  --set spotify_label "${spotify_label[@]}"
+sketchybar --add item cava center \
+  --set cava "${cava[@]}"
+  # --add item spotify_label center \
+  # --set spotify_label "${spotify_label[@]}"
 sketchybar --add event spotify_change $SPOTIFY_EVENT \
   --add item spotify center \
   --set spotify "${spotify[@]}" \
