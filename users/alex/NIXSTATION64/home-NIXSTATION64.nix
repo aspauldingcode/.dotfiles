@@ -6,7 +6,8 @@ imports = [
   nix-colors.homeManagerModules.default
   ./packages-NIXSTATION64.nix 
   ./sway.nix
-  ./nvim.nix
+  # ./nvim.nix # USING NIXVIM NOW
+  ./nixvim.nix
   ./git.nix
   ./alacritty.nix
   ./mako.nix
