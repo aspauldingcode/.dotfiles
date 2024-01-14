@@ -85,42 +85,42 @@
       yabai -m rule --add app='Brave Browser'         topmost=off
       yabai -m rule --add app='Sketchybar'            topmost=off
 
-      # workspace management
-      yabai -m space 1  --label www
-      yabai -m space 2  --label code
-      yabai -m space 3  --label music
-      yabai -m space 4  --label chat
-      yabai -m space 5  --label todo
-      yabai -m space 6  --label voice
-      yabai -m space 7  --label seven
-      yabai -m space 8  --label eight
-      yabai -m space 9  --label nine
-      yabai -m space 10 --label ten
-
-      # assign apps to spaces      
-      yabai -m rule --add app="Brave Browser"       space=www
-      yabai -m rule --add app="Google Chrome"       space=www
-      yabai -m rule --add app="Vivaldi"             space=www
-      yabai -m rule --add app="Arc"                 space=www
-
-      yabai -m rule --add app="Alacritty"           space=code
-      yabai -m rule --add app="Terminal"            space=code
-      yabai -m rule --add app="Code"                space=code
-
-      yabai -m rule --add app="Spotify"             space=music
-
-      yabai -m rule --add app="Beeper"              space=chat
-      yabai -m rule --add app="Element"             space=chat
-      yabai -m rule --add app="Messages"            space=chat
-      yabai -m rule --add app="Slack"               space=chat
-      yabai -m rule --add app="Signal"              space=chat
-
-      yabai -m rule --add app="Todoist"             space=todo
-
-      yabai -m rule --add app="Discord"             space=voice
-      yabai -m rule --add app="Mumble"              space=voice
-
-      yabai -m rule --add app="Microsoft Teams"     space=nine
+      # # workspace management
+      # yabai -m space 1  --label www
+      # yabai -m space 2  --label code
+      # yabai -m space 3  --label music
+      # yabai -m space 4  --label chat
+      # yabai -m space 5  --label todo
+      # yabai -m space 6  --label voice
+      # yabai -m space 7  --label seven
+      # yabai -m space 8  --label eight
+      # yabai -m space 9  --label nine
+      # yabai -m space 10 --label ten
+      #
+      # # assign apps to spaces      
+      # yabai -m rule --add app="Brave Browser"       space=www
+      # yabai -m rule --add app="Google Chrome"       space=www
+      # yabai -m rule --add app="Vivaldi"             space=www
+      # yabai -m rule --add app="Arc"                 space=www
+      #
+      # yabai -m rule --add app="Alacritty"           space=code
+      # yabai -m rule --add app="Terminal"            space=code
+      # yabai -m rule --add app="Code"                space=code
+      #
+      # yabai -m rule --add app="Spotify"             space=music
+      #
+      # yabai -m rule --add app="Beeper"              space=chat
+      # yabai -m rule --add app="Element"             space=chat
+      # yabai -m rule --add app="Messages"            space=chat
+      # yabai -m rule --add app="Slack"               space=chat
+      # yabai -m rule --add app="Signal"              space=chat
+      #
+      # yabai -m rule --add app="Todoist"             space=todo
+      #
+      # yabai -m rule --add app="Discord"             space=voice
+      # yabai -m rule --add app="Mumble"              space=voice
+      #
+      # yabai -m rule --add app="Microsoft Teams"     space=nine
 
       echo "yabai configuration loaded.."
 

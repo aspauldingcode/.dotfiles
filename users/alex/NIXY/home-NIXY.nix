@@ -7,14 +7,15 @@ in
     imports = [
       nix-colors.homeManagerModules.default
       ./packages-NIXY.nix
-      ./nvim.nix
+      # ./nvim.nix #NOT USING ANYMORE!
+      ./nixvim.nix
       ./alacritty.nix
       ./git.nix
       ./fish.nix
       ./zsh.nix
       ./karabiner.nix
       ./cava.nix
-      ./zellij.nix #try as an overlay?
+      ./zellij.nix
       ./sketchybar/sketchybar.nix 
       ./yabai.nix # contains skhd and borders config.
     ];

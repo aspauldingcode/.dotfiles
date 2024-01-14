@@ -1,35 +1,97 @@
-
-{ pkgs, config, ... }:
+{ pkgs, nixvim, ... }: 
 
 {
-  programs.neovim = 
+  imports = [
+    # For home-manager
+    nixvim.homeManagerModules.nixvim
+    # For NixOS
+    # nixvim.nixosModules.nixvim
+    # For nix-darwin
+    # nixvim.nixDarwinModules.nixvim
+  ];
+
+  
+  programs.nixvim = 
   let 
     toLua = str: "lua << EOF\n${str}\nEOF\n";
     toLuaFile = file: "lua << EOF\n${builtins.readFile file}\nEOF\n";
   in 
   {
-    enable = false;
-    defaultEditor = true;
-    viAlias = true;
-    vimAlias = true;
-    vimdiffAlias = true;
-    plugins = with pkgs.vimPlugins; [
-        # LSP
-        {
-          plugin = nvim-lspconfig;
-          config = toLuaFile ../extraConfig/nvim/plugin/lsp.lua;
-        }
+    enable = true;
+    options = {
+      number = true;         # Show line numbers
+      relativenumber = true; # Show relative line numbers
+      shiftwidth = 8;        # Tab width should be 2
+    };
+    extraConfigLua = ''
+      -- Print a little welcome message when nvim is opened!
+      -- print("Hello world!")
 
-        { 
-          plugin = nvim-jdtls;
-          #config = toLua ''
-          #local config = {
-          #  cmd = {'/home/alex/.nix-profile/bin/jdt-language-server'},
-          #  root_dir = vim.fs.dirname(vim.fs.find({'gradlew', '.git', 'mvnw'}, { upward = true })[1]),
-          #}
-          #require('jdt-language-server').start_or_attach(config)
-          #'';
-        }
+      -- All my configuration options for nvim:
+      ${builtins.readFile ../extraConfig/nvim/options.lua}
+    '';
+    globals.mapleader = ","; # Sets the leader key to comma
+    keymaps = [ # https://github.com/nix-community/nixvim/tree/main#key-mappings
+      {
+        key = ";";
+        action = ":";
+      }
+      {
+        mode = "n";
+        key = "<leader>m";
+        options.silent = true;
+        action = "<cmd>!make<CR>";
+      }
+    ];
+    plugins = {
+    	lightline.enable=false;
+	lsp = {
+		enable = true;
+		servers = { # https://nix-community.github.io/nixvim/plugins/lsp/
+			# javascript / typescript
+			tsserver.enable = true;
+			# lua
+			lua-ls.enable = true;
+			# nix
+			nil_ls = {
+				enable = true;
+				installLanguageServer = true;
+			};# rust
+			rust-analyzer = {
+				enable = true;
+				installCargo = true;
+				installRustc = true;
+			};
+			# python
+			pyright.enable = true; 
+			/*
+			lsp - pyright
+			linter - flake8
+			formatter - black
+			*/
+			# java
+			java-language-server = {
+				enable = true;
+				package = pkgs.jdt-language-server;
+				installLanguageServer = true;
+				cmd = [ "/nix/store/4qlb19k5fi0qnx5j6zk4gcycpn808pma-jdt-language-server-1.26.0/bin/jdt-language-server" 
+				];
+				#rootDir = "~/Desktop/codingProjects/java/";
+			};
+		};
+	};
+    };
+    colorschemes.gruvbox = {
+      enable = true;
+      #background = white;
+    };
+
+    extraPlugins = with pkgs.vimPlugins; [
+        # LSP
+        #{
+        #  plugin = nvim-lspconfig;
+        #  config = toLuaFile ../extraConfig/nvim/plugin/lsp.lua;
+        #}
 
         # FIXME: y u no worky? >:(
         # lsp-status-nvim # FIXME: What about lspinfo?
@@ -133,9 +195,12 @@
           config = toLuaFile ../extraConfig/nvim/plugin/gitsigns.lua;
         }
 
-        { plugin = gruvbox-nvim;
-        config = "colorscheme gruvbox";
-      }
+        #{ 
+	#	plugin = gruvbox-nvim;
+       # 	config = ''
+	#		colorscheme gruvbox
+	#	'';
+      	#}
 
       { 
         plugin = lsp_lines-nvim;
@@ -182,9 +247,5 @@
           config = toLuaFile ../extraConfig/nvim/plugin/treesitter.lua;
         }
       ];
-
-      extraLuaConfig = '' 
-      ${builtins.readFile ../extraConfig/nvim/options.lua}
-      '';
-    };
-  }
+  };
+}
