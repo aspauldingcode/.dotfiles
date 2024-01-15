@@ -8,7 +8,6 @@
         padding.x = 0;
         padding.y = 10;
         opacity   = 0.9;
-        # blur = true;
         class.instance = "Alacritty";
         class.general  = "Alacritty";
         decorations = "None";
@@ -71,40 +70,38 @@
       };
 
       cursor = {
-        style = "Beam";
+        style = {
+          shape = "Block"; 
+          blinking = "On";
+        };
+
         blink_interval = 750;
       };
       live_config_reload = true;
 
       keyboard.bindings = [
-        # {
-        #   key = "F";
-        #   mods = "Command|Shift";
-        #   action = "ToggleSimpleFullscreen";
-        # }
         {
           key = "C";
-          mods = "Command";
+          mods = "Control";
           action = "Copy";
         }
-    # {
-    #   key = "V";
-    #   mods = "Control";
-    #   action = "Paste";
-    # }
-    # {
-    #   key = "Period"; 
-    #   mods = "Control";
-    # }
+        {
+          key = "C";
+          mods = "Shift|Control";
+          action = "Copy";
+        }
+        {
+          key = "V";
+          mods = "Control";
+          action = "Paste";
+        }
     {
       key = "PageUp";
-          #mods = "Shift";   
           mode = "~Alt";
           action = "ScrollPageUp";
         }
         { 
           key = "PageDown";
-          #mods = "Shift";
           mode = "~Alt";
           action = "ScrollPageDown";
         }

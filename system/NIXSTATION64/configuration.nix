@@ -37,7 +37,7 @@
   # };
 
   environment = {
-    # systemPackages = with pkgs; [
+    # systemPackages = with pkgs; [ #FIXME: INCLUDE IN SDDM THEMES INSTEAD!
     #   # Get tokyo dark theme from github in sddm-themes.nix then call it here
     #   # (callPackage ./sddm-themes.nix{}).tokyo-night-sddm
     #   # (pkgs.callPackage ./sddm-themes.nix {})
@@ -48,6 +48,11 @@
     #   # libsForQt5.qt5.qtquickcontrols2    # add qtquickcontrols2
     #   # libsForQt5.qt5.qtdeclarative       # add qtdeclarative (for QML support)
     # ];
+    plasma5.excludePackages = with pkgs; [
+      oxygen
+      xwayland
+    ]; 
+
     variables = rec {
       QT_QPA_PLATFORMTHEME = "qt5ct";
       #QT_STYLE_OVERRIDE     = "qt5ct";
@@ -98,7 +103,10 @@
           theme = "${import ./sddm-themes.nix {inherit pkgs; }}";
         };
       };
-      desktopManager.plasma5.enable = true;
+      desktopManager.plasma5 = { 
+        enable = true;
+        runUsingSystemd = false;
+      };
     };
     
     pipewire = { # fix for pipewire audio:

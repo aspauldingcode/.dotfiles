@@ -167,7 +167,7 @@ in
       };
 
       "sway/window" = {
-        max-length = 20;
+        max-length = 25;
         format = "{title}";
         on-click = "swaymsg kill";
         all-outputs = true;
@@ -206,11 +206,11 @@ in
         format-ethernet = "󰈁 Connected";
         format-disconnected = "";
         tooltip-format = ''
-         {essid}
-        󱘖 {ifname}
-         {ipaddr}/{cidr}
-        󱚺 {bandwidthUpBits}
-        󱚶 {bandwidthDownBits}'';
+          {essid}
+        󱘖  {ifname}
+          {ipaddr}/{cidr}
+        󱚺  {bandwidthUpBits}
+        󱚶  {bandwidthDownBits}'';
         on-click = ""; #FIXME: Add on-click setup for preview like macos
       };
       backlight = {
@@ -531,10 +531,9 @@ in
       border: none;
     }
 
-    #seperator-left,
-    #seperator-right {
+    #custom-seperator-left,
+    #custom-seperator-right {
       padding-left: 8px;
-      padding-right: 8px;
     }
     
     #window {
