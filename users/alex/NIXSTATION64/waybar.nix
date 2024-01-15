@@ -69,20 +69,22 @@ in
           modules-left = [
             "custom/menu"
             "sway/workspaces"
+            "custom/seperator-left"
+            "sway/window"
           ];
 
           modules-center = [
             "pulseaudio"
             "clock"
-            "custom/unread-mail"
             #"custom/gpg-agent"
             # "custom/spotify"
             "cava"
             "custom/currentplayer"
-            "custom/player"
+            # "custom/player"
           ];
 
       modules-right = [
+        "custom/unread-mail"
         "tray"
         "network"
         "battery"
@@ -90,6 +92,7 @@ in
         # TODO: currently broken for some reason
         # "custom/gammastep"
         #"custom/hostname"
+        "custom/seperator-right"
         "cpu"
         "memory"
         "backlight"
@@ -97,7 +100,7 @@ in
         
       "tray" = {
         # "icon-size" = 21;
-        "spacing" = 16;
+        "spacing" = 8;
       }; 
 
       clock = {
@@ -110,11 +113,13 @@ in
       };
       
       cava = {
+        # exec-if = "${playerctl} status 2>/dev/null";
+        # exec = ''${playerctl} metadata --format '{"text": "{{title}} - {{artist}}", "alt": "{{status}}", "tooltip": "{{title}} - {{artist}} ({{album}})"}' 2>/dev/null '';
         # cava_config = "$XDG_CONFIG_HOME/cava/cava.conf";
 	      framerate = 30;
 	      autosens = 1;
 	      # sensitivity = 100;
-	      bars = 14;
+	      bars = 10;
         lower_cutoff_freq = 50;
         higher_cutoff_freq = 15000;
         method = "pulse";
@@ -126,9 +131,11 @@ in
         waves = false;
         noise_reduction = 0.77;
         input_delay = 2;
+        # format = "- paused -"; # when paused, replace string with "- paused -"
         format-icons = [ "▁" "▂" "▃" "▄" "▅" "▆" "▇" "█" ];
         actions = {
-		      on-click-right = "mode";
+          # on-click-right = "mode";
+          # on-click-left = "${playerctl} play-pause";
 	      };
       };
 
@@ -161,10 +168,13 @@ in
 
       "sway/window" = {
         max-length = 20;
+        format = "{title}";
+        on-click = "swaymsg kill";
+        all-outputs = true;
       };
 
       "sway/workspaces" = {
-	      disable-scroll = false;
+	      disable-scroll = true;
         all-outputs = true;
         # format = "{name}: {icon}";
         # format-icons = {
@@ -244,6 +254,22 @@ in
       #   format = "{}";
       #   on-click = "";
       # };
+      
+      "custom/seperator-left" = {
+        return-type = "json";
+        exec = jsonOutput "seperator-left" {
+          text = "";
+          # tooltip = ''$(${cat} /etc/os-release | ${grep} PRETTY_NAME | ${cut} -d '"' -f2)'';
+        };
+      };
+      "custom/seperator-right" = {
+        return-type = "json";
+        exec = jsonOutput "seperator-right" {
+          text = "";
+          # tooltip = ''$(${cat} /etc/os-release | ${grep} PRETTY_NAME | ${cut} -d '"' -f2)'';
+        };
+      };
+
       "custom/menu" = {
         return-type = "json";
         exec = jsonOutput "menu" {
@@ -253,6 +279,7 @@ in
         on-click-left = "wofi -S drun -x 10 -y 10 -W 25% -H 60%";
         on-click-right = "swaymsg scratchpad show";
       };
+
       "custom/hostname" = {
         exec = "echo $USER@$HOSTNAME";
         on-click = "${systemctl} --user restart waybar";
@@ -367,6 +394,7 @@ in
         on-click = "${playerctld} shift";
         on-click-right = "${playerctld} unshift";
       };
+
       "custom/player" = {
         exec-if = "${playerctl} status 2>/dev/null";
         exec = ''${playerctl} metadata --format '{"text": "{{title}} - {{artist}}", "alt": "{{status}}", "tooltip": "{{title}} - {{artist}} ({{album}})"}' 2>/dev/null '';
@@ -469,7 +497,7 @@ in
       transition: none;
       background: transparent;
       color: #${colors.base04};
-      padding: 0px;
+      padding: 0 4px;
       margin: -8 0px;
     }
 
@@ -477,6 +505,7 @@ in
       transition: none;
       background: transparent;
       color: #${colors.base04};
+      padding: 4px;
     }
 
     #workspaces button.hover {
@@ -485,7 +514,6 @@ in
       box-shadow: inherit;
       text-shadow: inherit;
       border-radius: inherit;
-      /* padding: 0 3px; */
     }
 
     #workspaces button.focused {
@@ -501,6 +529,17 @@ in
 
     #workspaces button {
       border: none;
+    }
+
+    #seperator-left,
+    #seperator-right {
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+    
+    #window {
+      padding-left: 16px;
+      padding-right: 8px;
     }
 
     #clock,
@@ -531,6 +570,11 @@ in
       margin: 0px;
     }
 
+    #cava {
+      padding-left: 4px;
+      padding-right: 4px;
+    }
+
     #spotify,
     #clock,
     .mail
@@ -542,11 +586,14 @@ in
       padding-right: 16px;
     }
 
-    #tray,
-    #network {
+    #tray {
       padding-left: 8px;
       padding-right: 8px;
     }
+    #network {
+      padding-right: 4px;
+    }
+
     #cpu {
       background-color: #${colors.base00};
       border-radius: 30px; 

@@ -82,16 +82,11 @@
         #   mods = "Command|Shift";
         #   action = "ToggleSimpleFullscreen";
         # }
-    # {
-       # key = "C";
-       # mods = "Control|Shift";
-       # chars = "\\x03";
-    # }
-    # {
-    #   key = "C";
-    #   mods = "Command";
-    #   action = "Copy";
-    # }
+        {
+          key = "C";
+          mods = "Command";
+          action = "Copy";
+        }
     # {
     #   key = "V";
     #   mods = "Control";
@@ -101,8 +96,6 @@
     #   key = "Period"; 
     #   mods = "Control";
     # }
-    #- { key: L,         mods: Control,                    action: ClearLogNotice }
-    #- { key: L,         mods: Control, mode: ~Vi|~Search, chars: "\x0c"          }
     {
       key = "PageUp";
           #mods = "Shift";   
@@ -115,8 +108,6 @@
           mode = "~Alt";
           action = "ScrollPageDown";
         }
-        #{ key: Home,      mods: Shift,   mode: ~Alt,        action: ScrollToTop    }
-        #- { key: End,       mods: Shift,   mode: ~Alt,        action: ScrollToBottom }
       ];
     };
   };
