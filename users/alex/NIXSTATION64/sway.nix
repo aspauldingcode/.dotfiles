@@ -45,7 +45,8 @@
         {command = "alacritty";} #FIXME: DOES ALACRITTY ACTUALLY LAUNCH?!?!?
       ];
       menu = "bemenu-run";
-
+       
+      workspaceLayout = "default";
       keybindings = {
         "${modifier}+f" = "exec maximize"; #custom script for zoom-fullscreen NOTWORKING?
         "${modifier}+Shift+f" = "fullscreen toggle";
@@ -125,8 +126,7 @@
         "${modifier}+u" = "focus parent";
 
         "${modifier}+w" = "layout toggle split";
-        "${modifier}+s" = "layout stacking";
-        "${modifier}+t" = "layout tabbed";
+        "${modifier}+s" = "layout tabbed";
         "${modifier}+e" = "layout default";
 
         #"${modifier}+o" = "inhibit_idle open; border normal; mark --add inhibiting_idle";

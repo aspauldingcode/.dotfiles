@@ -33,6 +33,8 @@ nix --experimental-features 'nix-command flakes'  # Enable flakes
 - [x] Fix Karabiner Key Combos
 - [x] Fix skhd hotkeys
 - [x] Fix nix Alacritty package issues
+- [ ] macOS shares the same workspaces across all monitors
+- [ ] Add macOS cursor timeout to hide after 8000 ms
 - [ ] SDDM Background swap
 - [ ] SDDM custom profile image, fetched from github profile
 - [ ] Fix wayland timeout to SDDM instead of waylock
@@ -45,6 +47,7 @@ nix --experimental-features 'nix-command flakes'  # Enable flakes
 - [ ] Overlay custom package for macOSInstantView driver with nix fetchers
 - [ ] Figure out how to FIRST TIME install on ALL systems
 - [ ] Build a mac FIRST-TIME install script with all my settings unrelated to nix
+- [ ] Fix hm-news broken after rebuild each time nix-collect-garbage is run
 - [ ] Fix sketchybar mail plugin
 - [ ] Fix sketchybar volume plugin
 - [ ] Fix sketchybar & waybar icons
