@@ -224,8 +224,8 @@ do
                               click_script="yabai -m space --focus $sid" \
                               icon.font="JetBrains Mono:Regular:12.0"
 done
-sketchybar --add item space_separator left                         \
-           --set space_separator icon=                            \
+sketchybar --add item separator-left left                         \
+           --set separator-left icon=                            \
                                  padding_left=10                   \
                                  label.drawing=off                 \
                                                                    \
@@ -235,6 +235,13 @@ sketchybar --add item space_separator left                         \
                                  label.padding_left=15            \
                                  label.padding_right=15            \
            --subscribe front_app front_app_switched
+
+sketchybar  --add item separator-right right                         \
+           --set separator-right icon=                            \
+                                 padding_right=10                   \
+                                 label.drawing=off                 \
+
+
 sketchybar --add item active_app left \
    --set active_app "${active_app[@]}" \ 
    --subscribe front_app front_app_switched
@@ -282,11 +289,11 @@ brackets=(
   background.border_width=2
 )
 
-sketchybar --add bracket lbracket apple space_seperator front_app left \
+sketchybar --add bracket lbracket apple separator-left front_app left \
   --set lbracket "${brackets[@]}"
 sketchybar --add bracket cbracket volume volume_icon datetime cava spotify center \
   --set cbracket "${brackets[@]}"
-sketchybar --add bracket rbracket wifi battery mail ram cpu right \
+sketchybar --add bracket rbracket wifi battery separator-right mail ram cpu right  \
   --set rbracket "${brackets[@]}"
 
 sketchybar --update

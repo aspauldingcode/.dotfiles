@@ -71,7 +71,10 @@
       };
 
       cursor = {
-        style = "Beam";
+        style = {
+          shape = "Block";
+          blinking = "On";
+        };
         blink_interval = 750;
       };
       live_config_reload = true;
@@ -82,41 +85,21 @@
           mods = "Command|Shift";
           action = "ToggleSimpleFullscreen";
         }
-    # {
-       # key = "C";
-       # mods = "Control|Shift";
-       # chars = "\\x03";
-    # }
-    # {
-    #   key = "C";
-    #   mods = "Command";
-    #   action = "Copy";
-    # }
-    # {
-    #   key = "V";
-    #   mods = "Control";
-    #   action = "Paste";
-    # }
-    # {
-    #   key = "Period"; 
-    #   mods = "Control";
-    # }
-    #- { key: L,         mods: Control,                    action: ClearLogNotice }
-    #- { key: L,         mods: Control, mode: ~Vi|~Search, chars: "\x0c"          }
+        {
+          key = "C";
+          mods = "Command";
+          action = "Copy";
+        }
     {
       key = "PageUp";
-          #mods = "Shift";   
           mode = "~Alt";
           action = "ScrollPageUp";
         }
         { 
           key = "PageDown";
-          #mods = "Shift";
           mode = "~Alt";
           action = "ScrollPageDown";
         }
-        #{ key: Home,      mods: Shift,   mode: ~Alt,        action: ScrollToTop    }
-        #- { key: End,       mods: Shift,   mode: ~Alt,        action: ScrollToBottom }
       ];
     };
   };

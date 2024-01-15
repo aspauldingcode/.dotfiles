@@ -27,6 +27,7 @@
     thefuck
     zsh-completions
     zoom-us
+    # python39
     (pkgs.python311.withPackages(ps: [ 
       ps.pygame 
       ps.matplotlib 

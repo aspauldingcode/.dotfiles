@@ -41,7 +41,7 @@
       "orbstack"
       "karabiner-elements" # remap keyboard
       "unnaturalscrollwheels"
-      "beeper"
+      "Beeper"
       "background-music"
     ];
     whalebrews = [

@@ -49,8 +49,125 @@
                     ]
                   }
                 ]
+              },
+              {
+                "description": "Swap Command and Control for Alacritty",
+                "manipulators": [
+                  {
+                    "type": "basic",
+                    "from": {
+                      "key_code": "left_control"
+                    },
+                    "to": [
+                      {
+                        "key_code": "left_command"
+                      }
+                    ],
+                    "conditions": [
+                      {
+                        "type": "frontmost_application_if",
+                        "bundle_identifiers": ["^org\\.alacritty$"]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "basic",
+                    "from": {
+                      "key_code": "left_command"
+                    },
+                    "to": [
+                      {
+                        "key_code": "left_control"
+                      }
+                    ],
+                    "conditions": [
+                      {
+                        "type": "frontmost_application_if",
+                        "bundle_identifiers": ["^org\\.alacritty$"]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "description": "Replace Control+C with Command+C in Alacritty",
+                "manipulators": [
+                  {
+                    "type": "basic",
+                    "from": {
+                      "key_code": "c",
+                      "modifiers": {
+                        "mandatory": ["left_control"]
+                      }
+                    },
+                    "to": [
+                      {
+                        "key_code": "c",
+                        "modifiers": ["left_command"]
+                      }
+                    ],
+                    "conditions": [
+                      {
+                        "type": "frontmost_application_if",
+                        "bundle_identifiers": ["^org\\.alacritty$"]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "description": "Replace Control+V with Command+V in Alacritty",
+                "manipulators": [
+                  {
+                    "type": "basic",
+                    "from": {
+                      "key_code": "v",
+                      "modifiers": {
+                        "mandatory": ["left_control"]
+                      }
+                    },
+                    "to": [
+                      {
+                        "key_code": "v",
+                        "modifiers": ["left_command"]
+                      }
+                    ],
+                    "conditions": [
+                      {
+                        "type": "frontmost_application_if",
+                        "bundle_identifiers": ["^org\\.alacritty$"]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "description": "Replace Control+X with Command+X in Alacritty",
+                "manipulators": [
+                  {
+                    "type": "basic",
+                    "from": {
+                      "key_code": "x",
+                      "modifiers": {
+                        "mandatory": ["left_control"]
+                      }
+                    },
+                    "to": [
+                      {
+                        "key_code": "x",
+                        "modifiers": ["left_command"]
+                      }
+                    ],
+                    "conditions": [
+                      {
+                        "type": "frontmost_application_if",
+                        "bundle_identifiers": ["^org\\.alacritty$"]
+                      }
+                    ]
+                  }
+                ]
               }
-            ]
+            ]          
           },
           "devices": [
             {
