@@ -22,6 +22,7 @@ nix-env --version  # Ensure that you have Nix 2.4 or newer
 nix --experimental-features 'nix-command flakes'  # Enable flakes
 ```
 
+- [ ] Convert all the following to github issues!
 - [x] Fix Double Waybar Issue
 - [x] Fix SDDM HomeManager vs System config and login issues
 - [x] Fix SDDM Theme with a gitFetch derivation for Sonoma V2 Theme
@@ -33,7 +34,14 @@ nix --experimental-features 'nix-command flakes'  # Enable flakes
 - [x] Fix Karabiner Key Combos
 - [x] Fix skhd hotkeys
 - [x] Fix nix Alacritty package issues
-- [ ] macOS shares the same workspaces across all monitors
+- [ ] Clean up sketchybarrc
+- [ ] Fix git update script to cancel git pushing empty commits if "already up to date"
+- [ ] Add sway and sketchybar window resize shortcuts
+- [ ] Add sway mod+s and mod+e scripts to make all windows stacked, or all windows default layout.
+- [x] Add sketchybar/yabai setting that macOS shares the same workspaces across all monitors
+- [ ] Fix sketchybar spaces showing multiple highlights - only highlight the active space which holds a focus or focused window
+- [ ] Fix sketchybar $mod+n not adding a new workspace n
+- [ ] Fix make sketchybar update everytime a new workspace is added or removed 
 - [ ] Add macOS cursor timeout to hide after 8000 ms
 - [ ] SDDM Background swap
 - [ ] SDDM custom profile image, fetched from github profile
@@ -41,6 +49,7 @@ nix --experimental-features 'nix-command flakes'  # Enable flakes
 - [ ] Add Zellij plugins
 - [ ] Fix bash problems
 - [ ] Fix fish problems
+- [ ] Make zsh shell not show the directory or tilda on the far right side "~"
 - [x] Fix zellij/sway  keybinds conflicts
 - [x] Fix zellij/yabai keybinds conflicts
 - [ ] Fix nvim and LSP Configurations
@@ -84,11 +93,12 @@ The install can be configured through the flake.nix.
 Home-Manager Configuration is done per-user under Users/{user}/home.nix
 If you're lost, please [read the Notes](notes.md) to follow setup.
 
-A preview of the repo layout:
-<pre>
+<details>
+  <summary>Directory Tree:</summary>
 ```
 .
 ├── README.md
+├── \
 ├── flake.lock
 ├── flake.nix
 ├── notes.md
@@ -118,6 +128,7 @@ A preview of the repo layout:
     │   │   ├── git.nix
     │   │   ├── home-NIXSTATION64.nix
     │   │   ├── mako.nix
+    │   │   ├── nixvim.nix
     │   │   ├── nvim.nix
     │   │   ├── packages-NIXSTATION64.nix
     │   │   ├── sway.nix
@@ -131,6 +142,7 @@ A preview of the repo layout:
     │   │   ├── git.nix
     │   │   ├── home-NIXY.nix
     │   │   ├── karabiner.nix
+    │   │   ├── nixvim.nix
     │   │   ├── nvim.nix
     │   │   ├── packages-NIXY.nix
     │   │   ├── sketchybar
@@ -205,6 +217,6 @@ A preview of the repo layout:
             │   └── packages-NIXY.nix
             └── packages-UNIVERSAL.nix
 
-22 directories, 95 files
+22 directories, 98 files
 ```
-</pre>
+</details>

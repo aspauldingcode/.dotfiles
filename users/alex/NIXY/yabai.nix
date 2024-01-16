@@ -215,7 +215,7 @@
         ${mod} + shift - up :    ${yabai} -m window --swap north
         ${mod} + shift - right : ${yabai} -m window --swap east
 
-        # increase window size
+        # increase window size #FIXME: edit window resizing shortcuts!
         ${mod} + shift - a : ${yabai} -m window --resize left:-20:0
         ${mod} + shift - s : ${yabai} -m window --resize right:-20:0
 
@@ -227,10 +227,10 @@
         ${mod} + shift - space : ${yabai} -m window --toggle float; \
                   ${yabai} -m window --grid 4:4:1:1:2:2
 
-        # toggle sticky(+float), topmost, picture-in-picture
-        ${mod} - p : ${yabai} -m window --toggle sticky; \
-                  ${yabai} -m window --toggle topmost; \
-                  ${yabai} -m window --toggle pip
+        # # toggle sticky(+float), topmost, picture-in-picture
+        # ${mod} - p : ${yabai} -m window --toggle sticky; \
+        #           ${yabai} -m window --toggle topmost; \
+        #           ${yabai} -m window --toggle pip
 
         # reload
         ${mod} + shift - r : fix-wm

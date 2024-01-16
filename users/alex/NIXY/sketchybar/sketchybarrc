@@ -209,39 +209,35 @@ sketchybar --add item apple left \
 for i in "${!SPACE_ICONS[@]}"
 do
   sid=$(($i+1))
-  sketchybar --add space space.$sid left                                 \
-             --set space.$sid space=$sid                                 \
-                              icon=${SPACE_ICONS[i]}                     \
-                              background.color=0x44ffffff                \
-                              icon.highlight_color=0x00000000             \
-                              background.corner_radius=5                 \
-                              padding_left=10                             \
-                              padding_right=10                            \
-                              background.height=20                       \
-                              background.drawing=off                     \
-                              label.drawing=off                          \
-                              script="$PLUGIN_DIR/space.sh"              \
-                              click_script="yabai -m space --focus $sid" \
-                              icon.font="JetBrains Mono:Regular:12.0"
+  sketchybar --add space space.$sid left \
+  --set space.$sid space=$sid ignore_association=on \
+    icon=${SPACE_ICONS[i]} \
+    background.color=0x44ffffff \
+    icon.highlight_color=0x00000000 \
+    background.corner_radius=5 \
+    padding_left=10 \
+    padding_right=10 \
+    background.height=20 \
+    background.drawing=off \
+    label.drawing=off \
+    script="$PLUGIN_DIR/space.sh" \
+    click_script="yabai -m space --focus $sid" \
+    icon.font="JetBrains Mono:Regular:12.0"
 done
-sketchybar --add item separator-left left                         \
-           --set separator-left icon=                            \
-                                 padding_left=10                   \
-                                 label.drawing=off                 \
-                                                                   \
-           --add item front_app left                               \
-           --set front_app       script="$PLUGIN_DIR/front_app.sh" \
-                                 icon.drawing=on                   \
-                                 label.padding_left=15            \
-                                 label.padding_right=15            \
-           --subscribe front_app front_app_switched
-
-sketchybar  --add item separator-right right                         \
-           --set separator-right icon=                            \
-                                 padding_right=10                   \
-                                 label.drawing=off                 \
-
-
+sketchybar --add item separator_left left \
+  --set separator_left "${active_app[@]}" \
+    icon= \
+    padding_left=10 \
+    label.drawing=off \
+    \
+  --add item front_app left \
+  --set front_app "${front_app[@]}" \
+    script="$PLUGIN_DIR/front_app.sh" \
+    icon.drawing=on \
+    label.padding_left=15 \
+    label.padding_right=15 \
+    update_freq=5 \
+  --subscribe front_app front_app_switched
 sketchybar --add item active_app left \
    --set active_app "${active_app[@]}" \ 
    --subscribe front_app front_app_switched
@@ -270,6 +266,11 @@ sketchybar --add item ram right \
   --set ram "${ram[@]}"
 sketchybar --add item cpu right \
   --set cpu "${cpu[@]}"
+sketchybar  --add item separator_right right \
+  --set separator_right "${seperator_right[@]}" \
+    icon= \
+    padding_right=0 \
+    label.drawing=off \
 sketchybar --add item battery right \
   --set battery "${battery[@]}" \
   --subscribe battery power_source_change system_woke
@@ -289,11 +290,11 @@ brackets=(
   background.border_width=2
 )
 
-sketchybar --add bracket lbracket apple separator-left front_app left \
+sketchybar --add bracket lbracket apple separator_left front_app left \
   --set lbracket "${brackets[@]}"
 sketchybar --add bracket cbracket volume volume_icon datetime cava spotify center \
   --set cbracket "${brackets[@]}"
-sketchybar --add bracket rbracket wifi battery separator-right mail ram cpu right  \
+sketchybar --add bracket rbracket wifi battery separator_right mail ram cpu right \
   --set rbracket "${brackets[@]}"
 
 sketchybar --update

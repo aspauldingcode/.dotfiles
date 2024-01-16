@@ -90,8 +90,13 @@
           mods = "Command";
           action = "Copy";
         }
-    {
-      key = "PageUp";
+        {
+          key = "C";
+          mods = "Command|Shift";
+          action = "Copy";
+        }
+        {
+          key = "PageUp";
           mode = "~Alt";
           action = "ScrollPageUp";
         }
