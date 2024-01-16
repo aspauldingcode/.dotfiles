@@ -25,6 +25,46 @@
             },
             "rules": [
               {
+                "description": "Replace Command+Tab with Control+Tab",
+                "manipulators": [
+                  {
+                    "type": "basic",
+                    "from": {
+                      "key_code": "tab",
+                      "modifiers": {
+                        "mandatory": ["left_command"]
+                      }
+                    },
+                    "to": [
+                      {
+                        "key_code": "tab",
+                        "modifiers": ["left_control"]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "description": "Replace Command+Shift+Tab with Control+Shift+Tab",
+                "manipulators": [
+                  {
+                    "type": "basic",
+                    "from": {
+                      "key_code": "tab",
+                      "modifiers": {
+                        "mandatory": ["left_command", "left_shift"]
+                      }
+                    },
+                    "to": [
+                      {
+                        "key_code": "tab",
+                        "modifiers": ["left_control", "left_shift"]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
                 "description": "Replace Alt+Q with Command+W to close tabs",
                 "manipulators": [
                   {
@@ -45,7 +85,7 @@
                 ]
               },
               {
-                "description": "Change keybind for Alacritty",
+                "description": "Swap Fullscreen to SimpleFullscreen in Alacritty",
                 "manipulators": [
                   {
                     "type": "basic",

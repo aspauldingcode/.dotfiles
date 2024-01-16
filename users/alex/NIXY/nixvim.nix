@@ -1,4 +1,4 @@
-{ pkgs, nixvim, ... }: 
+{ config, pkgs, nixvim, ... }: 
 
 {
   imports = [
@@ -44,7 +44,22 @@
       }
     ];
     plugins = {
-    	lightline.enable=false;
+      lightline.enable=false;
+      #JAVALSP
+      nvim-jdtls = {
+          enable = true;
+          data =  "${config.xdg.cacheHome}/jdtls/workspace";
+          configuration = "${config.xdg.cacheHome}/jdtls/config";
+          initOptions = null;
+          rootDir = { __raw = "require('jdtls.setup').find_root({'.git', 'mvnw', 'gradlew'})"; };
+          settings = null; 
+          /*Here you can configure eclipse.jdt.ls specific settings.
+          See https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request 
+          for a list of options.
+          */
+      };
+
+
 	lsp = {
 		enable = true;
 		servers = { # https://nix-community.github.io/nixvim/plugins/lsp/
@@ -69,15 +84,15 @@
 			linter - flake8
 			formatter - black
 			*/
-			# java
-			java-language-server = {
-				enable = true;
-				package = pkgs.jdt-language-server;
-				installLanguageServer = true;
-				cmd = [ "/nix/store/4qlb19k5fi0qnx5j6zk4gcycpn808pma-jdt-language-server-1.26.0/bin/jdt-language-server" 
-				];
-				#rootDir = "~/Desktop/codingProjects/java/";
-			};
+			# java #USE nvim-jdtls instead!!!!!
+			# java-language-server = {
+			# 	enable = true;
+			# 	package = pkgs.jdt-language-server;
+			# 	installLanguageServer = true;
+			# 	cmd = [ "/nix/store/4qlb19k5fi0qnx5j6zk4gcycpn808pma-jdt-language-server-1.26.0/bin/jdt-language-server" 
+			# 	];
+			# 	#rootDir = "~/Desktop/codingProjects/java/";
+			# };
 		};
 	};
     };

@@ -52,6 +52,12 @@ map('n', '<C-p>', ':NvimTreeToggle <CR>', {noremap = true})
 map('n', '<C-f>', ':Telescope find_files <CR>', {noremap = true})
 map('n', '<C-n>', ':Telescope live_grep <CR>', {noremap = true})
 
+-- Copy selected text #FIXME: NOT WORKING!
+-- vim.api.nvim_set_keymap('v', '<D-c>', '"+y<CR>', { noremap = true }) -- Command + C
+-- vim.api.nvim_set_keymap('x', '<D-c>', '"+y<CR>:echom "Copied"<CR>', { noremap = true }) -- Command + C
+-- vim.api.nvim_set_keymap('v', '<C-c>', '"+y<CR>', { noremap = true }) -- Control + C
+-- vim.api.nvim_set_keymap('v', '<D-c>', '"+y<CR>:echom "Copied"<CR>', { noremap = true }) -- Command + C
+
 -- Indent selected text right with Tab
 vim.api.nvim_set_keymap('x', '<Tab>', [[>gv]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('v', '<Tab>', [[>gv]], { noremap = true, silent = true })
