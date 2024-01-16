@@ -53,7 +53,7 @@
         "${modifier}+Return" = "exec ${terminal}";
         "${modifier}+Alt+Space" = "exec brave";
         "${modifier}+Shift+q" = "kill";
-        "${modifier}+q" = "exec kill-windows";
+        "${modifier}+q" = "exec wtype -M ctrl -P w -m ctrl -p w";
         "${modifier}+a" = "exec show-all-windows";
         "${modifier}+d" = "exec ${menu}";
         "${modifier}+m" = "exec docker start -ai 8b83fcdf83af"; # MacOS VM
@@ -126,7 +126,7 @@
         "${modifier}+u" = "focus parent";
 
         "${modifier}+w" = "layout toggle split";
-        "${modifier}+s" = "layout tabbed";
+        "${modifier}+s" = "layout tabbed"; #macos is stacked layout
         "${modifier}+e" = "layout default";
 
         #"${modifier}+o" = "inhibit_idle open; border normal; mark --add inhibiting_idle";

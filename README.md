@@ -34,6 +34,7 @@ nix --experimental-features 'nix-command flakes'  # Enable flakes
 - [x] Fix Karabiner Key Combos
 - [x] Fix skhd hotkeys
 - [x] Fix nix Alacritty package issues
+- [x] Replace Mod+q with control+w Sway
 - [ ] Clean up sketchybarrc
 - [ ] Fix git update script to cancel git pushing empty commits if "already up to date"
 - [ ] Add sway and sketchybar window resize shortcuts
