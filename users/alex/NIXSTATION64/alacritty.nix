@@ -88,7 +88,7 @@
         {
           key = "C";
           mods = "Shift|Control";
-          action = "Copy";
+          action = "ReceiveChar";
         }
         {
           key = "V";
