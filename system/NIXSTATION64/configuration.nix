@@ -51,6 +51,9 @@
     plasma5.excludePackages = with pkgs; [
       oxygen
       xwayland
+      kwalletmanager
+      konsole
+      xterm
     ]; 
 
     variables = rec {
