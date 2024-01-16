@@ -146,7 +146,7 @@
         ctrl + shift + ${mod4} - delete : sudo shutdown -h now
         ${mod} + shift - q :              ${yabai} -m window --close
 	      ${mod} - f :                      ${yabai} -m window --toggle zoom-fullscreen
-        ${mod} + shift - f :              ${yabai} -m window --toggle native-fullscreen #DON'T that thing SUCKS
+        ${mod} + shift - f :              ${yabai} -m window --toggle native-fullscreen
 
         # workspaces
         ${mod1} + ${mod4} - h :     ${yabai} -m space --focus prev

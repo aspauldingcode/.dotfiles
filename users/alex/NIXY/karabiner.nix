@@ -25,6 +25,26 @@
             },
             "rules": [
               {
+                "description": "Replace Alt+Q with Command+W to close tabs",
+                "manipulators": [
+                  {
+                    "type": "basic",
+                    "from": {
+                      "key_code": "q",
+                      "modifiers": {
+                        "mandatory": ["left_option"]
+                      }
+                    },
+                    "to": [
+                      {
+                        "key_code": "w",
+                        "modifiers": ["left_command"]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
                 "description": "Change keybind for Alacritty",
                 "manipulators": [
                   {

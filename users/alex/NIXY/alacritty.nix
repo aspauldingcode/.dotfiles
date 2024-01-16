@@ -93,7 +93,7 @@
         {
           key = "C";
           mods = "Command|Shift";
-          action = "Copy";
+          action = "ReceiveChar";
         }
         {
           key = "PageUp";
