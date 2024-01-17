@@ -307,7 +307,7 @@
           };
           sourcekit = {
             enable = true;
-            installLanguageServer = true;
+            installLanguageServer = false; # FAILED TO COMPILE ON NIXOS
           };
           svelte = {
             enable = true;
