@@ -27,6 +27,7 @@
       "pkgconf"
       "portaudio"
       "iniparser"
+      "sublime-text"
     ];
     #masApps = [ #FAILS
       #497799835 #Xcode 

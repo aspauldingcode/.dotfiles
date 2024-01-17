@@ -85,6 +85,33 @@
                 ]
               },
               {
+                "description": "Replace Command+H with Command+Y in Brave browser",
+                "manipulators": [
+                  {
+                    "type": "basic",
+                    "from": {
+                      "key_code": "h",
+                      "modifiers": {
+                        "mandatory": ["left_command"],
+                        "optional": ["any"]
+                      }
+                    },
+                    "to": [
+                      {
+                        "key_code": "y",
+                        "modifiers": ["left_command"]
+                      }
+                    ],
+                    "conditions": [
+                      {
+                        "type": "frontmost_application_if",
+                        "bundle_identifiers": ["^com.brave.Browser$"]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
                 "description": "Swap Fullscreen to SimpleFullscreen in Alacritty",
                 "manipulators": [
                   {

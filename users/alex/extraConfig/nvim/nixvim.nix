@@ -28,7 +28,7 @@
     -- print("Hello world!")
 
     -- All my configuration options for nvim:
-    ${builtins.readFile ../extraConfig/nvim/options.lua}
+    ${builtins.readFile ./options.lua}
     '';
     globals.mapleader = ","; # Sets the leader key to comma
     keymaps = [ # https://github.com/nix-community/nixvim/tree/main#key-mappings
@@ -405,7 +405,7 @@
       # asyncomplete-lsp-vim # FIXME: Learn more
       {
         plugin = nvim-cmp;
-        config = toLuaFile ../extraConfig/nvim/plugin/cmp.lua;
+        config = toLuaFile ./plugin/cmp.lua;
       }
       # cmp-nvim-lsp # FIXME: Learn more
       # cmp-nvim-lsp-document-symbol 
@@ -431,13 +431,13 @@
 
       {
         plugin = telescope-nvim;
-        config = toLuaFile ../extraConfig/nvim/plugin/telescope.lua;
+        config = toLuaFile ./plugin/telescope.lua;
       }
 
       # File Tree
       {
         plugin = nvim-tree-lua;
-        config = toLuaFile ../extraConfig/nvim/plugin/nvim-tree.lua;
+        config = toLuaFile ./plugin/nvim-tree.lua;
       }
       nvim-web-devicons # optional, for file icons
 
@@ -449,29 +449,29 @@
 
       {
         plugin = pkgs.vimPlugins.cmp-nvim-tags;
-        config = toLuaFile ../extraConfig/nvim/plugin/cmp-tags.lua;
+        config = toLuaFile ./plugin/cmp-tags.lua;
       }
 
       {
         plugin = statuscol-nvim;
-        config = toLuaFile ../extraConfig/nvim/plugin/statuscol.lua;
+        config = toLuaFile ./plugin/statuscol.lua;
       }
 
       # Visual Fixes
       {
         plugin = feline-nvim;
         config = let inherit (config.colorscheme) colors; in
-        toLuaFile ../extraConfig/nvim/plugin/feline.lua;
+        toLuaFile ./plugin/feline.lua;
       }
 
       {
         plugin = winbar-nvim;
-        config = toLuaFile ../extraConfig/nvim/plugin/winbar.lua;
+        config = toLuaFile ./plugin/winbar.lua;
       }
 
       {
         plugin = indent-blankline-nvim; # lines to identify codeblocks
-        config = toLuaFile ../extraConfig/nvim/plugin/indent-blankline.lua;
+        config = toLuaFile ./plugin/indent-blankline.lua;
       }
       # Behavior Fixes
       vim-autoswap
@@ -486,7 +486,7 @@
       # Emacs Org for nvim
       {
         plugin = neorg;
-        config = toLuaFile ../extraConfig/nvim/plugin/neorg.lua;
+        config = toLuaFile ./plugin/neorg.lua;
       }
       neorg-telescope
 
@@ -498,7 +498,7 @@
       # Git Visual integration #FIXME: USING GITGUTTER!
       {
         plugin = gitsigns-nvim;
-        config = toLuaFile ../extraConfig/nvim/plugin/gitsigns.lua;
+        config = toLuaFile ./plugin/gitsigns.lua;
       }
 
       #{ 
@@ -550,7 +550,7 @@
             p.tree-sitter-php
             p.tree-sitter-norg
           ]));
-          config = toLuaFile ../extraConfig/nvim/plugin/treesitter.lua;
+          config = toLuaFile ./plugin/treesitter.lua;
         }
       ];
     };

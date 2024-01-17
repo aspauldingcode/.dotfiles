@@ -236,7 +236,6 @@ sketchybar --add item separator_left left \
     icon.drawing=on \
     label.padding_left=15 \
     label.padding_right=15 \
-    update_freq=5 \
   --subscribe front_app front_app_switched
 sketchybar --add item active_app left \
    --set active_app "${active_app[@]}" \ 
