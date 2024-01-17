@@ -22,7 +22,7 @@ volume_change() {
   *) ICON=$VOLUME_100 ;;
   esac
 
-  sketchybar --set volume_icon label=$ICON
+  sketchybar --set volume_icon label="$ICON $INFO" #add the icon and the percentage
 
   sketchybar --set $NAME slider.percentage=$INFO \
     --animate tanh 30 --set $NAME slider.width=100

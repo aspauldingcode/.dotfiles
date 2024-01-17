@@ -1,4 +1,4 @@
-{ config, ... }: 
+{ config, pkgs, lib, ... }: 
 
 {
   home.file.yabai = {
@@ -81,9 +81,10 @@
       yabai -m rule --add app='Installer'             manage=off
       yabai -m rule --add app='Karabiner-EventViewer' manage=off
       yabai -m rule --add app='Karabiner-Elements'    manage=off
-      yabai -m rule --add app='Alacritty'             topmost=on
-      yabai -m rule --add app='Brave Browser'         topmost=off
-      yabai -m rule --add app='Sketchybar'            topmost=off
+      # yabai -m rule --add app='Alacritty'             layer=above
+      yabai -m rule --add app='Brave Browser'         layer=below
+      yabai -m rule --add app='Sketchybar'            layer=below
+      yabai -m rule --add app='borders'               layer=below
 
       # # workspace management
       # yabai -m space 1  --label www
@@ -116,8 +117,7 @@
       # yabai -m rule --add app="Signal"              space=chat
       #
       # yabai -m rule --add app="Todoist"             space=todo
-      #
-      # yabai -m rule --add app="Discord"             space=voice
+      #      # yabai -m rule --add app="Discord"             space=voice
       # yabai -m rule --add app="Mumble"              space=voice
       #
       # yabai -m rule --add app="Microsoft Teams"     space=nine
@@ -126,11 +126,64 @@
 
     '';
   };
-  
-  home.file.skhd = {
+
+  home.file.skhd = 
+  # let
+  #   toggle-sketchybar = pkgs.writeShellScriptBin "toggle-sketchybar" ''
+  #  toggle_sketchybar() {
+  #       local hidden_status=$(sketchybar --query bar | jq -r '.hidden')
+  #
+  #       if [ "$hidden_status" == "off" ]; then
+  #           STATE="on"
+  #           sketchybar --bar hidden=on
+  #       else
+  #           STATE="off"
+  #           sketchybar --bar hidden=off
+  #       fi
+  #   }
+  #
+  #   # Example usage
+  #   toggle_sketchybar
+  #   '';
+  # in  
+
+  # let 
+  #   toggle-layer-alacritty = pkgs.writeShellScriptBin "toggle-layer-alacritty" ''
+  #
+  #   check_focus_and_app() {
+  #   # Run yabai command and store JSON output
+  #   yabai_output=$(yabai -m query --windows --window)
+  #
+  #   # Extract the value of "has-focus" and "app" using jq
+  #   has_focus=$(echo "$yabai_output" | jq -r '.["has-focus"]')
+  #   app_name=$(echo "$yabai_output" | jq -r '.app')
+  #
+  #   # Check if "has-focus" is true and app name is "Alacritty"
+  #   if [ "$has_focus" = "true" ] && [ "$app_name" = "Alacritty" ]; then
+  #       echo "The focused window is true and the app name is Alacritty."
+  #       # Add your custom actions here if needed
+  #       say true
+  #   else
+  #       echo "Either the focused window is not true or the app name is not Alacritty."
+  #       # Add alternative actions if needed
+  #       say false
+  #   fi
+  #   }
+  #
+  #   # Call the function
+  #   check_focus_and_app
+  #   '';
+  # in
+  {
     executable = true;
     target = ".config/skhd/skhdrc";
-    text = let yabai = "/opt/homebrew/bin/yabai"; mod1 = "alt"; mod4 = "cmd"; mod = mod1; in
+    text = let 
+      # toggle-sketchybar = "/Users/alex/.nix-profile/bin/toggle-sketchybar";
+      yabai = "/opt/homebrew/bin/yabai";
+      mod1 = "alt";
+      mod4 = "cmd";
+      mod = mod1; 
+    in
       ''
         # alt + a / u / o / s are blocked due to umlaute
         
@@ -145,9 +198,11 @@
         ctrl + ${mod4} - delete :         sudo reboot
         ctrl + shift + ${mod4} - delete : sudo shutdown -h now
         ${mod} + shift - q :              ${yabai} -m window --close
-	      ${mod} - f :                      ${yabai} -m window --toggle zoom-fullscreen
+        # IF doing a fullscreen, then try toggling this: sketchybar --animate tanh 20 --bar y_offset=-20 y_offset=10
+	      ${mod} - f :                      ${yabai} -m window --toggle zoom-fullscreen 
         ${mod} + shift - f :              ${yabai} -m window --toggle native-fullscreen
-
+        #ctrl + shift - f :               toggle-layer-alacritty FIXME: BROKEN AF
+        
         # workspaces
         ${mod1} + ${mod4} - h :     ${yabai} -m space --focus prev
         ${mod1} + ${mod4} - j :     ${yabai} -m space --focus prev
@@ -158,17 +213,17 @@
         ${mod1} + ${mod4} - up :    ${yabai} -m space --focus next
         ${mod1} + ${mod4} - right : ${yabai} -m space --focus next
 
-        # move focused window to workspace n
-        ${mod} + shift - 1 : ${yabai} -m window --space 1
-        ${mod} + shift - 2 : ${yabai} -m window --space 2
-        ${mod} + shift - 3 : ${yabai} -m window --space 3
-        ${mod} + shift - 4 : ${yabai} -m window --space 4
-        ${mod} + shift - 5 : ${yabai} -m window --space 5
-        ${mod} + shift - 6 : ${yabai} -m window --space 6
-        ${mod} + shift - 7 : ${yabai} -m window --space 7
-        ${mod} + shift - 8 : ${yabai} -m window --space 8
-        ${mod} + shift - 9 : ${yabai} -m window --space 9
-        ${mod} + shift - 0 : ${yabai} -m window --space 10
+        # move focused window to workspace n & follow focus
+        ${mod} + shift - 1 : ${yabai} -m window --space 1;  ${yabai} -m space --focus 1
+        ${mod} + shift - 2 : ${yabai} -m window --space 2;  ${yabai} -m space --focus 2
+        ${mod} + shift - 3 : ${yabai} -m window --space 3;  ${yabai} -m space --focus 3
+        ${mod} + shift - 4 : ${yabai} -m window --space 4;  ${yabai} -m space --focus 4
+        ${mod} + shift - 5 : ${yabai} -m window --space 5;  ${yabai} -m space --focus 5
+        ${mod} + shift - 6 : ${yabai} -m window --space 6;  ${yabai} -m space --focus 6
+        ${mod} + shift - 7 : ${yabai} -m window --space 7;  ${yabai} -m space --focus 7
+        ${mod} + shift - 8 : ${yabai} -m window --space 8;  ${yabai} -m space --focus 8
+        ${mod} + shift - 9 : ${yabai} -m window --space 9;  ${yabai} -m space --focus 9
+        ${mod} + shift - 0 : ${yabai} -m window --space 10; ${yabai} -m space --focus 10
         
         # move focused space to workspace n
         ${mod} - 1 : ${yabai} -m space --focus 1
@@ -186,14 +241,14 @@
         ${mod} + shift - x : ${yabai} -m space --mirror x-axis
 
         # send window to next/prev space and follow focus
-        ${mod1} + ${mod4} - h :     ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-        ${mod1} + ${mod4} - j :     ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-        ${mod1} + ${mod4} - k :     ${yabai} -m window --space next; ${yabai} -m space --focus next
-        ${mod1} + ${mod4} - l :     ${yabai} -m window --space next; ${yabai} -m space --focus next
-        ${mod1} + ${mod4} - left :  ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-        ${mod1} + ${mod4} - down :  ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-        ${mod1} + ${mod4} - up :    ${yabai} -m window --space next; ${yabai} -m space --focus next
-        ${mod1} + ${mod4} - right : ${yabai} -m window --space next; ${yabai} -m space --focus next
+        ${mod1} + shift - h :     ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+        ${mod1} + shift - j :     ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+        ${mod1} + shift - k :     ${yabai} -m window --space next; ${yabai} -m space --focus next
+        ${mod1} + shift - l :     ${yabai} -m window --space next; ${yabai} -m space --focus next
+        ${mod1} + shift - left :  ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+        ${mod1} + shift - down :  ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+        ${mod1} + shift - up :    ${yabai} -m window --space next; ${yabai} -m space --focus next
+        ${mod1} + shift - right : ${yabai} -m window --space next; ${yabai} -m space --focus next
 
         # focus window in stacked, else in bsp
         ${mod} - h :      if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus west; fi
@@ -235,5 +290,5 @@
         # reload
         ${mod} + shift - r : fix-wm
       '';
-  };
+    };
 }
