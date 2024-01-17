@@ -7,7 +7,6 @@ in
     imports = [
       nix-colors.homeManagerModules.default
       ./packages-NIXY.nix
-      # ./nixvim.nix #try a universal nixvim.nix?
       ../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
       ./alacritty.nix
       ./git.nix
