@@ -22,8 +22,8 @@ o.softtabstop = 8
 o.expandtab = true
 o.signcolumn = 'yes'
 o.wrap = false
-o.textwidth = 80
-o.formatoptions = "t"
+-- o.textwidth = 80
+-- o.formatoptions = "t"
 
 -- Use mouse
 o.mouse = "a"

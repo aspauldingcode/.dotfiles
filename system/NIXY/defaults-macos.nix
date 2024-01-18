@@ -1,55 +1,71 @@
-{ lib, pkgs, config, ... }:
+{ ... }:
 
 ##SYSTEM DEFAULTS!!!! MACOS defaults config.
 {
   system.defaults = {
-		finder = { 
-			# Hide Desktop icons
-			CreateDesktop = false;
-			AppleShowAllFiles = true;
-			AppleShowAllExtensions = true;
-			# Change the default search scope. Use "SCcf" to default to the current folder.
-			FXDefaultSearchScope = "SCcf";	
-			# Whether to show warnings when change the file extension of files. The default is true.
-			FXEnableExtensionChangeWarning = false;
-			# Change the default finder view. “icnv” = Icon view, “Nlsv” = List view, “clmv” = Column View, “Flwv” = Gallery View The default is icnv.
-			FXPreferredViewStyle = "Nlsv";
-			#Whether to allow quitting of the Finder. The default is false.
-			QuitMenuItem = true;
-			#Show path breadcrumbs in finder windows. The default is false.
-			ShowPathbar = false;
-			#Show status bar at bottom of finder windows with item/disk space stats. The default is false.
-			ShowStatusBar = false;
-			#Whether to show the full POSIX filepath in the window title. The default is false.
-			_FXShowPosixPathInTitle = true;
-		};
-		loginwindow = {
-			#Disables the ability for a user to access the console by typing “>console” for a username at the login window. Default is false.
-			DisableConsoleAccess = true;
-			#Allow users to login to the machine as guests using the Guest account. Default is true.
-			GuestEnabled = false;
-			#Text to be shown on the login window. Default is “\\U03bb”. 
-			#LoginwindowText = "Login as: " whoami; ###FIXME READ HOMEMANAGER CONFIG!!!
-			#If set to true, the Power Off menu item will be disabled when the user is logged in. Default is false.
-			PowerOffDisabledWhileLoggedIn = false;
-			#Hides the Restart button on the login screen. Default is false.
-			RestartDisabled = false;
-			#Disables the “Restart” option when users are logged in. Default is false.
-			RestartDisabledWhileLoggedIn = false;
-			# Hides the Sleep button on the login screen. Default is false.
-			SleepDisabled = false;
-		};
-		NSGlobalDomain = {
-			#Whether to enable smooth scrolling. The default is true.
-			NSScrollAnimationEnabled = false;
-			#Whether to animate opening and closing of windows and popovers. The default is true.
-			NSAutomaticWindowAnimationsEnabled = false;
-			#Sets the speed speed of window resizing. The default is given in the example.
-				NSWindowResizeTime = 0.0;
-		};
-		spaces = {
-		# Displays have separate Spaces (note a logout is required before this setting will take effect).
-		spans-displays = false;
-		};
-	};
+    finder = { 
+      CreateDesktop = false;
+      AppleShowAllFiles = true;
+      AppleShowAllExtensions = true;
+      FXDefaultSearchScope = "SCcf";	
+      FXEnableExtensionChangeWarning = false;
+      FXPreferredViewStyle = "Nlsv";
+      QuitMenuItem = true;
+      ShowPathbar = false;
+      ShowStatusBar = false;
+      _FXShowPosixPathInTitle = true;
+    };
+    loginwindow = {
+      DisableConsoleAccess = true;
+      GuestEnabled = false;
+      LoginwindowText = "NIXY"; 
+      PowerOffDisabledWhileLoggedIn = false;
+      RestartDisabled = false;
+      RestartDisabledWhileLoggedIn = false;
+      SleepDisabled = false;
+    };
+    NSGlobalDomain = {
+      NSScrollAnimationEnabled = false;
+      NSAutomaticWindowAnimationsEnabled = false;
+      NSWindowResizeTime = 0.0;
+      "com.apple.sound.beep.volume" = 0.0; # mute beep/alert volume
+    };
+    spaces = {
+      spans-displays = true; # Required for yabai!?
+
+    };
+    dock = {
+      autohide = true; 
+      autohide-delay = 1000.0; #defaults write com.apple.dock autohide-delay -float 1000; killall Dock
+      autohide-time-modifier = 0.001; # or null?
+      dashboard-in-overlay = true;
+      expose-animation-duration = 0.001; #or null?
+      expose-group-by-app = null;
+      launchanim = false;
+      orientation = "bottom"; # try top?
+      show-recents = false;
+      showhidden = true;
+      wvous-bl-corner = 1; # 1 for disable
+      wvous-br-corner = 1;
+      wvous-tl-corner = 1;
+      wvous-tr-corner = 1;
+    }; 
+    menuExtraClock.IsAnalog = true;
+    trackpad = {
+      ActuationStrength = 0; # silent clicking
+      Clicking = true; # tap to click
+      Dragging = true; # tap to drag
+      TrackpadRightClick = true;
+      TrackpadThreeFingerDrag = true;
+
+    };
+    universalaccess = {
+      mouseDriverCursorSize = 1.5; # Cursor size
+      reduceMotion = true; # less animation!
+      reduceTransparency = true; 
+    };
+    ".GlobalPreferences" = {
+      "com.apple.mouse.scaling" = -1.0; # Set to -1.0 to disable mouse acceleration.
+    };
+  };
 }

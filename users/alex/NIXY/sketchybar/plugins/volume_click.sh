@@ -47,3 +47,5 @@ if [ "$BUTTON" = "right" ] || [ "$MODIFIER" = "shift" ]; then
 else
   toggle_detail
 fi
+
+toggle_detail

@@ -5,34 +5,34 @@
     enable = true;
     settings = {
       window = {
-        padding.x = 0;
-        padding.y = 10;
-        opacity   = 0.9;
-        blur = true;
-        class.instance = "Alacritty";
-        class.general  = "Alacritty";
-        decorations = "Buttonless";
+        padding.x =       0;
+        padding.y =       10;
+        opacity   =       0.9;
+        blur =            true;
+        class.instance =  "Alacritty";
+        class.general  =  "Alacritty";
+        decorations =     "Buttonless";
       };
 
       scrolling = {
-        history = 10000;
-        multiplier = 3;
+        history =     10000;
+        multiplier =  3;
       };
 
       font = {
         normal = {
-          family = "Hack Nerd Font Mono";
-          style = "Regular";
+          family =  "Hack Nerd Font Mono";
+          style =   "Regular";
         };
         bold = {
-          family = "Hack Nerd Font Mono";
-          style = "Bold";
+          family =  "Hack Nerd Font Mono";
+          style =   "Bold";
         };
         italic = {
-          family = "Hack Nerd Font Mono";
-          style = "Italic";
+          family =  "Hack Nerd Font Mono";
+          style =   "Italic";
         };
-        size = 12.0;
+        size =      12.0;
       };
 
         # Becomes either 'dark' or 'light', based on your colors! (in qutebrowser)
@@ -85,16 +85,16 @@
           mods = "Command|Shift";
           action = "ToggleSimpleFullscreen";
         }
-        {
-          key = "C";
-          mods = "Command";
-          action = "Copy";
-        }
-        {
-          key = "C";
-          mods = "Command|Shift";
-          action = "ReceiveChar";
-        }
+        # {
+        #   key = "C";
+        #   mods = "Control";
+        #   action = "Copy";
+        # }
+        # {
+        #   key = "W";
+        #   mods = "Command";
+        #   action = "ReceiveChar";
+        # }
         {
           key = "PageUp";
           mode = "~Alt";

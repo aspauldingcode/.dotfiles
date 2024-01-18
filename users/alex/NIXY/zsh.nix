@@ -5,14 +5,14 @@
     enable = true;
     enableCompletion = true;
     shellAliases = {
-      ll = "ls -l";
-      ifstat = "ifstat-legacy";
-      cat = "lolcat";
+      ll =      "ls -l";
+      ifstat =  "ifstat-legacy";
+      cat =     "lolcat";
     };
     oh-my-zsh = {
-      enable = true;
+      enable =  true;
       plugins = [ "git" "thefuck" ];
-      theme = "funky";
+      theme =   "funky";
     };
   };
   home.sessionVariables = {

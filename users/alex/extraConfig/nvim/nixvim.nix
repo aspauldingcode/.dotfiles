@@ -373,7 +373,7 @@
       enabled = false;
       autoRefresh = true;
     };
-    auto-save.enable = true;
+    auto-save.enable = false;
 
     # git and revisioning 
     gitgutter.enable = true;

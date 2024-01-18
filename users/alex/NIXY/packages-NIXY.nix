@@ -22,6 +22,7 @@
     utm 
     mas
     vscode
+    audacity
     yazi #somehow it's back? what?
     nil #rnix-lsp apparently is vulnerable? 
     thefuck

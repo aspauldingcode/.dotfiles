@@ -2,7 +2,6 @@
 
 {
   home.file.karabiner = {
-    # target = ".config/karabiner/assets/complex_modifications/universal-shortcuts-alex.json";
     target = ".config/karabiner/karabiner.json";
     text = ''
     {
@@ -112,7 +111,7 @@
                 ]
               },
               {
-                "description": "Swap Fullscreen to SimpleFullscreen in Alacritty",
+                "description": "Replace Fullscreen with SimpleFullscreen in Alacritty",
                 "manipulators": [
                   {
                     "type": "basic",
@@ -138,157 +137,19 @@
                 ]
               },
               {
-                "description": "Swap Command and Control for Alacritty",
-                "manipulators": [
-                  {
-                    "type": "basic",
-                    "from": {
-                      "key_code": "left_control"
-                    },
-                    "to": [
-                      {
-                        "key_code": "left_command"
-                      }
-                    ],
-                    "conditions": [
-                      {
-                        "type": "frontmost_application_if",
-                        "bundle_identifiers": ["^org\\.alacritty$"]
-                      }
-                    ]
-                  },
-                  {
-                    "type": "basic",
-                    "from": {
-                      "key_code": "left_command"
-                    },
-                    "to": [
-                      {
-                        "key_code": "left_control"
-                      }
-                    ],
-                    "conditions": [
-                      {
-                        "type": "frontmost_application_if",
-                        "bundle_identifiers": ["^org\\.alacritty$"]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "description": "Replace Control+C with Command+C in Alacritty",
+                "description": "Replace Command+Shift+C with Control+C in Alacritty",
                 "manipulators": [
                   {
                     "type": "basic",
                     "from": {
                       "key_code": "c",
                       "modifiers": {
-                        "mandatory": ["left_control"]
+                        "mandatory": ["left_command", "left_shift"]
                       }
                     },
                     "to": [
                       {
                         "key_code": "c",
-                        "modifiers": ["left_command"]
-                      }
-                    ],
-                    "conditions": [
-                      {
-                        "type": "frontmost_application_if",
-                        "bundle_identifiers": ["^org\\.alacritty$"]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "description": "Replace Control+V with Command+V in Alacritty",
-                "manipulators": [
-                  {
-                    "type": "basic",
-                    "from": {
-                      "key_code": "v",
-                      "modifiers": {
-                        "mandatory": ["left_control"]
-                      }
-                    },
-                    "to": [
-                      {
-                        "key_code": "v",
-                        "modifiers": ["left_command"]
-                      }
-                    ],
-                    "conditions": [
-                      {
-                        "type": "frontmost_application_if",
-                        "bundle_identifiers": ["^org\\.alacritty$"]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "description": "Replace Control+X with Command+X in Alacritty",
-                "manipulators": [
-                  {
-                    "type": "basic",
-                    "from": {
-                      "key_code": "x",
-                      "modifiers": {
-                        "mandatory": ["left_control"]
-                      }
-                    },
-                    "to": [
-                      {
-                        "key_code": "x",
-                        "modifiers": ["left_command"]
-                      }
-                    ],
-                    "conditions": [
-                      {
-                        "type": "frontmost_application_if",
-                        "bundle_identifiers": ["^org\\.alacritty$"]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "description": "Swap Alt and Control for Alacritty",
-                "manipulators": [
-                  {
-                    "type": "basic",
-                    "from": {
-                      "key_code": "left_alt",
-                      "modifiers": {
-                        "mandatory": ["left_control"]
-                      }
-                    },
-                    "to": [
-                      {
-                        "key_code": "left_alt",
-                        "modifiers": ["left_command"]
-                      }
-                    ],
-                    "conditions": [
-                      {
-                        "type": "frontmost_application_if",
-                        "bundle_identifiers": ["^org\\.alacritty$"]
-                      }
-                    ]
-                  },
-                  {
-                    "type": "basic",
-                    "from": {
-                      "key_code": "left_alt",
-                      "modifiers": {
-                        "mandatory": ["left_command"]
-                      }
-                    },
-                    "to": [
-                      {
-                        "key_code": "left_alt",
                         "modifiers": ["left_control"]
                       }
                     ],
@@ -300,34 +161,8 @@
                     ]
                   }
                 ]
-              },
-              {
-                "description": "Swap Control + Shift with Command + Shift in Alacritty",
-                "manipulators": [
-                  {
-                    "type": "basic",
-                    "from": {
-                      "key_code": "left_shift",
-                      "modifiers": {
-                        "mandatory": ["left_control"]
-                      }
-                    },
-                    "to": [
-                      {
-                        "key_code": "left_shift",
-                        "modifiers": ["left_command"]
-                      }
-                    ],
-                    "conditions": [
-                      {
-                        "type": "frontmost_application_if",
-                        "bundle_identifiers": ["^org\\.alacritty$"]
-                      }
-                    ]
-                  }
-                ]
               }
-            ]          
+            ]
           },
           "devices": [
             {

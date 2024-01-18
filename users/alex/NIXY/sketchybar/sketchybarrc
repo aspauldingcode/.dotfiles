@@ -89,8 +89,9 @@ volume=(
   slider.highlight_color=$GREY
   slider.background.height=5
   slider.background.corner_radius=3
-  slider.background.color=$GREY
+  slider.background.color=$TEMPUS
   slider.knob=$DOT
+  slider.knob.color=$WHITE
   slider.knob.drawing=off
   slider.padding_left=15
   slider.padding_right=15
@@ -107,7 +108,7 @@ volume=(
 
 volume_icon=(
   script="$PLUGIN_DIR/volume_icon.sh"
-  #click_script="$PLUGIN_DIR/volume_click.sh"
+  click_script="$PLUGIN_DIR/volume_click.sh"
   padding_right=10
   padding_left=10
 )
@@ -250,7 +251,7 @@ sketchybar --add item volume_icon center \
   --set volume_icon "${volume_icon[@]}"
 sketchybar --add slider volume center \
   --set volume "${volume[@]}" \
-  --subscribe volume volume_change mouse.clicked mouse.entered mouse.exited
+  --subscribe volume volume_change mouse.clicked mouse.entered mouse.exited mouse.scrolled
 sketchybar --add item datetime center \
   --set datetime "${datetime[@]}" \
   --subscribe time system_woke
