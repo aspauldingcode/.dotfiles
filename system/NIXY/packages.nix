@@ -26,6 +26,7 @@
     ranger
     ncurses6
     hexedit
+    # javaPackages.openjfx19
     #inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk20
     python311
     python311Packages.pygame

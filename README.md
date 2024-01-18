@@ -36,6 +36,7 @@ nix --experimental-features 'nix-command flakes'  # Enable flakes
 - [x] Fix nix Alacritty package issues
 - [x] Replace Mod+q with control+w Sway
 - [ ] Clean up sketchybarrc
+- [ ] Convert karabiner config to a nix language defined config.
 - [ ] Fix git update script to cancel git pushing empty commits if "already up to date"
 - [ ] Add sway and sketchybar window resize shortcuts
 - [ ] Add sway mod+s and mod+e scripts to make all windows stacked, or all windows default layout.
