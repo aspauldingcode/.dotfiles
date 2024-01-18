@@ -109,7 +109,7 @@
     # bindsym $mod+m exec ~/.config/i3/maximize.sh
 
     WRKSPC_FILE=~/.config/wrkspc
-    RESERVED_WORKSPACE=10
+    RESERVED_WORKSPACE=f
     MSG=swaymsg
     if [ "$XDG_SESSION_TYPE" == "x11"]
     then
@@ -133,7 +133,7 @@
         fi
       else
         # move the window back
-        $MSG move container to workspace number $(cat $WRKSPC_FILE)
+        $MSG move container to workspace $(cat $WRKSPC_FILE)
         $MSG workspace number $(cat $WRKSPC_FILE)
         notify-send "Returned back to workspace $(cat $WRKSPC_FILE)."
         rm -f $WRKSPC_FILE
@@ -145,8 +145,8 @@
       else
         # remember current workspace
         echo $CURRENT_WORKSPACE > $WRKSPC_FILE
-        $MSG move container to workspace number $RESERVED_WORKSPACE
-        $MSG workspace number $RESERVED_WORKSPACE
+        $MSG move container to workspace $RESERVED_WORKSPACE
+        $MSG workspace $RESERVED_WORKSPACE
         notify-send "Saved workspace $CURRENT_WORKSPACE and moved to workspace $RESERVED_WORKSPACE."
       fi
     fi

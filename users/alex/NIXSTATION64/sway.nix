@@ -134,45 +134,49 @@
 
         #"${modifier}+j" = "exec ${pkgs.mako}/bin/makoctl invoke"; # Invoke default action on top notification.
         #"${modifier}+Shift+t" = "exec ${pkgs.flashfocus}/bin/flash_window";
+        
+        # Change focused window
+        "${modifier}+${left}" =   "focus left";
+        "${modifier}+${down}" =   "focus down";
+        "${modifier}+${up}" =     "focus up";
+        "${modifier}+${right}" =  "focus right";
+        "${modifier}+Left" =      "focus left";
+        "${modifier}+Down" =      "focus down";
+        "${modifier}+Up" =        "focus up";
+        "${modifier}+Right" =     "focus right";
+        
+        #FIXME: make this swap window in place! Currently it rotates.
+        "${modifier}+Shift+${left}" =   "move left";
+        "${modifier}+Shift+${down}" =   "move down";
+        "${modifier}+Shift+${up}" =     "move up";
+        "${modifier}+Shift+${right}" =  "move right";
+        "${modifier}+Shift+Left" =      "move left";
+        "${modifier}+Shift+Down" =      "move down";
+        "${modifier}+Shift+Up" =        "move up";
+        "${modifier}+Shift+Right" =     "move right";
+        
 
-        "${modifier}+${left}" = "focus left";
-        "${modifier}+${down}" = "focus down";
-        "${modifier}+${up}" = "focus up";
-        "${modifier}+${right}" = "focus right";
-        "${modifier}+Left" = "focus left";
-        "${modifier}+Down" = "focus down";
-        "${modifier}+Up" = "focus up";
-        "${modifier}+Right" = "focus right";
+        # Navigate to next/prev workspace
+        "${modifier}+Ctrl+${left}" =    "workspace prev";
+        "${modifier}+Ctrl+${down}" =    "workspace next";
+        "${modifier}+Ctrl+${up}" =      "workspace prev";
+        "${modifier}+Ctrl+${right}" =   "workspace next";
+        "${modifier}+Ctrl+Left" =       "workspace prev";
+        "${modifier}+Ctrl+Down" =       "workspace next";
+        "${modifier}+Ctrl+Up" =         "workspace prev";
+        "${modifier}+Ctrl+Right" =      "workspace next";
 
-        "${modifier}+Shift+${left}" = "move left";
-        "${modifier}+Shift+${down}" = "move down";
-        "${modifier}+Shift+${up}" = "move up";
-        "${modifier}+Shift+${right}" = "move right";
-        "${modifier}+Shift+Left" = "move left";
-        "${modifier}+Shift+Down" = "move down";
-        "${modifier}+Shift+Up" = "move up";
-        "${modifier}+Shift+Right" = "move right";
-
-        #"${modifier}+a" = "workspace back_and_forth";
-        #"${modifier}+l" = "workspace prev";
-        #"${modifier}+y" = "workspace next";
-        #"${modifier}+Prior" = "workspace prev"; # PgUp
-        #"${modifier}+Next" = "workspace next"; # PgDown
-        "${modifier}+Ctrl+${left}" = "workspace prev";
-        "${modifier}+Ctrl+${right}" = "workspace next";
-        "${modifier}+Ctrl+Left" = "workspace prev";
-        "${modifier}+Ctrl+Right" = "workspace next";
-
-        # Move whole workspace to other output
-        "${modifier}+Alt+${left}" = "move workspace to output left";
-        "${modifier}+Alt+${down}" = "move workspace to output down";
-        "${modifier}+Alt+${up}" = "move workspace to output up";
-        "${modifier}+Alt+${right}" = "move workspace to output right";
-        "${modifier}+Alt+Left" = "move workspace to output left";
-        "${modifier}+Alt+Down" = "move workspace to output down";
-        "${modifier}+Alt+Up" = "move workspace to output up";
-        "${modifier}+Alt+Right" = "move workspace to output right";
-
+        # Move window to next/prev workspace and follow focus
+        "Ctrl+Shift+${left}" =   "move container to workspace prev, workspace prev";
+        "Ctrl+Shift+${down}" =   "move container to workspace next, workspace next";
+        "Ctrl+Shift+${up}" =     "move container to workspace prev, workspace prev";
+        "Ctrl+Shift+${right}" =  "move container to workspace next, workspace next";
+        "Ctrl+Shift+Left" =      "move container to workspace prev, workspace prev";
+        "Ctrl+Shift+Down" =      "move container to workspace next, workspace next";
+        "Ctrl+Shift+Up" =        "move container to workspace prev, workspace prev";
+        "Ctrl+Shift+Right" =     "move container to workspace next, workspace next";
+        
+        # Move focus to workspace n
         "${modifier}+1" = "workspace number 1";
         "${modifier}+2" = "workspace number 2";
         "${modifier}+3" = "workspace number 3";
@@ -183,17 +187,18 @@
         "${modifier}+8" = "workspace number 8";
         "${modifier}+9" = "workspace number 9";
         "${modifier}+0" = "workspace number 10";
-
-        "${modifier}+Shift+1" = "move container to workspace number 1";
-        "${modifier}+Shift+2" = "move container to workspace number 2";
-        "${modifier}+Shift+3" = "move container to workspace number 3";
-        "${modifier}+Shift+4" = "move container to workspace number 4";
-        "${modifier}+Shift+5" = "move container to workspace number 5";
-        "${modifier}+Shift+6" = "move container to workspace number 6";
-        "${modifier}+Shift+7" = "move container to workspace number 7";
-        "${modifier}+Shift+8" = "move container to workspace number 8";
-        "${modifier}+Shift+9" = "move container to workspace number 9";
-        "${modifier}+Shift+0" = "move container to workspace number 10";
+        
+        # Move window to workspace n and follow focus
+        "${modifier}+Shift+1" = "move container to workspace number 1, workspace number 1";
+        "${modifier}+Shift+2" = "move container to workspace number 2, workspace number 2";
+        "${modifier}+Shift+3" = "move container to workspace number 3, workspace number 3";
+        "${modifier}+Shift+4" = "move container to workspace number 4, workspace number 4";
+        "${modifier}+Shift+5" = "move container to workspace number 5, workspace number 5";
+        "${modifier}+Shift+6" = "move container to workspace number 6, workspace number 6";
+        "${modifier}+Shift+7" = "move container to workspace number 7, workspace number 7";
+        "${modifier}+Shift+8" = "move container to workspace number 8, workspace number 8";
+        "${modifier}+Shift+9" = "move container to workspace number 9, workspace number 9";
+        "${modifier}+Shift+0" = "move container to workspace number 10, workspace number 10";
 
         "${modifier}+Shift+R" = "reload";
       };
@@ -211,6 +216,11 @@
       # Read `man 5 sway-input` for more information about this section.
       # Launch the network manager widget!
       exec nm-applet
+
+      # SET workspace to specific output
+      workspace 1 output DP-4
+      workspace 2 output DP-3
+      workspace 3 output DP-2
 
       # Launch the bluetooth applet
       exec blueman-applet

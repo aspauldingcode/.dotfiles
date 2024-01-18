@@ -49,11 +49,14 @@
     #   # libsForQt5.qt5.qtdeclarative       # add qtdeclarative (for QML support)
     # ];
     plasma5.excludePackages = with pkgs; [
-      oxygen
+      libsForQt5.oxygen
       xwayland
-      kwalletmanager
-      konsole
+      libsForQt5.konsole
       xterm
+      libsForQt5.kwalletmanager
+      libsForQt5.kwallet
+      libsForQt5.kwallet-pam
+      kwalletcli
     ]; 
 
     variables = rec {
