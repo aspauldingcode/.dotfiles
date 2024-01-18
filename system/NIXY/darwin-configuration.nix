@@ -3,10 +3,10 @@
 {
   imports = [
     ./packages.nix
-    ./defaults-macos.nix
+    ./darwin-sudoers.nix
+    ./darwin-defaults.nix
     ./homebrew-pkgs.nix
     ./yabai-sa.nix
-    ./darwin-sudoers.nix
   ];
   # Allow Unfree
   nixpkgs.config.allowUnsupportedSystem = true;
@@ -37,17 +37,11 @@
       "Wi-Fi"
     ];
   };
+
   # Create /etc/zshrc that loads the nix-darwin environment.
   programs.zsh.enable = true;  # default shell on catalina
   programs.fish.enable = false; #NOT Borne COMPAT? 
-  users = {
-    groups = {
-      wheel.members = [ "alex" ];
-    };
-    users = {
-      alex.shell = pkgs.zsh;
-    };
-  };
+  users.users.alex.shell = pkgs.zsh; 
   nix = {
      # https://nixos.wiki/wiki/Distributed_build
      distributedBuilds = false; # set true after configuration
@@ -73,15 +67,16 @@
      };
      settings = {
        auto-optimise-store = true;
-       substituters = [ 
-         "https://cache.nixos.org/" 
-       ];
-       trusted-public-keys = [ 
-         "hydra.nixos.org-1:CNHJZBh9K4tP3EKF6FkkgeVYsS3ohTl+oS0Qa8bezVs=" 
-       ]; # By default, only the key for cache.nixos.org is included
-       trusted-substituters = [
-         "https://hydra.nixos.org/"
-       ];
+       # FIXME: add cahcix.nixos.org so I don't have to rebuild home-manager all the time
+       # substituters = [ 
+       #   "https://cache.nixos.org/" 
+       # ];
+       # trusted-public-keys = [ 
+       #   "hydra.nixos.org-1:CNHJZBh9K4tP3EKF6FkkgeVYsS3ohTl+oS0Qa8bezVs=" 
+       # ]; # By default, only the key for cache.nixos.org is included
+       # trusted-substituters = [
+       #   "https://hydra.nixos.org/"
+       # ];
        trusted-users = [
          "root"
          "@admin" # anyone in the wheel group

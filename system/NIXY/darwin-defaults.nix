@@ -25,14 +25,21 @@
       SleepDisabled = false;
     };
     NSGlobalDomain = {
+      AppleInterfaceStyle = "Dark"; # or null; for normal. ##FIXME: TRIGGER WITH COLORSCHEME!
       NSScrollAnimationEnabled = false;
       NSAutomaticWindowAnimationsEnabled = false;
       NSWindowResizeTime = 0.0;
+      NSUseAnimatedFocusRing = false;
+      NSAutomaticCapitalizationEnabled = false;
+      NSAutomaticSpellingCorrectionEnabled = false;
+      _HIHideMenuBar = true; # Auto-hide window bar
+      AppleEnableMouseSwipeNavigateWithScrolls = false;
+      AppleEnableSwipeNavigateWithScrolls = false;
       "com.apple.sound.beep.volume" = 0.0; # mute beep/alert volume
     };
+    SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true; # always up to date
     spaces = {
-      spans-displays = true; # Required for yabai!?
-
+      spans-displays = false; # Required false for yabai!
     };
     dock = {
       autohide = true; 
@@ -42,7 +49,7 @@
       expose-animation-duration = 0.001; #or null?
       expose-group-by-app = null;
       launchanim = false;
-      orientation = "bottom"; # try top?
+      orientation = "bottom";
       show-recents = false;
       showhidden = true;
       wvous-bl-corner = 1; # 1 for disable
@@ -56,16 +63,15 @@
       Clicking = true; # tap to click
       Dragging = true; # tap to drag
       TrackpadRightClick = true;
-      TrackpadThreeFingerDrag = true;
-
+      # TrackpadThreeFingerDrag = true;
     };
     universalaccess = {
-      mouseDriverCursorSize = 1.5; # Cursor size
-      reduceMotion = true; # less animation!
+      mouseDriverCursorSize = 1.2; # Cursor size
+      reduceMotion = true;
       reduceTransparency = true; 
     };
     ".GlobalPreferences" = {
-      "com.apple.mouse.scaling" = -1.0; # Set to -1.0 to disable mouse acceleration.
+      "com.apple.mouse.scaling" = 8.0; # Set to -1.0 to disable mouse acceleration.
     };
   };
 }

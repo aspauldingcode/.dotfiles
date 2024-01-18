@@ -27,7 +27,6 @@
       "pkgconf"
       "portaudio"
       "iniparser"
-      "sublime-text"
     ];
     #masApps = [ #FAILS
       #497799835 #Xcode 
@@ -44,6 +43,7 @@
       "unnaturalscrollwheels"
       "Beeper"
       "background-music"
+      "sublime-text"
     ];
     whalebrews = [
       #"wget" #FAILS

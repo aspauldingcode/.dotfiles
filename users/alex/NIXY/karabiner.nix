@@ -3,6 +3,83 @@
 {
   home.file.karabiner = {
     target = ".config/karabiner/karabiner.json";
+    #FIXME: change to nix language!
+    /* alacritty keybinds previously:
+    {
+                "description": "Swap Alt and Control for Alacritty",
+                "manipulators": [
+                  {
+                    "type": "basic",
+                    "from": {
+                      "key_code": "left_alt",
+                      "modifiers": {
+                        "mandatory": ["left_control"]
+                      }
+                    },
+                    "to": [
+                      {
+                        "key_code": "left_alt",
+                        "modifiers": ["left_command"]
+                      }
+                    ],
+                    "conditions": [
+                      {
+                        "type": "frontmost_application_if",
+                        "bundle_identifiers": ["^org\\.alacritty$"]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "basic",
+                    "from": {
+                      "key_code": "left_alt",
+                      "modifiers": {
+                        "mandatory": ["left_command"]
+                      }
+                    },
+                    "to": [
+                      {
+                        "key_code": "left_alt",
+                        "modifiers": ["left_control"]
+                      }
+                    ],
+                    "conditions": [
+                      {
+                        "type": "frontmost_application_if",
+                        "bundle_identifiers": ["^org\\.alacritty$"]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "description": "Swap Control + Shift with Command + Shift in Alacritty",
+                "manipulators": [
+                  {
+                    "type": "basic",
+                    "from": {
+                      "key_code": "left_shift",
+                      "modifiers": {
+                        "mandatory": ["left_control"]
+                      }
+                    },
+                    "to": [
+                      {
+                        "key_code": "left_shift",
+                        "modifiers": ["left_command"]
+                      }
+                    ],
+                    "conditions": [
+                      {
+                        "type": "frontmost_application_if",
+                        "bundle_identifiers": ["^org\\.alacritty$"]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]          
+          },*/
     text = ''
     {
       "global": {
@@ -110,6 +187,81 @@
                   }
                 ]
               },
+              {
+                "description": "Swap Alt and Control for Alacritty",
+                "manipulators": [
+                  {
+                    "type": "basic",
+                    "from": {
+                      "key_code": "left_alt",
+                      "modifiers": {
+                        "mandatory": ["left_control"]
+                      }
+                    },
+                    "to": [
+                      {
+                        "key_code": "left_alt",
+                        "modifiers": ["left_command"]
+                      }
+                    ],
+                    "conditions": [
+                      {
+                        "type": "frontmost_application_if",
+                        "bundle_identifiers": ["^org\\.alacritty$"]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "basic",
+                    "from": {
+                      "key_code": "left_alt",
+                      "modifiers": {
+                        "mandatory": ["left_command"]
+                      }
+                    },
+                    "to": [
+                      {
+                        "key_code": "left_alt",
+                        "modifiers": ["left_control"]
+                      }
+                    ],
+                    "conditions": [
+                      {
+                        "type": "frontmost_application_if",
+                        "bundle_identifiers": ["^org\\.alacritty$"]
+                      }
+                    ]
+                  }
+                ]
+                },
+                {
+                  "description": "Swap Control + Shift with Command + Shift in Alacritty",
+                  "manipulators": [
+                    {
+                      "type": "basic",
+                      "from": {
+                        "key_code": "left_shift",
+                        "modifiers": {
+                          "mandatory": ["left_control"]
+                        }
+                      },
+                      "to": [
+                        {
+                          "key_code": "left_shift",
+                          "modifiers": ["left_command"]
+                        }
+                      ],
+                      "conditions": [
+                        {
+                          "type": "frontmost_application_if",
+                          "bundle_identifiers": ["^org\\.alacritty$"]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]          
+            },
               {
                 "description": "Replace Fullscreen with SimpleFullscreen in Alacritty",
                 "manipulators": [
