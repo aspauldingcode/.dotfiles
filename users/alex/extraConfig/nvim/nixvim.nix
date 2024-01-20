@@ -381,7 +381,7 @@
     # statusbar
     lualine = {
       enable=true;
-      sections.lualine_c = [ "lsp_progress" ]; # Install lsp_progress!
+      # sections.lualine_c = [ "lsp_progress" ]; # Install lsp_progress!
     };
 
     ## VISUAL FIXES
@@ -558,10 +558,10 @@ extraPlugins = with pkgs.vimPlugins; [
       #     '';        
       #   }
       
-      { 
-        plugin = lualine-lsp-progress;
-        config = toLuaFile ./plugin/lualine-lsp-progress.lua;
-      }
+      # { 
+      #   plugin = lualine-lsp-progress;
+      #   config = toLuaFile ./plugin/lualine-lsp-progress.lua;
+      # }
 
       {
         plugin = (nvim-treesitter.withPlugins (p: [

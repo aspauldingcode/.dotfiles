@@ -37,9 +37,7 @@ in
         sd = "sudo shutdown -h now";
         l = "ls";
       };
-      file = { # MANAGE DOTFILES?
     };
-  };
   programs = {
     home-manager.enable = true; 
   };

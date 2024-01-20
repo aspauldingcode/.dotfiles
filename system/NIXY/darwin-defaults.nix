@@ -60,7 +60,7 @@
     menuExtraClock.IsAnalog = true;
     trackpad = {
       ActuationStrength = 0; # silent clicking
-      Clicking = true; # tap to click
+      Clicking = false; # tap to click
       Dragging = true; # tap to drag
       TrackpadRightClick = true;
       # TrackpadThreeFingerDrag = true;

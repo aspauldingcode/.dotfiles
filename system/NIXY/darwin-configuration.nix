@@ -39,13 +39,14 @@
   };
 
   # Create /etc/zshrc that loads the nix-darwin environment.
-  programs.zsh.enable = true;  # default shell on catalina
+  programs.zsh.enable = false;  # default shell on catalina
+  programs.bash.enable = false;
   programs.fish.enable = false; #NOT Borne COMPAT? 
   users.users.alex.shell = pkgs.zsh; 
   nix = {
      # https://nixos.wiki/wiki/Distributed_build
-     distributedBuilds = false; # set true after configuration
-     buildMachines = [ ]; #FIXME: add NIXSTATION64 as a builder!
+     # distributedBuilds = false; # set true after configuration
+     # buildMachines = [ ]; #FIXME: add NIXSTATION64 as a builder!
      # below are per build machine (* is the entry of the machine in the list above)
      # buildMachines.*.hostName = ""; # Example: "nixbuilder.example.org"
      # buildMachines.*.mandatoryFeatures

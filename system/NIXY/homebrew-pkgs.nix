@@ -34,10 +34,13 @@
     casks = [
       #"xquartz" #what an ugly app
       "alacritty"
+      "hammerspoon"
+      "phoenix"
       "dmenu-mac"
       "element"
       "brave-browser"
       "alt-tab"
+      "standard-notes"
       "orbstack"
       "karabiner-elements" # remap keyboard
       "unnaturalscrollwheels"
@@ -58,6 +61,7 @@
       # "homebrew/core"
       "homebrew/services"
       # Custom
+
       "koekeishiya/formulae"
       "FelixKratz/formulae"
     ];
