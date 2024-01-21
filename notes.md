@@ -12,7 +12,6 @@ else
   curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 fi
 
-exec bash -c '
 if [ "$(uname)" == "Darwin" ]; then
   echo -e "We will need to install Homebrew on this Mac to continue."
   sleep 2
@@ -39,7 +38,10 @@ fi
 
 echo "Running the .dotfiles flake install..."
 nix run github:aspauldingcode/.dotfiles
-'```
+
+# Source the nix-daemon.sh script
+. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+```
 
 
 #### SSH Keys
