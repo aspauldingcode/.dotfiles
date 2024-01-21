@@ -20,7 +20,10 @@ if [ "$(uname)" == "Darwin" ]; then
     echo "Nix-Darwin is already installed."
   else
     echo -e "Nix-Darwin is not installed. Installing..."
-    
+   
+    echo -e "First, renaming /etc/bashrc, /etc/zshrc, /etc/zshenv..."
+    sudo mv /etc/bashrc /etc/bashrc.before-nix-darwin && sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin && sudo mv /etc/zshenv /etc/zshenv.before-nix-darwin
+
     # Install Nix-Darwin
     nix_build_url="https://github.com/LnL7/nix-darwin/archive/master.tar.gz"
     installer_path="./result/bin/darwin-installer"
