@@ -80,7 +80,7 @@ echo -e "\n\n"
                   echo -e "\nSystem name, LocalHostName, and ComputerName changed to: $current_system_name"
                   echo -e "rebooting macOS in 3 seconds (re-run the script after)..."
                   sleep 3
-                  sudo reboot -h now & exit
+                  sudo reboot
                 fi
               else
                 # Default for other platforms (Linux, etc.)
@@ -123,8 +123,8 @@ echo -e "\n\n"
             
             # Display instructions for the user
             echo -e "\nWhen prompted, use the following information:"
-            echo "Name: $new_computer_name"
-            echo "Key: $(cat $HOME/.ssh/$new_computer_name.pub)"
+            echo "Name: \n$new_computer_name"
+            echo "Key: \n$(cat $HOME/.ssh/$new_computer_name.pub)"
             read -p "Continue? (y/n): " continue_answer
             if [ "$continue_answer" != "y" ]; then
                 echo -e "\nExiting setup script."
@@ -193,9 +193,9 @@ echo -e "\n\n"
           esac
         done
 
-echo "CLONING THE REPO TO ~/.dotfiles!"
+echo -e "\nCLONING THE REPO TO ~/.dotfiles!\n"
 brew install git
-/bin/git clone git@github.com:aspauldingcode/.dotfiles $HOME/.dotfiles
+git clone git@github.com:aspauldingcode/.dotfiles ~/.dotfiles
 
 cd ~/.dotfiles
 
