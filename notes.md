@@ -4,14 +4,12 @@ A few notes about my configuration in case I get lost.
 # NEW!
 run this install script:
 ```bash
-echo -e "\nThis script requires superuser privileges."
-sudo echo "Continuing..."
-
 exec bash -c '
 if command -v nix >/dev/null 2>&1; then
   echo "Nix is already installed."
 else
-  curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+  echo -e "\nThis script requires superuser privileges."
+  sudo curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 fi
 
 if [ "$(uname)" == "Darwin" ]; then
