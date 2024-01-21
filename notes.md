@@ -9,7 +9,7 @@ if command -v nix >/dev/null 2>&1; then
   echo "Nix is already installed."
 else
   echo -e "\nThis script requires superuser privileges."
-  sudo curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+  sudo yes | curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 fi
 
 if [ "$(uname)" == "Darwin" ]; then
@@ -32,7 +32,7 @@ if [ "$(uname)" == "Darwin" ]; then
     fi
   }
 
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+  yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
   brew_check_architecture
 fi
 
