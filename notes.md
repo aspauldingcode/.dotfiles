@@ -36,11 +36,12 @@ if [ "$(uname)" == "Darwin" ]; then
   brew_check_architecture
 fi
 
+echo "Sourcing the nix-daemon.sh script..."
+. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+
 echo "Running the .dotfiles flake install..."
 nix run github:aspauldingcode/.dotfiles
 
-# Source the nix-daemon.sh script
-. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 ```
 
 
