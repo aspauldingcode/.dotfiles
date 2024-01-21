@@ -6,6 +6,11 @@ run this install script:
 ```
 curl -O https://raw.githubusercontent.com/aspauldingcode/.dotfiles/main/install_script.sh && sudo chmod +x install_script.sh && bash install_script.sh
 ```
+# Uninstall nix and homebrew on mac:
+```
+yes | /nix/nix-installer uninstall
+yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+```
 
 #### SSH Keys
 You're gonna need ssh keys stored in ~/.ssh on your local machine. The public ssh key that syncs from this repo is "``.dotfiles-keys.pub``," and the private ssh key that syncs to this repo is "``.dotfiles-keys``." These files are responsible for allowing new git clones. Check BitWarden if you forget the passphrase.

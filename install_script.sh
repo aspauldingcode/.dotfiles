@@ -8,10 +8,19 @@ else
   curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install --no-confirm
 fi
 
+
 if [ "$(uname)" == "Darwin" ]; then
   echo -e "We will need to install Homebrew on this Mac to continue."
   sleep 2
-  brew_check_architecture() {
+  
+  # Check if brew is installed, if not, run the following:
+  if command -v brew >/dev/null 2>&1; then
+    echo "Homebrew is already installed."
+  else
+    echo -e "Homebrew is not installed. Installing..."
+    
+    # Check architecture and set brew shellenv accordingly
+    brew_check_architecture() {
       architecture=$(arch)
       
       echo -e "\nDetected architecture: $architecture"
@@ -26,8 +35,11 @@ if [ "$(uname)" == "Darwin" ]; then
         eval "$(/opt/homebrew/bin/brew shellenv)"
       fi
     }
-  brew_check_architecture
-  yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    brew_check_architecture
+    
+    # Install Homebrew
+    yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+  fi
 fi
 
 echo "Sourcing the nix-daemon.sh script..."
