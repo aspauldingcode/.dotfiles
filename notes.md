@@ -10,7 +10,7 @@ if command -v nix >/dev/null 2>&1; then
 else
   echo -e "\nThis script requires superuser privileges."
   sudo echo ""
-  yes | curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install --yes
+  yes | curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install -- --yes
 fi
 
 if [ "$(uname)" == "Darwin" ]; then
