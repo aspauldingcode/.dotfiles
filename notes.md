@@ -10,31 +10,16 @@ if command -v nix >/dev/null 2>&1; then
 else
   echo -e "\nThis script requires superuser privileges."
   sudo echo ""
-  yes | curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install -- --yes
+  curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install --no-confirm
 fi
 
 if [ "$(uname)" == "Darwin" ]; then
   echo -e "We will need to install Homebrew on this Mac to continue."
   sleep 2
 
-  brew_check_architecture() {
-    architecture=$(arch)
-    
-    echo -e "\nDetected architecture: $architecture"
-    
-  <!--   if [ "$architecture" == "x86_64" ]; then -->
-  <!--     echo -e "Running on 64-bit architecture." -->
-  <!--     { echo; echo 'eval "$(/usr/local/bin/brew shellenv)"'; } >> "$HOME/.zprofile" -->
-  <!--     eval "$(/usr/local/bin/brew shellenv)" -->
-  <!--   else -->
-  <!--     echo -e "Running on non-x86_64 architecture." -->
-  <!--     { echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"'; } >> "$HOME/.zprofile" -->
-  <!--     eval "$(/opt/homebrew/bin/brew shellenv)" -->
-  <!--   fi -->
-  <!-- } -->
 
   yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-  brew_check_architecture
+  
 fi
 
 echo "Sourcing the nix-daemon.sh script..."
@@ -46,6 +31,28 @@ echo "Running the .dotfiles flake install..."
 nix run github:aspauldingcode/.dotfiles
 '
 ```
+
+``` NOT INCLUDING (yet)
+  brew_check_architecture() {
+    architecture=$(arch)
+    
+    echo -e "\nDetected architecture: $architecture"
+    
+    if [ "$architecture" == "x86_64" ]; then
+      echo -e "Running on 64-bit architecture."
+      { echo; echo 'eval "$(/usr/local/bin/brew shellenv)"'; } >> "$HOME/.zprofile"
+      eval "$(/usr/local/bin/brew shellenv)"
+    else
+      echo -e "Running on non-x86_64 architecture."
+      { echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"'; } >> "$HOME/.zprofile"
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+    fi
+  }
+brew_check_architecture
+```
+
+
+
 
 
 #### SSH Keys
