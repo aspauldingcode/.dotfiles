@@ -4,8 +4,10 @@ A few notes about my configuration in case I get lost.
 # NEW!
 run this install script:
 ```bash
-sudo echo "This script requires superuser privileges."
+echo -e "\nThis script requires superuser privileges."
+sudo echo "Continuing..."
 
+exec bash -c '
 if command -v nix >/dev/null 2>&1; then
   echo "Nix is already installed."
 else
@@ -41,7 +43,7 @@ echo "Sourcing the nix-daemon.sh script..."
 
 echo "Running the .dotfiles flake install..."
 nix run github:aspauldingcode/.dotfiles
-
+'
 ```
 
 
