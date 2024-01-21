@@ -6,9 +6,40 @@ else
   sudo echo ""
   curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install --no-confirm
 fi
-
-
+ 
 if [ "$(uname)" == "Darwin" ]; then
+  echo -e "We will need to install Nix-Darwin on this Mac to continue."
+  sleep 2
+
+  echo "Sourcing the nix-daemon.sh script..."
+  if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+    . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+  fi
+ 
+  # Check if nix is installed, if not, run the following:
+  if command -v darwin-rebuild >/dev/null 2>&1; then
+    echo "Nix-Darwin is already installed."
+  else
+    echo -e "Nix-Darwin is not installed. Installing..."
+    
+    # Install Nix-Darwin
+    nix_build_url="https://github.com/LnL7/nix-darwin/archive/master.tar.gz"
+    installer_path="./result/bin/darwin-installer"
+    
+    nix_build() {
+      echo -e "\nDownloading and building Nix-Darwin..."
+      nix-build $nix_build_url -A installer
+    }
+    
+    run_installer() {
+      echo -e "Running Nix-Darwin installer..."
+      ./$installer_path
+    }
+    
+    nix_build
+    run_installer
+  fi
+
   echo -e "We will need to install Homebrew on this Mac to continue."
   sleep 2
   
@@ -39,40 +70,6 @@ if [ "$(uname)" == "Darwin" ]; then
     # Install Homebrew
     yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
   fi
-fi
-
-if [ "$(uname)" == "Darwin" ]; then
-  echo -e "We will need to install Nix-Darwin on this Mac to continue."
-  sleep 2
-  
-  # Check if nix is installed, if not, run the following:
-  if command -v darwin-rebuild >/dev/null 2>&1; then
-    echo "Nix-Darwin is already installed."
-  else
-    echo -e "Nix-Darwin is not installed. Installing..."
-    
-    # Install Nix-Darwin
-    nix_build_url="https://github.com/LnL7/nix-darwin/archive/master.tar.gz"
-    installer_path="./result/bin/darwin-installer"
-    
-    nix_build() {
-      echo -e "\nDownloading and building Nix-Darwin..."
-      nix-build $nix_build_url -A installer
-    }
-    
-    run_installer() {
-      echo -e "Running Nix-Darwin installer..."
-      ./$installer_path
-    }
-    
-    nix_build
-    run_installer
-  fi
-fi
-
-echo "Sourcing the nix-daemon.sh script..."
-if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
-  . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
 fi
 
 echo -e "\n\n"

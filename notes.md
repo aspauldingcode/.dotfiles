@@ -8,8 +8,7 @@ chsh -s /bin/bash && sudo chsh -s /bin/bash && bash -c 'curl -O https://raw.gith
 ```
 # Uninstall nix and homebrew on mac:
 ```
-yes | /nix/nix-installer uninstall
-yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+yes | /nix/nix-installer uninstall && yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
 ```
 
 #### SSH Keys
