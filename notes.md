@@ -23,11 +23,11 @@ if [ "$(uname)" == "Darwin" ]; then
     
     if [ "$architecture" == "x86_64" ]; then
       echo -e "Running on 64-bit architecture."
-      (echo; echo 'eval "$(/usr/local/bin/brew shellenv)"') >> "$HOME/.zprofile"
+      { echo; echo 'eval "$(/usr/local/bin/brew shellenv)"'; } >> "$HOME/.zprofile"
       eval "$(/usr/local/bin/brew shellenv)"
     else
       echo -e "Running on non-x86_64 architecture."
-      (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> "$HOME/.zprofile"
+      { echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"'; } >> "$HOME/.zprofile"
       eval "$(/opt/homebrew/bin/brew shellenv)"
     fi
   }
