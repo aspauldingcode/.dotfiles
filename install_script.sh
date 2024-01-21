@@ -1,5 +1,4 @@
 #!/bin/bash
-
 if command -v nix >/dev/null 2>&1; then
   echo "Nix is already installed."
 else
@@ -195,6 +194,28 @@ echo -e "\n\n"
               ;;
           esac
         done
-        
+       
+# CLONE THE REPO TO ~/.dotfiles!
+/bin/git clone git@github.com:aspauldingcode/.dotfiles $HOME/.dotfiles
+
+cd ~/.dotfiles
+
+if [ "$(uname)" == "Darwin" ]; then
+  chsh -s /bin/zsh
+  echo -e "\nRebuilding nix-darwin flake..."
+  sleep 2
+  darwin-rebuild switch --flake .#$new_computer_name
+  home-manager switch --flake .#alex@$new_computer_name
+  fix-wm
+  defaults write com.apple.dock ResetLaunchPad -bool true
+else
+  sudo nixos-rebuild switch --flake .#$new_computer_name
+  home-manager switch --flake .#alex@$new_computer_name
+  echo "Done. Running 'fix-wm'..."
+  fix-wm
+  echo "Completed."
+  date +"%r"
+fi
+
 echo "Running the .dotfiles flake install..."
 nix run github:aspauldingcode/.dotfiles

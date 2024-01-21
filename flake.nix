@@ -84,11 +84,8 @@
       default = let
         setup = pkgs.writeScriptBin "setup" /* bash */ '' 
         #!/bin/bash
-
-        # CLONE THE REPO TO ~/.dotfiles!
-        ${pkgs.git}/bin/git clone git@github.com:aspauldingcode/.dotfiles $HOME/.dotfiles
         # run the rebuild!
-        rebuild -r -f #FIXME: allow -r -f on NIXSTATION64
+        rebuild -r -f #FIXME: add -r -f flags to NIXSTATION64 and NIXEDUP! 
 
         '';
       in {
