@@ -4,7 +4,11 @@ A few notes about my configuration in case I get lost.
 # NEW!
 run this install script:
 ```bash
-chsh -s /bin/bash && bash && curl -O https://raw.githubusercontent.com/aspauldingcode/.dotfiles/main/install_script.sh && sudo chmod +x install_script.sh && bash install_script.sh
+chsh -s /bin/bash
+bash 
+curl -O https://raw.githubusercontent.com/aspauldingcode/.dotfiles/main/install_script.sh && sudo chmod +x install_script.sh && bash install_script.sh
+
+
 ```
 # Uninstall nix and homebrew on mac:
 ```
