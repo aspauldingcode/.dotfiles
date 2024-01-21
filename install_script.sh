@@ -116,6 +116,11 @@ echo -e "\n\n"
             echo -e "\nWhen prompted, use the following information:"
             echo "Name: $new_computer_name"
             echo "Key: $(cat $HOME/.ssh/$new_computer_name.pub)"
+            read -p "Continue? (y/n): " continue_answer
+            if [ "$continue_answer" != "y" ]; then
+                echo -e "\nExiting setup script."
+                exit 1
+            fi
           else
             read -p "Continue? (y/n): " continue_answer
             if [ "$continue_answer" != "y" ]; then
