@@ -78,8 +78,15 @@
       nixosConfigurations = nixosConfigurations;
       homeConfigurations = homeConfigurations;
       darwinConfigurations = darwinConfigurations;
-      packages = eachSystem (pkgs: {
-        default = pkgs.hello;
-      });
-    };
+      apps = eachSystem (pkgs: {
+      default = let
+        setup = pkgs.writeScriptBin "setup" ''
+          ${pkgs.git}/bin/git clone git@github.com:aspauldingcode/.dotfiles /etc/nixos/flake
+        '';
+      in {
+        type = "app";
+        program = "${setup}/bin/setup";
+      };
+    });
+  };
 }
