@@ -238,13 +238,13 @@ if [ "$(uname)" == "Darwin" ]; then
   sudo chsh -s /bin/zsh
   echo -e "\nRebuilding nix-darwin flake..."
   sleep 2
-  darwin-rebuild switch --flake .#$new_computer_name
-  home-manager switch --flake .#alex@$new_computer_name
+  darwin-rebuild switch --extra-experimental-features nix-command,flake --flake .#$new_computer_name
+  home-manager switch --extra-experimental-features nix-command,flake --flake .#alex@$new_computer_name
   fix-wm
   defaults write com.apple.dock ResetLaunchPad -bool true
 else
-  sudo nixos-rebuild switch --flake .#$new_computer_name
-  home-manager switch --flake .#alex@$new_computer_name
+  sudo nixos-rebuild switch --extra-experimental-features nix-command,flake --flake .#$new_computer_name
+  home-manager switch --extra-experimental-features nix-command,flake --flake .#alex@$new_computer_name
   echo "Done. Running 'fix-wm'..."
   fix-wm
   echo "Completed."
