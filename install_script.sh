@@ -5,16 +5,15 @@ else
   echo -e "\nThis script requires superuser privileges."
   sudo echo ""
   curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install --no-confirm
+  echo "Sourcing the nix-daemon.sh script..."
+  if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+    . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+  fi
 fi
  
 if [ "$(uname)" == "Darwin" ]; then
   echo -e "We will need to install Nix-Darwin on this Mac to continue."
   sleep 2
-
-  echo "Sourcing the nix-daemon.sh script..."
-  if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
-    . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
-  fi
  
   # Check if nix is installed, if not, run the following:
   if command -v darwin-rebuild >/dev/null 2>&1; then
