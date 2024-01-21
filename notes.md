@@ -6,7 +6,7 @@ run this install script:
 ```bash
 chsh -s /bin/bash && sudo chsh -s /bin/bash && bash -c 'curl -O https://raw.githubusercontent.com/aspauldingcode/.dotfiles/main/install_script.sh && sudo chmod +x install_script.sh && bash install_script.sh'
 ```
-# Uninstall nix and homebrew on mac:
+# FIXME: Uninstall nix and homebrew on mac:
 ```
 nix --extra-experimental-features "nix-command flakes" run nix-darwin#darwin-uninstaller  && yes | /nix/nix-installer uninstall && yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
 ```

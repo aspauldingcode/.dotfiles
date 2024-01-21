@@ -1,11 +1,11 @@
 #!/bin/bash
 if command -v nix >/dev/null 2>&1; then
-  echo "Nix is already installed."
+  echo "\nNix is already installed."
 else
   echo -e "\nThis script requires superuser privileges."
   sudo echo ""
   curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install --no-confirm
-  echo "Sourcing the nix-daemon.sh script..."
+  echo "\nSourcing the nix-daemon.sh script..."
   if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
     . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
   fi
@@ -17,12 +17,12 @@ if [ "$(uname)" == "Darwin" ]; then
  
   # Check if nix is installed, if not, run the following:
   if command -v darwin-rebuild >/dev/null 2>&1; then
-    echo "Nix-Darwin is already installed."
+    echo "\nNix-Darwin is already installed."
   else
     echo -e "Nix-Darwin is not installed. Installing..."
    
     echo -e "First, renaming /etc/bashrc, /etc/zshrc, /etc/zshenv..."
-    sudo mv /etc/bashrc /etc/bashrc.before-nix-darwin && sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin && sudo mv /etc/zshenv /etc/zshenv.before-nix-darwin
+    sudo mv /etc/bashrc /etc/bashrc.before-nix-darwin && sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin && sudo mv /etc/zshenv /etc/zshenv.before-nix-darwin && sudo mv /etc/nix/nix.conf /etc/nix/nix.conf.before-nix-darwin
 
     # Install Nix-Darwin
     nix_build_url="https://github.com/LnL7/nix-darwin/archive/master.tar.gz"
