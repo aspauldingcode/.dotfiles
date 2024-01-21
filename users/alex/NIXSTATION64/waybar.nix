@@ -140,7 +140,7 @@ in
       };
 
       pulseaudio = {
-        format = "{icon} {volume}% {format_source}";
+        format = "{icon} {volume}%"; # {format_source}";
         format-muted = "󰝟 0%";
         format-source = "Mic ON";
         format_source-muted = "Mic OFF";

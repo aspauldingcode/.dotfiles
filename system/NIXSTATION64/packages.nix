@@ -64,6 +64,7 @@
     hexedit 
     virt-manager
     uxplay
+
     #rebuild #sudo nixos-rebuild switch --show-trace --option eval-cache false --flake .#NIXSTATION64
     (pkgs.writeShellScriptBin "rebuild" ''
     # NIXSTATION64(x86_64-linux)
@@ -75,6 +76,7 @@
     echo "Completed."
     date +"%r"
     '')
+
     #update
     (pkgs.writeShellScriptBin "update" ''
     cd ~/.dotfiles

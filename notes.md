@@ -1,6 +1,60 @@
 # Notes
 A few notes about my configuration in case I get lost.
 
+# NEW!
+run this install script:
+```bash
+#!/bin/bash
+
+# Ask for sudo
+sudo echo "This script requires superuser privileges."
+
+# Check if Nix is already installed
+if command -v nix >/dev/null 2>&1; then
+  echo "Nix is already installed."
+else
+  # Install Nix determinite
+  curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+fi
+
+# Launch a new bash shell
+exec bash
+
+# Check if the system is macOS
+if [ "$(uname)" == "Darwin" ]; then
+  echo -e "We will need to install Homebrew on this Mac to continue."
+  sleep 2
+  
+  brew_check_architecture() {
+    architecture=$(arch)
+    
+    echo -e "\nDetected architecture: $architecture"
+    
+    # Add logic based on the architecture type
+    if [ "$architecture" == "x86_64" ]; then
+      echo -e "Running on 64-bit architecture."
+      # Update .zprofile for x86_64 architecture
+      (echo; echo 'eval "$(/usr/local/bin/brew shellenv)"') >> "$HOME/.zprofile"
+      eval "$(/usr/local/bin/brew shellenv)"
+    else
+      echo -e "Running on non-x86_64 architecture."
+      # Update .zprofile for other architectures
+      (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> "$HOME/.zprofile"
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+    fi
+  }
+
+  # Install Homebrew and update .zprofile
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+  brew_check_architecture
+fi
+
+# Inform the user about running the .dotfiles flake install
+echo "Running the .dotfiles flake install..."
+nix run github:aspauldingcode/.dotfiles
+```
+
+
 #### SSH Keys
 You're gonna need ssh keys stored in ~/.ssh on your local machine. The public ssh key that syncs from this repo is "``.dotfiles-keys.pub``," and the private ssh key that syncs to this repo is "``.dotfiles-keys``." These files are responsible for allowing new git clones. Check BitWarden if you forget the passphrase.
 
