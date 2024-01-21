@@ -16,7 +16,8 @@ fi
 if [ "$(uname)" == "Darwin" ]; then
   echo -e "We will need to install Homebrew on this Mac to continue."
   sleep 2
-  
+  yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
   brew_check_architecture() {
     architecture=$(arch)
     
@@ -32,9 +33,6 @@ if [ "$(uname)" == "Darwin" ]; then
       eval "$(/opt/homebrew/bin/brew shellenv)"
     fi
   }
-'
-  yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-  exec bash -c '
   brew_check_architecture
 fi
 
