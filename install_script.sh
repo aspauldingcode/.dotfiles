@@ -12,7 +12,7 @@ else
 fi
  
 if [ "$(uname)" == "Darwin" ]; then
-  echo -e "We will need to install Nix-Darwin on this Mac to continue."
+  echo -e "\nWe will need to install Nix-Darwin on this Mac to continue."
   sleep 2
  
   # Check if nix is installed, if not, run the following:
@@ -32,14 +32,14 @@ if [ "$(uname)" == "Darwin" ]; then
     
     run_installer() {
       echo -e "Running Nix-Darwin installer..."
-      ./$installer_path
+      yes "N" | ./$installer_path
     }
     
     nix_build
     run_installer
   fi
 
-  echo -e "We will need to install Homebrew on this Mac to continue."
+  echo -e "\nWe will need to install Homebrew on this Mac to continue."
   sleep 2
   
   # Check if brew is installed, if not, run the following:
