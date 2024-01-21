@@ -21,10 +21,7 @@ if [ "$(uname)" == "Darwin" ]; then
   else
     echo -e "Nix-Darwin is not installed. Installing..."
    
-    echo -e "First, renaming /etc/bashrc, /etc/zshrc, /etc/zshenv, /etc/nix/nix.conf..."
-    sudo mv /etc/bashrc /etc/bashrc.before-nix-darwin
-    sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin 
-    sudo mv /etc/zshenv /etc/zshenv.before-nix-darwin 
+    echo -e "Renaming /etc/nix/nix.conf first..."
     sudo mv /etc/nix/nix.conf /etc/nix/nix.conf.before-nix-darwin
 
     # Install Nix-Darwin
