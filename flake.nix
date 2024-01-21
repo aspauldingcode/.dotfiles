@@ -86,7 +86,6 @@
         #!/bin/bash
         # run the rebuild!
         rebuild -r -f #FIXME: add -r -f flags to NIXSTATION64 and NIXEDUP! 
-
         '';
       in {
         type = "app";

@@ -11,7 +11,7 @@
     toLuaFile = file: "lua << EOF\n${builtins.readFile file}\nEOF\n";
   in 
   {
-    enable = true;
+    enable = false;
     options = {
       number = true;         # Show line numbers
       relativenumber = true; # Show relative line numbers

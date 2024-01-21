@@ -12,36 +12,6 @@ else
 fi
  
 if [ "$(uname)" == "Darwin" ]; then
-  echo -e "\nWe will need to install Nix-Darwin on this Mac to continue."
-  sleep 2
- 
-  # Check if nix is installed, if not, run the following:
-  if command -v darwin-rebuild >/dev/null 2>&1; then
-    echo "\nNix-Darwin is already installed."
-  else
-    echo -e "Nix-Darwin is not installed. Installing..."
-   
-    echo -e "Renaming /etc/nix/nix.conf first..."
-    sudo mv /etc/nix/nix.conf /etc/nix/nix.conf.before-nix-darwin
-
-    # Install Nix-Darwin
-    nix_build_url="https://github.com/LnL7/nix-darwin/archive/master.tar.gz"
-    installer_path="./result/bin/darwin-installer"
-    
-    nix_build() {
-      echo -e "\nDownloading and building Nix-Darwin..."
-      nix-build $nix_build_url -A installer
-    }
-    
-    run_installer() {
-      echo -e "Running Nix-Darwin installer..."
-      yes "N" | ./$installer_path
-    }
-    
-    nix_build
-    run_installer
-  fi
-
   echo -e "\nWe will need to install Homebrew on this Mac to continue."
   sleep 2
   
@@ -230,18 +200,33 @@ brew install git
 cd ~/.dotfiles
 
 if [ "$(uname)" == "Darwin" ]; then
+  echo -e "\nWe will need to install Nix-Darwin on this Mac to continue."
+  sleep 2
+ 
+  # Check if nix-darwin is installed, if not, run the following:
+  if command -v darwin-rebuild >/dev/null 2>&1; then
+    echo "\nNix-Darwin is already installed."
+  else
+    echo -e "Nix-Darwin is not installed. Installing..."
+   
+    # echo -e "Renaming /etc/nix/nix.conf first..."
+    # sudo mv /etc/nix/nix.conf /etc/nix/nix.conf.before-nix-darwin
+
+    # Install Nix-Darwin
+    nix run --extra-experimental-features nix-command --extra-experimental-features flakes nix-darwin -- switch --flake ~/.dotfiles
+  fi
   echo "setting default shell back to zsh"
   chsh -s /bin/zsh
   sudo chsh -s /bin/zsh
   echo -e "\nRebuilding nix-darwin flake..."
   sleep 2
-  darwin-rebuild switch --extra-experimental-features nix-command,flake --flake .#$new_computer_name
-  home-manager switch --extra-experimental-features nix-command,flake --flake .#alex@$new_computer_name
+  darwin-rebuild switch --extra-experimental-features nix-command --extra-experimental-features flakes --flake .#$new_computer_name
+  home-manager switch --extra-experimental-features nix-command --extra-experimental-features flakes --flake .#alex@$new_computer_name
   fix-wm
   defaults write com.apple.dock ResetLaunchPad -bool true
 else
-  sudo nixos-rebuild switch --extra-experimental-features nix-command,flake --flake .#$new_computer_name
-  home-manager switch --extra-experimental-features nix-command,flake --flake .#alex@$new_computer_name
+  sudo nixos-rebuild switch --extra-experimental-features nix-command --extra-experimental-features flakes --flake .#$new_computer_name
+  home-manager switch --extra-experimental-features nix-command --extra-experimental-features flakes --flake .#alex@$new_computer_name
   echo "Done. Running 'fix-wm'..."
   fix-wm
   echo "Completed."
