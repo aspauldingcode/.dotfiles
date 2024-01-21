@@ -44,6 +44,7 @@
     packages = with pkgs; [
       lsof
       etcher
+      standardnotes
       gcal
       checkra1n
       cava

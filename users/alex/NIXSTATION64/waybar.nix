@@ -140,13 +140,15 @@ in
       };
 
       pulseaudio = {
-        format = "{icon}  {volume}%";
-        format-muted = "   0%";
+        format = "{icon} {volume}% {format_source}";
+        format-muted = "󰝟 0%";
+        format-source = "Mic ON";
+        format_source-muted = "Mic OFF";
         format-icons = {
           headphone = "󰋋";
           headset = "󰋎";
           portable = "";
-          default = [ "󰋋" "󰋋" "󰋋" ];
+          default = [ "󰕿" "󰖀" "󰖀" "󰕾" ];
         };
         on-click = pavucontrol;
       };
@@ -568,6 +570,19 @@ in
       padding-right: 8px;
       margin: 0px;
     }
+    
+    /*#pulse
+    audio {
+      background-color: #f1c40f;
+      color: #000000;
+    }
+    #pulseaudio.muted {
+      background-color: #90b1b1;
+      color: #2a5c45;
+    }
+    #pulseaudio.source-muted {
+      background-color: #222;
+    }*/
 
     #cava {
       padding-left: 4px;

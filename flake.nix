@@ -13,6 +13,8 @@
   let inherit (self) inputs;
     # Define common specialArgs for nixosConfigurations and homeConfigurations
     commonSpecialArgs = { inherit inputs nixvim flake-parts nix-colors self; };
+    systems = ["x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin"];
+    eachSystem = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
 
     # Define NixOS configurations
     nixosConfigurations = {
@@ -76,5 +78,8 @@
       nixosConfigurations = nixosConfigurations;
       homeConfigurations = homeConfigurations;
       darwinConfigurations = darwinConfigurations;
+      packages = eachSystem (pkgs: {
+        default = pkgs.hello;
+      });
     };
-  }
+}
