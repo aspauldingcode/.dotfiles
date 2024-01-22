@@ -116,7 +116,12 @@ echo -e "\n\n"
           if [ "$ssh_key_answer" == "n" ]; then
             # Generate SSH key using ssh-keygen
             ssh-keygen -t ed25519 -f "$HOME/.ssh/$new_computer_name" -q -N ""
-            
+	    eval "$(ssh-agent -s)"
+	    echo "Host github.com
+            	AddKeysToAgent yes
+  		UseKeychain yes
+  		IdentityFile ~/.ssh/$new_computer_name" >> ~/.ssh/$new_computer_name
+	    
             # Open GitHub SSH key creation page in the default browser
             echo -e "\nPlease visit the following link to add the SSH key to your GitHub account:"
             echo "https://github.com/settings/ssh/new"
@@ -193,8 +198,9 @@ echo -e "\n\n"
           esac
         done
 
-echo -e "\nCLONING THE REPO TO ~/.dotfiles!\n"
-brew install git
+echo -e "\nInstalling git with brew:"
+	brew install git
+echo -e "\n\nCLONING THE REPO TO ~/.dotfiles!\n"
 git clone git@github.com:aspauldingcode/.dotfiles ~/.dotfiles
 
 cd ~/.dotfiles
