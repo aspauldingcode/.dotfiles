@@ -118,7 +118,6 @@ echo -e "\n\n"
             ssh-keygen -t ed25519 -f "ed25519" -q -N ""
 	    eval "$(ssh-agent -s)"
 	    echo "Host *" >> ~/.ssh/config
-	    echo "$(ssh -T git@github.com)"	    	
             
 	    # Open GitHub SSH key creation page in the default browser
             echo -e "\nPlease visit the following link to add the SSH key to your GitHub account:"
@@ -127,7 +126,7 @@ echo -e "\n\n"
             # Display instructions for the user
             echo -e "\nWhen prompted, use the following information:"
             echo -e "Name: \n$new_computer_name"
-            echo -e "Key: \n$(cat $HOME/.ssh/ed25519.pub"
+	    echo -e "Key: \n$(cat $HOME/.ssh/ed25519.pub)"
             read -p "Continue? (y/n): " continue_answer
             if [ "$continue_answer" != "y" ]; then
                 echo -e "\nExiting setup script."
@@ -140,7 +139,8 @@ echo -e "\n\n"
                 exit 1
             fi
           fi
-        }
+	  echo "$(ssh -T git@github.com)"      
+  	}
 
         PS3="Select the computer you are setting up: "
         selected_option=""
