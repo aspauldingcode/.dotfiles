@@ -104,11 +104,11 @@ echo -e "\n\n"
     read -p "Have you set up an SSH key for this computer? (y/n): " ssh_key_answer
     if [ "$ssh_key_answer" == "n" ]; then
         # Generate SSH key using ssh-keygen
-        ssh_key_file="$HOME/.ssh/ed25519"
+        ssh_key_file="$HOME/.ssh/id_ed25519"
 
         # Check if the SSH key file already exists
         if [ -f "$ssh_key_file" ]; then
-            echo -e "\nWarning: An SSH key file 'ed25519' already exists in '$HOME/.ssh'."
+            echo -e "\nWarning: An SSH key file 'id_ed25519' already exists in '$HOME/.ssh'."
             echo "Please make sure you want to proceed, as generating a new key will overwrite the existing one."
             read -p "Do you still want to proceed? (y/n): " overwrite_answer
             if [ "$overwrite_answer" != "y" ]; then
@@ -128,7 +128,7 @@ echo -e "\n\n"
         # Display instructions for the user
         echo -e "\nWhen prompted, use the following information:"
         echo -e "Name: \n$new_computer_name"
-        echo -e "Key: \n$(cat $HOME/.ssh/ed25519.pub)"
+        echo -e "Key: \n$(cat $HOME/.ssh/id_ed25519.pub)"
         read -p "Continue? (y/n): " continue_answer
         if [ "$continue_answer" != "y" ]; then
             echo -e "\nExiting setup script."
