@@ -98,49 +98,53 @@ echo -e "\n\n"
           fi
         }
         
-        make_sshkey() {
-          # Check if the SSH key file for the current computer already exists
-          ssh_key_file="$HOME/.ssh/ed25519"
-          
-          if [ -f "$ssh_key_file" ]; then
-            echo -e "\nWarning: An SSH key file '$new_computer_name' already exists in '$HOME/.ssh'."
+        
+	make_sshkey() {
+    # Check if an SSH key is set for this computer
+    read -p "Have you set up an SSH key for this computer? (y/n): " ssh_key_answer
+    if [ "$ssh_key_answer" == "n" ]; then
+        # Generate SSH key using ssh-keygen
+        ssh_key_file="$HOME/.ssh/ed25519"
+
+        # Check if the SSH key file already exists
+        if [ -f "$ssh_key_file" ]; then
+            echo -e "\nWarning: An SSH key file 'ed25519' already exists in '$HOME/.ssh'."
             echo "Please make sure you want to proceed, as generating a new key will overwrite the existing one."
             read -p "Do you still want to proceed? (y/n): " overwrite_answer
             if [ "$overwrite_answer" != "y" ]; then
                 echo -e "\nExiting setup script."
                 exit 1
             fi
-          fi
+        fi
 
-          read -p "Have you set up an SSH key for this computer? (y/n): " ssh_key_answer
-          if [ "$ssh_key_answer" == "n" ]; then
-            # Generate SSH key using ssh-keygen
-            ssh-keygen -t ed25519 -f "ed25519" -q -N ""
-	    eval "$(ssh-agent -s)"
-	    echo "Host *" >> ~/.ssh/config
-            
-	    # Open GitHub SSH key creation page in the default browser
-            echo -e "\nPlease visit the following link to add the SSH key to your GitHub account:"
-            echo "https://github.com/settings/ssh/new"
-            
-            # Display instructions for the user
-            echo -e "\nWhen prompted, use the following information:"
-            echo -e "Name: \n$new_computer_name"
-	    echo -e "Key: \n$(cat $HOME/.ssh/ed25519.pub)"
-            read -p "Continue? (y/n): " continue_answer
-            if [ "$continue_answer" != "y" ]; then
-                echo -e "\nExiting setup script."
-                exit 1
-            fi
-          else
-            read -p "Continue? (y/n): " continue_answer
-            if [ "$continue_answer" != "y" ]; then
-                echo -e "\nExiting setup script."
-                exit 1
-            fi
-          fi
-	  echo "$(ssh -T git@github.com)"      
-  	}
+        ssh-keygen -t ed25519 -f "$ssh_key_file" -q -N ""
+        eval "$(ssh-agent -s)"
+        echo "Host *" >> "$HOME/.ssh/config"
+
+        # Open GitHub SSH key creation page in the default browser
+        echo -e "\nPlease visit the following link to add the SSH key to your GitHub account:"
+        echo "https://github.com/settings/ssh/new"
+
+        # Display instructions for the user
+        echo -e "\nWhen prompted, use the following information:"
+        echo -e "Name: \n$new_computer_name"
+        echo -e "Key: \n$(cat $HOME/.ssh/ed25519.pub)"
+        read -p "Continue? (y/n): " continue_answer
+        if [ "$continue_answer" != "y" ]; then
+            echo -e "\nExiting setup script."
+            exit 1
+        fi
+    else
+        # If SSH key is already set, ask if the user wants to continue without generating a new key
+        read -p "Do you want to continue without generating a new SSH key? (y/n): " continue_without_key
+        if [ "$continue_without_key" != "y" ]; then
+            echo -e "\nExiting setup script."
+            exit 1
+        fi
+    fi
+
+    echo "$(ssh -T git@github.com)"
+ }
 
         PS3="Select the computer you are setting up: "
         selected_option=""
