@@ -100,7 +100,7 @@ echo -e "\n\n"
         
         make_sshkey() {
           # Check if the SSH key file for the current computer already exists
-          ssh_key_file="$HOME/.ssh/$new_computer_name"
+          ssh_key_file="$HOME/.ssh/ed25519"
           
           if [ -f "$ssh_key_file" ]; then
             echo -e "\nWarning: An SSH key file '$new_computer_name' already exists in '$HOME/.ssh'."
@@ -115,21 +115,19 @@ echo -e "\n\n"
           read -p "Have you set up an SSH key for this computer? (y/n): " ssh_key_answer
           if [ "$ssh_key_answer" == "n" ]; then
             # Generate SSH key using ssh-keygen
-            ssh-keygen -t ed25519 -f "$HOME/.ssh/$new_computer_name" -q -N ""
+            ssh-keygen -t ed25519 -f "ed25519" -q -N ""
 	    eval "$(ssh-agent -s)"
-	    echo "Host github.com
-            	AddKeysToAgent yes
-  		UseKeychain yes
-  		IdentityFile ~/.ssh/$new_computer_name" >> ~/.ssh/$new_computer_name
-	    
-            # Open GitHub SSH key creation page in the default browser
+	    echo "Host *" >> ~/.ssh/config
+	    echo "$(ssh -T git@github.com)"	    	
+            
+	    # Open GitHub SSH key creation page in the default browser
             echo -e "\nPlease visit the following link to add the SSH key to your GitHub account:"
             echo "https://github.com/settings/ssh/new"
             
             # Display instructions for the user
             echo -e "\nWhen prompted, use the following information:"
-            echo "Name: \n$new_computer_name"
-            echo "Key: \n$(cat $HOME/.ssh/$new_computer_name.pub)"
+            echo -e "Name: \n$new_computer_name"
+            echo -e "Key: \n$(cat $HOME/.ssh/$new_computer_name.pub)"
             read -p "Continue? (y/n): " continue_answer
             if [ "$continue_answer" != "y" ]; then
                 echo -e "\nExiting setup script."
