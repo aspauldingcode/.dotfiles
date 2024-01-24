@@ -18,7 +18,7 @@
     powerline-symbols
     font-awesome_5
     jetbrains-mono
-    (pkgs.callPackage ./apple-fonts.nix {})
+    # (pkgs.callPackage ./apple-fonts.nix {})
     (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" "Hack" ]; })
   ];
   # system.build = builtins.exec "echo 'hello, world.'";
@@ -39,9 +39,9 @@
   };
 
   # Create /etc/zshrc that loads the nix-darwin environment.
-  programs.zsh.enable = false;  # default shell on catalina
-  programs.bash.enable = false;
-  programs.fish.enable = false; #NOT Borne COMPAT? 
+  programs.zsh.enable = true;  # default shell on catalina
+  programs.bash.enable = true;
+  programs.fish.enable = true; #NOT Borne COMPAT? 
   users.users.alex.shell = pkgs.zsh; 
   nix = {
      # https://nixos.wiki/wiki/Distributed_build

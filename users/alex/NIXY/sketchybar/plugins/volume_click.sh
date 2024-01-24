@@ -5,19 +5,21 @@ source "$HOME/.config/sketchybar/colors.sh"
 WIDTH=100
 
 detail_on() {
-  sketchybar --animate tanh 30 --set volume slider.width=$WIDTH
+  # sketchybar --set volume slider.width=$WIDTH
 }
 
 detail_off() {
-  sketchybar --animate tanh 30 --set volume slider.width=0
+  sketchybar --set volume slider.width=0
 }
+
+detail_off
 
 toggle_detail() {
   INITIAL_WIDTH=$(sketchybar --query volume | jq -r ".slider.width")
   if [ "$INITIAL_WIDTH" -eq "0" ]; then
-    detail_on
+    # detail_on
   else
-    detail_off
+    # detail_off
   fi
 }
 

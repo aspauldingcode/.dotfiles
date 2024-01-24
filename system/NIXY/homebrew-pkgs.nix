@@ -37,11 +37,13 @@
       "hammerspoon"
       "phoenix"
       "dmenu-mac"
+      "macforge"
       "element"
       "brave-browser"
       "alt-tab"
       "standard-notes"
       "orbstack"
+      "libreoffice"
       "karabiner-elements" # remap keyboard
       "unnaturalscrollwheels"
       "Beeper"

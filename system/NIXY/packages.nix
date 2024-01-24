@@ -24,7 +24,7 @@
     ifstat-legacy 
     discord
     ranger
-    iproute2mac
+    darwin.iproute2mac
     ncurses6
     hexedit
     # javaPackages.openjfx19

@@ -16,6 +16,7 @@
     chatgpt-cli
     cowsay
     qemu
+    # libreoffice-qt
     discord
     spotify
     vscode
@@ -121,11 +122,11 @@
     # if [[ "$1" == "on" ]]; then
     #   echo "User entered 'on' argument."
     #   echo "Turning on Single User Mode..."
-    #   sudo nvram boot-args="-arm64e_preview_abi -v -s"
+    #   sudo nvram boot-args="-arm64e_preview_abi amfi_get_out_of_my_way=0x80 -v -s"
     # elif [[ "$1" == "off" ]]; then
     #   echo "User entered 'off' argument."
     #   echo "Turning off Single User Mode..."
-    #   sudo nvram boot-args="-arm64e_preview_abi -v"
+    #   sudo nvram boot-args="-arm64e_preview_abi amfi_get_out_of_my_way=0x80 -v"
     # fi
     # if [[ "$1" == "on" || "$1" == "off" ]]; then
     #   echo "Completed. Your boot args are listed below:"

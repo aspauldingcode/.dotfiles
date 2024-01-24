@@ -3,18 +3,16 @@
 
   inputs = {
     nixpkgs.url =       "github:nixos/nixpkgs/nixos-unstable";
-    darwin.url =        "github:lnl7/nix-darwin";
-    nix-darwin.url =    "github:LnL7/nix-darwin";
+    nix-darwin.url =    "github:lnl7/nix-darwin";
     home-manager.url =  "github:nix-community/home-manager";
     nixvim.url =        "github:nix-community/nixvim";
     nix-colors.url =    "github:misterio77/nix-colors"; 
   };
 
-  outputs = { self, nixpkgs, darwin, nix-darwin, home-manager, nixvim, flake-parts, nix-colors }: 
+  outputs = { self, nixpkgs, nix-darwin, home-manager, nixvim, flake-parts, nix-colors }: 
   let inherit (self) inputs;
     # Define common specialArgs for nixosConfigurations and homeConfigurations
-    commonSpecialArgs = { inherit inputs nixvim flake-parts nix-colors self; };
-    darwinSpecialArgs = { inherit nix-darwin self; };
+    commonSpecialArgs = { inherit inputs nix-darwin home-manager nixvim flake-parts nix-colors self; };
     systems = ["x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin"];
     eachSystem = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
 
@@ -34,8 +32,8 @@
 
     # Define Darwin (macOS) configurations
     darwinConfigurations = {
-      NIXY = darwin.lib.darwinSystem {
-        specialArgs = [ commonSpecialArgs darwinSpecialArgs ];
+      NIXY = nix-darwin.lib.darwinSystem {
+        specialArgs = commonSpecialArgs;
         modules = [ ./system/NIXY/darwin-configuration.nix ];
       };
     };
@@ -46,7 +44,7 @@
       # User: "Alex"
       "alex@NIXY" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.aarch64-darwin;
-        extraSpecialArgs = [ commonSpecialArgs darwinSpecialArgs ];
+        extraSpecialArgs = commonSpecialArgs;
         modules = [ ./users/alex/NIXY/home-NIXY.nix ];
       };
 
@@ -65,7 +63,7 @@
     # User: "Su Su"
     "susu@NIXY" = home-manager.lib.homeManagerConfiguration {
       pkgs = nixpkgs.legacyPackages.aarch64-darwin;
-      extraSpecialArgs = [ commonSpecialArgs darwinSpecialArgs ];
+      extraSpecialArgs = commonSpecialArgs;
       modules = [ ./users/susu/home-NIXY.nix ];
     };
 

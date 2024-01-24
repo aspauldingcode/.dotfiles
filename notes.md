@@ -245,3 +245,42 @@ should show:
 origin  git@github.com:aspauldingcode/.dotfiles.git (fetch)
 origin  git@github.com:aspauldingcode/.dotfiles.git (push)
 
+QUICK INFO DUMP 2:
+as of 1/22/24, I've reinstalled macos again to build an installer script.
+
+A few things went wrong.
+
+Firstly, I need to have this installed:
+sudo softwareupdate --install-rosetta
+and, I need to disable SIP before anything.
+I need to install nix on nix-darwin using the nix installer, not nix-determinite installer. it failed for some reason.
+
+After, I need to install nix-darwin. continue:
+
+I have to use `darwin-rebuild switch -I ~/.dotfiles/system/NIXY/darwin-configuration.nix
+because otherwise darwin will try to load from config/darwin or something.
+
+Some initial things failed: iproute2mac (probably because its an unstable nix darwin channel thing?
+background music 4 (because rosetta2 needed installation sudo `softwareupdate --install-rosetta` If I try to automate this, the user must type "A" to agree. Probably something like: `yes "A" | sudo softwareupdate --install-rosetta`
+and com.defaults.universalaccess failed for whatever reason.
+
+nix and darwin-rebuild commands not found?
+
+add:
+ # Nix
+ if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+    . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+ fi
+ # End Nix
+
+to /etc/zshrc and /etc/bashrc. also, I just enable zsh, bash, fish from darwin config.
+
+additionally, after disabling sip, I enter this command for mac forge to disable libraryv validation:
+
+```
+sudo defaults write /Library/Preferences/com.apple.security.libraryvalidation.plist DisableLibraryValidation -bool true
+
+```
+
+also needed these as my boot flags:
+`sudo nvram boot-args="-arm64e_preview_abi amfi_get_out_of_my_way=1 ipc_control_port_options=0 -v"`

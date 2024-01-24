@@ -1,8 +1,8 @@
-{ lib, config, pkgs, nix-colors, ... }: 
+{ pkgs, nix-colors, ... }: 
 
-let
-  android-sdk = pkgs.android_sdk; # Replace with the actual Android SDK package name
-in
+# let
+#   android-sdk = pkgs.android_sdk; # Replace with the actual Android SDK package name
+# in
   {
     imports = [
       nix-colors.homeManagerModules.default
@@ -38,7 +38,17 @@ in
         l = "ls";
       };
     };
-  programs = {
-    home-manager.enable = true; 
+
+  # Enable nix flakes and nix command?
+  nix = {
+    package = pkgs.nix;
+    settings.experimental-features = [ "nix-command" "flakes" ];
+  };
+
+  programs = { # allow Home-Manager to configure itself
+  home-manager = {
+    enable = true; 
+    path = "https://github.com/rycee/home-manager/archive/release-18.03.tar.gz";
+    };
   };
 }

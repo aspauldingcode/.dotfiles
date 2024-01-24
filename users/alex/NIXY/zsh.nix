@@ -32,6 +32,8 @@
 
       # Add the mobile-nixos variable to $NIX_PATH
       # export NIX_PATH="$NIX_PATH:mobile-nixos=~/mobile-nixos"
+      export CLASSPATH=~/Desktop/hw/csci232/jars/algs4.jar:$CLASSPATH
+      export CLASSPATH=~/Desktop/hw/csci232/jars/stdlib.jar:$CLASSPATH
     '';
   };
 }
