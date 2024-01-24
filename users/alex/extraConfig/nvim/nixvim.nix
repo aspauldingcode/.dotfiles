@@ -59,7 +59,7 @@
         enable = true;
         installLanguageServer = true;
       };
-      astro = {
+      /*astro = {
         enable = true;
         installLanguageServer = true;
       };
@@ -270,11 +270,9 @@
       pyright = {
         enable = true;
         installLanguageServer = true;
-        /*
-        lsp - pyright
-        linter - flake8
-        formatter - black
-        */
+        #lsp - pyright
+        #linter - flake8
+        #formatter - black
       };
       rnix-lsp = {
         enable = false; # using nil_ls instead!
@@ -350,6 +348,7 @@
         enable = true;
         installLanguageServer = true;
       };
+      */
     };
   };
     # lsp-lines.enable = true;
@@ -359,8 +358,8 @@
     chadtree.enable = true;
 
     # code-completion
-    cmp-nvim-lsp-signature-help.enable = true;
-    cmp-zsh.enable = true;
+    #cmp-nvim-lsp-signature-help.enable = true;
+    #cmp-zsh.enable = true;
 
     # AI code-completion tools
     codeium-nvim.enable = true;
@@ -444,10 +443,10 @@ extraPlugins = with pkgs.vimPlugins; [
       # lsp-status-nvim # FIXME: What about lspinfo?
       # lazy-lsp-nvim # FIXME: LEARN MORE
       # asyncomplete-lsp-vim # FIXME: Learn more
-      {
-        plugin = nvim-cmp;
-        config = toLuaFile ./plugin/cmp.lua;
-      }
+      #{
+      #  plugin = nvim-cmp;
+      #  config = toLuaFile ./plugin/cmp.lua;
+      #}
       # cmp-nvim-lsp # FIXME: Learn more
       # cmp-nvim-lsp-document-symbol 
       # cmp-nvim-lsp-signature-help

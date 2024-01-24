@@ -64,6 +64,9 @@
       #dunst
       eww-wayland
       glpaper
+      sassc
+      glib
+      lxappearance
       gtk-layer-shell
       i3status-rust
       imv

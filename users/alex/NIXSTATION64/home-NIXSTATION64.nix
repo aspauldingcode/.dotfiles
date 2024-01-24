@@ -1,4 +1,4 @@
-{ nix-colors, ... }: 
+{ nix-colors, pkgs, ... }: 
 
 {
 #import other home-manager modules which are NIXSTATION64-specific

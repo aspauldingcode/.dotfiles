@@ -109,12 +109,17 @@
           theme = "${import ./sddm-themes.nix {inherit pkgs; }}";
         };
       };
-      desktopManager.plasma5 = { 
-        enable = true;
-        runUsingSystemd = false;
+      desktopManager = {
+      	plasma5 = { 
+        	enable = true;
+        	runUsingSystemd = false;
+      	};
+	mate = {
+		enable = true;
+		# runUsingSystemd = false;
+	};	
       };
     };
-    
     pipewire = { # fix for pipewire audio:
       enable = true;
       alsa.enable = true;
