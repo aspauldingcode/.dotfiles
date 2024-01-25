@@ -1,13 +1,9 @@
-{ inputs, lib, config, pkgs, ... }:
+{ inputs, lib, config, pkgs, mobile-nixos, ... }:
 
 {
-  imports = [ # Include the results of the hardware scan
-    # (import <mobile-nixos/lib/configuration.nix> { device = "oneplus-fajita"; }) # Must have your NIX_PATH includes mobile-nixos=/path/to/mobile-nixos
-    # If you want to use modules from other flakes (such as nixos-hardware):
-    # inputs.hardware.nixosModules.common-cpu-amd
-    # inputs.hardware.nixosModules.common-ssd
+  imports = [
     ./hardware-configuration.nix
-    #./sway-configuration.nix #FIXME: NOT USING!
+    # ("${mobile-nixos}/lib/configuration.nix" { device = "oneplus-fajita"; })
     ./packages.nix
     ./virtual-machines.nix
   ];

@@ -7,9 +7,13 @@
     home-manager.url =  "github:nix-community/home-manager";
     nixvim.url =        "github:nix-community/nixvim";
     nix-colors.url =    "github:misterio77/nix-colors"; 
+    mobile-nixos = {
+      url = "github:NixOS/mobile-nixos";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager, nixvim, flake-parts, nix-colors }: 
+  outputs = { self, nixpkgs, nix-darwin, home-manager, nixvim, flake-parts, nix-colors, mobile-nixos }: 
   let inherit (self) inputs;
     # Define common specialArgs for nixosConfigurations and homeConfigurations
     commonSpecialArgs = { inherit inputs nix-darwin home-manager nixvim flake-parts nix-colors self; };
@@ -20,7 +24,7 @@
     nixosConfigurations = {
       NIXSTATION64 = nixpkgs.lib.nixosSystem {
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        specialArgs = commonSpecialArgs;
+        specialArgs = commonSpecialArgs; /* // { extraPkgs = [ mobile-nixos ]; };*/
         modules = [ ./system/NIXSTATION64/configuration.nix ];
       };
       NIXEDUP = nixpkgs.lib.nixosSystem {
@@ -34,7 +38,7 @@
     darwinConfigurations = {
       NIXY = nix-darwin.lib.darwinSystem {
         specialArgs = commonSpecialArgs;
-        modules = [ ./system/NIXY/darwin-configuration.nix ];
+        modules = [ ./system/NIXY/darwin-configuration.nix  ];
       };
     };
 
