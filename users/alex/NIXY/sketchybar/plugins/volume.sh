@@ -40,11 +40,11 @@ mouse_clicked() {
 }
 
 mouse_entered() {
-  sketchybar --set $NAME slider.knob.drawing=on
+  sketchybar --set volume_icon slider.knob.drawing=on
 }
 
 mouse_exited() {
-  sketchybar --set $NAME slider.knob.drawing=off
+  sketchybar --set volume_icon slider.knob.drawing=off
 }
 
 case "$SENDER" in
