@@ -55,7 +55,7 @@ in
       package = pkgs.waybar.overrideAttrs (oa: {
         mesonFlags = (oa.mesonFlags or  [ ]) ++ [ "-Dexperimental=true" ];
       });
-      systemd.enable = false;
+      systemd.enable = false; #FIXME: set true because otherwise it fails to start sometimes or just dies when bootstrapped to sway
       settings = {
         primary = {
           mode = "dock";
@@ -621,6 +621,19 @@ in
       padding-left: 16px;
       padding-right: 16px;
     }
+
+    tooltip {
+      background-color: #${colors.base00};
+      border: 2px solid #${colors.base0C};
+      border-radius: 10px;
+      color: #${colors.base05};
+      text-shadow: none; 
+      margin-top: 20px;
+    }
+    /**/
+    /* tooltip label { */
+    /*   color: @theme_fg_color; */
+    /* } */
     '';
   };
 }

@@ -1,8 +1,59 @@
-{ config, pkgs, nixvim, ... }: 
+{ config, pkgs, lib, nixvim, ... }: 
 
 {
   imports = [
     nixvim.homeManagerModules.nixvim
+  ];
+  
+    nixpkgs.config.allowUnsupportedSystemPredicate = pkg:
+    builtins.elem (lib.getName pkg) [
+      # Add additional package names here
+      "swiftformat" 
+      "sourcekit-lsp" 
+    ];
+
+  # nixvim specific dependencies
+  home.packages = with pkgs; [  
+    # linters:
+    pylint #python
+    # python311Packages.flake8
+    #ruff # python
+    commitlint # git commits
+    lint-staged # git stage
+    sqlint # sql
+    yamllint # yaml
+    vim-vint # vimscript 
+    statix # nix
+    #nixpkgs-lint-community #nix with treesitter
+    #nix-linter # nix
+    cargo-toml-lint # cargo.toml
+    eslint_d # fast eslint
+    api-linter # linter for apis in protocol buffers
+    ls-lint # directory name linter
+    lua54Packages.luacheck # lua
+    ktlint # kotlin
+    rslint # ts, js
+    djlint # html
+    scss-lint # scss
+    csslint # css
+    cpplint # C++ static linter
+    actionlint # github actions
+
+    # formatters:
+    black # python uncomprimising 
+    luaformatter # lua
+    rufo # ruby
+    jsonfmt # json
+    #nixpkgs-fmt # nix
+    nixfmt # nix opinionated
+    #alejandra # nix uncompromising
+    google-java-format # java
+    ktlint # kotlin java
+    xcpretty # xcodebnuild
+    # swiftformat # swift format and linter
+    fop # xml
+    xmlformat # xml
+    commit-formatter # git
   ];
 
   programs.nixvim = 
@@ -207,10 +258,12 @@
         enable = true;
         installLanguageServer = true;
       };
+      */
       lua-ls = {
         enable = true;
         installLanguageServer = true;
       };
+      /*
       marksman = {
         enable = true;
         installLanguageServer = true;
@@ -219,10 +272,12 @@
         enable = true;
         installLanguageServer = true;
       };
+      */
       nil_ls = {
         enable = true;
         installLanguageServer = true;
       };
+      /*
       nixd = {
         enable = true;
         installLanguageServer = true;
@@ -267,6 +322,7 @@
         enable = true;
         installLanguageServer = true;
       };
+      */
       pyright = {
         enable = true;
         installLanguageServer = true;
@@ -274,6 +330,7 @@
         #linter - flake8
         #formatter - black
       };
+      /*
       rnix-lsp = {
         enable = false; # using nil_ls instead!
         installLanguageServer = true;
@@ -282,21 +339,22 @@
         enable = true;
         installLanguageServer = true;
       };
+      */
       rust-analyzer = {
         enable = true;
         installLanguageServer = true;
         installCargo = true;
         installRustc = true;
       };
-      solargraph = {
-        enable = true;
-        installLanguageServer = true;
-      };
+      # solargraph = {
+      #   enable = true;
+      #   installLanguageServer = true;
+      # };
       sourcekit = {
         enable = true;
         installLanguageServer = false; # FAILED TO COMPILE ON NIXOS
       };
-      svelte = {
+      /*svelte = {
         enable = true;
         installLanguageServer = true;
       };
@@ -320,10 +378,12 @@
         enable = true;
         installLanguageServer = true;
       };
+      */
       tsserver = {
         enable = true;
         installLanguageServer = true;
       };
+      /*
       typst-lsp = {
         enable = true;
         installLanguageServer = true;
@@ -587,6 +647,7 @@ extraPlugins = with pkgs.vimPlugins; [
           p.tree-sitter-css
           p.tree-sitter-php
           p.tree-sitter-norg
+          p.tree-sitter-ini
         ]));
         config = toLuaFile ./plugin/treesitter.lua;
       }

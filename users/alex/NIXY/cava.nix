@@ -1,10 +1,10 @@
-{ config, pkgs, ... }:
+{ ... }:
 
 {
   # Define the home configuration
   home.file."cava" = { 
     target = ".config/cava/config";
-    text = ''
+    text = /* ini */ ''
       # THIS BE MY CONF TEST TExT
       ## Configuration file for CAVA.
       # Remove the ; to change parameters.
@@ -135,7 +135,7 @@
       # Raw data format. Can be 'binary' or 'ascii'.
       ; data_format = binary
 
-      # Binary bit format, can be '8bit' (0-255) or '16bit' (0-65530).
+      # Binary bit for, can be '8bit' (0-255) or '16bit' (0-65530).
       ; bit_format = 16bit
 
       # Ascii max value. In 'ascii' mode range will run from 0 to value specified here
@@ -222,7 +222,7 @@
 
       # Noise reduction, int 0 - 100. default 77
       # the raw visualization is very noisy, this factor adjusts the integral and gravity filters to keep the signal smooth
-      # 100 will be very slow and smooth, 0 will be fast but noisy.
+      # 100 will be ve slow and smooth, 0 will be fast but noisy.
       ; noise_reduction = 77
 
 

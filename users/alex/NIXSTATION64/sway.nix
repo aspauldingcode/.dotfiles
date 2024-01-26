@@ -45,7 +45,7 @@
         {command = "alacritty";} #FIXME: DOES ALACRITTY ACTUALLY LAUNCH?!?!?
       ];
       menu = "bemenu-run";
-       
+
       workspaceLayout = "default";
       keybindings = {
         "${modifier}+f" = "exec maximize"; #custom script for zoom-fullscreen NOTWORKING?
@@ -89,11 +89,11 @@
         # "XF86???Lock" = "";
         #"XF86HomePage" = "exec ${pkgs.firefox-wayland}/bin/firefox";
         # "XF86???FOLDER" = "";
-        
+
         # Screenshot
         "Alt+Shift+3" = "exec screenshot"; # All visible outputs
         "Alt+Shift+4" = "exec grimshot --notify save window";
-        
+
         # Screen recording
         #"${modifier}+Print" = "exec wayrecorder --notify screen";
         #"${modifier}+Shift+Print" = "exec wayrecorder --notify --input area";
@@ -134,7 +134,7 @@
 
         #"${modifier}+j" = "exec ${pkgs.mako}/bin/makoctl invoke"; # Invoke default action on top notification.
         #"${modifier}+Shift+t" = "exec ${pkgs.flashfocus}/bin/flash_window";
-        
+
         # Change focused window
         "${modifier}+${left}" =   "focus left";
         "${modifier}+${down}" =   "focus down";
@@ -144,7 +144,7 @@
         "${modifier}+Down" =      "focus down";
         "${modifier}+Up" =        "focus up";
         "${modifier}+Right" =     "focus right";
-        
+
         #FIXME: make this swap window in place! Currently it rotates.
         "${modifier}+Shift+${left}" =   "move left";
         "${modifier}+Shift+${down}" =   "move down";
@@ -154,7 +154,7 @@
         "${modifier}+Shift+Down" =      "move down";
         "${modifier}+Shift+Up" =        "move up";
         "${modifier}+Shift+Right" =     "move right";
-        
+
 
         # Navigate to next/prev workspace
         "${modifier}+Ctrl+${left}" =    "workspace prev";
@@ -175,7 +175,7 @@
         "Ctrl+Shift+Down" =      "move container to workspace next, workspace next";
         "Ctrl+Shift+Up" =        "move container to workspace prev, workspace prev";
         "Ctrl+Shift+Right" =     "move container to workspace next, workspace next";
-        
+
         # Move focus to workspace n
         "${modifier}+1" = "workspace number 1";
         "${modifier}+2" = "workspace number 2";
@@ -187,7 +187,7 @@
         "${modifier}+8" = "workspace number 8";
         "${modifier}+9" = "workspace number 9";
         "${modifier}+0" = "workspace number 10";
-        
+
         # Move window to workspace n and follow focus
         "${modifier}+Shift+1" = "move container to workspace number 1, workspace number 1";
         "${modifier}+Shift+2" = "move container to workspace number 2, workspace number 2";
@@ -203,15 +203,15 @@
         "${modifier}+Shift+R" = "reload";
       };
     };
-    
-    extraConfig = let inherit (config.colorscheme) colors; in /* swayfx specific config */ ''
-      set $mod Mod4
+
+    extraConfig = let inherit (config.colorscheme) colors; in ''
+    set $mod Mod4
       # Idle configuration        
       exec swayidle -w \
       timeout 7320 'swaylock -f -c 000000' \
       timeout 8000 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
       before-sleep 'swaylock -f -c 000000'
-      
+
       # You can get the names of your inputs by running: swaymsg -t get_inputs
       # Read `man 5 sway-input` for more information about this section.
       # Launch the network manager widget!
@@ -237,6 +237,13 @@
       gaps inner 13
       gaps top -2
       corner_radius 10
+
+      #FIX waybar tooltips!
+      for_window [app_id="waybar" floating] {
+        move position cursor
+        move down 120px # adjust if some menus still don't fit
+      }
+
 
       # Window background blur
       blur on #FIXME: TURN ON! Floating window loses its borders...
@@ -265,10 +272,10 @@
       client.focused ${colors.base0C} ${colors.base0C} ${colors.base0C} ${colors.base0C}
 
       exec {
-      gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
-      gsettings set org.gnome.desktop.interface icon-theme 'elementary'
-      gsettings set org.gnome.desktop.interface cursor-theme 'elementary'
-      gsettings set org.gnome.desktop.interface font-name 'Roboto Slab 10'
+        gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+        gsettings set org.gnome.desktop.interface icon-theme 'elementary'
+        gsettings set org.gnome.desktop.interface cursor-theme 'elementary'
+        gsettings set org.gnome.desktop.interface font-name 'Roboto Slab 10'
       }
 
       # Fix zoom
@@ -277,6 +284,6 @@
       for_window [app_id="zoom" title="zoom"] floating enable
       for_window [app_id="zoom" title="Zoom Meeting"] floating disable
       for_window [app_id="zoom" title="Zoom - Free Account"] floating disable
-    '';
-  };
-}
+      '';
+    };
+  }

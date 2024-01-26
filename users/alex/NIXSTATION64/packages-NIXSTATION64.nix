@@ -40,20 +40,25 @@
       name = "Bibata-Modern-Ice";
       size = 22;
     };
-    
+
     packages = with pkgs; [
-      lsof
-      etcher
-      standardnotes
-      gcal
-      checkra1n
-      cava
-      pfetch
-      zoom-us
-      spotify-unwrapped
-      android-studio
-      corefonts
-      beeper
+    # DARLING PROJECT!
+    darling
+    darling-dmg
+
+    lsof
+    etcher
+    standardnotes
+    gcal
+    checkra1n
+    cava
+    lavat
+    pfetch
+    zoom-us
+    spotify-unwrapped
+    android-studio
+    corefonts
+    beeper
       # davinci-resolve 
       ocl-icd
       rofi-wayland-unwrapped
@@ -62,6 +67,7 @@
       #wofiPower
       #wofiWindowJump
       #dunst
+      gnomeExtensions.dark-variant
       eww-wayland
       glpaper
       sassc
@@ -189,7 +195,7 @@
       })
       #fix-wm
       (pkgs.writeShellScriptBin "fix-wm" ''
-        pkill waybar && sway reload
+      pkill waybar && sway reload
       '')
     ];
   };
