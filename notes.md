@@ -284,3 +284,9 @@ sudo defaults write /Library/Preferences/com.apple.security.libraryvalidation.pl
 
 also needed these as my boot flags:
 `sudo nvram boot-args="-arm64e_preview_abi amfi_get_out_of_my_way=1 ipc_control_port_options=0 -v"`
+
+
+
+## FIX for home-manager on DARWIN not found!
+
+`home-manager build --flake .#alex@NIXY`

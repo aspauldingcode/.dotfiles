@@ -1,4 +1,4 @@
-{ pkgs, nix-colors, ... }: 
+{ home-manager, lib, config, pkgs, nix-colors, ... }: 
 
 # let
 #   android-sdk = pkgs.android_sdk; # Replace with the actual Android SDK package name
@@ -48,7 +48,7 @@
   programs = { # allow Home-Manager to configure itself
   home-manager = {
     enable = true; 
-    path = "https://github.com/rycee/home-manager/archive/release-18.03.tar.gz";
+    path = lib.mkDefault "https://github.com/rycee/home-manager/archive/release-18.03.tar.gz";
     };
   };
 }
