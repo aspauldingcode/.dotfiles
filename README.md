@@ -22,74 +22,6 @@ nix-env --version  # Ensure that you have Nix 2.4 or newer
 nix --experimental-features 'nix-command flakes'  # Enable flakes
 ```
 
-- [ ] Convert all the following to github issues!
-- [x] Fix Double Waybar Issue
-- [x] Fix SDDM HomeManager vs System config and login issues
-- [x] Fix SDDM Theme with a gitFetch derivation for Sonoma V2 Theme
-- [x] Set Default xserver Session to SwayFX instead of Plasma Wayland or Plasma(x11)
-- [x] Universal UX for zsh/zshrc
-- [x] Configure Zellij
-- [x] Fix zsh problems
-- [x] Waybar and Sketchybar Universal UX/UI Config
-- [x] Fix Karabiner Key Combos
-- [x] Fix skhd hotkeys
-- [x] Fix nix Alacritty package issues
-- [x] Replace Mod+q with control+w Sway
-- [ ] Clean up sketchybarrc
-- [ ] Convert karabiner config to a nix language defined config.
-- [ ] Fix git update script to cancel git pushing empty commits if "already up to date"
-- [ ] Add sway and sketchybar window resize shortcuts
-- [ ] Add sway mod+s and mod+e scripts to make all windows stacked, or all windows default layout.
-- [x] Add sketchybar/yabai setting that macOS shares the same workspaces across all monitors
-- [ ] Fix sketchybar spaces showing multiple highlights - only highlight the active space which holds a focus or focused window
-- [ ] Fix sketchybar $mod+n not adding a new workspace n
-- [ ] Fix make sketchybar update everytime a new workspace is added or removed 
-- [ ] Add macOS cursor timeout to hide after 8000 ms
-- [ ] SDDM Background swap
-- [ ] SDDM custom profile image, fetched from github profile
-- [ ] Fix wayland timeout to SDDM instead of waylock
-- [ ] Add Zellij plugins
-- [ ] Fix bash problems
-- [ ] Fix fish problems
-- [ ] Make zsh shell not show the directory or tilda on the far right side "~"
-- [x] Fix zellij/sway  keybinds conflicts
-- [x] Fix zellij/yabai keybinds conflicts
-- [ ] Fix nvim and LSP Configurations
-- [ ] Overlay custom package for macOSInstantView driver with nix fetchers
-- [ ] Figure out how to FIRST TIME install on ALL systems
-- [ ] Build a mac FIRST-TIME install script with all my settings unrelated to nix
-- [ ] Fix hm-news broken after rebuild each time nix-collect-garbage is run
-- [ ] Fix sketchybar mail plugin
-- [ ] Fix sketchybar volume plugin
-- [ ] Fix sketchybar & waybar icons
-- [ ] Fix sketchybar wifi pupup
-- [ ] Fix sketchybar calendar plugin
-~~- [ ] Fix sketchybar datetime icon~~
-- [x] Add sketchybar tray seperator
-- [x] Add waybar tray seperator
-- [ ] Add sketchybar currently playing plugin.
-- [ ] Add sketchybar weather plugin
-- [ ] Add sketchybar wallpaper setter plugin
-- [ ] Add sketchybar darkmode scheme switch plugin
-- [ ] Update rebuild scripts to use universal prompts (bemenu, dmenu-mac yes/no)
-- [ ] Fix sketchybar popups to on-hover instead of on-click 
-- [ ] Sketchybar onclick frontapp label kills the focused app
-- [ ] Learn Kmonad and see if it's right for my usecase.
-- [ ] Learn [direnv](https://direnv.net/)
-- [ ] Learn LaTeX and vimtex plugin for nvim
-- [ ] Install mobile-nixos on NIXEDUP
-- [ ] Enable Flakes local config on NIXEDUP
-- [ ] NixOS NIXY configuration (for nixos on NIXY instead of macOS on NIXY)
-- [ ] Fix SSH configurations and setups!
-- [ ] Fix Nix-Colors configurations!
-- [ ] Nix-Colors scheme switcher for darkmode/lightmode on both systems!
-- [ ] Get Su Su's account set up with plasma or gnome!
-- [ ] Upgrade my Calendar Plugin for Sketchybar
-- [ ] Complete Sketchybar Config
-- [ ] Complete Waybar Config
-- [ ] Are we UNIVERSAL yet?
-- [ ] Clean up repo code 
-
 ## Extra 
 The install can be configured through the flake.nix.
 Home-Manager Configuration is done per-user under Users/{user}/home.nix
@@ -97,6 +29,7 @@ If you're lost, please [read the Notes](notes.md) to follow setup.
 
 <details>
   <summary>Directory Tree:</summary>
+
 ```
 .
 ├── README.md
@@ -221,4 +154,5 @@ If you're lost, please [read the Notes](notes.md) to follow setup.
 
 22 directories, 98 files
 ```
+
 </details>
