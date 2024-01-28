@@ -7,7 +7,7 @@
     imports = [
       nix-colors.homeManagerModules.default
       ./packages-NIXY.nix
-      ../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
+      #../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
       ./alacritty.nix
       ./git.nix
       ./fish.nix
@@ -46,9 +46,6 @@
   };
 
   programs = { # allow Home-Manager to configure itself
-  home-manager = {
-    enable = true; 
-    path = lib.mkDefault "https://github.com/rycee/home-manager/archive/release-18.03.tar.gz";
-    };
+    home-manager.enable = true;
   };
 }

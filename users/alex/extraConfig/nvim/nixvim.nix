@@ -226,10 +226,10 @@
         enable = true;
         installLanguageServer = true;
       };
-      # htmx = {
-      #   enable = true;
+      #htmx = {
+      #   enable = false;
       #   installLanguageServer = false; # FAILED
-      # };
+      #};
       intelephense = {
         enable = true;
         installLanguageServer = true;

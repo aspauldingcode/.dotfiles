@@ -15,7 +15,6 @@
     ## macosINSTANTView?
     zellij
     home-manager
-    neovim
     neofetch
     htop
     btop
