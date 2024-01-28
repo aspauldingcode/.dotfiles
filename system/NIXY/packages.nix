@@ -14,7 +14,6 @@
   environment.systemPackages = with pkgs; [
     ## macosINSTANTView?
     zellij
-    home-manager
     neofetch
     htop
     btop

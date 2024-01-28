@@ -13,7 +13,7 @@
     ];
 
   # nixvim specific dependencies
-  home.packages = with pkgs; [  
+  home.packages = with pkgs; [
     # linters:
     pylint #python
     # python311Packages.flake8
@@ -33,7 +33,7 @@
     lua54Packages.luacheck # lua
     ktlint # kotlin
     rslint # ts, js
-    djlint # html
+    #djlint # html
     scss-lint # scss
     csslint # css
     cpplint # C++ static linter
@@ -223,13 +223,14 @@
         installLanguageServer = true;
       };
       html = {
-        enable = true;
-        installLanguageServer = true;
+        enable = false;
+        installLanguageServer = false;
       };
-      #htmx = {
-      #   enable = false;
-      #   installLanguageServer = false; # FAILED
-      #};
+      htmx = {
+        enable = false;
+        plugins.lsp.servers.htmx.package = ./htmx-lsp-derivation.nix;
+        installLanguageServer = false; # FAILED
+      };
       intelephense = {
         enable = true;
         installLanguageServer = true;

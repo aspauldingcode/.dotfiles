@@ -7,7 +7,7 @@
     imports = [
       nix-colors.homeManagerModules.default
       ./packages-NIXY.nix
-      #../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
+      ../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
       ./alacritty.nix
       ./git.nix
       ./fish.nix
@@ -25,12 +25,12 @@
 
     home = {
       username = "alex";
-      homeDirectory = "/Users/alex";
-      stateVersion = "23.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+      homeDirectory = lib.mkForce "/Users/alex";
+      stateVersion = "23.11"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
       shellAliases = { 
         python = "python3.11";
-        vim = "nvim";
-        vi = "nvim";
+        #vim = "nvim";
+        #vi = "nvim";
         reboot = "sudo reboot now";
         rb = "sudo reboot now";
         shutdown = "sudo shutdown -h now";
@@ -40,10 +40,10 @@
     };
 
   # Enable nix flakes and nix command?
-  nix = {
-    package = pkgs.nix;
-    settings.experimental-features = [ "nix-command" "flakes" ];
-  };
+  #nix = {
+   # package = pkgs.nix;
+   # settings.experimental-features = [ "nix-command" "flakes" ];
+  #};
 
   programs = { # allow Home-Manager to configure itself
     home-manager.enable = true;
