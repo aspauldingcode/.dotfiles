@@ -1,4 +1,4 @@
-{ nix-colors, pkgs, ... }: 
+{ nix-colors, ... }: 
 
 {
 #import other home-manager modules which are NIXSTATION64-specific
@@ -14,8 +14,8 @@ imports = [
   ./zsh.nix
   ./zellij.nix
 ]; 
-
     colorScheme = nix-colors.colorSchemes.gruvbox-dark-soft;
+    # colorScheme = nix-colors.colorSchemes.dracula;
 
     home = {
       username = "alex";

@@ -25,6 +25,7 @@ let
     tail = "${pkgs.coreutils}/bin/tail";
     wc = "${pkgs.coreutils}/bin/wc";
     xargs = "${pkgs.findutils}/bin/xargs";
+
     # timeout = "${pkgs.coreutils}/bin/timeout";
     # ping = "${pkgs.iputils}/bin/ping";
 
@@ -105,7 +106,7 @@ in
 
       clock = {
         interval = 1;
-        format = "{:%a, %b %d   %r}";
+        format = "{:%a, %b %d  %I:%M %p}";
         # on-click = "mode";
         tooltip-format = ''
         <tt><small>{calendar}</small></tt>
@@ -263,7 +264,7 @@ in
           text = "";
           # tooltip = ''$(${cat} /etc/os-release | ${grep} PRETTY_NAME | ${cut} -d '"' -f2)'';
         };
-      };
+      }; 
       "custom/seperator-right" = {
         return-type = "json";
         exec = jsonOutput "seperator-right" {
@@ -274,18 +275,27 @@ in
 
       "custom/menu" = {
         return-type = "json";
+        #exec = "echo $USER@$HOSTNAME";
+        #on-click = "${systemctl} --user restart waybar";
+        #text = "󱄅";
         exec = jsonOutput "menu" {
-          text = "";
-          tooltip = ''$(${cat} /etc/os-release | ${grep} PRETTY_NAME | ${cut} -d '"' -f2)'';
+        text = "󱄅";
+        pre = ''
+        OS="$(${cat} /etc/os-release | ${grep} PRETTY_NAME | ${cut} -d '"' -f2)"
+        Kernel="$(uname -s -r -m)"
+        Darling="Darling here" '';
+        tooltip = "$OS\n$Kernel\n$Darling";
+
         };
-        on-click-left = "wofi -S drun -x 10 -y 10 -W 25% -H 60%";
-        on-click-right = "swaymsg scratchpad show";
+        #on-click-left = "wofi -S drun -x 10 -y 10 -W 25% -H 60%";
+        #on-click-right = "swaymsg scratchpad show";
       };
 
       "custom/hostname" = {
-        exec = "echo $USER@$HOSTNAME";
+        exec = "echo $USER@$HOST";
         on-click = "${systemctl} --user restart waybar";
       };
+
       "custom/unread-mail" = {
         interval = 5;
         return-type = "json";

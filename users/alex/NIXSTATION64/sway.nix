@@ -146,15 +146,14 @@
         "${modifier}+Right" =     "focus right";
 
         #FIXME: make this swap window in place! Currently it rotates.
-        "${modifier}+Shift+${left}" =   "move left";
-        "${modifier}+Shift+${down}" =   "move down";
-        "${modifier}+Shift+${up}" =     "move up";
-        "${modifier}+Shift+${right}" =  "move right";
-        "${modifier}+Shift+Left" =      "move left";
-        "${modifier}+Shift+Down" =      "move down";
-        "${modifier}+Shift+Up" =        "move up";
-        "${modifier}+Shift+Right" =     "move right";
-
+        #"${modifier}+Shift+${left}" =   "mark --add \"_swap\", focus left,  swap container with mark \"_swap\", unmark \"_swap\"";
+        #"${modifier}+Shift+${down}" =   "mark --add \"_swap\", focus down,  swap container with mark \"_swap\", unmark \"_swap\"";
+        #"${modifier}+Shift+${up}" =     "mark --add \"_swap\", focus up,    swap container with mark \"_swap\", unmark \"_swap\"";
+        #"${modifier}+Shift+${right}" =  "mark --add \"_swap\", focus right, swap container with mark \"_swap\", unmark \"_swap\"";        "${modifier}+Shift+Left" =      "swap left";
+        #"${modifier}+Shift+Left" =      "mark --add \"_swap\", focus left,  swap container with mark \"_swap\", unmark \"_swap\"";
+        #"${modifier}+Shift+Down" =      "mark --add \"_swap\", focus down,  swap container with mark \"_swap\", unmark \"_swap\"";
+        #"${modifier}+Shift+Up" =        "mark --add \"_swap\", focus up,    swap container with mark \"_swap\", unmark \"_swap\"";
+        #"${modifier}+Shift+Right" =     "mark --add \"_swap\", focus right, swap container with mark \"_swap\", unmark \"_swap\"";
 
         # Navigate to next/prev workspace
         "${modifier}+Ctrl+${left}" =    "workspace prev";
@@ -216,6 +215,13 @@
       # Read `man 5 sway-input` for more information about this section.
       # Launch the network manager widget!
       exec nm-applet
+
+      #FIXME: update this to be above! moves windows.
+      # Swap positions of the current window with the one on $direction
+      bindsym $mod+Shift+Left  mark --add "_swap", focus left,  swap container with mark "_swap", focus left,  unmark "_swap"
+      bindsym $mod+Shift+Down  mark --add "_swap", focus down,  swap container with mark "_swap", focus down,  unmark "_swap"
+      bindsym $mod+Shift+Up    mark --add "_swap", focus up,    swap container with mark "_swap", focus up,    unmark "_swap"
+      bindsym $mod+Shift+Right mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"
 
       # SET workspace to specific output
       workspace 1 output DP-4
