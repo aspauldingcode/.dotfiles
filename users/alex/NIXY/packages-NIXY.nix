@@ -20,6 +20,7 @@
     discord #unfree! move to allowUnfree predictate.
     spotify
     vscode
+    # bonsai #Only available on mac?
     utm 
     mas
     vscode
