@@ -22,7 +22,7 @@
     ifstat-legacy 
     discord
     ranger
-    darwin.iproute2mac
+    #darwin.iproute2mac #MUST BE BREW PACKAGE?
     ncurses6
     hexedit
     # javaPackages.openjfx19

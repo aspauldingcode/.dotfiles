@@ -61,3 +61,28 @@ update_sketchybar
 # Replace $NAME with the actual name you want to set for sketchybar
 # For example: NAME=my_window_label update_sketchybar
 
+
+
+
+
+# Handle mouse events
+case "$SENDER" in
+  "mouse.entered")
+    sleep 1
+    sketchybar --set $NAME popup.drawing=on
+    #echo "Mouse Hovered in $NAME icon" >> /tmp/sketchybar_debug.log
+    ;;
+  "mouse.exited" | "mouse.exited.global")
+    sketchybar --set $NAME popup.drawing=off
+    #echo "Mouse left hover of $NAME icon" >> /tmp/sketchybar_debug.log
+    ;;
+  "mouse.clicked")
+    #sketchybar --set datetime popup.drawing=toggle
+    #echo "Mouse clicked on $NAME icon" >> /tmp/sketchybar_debug.log
+    # toggle_battery_popup
+    ;;
+  "routine")
+    # Update battery info periodically
+    update_battery
+    ;;
+esac

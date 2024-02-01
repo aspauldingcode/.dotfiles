@@ -5,6 +5,7 @@
   nixpkgs = {
     config = {
       allowUnfree = true;
+      #allowUnfreePredicate = (_: true);
       allowUnsupportedSystem = false;
       allowBroken = false;
     };
@@ -16,8 +17,7 @@
     chatgpt-cli
     cowsay
     qemu
-    # libreoffice-qt
-    discord
+    discord #unfree! move to allowUnfree predictate.
     spotify
     vscode
     utm 
@@ -66,8 +66,8 @@
 
     echo "Rebuilding..."
     cd ~/.dotfiles
-    darwin-rebuild switch --flake .#NIXY
-    home-manager switch --flake .#alex@NIXY
+    darwin-rebuild switch --show-trace --flake .#NIXY
+    $home-manager switch --show-trace --flake .#alex@NIXY
     echo "Done."
 
     if [ "$run_fix_wm" = true ]; then

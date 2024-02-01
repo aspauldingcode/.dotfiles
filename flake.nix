@@ -2,16 +2,18 @@
   description = "Universal Flake by Alex - macOS and NixOS";
 
   inputs = {
-    nixpkgs.url =               "github:nixos/nixpkgs/nixos-23.11";
-    pkgs-unstable.url =         "github:nixos/nixpkgs/nixpkgs-unstable";
+    #nixpkgs.url =               "github:nixos/nixpkgs/nixos-23.11";
+    #pkgs-unstable.url =         "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url =               "github:nixos/nixpkgs/nixpkgs-unstable";
+
     nix-darwin = {
       url =                     "github:lnl7/nix-darwin";
       inputs.nixpkgs.follows =  "nixpkgs";
     };
-    home-manager.url =          "github:nix-community/home-manager/release-23.11"; # HOME-MANGER INSTALLED AS A NixOS/Darwin MODULE!
+    home-manager.url =          "github:nix-community/home-manager/master";
     nixvim = {
       url =                     "github:nix-community/nixvim";
-      #inputs.nixpkgs.follows =  "pkgs-unstable";
+      inputs.nixpkgs.follows =  "nixpkgs";
     };
     nix-colors.url =            "github:misterio77/nix-colors"; 
     mobile-nixos = {
@@ -20,7 +22,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, pkgs-unstable, nix-darwin, home-manager, nixvim, flake-parts, nix-colors, mobile-nixos }: 
+  outputs = { self, nixpkgs, nix-darwin, home-manager, nixvim, flake-parts, nix-colors, mobile-nixos }: 
   let inherit (self) inputs;
     # Define common specialArgs for nixosConfigurations and homeConfigurations
     commonSpecialArgs = { inherit inputs nix-darwin nixvim home-manager flake-parts nix-colors self; };
@@ -45,17 +47,19 @@
     # Define Darwin (macOS) configurations
     darwinConfigurations = {
       NIXY = nix-darwin.lib.darwinSystem {
-        #pkgs = nixpkgs.legacyPackages.aarch64-darwin;
-        #pkgs-unstable = import pkgs-unstable;
         pkgs = import nixpkgs {
           system = "aarch64-darwin";
+          config.allowUnfree = true; 
           overlays = [ 
-            (final: prev: {
+            #(final: prev: {
               #htmx-lsp = prev.pkgs.callPackage ./users/alex/extraConfig/nvim/htmx-lsp.nix {};
               #htmx-lsp = prev.pkgs.emptyDirectory;
-              htmx-lsp = pkgs-unstable.htmx-lsp; # if you have separate pkgs for unstable and want to use it from that
-              templ = pkgs-unstable.templ;
-            })
+              #htmx-lsp = pkgs-unstable.legacyPackages.${prev.system}.htmx-lsp;
+              #templ = pkgs-unstable.legacyPackages.${prev.system}.templ;
+              #vimPlugins = { inherit (pkgs-unstable.legacyPackages.${prev.system}.vimPlugins) codeium-nvim gruvbox-nvim vim-airline copilot-nvim copilot-vim copilot-lua emmet-vim vim-endwise vim-fugitive goyo-vim instant-nvim vim-ledger magma-nvim-goose markdown-preview-nvim molten-nvim vim-nix vim-startify surround tagbar undotree vim-slime zig-vim copilot-cmp indent-blankline-nvim lualine-nvim nvim-web-devicons nvim-lspconfig nvim-jdtls clangd_extensions-nvim gitgutter lspkind-nvim; };
+              #inherit (pkgs-unstable.legacyPackages.${prev.system}) vimPlugins;
+            #  }
+            #)
           ];
         };
 

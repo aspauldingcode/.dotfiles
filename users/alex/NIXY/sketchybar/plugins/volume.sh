@@ -22,30 +22,25 @@ volume_change() {
   *) ICON=$VOLUME_100 ;;
   esac
 
-  sketchybar --set volume_icon label="$ICON $INFO" #add the icon and the percentage
-
-  sketchybar --set $NAME slider.percentage=$INFO \
-    --animate tanh 30 --set $NAME slider.width=100
-
-  sleep 2
-
-  FINAL_PERCENTAGE=$(sketchybar --query $NAME | jq -r ".slider.percentage")
-  if [ "$FINAL_PERCENTAGE" -eq "$INFO" ]; then
-    sketchybar --animate tanh 30 --set $NAME slider.width=0
-  fi
+  sketchybar --set volume_icon label="$ICON $INFO%" #add the icon and the percentage
 }
 
 mouse_clicked() {
-  osascript -e "set volume output volume $PERCENTAGE"
+  #osascript -e "set volume output volume 0"
+  say hi
 }
 
 mouse_entered() {
-  sketchybar --set volume_icon slider.knob.drawing=on
+  sleep 2
+  sketchybar --set volume_icon popup.drawing=on
+  sketchybar --set volume popup.drawing=on
 }
 
 mouse_exited() {
-  sketchybar --set volume_icon slider.knob.drawing=off
+  sketchybar --set volume_icon popup.drawing=off
+  sketchybar --set volume popup.drawing=off
 }
+
 
 case "$SENDER" in
 "volume_change")

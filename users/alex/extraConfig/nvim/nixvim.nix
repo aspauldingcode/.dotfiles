@@ -226,11 +226,11 @@
         enable = false;
         installLanguageServer = false;
       };
-      htmx = {
-        enable = false;
-        plugins.lsp.servers.htmx.package = ./htmx-lsp-derivation.nix;
-        installLanguageServer = false; # FAILED
-      };
+      #htmx = {
+      #  enable = false;
+      #  plugins.lsp.servers.htmx.package = ./htmx-lsp-derivation.nix;
+      #  installLanguageServer = false; # FAILED
+      #};
       intelephense = {
         enable = true;
         installLanguageServer = true;
@@ -326,16 +326,14 @@
         #linter - flake8
         #formatter - black
       };
-      /*
-      rnix-lsp = {
-        enable = false; # using nil_ls instead!
-        installLanguageServer = true;
-      };
-      ruff-lsp = {
-        enable = true;
-        installLanguageServer = true;
-      };
-      */
+      #rnix-lsp = {
+      #  enable = false; # using nil_ls instead!
+      #  installLanguageServer = true;
+      #};
+      #ruff-lsp = {
+      #  enable = true;
+      #  installLanguageServer = true;
+      #};
       rust-analyzer = {
         enable = true;
         installLanguageServer = true;
@@ -415,7 +413,7 @@
     #cmp-zsh.enable = true;
 
     # AI code-completion tools
-    codeium-nvim.enable = true;
+    codeium-nvim.enable = false;
     copilot-cmp.enable = true;
     copilot-lua = {
       enable = true;
@@ -485,7 +483,7 @@ colorschemes.gruvbox = {
   invertSelection = true;
 };
 
-extraPlugins = with pkgs.vimPlugins; [
+#extraPlugins = with pkgs.vimPlugins; [
       # LSP
       #{
       #  plugin = nvim-lspconfig;

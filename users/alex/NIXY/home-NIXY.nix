@@ -7,7 +7,7 @@
     imports = [
       nix-colors.homeManagerModules.default
       ./packages-NIXY.nix
-      ../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
+      #../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
       ./alacritty.nix
       ./git.nix
       ./fish.nix
@@ -26,7 +26,7 @@
     home = {
       username = "alex";
       homeDirectory = lib.mkForce "/Users/alex";
-      stateVersion = "23.11"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+      stateVersion = "23.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
       shellAliases = { 
         python = "python3.11";
         #vim = "nvim";

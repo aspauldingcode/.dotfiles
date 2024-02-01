@@ -10,7 +10,11 @@ CURR_TX="$(echo "$CURRENT_WIFI" | grep -o "lastTxRate: .*" | sed 's/^lastTxRate:
 POPUP_OFF="sketchybar --set wifi.ssid popup.drawing=off && sketchybar --set wifi.speed popup.drawing=off"
 WIFI_INTERFACE=$(networksetup -listallhardwareports | awk '/Wi-Fi/{getline; print $2}')
 WIFI_POWER=$(networksetup -getairportpower $WIFI_INTERFACE | awk '{print $4}')
-IP_ADDR=$(ipconfig getifaddr $WIFI_INTERFACE)
+
+# Get the second IP address line REQUIRES iproute2mac HOMEBREW!
+IP_ADDR="$(ip addr show dev en0 | awk '/inet / {print $2}')"
+
+#IP_ADDR=$(ipconfig getifaddr $WIFI_INTERFACE)
 
 ssid=(
   icon=$NETWORK
@@ -97,3 +101,31 @@ if [ $CURR_TX = 0 ]; then
 fi
 
 sketchybar --set $NAME label=$WIFI
+
+
+
+
+
+
+# Handle mouse events
+case "$SENDER" in
+  "mouse.entered")
+    sleep 1
+    sketchybar --set $NAME popup.drawing=on
+    #echo "Mouse Hovered in $NAME icon" >> /tmp/sketchybar_debug.log
+    ;;
+  "mouse.exited" | "mouse.exited.global")
+    sketchybar --set $NAME popup.drawing=off
+    #echo "Mouse left hover of $NAME icon" >> /tmp/sketchybar_debug.log
+    ;;
+  "mouse.clicked")
+    #sketchybar --set $NAME popup.drawing=toggle
+    #echo "Mouse clicked on $NAME icon" >> /tmp/sketchybar_debug.log
+    # toggle_battery_popup
+    ;;
+  "routine")
+    # Update battery info periodically
+    update_battery
+    ;;
+esac
+

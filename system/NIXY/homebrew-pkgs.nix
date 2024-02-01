@@ -27,6 +27,8 @@
       "pkgconf"
       "portaudio"
       "iniparser"
+      "gcal"
+      "iproute2mac"
     ];
     #masApps = [ #FAILS
       #497799835 #Xcode 

@@ -36,6 +36,7 @@
       AppleEnableMouseSwipeNavigateWithScrolls = false;
       AppleEnableSwipeNavigateWithScrolls = false;
       "com.apple.sound.beep.volume" = 0.0; # mute beep/alert volume
+      "com.apple.sound.beep.feedback" = 1; # enable volume changed feedback.
     };
     SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true; # always up to date
     spaces = {
@@ -59,7 +60,7 @@
     }; 
     menuExtraClock.IsAnalog = true;
     trackpad = {
-      ActuationStrength = 0; # silent clicking
+      ActuationStrength = 1; # 0 for silent clicking, 1 to disable
       Clicking = false; # tap to click
       Dragging = true; # tap to drag
       TrackpadRightClick = true;

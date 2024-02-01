@@ -6,7 +6,7 @@ source "$HOME/.config/sketchybar/icons.sh"
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 ITEM_DIR="$HOME/.config/sketchybar/items"
 SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
-POPUP_CLICK_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
+POPUP_TOGGLE_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
 
 # ACTIVE_SPACE=$(yabai -m query --spaces --space | jq '.index')
 SPACE_ICONS=("1" "2" "3" "4" "5" "6" "7" "8" "9" "10")
@@ -45,20 +45,20 @@ sketchybar --default "${defaults[@]}"
 datetime=(
 #FIXME: ONHOVER: https://github.com/FelixKratz/SketchyBar/discussions/12#discussioncomment-5328921
   background.color=$TEMPUS
-  background.padding_left=3
-  background.padding_right=3
+  label.padding_left=15
+  label.padding_right=15
   background.height=19
   background.corner_radius=10
   popup.horizontal=on # FIXME: FIGURE OUT HOW TO MAKE CALENDAR WITHOUT THIS!
   popup.align=center
-  icon.padding_right=10
-  icon.padding_left=10
-  icon=$TIME
-  icon.drawing=on
-  label.padding_right=10
-  update_freq=1
+  #icon.padding_right=10
+  #icon.padding_left=10
+  #icon=$TIME
+  #icon.drawing=on
+  #label.padding_right=10
+  update_freq=60
   script="$PLUGIN_DIR/datetime.sh"
-  click_script="$POPUP_CLICK_SCRIPT"
+  #click_script="$POPUP_TOGGLE_SCRIPT"
   popup.height=135
   popup.width=10
   background.corner_radius=10
@@ -66,9 +66,9 @@ datetime=(
 
 wifi=(
   script="$PLUGIN_DIR/wifi.sh"
-  click_script="$POPUP_CLICK_SCRIPT"
+  #click_script="$POPUP_TOGGLE_SCRIPT"
   label.padding_right=10
-  update_freq=2
+  update_freq=10
   popup.align=center
 )
 
@@ -76,9 +76,10 @@ battery=(
   script="$PLUGIN_DIR/battery.sh"
   update_freq=120
   updates=on
-  click_script="$POPUP_CLICK_SCRIPT"
+  #click_script="$POPUP_TOGGLE_SCRIPT"
   label.padding_right=10
   popup.align=center
+
 )
 
 volume=(
@@ -86,18 +87,7 @@ volume=(
   updates=on
   label.drawing=off
   icon.drawing=off
-  slider.highlight_color=$GREY
-  slider.background.height=5
-  slider.background.corner_radius=3
-  slider.background.color=$TEMPUS
-  slider.knob=$DOT
-  slider.knob.color=$WHITE
-  slider.knob.drawing=off
-  slider.padding_left=15
-  slider.padding_right=15
-  slider.drawing=off
-  label.padding_right=10
-  label.padding_left=10
+  #label.padding_left=10
   background.color=$STATUS
   background.height=10
   background.corner_radius=10
@@ -109,7 +99,7 @@ volume=(
 volume_icon=(
   script="$PLUGIN_DIR/volume_icon.sh"
   click_script="$PLUGIN_DIR/volume_click.sh"
-  padding_right=10
+  padding_right=0
   padding_left=10
 )
 
@@ -122,7 +112,7 @@ mail=(
   icon="$MAIL"
   icon.padding_left=15
   script="$PLUGIN_DIR/mail.sh"
-  click_script="$POPUP_CLICK_SCRIPT"
+  click_script="$POPUP_TOGGLE_SCRIPT"
   update_freq=60
 )
 
@@ -133,10 +123,11 @@ cava=(
   label.font="Hack Nerd Font Mono:Regular:13.0"
   icon.drawing=off
   label="cava"
+  label.padding_left="4"
 )
 
 spotify=(
-  click_script="$POPUP_CLICK_SCRIPT"
+  click_script="$POPUP_TOGGLE_SCRIPT"
   popup.horizontal=on
   popup.align=center
   popup.height=100
@@ -187,7 +178,7 @@ cpu=(
 
 apple=(
   script="$PLUGIN_DIR/apple.sh"
-  click_script="$POPUP_CLICK_SCRIPT"
+  #click_script="$POPUP_TOGGLE_SCRIPT"
   label=$APPLE
   label.padding_right=15
   label.padding_left=15
@@ -208,7 +199,9 @@ space_bg=(
 ## Adding sketchybar Items:
 # Left Items
 sketchybar --add item apple left \
-  --set apple "${apple[@]}"
+  --set apple "${apple[@]}" \
+  --subscribe apple mouse.entered mouse.exited mouse.exited.global
+
 for i in "${!SPACE_ICONS[@]}"
 
 # ADD ignore_association=on !!!
@@ -234,27 +227,28 @@ sketchybar --add item separator_left left \
     icon= \
     padding_left=8 \
     label.drawing=off \
-    \
   --add item front_app left \
   --set front_app "${front_app[@]}" \
     script="$PLUGIN_DIR/front_app.sh" \
+    click_script="yabai -m window --close" \
     icon.drawing=on \
     label.padding_left=15 \
     label.padding_right=15 \
-  --subscribe front_app front_app_switched
+  --subscribe front_app front_app_switched mouse.clicked mouse.entered mouse.exited
 sketchybar --add item active_app left \
-   --set active_app "${active_app[@]}" \ 
+   --set active_app "${active_app[@]}" \
    --subscribe front_app front_app_switched
 
 # Center Items
 sketchybar --add item volume_icon center \
-  --set volume_icon "${volume_icon[@]}"
+  --set volume_icon "${volume_icon[@]}" \
+  --subscribe volume volume_change mouse.clicked mouse.entered mouse.exited mouse.exited.global mouse.scrolled
 sketchybar --add slider volume center \
   --set volume "${volume[@]}" \
-  --subscribe volume volume_change mouse.clicked mouse.entered mouse.exited mouse.scrolled
+  --subscribe volume volume_change mouse.clicked mouse.entered mouse.exited mouse.exited.global mouse.scrolled
 sketchybar --add item datetime center \
   --set datetime "${datetime[@]}" \
-  --subscribe time system_woke
+  --subscribe time system_woke mouse.entered mouse.exited mouse.exited.global
 sketchybar --add item cava center \
   --set cava "${cava[@]}"
   # --add item spotify_label center \
@@ -262,8 +256,7 @@ sketchybar --add item cava center \
 sketchybar --add event spotify_change $SPOTIFY_EVENT \
   --add item spotify center \
   --set spotify "${spotify[@]}" \
-  --subscribe spotify mouse.entered mouse.exited \
-  mouse.exited.global
+  --subscribe spotify mouse.entered mouse.exited mouse.exited.global
 
 # Right Items
 sketchybar --add item ram right \
@@ -274,15 +267,17 @@ sketchybar  --add item separator_right right \
   --set separator_right "${separator_right[@]}" \
     icon= \
     padding_right=0 \
-    label.drawing=off \
+    label.drawing=off 
 sketchybar --add item battery right \
   --set battery "${battery[@]}" \
-  --subscribe battery power_source_change system_woke
+  --subscribe battery power_source_change system_woke mouse.entered mouse.exited mouse.exited.global
+
 rm -f /tmp/sketchybar_speed
 rm -f /tmp/sketchybar_wifi
 sketchybar --add item wifi right \
   --set wifi "${wifi[@]}" \
-  --subscribe wifi system_woke
+  --subscribe wifi system_woke mouse.entered mouse.exited mouse.exited.global
+
 sketchybar --add item mail right \
   --set mail "${mail[@]}"
 
@@ -296,7 +291,7 @@ brackets=(
 
 sketchybar --add bracket lbracket apple separator_left front_app left \
   --set lbracket "${brackets[@]}"
-sketchybar --add bracket cbracket volume volume_icon datetime cava spotify center \
+sketchybar --add bracket cbracket volume_icon datetime cava spotify center \
   --set cbracket "${brackets[@]}"
 sketchybar --add bracket rbracket wifi battery separator_right mail ram cpu right \
   --set rbracket "${brackets[@]}"

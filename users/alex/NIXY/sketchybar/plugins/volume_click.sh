@@ -51,3 +51,36 @@ else
 fi
 
 toggle_detail
+
+
+mouse_clicked() {
+  #osascript -e "set volume output volume 0"
+  say hi
+}
+
+mouse_entered() {
+  sleep 2
+  sketchybar --set volume_icon popup.drawing=on
+  sketchybar --set volume popup.drawing=on
+}
+
+mouse_exited() {
+  sketchybar --set volume_icon popup.drawing=off
+  sketchybar --set volume popup.drawing=off
+}
+
+case "$SENDER" in
+"volume_change")
+  volume_change
+  ;;
+"mouse.clicked")
+  mouse_clicked
+  ;;
+"mouse.entered")
+  mouse_entered
+  ;;
+"mouse.exited")
+  mouse_exited
+  ;;
+esac
+

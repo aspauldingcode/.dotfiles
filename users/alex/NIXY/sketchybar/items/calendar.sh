@@ -1,8 +1,5 @@
 #!/bin/bash
 
-POPUP_OFF="sketchybar --set apple.logo popup.drawing=off"
-POPUP_CLICK_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
-
 # CALENDAR=$(gcal --starting-day=1 | sed 's/<\([^>]*\)>/ \1 /g')
 CALENDAR=$(gcal --starting-day=1 | sed -e 's|<|\[|g' -e 's|>|\]|g')
 # CALENDAR=$(gcal --starting-day=1 | sed -n '1,4p')
