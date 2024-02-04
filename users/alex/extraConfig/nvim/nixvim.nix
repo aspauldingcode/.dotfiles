@@ -1,8 +1,8 @@
-{ config, pkgs, lib, nixvim, ... }: 
+{ config, pkgs, lib, nixvim, inputs, ... }: 
 
 {
   imports = [
-    nixvim.homeManagerModules.nixvim
+    inputs.nixvim.homeManagerModules.nixvim
   ];
   
     nixpkgs.config.allowUnsupportedSystemPredicate = pkg:
@@ -15,7 +15,7 @@
   # nixvim specific dependencies
   home.packages = with pkgs; [
     # linters:
-    pylint #python
+    #pylint #python #NO SUCH FILE OR DIRECTORY?
     # python311Packages.flake8
     #ruff # python
     commitlint # git commits
@@ -62,7 +62,7 @@
     toLuaFile = file: "lua << EOF\n${builtins.readFile file}\nEOF\n";
   in 
   {
-    enable = true;
+    #enable = true;
     options = {
       number = true;         # Show line numbers
       relativenumber = true; # Show relative line numbers
@@ -473,17 +473,19 @@
 
 colorschemes.gruvbox = {
   enable = true;
-  transparentBg = true;
-  trueColor = true;
-  undercurl = true;
-  underline = true;
-  bold = true;
-  improvedStrings = true;
-  improvedWarnings = true;
-  invertSelection = true;
+  settings = {
+    transparentBg = true;
+    trueColor = true;
+    undercurl = true;
+    underline = true;
+    bold = true;
+    improvedStrings = true;
+    improvedWarnings = true;
+    invertSelection = true;
+  };
 };
 
-#extraPlugins = with pkgs.vimPlugins; [
+extraPlugins = with pkgs.vimPlugins; [
       # LSP
       #{
       #  plugin = nvim-lspconfig;

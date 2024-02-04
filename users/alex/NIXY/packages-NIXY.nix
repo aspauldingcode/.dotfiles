@@ -16,10 +16,11 @@
     pfetch
     chatgpt-cli
     cowsay
+    newsboat
+    #ruby
     qemu
-    discord #unfree! move to allowUnfree predictate.
     spotify
-    vscode
+    #vscode
     # bonsai #Only available on mac?
     utm 
     mas
@@ -68,7 +69,7 @@
     echo "Rebuilding..."
     cd ~/.dotfiles
     darwin-rebuild switch --show-trace --flake .#NIXY
-    $home-manager switch --show-trace --flake .#alex@NIXY
+    #home-manager switch --show-trace --flake .#alex@NIXY
     echo "Done."
 
     if [ "$run_fix_wm" = true ]; then
@@ -208,6 +209,15 @@
     done < "$input_file"
 
     '')
+
+	#disable-hud
+	(pkgs.writeShellScriptBin "disable-hud" ''
+	#!/bin/bash
+	echo "Note: SIP must be is disabled."
+	launchctl unload -F /System/Library/LaunchAgents/com.apple.OSDUIHelper.plist
+	(crontab -l ; echo "@reboot launchctl unload -F /System/Library/LaunchAgents/com.apple.OSDUIHelper.plist") | crontab -
+	echo "Volume and Brightness HUD disabled."
+	'')
 
    #toggle-sketchybar
    (pkgs.writeShellScriptBin "toggle-sketchybar" ''
