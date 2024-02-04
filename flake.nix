@@ -3,17 +3,21 @@
 
   inputs = {
     #nixpkgs.url =               "github:nixos/nixpkgs/nixos-23.11";
-    #pkgs-unstable.url =         "github:nixos/nixpkgs/nixpkgs-unstable";
+    #pkgs-unstable.url =         "github:nixos/nixpkgs/nixpkgs-unstable"; # to make stable/unstable
     nixpkgs.url =               "github:nixos/nixpkgs/nixpkgs-unstable";
     nix-darwin = {
       url =                     "github:lnl7/nix-darwin";
       inputs.nixpkgs.follows =  "nixpkgs";
     };
     home-manager.url =          "github:nix-community/home-manager/master";
+    
     nixvim = {
-      url =                     "github:nix-community/nixvim";
-      inputs.nixpkgs.follows =  "nixpkgs";
+    url = "github:nix-community/nixvim";
+    # If you are not running an unstable channel of nixpkgs, select the corresponding branch of nixvim.
+    #url = "github:nix-community/nixvim/nixos-23.05";
+    inputs.nixpkgs.follows = "nixpkgs";
     };
+
     nix-colors.url =            "github:misterio77/nix-colors"; 
     mobile-nixos = {
       url =                     "github:NixOS/mobile-nixos";

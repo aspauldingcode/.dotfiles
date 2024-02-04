@@ -7,7 +7,7 @@
     imports = [
       nix-colors.homeManagerModules.default
       ./packages-NIXY.nix
-      #../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
+      #../extraConfig/nvim/nixvim.nix
       ./alacritty.nix
       ./git.nix
       ./fish.nix
@@ -45,7 +45,9 @@
    # settings.experimental-features = [ "nix-command" "flakes" ];
   #};
 
-  programs = { # allow Home-Manager to configure itself
+  programs = { 
+    # allow Home-Manager to configure itself
     home-manager.enable = true;
+    ssh.addKeysToAgent = true;
   };
 }
