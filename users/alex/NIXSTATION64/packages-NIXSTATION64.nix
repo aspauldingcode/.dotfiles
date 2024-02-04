@@ -29,6 +29,9 @@
       permittedInsecurePackages = [
         "electron-19.1.9"
       ];
+      allowUnfreePredicate = (_: true);
+      allowUnsupportedSystem = false;
+      allowBroken = false;
     };
   };
 
@@ -42,10 +45,8 @@
     };
 
     packages = with pkgs; [
-    # DARLING PROJECT!
     darling
     darling-dmg
-
     lsof
     etcher
     standardnotes

@@ -151,8 +151,10 @@ in
           portable = "";
           default = [ "󰕿" "󰖀" "󰖀" "󰕾" ];
         };
+        scroll-step = 6;
         on-click = pavucontrol;
       };
+
       idle_inhibitor = {
         format = "{icon}";
         format-icons = {

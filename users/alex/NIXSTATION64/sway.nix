@@ -22,21 +22,21 @@
           res = "1920x1080";
           pos = "0,0"; 
           transform = "270";
-          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/BunnyCooks.jpg fill";
+          #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
         };
         DP-3 = {
           res = "1920x1080";
           pos = "1080,450";
-          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ElkCooks.jpg fill";
+          #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
         };
         DP-2 = {
           res = "1920x1080"; 
           pos = "3000,450";
-          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/sketchybarTODAY.png fill";
+          #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
         };
-        # "*" = { # change background for all outputs
-        #   bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/synthwave-night-skyscrapers.jpg fill";
-        # };
+        "*" = { # change background for all outputs
+          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
+        };
       };
       # Use alacritty as default terminal
       terminal = "alacritty"; 
@@ -92,7 +92,8 @@
 
         # Screenshot
         "Alt+Shift+3" = "exec screenshot"; # All visible outputs
-        "Alt+Shift+4" = "exec grimshot --notify save window";
+        "Alt+Shift+4" = ''exec grimshot --notify save window ~/Desktop/"Screenshot $(date '+%Y-%m-%d at %I.%M.%S %p').png"'';
+
 
         # Screen recording
         #"${modifier}+Print" = "exec wayrecorder --notify screen";

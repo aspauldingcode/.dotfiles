@@ -483,7 +483,7 @@ colorschemes.gruvbox = {
   invertSelection = true;
 };
 
-#extraPlugins = with pkgs.vimPlugins; [
+extraPlugins = with pkgs.vimPlugins; [
       # LSP
       #{
       #  plugin = nvim-lspconfig;

@@ -17,6 +17,7 @@
     neofetch
     ueberzugpp #replacement for depricated inline terminal image previewer
     yazi
+    grim
     krita
     libreoffice-fresh
     xdg-desktop-portal-wlr
@@ -69,8 +70,8 @@
     (pkgs.writeShellScriptBin "rebuild" ''
     # NIXSTATION64(x86_64-linux)
     cd ~/.dotfiles
-    sudo nixos-rebuild switch --flake .#NIXSTATION64 
-    home-manager switch --flake .#alex@NIXSTATION64
+    sudo nixos-rebuild switch --show-trace --flake .#NIXSTATION64 
+    #home-manager switch --flake .#alex@NIXSTATION64
     echo "Done. Running 'fix-wm'..."
     fix-wm
     echo "Completed."
@@ -101,11 +102,11 @@
       # Loop through each output and save its contents to the desktop directory
       for output_name in $output_names
       do
-      output_file="$output_directory/$output_name.png"
-      grim -o $output_name "$output_file"
-      done
-      '')
-    #maximize (FIXME maximize sway windows to window size rather than fullscreen)
+          output_file="$output_directory/Screenshot $(date '+%Y-%m-%d at %I.%M.%S %p') $output_name.png"
+          grim -o $output_name "$output_file"
+      done      
+    '')
+          #maximize (FIXME maximize sway windows to window size rather than fullscreen)
     (pkgs.writeShellScriptBin "maximize" ''
     # un/maximize script for i3 and sway
     # bindsym $mod+m exec ~/.config/i3/maximize.sh

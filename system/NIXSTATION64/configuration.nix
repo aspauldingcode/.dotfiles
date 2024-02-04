@@ -92,7 +92,6 @@
     };
   };
 
-
 # services
   services = {
     # PRETTY LOGIN SCREEN! (FIXME needs to be configured with osx sddm theme)
@@ -127,12 +126,14 @@
     udisks2.enable = true;
 
     # This setups a SSH server. Very important if you're setting up a headless system.
-    openssh = {
+    openssh = { #be sure to check allowed firewall ports
       enable = true;
       settings = {
-        PermitRootLogin = "no"; # Forbid root login through SSH.
-        PasswordAuthentication =
-          false; # Use keys only. Remove if you want to SSH using password (not recommended)
+        #PermitRootLogin = "no"; # Forbid root login through SSH.
+        PasswordAuthentication = false; # Use keys only. Remove if you want to SSH using password (not recommended)
+        X11Forwarding = true; 
+        KbdInteractiveAuthentication = false;
+        #AllowUsers = [ "alex" ];
         };
       };
 
@@ -175,9 +176,10 @@
 
   # allow AirPrinter through firewall
   networking.firewall = {
-    allowedTCPPorts = [ 631 7000 7001 7100 ];
-    allowedUDPPorts = [ 631 5353 6000 6001 7011 ];
+    allowedTCPPorts = [ 631 7000 7001 7100 22 ];
+    allowedUDPPorts = [ 631 5353 6000 6001 7011 22 ];
   };
+
   # programs
   programs = {
     fish.enable = false;
@@ -204,6 +206,7 @@
         # TODO: Add your SSH public key(s) here, if you plan on using SSH to connect
       ];
       shell = pkgs.zsh;
+      openssh.authorizedKeys.keyFiles = [ ./../id_ed25519-NIXSTATION64.pub ];
     };
 
     susu = {

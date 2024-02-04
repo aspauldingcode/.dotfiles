@@ -5,7 +5,6 @@
     #nixpkgs.url =               "github:nixos/nixpkgs/nixos-23.11";
     #pkgs-unstable.url =         "github:nixos/nixpkgs/nixpkgs-unstable";
     nixpkgs.url =               "github:nixos/nixpkgs/nixpkgs-unstable";
-
     nix-darwin = {
       url =                     "github:lnl7/nix-darwin";
       inputs.nixpkgs.follows =  "nixpkgs";
@@ -33,9 +32,27 @@
     # Define NixOS configurations
     nixosConfigurations = {
       NIXSTATION64 = nixpkgs.lib.nixosSystem {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        pkgs = import nixpkgs {
+          system = "x86_64-linux";
+          config = {
+            allowUnfree = true; 
+            permittedInsecurePackages = [
+              "electron-19.1.9"
+            ];
+          };
+        };
         specialArgs = commonSpecialArgs; /* // { extraPkgs = [ mobile-nixos ]; };*/
-        modules = [ ./system/NIXSTATION64/configuration.nix ];
+        modules = [ 
+          ./system/NIXSTATION64/configuration.nix 
+          home-manager.nixosModules.home-manager {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.alex = import ./users/alex/NIXSTATION64/home-NIXSTATION64.nix;
+            # Optionally, use home-manager.extraSpecialArgs to pass
+            # arguments to home.nix
+            home-manager.extraSpecialArgs = commonExtraSpecialArgs;
+          }
+        ];
       };
       NIXEDUP = nixpkgs.lib.nixosSystem {
         pkgs = nixpkgs.legacyPackages.aarch64-linux;
@@ -62,7 +79,6 @@
             #)
           ];
         };
-
         specialArgs = commonSpecialArgs;
         modules = [
           ./system/NIXY/darwin-configuration.nix 
@@ -70,7 +86,6 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.alex = import ./users/alex/NIXY/home-NIXY.nix;
-
             # Optionally, use home-manager.extraSpecialArgs to pass
             # arguments to home.nix
             home-manager.extraSpecialArgs = commonExtraSpecialArgs;
