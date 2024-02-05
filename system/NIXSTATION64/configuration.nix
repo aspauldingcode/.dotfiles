@@ -6,6 +6,7 @@
     # ("${mobile-nixos}/lib/configuration.nix" { device = "oneplus-fajita"; })
     ./packages.nix
     ./virtual-machines.nix
+    ./wg-quick.nix
   ];
 
   # Bootloader.

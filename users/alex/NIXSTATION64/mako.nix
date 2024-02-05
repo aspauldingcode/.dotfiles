@@ -8,7 +8,7 @@
     layer = "overlay";
     anchor = "top-right";
     borderSize = 2;
-    borderColor = "#${config.colorScheme.colors.base0C}";
+    borderColor = "#${config.colorScheme.colors.base02}";
     borderRadius = 10;
     defaultTimeout = 5000;
     ignoreTimeout = false;

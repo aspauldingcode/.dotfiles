@@ -15,7 +15,7 @@
   # nixvim specific dependencies
   home.packages = with pkgs; [
     # linters:
-    #pylint #python #NO SUCH FILE OR DIRECTORY?
+    pylint #python #NO SUCH FILE OR DIRECTORY?
     # python311Packages.flake8
     #ruff # python
     commitlint # git commits
@@ -62,7 +62,7 @@
     toLuaFile = file: "lua << EOF\n${builtins.readFile file}\nEOF\n";
   in 
   {
-    #enable = true;
+    enable = true;
     options = {
       number = true;         # Show line numbers
       relativenumber = true; # Show relative line numbers
@@ -77,16 +77,6 @@
     '';
     globals.mapleader = ","; # Sets the leader key to comma
     keymaps = [ # https://github.com/nix-community/nixvim/tree/main#key-mappings
-    {
-      key = ";";
-      action = ":";
-    }
-    {
-      mode = "n";
-      key = "<leader>m";
-      options.silent = true;
-      action = "<cmd>!make<CR>";
-    }
   ];
   plugins = { 
     #JAVALSP
@@ -402,19 +392,45 @@
       # };
     };
   };
-    # lsp-lines.enable = true;
+    lsp-lines.enable = true;
     lspkind.enable = true;
 
+    # treesitter conf
+    treesitter = {
+      enable = true;
+      folding = true;
+      indent = true;
+      incrementalSelection = {
+        enable = true;
+        keymaps = {
+          initSelection = "gnn";
+          nodeDecremental = "grm";
+          nodeIncremental = "grn";
+          scopeIncremental = "grc";
+        };
+      };
+    };
+    
     # Filetree
     chadtree.enable = false;
-
+    nvim-tree = {
+      enable = true;
+      autoClose = true;
+      actions.openFile.quitOnOpen = true; # close on file open 
+      tab.sync.close = true;
+      tab.sync.open = true;
+      renderer.addTrailing = false;
+    };
+    
     # code-completion
+    cmp-nvim-lsp.enable = true;
     #cmp-nvim-lsp-signature-help.enable = true;
     #cmp-zsh.enable = true;
+    intellitab.enable = true;
 
     # AI code-completion tools
     codeium-nvim.enable = false;
-    copilot-cmp.enable = true;
+    #copilot-cmp.enable = true;
     copilot-lua = {
       enable = true;
       suggestion.enabled = false;
@@ -429,68 +445,71 @@
     gitgutter.enable = true;
 
     # statusbar
-    lualine = {
-      enable=true;
-      # sections.lualine_c = [ "lsp_progress" ]; # Install lsp_progress!
-    };
+    #lualine = {
+    #  enable=true;
+    #  # sections.lualine_c = [ "lsp_progress" ]; # Install lsp_progress!
+    #};
 
     ## VISUAL FIXES
     # startup screen #FIXME: USE TOILET BANNER TO SAY HELLO!
     startup.enable = false;
     startify.enable = true;
 
+    #commenting
+    comment-nvim.enable = true;
+
     # outline code blocks
     indent-blankline = {
-      enable = true;
-      exclude = { #FIXME: ADD FileTree and CHADTREE!!!
-      buftypes = [
-        "terminal" "nofile" "quickfix" "prompt"
-      ];
-      filetypes = [ 
-        "lspinfo" "packer" "checkhealth" "help" "man" "gitcommit" 
-        "TelescopePrompt" "TelescopeResults" "\'\'" "nvimtree" "startify"
-        "dashboard" 
-      ];
+     enable = true;
+     exclude = { #FIXME: ADD FileTree and CHADTREE!!!
+     buftypes = [
+       "terminal" "nofile" "quickfix" "prompt"
+     ];
+     filetypes = [ 
+       "lspinfo" "packer" "checkhealth" "help" "man" "gitcommit" 
+       "TelescopePrompt" "TelescopeResults" "\'\'" "nvimtree" "startify"
+       "dashboard" 
+     ];
     };
     indent = {
-      char = "▏"; # Alternatives: https://github.com/lukas-reineke/indent-blankline.nvim/blob/12e92044d313c54c438bd786d11684c88f6f78cd/doc/indent_blankline.txt#L262
-      tabChar = null;
-      highlight = null; # "|hl-IblIndent|"
+     char = "▏"; # Alternatives: https://github.com/lukas-reineke/indent-blankline.nvim/blob/12e92044d313c54c438bd786d11684c88f6f78cd/doc/indent_blankline.txt#L262
+     tabChar = null;
+     highlight = null; # "|hl-IblIndent|"
     };
     scope = {
-      enabled = true;
-      char = null; # use indent.char
-      highlight = null; # Shows an underline on the first line of the scope
-      showExactScope = true; # Shows an underline on the first line of the scope starting at the exact start of the scope
+     enabled = true;
+     char = null; # use indent.char
+     highlight = null; # Shows an underline on the first line of the scope
+     showExactScope = true; # Shows an underline on the first line of the scope starting at the exact start of the scope
     };
     whitespace = {
-      highlight = null; # use default |hl-IblWhitespace|
-      removeBlanklineTrail = true; # set false?
+     highlight = null; # use default |hl-IblWhitespace|
+     removeBlanklineTrail = true; # set false?
     };
   };
 
 };
 
 colorschemes.gruvbox = {
-  enable = true;
-  settings = {
-    transparentBg = true;
-    trueColor = true;
-    undercurl = true;
-    underline = true;
-    bold = true;
-    improvedStrings = true;
-    improvedWarnings = true;
-    invertSelection = true;
-  };
+ enable = true;
+ settings = {
+   transparentBg = true;
+   trueColor = true;
+   undercurl = true;
+   underline = true;
+   bold = true;
+   improvedStrings = true;
+   improvedWarnings = true;
+   invertSelection = true;
+ };
 };
 
 extraPlugins = with pkgs.vimPlugins; [
       # LSP
-      #{
-      #  plugin = nvim-lspconfig;
-      #  config = toLuaFile ../extraConfig/nvim/plugin/lsp.lua;
-      #}
+      {
+        plugin = nvim-lspconfig;
+        config = toLuaFile ./plugin/lsp.lua;
+      }
 
       # FIXME: y u no worky? >:(
       # lsp-status-nvim # FIXME: What about lspinfo?
@@ -500,50 +519,45 @@ extraPlugins = with pkgs.vimPlugins; [
       #  plugin = nvim-cmp;
       #  config = toLuaFile ./plugin/cmp.lua;
       #}
-      # cmp-nvim-lsp # FIXME: Learn more
-      # cmp-nvim-lsp-document-symbol 
-      # cmp-nvim-lsp-signature-help
-
-      {
-        plugin = comment-nvim;
-        config = toLua "require(\"Comment\").setup()";
-      }
+      cmp-nvim-lsp # FIXME: Learn more
+      cmp-nvim-lsp-document-symbol 
+      cmp-nvim-lsp-signature-help
 
       # {
       #   plugin = vim-startify;
       #   config = "let g:startify_change_to_vcs_root = 0";
       # }
 
-      {
-        plugin = nvim-colorizer-lua; # relies on AutoCmd
-        config = ''
-        packadd! nvim-colorizer.lua
-        lua require 'colorizer'.setup()
-        '';
-      }
+      #{
+      #  plugin = nvim-colorizer-lua; # relies on AutoCmd
+      #  config = ''
+      #  packadd! nvim-colorizer.lua
+      #  lua require 'colorizer'.setup()
+      #  '';
+      #}
 
-      {
-        plugin = telescope-nvim;
-        config = toLuaFile ./plugin/telescope.lua;
-      }
+      #{
+      #  plugin = telescope-nvim;
+      #  config = toLuaFile ./plugin/telescope.lua;
+      #}
 
       # File Tree
-      {
-        plugin = nvim-tree-lua;
-        config = toLuaFile ./plugin/nvim-tree.lua;
-      }
+      #{
+      #  plugin = nvim-tree-lua;
+      #  config = toLuaFile ./plugin/nvim-tree.lua;
+      #}
       nvim-web-devicons # optional, for file icons
 
       # Code Snippits
       luasnip # FIXME: Do I need this too? NEEDED
-      cmp-nvim-lsp # FIXME: What's this? NEEDED
+     # cmp-nvim-lsp # FIXME: What's this? NEEDED
       friendly-snippets 
-      cmp_luasnip # completion for lua snippits
+      #cmp_luasnip # completion for lua snippits
 
-      {
-        plugin = pkgs.vimPlugins.cmp-nvim-tags;
-        config = toLuaFile ./plugin/cmp-tags.lua;
-      }
+      #{
+      #  plugin = pkgs.vimPlugins.cmp-nvim-tags;
+      #  config = toLuaFile ./plugin/cmp-tags.lua;
+      #}
       #
       # {
       #   plugin = statuscol-nvim;
@@ -577,73 +591,11 @@ extraPlugins = with pkgs.vimPlugins; [
       vim-nix # better highlighting for nix files
 
       # Emacs Org for nvim
-      {
-        plugin = neorg;
-        config = toLuaFile ./plugin/neorg.lua;
-      }
+      #{
+      #  plugin = neorg;
+      #  config = toLuaFile ./plugin/neorg.lua;
+      #}
       neorg-telescope
-
-      {
-        plugin = guess-indent-nvim;
-        config = toLua "require(\"guess-indent\").setup()";
-      }
-
-      # Git Visual integration #FIXME: USING GITGUTTER!
-      # {
-      #   plugin = gitsigns-nvim;
-      #   config = toLuaFile ./plugin/gitsigns.lua;
-      # }
-
-      # { 
-      #   plugin = lsp_lines-nvim;
-      #   config = toLua ''
-      #   require("lsp_lines").setup()
-      #   vim.diagnostic.config({
-      #     virtual_text = false,
-      #   })
-      #   vim.keymap.set(
-      #     "",
-      #     "<Leader>l",
-      #     require("lsp_lines").toggle,
-      #     { desc = "Toggle lsp_lines" }
-      #     )
-      #     '';        
-      #   }
-      
-      # { 
-      #   plugin = lualine-lsp-progress;
-      #   config = toLuaFile ./plugin/lualine-lsp-progress.lua;
-      # }
-
-      {
-        plugin = (nvim-treesitter.withPlugins (p: [
-          p.tree-sitter-nix
-          p.tree-sitter-vim
-          p.tree-sitter-bash
-          p.tree-sitter-lua
-          p.tree-sitter-python
-          p.tree-sitter-json
-          p.tree-sitter-java
-          p.tree-sitter-kotlin
-          p.tree-sitter-javascript
-          p.tree-sitter-typescript
-          p.tree-sitter-swift
-          p.tree-sitter-cpp
-          p.tree-sitter-c
-          p.tree-sitter-objc
-          p.tree-sitter-c-sharp
-          p.tree-sitter-rust
-          p.tree-sitter-go
-          p.tree-sitter-sql
-          p.tree-sitter-xml
-          p.tree-sitter-html
-          p.tree-sitter-css
-          p.tree-sitter-php
-          p.tree-sitter-norg
-          p.tree-sitter-ini
-        ]));
-        config = toLuaFile ./plugin/treesitter.lua;
-      }
     ];
   };
 }

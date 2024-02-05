@@ -635,7 +635,7 @@ in
     }
 
     tooltip {
-      background-color: #${colors.base00};
+      background-color: #${colors.base02};
       border: 2px solid #${colors.base0C};
       border-radius: 10px;
       margin-top: 20px;

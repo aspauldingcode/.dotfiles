@@ -97,65 +97,9 @@
         ];
       };
     };
-
-    # FIXME: now using home-manager as system modules for NixOS and Darwin.
-    # Define home-manager configurations for Users
-    /*
-    homeConfigurations = {
-
-      # User: "Alex"
-      "alex@NIXY" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.aarch64-darwin;
-        extraSpecialArgs = commonSpecialArgs;
-        modules = [ ./users/alex/NIXY/home-NIXY.nix ];
-      };
-
-      "alex@NIXEDUP" = home-manager.lib.homeManagerConfiguration { 
-        pkgs = nixpkgs.legacyPackages.aarch64-linux;
-        extraSpecialArgs = commonSpecialArgs;
-        modules = [ ./users/alex/NIXEDUP/home-NIXEDUP.nix];
-      };
-
-      "alex@NIXSTATION64" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        extraSpecialArgs = commonSpecialArgs;
-        modules = [ ./users/alex/NIXSTATION64/home-NIXSTATION64.nix ];
-      };
-
-    # User: "Su Su"
-    "susu@NIXY" = home-manager.lib.homeManagerConfiguration {
-      pkgs = nixpkgs.legacyPackages.aarch64-darwin;
-      extraSpecialArgs = commonSpecialArgs;
-      modules = [ ./users/susu/home-NIXY.nix ];
-    };
-
-    "susu@NIXSTATION64" = home-manager.lib.homeManagerConfiguration {
-      pkgs = nixpkgs.legacyPackages.x86_64-linux;
-      extraSpecialArgs = commonSpecialArgs;
-      modules = [ ./users/susu/home-NIXSTATION64.nix ];
-    };
-  };
-  */
-
   in {
       # Return all the configurations
       nixosConfigurations = nixosConfigurations;
       darwinConfigurations = darwinConfigurations;
-
-      ## Ignore all this sh*t:
-      #homeConfigurations = homeConfigurations;
-
-      #apps = eachSystem (pkgs: {
-      #let
-      #  setup = pkgs.writeScriptBin "setup" /* bash */ '' 
-      #  #!/bin/bash
-      #  # run the rebuild!
-      #  rebuild -r -f #FIXME: add -r -f flags to NIXSTATION64 and NIXEDUP! 
-      #  '';
-      #in {
-      #  type = "app";
-      #  program = "${setup}/bin/setup";
-      #};
-    #});    
   };
 }
