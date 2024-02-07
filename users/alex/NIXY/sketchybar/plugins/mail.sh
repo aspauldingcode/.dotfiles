@@ -6,12 +6,10 @@ RUNNING=$(osascript -e 'if application "Mail" is running then return 0')
 COUNT=0
 
 mail_popup=(
-  sticky=on#WTF doesn't change anything?
+  sticky=on #WTF doesn't change anything?
   icon=$MAIL_UNREAD
-  icon.padding_left=10
+  #icon.padding_left=10
   label.y_offset=0
-  label.padding_left=10
-  label.padding_right=10
   label.font="DejaVu Mono:Bold:12.0"
   height=10
   blur_radius=100

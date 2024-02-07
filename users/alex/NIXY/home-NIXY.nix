@@ -7,7 +7,7 @@
     imports = [
       nix-colors.homeManagerModules.default
       ./packages-NIXY.nix
-      #../extraConfig/nvim/nixvim.nix
+      #./../extraConfig/nvim/nixvim.nix
       ./alacritty.nix
       ./git.nix
       ./fish.nix

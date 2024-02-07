@@ -42,11 +42,8 @@ update_battery() {
   # Define battery popup properties
   battery_popup=(
     icon="$ICON"
-    icon.padding_left=10
     label="$PERCENTAGE %"
     label.y_offset=0
-    label.padding_left=10
-    label.padding_right=10
     label.font="DejaVu Mono:Bold:12.0"
     height=10
     blur_radius=100
@@ -69,15 +66,15 @@ fi
 case "$SENDER" in
   "mouse.entered")
     sleep 1
-    sketchybar --set datetime popup.drawing=on
+    sketchybar --set $NAME popup.drawing=on
     #echo "Mouse Hovered in $NAME icon" >> /tmp/sketchybar_debug.log
     ;;
   "mouse.exited" | "mouse.exited.global")
-    sketchybar --set datetime popup.drawing=off
+    sketchybar --set $NAME popup.drawing=off
     #echo "Mouse left hover of $NAME icon" >> /tmp/sketchybar_debug.log
     ;;
   "mouse.clicked")
-    #sketchybar --set datetime popup.drawing=toggle
+    #sketchybar --set $NAME popup.drawing=toggle
     #echo "Mouse clicked on $NAME icon" >> /tmp/sketchybar_debug.log
     # toggle_battery_popup
     ;;

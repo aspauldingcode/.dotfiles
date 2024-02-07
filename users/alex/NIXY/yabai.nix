@@ -33,7 +33,7 @@
       yabai -m config mouse_action2               resize
       yabai -m config mouse_drop_action           swap
       yabai -m config focus_follows_mouse         autofocus
-      yabai -m config mouse_follows_focus         on #FIXME: configure apps so I can turn this on.
+      yabai -m config mouse_follows_focus         off #FIXME: configure apps so I can turn this on.
 
       #UPGRADED to Sonoma. JankyBorders installed
       borders active_color=0xff"${colors.base0C}" inactive_color=0xff"${colors.base03}" width=5.0 &
@@ -42,13 +42,13 @@
       yabai -m config window_shadow               float
       yabai -m config window_opacity              on
       yabai -m config window_opacity_duration     0.1
-      yabai -m config window_animation_duration		0.35
-	    yabai -m config window_opacity_duration			0.35
-	    yabai -m config normal_window_opacity				0.95
-      yabai -m config active_window_opacity				1.0
+      yabai -m config window_animation_duration	  0.35
+      yabai -m config window_opacity_duration	  0.35
+      yabai -m config normal_window_opacity	  0.95
+      yabai -m config active_window_opacity	  1.0
       
       # layout
-      yabai -m config layout                      bsp
+      yabai -m config layout                      float # bsp
       yabai -m config auto_balance                off
       yabai -m config split_ratio                 0.50
       yabai -m config window_placement            second_child

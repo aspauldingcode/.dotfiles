@@ -18,7 +18,6 @@ let
       '';
 in {
 # ALL MUST BE MARKED AS EXECUTABLE!
-xdg.configFile."sketchybar/items/calendar.sh".source = ./items/calendar.sh;
 xdg.configFile."sketchybar/sketchybarrc".source = ./sketchybarrc;
 xdg.configFile."sketchybar/colors.sh".source = nixy-colors;
 xdg.configFile."sketchybar/icons.sh".source = ./icons.sh;
@@ -40,7 +39,6 @@ xdg.configFile."sketchybar/plugins/volume_click.sh".source = ./plugins/volume_cl
 xdg.configFile."sketchybar/plugins/wifi.sh".source = ./plugins/wifi.sh;
 
 # Specify executable for each file
-xdg.configFile."sketchybar/items/calendar.sh".executable = true;
 xdg.configFile."sketchybar/sketchybarrc".executable = true;
 xdg.configFile."sketchybar/colors.sh".executable = true;
 xdg.configFile."sketchybar/icons.sh".executable = true;
