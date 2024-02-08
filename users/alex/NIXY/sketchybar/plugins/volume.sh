@@ -22,37 +22,32 @@ volume_change() {
   *) ICON=$VOLUME_100 ;;
   esac
 
-  sketchybar --set volume_icon label="$ICON $INFO%" #add the icon and the percentage
+  sketchybar --set volume label="$ICON $INFO%" #add the icon and the percentage
 }
 
-mouse_clicked() {
-  #osascript -e "set volume output volume 0"
-  say hi
-}
-
-mouse_entered() {
-  sleep 2
-  sketchybar --set volume_icon popup.drawing=on
-  sketchybar --set volume popup.drawing=on
-}
-
-mouse_exited() {
-  sketchybar --set volume_icon popup.drawing=off
-  sketchybar --set volume popup.drawing=off
-}
-
+#volume_change # Run it once to set the icon and label!
 
 case "$SENDER" in
 "volume_change")
   volume_change
   ;;
-"mouse.clicked")
-  mouse_clicked
+"mouse.scrolled")
+  # Extract the delta value from INFO (assuming it's in JSON format)
+  SCROLL_DELTA=$(echo "$INFO" | tr -d '{}' | awk -F':' '/delta/ {print $2}' | tr -d ' ')
+
+  # Get the current volume level
+  CURRENT_VOLUME=$(osascript -e "output volume of (get volume settings)")
+
+  # Calculate the new volume level
+  NEW_VOLUME=$((CURRENT_VOLUME + SCROLL_DELTA * 2))
+
+  # Ensure the volume doesn't go below 0 or above 100
+  NEW_VOLUME=$(awk -v v="$NEW_VOLUME" 'BEGIN {print (v < 0) ? 0 : (v > 100) ? 100 : v}')
+
+  # Adjust volume using osascript
+  osascript -e "set volume output volume $NEW_VOLUME"
   ;;
-"mouse.entered")
-  mouse_entered
-  ;;
-"mouse.exited")
-  mouse_exited
-  ;;
+  "routine")
+    ;;
 esac
+

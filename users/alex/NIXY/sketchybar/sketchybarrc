@@ -80,15 +80,8 @@ battery=(
 volume=(
   script="$PLUGIN_DIR/volume.sh"
   updates=on
-  icon.padding_right=5
-)
-
-volume_icon=(
-  script="$PLUGIN_DIR/volume_icon.sh"
-  #click_script="$PLUGIN_DIR/volume_click.sh"
-  #padding_right=10
-  #padding_left=10
   icon.padding_left=10
+  label.padding_right=5
 )
 
 mail=(
@@ -132,15 +125,6 @@ spotify=(
   script="$PLUGIN_DIR/spotify.sh"
   update_freq=5
 )
-
-# spotify_label=(
-#   label="Spotify"
-#   label.padding_left=10
-#   label.padding_right=15
-#   label.font="JetBrains Mono:Bold:9.0"
-#   script="$PLUGIN_DIR/spotify.sh"
-#   update_freq=5
-# )
 
 ram=(
   icon=$RAM
@@ -230,12 +214,9 @@ sketchybar --add item active_app left \
    --subscribe front_app front_app_switched
 
 # Center Items
-sketchybar --add item volume_icon center \
-  --set volume_icon "${volume_icon[@]}" \
-  --subscribe volume volume_change mouse.clicked mouse.entered mouse.exited mouse.exited.global mouse.scrolled
-sketchybar --add slider volume center \
+sketchybar --add item volume center \
   --set volume "${volume[@]}" \
-  --subscribe volume volume_change mouse.clicked mouse.entered mouse.exited mouse.exited.global mouse.scrolled
+  --subscribe volume volume_change mouse.scrolled
 sketchybar --add item datetime center \
   --set datetime "${datetime[@]}" \
   --subscribe datetime system_woke mouse.clicked mouse.entered mouse.exited mouse.exited.global # REQUIRED events for hover popup.
@@ -281,7 +262,7 @@ brackets=(
 
 sketchybar --add bracket lbracket apple separator_left front_app left \
   --set lbracket "${brackets[@]}"
-sketchybar --add bracket cbracket volume_icon datetime cava spotify center \
+sketchybar --add bracket cbracket volume datetime cava spotify center \
   --set cbracket "${brackets[@]}"
 sketchybar --add bracket rbracket wifi battery separator_right mail ram cpu right \
   --set rbracket "${brackets[@]}"

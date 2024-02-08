@@ -102,11 +102,6 @@ fi
 
 sketchybar --set $NAME label=$WIFI
 
-
-
-
-
-
 # Handle mouse events
 case "$SENDER" in
   "mouse.entered")

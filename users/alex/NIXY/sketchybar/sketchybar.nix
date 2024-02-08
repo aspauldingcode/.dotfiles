@@ -35,7 +35,6 @@ xdg.configFile."sketchybar/plugins/cava.sh".source = ./plugins/cava.sh;
 xdg.configFile."sketchybar/plugins/cava.conf".source = ./plugins/cava.conf;
 xdg.configFile."sketchybar/plugins/time.sh".source = ./plugins/time.sh;
 xdg.configFile."sketchybar/plugins/volume.sh".source = ./plugins/volume.sh;
-xdg.configFile."sketchybar/plugins/volume_click.sh".source = ./plugins/volume_click.sh;
 xdg.configFile."sketchybar/plugins/wifi.sh".source = ./plugins/wifi.sh;
 
 # Specify executable for each file
@@ -56,6 +55,5 @@ xdg.configFile."sketchybar/plugins/cava.sh".executable = true;
 xdg.configFile."sketchybar/plugins/cava.conf".executable = true;
 xdg.configFile."sketchybar/plugins/time.sh".executable = true;
 xdg.configFile."sketchybar/plugins/volume.sh".executable = true;
-xdg.configFile."sketchybar/plugins/volume_click.sh".executable = true;
 xdg.configFile."sketchybar/plugins/wifi.sh".executable = true;
 }
