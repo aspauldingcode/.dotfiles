@@ -5,12 +5,12 @@
     inputs.nixvim.homeManagerModules.nixvim
   ];
   
-    nixpkgs.config.allowUnsupportedSystemPredicate = pkg:
-    builtins.elem (lib.getName pkg) [
-      # Add additional package names here
-      "swiftformat" 
-      "sourcekit-lsp" 
-    ];
+  #  nixpkgs.config.allowUnsupportedSystemPredicate = pkg:
+  #  builtins.elem (lib.getName pkg) [
+  #    # Add additional package names here
+  #    "swiftformat" 
+  #    "sourcekit-lsp" 
+  #  ];
 
   # nixvim specific dependencies
   home.packages = with pkgs; [
@@ -63,6 +63,7 @@
   in 
   {
     enable = true;
+    enableMan = false;
     options = {
       number = true;         # Show line numbers
       relativenumber = true; # Show relative line numbers

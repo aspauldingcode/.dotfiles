@@ -1,4 +1,4 @@
-#!/bin/sh
+  #!/bin/sh
 
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
@@ -43,31 +43,24 @@ defaults=(
 sketchybar --default "${defaults[@]}"
 
 datetime=(
-#FIXME: ONHOVER: https://github.com/FelixKratz/SketchyBar/discussions/12#discussioncomment-5328921
-  background.color=$TEMPUS
+  background.color=$TEMPUS          # Set this color to your background color for popups!
   label.padding_left=15
   label.padding_right=15
-  background.height=19
+  background.height=19 
   background.corner_radius=10
-  popup.horizontal=on # FIXME: FIGURE OUT HOW TO MAKE CALENDAR WITHOUT THIS!
+  popup.horizontal=on               # FIXME: FIGURE OUT HOW TO MAKE CALENDAR WITHOUT THIS!
   popup.align=center
-  #icon.padding_right=10
-  #icon.padding_left=10
-  #icon=$TIME
-  #icon.drawing=on
-  #label.padding_right=10
-  update_freq=60
+  update_freq=60                    # required for datetime clock!
   script="$PLUGIN_DIR/datetime.sh"
-  #click_script="$POPUP_TOGGLE_SCRIPT"
-  popup.height=135
-  popup.width=10
+  popup.height=135                  # REQUIRED for popup to work properly.
   background.corner_radius=10
 )
 
 wifi=(
   script="$PLUGIN_DIR/wifi.sh"
   #click_script="$POPUP_TOGGLE_SCRIPT"
-  label.padding_right=10
+  label.padding_left=5
+  label.padding_right=5
   update_freq=10
   popup.align=center
 )
@@ -77,42 +70,31 @@ battery=(
   update_freq=120
   updates=on
   #click_script="$POPUP_TOGGLE_SCRIPT"
-  label.padding_right=10
+  #label.padding_left=5
+  #label.padding_right=5
+  icon.padding_left=6
+  icon.padding_right=8
   popup.align=center
-
 )
 
 volume=(
   script="$PLUGIN_DIR/volume.sh"
   updates=on
-  label.drawing=off
-  icon.drawing=off
-  #label.padding_left=10
-  background.color=$STATUS
-  background.height=10
-  background.corner_radius=10
-  background.border_width=2
-  background.border_color=$GREY
-  background.padding_right=7
-)
-
-volume_icon=(
-  script="$PLUGIN_DIR/volume_icon.sh"
-  click_script="$PLUGIN_DIR/volume_click.sh"
-  padding_right=0
-  padding_left=10
+  icon.padding_left=10
+  label.padding_right=5
 )
 
 mail=(
   # background.color=$TEMPUS
   background.height=25
   corner_radius=8
-  padding_right=10
+  background.padding_left=5 # because it is leftmost of the bracket.
+  icon.padding_left=5 
+  icon.padding_right=5
   icon.drawing=on
   icon="$MAIL"
-  icon.padding_left=15
   script="$PLUGIN_DIR/mail.sh"
-  click_script="$POPUP_TOGGLE_SCRIPT"
+  #click_script="$POPUP_TOGGLE_SCRIPT"
   update_freq=60
 )
 
@@ -123,11 +105,12 @@ cava=(
   label.font="Hack Nerd Font Mono:Regular:13.0"
   icon.drawing=off
   label="cava"
-  label.padding_left="4"
+  label.padding_left=4
+  label.padding_right=4
 )
 
 spotify=(
-  click_script="$POPUP_TOGGLE_SCRIPT"
+  #click_script="$POPUP_TOGGLE_SCRIPT"
   popup.horizontal=on
   popup.align=center
   popup.height=100
@@ -137,20 +120,11 @@ spotify=(
   background.color=$TEMPUS
   background.height=19
   background.corner_radius=10
-  background.padding_left=3
+  #background.padding_left=3
   background.padding_right=3
   script="$PLUGIN_DIR/spotify.sh"
   update_freq=5
 )
-
-# spotify_label=(
-#   label="Spotify"
-#   label.padding_left=10
-#   label.padding_right=15
-#   label.font="JetBrains Mono:Bold:9.0"
-#   script="$PLUGIN_DIR/spotify.sh"
-#   update_freq=5
-# )
 
 ram=(
   icon=$RAM
@@ -200,7 +174,7 @@ space_bg=(
 # Left Items
 sketchybar --add item apple left \
   --set apple "${apple[@]}" \
-  --subscribe apple mouse.entered mouse.exited mouse.exited.global
+  --subscribe apple mouse.clicked mouse.entered mouse.exited mouse.exited.global
 
 for i in "${!SPACE_ICONS[@]}"
 
@@ -213,8 +187,8 @@ do
     background.color=0x44ffffff \
     icon.highlight_color=0x00000000 \
     background.corner_radius=5 \
-    padding_left=10 \
-    padding_right=10 \
+    icon.padding_left=5  \
+    icon.padding_right=5  \
     background.height=20 \
     background.drawing=off \
     label.drawing=off \
@@ -234,21 +208,18 @@ sketchybar --add item separator_left left \
     icon.drawing=on \
     label.padding_left=15 \
     label.padding_right=15 \
-  --subscribe front_app front_app_switched mouse.clicked mouse.entered mouse.exited
+  --subscribe front_app front_app_switched mouse.clicked mouse.entered mouse.exited mouse.exited.global
 sketchybar --add item active_app left \
    --set active_app "${active_app[@]}" \
    --subscribe front_app front_app_switched
 
 # Center Items
-sketchybar --add item volume_icon center \
-  --set volume_icon "${volume_icon[@]}" \
-  --subscribe volume volume_change mouse.clicked mouse.entered mouse.exited mouse.exited.global mouse.scrolled
-sketchybar --add slider volume center \
+sketchybar --add item volume center \
   --set volume "${volume[@]}" \
-  --subscribe volume volume_change mouse.clicked mouse.entered mouse.exited mouse.exited.global mouse.scrolled
+  --subscribe volume volume_change mouse.scrolled
 sketchybar --add item datetime center \
   --set datetime "${datetime[@]}" \
-  --subscribe time system_woke mouse.entered mouse.exited mouse.exited.global
+  --subscribe datetime system_woke mouse.clicked mouse.entered mouse.exited mouse.exited.global # REQUIRED events for hover popup.
 sketchybar --add item cava center \
   --set cava "${cava[@]}"
   # --add item spotify_label center \
@@ -256,7 +227,7 @@ sketchybar --add item cava center \
 sketchybar --add event spotify_change $SPOTIFY_EVENT \
   --add item spotify center \
   --set spotify "${spotify[@]}" \
-  --subscribe spotify mouse.entered mouse.exited mouse.exited.global
+  --subscribe spotify mouse.clicked mouse.entered mouse.exited mouse.exited.global
 
 # Right Items
 sketchybar --add item ram right \
@@ -291,7 +262,7 @@ brackets=(
 
 sketchybar --add bracket lbracket apple separator_left front_app left \
   --set lbracket "${brackets[@]}"
-sketchybar --add bracket cbracket volume_icon datetime cava spotify center \
+sketchybar --add bracket cbracket volume datetime cava spotify center \
   --set cbracket "${brackets[@]}"
 sketchybar --add bracket rbracket wifi battery separator_right mail ram cpu right \
   --set rbracket "${brackets[@]}"
