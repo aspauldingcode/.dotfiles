@@ -17,6 +17,7 @@
       ./zellij.nix
       ./sketchybar/sketchybar.nix 
       ./yabai.nix # contains skhd and borders config.
+      ./phoenix.nix # new window-manager for macOS!
     ];
 
     #colorScheme = nix-colors.colorSchemes.dracula;

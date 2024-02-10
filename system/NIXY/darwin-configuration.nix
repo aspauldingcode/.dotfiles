@@ -7,6 +7,7 @@
     ./darwin-defaults.nix
     ./homebrew-pkgs.nix
     ./yabai-sa.nix
+    ./wg-quick.nix
   ];
   # Allow Unfree
   nixpkgs.config.allowUnsupportedSystem = true;

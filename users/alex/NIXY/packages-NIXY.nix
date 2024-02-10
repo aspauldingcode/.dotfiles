@@ -17,7 +17,6 @@
     chatgpt-cli
     cowsay
     newsboat
-    wireguard-tools
     #ruby
     qemu
     spotify
