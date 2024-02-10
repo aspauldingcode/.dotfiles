@@ -92,7 +92,7 @@
 
         # Screenshot
         "Alt+Shift+3" = "exec screenshot"; # All visible outputs
-        "Alt+Shift+4" = ''exec grimshot --notify save window ~/Desktop/"Screenshot $(date '+%Y-%m-%d at %I.%M.%S %p').png"'';
+        "Alt+Shift+4" = ''exec grimshot --notify save anything ~/Desktop/"Screenshot $(date '+%Y-%m-%d at %I.%M.%S %p').png"'';
 
 
         # Screen recording
