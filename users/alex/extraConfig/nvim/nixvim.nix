@@ -398,7 +398,7 @@
     # treesitter conf
     treesitter = {
       enable = true;
-      folding = true;
+      folding = false; # enable by keybind?
       indent = true;
       incrementalSelection = {
         enable = true;

@@ -1,28 +1,10 @@
 
-{ lib, config, pkgs, ... }:
+{ pkgs, ... }:
 
 # NIXSTATION-specific packages
 {
   imports = [
   ]; 
-  #FIXME: THEME STUFF
-  gtk.enable = true;
-  qt.enable = false;
-
-  # QT theme
-  qt.platformTheme = "gtk";
-
-  # name of gtk theme
-  qt.style.name = "adwaita-dark";
-
-  # cursor theme
-  #package = pkgs.bibata-cursors;
-  #name = "Bibata-Modern-Ice";
-  #size = 22;
-
-  # package to use
-  qt.style.package = pkgs.adwaita-qt;
-
   nixpkgs = {
     config = {
       allowUnfree = true;
@@ -36,14 +18,6 @@
   };
 
   home = {
-    pointerCursor = {
-      gtk.enable = true;
-      # cursor theme
-      package = pkgs.bibata-cursors;
-      name = "Bibata-Modern-Ice";
-      size = 22;
-    };
-
     packages = with pkgs; [
     darling
     darling-dmg

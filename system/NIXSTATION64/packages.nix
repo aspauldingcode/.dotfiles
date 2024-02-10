@@ -11,7 +11,20 @@
     libsForQt5.qt5.qtquickcontrols2
     libsForQt5.kdialog
     libsForQt5.qt5.qtgraphicaleffects
-    louvre
+    libsForQt5.dolphin
+    libsForQt5.qt5ct
+    # libsForQt5.breeze-qt5
+    # libsForQt5.breeze-gtk
+    # libsForQt5.breeze-icons
+    # libsForQt5.breeze-plymouth
+    # libsForQt5.breeze-grublouvre
+
+    #macOS THEME
+    whitesur-kde
+    whitesur-gtk-theme
+    whitesur-icon-theme
+    # whitesur-cursors
+
     ranger
     wl-clipboard
     neofetch
@@ -42,13 +55,7 @@
     appimage-run
     tree-sitter
     jdk20
-    libsForQt5.dolphin
-    libsForQt5.qt5ct
-    libsForQt5.breeze-qt5
-    libsForQt5.breeze-gtk
-    libsForQt5.breeze-icons
-    libsForQt5.breeze-plymouth
-    libsForQt5.breeze-grub
+
     python311
     nodejs
     ncurses6

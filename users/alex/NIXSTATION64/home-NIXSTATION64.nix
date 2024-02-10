@@ -7,6 +7,7 @@ imports = [
   ./packages-NIXSTATION64.nix 
   ./sway.nix
   ./../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
+  ./theme.nix # theme of system.
   ./git.nix
   ./alacritty.nix
   ./mako.nix
@@ -14,8 +15,6 @@ imports = [
   ./zsh.nix
   ./zellij.nix
 ]; 
-    colorScheme = nix-colors.colorSchemes.gruvbox-dark-soft;
-    # colorScheme = nix-colors.colorSchemes.dracula;
 
     home = {
       username = "alex";

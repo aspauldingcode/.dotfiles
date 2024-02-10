@@ -251,6 +251,8 @@
         move down 120px # adjust if some menus still don't fit
       }
 
+      # Enable csd borders # options are: none | normal | csd | pixel [<n>]
+      bindsym $mod+Shift+B exec swaymsg border toggle
 
       # Window background blur
       blur on #FIXME: TURN ON! Floating window loses its borders...
@@ -260,7 +262,7 @@
 
       shadows on
       #shadows_on_csd disable
-      shadow_blur_radius 10
+      shadow_blur_radius 30
       shadow_color #000000ff
 
       # inactive window fade amount. 0.0 = no dimming, 1.0 = fully dimmed
