@@ -44,6 +44,15 @@ dconf.settings = {
   };
 };
 
+# Disable KDE Wallet 5 from plasma! UGH!
+  home.file.kwalletrc = {
+    #executable = true;
+    target = ".config/kwalletrc";
+    text = /* ini */  ''
+      [Wallet]
+      Enabled=false
+    '';
+  };
 # Nicely reload system units when changing configs
 systemd.user.startServices = "sd-switch"; 
 }

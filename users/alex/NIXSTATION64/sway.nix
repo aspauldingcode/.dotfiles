@@ -253,6 +253,10 @@
 
       # Enable csd borders # options are: none | normal | csd | pixel [<n>]
       bindsym $mod+Shift+B exec swaymsg border toggle
+      
+      #for all windows, brute-force use of "pixel"
+      for_window [shell="xdg_shell"] border pixel 2
+      for_window [shell="xwayland"] border pixel 2
 
       # Window background blur
       blur on #FIXME: TURN ON! Floating window loses its borders...

@@ -1,5 +1,16 @@
 { pkgs }:
 
+#You can use WhiteSur theme now btw,,,
+# Sddm Sonoma theme!
+let
+  /*
+  image = pkgs.fetchurl {
+    url =  ""; # https link to image
+    sha256 = ""; # hash of image file
+  };
+  */
+  image = ./../../users/alex/extraConfig/wallpapers/ghibliwp.jpg; #background image?
+in
 pkgs.stdenv.mkDerivation {
   name = "sddm-theme";
   src = pkgs.fetchurl {
@@ -10,8 +21,14 @@ pkgs.stdenv.mkDerivation {
   installPhase = ''
   mkdir -p $out
   cp -R ./* $out/
+
+  # replace background wallpaper!
+  cd $out/
+  rm background.jpg
+  cp -r ${image} $out/background.jpg
   '';
 }
+
 # Sonoma V2 theme URL found via inspector
 # Request URL:
 # https://www.pling.com/dl?file_id=1704051096&file_type=application/x-xz&file_name=Apple-Sonoma-v2.tar.xz&file_size=2023496&has_torrent=0&project_id=2059021&link_type=download&is_external=false&external_link=null

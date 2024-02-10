@@ -393,7 +393,7 @@ in
         };
         format = "{icon}{}";
         format-icons = {
-          "No player active" = " ";
+          "No player active" = " ";
           "Celluloid" = "󰎁 ";
           "spotify" = " ";
           "ncspot" = " ";

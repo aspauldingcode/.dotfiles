@@ -6,7 +6,7 @@
     # ("${mobile-nixos}/lib/configuration.nix" { device = "oneplus-fajita"; })
     ./packages.nix
     ./virtual-machines.nix
-    ./wg-quick.nix
+    #./wg-quick.nix
   ];
 
   # Bootloader.
@@ -45,14 +45,15 @@
     #   # libsForQt5.qt5.qtquickcontrols2    # add qtquickcontrols2
     #   # libsForQt5.qt5.qtdeclarative       # add qtdeclarative (for QML support)
     # ];
+
     plasma5.excludePackages = with pkgs; [
-      libsForQt5.oxygen
+      plasma5Packages.oxygen
       xwayland
-      libsForQt5.konsole
+      plasma5Packages.konsole
       xterm
-      libsForQt5.kwalletmanager
-      libsForQt5.kwallet
-      libsForQt5.kwallet-pam
+      plasma5Packages.kwalletmanager
+      plasma5Packages.kwallet
+      plasma5Packages.kwallet-pam
       kwalletcli
     ]; 
 
@@ -103,6 +104,7 @@
           enable = true;
           wayland.enable = true;
           theme = "${import ./sddm-themes.nix {inherit pkgs; }}";
+          #theme = "WhiteSur"; # I Don't like this one as much...
         };
       };
       desktopManager = {
