@@ -6,98 +6,83 @@
     packages = with pkgs; [
       discord
       betterdiscordctl
-      betterdiscord-installer
+      betterdiscord-installer # not needed for NixOS? just use betterdiscordctl
     ];
   };
-  home.file.betterdiscord = {
-    #FIXME: add nix-colors conf!
+
+
+  ##FIXME: copy instead of symlink?
+  #home.file.betterdiscordtheme = {
+  #  target = ".config/BetterDiscord/data/stable/themes.json";
+  #  force = true;
+  #  text = /* json */ ''
+  #    {
+  #        "NixColors": false
+  #    }
+  #  '';
+  #};
+
+  home.file.betterdiscordthemeconf = {
     target = ".config/BetterDiscord/themes/NixColors.theme.css";
     text = let inherit (config.colorScheme) colors; in /* css */ ''
-      /**
-       * @name NixColors
-       * @author Alex Spaulding
-       * @version 1.0.0
-       * @description Use Nix-Colors with Discord!
-       * @website https://github.com/aspauldingcode/.dotfiles
-      */
-      @import url(https://plusinsta.github.io/discord-plus/src/DiscordPlus-source.theme.css);
+    /**
+    * @name NixColors
+    * @description 
+    * @author aspauldingcode
+    * @version 1.0.0
+    * @website https://github.com/aspauldingcode/.dotfiles
+    */
 
-      /* I've commented most of these values so you can change them yourself. If you're having trouble, or you want to do more than what these values allow for, a volunteer might be able to help you in my server. */
+    /* For Better Look */
+    @import url("https://nyri4.github.io/Discolored/main.css");
 
-      .theme-dark {
-      /* Backdrop image which is shown behind the app. Can also be an HTML color. Falls back to accent color if invalid.
-         To use an image from your computer, upload it somewhere first, copy its link, then paste it below. */
-        --dplus-backdrop: url(https://i.imgur.com/3AiL3yN.png);
+    .theme-dark, .theme-light { 
 
-      /* Accent color, used to decorate the UI with colors. */
-        --dplus-accent-color-hue: 320;
-        --dplus-accent-color-saturation: 60%;
-        --dplus-accent-color-lightness: 31%;
+      --header-primary: var(--text-normal);
+      --header-secondary: var(--text-muted);
 
-      /* Foreground color: For things like text and icons. */
-        --dplus-foreground-color-hue-base: 210;
-        --dplus-foreground-color-hue-links: 197;
-        --dplus-foreground-color-saturation-amount: 1;
-        --dplus-foreground-color-lightness-amount: 1;
+      /*  Text-Color  */
+      --text-normal: #${colors.base05};
+      --text-muted: #${colors.base06};
+      --interactive-normal: #${colors.base05};
+      --interactive-hover: #${colors.base06};
+      --interactive-active: #${colors.base0A};
+      --interactive-muted: #${colors.base07};
 
-      /* Background color: Covers the backdrop so the app is easier to read. */
-        --dplus-background-color-hue: 320;
-        --dplus-background-color-saturation-amount: 1;
-        --dplus-background-color-lightness-amount: 1;
-        --dplus-background-color-alpha: 0.8;
-      }
+      /* Background-Color */
+      --background-primary: #${colors.base00}88;
+      --background-secondary: #${colors.base00};
+      --background-secondary-alt: #${colors.base00};
+      --background-tertiary: #${colors.base00}55; /*main background thing actually? */
+      --background-tertiary-alt: var(--background-secondary-alt);
+      --background-accent: #${colors.base00}55;
+      --background-floating: #${colors.base00};
+      --background-modifier-hover: #${colors.base04}88;
+      --background-modifier-active: #${colors.base04}55;
+      --background-modifier-selected: #${colors.base04}88;
+      --background-modifier-accent: #${colors.base03};
+      --background-mentioned: #${colors.base0A}11;
+      --border-mentioned: #${colors.base0A};
+      --background-mentioned-hover: #${colors.base0B};
+      --accent-color: #${colors.base02};
 
-      /* If you use light theme, you can give it unique settings that are separate from dark theme. */
-      .theme-light {
-        --dplus-backdrop: url(https://i.imgur.com/3AiL3yN.png);
-        
-        --dplus-accent-color-hue: 320;
-        --dplus-accent-color-saturation: 60%;
-        --dplus-accent-color-lightness: 31%;
-        
-        --dplus-foreground-color-hue-base: 210;
-        --dplus-foreground-color-hue-links: 197;
-        --dplus-foreground-color-saturation-amount: 1;
-        --dplus-foreground-color-lightness-amount: 1;
+      /* Folder-Color */
+      --folder-color: #${colors.base03}55;
+      --folder-color-light: #${colors.base06}55;
 
-        --dplus-background-color-hue: 320;
-        --dplus-background-color-saturation-amount: 1;
-        --dplus-background-color-lightness-amount: 1;
-        --dplus-background-color-alpha: 0.8;
-      }
+      /* Scrollbars-Color */
+      --scrollbar-thin-thumb: #${colors.base0C};
+      --scrollbar-thin-track: #${colors.base01}55;
+      --scrollbar-auto-thumb: #${colors.base04}55;
+      --scrollbar-auto-thumb-hover: #${colors.base08};
+      --scrollba-auto-track: #${colors.base0E}55;
+      --scrollbar-auto-scrollbar-color-thumb: var(--scrollbar-auto-thumb);
+      --scrollbar-auto-scrollbar-color-track: var(--scrollbar-auto-track);
 
-      :root {
-      /* Fonts */
-      /* You can use any installed font on your device. */
-        --dplus-font-ui: 'Poppins';
-        --dplus-font-body: 'Roboto';
-        --dplus-font-header: 'Righteous';
-
-      /* Round corner sizes, measured in pixel radius.
-      Set avatar/server radius to 50% to make them circular.
-         UI radius must be in pixels, otherwise things break. */
-        --dplus-radius-ui: 10px;
-        --dplus-radius-avatar: 20%;
-        --dplus-radius-server: 20%;
-
-      /* This decides how much breathing room there should be between things like buttons and content. */
-        --dplus-spacing-ui: 10px;
-
-      /* This sets how much space there should be between the app contents and the edges of the window. It also affects the distance between major UI elements, such as the server list to the channel list and channel list to the chat. */
-         --dplus-spacing-app: 10px;
-
-      /* Size of user and server icons */
-      --dplus-icon-avatar-chat: 64px;
-      --dplus-icon-avatar-list: 32px;
-      --dplus-icon-avatar-profile: 80px;
-
-      --dplus-icon-server-sidebar: 48px;
-      --dplus-icon-server-list: 32px;
-
-      /* The Home icon on the top left */
-      --dplus-icon-home-dark: url(https://plusinsta.github.io/discord-plus/assets/discord/home_dark.svg);
-      --dplus-icon-home-light: url(https://plusinsta.github.io/discord-plus/assets/discord/home_light.svg);
-      }
+      /* Chat Box Color */
+      --channeltextarea-background: var(--background-secondary);
+      --channeltextarea-background-hover: var(--background-tertiary);    
+    }
     '';
     };
   }

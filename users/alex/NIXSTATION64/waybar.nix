@@ -487,7 +487,7 @@ in
     }
     
     #custom-menu {
-      background-color: #${colors.base03};
+      background-color: #${colors.base02};
       /* border: 0px solid #${colors.base0C}; */
       border-radius: 30px;
       padding-left: 14px;
@@ -495,7 +495,7 @@ in
     }
 
     #custom-currentplayer { /* SPOTIFY ICON */
-      background-color: #${colors.base03};
+      background-color: #${colors.base02};
       border: 0px solid #${colors.base0C};
       border-radius: 30px;
       padding-left: 18px;
@@ -562,7 +562,7 @@ in
     }
 
     #clock-popup {
-      background-color: #${colors.base03};
+      background-color: #${colors.base02};
       border: 2px solid #${colors.base0C};
       border-radius: 10px;
       font-size: 16px;
@@ -605,7 +605,7 @@ in
     #clock,
     .mail
     {
-      background-color: #${colors.base03};
+      background-color: #${colors.base02};
       border: 0px solid #${colors.base0C};
       border-radius: 30px;
       padding-left: 16px;
@@ -627,7 +627,7 @@ in
       padding-right: 16px;
     }
     #memory {
-      background-color: #${colors.base03};
+      background-color: #${colors.base02};
       border: 0px solid #${colors.base0C};
       border-radius: 30px;
       padding-left: 16px;
@@ -635,7 +635,7 @@ in
     }
 
     tooltip {
-      background-color: #${colors.base02};
+      background-color: #${colors.base00};
       border: 2px solid #${colors.base0C};
       border-radius: 10px;
       margin-top: 20px;

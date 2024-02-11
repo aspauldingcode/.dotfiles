@@ -99,7 +99,7 @@
     theme[hi_fg]="#${colors.base0A}"
 
     # Background color of selected items
-    theme[selected_bg]="#${colors.base03}"
+    theme[selected_bg]="#${colors.base02}"
 
     # Foreground color of selected items
     theme[selected_fg]="#${colors.base0A}"
