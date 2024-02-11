@@ -519,7 +519,7 @@ in
       transition: none;
       background: transparent;
       color: #${colors.base04};
-      padding: 4px;
+      padding: 0 2px;
     }
 
     #workspaces button.hover {

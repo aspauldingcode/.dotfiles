@@ -34,7 +34,6 @@
     android-studio
     corefonts
     beeper
-    btop
       # davinci-resolve 
       ocl-icd
       rofi-wayland-unwrapped

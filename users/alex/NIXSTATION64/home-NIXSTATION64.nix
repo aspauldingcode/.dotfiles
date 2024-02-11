@@ -14,6 +14,7 @@ imports = [
   ./fish.nix
   ./zsh.nix
   ./zellij.nix
+  ./btop.nix # btop theme!
 ]; 
 
     home = {

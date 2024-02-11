@@ -16,7 +16,6 @@
     zellij
     neofetch
     htop
-    btop
     git
     tree
     ifstat-legacy 
