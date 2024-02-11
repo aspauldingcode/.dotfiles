@@ -15,6 +15,7 @@
       ./karabiner.nix
       ./cava.nix
       ./zellij.nix
+      ./btop.nix
       ./sketchybar/sketchybar.nix 
       ./yabai.nix # contains skhd and borders config.
       ./phoenix/phoenix.nix # new window-manager for macOS!
