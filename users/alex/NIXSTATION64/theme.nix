@@ -7,6 +7,8 @@
       package = pkgs.bibata-cursors;
   };
   colorScheme = nix-colors.colorSchemes.gruvbox-dark-soft;
+  #colorScheme = nix-colors.colorSchemes.dracula;
+
   gtk = {
     enable = true;
     cursorTheme = {
