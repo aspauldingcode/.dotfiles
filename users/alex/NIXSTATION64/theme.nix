@@ -6,8 +6,10 @@
       name = "Bibata-Modern-Ice";
       package = pkgs.bibata-cursors;
   };
-  colorScheme = nix-colors.colorSchemes.gruvbox-dark-soft;
+  
+  #colorScheme = nix-colors.colorSchemes.gruvbox-dark-soft;
   #colorScheme = nix-colors.colorSchemes.dracula;
+  colorScheme = nix-colors.colorSchemes.paraiso;
 
   gtk = {
     enable = true;
