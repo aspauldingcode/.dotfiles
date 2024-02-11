@@ -1,15 +1,17 @@
 { nix-colors, pkgs, ... }:
 
 # Configure GTK, QT themes, color schemes..
+let 
+  theme = "paraiso";
+  # Choose from: https://nix-community.github.io/nixvim/colorschemes/base16/index.html#colorschemesbase16colorscheme
+in
 {
+  colorScheme = nix-colors.colorSchemes.${theme};
+  
   home.pointerCursor = {
       name = "Bibata-Modern-Ice";
       package = pkgs.bibata-cursors;
   };
-  
-  #colorScheme = nix-colors.colorSchemes.gruvbox-dark-soft;
-  #colorScheme = nix-colors.colorSchemes.dracula;
-  colorScheme = nix-colors.colorSchemes.paraiso;
 
   gtk = {
     enable = true;

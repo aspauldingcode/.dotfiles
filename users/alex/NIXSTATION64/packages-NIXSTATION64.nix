@@ -93,7 +93,6 @@
       audacity
       pinentry 
       git-crypt
-      discord
       cowsay
       spotify-unwrapped
       autotiling waydroid

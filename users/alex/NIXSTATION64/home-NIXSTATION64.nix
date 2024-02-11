@@ -11,6 +11,8 @@ imports = [
   ./git.nix
   ./alacritty.nix
   ./mako.nix
+  ./discocss.nix
+  ./betterdiscord.nix
   ./fish.nix
   ./zsh.nix
   ./zellij.nix
