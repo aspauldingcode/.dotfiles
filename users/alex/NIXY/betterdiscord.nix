@@ -4,9 +4,8 @@
 {
   home = {
     packages = with pkgs; [
-      discord
-      betterdiscordctl
-      betterdiscord-installer # not needed for NixOS? just use betterdiscordctl
+      # discord
+      # Using brew to install betterdiscord!
     ];
   };
 
@@ -22,7 +21,7 @@
   #};
 
   home.file.betterdiscordthemeconf = {
-    target = ".config/BetterDiscord/themes/NixColors.theme.css";
+    target = "Library/Application Support/BetterDiscord/themes/NixColors.theme.css";
     text = let inherit (config.colorScheme) colors; in /* css */ ''
     /**
     * @name NixColors

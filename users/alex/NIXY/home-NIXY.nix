@@ -11,6 +11,7 @@
       ./theme.nix
       ./xcode/xcode.nix #FIXME: use nix-color theme
       ./alacritty.nix
+      ./betterdiscord.nix
       ./git.nix
       ./fish.nix
       ./zsh.nix

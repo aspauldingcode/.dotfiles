@@ -1,10 +1,12 @@
 { nix-colors, pkgs, ... }:
 
 # Configure color schemes..
+let 
+  theme = "catppuccin-macchiato";
+  # Choose from: https://nix-community.github.io/nixvim/colorschemes/base16/index.html#colorschemesbase16colorscheme
+in
 {
-  colorScheme = nix-colors.colorSchemes.gruvbox-dark-soft;
-  #colorScheme = nix-colors.colorSchemes.dracula;
-  #colorScheme = nix-colors.colorSchemes.paraiso;
+  colorScheme = nix-colors.colorSchemes.${theme};
 
   /*
   gtk = {

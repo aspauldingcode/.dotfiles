@@ -51,6 +51,8 @@
       "Beeper"
       "background-music"
       "sublime-text"
+      "betterdiscord-installer"
+      "discord"
     ];
     whalebrews = [
       #"wget" #FAILS
