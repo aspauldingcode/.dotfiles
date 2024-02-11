@@ -8,6 +8,8 @@
       nix-colors.homeManagerModules.default
       ./packages-NIXY.nix
       #./../extraConfig/nvim/nixvim.nix
+      ./theme.nix
+      ./xcode/xcode.nix #FIXME: use nix-color theme
       ./alacritty.nix
       ./git.nix
       ./fish.nix
@@ -20,10 +22,6 @@
       ./yabai.nix # contains skhd and borders config.
       ./phoenix/phoenix.nix # new window-manager for macOS!
     ];
-
-    #colorScheme = nix-colors.colorSchemes.dracula;
-    #colorScheme = nix-colors.colorSchemes.paraiso;
-    colorScheme = nix-colors.colorSchemes.gruvbox-dark-soft;
 
     home = {
       username = "alex";
