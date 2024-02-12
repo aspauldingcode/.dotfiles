@@ -53,6 +53,8 @@
       "sublime-text"
       "betterdiscord-installer"
       "discord"
+      "asset-catalog-tinkerer"
+      "themeengine"
     ];
     whalebrews = [
       #"wget" #FAILS

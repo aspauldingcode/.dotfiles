@@ -4,7 +4,11 @@
   imports = [
     inputs.nixvim.homeManagerModules.nixvim
   ];
-  
+  programs.nixvim.enable = true; # Troubleshoot nvim
+} 
+
+/* 
+
   #  nixpkgs.config.allowUnsupportedSystemPredicate = pkg:
   #  builtins.elem (lib.getName pkg) [
   #    # Add additional package names here
@@ -88,10 +92,9 @@
       initOptions = null;
       rootDir = { __raw = "require('jdtls.setup').find_root({'.git', 'mvnw', 'gradlew'})"; };
       settings = null; 
-      /*Here you can configure eclipse.jdt.ls specific settings.
-      See https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request 
-      for a list of options.
-      */
+      #Here you can configure eclipse.jdt.ls specific settings.
+      #See https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request 
+      #for a list of options.
     };
     clangd-extensions.enable = true;
     lsp = {
@@ -609,3 +612,4 @@ extraPlugins = with pkgs.vimPlugins; [
     ];
   };
 }
+*/
