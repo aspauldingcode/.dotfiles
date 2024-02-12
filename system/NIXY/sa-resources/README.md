@@ -50,6 +50,11 @@ devfs on /dev (devfs, local, nobrowse)
 ```
 To get the actual name of the system volume disk, remove the final “sX” from the device. In the preceding example, the name of the system volume disk is `/dev/disk4s5`.
 
+
+
+NOTE: So, for myself, to rephrase this nonsense, I run `mount` in terminal, and find the disk "/dev/diskxsxsx on / (xxxxx)" which is /dev/disk3s3s1 for me, and the system volume disk is actually just `/dev/disk3s3` on my system.
+
+
 3. Mount a Live Version of the System Volume
 Run the mount command in Terminal to mount the system volume disk to a temporary location. When running the mount command, always include the nobrowse mount option to prevent Spotlight from indexing the volume.
 
@@ -57,5 +62,15 @@ Run the mount command in Terminal to mount the system volume disk to a temporary
 
 `sudo mount -o nobrowse -t apfs  /dev/disk4s5 /Users/<YOUR USER NAME>/livemount`
 
+NOTE: so, for myself, I will enter:
+
+`mkdir /Users/alex/livemount`
+`sudo mount -o nobrowse -t apfs /dev/disk3s3 /Users/alex/livemount`
+
 4. Edit the files from `/Users/<YOUR USER NAME>/livemount`
 5. Bless your livemount with `sudo bless --mount /Users/<YOUR USER NAME>/livemount --bootefi --create-snapshot`s
+
+NOTE: for myself, I will type:
+
+`sudo bless --mount /Users/alex/livemount --bootefi --create-snapshot`
+I believe this will apply the changes I've made from livemount to the system.
