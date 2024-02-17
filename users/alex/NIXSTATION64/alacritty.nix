@@ -1,6 +1,11 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
+  home.packages = with pkgs; [
+    #ueberzug
+    ueberzugpp #required for yazi Window System Protocol to preview images.
+  ];
+
   programs.alacritty = {
     enable = true;
     settings = {

@@ -94,6 +94,12 @@
     };
   };
 
+  # grab user profile pictures
+  system.activationScripts.script.text = ''
+    cp /home/alex/.dotfiles/users/alex/face.png /var/lib/AccountsService/icons/alex
+    cp /home/alex/.dotfiles/users/susu/face.png /var/lib/AccountsService/icons/susu
+  '';
+
 # services
   services = {
     # PRETTY LOGIN SCREEN! (FIXME needs to be configured with osx sddm theme)
