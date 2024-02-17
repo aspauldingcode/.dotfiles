@@ -61,6 +61,7 @@ set_date_and_time # call it first
 # Handle mouse events
 case "$SENDER" in
   "mouse.entered")
+    sleep 1
     sketchybar --set $NAME popup.drawing=on
     #echo "Mouse Hovered in $NAME icon" >> /tmp/sketchybar_debug.log
     ;;
