@@ -2,7 +2,7 @@
 
 # Configure color schemes..
 let 
-  theme = "catppuccin-macchiato";
+  theme = "black-metal-bathory";
   # Choose from: https://nix-community.github.io/nixvim/colorschemes/base16/index.html#colorschemesbase16colorscheme
 in
 {

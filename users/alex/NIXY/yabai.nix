@@ -1,10 +1,10 @@
-{ config, pkgs, lib, ... }: 
+{ config, ... }: 
 
 {
   home.file.yabai = {
     executable = true;
     target = ".config/yabai/yabairc";
-    text = let inherit (config.colorScheme) colors; in ''
+    text = let inherit (config.colorScheme) colors; in /* bash */ ''
       #!/usr/bin/env sh
 
       # update_sudoers() {
@@ -32,7 +32,7 @@
       yabai -m config mouse_action1               move
       yabai -m config mouse_action2               resize
       yabai -m config mouse_drop_action           swap
-      yabai -m config focus_follows_mouse         autofocus
+      yabai -m config focus_follows_mouse         autoraise # autofocus
       yabai -m config mouse_follows_focus         off #FIXME: configure apps so I can turn this on.
 
       #UPGRADED to Sonoma. JankyBorders installed
@@ -81,6 +81,8 @@
       yabai -m rule --add app='Installer'             manage=off
       yabai -m rule --add app='Karabiner-EventViewer' manage=off
       yabai -m rule --add app='Karabiner-Elements'    manage=off
+      yabai -m rule --add app='macOS InstantView'     manage=off # IMPORTANT
+      yabai -m rule --add app='Dock'                  manage=off # MAKE SURE
       # yabai -m rule --add app='Alacritty'             layer=above
       yabai -m rule --add app='Brave Browser'         layer=below
       yabai -m rule --add app='Sketchybar'            layer=below
@@ -188,7 +190,7 @@
       mod4 =  "cmd";
       mod5 =  "ctrl";
       modifier =   mod1; 
-    in
+    in /* bash */ 
       ''
         # alt + a / u / o / s are blocked due to umlaute
         

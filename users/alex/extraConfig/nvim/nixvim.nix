@@ -4,17 +4,12 @@
   imports = [
     inputs.nixvim.homeManagerModules.nixvim
   ];
-  programs.nixvim.enable = true; # Troubleshoot nvim
-} 
-
-/* 
-
-  #  nixpkgs.config.allowUnsupportedSystemPredicate = pkg:
-  #  builtins.elem (lib.getName pkg) [
-  #    # Add additional package names here
-  #    "swiftformat" 
-  #    "sourcekit-lsp" 
-  #  ];
+  #programs.nixvim.enable = true; # Troubleshoot nvim
+  nixpkgs.config.allowUnsupportedSystemPredicate = pkg:
+  builtins.elem (lib.getName pkg) [
+      "swiftformat" 
+      "sourcekit-lsp" 
+  ];
 
   # nixvim specific dependencies
   home.packages = with pkgs; [
@@ -38,7 +33,7 @@
     ktlint # kotlin
     rslint # ts, js
     #djlint # html
-    scss-lint # scss
+    #scss-lint # scss BROKEN??!?? 100% yeah its broken
     csslint # css
     cpplint # C++ static linter
     actionlint # github actions
@@ -612,4 +607,3 @@ extraPlugins = with pkgs.vimPlugins; [
     ];
   };
 }
-*/

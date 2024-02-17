@@ -7,7 +7,7 @@
     imports = [
       nix-colors.homeManagerModules.default
       ./packages-NIXY.nix
-      #./../extraConfig/nvim/nixvim.nix
+      ./../extraConfig/nvim/nixvim.nix
       ./theme.nix
       ./xcode/xcode.nix #FIXME: use nix-color theme
       ./alacritty.nix
