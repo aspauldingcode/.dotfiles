@@ -2,7 +2,7 @@
 
 # Configure color schemes..
 let 
-  theme = "black-metal-bathory";
+  theme = "gruvbox-dark-soft";
   # Choose from: https://nix-community.github.io/nixvim/colorschemes/base16/index.html#colorschemesbase16colorscheme
 in
 {

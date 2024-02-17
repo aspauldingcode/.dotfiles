@@ -20,6 +20,8 @@
     #ruby
     qemu
     spotify
+    sl
+    lavat
     #vscode
     # bonsai #Only available on mac?
     utm 
