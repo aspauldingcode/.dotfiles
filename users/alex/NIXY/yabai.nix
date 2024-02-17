@@ -31,8 +31,8 @@
       yabai -m config mouse_modifier              alt
       yabai -m config mouse_action1               move
       yabai -m config mouse_action2               resize
-      #yabai -m config mouse_drop_action           swap
-      yabai -m config focus_follows_mouse         autoraise + window_topmost # autofocus?
+      yabai -m config mouse_drop_action           swap
+      yabai -m config focus_follows_mouse         autofocus
       yabai -m config mouse_follows_focus         off #FIXME: configure apps so I can turn this on.
 
       #UPGRADED to Sonoma. JankyBorders installed
@@ -44,8 +44,8 @@
       yabai -m config window_opacity_duration     0.1
       yabai -m config window_animation_duration	  0.35
       yabai -m config window_opacity_duration	  0.35
-      yabai -m config normal_window_opacity	  0.8
-      yabai -m config active_window_opacity	  0.95
+      yabai -m config normal_window_opacity	  0.95
+      yabai -m config active_window_opacity	  1.0
       
       # layout
       yabai -m config layout                      float # bsp
@@ -202,9 +202,9 @@
         ${mod4} + ${mod5} - delete :          sudo reboot
         ${mod4} + ${mod5} + shift - delete :  sudo shutdown -h now
         ${modifier} + shift - q :             ${yabai} -m window --close
-	      #${modifier} - f :                     ${yabai} -m window --toggle zoom-fullscreen 
-        #${modifier} + shift - f :             ${yabai} -m window --toggle native-fullscreen
-
+	      ${modifier} - f :                     ${yabai} -m window --toggle zoom-fullscreen 
+        ${modifier} + shift - f :             ${yabai} -m window --toggle native-fullscreen
+        
         #ctrl + shift - f :               toggle-layer-alacritty FIXME: BROKEN
         #AsF - Try making this a system script isntead of user script binary!
         
@@ -266,26 +266,26 @@
         ${modifier} - right :     if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus east; fi
         
         # swap managed window
-        #${modifier} + shift - ${left} :   ${yabai} -m window --swap west
-        #${modifier} + shift - ${down} :   ${yabai} -m window --swap south
-        #${modifier} + shift - ${up} :     ${yabai} -m window --swap north
-        #${modifier} + shift - ${right} :  ${yabai} -m window --swap east
-        #${modifier} + shift - left :      ${yabai} -m window --swap west
-        #${modifier} + shift - down :      ${yabai} -m window --swap south
-        #${modifier} + shift - up :        ${yabai} -m window --swap north
-        #${modifier} + shift - right :     ${yabai} -m window --swap east
+        ${modifier} + shift - ${left} :   ${yabai} -m window --swap west
+        ${modifier} + shift - ${down} :   ${yabai} -m window --swap south
+        ${modifier} + shift - ${up} :     ${yabai} -m window --swap north
+        ${modifier} + shift - ${right} :  ${yabai} -m window --swap east
+        ${modifier} + shift - left :      ${yabai} -m window --swap west
+        ${modifier} + shift - down :      ${yabai} -m window --swap south
+        ${modifier} + shift - up :        ${yabai} -m window --swap north
+        ${modifier} + shift - right :     ${yabai} -m window --swap east
 
         # increase window size #FIXME: edit window resizing shortcuts!
-        #${modifier} + shift - a : ${yabai} -m window --resize left:-20:0
-        #${modifier} + shift - s : ${yabai} -m window --resize right:-20:0
+        ${modifier} + shift - a : ${yabai} -m window --resize left:-20:0
+        ${modifier} + shift - s : ${yabai} -m window --resize right:-20:0
 
         # toggle layout
-        #${modifier} - s : ${yabai} -m space --layout stack
-        #${modifier} - e : ${yabai} -m space --layout bsp
+        ${modifier} - s : ${yabai} -m space --layout stack
+        ${modifier} - e : ${yabai} -m space --layout bsp
 
         # float / unfloat window and center on screen
-        #${modifier} + shift - space : ${yabai} -m window --toggle float; \
-        #          ${yabai} -m window --grid 4:4:1:1:2:2
+        ${modifier} + shift - space : ${yabai} -m window --toggle float; \
+                  ${yabai} -m window --grid 4:4:1:1:2:2
 
         # # toggle sticky(+float), topmost, picture-in-picture
         # ${modifier} - p : ${yabai} -m window --toggle sticky; \

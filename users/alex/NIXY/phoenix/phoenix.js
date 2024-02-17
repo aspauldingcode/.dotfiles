@@ -13,14 +13,10 @@ _.mixin({
     return _.flatten(_.map(list, iteratee, context))
   }
 })
-
-GAPS = 13
-
-MARGIN_X = GAPS // gaps!
-MARGIN_Y = GAPS // gaps!
-GRID_WIDTH = 5 // or 16 - 
-GRID_HEIGHT = 3 // by 9 aspect ratio! need to be able to detect screen ration...
-GRID_BAR = 40 // Give space for the sketchybar on top.
+MARGIN_X = 0
+MARGIN_Y = 0
+GRID_WIDTH = 16 
+GRID_HEIGHT = 9
 focused = () => Window.focused()
 
 function visible() { 
@@ -205,13 +201,13 @@ Window.prototype.toTopLeft = function() {
 Window.prototype.toBottomLeft = function() {
   return this.toGrid({x: 0, y: 0.5, width: 0.5, height: 0.5})
 }
-Window.prototype.toCenterWithBorder = function(border = 1) { // HUH?
+Window.prototype.toCenterWithBorder = function(border = 1) {
   let [boxWidth, boxHeight] = this.getBoxSize()
   let rect = { 
                x: border,
                y: border, 
-               width: GRID_WIDTH  - (border * 2),
-               height: GRID_HEIGHT - (border * 2)
+               width: GRID_WIDTH - (border * 2), 
+               height: GRID_HEIGHT - (border * 2) 
              }
   this.setGrid(rect)
 }
@@ -219,28 +215,24 @@ windowLeftOneColumn = () => {
   let frame = focused().getGrid()
   frame.x = Math.max(frame.x - 1, 0)
   return focused().setGrid(frame)
-  Phoenix.notify("windowLeftOneColumn")
 }
 
 windowDownOneRow = () => {
   let frame = focused().getGrid()
   frame.y = Math.min(Math.floor(frame.y + 1), GRID_HEIGHT - 1)
   return focused().setGrid(frame)
-  Phoenix.notify("windowDownOneRow")
 }
 
 windowUpOneRow = () => {
   let frame = focused().getGrid()
   frame.y = Math.max(Math.floor(frame.y - 1), 0)
   return focused().setGrid(frame)
-  Phoenix.notify("windowUpOneRow")
 }
 
 windowRightOneColumn = () => {
   let frame = focused().getGrid()
   frame.x = Math.min(frame.x + 1, GRID_WIDTH - frame.width)
   return focused().setGrid(frame)
-  Phoenix.notify("windowRightOneColumn")
 }
 windowGrowOneGridColumn = () => {
   let frame = focused().getGrid()
@@ -307,11 +299,10 @@ App.focusOrStart = name => {
   
   return _.each(activeWindows, win => win.focus())
 }
-
-ALACRITTY = "Alacritty"
+ITERM = "iTerm2"
 EMACS = "Emacs"
 FINDER = "Finder"
-BRAVE = "Brave Browser"
+FIREFOX = "Firefox"
 let showAppName = () => {
   let name = focused().app().name()
   let frame = focused().screenFrame()
@@ -338,15 +329,15 @@ bind_key('Q', 'Top Left', mash, () => focused().toTopLeft())
 bind_key('A', 'Bottom Left', mash, () => focused().toBottomLeft())
 bind_key('W', 'Top Right', mash, () => focused().toTopRight())
 bind_key('S', 'Bottom Right', mash, () => focused().toBottomRight())
-bind_key('z', 'Left Half', mash, () => focused().toLeftHalf())
-bind_key('x', 'Right Half', mash, () => focused().toRightHalf())
-bind_key('F', 'Maximize Window', mash, () => focused().toMaximizeScreen())
-bind_key('F', 'Fullscreen Window', smash, () => focused().toFullScreen())
+bind_key('z', 'Right Half', mash, () => focused().toLeftHalf())
+bind_key('x', 'Left Half', mash, () => focused().toRightHalf())
+bind_key('space', 'Maximize Window', mash, () => focused().toFullScreen())
+bind_key('return', 'Maximize Window', mash, () => focused().toFullScreen())
 bind_key('1', 'Show App Name', mash, showAppName) 
 bind_key('E', 'Launch Emacs', mash, () => App.focusOrStart(EMACS))
-bind_key('T', 'Launch Alacritty', mash, () => App.focusOrStart(ALACRITTY))
-bind_key('space', 'Launch Browser', mash, () => App.focusOrStart(BRAVE))
-//bind_key('F', 'Launch Finder', mash, () => App.focusOrStart(FINDER))
+bind_key('T', 'Launch iTerm2', mash, () => App.focusOrStart(ITERM))
+bind_key('B', 'Launch Browser', mash, () => App.focusOrStart(FIREFOX))
+bind_key('F', 'Launch Finder', mash, () => App.focusOrStart(FINDER))
 bind_key('N', 'To Next Screen', mash, moveWindowToNextScreen)
 bind_key('P', 'To Previous Screen', mash, moveWindowToPreviousScreen)
 bind_key('=', 'Increase Grid Columns', mash, () => changeGridWidth(+1))
@@ -360,26 +351,26 @@ bind_key('J', 'Move Grid Down', mash, windowDownOneRow)
 bind_key('K', 'Move Grid Up', mash, windowUpOneRow)
 bind_key('L', 'Move Grid Right', mash, windowRightOneColumn)
 bind_key('6', 'Move Grid Left', mash, windowLeftOneColumn)
-bind_key('7', 'Move Grid Down', mash, windowDownOneRow) //works
-bind_key('8', 'Move Grid Up', mash, windowUpOneRow) //works
+bind_key('7', 'Move Grid Down', mash, windowDownOneRow)
+bind_key('8', 'Move Grid Up', mash, windowUpOneRow)
 bind_key('9', 'Move Grid Right', mash, windowRightOneColumn)
-bind_key('U', 'Window Full Height', mash, windowToFullHeight) 
-bind_key('Y', 'Window Full Width', mash, windowToFullWidth)
+bind_key('U', 'Window Full Height', mash, windowToFullHeight)
+bind_key('Y', 'Window Full Height', mash, windowToFullWidth)
 bind_key('I', 'Shrink by One Column', mash, windowShrinkOneGridColumn)
 bind_key('O', 'Grow by One Column', mash, windowGrowOneGridColumn)
 bind_key(',', 'Shrink by One Row', mash, windowShrinkOneGridRow)
 bind_key('.', 'Grow by One Row', mash, windowGrowOneGridRow)
-//bind_key('M', 'Markdown Editing', mash, () => {
-//  App.focusOrStart(FIREFOX) 
-//  focused().toRightHalf()
-//  App.focusOrStart(EMACS)
-//  focused().toLeftHalf()
-//})
+bind_key('M', 'Markdown Editing', mash, () => {
+  App.focusOrStart(FIREFOX) 
+  focused().toRightHalf()
+  App.focusOrStart(EMACS)
+  focused().toLeftHalf()
+})
 
-//bind_key('M', 'Exit Markdown Editing', smash, () => {
-//  App.focusOrStart(FIREFOX)
-//  focused().toFullScreen(false)
-//  App.focusOrStart(EMACS)
-//  focused().toFullScreen(false)
-//})
+bind_key('M', 'Exit Markdown Editing', smash, () => {
+  App.focusOrStart(FIREFOX)
+  focused().toFullScreen(false)
+  App.focusOrStart(EMACS)
+  focused().toFullScreen(false)
+})
 Phoenix.notify("All ok.")

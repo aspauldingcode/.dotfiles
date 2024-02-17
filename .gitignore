@@ -1,0 +1,31 @@
+
+# Ignore compiled files
+*.class
+*.o
+*.pyc
+*.
+
+# Ignore IDE and editor-specific files
+.vscode/
+.idea/
+*.suo
+*.user
+*.sln
+*.suo
+*.user
+*.sw?
+*.swn
+.DS_Store
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+
+# Ignore build and dependency directories
+/node_modules/
+/target/
+/vendor/
+/.venv/
+
+# ignore unsupported files
+fifo
