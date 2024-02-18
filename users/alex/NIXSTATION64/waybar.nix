@@ -76,7 +76,8 @@ in
 
           modules-center = [
             "pulseaudio"
-            "clock"
+            #"clock"
+            "custom/datetime"
             #"custom/gpg-agent"
             # "custom/spotify"
             "cava"
@@ -104,16 +105,21 @@ in
         "spacing" = 8;
       }; 
 
-      clock = {
-        interval = 1;
-        format = "{:%a, %b %d  %I:%M %p}";
-        # on-click = "mode";
-        tooltip-format = ''
-        <tt><small>{calendar}</small></tt>
-        '';        # TODO: Implement gcal: {gcal --starting-day=1 | sed -e 's|<|\[|g' -e 's|>|\]|g}
-      };
-      
-      cava = {
+      "custom/datetime" = {
+        interval = 60;
+        return-type = "json";
+        format = " {}";
+        exec = jsonOutput "menu" {
+          text = "$DATETIME"; #  date "+%a, %b %d  %I:%M %p
+          pre = ''
+          CAL="$(gcal | awk '{printf "%-21s\n", $0}' | sed -e 's|<|\[|g' -e 's|>|\]|g' -e '/^$/d' | sed -e '1d;$!s/\]$/&/;$!s/$/ /' -e '$!N;s/\n$//')"
+          DATETIME=$(date "+%a, %b %d  %I:%M %p") 
+          '';
+            tooltip = "$CAL";
+          };
+        };
+
+        cava = {
         # exec-if = "${playerctl} status 2>/dev/null";
         # exec = ''${playerctl} metadata --format '{"text": "{{title}} - {{artist}}", "alt": "{{status}}", "tooltip": "{{title}} - {{artist}} ({{album}})"}' 2>/dev/null '';
         # cava_config = "$XDG_CONFIG_HOME/cava/cava.conf";
@@ -451,7 +457,7 @@ in
       margin-top: 7px;
       margin-bottom: 7px;
       font-family: 'JetBrains Mono', Regular;
-      font-size: 10pt;
+      font-size: 9pt;
       padding: 1px;
       color: #${colors.base05};
     }
@@ -555,18 +561,29 @@ in
       padding-right: 8px;
     }
 
-    #clock,
+    /* #clock, */
+    #custom-datetime    
     #memory {
       margin-top: 0px;
       margin-bottom: 0px;
     }
 
-    #clock-popup {
+    #custom-datetime {
+      font-family: 'JetBrains Mono', Regular;
+      font-size: 9pt;
       background-color: #${colors.base02};
-      border: 2px solid #${colors.base0C};
-      border-radius: 10px;
-      font-size: 16px;
+      border: 0px solid #${colors.base0C};
+      border-radius: 30px;
+      padding-left: 16px;
+      padding-right: 16px;
     }
+
+    /* #clock-popup { */
+    /*   background-color: #${colors.base02}; */
+    /*   border: 2px solid #${colors.base0C}; */
+    /*   border-radius: 10px; */
+    /*   font-size: 16px; */
+    /* } */
 
     #custom-hostname {
       background-color: #${colors.base0C};
@@ -601,8 +618,9 @@ in
       padding-right: 4px;
     }
 
+    /* #clock, */
+    #custom-datetime
     #spotify,
-    #clock,
     .mail
     {
       background-color: #${colors.base02};
@@ -644,6 +662,8 @@ in
     tooltip * {
       color: #${colors.base05};
       text-shadow: none; 
+      font-family: 'JetBrains Mono', Regular;
+      font-size: 9pt;
     }
     /**/
     /* tooltip label { */

@@ -12,6 +12,6 @@
     borderRadius = 10;
     defaultTimeout = 5000;
     ignoreTimeout = false;
-    backgroundColor = "#${config.colorScheme.colors.base02}";
+    backgroundColor = "#${config.colorScheme.colors.base00}";
   };
 }
