@@ -69,7 +69,7 @@ case "$SENDER" in
     #echo "Mouse left hover of $NAME icon" >> /tmp/sketchybar_debug.log
     ;;
   "mouse.clicked")
-    sketchybar --set $NAME popup.drawing=toggle
+    #sketchybar --set $NAME popup.drawing=toggle
     #echo "Mouse clicked on $NAME icon" >> /tmp/sketchybar_debug.log
     ;;
 esac

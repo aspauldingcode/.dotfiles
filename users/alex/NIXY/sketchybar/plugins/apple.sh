@@ -19,14 +19,22 @@ properties=(
   width=175
 )
 
-sketchybar --add item apple.popup popup.apple \
-  --set apple.popup label="$(uname -s -r -m)" \
-    icon=$APPLE "${properties[@]}" 
+#FIXME: show second page.
+sketchybar --add item apple.uname popup.apple \
+  --set apple.uname label="$(uname -s -r -m)" \
+    label.padding_left=10 \
+    label.padding_right=10 \
+--add item apple.sw_vers popup.sw_vers \ 
+  --set apple.sw_vers label="$(sw_vers | awk '/ProductName/ {printf $2" "} /ProductVersion/ {printf $2" "} /BuildVersion/ {print "(" $2")"}')" \
+    label.padding_left=10 \
+    label.padding_right=10
 
+    #icon=$APPLE "${properties[@]}" 
+    #
   # Handle mouse events
 case "$SENDER" in
   "mouse.entered")
-    sleep 1
+    #sleep 1
     sketchybar --set $NAME popup.drawing=on
     #echo "Mouse Hovered in $NAME icon" >> /tmp/sketchybar_debug.log
     ;;
@@ -41,6 +49,6 @@ case "$SENDER" in
     ;;
   "routine")
     # Update battery info periodically
-    update_battery
+    #update_battery
     ;;
 esac

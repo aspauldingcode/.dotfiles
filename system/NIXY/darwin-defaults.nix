@@ -4,7 +4,7 @@
 {
   system.defaults = {
     finder = { 
-      CreateDesktop = false;
+      CreateDesktop = false; # REQUIRED to fix https://github.com/koekeishiya/yabai/issues/863
       AppleShowAllFiles = true;
       AppleShowAllExtensions = true;
       FXDefaultSearchScope = "SCcf";	
@@ -43,7 +43,7 @@
       spans-displays = false; # Required false for yabai!
     };
     dock = {
-      autohide = true; 
+      autohide = false; #Disable for now. 
       autohide-delay = 1000.0; #defaults write com.apple.dock autohide-delay -float 1000; killall Dock
       autohide-time-modifier = 0.001; # or null?
       dashboard-in-overlay = true;

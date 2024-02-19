@@ -10,7 +10,7 @@ let
       export BLUE="0xE6${colors.base0D}"  # Changes background of drop-down windows 
       export MAGENTA="0xff${colors.base0E}" # Changed border color? NO
       export ORANGE=0xff${colors.base0A}
-      export TEMPUS="0xff${colors.base02}" # backgrounds of RAM, spotify, apple logo, time and date
+      export TEMPUS="0xE6${colors.base02}" # backgrounds of RAM, spotify, apple logo, time and date
       export STATUS="0xE6${colors.base00}" #BACKGROUND of bar. make same as alacritty.
       export SPACEBG=0xFF808080 #Didn't change much?
       export MIDNIGHT="0xE6${colors.base03}" # Only worked on the mail icon?

@@ -9,7 +9,7 @@ osascript -e 'tell application "System Events" to make login item at end with pr
 while true
 do
   cava -p $PLUGIN_DIR/cava.conf | sed -u 's/ //g; s/0/▁/g; s/1/▂/g; s/2/▃/g; s/3/▄/g; s/4/▅/g; s/5/▆/g; s/6/▇/g; s/7/█/g; s/8/█/g' | while read line; do
-    sketchybar --set cava label=$line label.font="JetBrains Mono:Regular:12.0" #FIXME: change it so this font fixes spacing issues between bars
+    sketchybar --set cava label=$line label.font="Droid Sans Mono for Powerline:Regular:12.0" #FIXME: change it so this font fixes spacing issues between bars
   done
-  sleep 5
+  #sleep 5
 done

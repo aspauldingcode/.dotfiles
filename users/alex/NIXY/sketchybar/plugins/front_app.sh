@@ -68,7 +68,7 @@ update_sketchybar
 # Handle mouse events
 case "$SENDER" in
   "mouse.entered")
-    sleep 1
+    #sleep 1
     sketchybar --set $NAME popup.drawing=on
     #echo "Mouse Hovered in $NAME icon" >> /tmp/sketchybar_debug.log
     ;;
@@ -83,6 +83,6 @@ case "$SENDER" in
     ;;
   "routine")
     # Update battery info periodically
-    update_battery
+    #update_battery
     ;;
 esac

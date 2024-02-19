@@ -28,11 +28,11 @@
       yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
 
       # move/resize windows with mouse
-      yabai -m config mouse_modifier              alt
+      yabai -m config mouse_modifier              cmd
       yabai -m config mouse_action1               move
       yabai -m config mouse_action2               resize
       yabai -m config mouse_drop_action           swap
-      yabai -m config focus_follows_mouse         autoraise # autofocus
+      yabai -m config focus_follows_mouse         off # autoraise # autofocus
       yabai -m config mouse_follows_focus         off #FIXME: configure apps so I can turn this on.
 
       #UPGRADED to Sonoma. JankyBorders installed

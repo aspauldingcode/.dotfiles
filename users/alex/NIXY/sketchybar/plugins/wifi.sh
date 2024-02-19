@@ -105,7 +105,7 @@ sketchybar --set $NAME label=$WIFI
 # Handle mouse events
 case "$SENDER" in
   "mouse.entered")
-    sleep 1
+    #sleep 1
     sketchybar --set $NAME popup.drawing=on
     #echo "Mouse Hovered in $NAME icon" >> /tmp/sketchybar_debug.log
     ;;
