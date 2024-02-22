@@ -1,5 +1,6 @@
 { config, pkgs, lib, nixvim, inputs, ... }: 
 
+# my universal neovim configuration with Nix Syntax using NixVim!
 {
   imports = [
     inputs.nixvim.homeManagerModules.nixvim
@@ -409,7 +410,10 @@
         };
       };
     };
-    treesitter-context.enable = true;
+    treesitter-context = { 
+      enable = true;
+      maxLines = 3; # limit to not hog up screenspace.
+    };
 
     #wtf.enable = true; ChatGPT error explainations!
 

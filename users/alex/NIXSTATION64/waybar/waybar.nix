@@ -123,15 +123,15 @@ in
         # exec-if = "${playerctl} status 2>/dev/null";
         # exec = ''${playerctl} metadata --format '{"text": "{{title}} - {{artist}}", "alt": "{{status}}", "tooltip": "{{title}} - {{artist}} ({{album}})"}' 2>/dev/null '';
         # cava_config = "$XDG_CONFIG_HOME/cava/cava.conf";
-	      framerate = 30;
-	      autosens = 1;
-	      # sensitivity = 100;
-	      bars = 10;
+        framerate = 30;
+        #autosens = 1;
+        # sensitivity = 100;
+        bars = 10;
         lower_cutoff_freq = 50;
         higher_cutoff_freq = 15000;
         method = "pulse";
         source = "auto";
-        stereo = true;
+        stereo = false;
         reverse = false;
         bar_delimiter = 0;
         monstercat = false;
@@ -446,8 +446,21 @@ in
     window#waybar {
       background-color: #${colors.base00};
       border: 2px solid #${colors.base0C};
-      border-radius: 30px; 
+      border-radius: 30px;
     }
+
+    window#waybar.hidden {
+      opacity: 0.2;
+    }
+
+    /*
+    window#waybar.empty {
+      background-color: transparent;
+    }
+    window#waybar.solo {
+      background-color: #FFFFFF;
+    }
+    */
 
     .modules-left {
       background-color: #${colors.base00};
@@ -506,6 +519,7 @@ in
       border-radius: 30px;
       padding-left: 18px;
       padding-right: 14px;
+      font-size: 9pt;
     }
 
     #custom-player {
@@ -517,15 +531,19 @@ in
       transition: none;
       background: transparent;
       color: #${colors.base04};
-      padding: 0 4px;
+      padding: 0px;
+      padding-left: 4px;
       margin: -8 0px;
+      font-size: 9pt;
     }
 
     #workspaces button {
       transition: none;
       background: transparent;
       color: #${colors.base04};
-      padding: 0 2px;
+      padding: 0px;
+      margin: 0px -16px;
+      border: none;
     }
 
     #workspaces button.hover {
@@ -541,16 +559,6 @@ in
       font-family: 'JetBrains Mono', Bold;
     }
     
-    #workspaces button:hover {
-      transition: none;
-      border-color: transparent;
-      font-family: 'JetBrains Mono', Italic;
-    }
-
-    #workspaces button {
-      border: none;
-    }
-
     #custom-seperator-left,
     #custom-seperator-right {
       padding-left: 8px;
@@ -576,6 +584,7 @@ in
       border-radius: 30px;
       padding-left: 16px;
       padding-right: 16px;
+      font-size: 9pt;
     }
 
     /* #clock-popup { */
@@ -598,6 +607,7 @@ in
       padding-left: 8px;
       padding-right: 8px;
       margin: 0px;
+      font-size: 9pt;
     }
     
     /*#pulse
@@ -616,6 +626,8 @@ in
     #cava {
       padding-left: 4px;
       padding-right: 4px;
+      font-size: 9pt;
+      font-family: 'JetBrains Mono', Regular;      
     }
 
     /* #clock, */
@@ -643,6 +655,7 @@ in
       border-radius: 30px; 
       padding-left: 16px;
       padding-right: 16px;
+      font-size: 9pt;
     }
     #memory {
       background-color: #${colors.base02};
@@ -650,6 +663,7 @@ in
       border-radius: 30px;
       padding-left: 16px;
       padding-right: 16px;
+      font-size: 9pt;
     }
 
     tooltip {
@@ -664,6 +678,7 @@ in
       text-shadow: none; 
       font-family: 'JetBrains Mono', Regular;
       font-size: 9pt;
+      padding: 4px;
     }
     /**/
     /* tooltip label { */

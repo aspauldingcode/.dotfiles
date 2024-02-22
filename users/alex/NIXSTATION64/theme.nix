@@ -41,17 +41,17 @@ in
     #};
   };
   qt = {
-    enable = false;
-    platformTheme = "kde";
+    enable = true;
+    platformTheme = "gtk";
     # name of gtk theme
-    style = {
-      name = "${config.colorScheme.slug}";
-      package = gtkThemeFromScheme {scheme = config.colorScheme;};
+    #style = {
+    #  name = "${config.colorScheme.slug}";
+    #  package = gtkThemeFromScheme {scheme = config.colorScheme;};
       #name = "whitesur-kde-unstable";
       #package = pkgs.whitesur-kde;
       #name = "breeze-dark"; # WORKS
       #name = "whitesur-icon-theme";
       #package = pkgs.whitesur-gtk-theme;
-    };
+    #};
   };
 }

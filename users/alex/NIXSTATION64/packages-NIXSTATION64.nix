@@ -150,6 +150,7 @@
       gimp 
       zip
       thefuck
+      ffmpeg-full
       sway-contrib.grimshot
       (python311.withPackages(ps: with ps; [
         toml
@@ -171,6 +172,8 @@
       #fix-wm
       (pkgs.writeShellScriptBin "fix-wm" ''
       pkill waybar && sway reload
+      sleep 4       #FIX waybar cava init issue:
+      nohup ffplay ~/.dotfiles/users/alex/NIXSTATION64/waybar/silence.wav -t 4 -nodisp -autoexit > /dev/null 2>&1 &
       '')
     ];
   };

@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./waybar.nix
+    ./waybar/waybar.nix
   ];
 
   wayland.windowManager.sway = {
@@ -243,7 +243,7 @@
       # STYLIZE!
       gaps inner 13
       gaps top -2
-      corner_radius 8
+      corner_radius 10
 
       #FIX waybar tooltips!
       for_window [app_id="waybar" floating] {
