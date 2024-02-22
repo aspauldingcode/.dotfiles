@@ -29,6 +29,7 @@
       "iniparser"
       "gcal"
       "iproute2mac"
+      "gtk-mac-integration" # build gtk mac apps?
     ];
     #masApps = [ #FAILS
       #497799835 #Xcode 

@@ -1,21 +1,32 @@
-{ nix-colors, pkgs, ... }:
+{ nix-colors, config, pkgs, ... }:
 
-# Configure color schemes..
-let 
-  theme = "gruvbox-dark-soft";
-  # Choose from: https://nix-community.github.io/nixvim/colorschemes/base16/index.html#colorschemesbase16colorscheme
+# Configure GTK, QT themes, color schemes.. USE NIXOS MODULE
+#let 
+#  theme = "gruvbox-dark-soft";
+#  # Choose from: https://nix-community.github.io/nixvim/colorschemes/base16/index.html#colorschemesbase16colorscheme
+#in
+
+let
+  inherit (nix-colors.lib-contrib {inherit pkgs;}) gtkThemeFromScheme; 
 in
 {
-  colorScheme = nix-colors.colorSchemes.${theme};
 
-  /*
+  #colorScheme = nix-colors.colorSchemes.${theme};
+  
+  #home.pointerCursor = {
+  #    name = "Bibata-Modern-Ice";
+  #    package = pkgs.bibata-cursors;
+  #};
+
   gtk = {
     enable = true;
-    cursorTheme = {
-      name = "Bibata-Modern-Ice";
-      package = pkgs.bibata-cursors;
-    };
+    #cursorTheme = {
+    #  name = "Bibata-Modern-Ice";
+    #  package = pkgs.bibata-cursors;
+    #};
     #theme = {
+    #  name = "${config.colorScheme.slug}";
+    #  package = gtkThemeFromScheme {scheme = config.colorScheme;};
       #name = "WhiteSur-GTK-Theme";
       #package = pkgs.whitesur-gtk-theme;
       #name = "adw-gtk3";
@@ -30,13 +41,13 @@ in
       #package = ;
     #};
   };
-  */
-  
-  /*qt = {
+  qt = {
     enable = false;
-    platformTheme = "kde";
+    platformTheme = "gtk";
     # name of gtk theme
     style = {
+      name = "${config.colorScheme.slug}";
+      package = gtkThemeFromScheme {scheme = config.colorScheme;};
       #name = "whitesur-kde-unstable";
       #package = pkgs.whitesur-kde;
       #name = "breeze-dark"; # WORKS
@@ -44,5 +55,5 @@ in
       #package = pkgs.whitesur-gtk-theme;
     };
   };
-  */
 }
+

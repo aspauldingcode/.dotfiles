@@ -14,7 +14,7 @@
       plugins = [ "git" "thefuck" ];
       theme =   "funky";
     };
-    initExtra = "disable-hud\n"; # DISABLE volume/brightness HUD!
+    initExtra = "disable-hud\nsudo spctl --master-disable\n"; # DISABLE volume/brightness HUD! Disable GATEKEEPER
   };
   home.sessionVariables = {
     LANG = "en_US.UTF-8";

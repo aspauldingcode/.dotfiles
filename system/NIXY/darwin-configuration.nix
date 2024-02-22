@@ -8,6 +8,7 @@
     ./homebrew-pkgs.nix
     ./yabai-sa.nix
     ./wg-quick.nix
+    ./theme.nix
   ];
   # Allow Unfree
   nixpkgs.config.allowUnsupportedSystem = true;
