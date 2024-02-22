@@ -1,11 +1,11 @@
 { inputs, lib, config, pkgs, mobile-nixos, ... }:
-
 {
   imports = [
     ./hardware-configuration.nix
     # ("${mobile-nixos}/lib/configuration.nix" { device = "oneplus-fajita"; })
     ./packages.nix
     ./virtual-machines.nix
+    ./theme.nix
     #./wg-quick.nix
   ];
 
@@ -13,10 +13,10 @@
   boot = {
     kernelPackages = pkgs.linuxPackages_latest; # choose your kernel
     loader = { # TODO: Use whatever bootloader you prefer!
-    systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
   };
-};
 
   # This is using a rec (recursive) expression to set and access XDG_BIN_HOME within the expression
   # For more on rec expressions see https://nix.dev/tutorials/first-steps/nix-language#recursive-attribute-set-rec

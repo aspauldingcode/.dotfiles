@@ -409,7 +409,10 @@
         };
       };
     };
-    
+    treesitter-context.enable = true;
+
+    #wtf.enable = true; ChatGPT error explainations!
+
     # Filetree
     chadtree.enable = false;
     nvim-tree = {
@@ -486,7 +489,33 @@
      removeBlanklineTrail = true; # set false?
     };
   };
-
+  
+  # Git readme Parser! if saved as README.org!
+  neorg = {
+    enable = true;
+    modules = {
+    #  require('neorg').setup {
+    #    load = {
+    #      ["core.defaults"] = {}, -- 
+    #      ["core.concealer"] = {}, -- Allows for use of icons
+    #    };
+    #  }
+    #}
+      "core.defaults" = { # Load all the default modules
+        #__empty = null;
+      };
+      "core.concealer" = { # Allows for the use of icons
+      };
+      "core.dirman" = { # idk what this does 
+        #config = {
+        #  workspaces = {
+        #    home = "~/notes/home";
+        #    work = "~/notes/work";
+        #  };
+        #};
+      };
+    };
+  };
 };
 
 colorschemes.base16 = {

@@ -35,7 +35,7 @@
           #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
         };
         "*" = { # change background for all outputs
-          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
+          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/sweden.png fill"; #ghibliwp.jpg, sweden.png
         };
       };
       # Use alacritty as default terminal
@@ -243,7 +243,7 @@
       # STYLIZE!
       gaps inner 13
       gaps top -2
-      corner_radius 10
+      corner_radius 8
 
       #FIX waybar tooltips!
       for_window [app_id="waybar" floating] {
