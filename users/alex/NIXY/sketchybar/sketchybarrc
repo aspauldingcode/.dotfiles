@@ -44,7 +44,8 @@ sketchybar --default "${defaults[@]}"
 
 datetime=(
   background.color=$TEMPUS         # Set this color to your background color for popups!
-  label.padding_left=15
+  icon.padding_left=15
+  label.padding_left=5
   label.padding_right=15
   background.height=19 
   background.corner_radius=10
@@ -115,8 +116,8 @@ spotify=(
   popup.align=center
   popup.height=100
   icon=$SPOTIFY
-  icon.padding_right=15
-  icon.padding_left=15
+  icon.padding_right=18
+  icon.padding_left=18
   background.color=$TEMPUS
   background.height=19
   background.corner_radius=10
@@ -208,7 +209,7 @@ sketchybar --add item separator_left left \
     icon.drawing=on \
     label.padding_left=15 \
     label.padding_right=15 \
-  --subscribe front_app front_app_switched mouse.clicked mouse.entered mouse.exited mouse.exited.global
+    --subscribe front_app front_app_switched mouse.clicked mouse.entered mouse.exited mouse.exited.global
 sketchybar --add item active_app left \
    --set active_app "${active_app[@]}" \
    --subscribe front_app front_app_switched
@@ -216,7 +217,7 @@ sketchybar --add item active_app left \
 # Center Items
 sketchybar --add item volume center \
   --set volume "${volume[@]}" \
-  --subscribe volume volume_change mouse.scrolled
+  --subscribe volume volume_change mouse.scrolled mouse.clicked mouse.entered mouse.exited mouse.exited.global
 sketchybar --add item datetime center \
   --set datetime "${datetime[@]}" \
   --subscribe datetime system_woke mouse.clicked mouse.entered mouse.exited mouse.exited.global # REQUIRED events for hover popup.
@@ -232,8 +233,10 @@ sketchybar --add event spotify_change $SPOTIFY_EVENT \
 # Right Items
 sketchybar --add item ram right \
   --set ram "${ram[@]}"
+  --subscribe ram mouse.clicked mouse.entered mouse.exited mouse.exited.global
 sketchybar --add item cpu right \
   --set cpu "${cpu[@]}"
+  --subscribe cpu mouse.clicked mouse.entered mouse.exited mouse.exited.global
 sketchybar  --add item separator_right right \
   --set separator_right "${separator_right[@]}" \
     icon= \

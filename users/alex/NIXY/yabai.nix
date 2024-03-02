@@ -32,7 +32,7 @@
       yabai -m config mouse_action1               move
       yabai -m config mouse_action2               resize
       yabai -m config mouse_drop_action           swap
-      yabai -m config focus_follows_mouse         autofocus # autoraise | autofocus
+      yabai -m config focus_follows_mouse         autoraise # autofocus
       yabai -m config mouse_follows_focus         off #FIXME: configure apps so I can turn this on.
 
       #UPGRADED to Sonoma. JankyBorders installed

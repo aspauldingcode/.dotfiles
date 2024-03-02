@@ -2,6 +2,7 @@
 
 # I like to source my colors, to reference them automatically in a colorScheme switch. 
 source "$HOME/.config/sketchybar/colors.sh"
+source "$HOME/.config/sketchybar/icons.sh"
 
 # Calendar output with gcal. MUST INSTALL gcal! requires awk and sed. 
 CALENDAR=$(gcal | awk '{printf "%-21s\n", $0}' | sed -e 's|<|\[|g' -e 's|>|\]|g' | sed -e '/^$/d' | sed -e 's/\]$/&/' -e '/\]$/!s/$/ /')
@@ -53,7 +54,7 @@ sketchybar --set "$item_name" background.padding_right=185
 # Function to set date and time
 function set_date_and_time {
   sketchybar --set $NAME label="$(date '+%a, %b %d  %I:%M %p')"
-  sketchybar --set $NAME icon=$TIME
+  sketchybar --set $NAME icon=$DATE
 }
 
 set_date_and_time # call it first

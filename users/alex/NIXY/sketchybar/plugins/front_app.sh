@@ -29,7 +29,11 @@ update_sketchybar() {
         CURRENT_WINDOW_TITLE=$(echo "$CURRENT_APP_NAME_AND_WINDOW" | cut -c -$limit)
     [ ${#CURRENT_APP_NAME_AND_WINDOW} -gt $limit ] && CURRENT_WINDOW_TITLE+="..."
     fi
-    sketchybar --set $NAME label="$CURRENT_WINDOW_TITLE"
+    sketchybar --set $NAME label="$CURRENT_WINDOW_TITLE" 
+    sketchybar --add item $NAME.popup popup.$NAME \
+  --set $NAME.popup label="$CURRENT_APP_NAME_AND_WINDOW" \
+    label.padding_left=10 \
+    label.padding_right=10
 }
 
 update_sketchybar

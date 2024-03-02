@@ -25,8 +25,12 @@ volume_change() {
   sketchybar --set volume label="$ICON $INFO%" #add the icon and the percentage
 }
 
-#volume_change # Run it once to set the icon and label!
+sketchybar --add item $NAME.popup popup.$NAME \
+  --set $NAME.popup label="$(system_profiler SPAudioDataType -xml | awk -F'<|>' '/<dict>/ {output_name=""; default_output=0} /<key>_name<\/key>/{getline; output_name=$3} /<key>coreaudio_default_audio_output_device<\/key>/{default_output=1} /<\/dict>/ && default_output {print output_name; exit}')" \
+  label.padding_left=10 \
+  label.padding_right=10 \
 
+# Handle mouse events
 case "$SENDER" in
 "volume_change")
   volume_change
@@ -47,7 +51,24 @@ case "$SENDER" in
   # Adjust volume using osascript
   osascript -e "set volume output volume $NEW_VOLUME"
   ;;
+  "mouse.entered")
+    #sleep 1
+    sketchybar --set $NAME popup.drawing=on
+    #echo "Mouse Hovered in $NAME icon" >> /tmp/sketchybar_debug.log
+    ;;
+  "mouse.exited" | "mouse.exited.global")
+    sketchybar --set $NAME popup.drawing=off
+    #echo "Mouse left hover of $NAME icon" >> /tmp/sketchybar_debug.log
+    ;;
+  "mouse.clicked")
+    open /System/Library/PreferencePanes/Sound.prefPane
+    #sketchybar --set $NAME popup.drawing=toggle
+    #echo "Mouse clicked on $NAME icon" >> /tmp/sketchybar_debug.log
+    # toggle_battery_popup
+    ;;
   "routine")
+    # Update battery info periodically
+    #update_battery
     ;;
 esac
 

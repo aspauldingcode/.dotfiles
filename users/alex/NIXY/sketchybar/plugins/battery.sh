@@ -7,7 +7,7 @@ PERCENTAGE=$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)
 CHARGING=$(pmset -g batt | grep 'AC Power')
 
 batt() {
-  if [ $PERCENTAGE = "" ]; then
+  if [ "$PERCENTAGE" = "" ]; then  # Use double quotes for variable comparison
     exit 0
   fi
 
@@ -27,7 +27,7 @@ batt() {
     *) ICON="$BATTERY_0" ;;
   esac
 
-  if [[ $CHARGING != "" ]]; then
+  if [[ "$CHARGING" != "" ]]; then  # Use double quotes for variable comparison
     ICON="$BATTERY_LOADING"
   fi
 
@@ -41,16 +41,17 @@ update_battery() {
 
   # Define battery popup properties
   battery_popup=(
-    icon="$ICON"
-    label="$PERCENTAGE %"
-    label.y_offset=0
-    label.font="DejaVu Mono:Bold:12.0"
+    $NAME.popup label="$PERCENTAGE%"
+    icon="$ICON" 
+    icon.padding_left=10
+    label.padding_left=8
+    label.padding_right=10
     height=10
     blur_radius=100
   )
 
-  # Use a single update command for the popup
-  sketchybar --set $NAME.popup "${battery_popup[@]}"
+  # Use a single update command at the end to avoid multiple calls
+  sketchybar --add item $NAME.popup popup.$NAME --set "${battery_popup[@]}"
 }
 
 # Check if battery information is available
@@ -65,18 +66,13 @@ fi
 # Handle mouse events
 case "$SENDER" in
   "mouse.entered")
-    #sleep 1
     sketchybar --set $NAME popup.drawing=on
-    #echo "Mouse Hovered in $NAME icon" >> /tmp/sketchybar_debug.log
     ;;
   "mouse.exited" | "mouse.exited.global")
     sketchybar --set $NAME popup.drawing=off
-    #echo "Mouse left hover of $NAME icon" >> /tmp/sketchybar_debug.log
     ;;
   "mouse.clicked")
-    #sketchybar --set $NAME popup.drawing=toggle
-    #echo "Mouse clicked on $NAME icon" >> /tmp/sketchybar_debug.log
-    # toggle_battery_popup
+    # Handle mouse click event if needed
     ;;
   "routine")
     # Update battery info periodically
