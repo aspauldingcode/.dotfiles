@@ -80,11 +80,11 @@
       live_config_reload = true;
 
       keyboard.bindings = [
-        {
-          key = "F";
-          mods = "Command|Shift";
-          action = "ToggleSimpleFullscreen";
-        }
+        #{
+        #  key = "F";
+        #  mods = "Command|Shift";
+        #  action = "ToggleSimpleFullscreen";
+        #}
         # {
         #   key = "C";
         #   mods = "Control";

@@ -32,7 +32,7 @@
       yabai -m config mouse_action1               move
       yabai -m config mouse_action2               resize
       yabai -m config mouse_drop_action           swap
-      yabai -m config focus_follows_mouse         off # autoraise # autofocus
+      yabai -m config focus_follows_mouse         autofocus # autoraise | autofocus
       yabai -m config mouse_follows_focus         off #FIXME: configure apps so I can turn this on.
 
       #UPGRADED to Sonoma. JankyBorders installed
@@ -42,13 +42,13 @@
       yabai -m config window_shadow               float
       yabai -m config window_opacity              on
       yabai -m config window_opacity_duration     0.1
-      yabai -m config window_animation_duration	  0.35
+      #yabai -m config window_animation_duration	  0.35
       yabai -m config window_opacity_duration	  0.35
       yabai -m config normal_window_opacity	  0.95
       yabai -m config active_window_opacity	  1.0
       
       # layout
-      yabai -m config layout                      float # bsp
+      yabai -m config layout                      bsp # bsp | float
       yabai -m config auto_balance                off
       yabai -m config split_ratio                 0.50
       yabai -m config window_placement            second_child
@@ -205,7 +205,7 @@
         ${mod4} + ${mod5} + shift - delete :  sudo shutdown -h now
         ${modifier} + shift - q :             ${yabai} -m window --close
 	      ${modifier} - f :                     ${yabai} -m window --toggle zoom-fullscreen 
-        ${modifier} + shift - f :             ${yabai} -m window --toggle native-fullscreen
+        #${modifier} + shift - f :             ${yabai} -m window --toggle native-fullscreen
         
         #ctrl + shift - f :               toggle-layer-alacritty FIXME: BROKEN
         #AsF - Try making this a system script isntead of user script binary!

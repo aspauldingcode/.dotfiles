@@ -237,6 +237,24 @@
 
     # Example usage
     toggle_sketchybar
-   '')
+    '')
+
+    #toggle-float
+    (pkgs.writeShellScriptBin "toggle-float" ''
+      # Check if the script is provided with an argument
+      if [ $# -eq 0 ]; then
+        echo "Usage: $0 <true|false>"
+        exit 1
+      fi
+
+      # Check the value of the boolean argument
+      if [ "$1" = true ]; then
+        yabai -m window --toggle float; yabai -m window --grid 4:4:1:1:2:2 #FIXME: toggle on
+      elif [ "$1" = false ]; then
+        yabai -m window --toggle float; yabai -m window --grid 4:4:1:1:2:2 #FIXME: toggle off
+      else
+        exit 1
+      fi
+    '')
   ];
 }
