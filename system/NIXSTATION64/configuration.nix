@@ -249,10 +249,15 @@
       # })
     ];
 
-    #config = { # Configure your nixpkgs instance
-    #allowUnfree = true; # Allow unfree packages #FIXME: DOES THIS EVEN WORK?
-
-    #};
+    # config = { # Configure your nixpkgs instance
+    # # allowUnfree = true; # Allow unfree packages #FIXME: DOES THIS EVEN WORK?
+    # allowUnfreePredicate = pkg:
+    # builtins.elem (lib.getName pkg) [
+    #   # Add additional package names here
+    #   #"hello-unfree"
+    #   "oneplus-sdm845-firmware-x"
+    # ];
+    # };
   };
 
   # nix

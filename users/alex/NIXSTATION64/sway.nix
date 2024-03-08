@@ -264,7 +264,8 @@
       blur_passes 2
       blur_radius 5
 
-      shadows on
+      for_window [tiling] shadows off
+      for_window [floating] shadows on
       #shadows_on_csd disable
       shadow_blur_radius 30
       shadow_color #000000ff

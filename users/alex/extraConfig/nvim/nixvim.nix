@@ -83,6 +83,7 @@
     #JAVALSP
     nvim-jdtls = {
       enable = true;
+      #package = pkgs.jdt-language-server;
       data =  "${config.xdg.cacheHome}/jdtls/workspace";
       configuration = "${config.xdg.cacheHome}/jdtls/config";
       initOptions = null;
@@ -106,7 +107,7 @@
       # };
       bashls = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       # beancount = {
       #   enable = true;
@@ -114,31 +115,31 @@
       # };
       biome = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       ccls = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       clangd = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       clojure-lsp = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       cmake = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       csharp-ls = {
         enable = true;
-        installLanguageServer = false; # NOT AVAILABLE on DARWIN
+        # installLanguageServer = false; # NOT AVAILABLE on DARWIN
       };
       cssls = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       # dagger = {
       #   enable = true;
@@ -146,7 +147,7 @@
       # };
       dartls = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       # denols = {
       #   enable = true;
@@ -162,7 +163,7 @@
       # };
       dockerls = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       # efm = {
       #   enable = true;
@@ -182,11 +183,11 @@
       # };
       eslint = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       fsautocomplete = {
         enable = true;
-        installLanguageServer = false; # DOESN'T COMPILE ON DARWIN
+        # installLanguageServer = false; # DOESN'T COMPILE ON DARWIN
       };
       # futhark-lsp = {
       #   enable = true;
@@ -194,27 +195,27 @@
       # };
       gdscript = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       gleam = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       gopls = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       graphql = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       hls = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       html = {
         enable = false;
-        installLanguageServer = false;
+        # installLanguageServer = false;
       };
       #htmx = {
       #  enable = false;
@@ -223,7 +224,7 @@
       #};
       intelephense = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       #java-language-server = { #USING JDTLS!
       #  enable = true;
@@ -231,15 +232,15 @@
       #};
       jsonls = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       julials = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       kotlin-language-server = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       # leanls = {
       #   enable = true;
@@ -247,11 +248,11 @@
       # };
       ltex = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       lua-ls = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       # marksman = {
       #   enable = true;
@@ -263,7 +264,7 @@
       # };
       nil_ls = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       # nixd = {
       #   enable = true;
@@ -311,7 +312,7 @@
       # };
       pyright = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
         #lsp - pyright
         #linter - flake8
         #formatter - black
@@ -326,7 +327,7 @@
       #};
       rust-analyzer = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
         installCargo = true;
         installRustc = true;
       };
@@ -336,15 +337,15 @@
       # };
       sourcekit = {
         enable = true;
-        installLanguageServer = false; # FAILED TO COMPILE ON NIXOS
+        # installLanguageServer = false; # FAILED TO COMPILE ON NIXOS
       };
       svelte = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       tailwindcss = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       # taplo = {
       #   enable = true;
@@ -364,7 +365,7 @@
       # };
       tsserver = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       # typst-lsp = {
       #   enable = true;
@@ -380,7 +381,7 @@
       # };
       vuels = {
         enable = true;
-        installLanguageServer = true;
+        # installLanguageServer = true;
       };
       # yamlls = {
       #   enable = true;

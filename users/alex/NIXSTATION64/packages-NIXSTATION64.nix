@@ -44,7 +44,7 @@
       #wofiWindowJump
       #dunst
       gnomeExtensions.dark-variant
-      eww-wayland
+      eww
       glpaper
       sassc
       glib
@@ -159,7 +159,7 @@
         flake8
         evdev
         pynput
-        pygame
+        # pygame
         matplotlib
         libei
         keyboard

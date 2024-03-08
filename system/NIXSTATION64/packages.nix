@@ -1,9 +1,9 @@
 # Configure included packages for NixOS.
 
-{ pkgs, ... }:
+{ lib, pkgs, nixpkgs, ... }:
 
 {
-  environment.systemPackages = with pkgs; [
+    environment.systemPackages = with pkgs; [
     neovim
     zellij
     libsForQt5.qt5.qtbase
