@@ -1,4 +1,4 @@
-Phoenix.notify("Phoenix config loading")
+//Phoenix.notify("Phoenix config loading")
 
 Phoenix.set({
   daemon: true,
@@ -387,4 +387,4 @@ bind_key('F', 'Fullscreen Window', mod1, () => focused().toFullScreen(), FLOATWI
 //  focused().toFullScreen(false)
 //})
 
-Phoenix.notify("Loaded!")
+//Phoenix.notify("Loaded!")

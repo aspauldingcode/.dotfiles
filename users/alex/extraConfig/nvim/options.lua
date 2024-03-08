@@ -62,15 +62,65 @@ local function map(mode, combo, mapping, opts)
     end
     vim.api.nvim_set_keymap(mode, combo, mapping, options)
 end
-map('n', '<C-p>', ':NvimTreeToggle <CR>', {noremap = true})
+map('n', '<C-Tab>', ':NvimTreeToggle <CR>', {noremap = true})
 map('n', '<C-f>', ':Telescope find_files <CR>', {noremap = true})
 map('n', '<C-n>', ':Telescope live_grep <CR>', {noremap = true})
 
--- Copy selected text #FIXME: NOT WORKING!
--- vim.api.nvim_set_keymap('v', '<D-c>', '"+y<CR>', { noremap = true }) -- Command + C
--- vim.api.nvim_set_keymap('x', '<D-c>', '"+y<CR>:echom "Copied"<CR>', { noremap = true }) -- Command + C
--- vim.api.nvim_set_keymap('v', '<C-c>', '"+y<CR>', { noremap = true }) -- Control + C
--- vim.api.nvim_set_keymap('v', '<D-c>', '"+y<CR>:echom "Copied"<CR>', { noremap = true }) -- Command + C
+-- Enable line wrapping at whitespace
+vim.api.nvim_win_set_option(0, 'wrap', true)
+vim.api.nvim_win_set_option(0, 'linebreak', true)
+vim.api.nvim_win_set_option(0, 'breakindent', true)
+vim.api.nvim_win_set_option(0, 'showbreak', ' ')
+
+-- Toggle line wrapping
+function ToggleWrap()
+  local wrap_state = vim.wo.wrap
+  local linebreak_state = vim.wo.linebreak
+
+  if wrap_state then
+    vim.wo.wrap = false
+    vim.wo.linebreak = false
+    vim.wo.breakindent = false
+    print("Wrap disabled")
+  else
+    vim.wo.wrap = true
+    vim.wo.linebreak = true
+    vim.wo.breakindent = true
+    print("Wrap enabled")
+  end
+end
+
+-- Set a key mapping for toggling line wrapping
+vim.api.nvim_set_keymap('n', '<Leader>w', [[:lua ToggleWrap()<CR>]], { noremap = true, silent = true })
+
+-- Select All! (in normal, visual, or visual line mode)
+vim.api.nvim_set_keymap('n', '<C-a>', '<Esc>:normal! ggVG<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<C-a>', '<Esc>:normal! ggVG<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('x', '<C-a>', '<Esc>:normal! ggVG<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('i', '<C-a>', '<Esc>:normal! ggVG<CR>', { noremap = true, silent = true })
+-- ggVG selects all content. gg moves to first line. V starts visual mode. G jumps to last line thereby selecting from first to last line.
+
+-- Copy/Paste (in normal, visual, or visual line mode)
+vim.api.nvim_set_keymap('n', '<C-c>', '"+y', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<C-c>', '"+y', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('x', '<C-c>', '"+y', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('i', '<C-c>', '<Esc>"+y', { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap('n', '<C-v>', '"+p', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<C-v>', '"+p', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('x', '<C-v>', '"+p', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('i', '<C-v>', '<Esc>"+p', { noremap = true, silent = true })
+
+-- Copy/Paste (in normal, visual, or visual line mode)
+vim.api.nvim_set_keymap('n', '<D-c>', '"+y', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<D-c>', '"+y', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('x', '<D-c>', '"+y', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('i', '<D-c>', '<Esc>"+y', { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap('n', '<D-v>', '"+p', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<D-v>', '"+p', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('x', '<D-v>', '"+p', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('i', '<D-v>', '<Esc>"+p', { noremap = true, silent = true })
 
 -- Indent selected text right with Tab
 vim.api.nvim_set_keymap('x', '<Tab>', [[>gv]], { noremap = true, silent = true })

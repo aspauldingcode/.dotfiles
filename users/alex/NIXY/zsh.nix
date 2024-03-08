@@ -38,6 +38,13 @@
 
       # add ruby 2.6 to PATH because it doesn't build ffi 1.9.25 required gem for nixvim otherwise.
       export PATH="/Users/alex/.gem/ruby/2.6.0/bin:$PATH"
+
+      # add gyr to path
+      export PATH="/Users/alex/.cargo/bin:$PATH"
+      
+      # Try to bind copy paste command so neovim binds are untouched
+      # bindkey -s '^C' 'This shit is copied bruv\n'
+      # bindkey -s '^V' 'Shiit pasteee rn\n'
     '';
   };
 }

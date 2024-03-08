@@ -28,7 +28,7 @@
       yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
 
       # move/resize windows with mouse
-      yabai -m config mouse_modifier              cmd
+      yabai -m config mouse_modifier              cmd # alt doesn't work
       yabai -m config mouse_action1               move
       yabai -m config mouse_action2               resize
       yabai -m config mouse_drop_action           swap
@@ -46,7 +46,7 @@
       yabai -m config window_opacity_duration	  0.35
       yabai -m config normal_window_opacity	  0.95
       yabai -m config active_window_opacity	  1.0
-      
+
       # layout
       yabai -m config layout                      bsp # bsp | float
       yabai -m config auto_balance                off
@@ -189,7 +189,7 @@
       mod1 =  "alt";
       mod4 =  "cmd";
       mod5 =  "ctrl";
-      modifier =   mod1; 
+      modifier =   mod1;
     in /* bash */ 
       ''
         # alt + a / u / o / s are blocked due to umlaute
@@ -204,11 +204,8 @@
         ${mod4} + ${mod5} - delete :          sudo reboot
         ${mod4} + ${mod5} + shift - delete :  sudo shutdown -h now
         ${modifier} + shift - q :             ${yabai} -m window --close
-	      ${modifier} - f :                     ${yabai} -m window --toggle zoom-fullscreen 
-        #${modifier} + shift - f :             ${yabai} -m window --toggle native-fullscreen
-        
-        #ctrl + shift - f :               toggle-layer-alacritty FIXME: BROKEN
-        #AsF - Try making this a system script isntead of user script binary!
+	${modifier} - f :                     ${yabai} -m window --toggle zoom-fullscreen 
+        #${modifier} + shift - f :             ${yabai} -m window --toggle native-fullscreen #USING PHOENIXWM for this!
         
         # Move focus to next/prev workspace
         ${mod1} + ${mod4} - ${left} :   ${yabai} -m space --focus prev
@@ -293,6 +290,11 @@
         # ${modifier} - p : ${yabai} -m window --toggle sticky; \
         #           ${yabai} -m window --toggle topmost; \
         #           ${yabai} -m window --toggle pip
+
+        #FIXME: Define the hotkey for Alt + Left Click
+        #alt - 0x3C : cmd - 0x3C
+        # Define the hotkey for Alt + Right Click
+        #alt - 0x3D : cmd - 0x3D
 
         # reload
         ${modifier} + shift - r : fix-wm

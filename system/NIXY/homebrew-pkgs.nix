@@ -28,6 +28,7 @@
       "portaudio"
       "iniparser"
       "gcal"
+      "cliclick"
       "iproute2mac"
       "gtk-mac-integration" # build gtk mac apps?
     ];

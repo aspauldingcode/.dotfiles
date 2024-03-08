@@ -12,6 +12,7 @@
         class.instance =  "Alacritty";
         class.general  =  "Alacritty";
         decorations =     "Buttonless";
+        option_as_alt =   "Both";
       };
 
       scrolling = {
@@ -80,21 +81,24 @@
       live_config_reload = true;
 
       keyboard.bindings = [
-        #{
-        #  key = "F";
-        #  mods = "Command|Shift";
-        #  action = "ToggleSimpleFullscreen";
-        #}
         # {
-        #   key = "C";
-        #   mods = "Control";
-        #   action = "Copy";
+        #    key = "C";
+        #    mods = "Control|Shift";
+        #    chars = "\\u0003";
         # }
         # {
-        #   key = "W";
-        #   mods = "Command";
-        #   action = "ReceiveChar";
+        #    key = "C";
+        #    mods = "Control";
+        #    action = "Copy";
         # }
+        # {
+        #    key = "V";
+        #    mods = "Control";
+        #    action = "Paste";
+        # }
+
+        # You can use the ReceivedChar as action for Ctrl + Shift + C, so it'll have SIGINT, and your binding for ctrl+c. The new syntax for \x03 is \U0003, the migrator translates them correctly.
+
         {
           key = "PageUp";
           mode = "~Alt";

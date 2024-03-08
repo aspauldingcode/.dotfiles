@@ -177,19 +177,63 @@ sketchybar --add item apple left \
   --set apple "${apple[@]}" \
   --subscribe apple mouse.clicked mouse.entered mouse.exited mouse.exited.global
 
-for i in "${!SPACE_ICONS[@]}"
+# REMOVE ALL SPACES to start clean.
+DISPLAY_INFO=$(yabai -m query --displays)
+num_displays=$(echo "$DISPLAY_INFO" | jq length)
+while true; do
+  # Get the current number of spaces
+  max_space_index=$(yabai -m query --spaces | jq 'max_by(.index) | .index')
+  echo "Max Space Index: $max_space_index"
+  # Initial check for empty spaces
+  for ((sid=1; sid<=max_space_index; sid++)); do
+    windows_count=$(yabai -m query --spaces --space $sid | jq '.windows | length')
+    echo "Space $sid has $windows_count windows"
+    if [ "$windows_count" -eq 0 ]; then
+      echo "Removing Space $sid"
+      if yabai -m space $sid --destroy 2>&1 | grep -q "acting space is the last user-space on the source display and cannot be destroyed"; then
+        echo "Encountered the specific error. Exiting the loop."
+        exit
+      fi
+    fi
+  done
+  # Repeatedly check for and remove empty spaces
+  removed=false
+  # Iterate through spaces dynamically
+  for ((sid=1; sid<=max_space_index; sid++)); do
+    # Check if the space still exists
+    if yabai -m query --spaces --space $sid >/dev/null 2>&1; then
+      windows_count=$(yabai -m query --spaces --space $sid | jq '.windows | length')
+      echo "Space $sid has $windows_count windows"
+      if [ "$windows_count" -eq 0 ]; then
+        echo "Removing Space $sid"
+        if yabai -m space $sid --destroy 2>&1 | grep -q "acting space is the last user-space on the source display and cannot be destroyed"; then
+          echo "Encountered the specific error. Exiting the loop."
+          exit
+        fi
+        removed=true
+        break  # Exit the loop to recheck indices
+      fi
+    fi
+  done
+  # Break out of the loop if no empty spaces were removed
+  if [ "$removed" = false ]; then
+    break
+  fi
+done
 
-# ADD ignore_association=on !!!
-do
-  sid=$(($i+1))
+max_space_index=$(yabai -m query --spaces | jq 'max_by(.index) | .index')
+# Add only open spaces to Sketchybar
+for ((i=1; i<=max_space_index; i++)); do
+  sid=$(($i))
   sketchybar --add space space.$sid left \
-  --set space.$sid space=$sid \
-    icon=${SPACE_ICONS[i]} \
+    --set space.$sid space=$sid \
+    ignore_association=on \
+    icon=${SPACE_ICONS[i-1]} \
     background.color=0x44ffffff \
     icon.highlight_color=0x00000000 \
     background.corner_radius=5 \
-    icon.padding_left=5  \
-    icon.padding_right=5  \
+    icon.padding_left=5 \
+    icon.padding_right=5 \
     background.height=20 \
     background.drawing=off \
     label.drawing=off \
@@ -197,6 +241,7 @@ do
     click_script="yabai -m space --focus $sid" \
     icon.font="JetBrains Mono:Regular:13.0"
 done
+
 sketchybar --add item separator_left left \
   --set separator_left "${separator_left[@]}" \
     icon= \

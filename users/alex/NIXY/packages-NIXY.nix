@@ -24,6 +24,8 @@
     lavat
     #vscode
     # bonsai #Only available on mac?
+    rustc
+    cargo
     utm 
     mas
     vscode
