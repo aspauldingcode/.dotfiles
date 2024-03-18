@@ -1,6 +1,10 @@
-{ lib, pkgs, config, inputs, ... }:
+{ pkgs, inputs, ... }:
 
 {
+  #imports = [
+  #  ./instantview.nix
+  #];
+
   nixpkgs = {
     hostPlatform = "aarch64-darwin";
     config = {
@@ -34,14 +38,18 @@
     dwm
     zoom-us
     android-tools
+    undmg
+    p7zip
     jq
     libusb
+    darling-dmg
     lolcat
     tree-sitter
     nodejs_20
     #lspconfig
     fd #find tool
     ripgrep
+    (pkgs.callPackage ./instantview.nix {})
   ];
 
   system.activationScripts.extraActivation.text = '' 

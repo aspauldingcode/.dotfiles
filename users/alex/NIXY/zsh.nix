@@ -3,7 +3,7 @@
 {
   programs.zsh = {
     enable = true;
-    enableCompletion = true;
+
     shellAliases = {
       ll =      "ls -l";
       ifstat =  "ifstat-legacy";
@@ -33,6 +33,8 @@
 
       # Add the mobile-nixos variable to $NIX_PATH
       # export NIX_PATH="$NIX_PATH:mobile-nixos=~/mobile-nixos"
+
+      # Princeton Jar files!
       export CLASSPATH=~/Desktop/hw/csci232/jars/algs4.jar:$CLASSPATH
       export CLASSPATH=~/Desktop/hw/csci232/jars/stdlib.jar:$CLASSPATH
 
@@ -41,7 +43,12 @@
 
       # add gyr to path
       export PATH="/Users/alex/.cargo/bin:$PATH"
-      
+
+      # add x11 to path
+      export PATH=/usr/X11R6/bin:$PATH
+      export MANPATH=/usr/X11R6/man:$MANPATH
+      export DISPLAY=:0            # Required!
+
       # Try to bind copy paste command so neovim binds are untouched
       # bindkey -s '^C' 'This shit is copied bruv\n'
       # bindkey -s '^V' 'Shiit pasteee rn\n'

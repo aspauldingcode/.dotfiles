@@ -5,6 +5,7 @@
     enable = true;
     settings = {
       window = {
+        dynamic_padding = true;
         padding.x =       0;
         padding.y =       10;
         opacity   =       0.9;
@@ -80,6 +81,10 @@
       };
       live_config_reload = true;
 
+      selection = {
+        save_to_clipboard = true; #copy on selection
+      };
+
       keyboard.bindings = [
         # {
         #    key = "C";
@@ -98,6 +103,18 @@
         # }
 
         # You can use the ReceivedChar as action for Ctrl + Shift + C, so it'll have SIGINT, and your binding for ctrl+c. The new syntax for \x03 is \U0003, the migrator translates them correctly.
+
+
+        /*
+    # shortcuts for tmux. the leader key is control-b (0x02)
+  - { key: W,        mods: Command,       chars: "\x02&"                       }  # close tab (kill)
+  - { key: T,        mods: Command,       chars: "\x02c"                       }  # new tab
+  - { key: RBracket, mods: Command|Shift, chars: "\x02n"                       }  # select next tab
+  - { key: LBracket, mods: Command|Shift, chars: "\x02p"                       }  # select previous tab
+  - { key: RBracket, mods: Command,       chars: "\x02o"                       }  # select next pane
+  - { key: LBracket, mods: Command,       chars: "\x02;"                       }  # select last (previously used) pane
+  - { key: F,        mods: Command,       chars: "\x02/"                       }  # search (upwards) (see tmux.conf)
+        */
 
         {
           key = "PageUp";

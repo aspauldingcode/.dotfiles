@@ -12,6 +12,7 @@
   };
 
   home.packages = with pkgs; [
+    # autotiling
     calcurse
     pfetch
     chatgpt-cli

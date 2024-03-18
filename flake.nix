@@ -71,16 +71,16 @@
         pkgs = import nixpkgs {
           system = "aarch64-darwin";
           config.allowUnfree = true; 
-          overlays = [ 
-            #(final: prev: {
-              #htmx-lsp = prev.pkgs.callPackage ./users/alex/extraConfig/nvim/htmx-lsp.nix {};
-              #htmx-lsp = prev.pkgs.emptyDirectory;
-              #htmx-lsp = pkgs-unstable.legacyPackages.${prev.system}.htmx-lsp;
-              #templ = pkgs-unstable.legacyPackages.${prev.system}.templ;
-              #vimPlugins = { inherit (pkgs-unstable.legacyPackages.${prev.system}.vimPlugins) codeium-nvim gruvbox-nvim vim-airline copilot-nvim copilot-vim copilot-lua emmet-vim vim-endwise vim-fugitive goyo-vim instant-nvim vim-ledger magma-nvim-goose markdown-preview-nvim molten-nvim vim-nix vim-startify surround tagbar undotree vim-slime zig-vim copilot-cmp indent-blankline-nvim lualine-nvim nvim-web-devicons nvim-lspconfig nvim-jdtls clangd_extensions-nvim gitgutter lspkind-nvim; };
-              #inherit (pkgs-unstable.legacyPackages.${prev.system}) vimPlugins;
-            #  }
-            #)
+          overlays = [
+            #install i3/sway autotiling on macos for i3 xquartz!
+            (final: prev: {
+              autotiling = if prev.system == "aarch64-darwin" then
+              prev.pkgs.autotiling.overrideAttrs (oldAttrs: {
+              unsupportedSystems = false;  # Changed to false for unsupported
+            })
+            else
+              prev.pkgs.autotiling;
+            })
           ];
         };
         specialArgs = commonSpecialArgs;

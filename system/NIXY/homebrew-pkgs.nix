@@ -36,7 +36,7 @@
       #497799835 #Xcode 
     #];
     casks = [
-      #"xquartz" #what an ugly app
+      "xquartz" #what an ugly app
       "alacritty"
       "hammerspoon"
       "phoenix"
