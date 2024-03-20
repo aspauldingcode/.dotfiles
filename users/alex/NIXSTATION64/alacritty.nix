@@ -84,6 +84,10 @@
       };
       live_config_reload = true;
 
+      selection = {
+        save_to_clipboard = true; #copy on selection
+      };
+
       keyboard.bindings = [
         {
           key = "C";

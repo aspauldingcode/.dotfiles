@@ -28,7 +28,7 @@
       yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
 
       # move/resize windows with mouse
-      yabai -m config mouse_modifier              cmd # alt is frustrating on mac bc/hide window shortcut
+      yabai -m config mouse_modifier              alt # alt is fixed as of Yabai v7.0.0!
       yabai -m config mouse_action1               move
       yabai -m config mouse_action2               resize
       yabai -m config mouse_drop_action           swap

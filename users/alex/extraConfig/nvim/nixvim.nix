@@ -89,6 +89,10 @@
       initOptions = null;
       rootDir = { __raw = "require('jdtls.setup').find_root({'.git', 'mvnw', 'gradlew'})"; };
       settings = null; 
+      cmd = [
+        "${pkgs.jdt-language-server}/bin/jdtls"
+        #"-foo" "bar"
+      ];
       #Here you can configure eclipse.jdt.ls specific settings.
       #See https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request 
       #for a list of options.

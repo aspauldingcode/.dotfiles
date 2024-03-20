@@ -15,7 +15,7 @@ imports = [
   ./betterdiscord.nix
   ./fish.nix
   ./zsh.nix
-  ./zellij.nix
+  # ./zellij.nix
   ./btop.nix # btop theme!
 ]; 
 

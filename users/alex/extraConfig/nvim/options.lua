@@ -16,9 +16,9 @@ o.clipboard = 'unnamedplus'
 -- Indentation
 o.smartindent = true
 o.autoindent = true
-o.tabstop = 8
-o.shiftwidth = 8
-o.softtabstop = 8
+o.tabstop = 4
+o.shiftwidth = 4
+o.softtabstop = 4
 o.expandtab = true
 o.signcolumn = 'yes'
 o.wrap = false
