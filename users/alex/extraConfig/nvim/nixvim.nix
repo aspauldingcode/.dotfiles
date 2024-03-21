@@ -1,4 +1,4 @@
-{ config, pkgs, lib, nixvim, inputs, ... }: 
+{ config, pkgs, lib, inputs, ... }: 
 
 # my universal neovim configuration with Nix Syntax using NixVim!
 {
@@ -8,14 +8,14 @@
   #programs.nixvim.enable = true; # Troubleshoot nvim
   nixpkgs.config.allowUnsupportedSystemPredicate = pkg:
   builtins.elem (lib.getName pkg) [
-      "swiftformat" 
-      "sourcekit-lsp" 
+    "swiftformat" 
+    "sourcekit-lsp" 
   ];
 
   # nixvim specific dependencies
   home.packages = with pkgs; [
     # linters:
-    pylint #python #NO SUCH FILE OR DIRECTORY?
+    #pylint #python #NO SUCH FILE OR DIRECTORY?
     # python311Packages.flake8
     #ruff # python
     commitlint # git commits
@@ -23,14 +23,14 @@
     sqlint # sql
     yamllint # yaml
     vim-vint # vimscript 
-    statix # nix
+    #statix # nix
     #nixpkgs-lint-community #nix with treesitter
     #nix-linter # nix
     cargo-toml-lint # cargo.toml
     eslint_d # fast eslint
     api-linter # linter for apis in protocol buffers
     ls-lint # directory name linter
-    lua54Packages.luacheck # lua
+    #lua54Packages.luacheck # lua
     ktlint # kotlin
     rslint # ts, js
     #djlint # html
@@ -40,14 +40,14 @@
     actionlint # github actions
 
     # formatters:
-    black # python uncomprimising 
-    luaformatter # lua
+    #black # python uncomprimising 
+    #luaformatter # lua
     rufo # ruby
     jsonfmt # json
     #nixpkgs-fmt # nix
-    nixfmt # nix opinionated
+    #nixfmt # nix opinionated
     #alejandra # nix uncompromising
-    google-java-format # java
+    #google-java-format # java
     ktlint # kotlin java
     xcpretty # xcodebnuild
     # swiftformat # swift format and linter
@@ -67,37 +67,77 @@
     options = {
       number = true;         # Show line numbers
       relativenumber = true; # Show relative line numbers
-      shiftwidth = 8;        # Tab width should be 2
+      shiftwidth = 4;        # Tab width should be 2
     };
-    extraConfigLua = ''
-    -- Print a little welcome message when nvim is opened!
-    -- print("Hello world!")
+    #extraConfigLua = ''
+    #-- Print a little welcome message when nvim is opened!
+    #-- print("Hello world!")
 
-    -- All my configuration options for nvim:
-    ${builtins.readFile ./options.lua}
-    '';
-    globals.mapleader = ","; # Sets the leader key to comma
-    keymaps = [ # https://github.com/nix-community/nixvim/tree/main#key-mappings
-  ];
+    #-- All my configuration options for nvim:
+    #${builtins.readFile ./options.lua}
+    #'';
+    #globals.mapleader = ","; # Sets the leader key to comma
+    #keymaps = [ # https://github.com/nix-community/nixvim/tree/main#key-mappings
+  #];
   plugins = { 
     #JAVALSP
     nvim-jdtls = {
       enable = true;
-      #package = pkgs.jdt-language-server;
       data =  "${config.xdg.cacheHome}/jdtls/workspace";
       configuration = "${config.xdg.cacheHome}/jdtls/config";
       initOptions = null;
-      rootDir = { __raw = "require('jdtls.setup').find_root({'.git', 'mvnw', 'gradlew'})"; };
+      rootDir = {
+        __raw = "require('jdtls.setup').find_root({'.git','mvnw','gradlew'})";
+      };
       settings = null; 
       cmd = [
         "${pkgs.jdt-language-server}/bin/jdtls"
         #"-foo" "bar"
       ];
-      #Here you can configure eclipse.jdt.ls specific settings.
-      #See https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request 
-      #for a list of options.
     };
     clangd-extensions.enable = true;
+    efmls-configs = {
+      enable = true;
+      setup = {
+        all = { 
+          #formatter = [
+          #  "languagetool"
+          #];
+          linter = [
+            "codespell"
+          ];
+        };
+        nix = {
+          formatter = [ "alejandra" ]; 
+          linter =   [ "statix" ];
+        };
+        java = { 
+          formatter = [ "google_java_format" ];
+          #linter =   [ "" ]; 
+        };
+        python = {
+          formatter = [ "black" ];
+          linter =    [ "flake8" ];
+        };
+        markdown = {
+          formatter = [ "mdformat" ];
+          #linter =   [];
+        };
+        lua = {
+          formatter = ["lua_format"];
+          #linter =   [];
+        };
+        bash = {
+          formatter = [ "beautysh" ];
+          linter = [ "bashate" ];
+        };
+      };
+    };
+    notify = {
+      enable = true;
+      #stages = "slide";
+    };
+    gitsigns.enable = true;
     lsp = {
       enable = true;
       servers = { # https://nix-community.github.io/nixvim/plugins/lsp/
@@ -174,7 +214,7 @@
       #   installLanguageServer = true;
       # };
       # elixirls = {
-      #   enable = true;
+      #enable = true;
       #   installLanguageServer = true;
       # };
       # elmls = {
@@ -397,8 +437,8 @@
       # };
     };
   };
-    lsp-lines.enable = true;
-    lspkind.enable = true;
+  lsp-lines.enable = true;
+  lspkind.enable = true;
 
     # treesitter conf
     treesitter = {
@@ -420,10 +460,9 @@
       maxLines = 3; # limit to not hog up screenspace.
     };
 
-    #wtf.enable = true; ChatGPT error explainations!
+    #wtf.enable = true; ChatGPT error explanations!
 
     # Filetree
-    chadtree.enable = false;
     nvim-tree = {
       enable = true;
       autoClose = true;
@@ -433,10 +472,24 @@
       renderer.addTrailing = false;
     };
     
+    # file search/fuzzyfinder
+    telescope = {
+      enable = true;
+      keymaps = {
+        
+      "<C-p>" = {
+        action = "git_files";
+        desc = "Telescope Git Files";
+      };
+      "<leader>fg" = "live_grep";
+      };
+    };
+
     # code-completion
+    # cmp-nvim-lua.enable = true;
     cmp-nvim-lsp.enable = true;
-    #cmp-nvim-lsp-signature-help.enable = true;
-    #cmp-zsh.enable = true;
+    cmp-nvim-lsp-signature-help.enable = true;
+    cmp-zsh.enable = true;
     intellitab.enable = true;
 
     # AI code-completion tools
@@ -452,7 +505,7 @@
     };
     auto-save.enable = false;
 
-    # git and revisioning 
+    # git and revisioning
     gitgutter.enable = true;
 
     # statusbar
@@ -464,42 +517,98 @@
     ## VISUAL FIXES
     # startup screen #FIXME: USE TOILET BANNER TO SAY HELLO!
     startup.enable = false;
-    startify.enable = true;
-
+    startify = {
+      enable = true;
+      settings = {
+        change_to_dir = false;
+        custom_header = [
+          ""
+          "     ███╗   ██╗██╗██╗  ██╗██╗   ██╗██╗███╗   ███╗"
+          "     ████╗  ██║██║╚██╗██╔╝██║   ██║██║████╗ ████║"
+          "     ██╔██╗ ██║██║ ╚███╔╝ ██║   ██║██║██╔████╔██║"
+          "     ██║╚██╗██║██║ ██╔██╗ ╚██╗ ██╔╝██║██║╚██╔╝██║"
+          "     ██║ ╚████║██║██╔╝ ██╗ ╚████╔╝ ██║██║ ╚═╝ ██║"
+          "     ╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝  ╚═══╝  ╚═╝╚═╝     ╚═╝"
+        ];
+        fortune_use_unicode = true;
+        lists = [
+          {
+            type = "files";
+            header = ["   MRU"];
+          }
+          {
+            type = "dir";
+            header = [{__raw = "'   MRU' .. vim.loop.cwd()";}];
+          }
+          {
+            type = "sessions";
+            header = ["   Sessions"];
+          }
+          {
+            type = "bookmarks";
+            header = ["   Bookmarks"];
+          }
+          {
+            type = "commands";
+            header = ["   Commands"];
+          }
+        ];
+      };
+    };
     #commenting
     comment-nvim.enable = true;
 
     # outline code blocks
     indent-blankline = {
-     enable = true;
-     exclude = { #FIXME: ADD FileTree and CHADTREE!!!
-     buftypes = [
-       "terminal" "nofile" "quickfix" "prompt"
-     ];
-     filetypes = [ 
-       "lspinfo" "packer" "checkhealth" "help" "man" "gitcommit" 
-       "TelescopePrompt" "TelescopeResults" "\'\'" "nvimtree" "startify"
-       "dashboard" 
-     ];
+      enable = true;
+      exclude = { #FIXME: ADD FileTree and CHADTREE!!!
+      buftypes = [
+        "terminal" "nofile" "quickfix" "prompt"
+      ];
+      filetypes = [ 
+        "lspinfo" "packer" "checkhealth" "help" "man" "gitcommit" 
+        "TelescopePrompt" "TelescopeResults" "\'\'" "nvimtree" "startify"
+        "dashboard" 
+      ];
     };
     indent = {
-     char = "▏"; # Alternatives: https://github.com/lukas-reineke/indent-blankline.nvim/blob/12e92044d313c54c438bd786d11684c88f6f78cd/doc/indent_blankline.txt#L262
-     tabChar = null;
-     highlight = null; # "|hl-IblIndent|"
+      char = "▏"; 
+      tabChar = null;
+      highlight = null; # "|hl-IblIndent|"
     };
     scope = {
-     enabled = true;
-     char = null; # use indent.char
-     highlight = null; # Shows an underline on the first line of the scope
-     showExactScope = true; # Shows an underline on the first line of the scope starting at the exact start of the scope
+      enabled = true;
+      char = null; # use indent.char
+      highlight = null; # Shows an underline on the first line of the scope
+      showExactScope = true; # Shows an underline on the first line of the scope starting at the exact start of the scope
     };
     whitespace = {
-     highlight = null; # use default |hl-IblWhitespace|
-     removeBlanklineTrail = true; # set false?
+      highlight = null; # use default |hl-IblWhitespace|
+      removeBlanklineTrail = true; # set false?
     };
   };
-  
-  # Git readme Parser! if saved as README.org!
+
+  #Note-taking
+  obsidian = {
+    enable = false; # Cross that bridge when we get there...
+    extraOptions = {
+      completion = {
+        min_chars = 2;
+        nvim_cmp = true;
+      };
+      new_notes_location = "current_dir";
+      workspaces = [
+        {
+          name = "work";
+          path = "~/obsidian/work";
+        }
+        {
+          name = "school";
+          path = "~/obsidian/school";
+        }
+      ];
+    };
+  };
   neorg = {
     enable = true;
     modules = {
@@ -510,12 +619,12 @@
     #    };
     #  }
     #}
-      "core.defaults" = { # Load all the default modules
+    "core.defaults" = { # Load all the default modules
         #__empty = null;
       };
       "core.concealer" = { # Allows for the use of icons
-      };
-      "core.dirman" = { # idk what this does 
+    };
+    "core.dirman" = { # idk what this does 
         #config = {
         #  workspaces = {
         #    home = "~/notes/home";
@@ -530,74 +639,59 @@
 colorschemes.base16 = {
   enable = true;
   customColorScheme = let inherit (config.colorScheme) colors; in { # use nix-colors
-    base00 = "#${colors.base00}";
-    base01 = "#${colors.base01}";
-    base02 = "#${colors.base02}";
-    base03 = "#${colors.base03}";
-    base04 = "#${colors.base04}";
-    base05 = "#${colors.base05}";
-    base06 = "#${colors.base06}";
-    base07 = "#${colors.base07}";
-    base08 = "#${colors.base08}";
-    base09 = "#${colors.base09}";
-    base0A = "#${colors.base0A}";
-    base0B = "#${colors.base0B}";
-    base0C = "#${colors.base0C}";
-    base0D = "#${colors.base0D}";
-    base0E = "#${colors.base0E}";
-    base0F = "#${colors.base0F}";
-  };
+  base00 = "#${colors.base00}";
+  base01 = "#${colors.base01}";
+  base02 = "#${colors.base02}";
+  base03 = "#${colors.base03}";
+  base04 = "#${colors.base04}";
+  base05 = "#${colors.base05}";
+  base06 = "#${colors.base06}";
+  base07 = "#${colors.base07}";
+  base08 = "#${colors.base08}";
+  base09 = "#${colors.base09}";
+  base0A = "#${colors.base0A}";
+  base0B = "#${colors.base0B}";
+  base0C = "#${colors.base0C}";
+  base0D = "#${colors.base0D}";
+  base0E = "#${colors.base0E}";
+  base0F = "#${colors.base0F}";
+};
   #useTruecolor = true;
 };
 
 extraPlugins = with pkgs.vimPlugins; [
-      # LSP
+      #{
+      #  plugin = nvim-scrollbar;
+      #  config = toLuaFile ./plugin/scrollbar.lua;
+      #}
       {
-        plugin = nvim-lspconfig;
-        config = toLuaFile ./plugin/lsp.lua;
+        plugin = nvim-scrollview;
+        config = toLuaFile ./plugin/scrollview.lua;
       }
+      # LSP
+      #{
+      #  plugin = nvim-lspconfig;
+      #  config = toLuaFile ./plugin/lsp.lua;
+      #}
 
       # FIXME: y u no worky? >:(
       # lsp-status-nvim # FIXME: What about lspinfo?
       # lazy-lsp-nvim # FIXME: LEARN MORE
       # asyncomplete-lsp-vim # FIXME: Learn more
-      #{
-      #  plugin = nvim-cmp;
-      #  config = toLuaFile ./plugin/cmp.lua;
-      #}
-      cmp-nvim-lsp # FIXME: Learn more
-      cmp-nvim-lsp-document-symbol 
-      cmp-nvim-lsp-signature-help
+      {
+       plugin = nvim-cmp;
+       config = toLuaFile ./plugin/cmp.lua;
+      }
+      #cmp-nvim-lsp # FIXME: Learn more
+      #cmp-nvim-lsp-document-symbol 
+      #cmp-nvim-lsp-signature-help
 
-      # {
-      #   plugin = vim-startify;
-      #   config = "let g:startify_change_to_vcs_root = 0";
-      # }
-
-      #{
-      #  plugin = nvim-colorizer-lua; # relies on AutoCmd
-      #  config = ''
-      #  packadd! nvim-colorizer.lua
-      #  lua require 'colorizer'.setup()
-      #  '';
-      #}
-
-      #{
-      #  plugin = telescope-nvim;
-      #  config = toLuaFile ./plugin/telescope.lua;
-      #}
-
-      # File Tree
-      #{
-      #  plugin = nvim-tree-lua;
-      #  config = toLuaFile ./plugin/nvim-tree.lua;
-      #}
       nvim-web-devicons # optional, for file icons
 
       # Code Snippits
       luasnip # FIXME: Do I need this too? NEEDED
      # cmp-nvim-lsp # FIXME: What's this? NEEDED
-      friendly-snippets 
+     friendly-snippets 
       #cmp_luasnip # completion for lua snippits
 
       #{
@@ -631,17 +725,17 @@ extraPlugins = with pkgs.vimPlugins; [
       neodev-nvim # FIXME: WTF is neodev-nvim? NEEDED
 
       # Fuzzy Search Tool
-      telescope-fzf-native-nvim # FIXME: How do I use?
+      #telescope-fzf-native-nvim # FIXME: How do I use?
 
       # Syntax Highlighting
-      vim-nix # better highlighting for nix files
+      #vim-nix # better highlighting for nix files
 
       # Emacs Org for nvim
       #{
       #  plugin = neorg;
       #  config = toLuaFile ./plugin/neorg.lua;
       #}
-      neorg-telescope
+      #neorg-telescope
     ];
   };
 }

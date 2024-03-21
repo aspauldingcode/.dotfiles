@@ -35,6 +35,7 @@
     corefonts
     beeper
     sl
+    obsidian
       # davinci-resolve 
       ocl-icd
       rofi-wayland-unwrapped

@@ -168,3 +168,15 @@ o.autoread = true
 o.incsearch = true
 o.hidden = true
 o.shortmess = "atI"
+
+-- FIXME: Broken after adding nvim-scrollview and gitsigns integration!
+-- Highlight column 80, 120, and beyond as ColorColumn
+vim.opt.colorcolumn = "80," .. table.concat(vim.tbl_map(tostring, vim.fn.range(120, 999)), ",")
+
+--Toggle lsp-lines
+-- vim.api.nvim_set_keymap(
+--   "n", -- This keymap is for normal mode
+--   "<Leader>l",
+--   "<cmd>lua require('lsp_lines').toggle()<CR>",
+--   { noremap = true, silent = true, desc = "Toggle lsp_lines" }
+-- )
