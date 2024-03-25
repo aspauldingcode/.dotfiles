@@ -306,10 +306,10 @@
       #   enable = true;
       #   installLanguageServer = true;
       # };
-      nil_ls = {
-        enable = true;
-        # installLanguageServer = true;
-      };
+      #nil_ls = {
+      #  enable = true;
+      #  # installLanguageServer = true;
+      #};
       # nixd = {
       #   enable = true;
       #   installLanguageServer = true;

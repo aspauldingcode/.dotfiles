@@ -31,6 +31,7 @@
       "cliclick"
       "iproute2mac"
       "gtk-mac-integration" # build gtk mac apps?
+      "okular"
     ];
     #masApps = [ #FAILS
       #497799835 #Xcode 
@@ -71,7 +72,7 @@
       # "homebrew/core"
       "homebrew/services"
       # Custom
-
+      "kde-mac/kde"
       "koekeishiya/formulae"
       "FelixKratz/formulae"
     ];

@@ -21,6 +21,7 @@
     #ruby
     qemu
     spotify
+    obsidian
     sl
     lavat
     #vscode
@@ -37,7 +38,7 @@
     zoom-us
     # python39
     (pkgs.python311.withPackages(ps: [ 
-      ps.pygame 
+      #ps.pygame 
       ps.matplotlib 
     ]))
     
@@ -159,8 +160,9 @@
     (pkgs.writeShellScriptBin "fix-wm" ''
       yabai --stop-service && yabai --start-service #helps with adding initial service
       skhd --stop-service && skhd --start-service #otherwise, I have to run manually first time.
-      brew services restart felixkratz/formulae/sketchybar 
+      brew services restart felixkratz/formulae/sketchybar
       launchctl stop org.pqrs.karabiner.karabiner_console_user_server && launchctl start org.pqrs.karabiner.karabiner_console_user_server
+      xrdb -merge ~/.Xresources
       echo -ne '\n' | sudo pkill "Background Music" && "/Applications/Background Music.app/Contents/MacOS/Background Music" > /dev/null 2>&1 &
       '')
 

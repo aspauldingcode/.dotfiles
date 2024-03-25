@@ -67,9 +67,9 @@
       # TrackpadThreeFingerDrag = true;
     };
     universalaccess = {
-      mouseDriverCursorSize = 1.2; # Cursor size
-      reduceMotion = true;
-      reduceTransparency = true; 
+     mouseDriverCursorSize = 1.2; # Cursor size
+     reduceMotion = true;
+     reduceTransparency = true; 
     };
     ".GlobalPreferences" = {
       "com.apple.mouse.scaling" = 8.0; # Set to -1.0 to disable mouse acceleration.
@@ -86,9 +86,9 @@
       NSGlobalDomain = {
         TISRomanSwitchState = 1;
       };
-      "com.apple.Safari" = {
-        "com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled" = true;
-      };
+      #"com.apple.Safari" = {
+      #  "com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled" = true;
+      #};
       "....X11" = {
         enable_fake_buttons = 1;
         fullscreen_hotkeys = 1; #1 is true, 0 is false!

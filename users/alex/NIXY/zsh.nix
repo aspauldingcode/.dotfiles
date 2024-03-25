@@ -38,16 +38,18 @@
       export CLASSPATH=~/Desktop/hw/csci232/jars/algs4.jar:$CLASSPATH
       export CLASSPATH=~/Desktop/hw/csci232/jars/stdlib.jar:$CLASSPATH
 
-      # add ruby 2.6 to PATH because it doesn't build ffi 1.9.25 required gem for nixvim otherwise.
-      export PATH="/Users/alex/.gem/ruby/2.6.0/bin:$PATH"
-
       # add gyr to path
       export PATH="/Users/alex/.cargo/bin:$PATH"
 
       # add x11 to path
+      export PATH=/opt/X11/bin:$PATH
       export PATH=/usr/X11R6/bin:$PATH
       export MANPATH=/usr/X11R6/man:$MANPATH
       export DISPLAY=:0            # Required!
+
+      # add missing paths for i3 to work
+      export PATH=/opt/local/bin:$PATH
+      export PATH=/opt/local/sbin:$PATH
 
       # Try to bind copy paste command so neovim binds are untouched
       # bindkey -s '^C' 'This shit is copied bruv\n'

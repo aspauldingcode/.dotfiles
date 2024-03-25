@@ -12,7 +12,7 @@
       #code 57 is space.
       #code 44 is return.
 
-      ### Variables for settings (This makes changing them WAY easyer!) ###
+      ### Variables for settings (This makes changing them WAY easier!) ###
       set $mod                             Mod1
       set $smod                            Shift
       set $wm_setting_font                 pango:Source JetBrains Mono, Regular 12
@@ -36,7 +36,7 @@
       set $wm_color_border_inactive_fg     #D8DEE9
       set $wm_color_background             #2E3440
       
-      set $bar_setting_position              top
+      set $bar_setting_position            top
       set $bar_setting_mode                dock # dock|hide|invisible|toggle
       #set $bar_setting_font                pango:Source JetBrains Mono, Regular 12
       set $bar_setting_separator           " - "
@@ -206,7 +206,7 @@
       bindsym $mod+$smod+f fullscreen toggle
       
       # # Toggle between tiling and floating
-      bindsym $mod+$smod+Space floating toggle
+      bindsym $mod+$smod+space floating toggle
       
       # # Kill the focused window
       bindsym $mod+$smod+q kill

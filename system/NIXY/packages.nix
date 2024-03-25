@@ -29,8 +29,7 @@
     hexedit
     # javaPackages.openjfx19
     #inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk20
-    python311
-    python311Packages.pygame
+    #python311
     oh-my-zsh #zsh shell framework
     oh-my-fish #fish shell framework
     #oh-my-git #git learning game
