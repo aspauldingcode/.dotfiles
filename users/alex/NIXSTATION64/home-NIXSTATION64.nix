@@ -27,9 +27,9 @@ imports = [
         python = "python3.11";
         vim = "nvim";
         vi = "nvim";
-        reboot = "sudo reboot now";
-        rb = "sudo reboot now";
-        shutdown = "sudo shutdownnow";
+        reboot = "sudo systemctl reboot";
+        rb = "sudo systemctl reboot";
+        shutdown = "sudo shutdown now";
         sd = "sudo shutdown now";
         l = "ls";
       };
