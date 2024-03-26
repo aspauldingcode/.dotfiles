@@ -24,18 +24,20 @@
     obsidian
     sl
     lavat
+    libsForQt5.ki18n
     #vscode
     # bonsai #Only available on mac?
     rustc
     cargo
-    utm 
+    utm
     mas
     vscode
     audacity
-    yazi
+    #yazi to upgrade temperarily with homebrew
     thefuck
     zsh-completions
     zoom-us
+    unar
     # python39
     (pkgs.python311.withPackages(ps: [ 
       #ps.pygame 

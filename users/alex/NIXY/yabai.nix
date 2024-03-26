@@ -195,9 +195,12 @@
     in /* bash */ 
     ''
       # alt + a / u / o / s are blocked due to umlaute
-      
+     
+      # FIXME: use kitty terminal for yazi filemanager only.
+
       # Launch shortcuts
       ${modifier} - return :                open -na /opt/homebrew/bin/alacritty #FIXME: Alacritty is broken atm. Using homebrew. 
+      #${modifier} - return : 		    open -a kitty -n
       # ${modifier} - return :              alacritty
       ${modifier} - d :                     open -a dmenu-mac
       ${mod1} + ${mod5} - space :           open -na "Brave Browser"
@@ -298,6 +301,40 @@
       # Define the hotkey for Alt + Right Click
       #alt - 0x3D : cmd - 0x3D
 
+    # defines a new mode 'resize' with an on_enter command, that captures keypresses
+    :: resize @ : yabai -m config active_window_opacity 1; yabai -m config normal_window_opacity 0.9;
+
+    # from 'default' mode, activate mode 'resize'
+    # (this is the key combination you want to use to enter resize mode)
+    ctrl - escape ; resize 
+    alt + ctrl - 0x32 ; resize
+
+    # from 'resize' mode, activate mode 'default'
+    # (this is the keypress required to leave resize mode)
+    resize < escape ; default
+    resize < 0x32 ; default
+    
+    # equalize windows
+    resize < ctrl - 0 : yabai -m space --balance
+
+    # increase window size
+    resize < ctrl - left : yabai -m window --resize left:-25:0
+    resize < ctrl - down : yabai -m window --resize bottom:0:25
+    resize < ctrl - up : yabai -m window --resize top:0:-25
+    resize < ctrl - right : yabai -m window --resize right:25:0
+
+    # decrease window size
+    resize < alt - right : yabai -m window --resize left:25:0
+    resize < alt - up : yabai -m window --resize bottom:0:-25
+    resize < alt - down : yabai -m window --resize top:0:25
+    resize < alt - left : yabai -m window --resize right:-25:0
+
+    # move window
+    resize < cmd - left : yabai -m window --move rel:-25:0
+    resize < cmd - down : yabai -m window -move rel:0:25
+    resize < cmd - up : yabai -m window --move rel:0:-25
+    resize < cmd - right : yabai -m window --move rel:25:0
+
       # reload
       ${modifier} + shift - r : fix-wm
 
@@ -305,7 +342,6 @@
       .blacklist [
         "terminal"
         "qutebrowser"
-        "kitty"
         "google chrome"
         "xquartz"
       ]
@@ -324,7 +360,7 @@
       	hidpi=on
         active_color=0xff"${colors.base0C}"
         inactive_color=0xff"${colors.base03}"
-        blacklist="google chrome, kitty, vmware fusion, xquartz"
+        blacklist="google chrome, vmware fusion, xquartz"
       )
 
       borders "''${options[@]}"  

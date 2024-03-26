@@ -8,6 +8,8 @@
       ll =      "ls -l";
       ifstat =  "ifstat-legacy";
       cat =     "lolcat";
+      tf = 	"thefuck";
+      yazi = 	"kitty --single-instance yazi &";
     };
     oh-my-zsh = {
       enable =  true;
@@ -51,9 +53,9 @@
       export PATH=/opt/local/bin:$PATH
       export PATH=/opt/local/sbin:$PATH
 
-      # Try to bind copy paste command so neovim binds are untouched
-      # bindkey -s '^C' 'This shit is copied bruv\n'
-      # bindkey -s '^V' 'Shiit pasteee rn\n'
+      # Set default editor in zsh shell
+      export EDITOR=nvim
+      export VISUAL="$EDITOR"
     '';
   };
 }

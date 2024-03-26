@@ -18,6 +18,7 @@
       "skhd"
       "sketchybar"
       "borders"
+      "yazi"
       "cava"
       "fftw" 
       "ncurses" 
@@ -31,10 +32,12 @@
       "cliclick"
       "iproute2mac"
       "gtk-mac-integration" # build gtk mac apps?
-      "okular"
+      #"okular" # FAILS
+      #"dolphin" # FAILS
+      #"ki18n" # FAILS
     ];
-    #masApps = [ #FAILS
-      #497799835 #Xcode 
+    #masApps = [ # FAILS
+      #497799835 # Xcode 
     #];
     casks = [
       "xquartz" #what an ugly app
@@ -42,6 +45,7 @@
       "hammerspoon"
       "phoenix"
       "dmenu-mac"
+      "kitty"
       "macforge"
       "element"
       "brave-browser"
