@@ -116,6 +116,11 @@
   - { key: F,        mods: Command,       chars: "\x02/"                       }  # search (upwards) (see tmux.conf)
         */
 
+        # {
+        #     key = "f";
+        #     mode = "";
+        #     action = "";
+        # }
         {
           key = "PageUp";
           mode = "~Alt";

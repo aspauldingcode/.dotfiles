@@ -26,6 +26,7 @@
     standardnotes
     gcal
     checkra1n
+    lutris
     cava
     lavat
     pfetch
@@ -95,6 +96,7 @@
       audacity
       pinentry 
       git-crypt
+      gitflow
       cowsay
       spotify-unwrapped
       autotiling waydroid
@@ -102,7 +104,6 @@
       w3m 
       obs-studio
       audacity 
-      razergenie
       docker 
       home-manager
       android-tools 
@@ -134,8 +135,6 @@
       flameshot 
       fd 
       ripgrep
-      linuxKernel.packages.linux_latest_libre.openrazer
-      openrazer-daemon
       idevicerestore 
       usbmuxd 
       libusbmuxd 

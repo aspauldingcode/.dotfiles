@@ -11,9 +11,11 @@
 
   # Bootloader.
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest; # choose your kernel
+    # choose your kernel
+    #kernelPackages = pkgs.linuxPackages_latest;      # standard
+    kernelPackages = pkgs.linuxPackages-rt_latest;   # real-time
     loader = { # TODO: Use whatever bootloader you prefer!
-      systemd-boot.enable = true;
+      systemd-boot.enable = true; # switch to dinit for mac/linux/bsd?
       efi.canTouchEfiVariables = true;
     };
   };

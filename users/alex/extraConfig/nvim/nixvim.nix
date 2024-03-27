@@ -67,18 +67,18 @@
     options = {
       number = true;         # Show line numbers
       relativenumber = true; # Show relative line numbers
-      shiftwidth = 4;        # Tab width should be 2
+      shiftwidth = 4;        # Tab width should be 4
     };
-    #extraConfigLua = ''
-    #-- Print a little welcome message when nvim is opened!
-    #-- print("Hello world!")
+    extraConfigLua = ''
+    -- Print a little welcome message when nvim is opened!
+    -- print("Hello world!")
 
-    #-- All my configuration options for nvim:
-    #${builtins.readFile ./options.lua}
-    #'';
+    -- All my configuration options for nvim:
+    ${builtins.readFile ./options.lua}
+    '';
     #globals.mapleader = ","; # Sets the leader key to comma
-    #keymaps = [ # https://github.com/nix-community/nixvim/tree/main#key-mappings
-  #];
+    keymaps = [ # https://github.com/nix-community/nixvim/tree/main#key-mappings
+  ];
   plugins = { 
     #JAVALSP
     nvim-jdtls = {

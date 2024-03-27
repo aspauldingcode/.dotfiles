@@ -51,8 +51,8 @@ o.cursorline = true
 vim.cmd('filetype plugin indent on')
 
 -- Get rid of annoying viminfo file
-o.viminfo = ""
-o.viminfofile = "NONE"
+-- o.viminfo = ""
+-- o.viminfofile = "NONE"
 
 -- Keybinds
 local function map(mode, combo, mapping, opts)
@@ -63,8 +63,8 @@ local function map(mode, combo, mapping, opts)
     vim.api.nvim_set_keymap(mode, combo, mapping, options)
 end
 map('n', '<C-Tab>', ':NvimTreeToggle <CR>', {noremap = true})
-map('n', '<C-f>', ':Telescope find_files <CR>', {noremap = true})
-map('n', '<C-n>', ':Telescope live_grep <CR>', {noremap = true})
+map('n', '<C-d>', ':Telescope find_files <CR>', {noremap = true})
+map('n', '<C-f>', ':Telescope live_grep <CR>', {noremap = true})
 
 -- Enable line wrapping at whitespace
 vim.api.nvim_win_set_option(0, 'wrap', true)

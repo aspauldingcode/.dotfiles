@@ -99,6 +99,11 @@
           mods = "Shift|Control";
           action = "ReceiveChar";
         }
+        # {
+        #   key = "f";
+        #   mods = "Shift|Control";
+        #   action = "";
+        # }
         {
           key = "V";
           mods = "Control";
