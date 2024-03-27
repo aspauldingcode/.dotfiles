@@ -29,6 +29,15 @@
     fzf
     checkra1n
     lutris
+    # wine
+    # wine64
+    # wine-wayland
+    #winePackages.waylandFull
+    wineWow64Packages.waylandFull
+    #winePackages.stableFull
+    #wine64Packages.stableFull
+    wineasio
+    winetricks
     cava
     lavat
     pfetch

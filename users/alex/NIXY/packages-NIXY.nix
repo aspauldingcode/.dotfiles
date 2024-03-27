@@ -223,10 +223,10 @@
 	#disable-hud
 	(pkgs.writeShellScriptBin "disable-hud" ''
 	#!/bin/bash
-	echo "Note: SIP must be is disabled."
+	# echo "Note: SIP must be is disabled."
 	launchctl unload -F /System/Library/LaunchAgents/com.apple.OSDUIHelper.plist
-	(crontab -l ; echo "@reboot launchctl unload -F /System/Library/LaunchAgents/com.apple.OSDUIHelper.plist") | crontab -
-	echo "Volume and Brightness HUD disabled."
+	#(crontab -l ; echo "@reboot launchctl unload -F /System/Library/LaunchAgents/com.apple.OSDUIHelper.plist") | crontab -
+	# echo "Volume and Brightness HUD disabled."
 	'')
 
    #toggle-sketchybar

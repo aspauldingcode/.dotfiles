@@ -7,13 +7,13 @@
     shellAliases = {
       ll =              "ls -l";
       ifstat =          "ifstat-legacy";
-      cat =             "lolcat";
+      # cat =             "lolcat";
       tf =              "thefuck";
     };
     oh-my-zsh = {
       enable = true;
       plugins = [ "git" "thefuck" ];
-      theme = "funky";
+      theme = "cypher";
     };
   };
   home.sessionVariables = {

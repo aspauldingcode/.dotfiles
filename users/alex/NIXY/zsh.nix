@@ -1,5 +1,6 @@
 { ... }:
 
+# Configure NIXY's zshell
 {
   programs.zsh = {
     enable = 		true;
