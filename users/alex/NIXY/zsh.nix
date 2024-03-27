@@ -7,7 +7,7 @@
     shellAliases = {
       ll =      "ls -l";
       ifstat =  "ifstat-legacy";
-      cat =     "lolcat";
+      # cat =     "lolcat";
       tf = 	"thefuck";
       yazi = 	"kitty --single-instance yazi &";
     };
