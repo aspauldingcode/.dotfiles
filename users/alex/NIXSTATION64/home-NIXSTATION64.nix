@@ -10,6 +10,8 @@ imports = [
   ./theme.nix # theme of system.
   ./git.nix
   ./alacritty.nix
+  ./yazi/yazi.nix
+  ./mimeapps.nix
   ./mako.nix
   ./discocss.nix
   ./betterdiscord.nix

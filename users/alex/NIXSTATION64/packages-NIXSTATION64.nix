@@ -22,9 +22,11 @@
     darling
     darling-dmg
     lsof
+    wget
     etcher
     standardnotes
     gcal
+    fzf
     checkra1n
     lutris
     cava
@@ -174,6 +176,20 @@
       pkill waybar && sway reload
       sleep 4       #FIX waybar cava init issue:
       nohup ffplay ~/.dotfiles/users/alex/NIXSTATION64/waybar/silence.wav -t 4 -nodisp -autoexit > /dev/null 2>&1 &
+      '')
+      #search
+      (pkgs.writeShellScriptBin "search" ''
+        # Check if an argument is provided
+        if [ $# -ne 1 ]; then
+            echo "Usage: $0 <search_term>"
+            exit 1
+        fi
+
+        # Perform the search (in the current directory) using find and fzf with provided options
+        search_term=$1
+        echo "Searching for: $search_term"
+        echo "Press Ctrl+C to cancel..."
+        find . -iname "*$search_term*" 2>/dev/null | fzf --preview="bat --color=always {}" --preview-window="right:60%" --height=80%
       '')
     ];
   };
