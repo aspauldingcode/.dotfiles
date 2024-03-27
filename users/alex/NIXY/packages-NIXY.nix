@@ -23,6 +23,7 @@
     spotify
     obsidian
     sl
+    fzf
     lavat
     libsForQt5.ki18n
     #vscode
@@ -33,7 +34,7 @@
     mas
     vscode
     audacity
-    #yazi to upgrade temperarily with homebrew
+    #yazi to upgrade temporarily with homebrew
     thefuck
     zsh-completions
     zoom-us
@@ -263,5 +264,20 @@
         exit 1
       fi
     '')
+
+    #search
+      (pkgs.writeShellScriptBin "search" ''
+        # Check if an argument is provided
+        if [ $# -ne 1 ]; then
+            echo "Usage: $0 <search_term>"
+            exit 1
+        fi
+
+        # Perform the search (in the current directory) using find and fzf with provided options
+        search_term=$1
+        echo "Searching for: $search_term"
+        echo "Press Ctrl+C to cancel..."
+        find . -iname "*$search_term*" 2>/dev/null | fzf --preview="bat --color=always {}" --preview-window="right:60%" --height=80%
+      '')
   ];
 }

@@ -2,21 +2,21 @@
 
 {
   programs.zsh = {
-    enable = true;
-
+    enable = 		true;
+    enableCompletion =  true;
     shellAliases = {
-      ll =      "ls -l";
-      ifstat =  "ifstat-legacy";
-      cat =     "lolcat";
-      tf = 	"thefuck";
-      yazi = 	"kitty --single-instance yazi &";
+      ll =      	"ls -l";
+      ifstat =  	"ifstat-legacy";
+      # cat =     	"lolcat";
+      tf = 		    "thefuck";
+      yazi = 		"kitty --single-instance yazi &";
     };
     oh-my-zsh = {
       enable =  true;
       plugins = [ "git" "thefuck" ];
-      theme =   "funky";
+      theme =   "cypher";
     };
-    initExtra = "disable-hud\nsudo spctl --master-disable\n"; # DISABLE volume/brightness HUD! Disable GATEKEEPER
+    initExtra = "disable-hud\nsudo spctl --master-disable\nunset RPS1\ntouch ~/.hushlogin\n"; # DISABLE volume/brightness HUD! Disable GATEKEEPER
   };
   home.sessionVariables = {
     LANG = "en_US.UTF-8";
