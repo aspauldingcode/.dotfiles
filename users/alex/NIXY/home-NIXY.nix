@@ -50,6 +50,21 @@
    # settings.experimental-features = [ "nix-command" "flakes" ];
   #};
 
+  # disable Volumw/Brightness HUD on macOS at login!
+  launchd.agents.xdg_cache_home = {
+    enable = true;
+    config = {
+      Program = "/bin/launchctl";
+      ProgramArguments = [ 
+        "/bin/launchctl" "unload" "-F"
+        "/System/Library/LaunchAgents/com.apple.OSDUIHelper.plist" 
+      ];
+      RunAtLoad = true;
+      StandardErrorPath = "/dev/null";
+      StandardOutPath = "/dev/null";
+    };
+  };
+
   programs = { 
     # allow Home-Manager to configure itself
     home-manager.enable = true;

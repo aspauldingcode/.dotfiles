@@ -65,6 +65,15 @@ end
 map('n', '<C-Tab>', ':NvimTreeToggle <CR>', {noremap = true})
 map('n', '<C-d>', ':Telescope find_files <CR>', {noremap = true})
 map('n', '<C-f>', ':Telescope live_grep <CR>', {noremap = true})
+map('i', '<C-l>', '<Esc>:left <CR>', {noremap = true})   -- align text left
+map('i', '<C-e>', '<Esc>:center <CR>', {noremap = true}) -- center text
+map('i', '<C-r>', '<Esc>:right <CR>', {noremap = true})  -- align text right
+map('n', '<C-l>', ':left <CR>', {noremap = true})        -- align text left
+map('n', '<C-e>', ':center <CR>', {noremap = true})      -- center text
+map('n', '<C-r>', ':right <CR>', {noremap = true})       -- align text right
+map('n', '<C-S-Z>', ':redo <CR>', {noremap = true})
+map('n', '<C-y>', ':redo <CR>', {noremap = true})
+map('n', '<C-z>', ':undo <CR>', {noremap = true})
 
 -- Enable line wrapping at whitespace
 vim.api.nvim_win_set_option(0, 'wrap', true)

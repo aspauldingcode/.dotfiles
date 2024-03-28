@@ -17,7 +17,7 @@
       plugins = [ "git" "thefuck" ];
       theme =   "cypher";
     };
-    initExtra = "disable-hud\nsudo spctl --master-disable\nunset RPS1\ntouch ~/.hushlogin\n"; # DISABLE volume/brightness HUD! Disable GATEKEEPER
+    initExtra = "sudo spctl --master-disable\nunset RPS1\ntouch ~/.hushlogin\n"; # DISABLE volume/brightness HUD! Disable GATEKEEPER
   };
   home.sessionVariables = {
     LANG = "en_US.UTF-8";
