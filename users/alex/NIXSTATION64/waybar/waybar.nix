@@ -106,18 +106,19 @@ in
       }; 
 
       "custom/datetime" = {
-        interval = 60;
-        return-type = "json";
-        format = " {}";
-        exec = jsonOutput "menu" {
-          text = "$DATETIME"; #  date "+%a, %b %d  %I:%M %p
-          pre = ''
-          CAL="$(gcal | awk '{printf "%-21s\n", $0}' | sed -e 's|<|\[|g' -e 's|>|\]|g' -e '/^$/d' | sed -e '1d;$!s/\]$/&/;$!s/$/ /' -e '$!N;s/\n$//')"
-          DATETIME=$(date "+%a, %b %d  %I:%M %p") 
-          '';
-            tooltip = "$CAL";
+          interval = 60;
+          return-type = "json";
+          format = " {}";
+          exec = jsonOutput "menu" {
+              text = "$DATETIME"; #  date "+%a, %b %d  %I:%M %p
+                  pre = ''
+                  CAL="$(gcal | awk '{printf "%-21s\n", $0}' | sed -e 's|<|\[|g' -e 's|>|\]|g' -e '/^$/d' | sed -e '1d;$!s/\]$/&/;$!s/$/ /' -e '$!N;s/\n$//')"
+                  DATETIME=$(date "+%a, %b %d  %I:%M %p") 
+                  '';
+              tooltip = "$CAL";
           };
-        };
+          on-click = "xdg-open https://calendar.google.com/calendar/";
+      };
 
         cava = {
         # exec-if = "${playerctl} status 2>/dev/null";
@@ -291,8 +292,9 @@ in
         pre = ''
         OS="$(${cat} /etc/os-release | ${grep} PRETTY_NAME | ${cut} -d '"' -f2)"
         Kernel="$(uname -s -r -m)"
-        Darling="Darling here" '';
-        tooltip = "$OS\n$Kernel\n$Darling";
+        Darling="$(darling shell uname -s -r -m) (Darling)" 
+        Wine="$(wine-version)"'';
+        tooltip = "$OS\n$Kernel\n$Darling\n$Wine";
 
         };
         #on-click-left = "wofi -S drun -x 10 -y 10 -W 25% -H 60%";

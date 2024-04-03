@@ -3,6 +3,8 @@
 { lib, pkgs, nixpkgs, ... }:
 
 {
+    programs.darling.enable = true; # install darling with setuid wrapper
+
     environment.systemPackages = with pkgs; [
     neovim
     zellij
@@ -55,7 +57,6 @@
     appimage-run
     tree-sitter
     jdk20
-
     python311
     nodejs
     ncurses6

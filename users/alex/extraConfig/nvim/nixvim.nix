@@ -509,10 +509,11 @@
     gitgutter.enable = true;
 
     # statusbar
-    #lualine = {
-    #  enable=true;
-    #  # sections.lualine_c = [ "lsp_progress" ]; # Install lsp_progress!
-    #};
+    lualine = {
+     enable=true;
+     sections.lualine_c = [ "lsp_progress" ]; # Install lsp_progress!
+    };
+    noice.lsp.progress.enabled = true;
 
     ## VISUAL FIXES
     # startup screen #FIXME: USE TOILET BANNER TO SAY HELLO!

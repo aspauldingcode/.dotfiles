@@ -183,6 +183,20 @@
       }];
     };
     polkit.enable = true;
+    pam.loginLimits = [
+    {
+        domain = "*";
+        type = "-";
+        item = "memlock";
+        value = "infinity";
+    }
+    {
+        domain = "*";
+        type = "-";
+        item = "nofile";
+        value = "65536";
+    }
+    ];
   };
 
   # allow AirPrinter through firewall

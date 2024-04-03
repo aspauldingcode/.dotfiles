@@ -19,16 +19,26 @@
 
   home = {
     packages = with pkgs; [
-    darling
-    darling-dmg
+    #darling REQUIRES  Security wrapper SETUID!!!
+    #darling-dmg
     lsof
     wget
     etcher
     standardnotes
     gcal
     fzf
+    libnotify
     checkra1n
-    lutris
+    lutris # TF man, NOTHING is working with this??
+    bottles-unwrapped
+    ardour
+    bitwig-studio
+    lmms
+    renoise
+    zrythm
+    vital
+    # dexed
+    distrho
     # wine
     # wine64
     # wine-wayland
@@ -199,6 +209,21 @@
         echo "Searching for: $search_term"
         echo "Press Ctrl+C to cancel..."
         find . -iname "*$search_term*" 2>/dev/null | fzf --preview="bat --color=always {}" --preview-window="right:60%" --height=80%
+      '')
+      #wine-version
+      (pkgs.writeShellScriptBin "wine-version" ''
+        #!/bin/bash
+
+        wine_version=$(wine --version | sed 's/^wine-//')
+        system_reg_content=$(head -n 20 ~/.wine/system.reg)
+
+        if [[ $system_reg_content == *"#arch=win64"* ]]; then
+        echo "Wine wine-$wine_version win64"
+        elif [[ $system_reg_content == *"#arch=win32"* ]]; then
+        echo "Wine wine-$wine_version win32"
+        else
+        echo "Unknown-Architecture"
+        fi
       '')
     ];
   };

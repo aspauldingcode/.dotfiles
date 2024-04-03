@@ -52,6 +52,8 @@
         "${modifier}+Shift+f" = "fullscreen toggle";
         "${modifier}+Return" = "exec ${terminal}";
         "${modifier}+Alt+Space" = "exec brave";
+        "${modifier}+Shift+Alt+Space" = "exec brave --incognito";
+        "${modifier}+Control+Alt+Space" = "exec brave --tor";
         "${modifier}+Shift+q" = "kill";
         "${modifier}+q" = "exec wtype -M ctrl -P w -m ctrl -p w";
         "${modifier}+a" = "exec show-all-windows";
@@ -243,7 +245,7 @@
       # STYLIZE!
       gaps inner 13
       gaps top -2
-      corner_radius 10
+      corner_radius 8
 
       #FIX waybar tooltips!
       for_window [app_id="waybar" floating] {
@@ -261,7 +263,7 @@
       # Window background blur
       blur on #FIXME: TURN ON! Floating window loses its borders...
       #blur_xray on
-      blur_passes 2
+      blur_passes 5
       blur_radius 5
 
       for_window [tiling] shadows off
