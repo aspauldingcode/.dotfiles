@@ -75,6 +75,10 @@
       yabai -m rule --add app='Finder'                manage=off
       yabai -m rule --add title="XQuartz"             manage=off
       yabai -m rule --add app='XQuartz'               manage=off
+      yabai -m rule --add app='^XQuartz$'             manage=off
+      yabai -m rule --add app='^X11.bin$'             manage=off
+      yabai -m rule --add app='X11.bin'               manage=off
+      yabai -m rule --add app='X11'                   manage=off
       yabai -m rule --add app='Archive Utility'       manage=off
       yabai -m rule --add app='Display Calibrator'    manage=off
       yabai -m rule --add app='Installer'             manage=off
@@ -82,6 +86,9 @@
       yabai -m rule --add app='Karabiner-Elements'    manage=off
       yabai -m rule --add app='macOS InstantView'     manage=off # IMPORTANT
       yabai -m rule --add app='Dock'                  manage=off # MAKE SURE
+
+      
+
       # yabai -m rule --add app='Alacritty'             layer=above
       yabai -m rule --add app='Brave Browser'         layer=below
       yabai -m rule --add app='Sketchybar'            layer=below
@@ -122,6 +129,17 @@
       # yabai -m rule --add app="Mumble"              space=voice
       #
       # yabai -m rule --add app="Microsoft Teams"     space=nine
+            
+           #  menubar_opacity [<FLOAT_SEL>]
+           # Changes the transparency of the macOS menubar.
+           # If the value is 0.0, the menubar will no longer
+           # respond to mouse-events, effectively hiding the
+           # menubar permanently.
+           # The menubar will automatically become fully
+           # opaque upon entering a native-fullscreen space,
+           # and adjusted down afterwards.
+     
+      yabai -m config menubar_opacity 0.0 #Disable MacOS Menubar?
 
       # Borders!
       borders
@@ -204,6 +222,8 @@
       # ${modifier} - return :              alacritty
       ${modifier} - d :                     open -a dmenu-mac
       ${mod1} + ${mod5} - space :           open -na "Brave Browser"
+      ${mod1} + shift + ${mod5} - space :   open -na "Brave Browser" --args --incognito
+      ${mod1} + ${mod4} + ${mod5} - space : open -na "Brave Browser" --args --tor
       ${mod4} + ${mod5} - 0x33 :            sudo reboot # using cmd ctrl backspace
       ${mod4} + ${mod5} + shift - 0x33 :    sudo shutdown -h now # using cmd ctrl backspace
       ${mod4} + ${mod5} - delete :          sudo reboot
@@ -211,7 +231,18 @@
       ${modifier} + shift - q :             ${yabai} -m window --close
       ${modifier} - f :                     ${yabai} -m window --toggle zoom-fullscreen 
       #${modifier} + shift - f :             ${yabai} -m window --toggle native-fullscreen #USING PHOENIXWM for this!
-      
+     
+      # Create a space with mutli-monitor
+      # shift + alt - n : yabai -m space --create && \
+      #              index="$(yabai -m query --spaces --display | jq 'map(select(."is-native-fullscreen" == false))[-1].index')" && \
+                   # yabai -m window --space "''${index}" && \
+                   # yabai -m space --focus "''${index}"
+                   
+                #Also not working?
+                #    ${mod1} + ${mod5} - 2 : yabai -m space --create && \
+                # index="$(yabai -m query --spaces --display | jq 'map(select(."native-fullscreen" == 0))[-1].index')" && \
+                # yabai -m space --focus "''${index}"
+        
       # Move focus to next/prev workspace
       ${mod1} + ${mod4} - ${left} :   ${yabai} -m space --focus prev
       ${mod1} + ${mod4} - ${down} :   ${yabai} -m space --focus prev

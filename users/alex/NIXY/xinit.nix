@@ -6,6 +6,7 @@
     target = ".xinitrc";
     text = ''
     exec /opt/local/bin/i3 #start i3 before xquartzwm does.
+    exec sleep 3
     exec /usr/X11R6/bin/xrdb -merge ~/.Xresources #merge Xresources settings to x11
     '';
   };

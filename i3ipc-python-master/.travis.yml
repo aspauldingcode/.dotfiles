@@ -1,0 +1,8 @@
+language: minimal
+dist: xenial
+services:
+  - docker
+before_install:
+  - docker build -t i3ipc-python-test .
+script:
+  - docker run -it i3ipc-python-test

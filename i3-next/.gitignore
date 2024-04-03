@@ -1,0 +1,53 @@
+*.o
+tags
+include/GENERATED_*.h
+include/all.h.pch
+*~
+*.swp
+*.gcda
+*.gcno
+*.dSYM
+test.commands_parser
+test.config_parser
+testcases/MYMETA.json
+testcases/MYMETA.yml
+testcases/blib/
+testcases/pm_to_blib
+AnyEvent-I3/Makefile
+AnyEvent-I3/META.yml
+AnyEvent-I3/MYMETA.json
+AnyEvent-I3/MYMETA.yml
+AnyEvent-I3/blib/
+AnyEvent-I3/inc/
+AnyEvent-I3/pm_to_blib
+*.output
+*.tab.*
+*.yy.c
+man/*.1
+man/*.xml
+man/*.html
+*.tar.bz2*
+i3
+i3-input/i3-input
+i3-nagbar/i3-nagbar
+i3-msg/i3-msg
+i3-config-wizard/i3-config-wizard
+i3-dump-log/i3-dump-log
+libi3.a
+docs/*.pdf
+docs/*.html
+!/docs/refcard.html
+i3-command-parser.stamp
+i3-config-parser.stamp
+.clang_complete
+compile_commands.json
+/.ccls-cache
+/.clangd
+LAST_VERSION
+
+# We recommend building in a subdirectory called build.
+# If you chose a different directory name,
+# it is up to you to arrange for it to be ignored by git,
+# e.g. by listing your directory in .git/info/exclude.
+/build
+

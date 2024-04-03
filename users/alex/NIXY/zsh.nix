@@ -11,6 +11,7 @@
       # cat =     	"lolcat";
       tf = 		    "thefuck";
       yazi = 		"kitty --single-instance yazi &";
+      autotiling =  "python3.11 ~/.dotfiles/i3ipc-python-master/autotiling.py";
     };
     oh-my-zsh = {
       enable =  true;

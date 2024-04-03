@@ -41,7 +41,11 @@
     unar
     # python39
     (pkgs.python311.withPackages(ps: [ 
-      #ps.pygame 
+      #ps.pygame
+      ps.cx-freeze
+      # ps.pep517
+      # ps.build
+      #ps.i3ipc
       ps.matplotlib 
     ]))
     
