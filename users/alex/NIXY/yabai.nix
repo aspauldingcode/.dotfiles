@@ -36,13 +36,14 @@
       yabai -m config mouse_follows_focus         off #FIXME: configure apps so I can turn this on.
       
       # window appearance
-      yabai -m config window_shadow               float
+      yabai -m config window_shadow               float # floating windows only
       yabai -m config window_opacity              on
       yabai -m config window_opacity_duration     0.1
       #yabai -m config window_animation_duration	  0.35
-      yabai -m config window_opacity_duration	  0.35
-      yabai -m config normal_window_opacity	  0.95
-      yabai -m config active_window_opacity	  1.0
+      yabai -m config window_opacity_duration     0.35
+      yabai -m config normal_window_opacity	      0.95
+      yabai -m config active_window_opacity	      1.0
+      yabai -m config insert_feedback_color       0xff${colors.base0C}
 
       # layout
       yabai -m config layout                      bsp # bsp | float
@@ -50,12 +51,16 @@
       yabai -m config split_ratio                 0.50
       yabai -m config window_placement            second_child
       yabai -m config window_origin_display       default
+      yabai -m config display_arrangement_order horizontal # default | vertical
 
       # floating windows are always on top
       # when enabling this option, overlays in chrome are hidden
       # this affects popups like site search or bitwarden extension
       # yabai -m config window_topmost off
-        
+
+      # manage new window on the FOCUSED display on creation!
+      yabai -m config window_origin_display cursor # default | focused | cursor
+
       # gaps
       yabai -m config top_padding     15
       yabai -m config bottom_padding  15

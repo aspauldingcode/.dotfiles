@@ -18,46 +18,54 @@
       plugins = [ "git" "thefuck" ];
       theme =   "cypher";
     };
-    initExtra = "sudo spctl --master-disable\nunset RPS1\ntouch ~/.hushlogin\n"; # DISABLE volume/brightness HUD! Disable GATEKEEPER
+    #initExtra = "sudo spctl --master-disable\nunset RPS1\ntouch ~/.hushlogin\n"; # DISABLE volume/brightness HUD! Disable GATEKEEPER
+    initExtra = "unset RPS1";
   };
   home.sessionVariables = {
     LANG = "en_US.UTF-8";
   };
 
-  home.file.".zshrc" = {
-    text = ''
-      # Add your custom Zsh configurations here
-      # For example, you can set aliases, customize prompts, etc.
+  home.file = {
+      ".zshrc" = {
+            text = ''
+                  # Add your custom Zsh configurations here
+                  # For example, you can set aliases, customize prompts, etc.
 
-      # Zsh history settings
-      HISTFILE=~/.zsh_history
-      HISTSIZE=1000
-      SAVEHIST=1000
-      setopt APPEND_HISTORY
+                  # Zsh history settings
+                  HISTFILE=~/.zsh_history
+                  HISTSIZE=1000
+                  SAVEHIST=1000
+                  setopt APPEND_HISTORY
 
-      # Add the mobile-nixos variable to $NIX_PATH
-      # export NIX_PATH="$NIX_PATH:mobile-nixos=~/mobile-nixos"
+                  # Add the mobile-nixos variable to $NIX_PATH
+                  # export NIX_PATH="$NIX_PATH:mobile-nixos=~/mobile-nixos"
 
-      # Princeton Jar files!
-      export CLASSPATH=~/Desktop/hw/csci232/jars/algs4.jar:$CLASSPATH
-      export CLASSPATH=~/Desktop/hw/csci232/jars/stdlib.jar:$CLASSPATH
+                  # Princeton Jar files!
+                  export CLASSPATH=~/Desktop/hw/csci232/jars/algs4.jar:$CLASSPATH
+                  export CLASSPATH=~/Desktop/hw/csci232/jars/stdlib.jar:$CLASSPATH
 
-      # add gyr to path
-      export PATH="/Users/alex/.cargo/bin:$PATH"
+                  # add gyr to path
+                  export PATH="/Users/alex/.cargo/bin:$PATH"
 
-      # add x11 to path
-      export PATH=/opt/X11/bin:$PATH
-      export PATH=/usr/X11R6/bin:$PATH
-      export MANPATH=/usr/X11R6/man:$MANPATH
-      export DISPLAY=:0            # Required!
+                  # add x11 to path
+                  export PATH=/opt/X11/bin:$PATH
+                  export PATH=/usr/X11R6/bin:$PATH
+                  export MANPATH=/usr/X11R6/man:$MANPATH
+                  export DISPLAY=:0            # Required!
 
-      # add missing paths for i3 to work
-      export PATH=/opt/local/bin:$PATH
-      export PATH=/opt/local/sbin:$PATH
+                  # add missing paths for i3 to work
+                  export PATH=/opt/local/bin:$PATH
+                  export PATH=/opt/local/sbin:$PATH
 
-      # Set default editor in zsh shell
-      export EDITOR=nvim
-      export VISUAL="$EDITOR"
-    '';
+                  # Set default editor in zsh shell
+                  export EDITOR=nvim
+                  export VISUAL="$EDITOR"
+            '';
+      };
+      # GET YEETED! Hello print on terminal go byebye
+      ".hushlogin" = {
+          text = ''
+          '';
+      };
   };
 }

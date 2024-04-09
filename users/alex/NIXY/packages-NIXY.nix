@@ -18,6 +18,11 @@
     chatgpt-cli
     cowsay
     newsboat
+    nmap
+    tshark
+    termshark
+    # wireshark
+    # nmapsi4
     #ruby
     qemu
     spotify
