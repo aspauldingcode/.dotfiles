@@ -32,46 +32,46 @@
         yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces"
         yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
 
-      # move/resize windows with mouse
-      yabai -m config mouse_modifier              alt # alt is fixed as of Yabai v7.0.0!
-      yabai -m config mouse_action1               move
-      yabai -m config mouse_action2               resize
-      yabai -m config mouse_drop_action           swap
-      yabai -m config focus_follows_mouse         autofocus # autofocus | autoraise
-      yabai -m config mouse_follows_focus         off #FIXME: configure apps so I can turn this on.
-      
-      # window appearance
-      yabai -m config window_shadow               float # floating windows only
-      yabai -m config window_opacity              on
-      yabai -m config window_opacity_duration     0.1
-      #yabai -m config window_animation_duration	  0.35
-      yabai -m config window_opacity_duration     0.35
-      yabai -m config normal_window_opacity	      0.95
-      yabai -m config active_window_opacity	      1.0
-      yabai -m config insert_feedback_color       0xff${colors.base0C}
+        # move/resize windows with mouse
+        yabai -m config mouse_modifier              alt # alt is fixed as of Yabai v7.0.0!
+        yabai -m config mouse_action1               move
+        yabai -m config mouse_action2               resize
+        yabai -m config mouse_drop_action           swap
+        yabai -m config focus_follows_mouse         autofocus # autofocus | autoraise
+        yabai -m config mouse_follows_focus         off #FIXME: configure apps so I can turn this on.
 
-      # layout
-      yabai -m config layout                      bsp # bsp | float
-      yabai -m config auto_balance                off
-      yabai -m config split_ratio                 0.50
-      yabai -m config window_placement            second_child
-      yabai -m config window_origin_display       default
-      yabai -m config display_arrangement_order horizontal # default | vertical
+        # window appearance
+        yabai -m config window_shadow               float # floating windows only
+        yabai -m config window_opacity              on
+        yabai -m config window_opacity_duration     0.1
+        #yabai -m config window_animation_duration	  0.35
+        yabai -m config window_opacity_duration     0.35
+        yabai -m config normal_window_opacity	      0.95
+        yabai -m config active_window_opacity	      1.0
+        yabai -m config insert_feedback_color       0xff${colors.base0C}
 
-      # floating windows are always on top
-      # when enabling this option, overlays in chrome are hidden
-      # this affects popups like site search or bitwarden extension
-      # yabai -m config window_topmost off
+        # layout
+        yabai -m config layout                      bsp # bsp | float
+        yabai -m config auto_balance                off
+        yabai -m config split_ratio                 0.50
+        yabai -m config window_placement            second_child
+        yabai -m config window_origin_display       default
+        yabai -m config display_arrangement_order horizontal # default | vertical
 
-      # manage new window on the FOCUSED display on creation!
-      yabai -m config window_origin_display cursor # default | focused | cursor
+        # floating windows are always on top
+        # when enabling this option, overlays in chrome are hidden
+        # this affects popups like site search or bitwarden extension
+        # yabai -m config window_topmost off
 
-      # gaps
-      yabai -m config top_padding     15
-      yabai -m config bottom_padding  15
-      yabai -m config left_padding    15
-      yabai -m config right_padding   15
-      yabai -m config window_gap      15
+        # manage new window on the FOCUSED display on creation!
+        yabai -m config window_origin_display cursor # default | focused | cursor
+
+        # gaps
+        yabai -m config top_padding     15
+        yabai -m config bottom_padding  15
+        yabai -m config left_padding    15
+        yabai -m config right_padding   15
+        yabai -m config window_gap      15
 
         # rules
         yabai -m rule --add app="^System Settings$"     manage=off
@@ -139,14 +139,14 @@
         #
         # yabai -m rule --add app="Microsoft Teams"     space=nine
               
-             #  menubar_opacity [<FLOAT_SEL>]
-             # Changes the transparency of the macOS menubar.
-             # If the value is 0.0, the menubar will no longer
-             # respond to mouse-events, effectively hiding the
-             # menubar permanently.
-             # The menubar will automatically become fully
-             # opaque upon entering a native-fullscreen space,
-             # and adjusted down afterwards.
+        #  MENUBAR_OPACITY [<float_sel>]
+        # cHANGES THE TRANSPARENCY OF THE MACos MENUBAR.
+        # iF THE VALUE IS 0.0, THE MENUBAR WILL NO LONGER
+        # RESPOND TO MOUSE-EVENTS, EFFECTIVELY HIDING THE
+        # MENUBAR PERMANENTLY.
+        # tHE MENUBAR WILL AUTOMATICALLY BECOME FULLY
+        # OPAQUE UPON ENTERING A NATIVE-FULLSCREEN SPACE,
+        # AND ADJUSTED down afterwards.
 
         yabai -m config menubar_opacity 0.0 # Disables MacOS Menubar.
 
@@ -154,7 +154,6 @@
         borders
 
         echo "yabai configuration loaded.."
-
       '';
   };
 
@@ -311,19 +310,53 @@
             ${modifier} - up :        if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus north; fi
             ${modifier} - right :     if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus east; fi
             
-            # swap managed window
-            ${modifier} + shift - ${left} :   ${yabai} -m window --swap west
-            ${modifier} + shift - ${down} :   ${yabai} -m window --swap south
-            ${modifier} + shift - ${up} :     ${yabai} -m window --swap north
-            ${modifier} + shift - ${right} :  ${yabai} -m window --swap east
-            ${modifier} + shift - left :      ${yabai} -m window --swap west
-            ${modifier} + shift - down :      ${yabai} -m window --swap south
-            ${modifier} + shift - up :        ${yabai} -m window --swap north
-            ${modifier} + shift - right :     ${yabai} -m window --swap east
+           # swap managed window
+           ${modifier} + shift - ${left} :   ${yabai} -m window --swap west
+           ${modifier} + shift - ${down} :   ${yabai} -m window --swap south
+           ${modifier} + shift - ${up} :     ${yabai} -m window --swap north
+           ${modifier} + shift - ${right} :  ${yabai} -m window --swap east
+           ${modifier} + shift - left :      ${yabai} -m window --swap west
+           ${modifier} + shift - down :      ${yabai} -m window --swap south
+           ${modifier} + shift - up :        ${yabai} -m window --swap north
+           ${modifier} + shift - right :     ${yabai} -m window --swap east
 
-            # increase window size #FIXME: edit window resizing shortcuts!
-            ${modifier} + shift - a : ${yabai} -m window --resize left:-20:0
-            ${modifier} + shift - s : ${yabai} -m window --resize right:-20:0
+           # move window
+           ${modifier} + shift + cmd - ${left} :  yabai -m window --move rel:-20:0
+           ${modifier} + shift + cmd - ${down} :  yabai -m window --move rel:0:20
+           ${modifier} + shift + cmd - ${up} :    yabai -m window --move rel:0:-20
+           ${modifier} + shift + cmd - ${right} : yabai -m window --move rel:20:0
+           ${modifier} + shift + cmd - left :     yabai -m window --move rel:-20:0
+           ${modifier} + shift + cmd - down :     yabai -m window --move rel:0:20
+           ${modifier} + shift + cmd - up :       yabai -m window --move rel:0:-20
+           ${modifier} + shift + cmd - right :    yabai -m window --move rel:20:0
+
+           # increase window size
+           ${modifier} + ctrl - ${left} :  yabai -m window --resize left:-20:0
+           ${modifier} + ctrl - ${down} :  yabai -m window --resize bottom:0:20
+           ${modifier} + ctrl - ${up} :    yabai -m window --resize top:0:-20
+           ${modifier} + ctrl - ${right} : yabai -m window --resize right:20:0
+           ${modifier} + ctrl - left :     yabai -m window --resize left:-20:0
+           ${modifier} + ctrl - down :     yabai -m window --resize bottom:0:20
+           ${modifier} + ctrl - up :       yabai -m window --resize top:0:-20
+           ${modifier} + ctrl - right :    yabai -m window --resize right:20:0
+
+           # decrease window size
+           ${modifier} + shift + ctrl - ${left} :  yabai -m window --resize left:20:0
+           ${modifier} + shift + ctrl - ${down} :  yabai -m window --resize bottom:0:-20
+           ${modifier} + shift + ctrl - ${up} :    yabai -m window --resize top:0:20
+           ${modifier} + shift + ctrl - ${right} : yabai -m window --resize right:-20:0
+           ${modifier} + shift + ctrl - left :     yabai -m window --resize left:20:0
+           ${modifier} + shift + ctrl - down :     yabai -m window --resize bottom:0:-20
+           ${modifier} + shift + ctrl - up :       yabai -m window --resize top:0:20
+           ${modifier} + shift + ctrl - right :    yabai -m window --resize right:-20:0
+
+            # set insertion point in focused container
+            ${modifier} - b : yabai -m window --insert east
+            ${modifier} - v : yabai -m window --insert south
+
+            # rotate tree
+            ${modifier} - r : yabai -m space --rotate 90
+            ${modifier} - t : yabai -m space --rotate 270
 
             # toggle layout
             ${modifier} - s : ${yabai} -m space --layout stack
@@ -338,45 +371,9 @@
             #           ${yabai} -m window --toggle topmost; \
             #           ${yabai} -m window --toggle pip
 
-            #FIXME: Define the hotkey for Alt + Left Click
-            #alt - 0x3C : cmd - 0x3C
-            # Define the hotkey for Alt + Right Click
-            #alt - 0x3D : cmd - 0x3D
-
-          # defines a new mode 'resize' with an on_enter command, that captures keypresses
-          :: resize @ : yabai -m config active_window_opacity 1; yabai -m config normal_window_opacity 0.9;
-
-          # from 'default' mode, activate mode 'resize'
-          # (this is the key combination you want to use to enter resize mode)
-          ctrl - escape ; resize 
-          alt + ctrl - 0x32 ; resize
-
-          # from 'resize' mode, activate mode 'default'
-          # (this is the keypress required to leave resize mode)
-          resize < escape ; default
-          resize < 0x32 ; default
-
           # equalize windows
-          resize < ctrl - 0 : yabai -m space --balance
-
-          # increase window size
-          resize < ctrl - left : yabai -m window --resize left:-25:0
-          resize < ctrl - down : yabai -m window --resize bottom:0:25
-          resize < ctrl - up : yabai -m window --resize top:0:-25
-          resize < ctrl - right : yabai -m window --resize right:25:0
-
-          # decrease window size
-          resize < alt - right : yabai -m window --resize left:25:0
-          resize < alt - up : yabai -m window --resize bottom:0:-25
-          resize < alt - down : yabai -m window --resize top:0:25
-          resize < alt - left : yabai -m window --resize right:-25:0
-
-          # move window
-          resize < cmd - left : yabai -m window --move rel:-25:0
-          resize < cmd - down : yabai -m window -move rel:0:25
-          resize < cmd - up : yabai -m window --move rel:0:-25
-          resize < cmd - right : yabai -m window --move rel:25:0
-
+          alt + shift - u : yabai -m space --balance
+            
             # reload
             ${modifier} + shift - r : fix-wm
 
