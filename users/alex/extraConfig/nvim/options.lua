@@ -25,6 +25,10 @@ o.wrap = false
 -- o.textwidth = 80
 -- o.formatoptions = "t"
 
+-- Map <Leader>f to run LSP format
+vim.api.nvim_set_keymap('n', '<Leader>f', '<cmd>lua vim.lsp.buf.format()<CR>',
+    { noremap = true, silent = true })
+
 -- Set listchars
 vim.o.listchars = 'nbsp:␣,eol:↲,tab:»\\ ,extends:›,precedes:‹,trail:•'
 

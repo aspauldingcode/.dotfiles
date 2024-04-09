@@ -18,29 +18,21 @@
                 "^com\\.citrix\\.XenAppViewer$"
                 "^com\\.microsoft\\.rdc\\.macos$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "insert";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "c";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -70,29 +62,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "insert";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "c";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -117,29 +101,21 @@
                 "^com\\.citrix\\.XenAppViewer$"
                 "^com\\.microsoft\\.rdc\\.macos$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "insert";
             modifiers = {
-              mandatory = [
-                "shift"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "shift" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "v";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -169,29 +145,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "insert";
             modifiers = {
-              mandatory = [
-                "shift"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "shift" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "v";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -221,24 +189,18 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "home";
-            modifiers.optional = [
-              "any"
-            ];
+            modifiers.optional = [ "any" ];
           };
           to = [
             {
               "key_code" = "left_arrow";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -268,29 +230,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "home";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "up_arrow";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -320,21 +274,15 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "home";
             modifiers = {
-              mandatory = [
-                "shift"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "shift" ];
+              optional = [ "any" ];
             };
           };
           to = [
@@ -373,9 +321,7 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
@@ -386,9 +332,7 @@
                 "control"
                 "shift"
               ];
-              optional = [
-                "any"
-              ];
+              optional = [ "any" ];
             };
           };
           to = [
@@ -427,24 +371,18 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "end";
-            modifiers.optional = [
-              "any"
-            ];
+            modifiers.optional = [ "any" ];
           };
           to = [
             {
               "key_code" = "right_arrow";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -474,29 +412,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "end";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "down_arrow";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -526,21 +456,15 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "end";
             modifiers = {
-              mandatory = [
-                "shift"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "shift" ];
+              optional = [ "any" ];
             };
           };
           to = [
@@ -579,9 +503,7 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
@@ -592,9 +514,7 @@
                 "control"
                 "shift"
               ];
-              optional = [
-                "any"
-              ];
+              optional = [ "any" ];
             };
           };
           to = [
@@ -633,29 +553,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "left_arrow";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "left_arrow";
-              modifiers = [
-                "option"
-              ];
+              modifiers = [ "option" ];
             }
           ];
           type = "basic";
@@ -685,9 +597,7 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
@@ -698,9 +608,7 @@
                 "control"
                 "shift"
               ];
-              optional = [
-                "any"
-              ];
+              optional = [ "any" ];
             };
           };
           to = [
@@ -739,29 +647,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "right_arrow";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "right_arrow";
-              modifiers = [
-                "option"
-              ];
+              modifiers = [ "option" ];
             }
           ];
           type = "basic";
@@ -791,9 +691,7 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
@@ -804,9 +702,7 @@
                 "control"
                 "shift"
               ];
-              optional = [
-                "any"
-              ];
+              optional = [ "any" ];
             };
           };
           to = [
@@ -845,29 +741,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "delete_or_backspace";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "delete_or_backspace";
-              modifiers = [
-                "option"
-              ];
+              modifiers = [ "option" ];
             }
           ];
           type = "basic";
@@ -897,29 +785,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "delete_forward";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "delete_forward";
-              modifiers = [
-                "option"
-              ];
+              modifiers = [ "option" ];
             }
           ];
           type = "basic";
@@ -949,29 +829,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "return_or_enter";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "return_or_enter";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -1001,9 +873,7 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
@@ -1014,9 +884,7 @@
                 "control"
                 "shift"
               ];
-              optional = [
-                "any"
-              ];
+              optional = [ "any" ];
             };
           };
           to = [
@@ -1037,16 +905,8 @@
       manipulators = [
         {
           from."key_code" = "left_command";
-          to = [
-            {
-              "key_code" = "left_command";
-            }
-          ];
-          "to_if_alone" = [
-            {
-              "apple_vendor_keyboard_key_code" = "spotlight";
-            }
-          ];
+          to = [ { "key_code" = "left_command"; } ];
+          "to_if_alone" = [ { "apple_vendor_keyboard_key_code" = "spotlight"; } ];
           type = "basic";
         }
       ];
@@ -1074,29 +934,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "a";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "a";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -1126,29 +978,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "b";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "b";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -1178,29 +1022,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "c";
             modifiers = {
-              mandatory = [
-                "left_control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "left_control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "c";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -1230,17 +1066,13 @@
                 "control"
                 "shift"
               ];
-              optional = [
-                "any"
-              ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "c";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -1270,29 +1102,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "f";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "f";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -1322,29 +1146,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "i";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "i";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -1358,12 +1174,8 @@
           from = {
             "key_code" = "l";
             modifiers = {
-              mandatory = [
-                "command"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "command" ];
+              optional = [ "any" ];
             };
           };
           to = [
@@ -1382,12 +1194,8 @@
           from = {
             "key_code" = "l";
             modifiers = {
-              mandatory = [
-                "command"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "command" ];
+              optional = [ "any" ];
             };
           };
           to = [
@@ -1414,9 +1222,7 @@
                 "control"
                 "option"
               ];
-              optional = [
-                "any"
-              ];
+              optional = [ "any" ];
             };
           };
           to = [
@@ -1439,9 +1245,7 @@
                 "control"
                 "option"
               ];
-              optional = [
-                "any"
-              ];
+              optional = [ "any" ];
             };
           };
           to = [
@@ -1480,29 +1284,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "n";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "n";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -1532,29 +1328,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "o";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "o";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -1584,29 +1372,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "p";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "p";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -1636,29 +1416,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "r";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "r";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -1688,29 +1460,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "s";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "s";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -1740,29 +1504,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "t";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "t";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -1792,29 +1548,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "u";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "u";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -1844,29 +1592,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "v";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "v";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -1896,17 +1636,13 @@
                 "control"
                 "shift"
               ];
-              optional = [
-                "any"
-              ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "v";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -1936,29 +1672,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "w";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "w";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -1988,29 +1716,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "x";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "x";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -2040,29 +1760,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "y";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "y";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -2092,29 +1804,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "z";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "z";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -2144,28 +1848,18 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "1";
             modifiers = {
-              mandatory = [
-                "command"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "command" ];
+              optional = [ "any" ];
             };
           };
-          to = [
-            {
-              "shell_command" = "open -b com.apple.finder";
-            }
-          ];
+          to = [ { "shell_command" = "open -b com.apple.finder"; } ];
           type = "basic";
         }
       ];
@@ -2193,21 +1887,15 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "2";
             modifiers = {
-              mandatory = [
-                "command"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "command" ];
+              optional = [ "any" ];
             };
           };
           to = [
@@ -2242,21 +1930,15 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "3";
             modifiers = {
-              mandatory = [
-                "command"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "command" ];
+              optional = [ "any" ];
             };
           };
           to = [
@@ -2291,21 +1973,15 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "4";
             modifiers = {
-              mandatory = [
-                "command"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "command" ];
+              optional = [ "any" ];
             };
           };
           to = [
@@ -2340,21 +2016,15 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "5";
             modifiers = {
-              mandatory = [
-                "command"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "command" ];
+              optional = [ "any" ];
             };
           };
           to = [
@@ -2389,21 +2059,15 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "6";
             modifiers = {
-              mandatory = [
-                "command"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "command" ];
+              optional = [ "any" ];
             };
           };
           to = [
@@ -2438,21 +2102,15 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "7";
             modifiers = {
-              mandatory = [
-                "command"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "command" ];
+              optional = [ "any" ];
             };
           };
           to = [
@@ -2487,21 +2145,15 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "8";
             modifiers = {
-              mandatory = [
-                "command"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "command" ];
+              optional = [ "any" ];
             };
           };
           to = [
@@ -2536,21 +2188,15 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "9";
             modifiers = {
-              mandatory = [
-                "command"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "command" ];
+              optional = [ "any" ];
             };
           };
           to = [
@@ -2580,29 +2226,21 @@
                 "^com\\.citrix\\.XenAppViewer$"
                 "^com\\.microsoft\\.rdc\\.macos$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "slash";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "slash";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -2632,29 +2270,21 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "spacebar";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "spacebar";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -2684,17 +2314,13 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "f1";
-            modifiers.optional = [
-              "any"
-            ];
+            modifiers.optional = [ "any" ];
           };
           to = [
             {
@@ -2732,24 +2358,18 @@
                 "^com\\.apple\\.Terminal$"
                 "^com\\.github\\.wez\\.wezterm$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "f3";
-            modifiers.optional = [
-              "any"
-            ];
+            modifiers.optional = [ "any" ];
           };
           to = [
             {
               "key_code" = "g";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -2774,29 +2394,21 @@
                 "^com\\.citrix\\.XenAppViewer$"
                 "^com\\.microsoft\\.rdc\\.macos$"
               ];
-              "file_paths" = [
-                "Chrome Remote Desktop\\.app"
-              ];
+              "file_paths" = [ "Chrome Remote Desktop\\.app" ];
               type = "frontmost_application_unless";
             }
           ];
           from = {
             "key_code" = "f4";
             modifiers = {
-              mandatory = [
-                "option"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "option" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "q";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";
@@ -2819,20 +2431,14 @@
           from = {
             "key_code" = "f4";
             modifiers = {
-              mandatory = [
-                "control"
-              ];
-              optional = [
-                "any"
-              ];
+              mandatory = [ "control" ];
+              optional = [ "any" ];
             };
           };
           to = [
             {
               "key_code" = "w";
-              modifiers = [
-                "command"
-              ];
+              modifiers = [ "command" ];
             }
           ];
           type = "basic";

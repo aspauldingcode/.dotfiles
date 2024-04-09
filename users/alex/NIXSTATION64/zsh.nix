@@ -2,17 +2,20 @@
 
 {
   programs.zsh = {
-    enable =            true;
-    enableCompletion =  true;
+    enable = true;
+    enableCompletion = true;
     shellAliases = {
-      ll =              "ls -l";
-      ifstat =          "ifstat-legacy";
+      ll = "ls -l";
+      ifstat = "ifstat-legacy";
       # cat =             "lolcat";
-      tf =              "thefuck";
+      tf = "thefuck";
     };
     oh-my-zsh = {
       enable = true;
-      plugins = [ "git" "thefuck" ];
+      plugins = [
+        "git"
+        "thefuck"
+      ];
       theme = "cypher";
     };
   };
@@ -37,7 +40,7 @@
       # Add classpaths for school.
       export CLASSPATH=~/Desktop/hw/csci232/jars/algs4.jar:$CLASSPATH
       export CLASSPATH=~/Desktop/hw/csci232/jars/stdlib.jar:$CLASSPATH
-    
+
       # Set default editor in zsh shell
       export EDITOR=nvim
       export VISUAL="$EDITOR"

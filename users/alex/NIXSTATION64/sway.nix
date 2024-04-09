@@ -1,16 +1,14 @@
-{ config, pkgs, ...}:
+{ config, pkgs, ... }:
 
 {
-  imports = [
-    ./waybar/waybar.nix
-  ];
+  imports = [ ./waybar/waybar.nix ];
 
   wayland.windowManager.sway = {
     enable = true;
     package = null;
     config = rec {
       bars = [
-        {command = "${pkgs.waybar}/bin/waybar";}#FIXME: WHY ARE THERE TWO WAYBARS at launch?
+        { command = "${pkgs.waybar}/bin/waybar"; } # FIXME: WHY ARE THERE TWO WAYBARS at launch?
       ];
       modifier = "Mod4";
       left = "h";
@@ -18,9 +16,9 @@
       up = "k";
       right = "l";
       output = {
-        DP-4 = { 
+        DP-4 = {
           res = "1920x1080";
-          pos = "0,0"; 
+          pos = "0,0";
           transform = "270";
           #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
         };
@@ -30,25 +28,26 @@
           #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
         };
         DP-2 = {
-          res = "1920x1080"; 
+          res = "1920x1080";
           pos = "3000,450";
           #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
         };
-        "*" = { # change background for all outputs
-          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/sweden.png fill"; #ghibliwp.jpg, sweden.png
+        "*" = {
+          # change background for all outputs
+          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/sweden.png fill"; # ghibliwp.jpg, sweden.png
         };
       };
       # Use alacritty as default terminal
-      terminal = "alacritty"; 
+      terminal = "alacritty";
       startup = [
         # Launch alacritty on start
-        {command = "alacritty";} #FIXME: DOES ALACRITTY ACTUALLY LAUNCH?!?!?
+        { command = "alacritty"; } # FIXME: DOES ALACRITTY ACTUALLY LAUNCH?!?!?
       ];
       menu = "bemenu-run";
 
       workspaceLayout = "default";
       keybindings = {
-        "${modifier}+f" = "exec maximize"; #custom script for zoom-fullscreen NOTWORKING?
+        "${modifier}+f" = "exec maximize"; # custom script for zoom-fullscreen NOTWORKING?
         "${modifier}+Shift+f" = "fullscreen toggle";
         "${modifier}+Return" = "exec ${terminal}";
         "${modifier}+Alt+Space" = "exec brave";
@@ -96,7 +95,6 @@
         "Alt+Shift+3" = "exec screenshot"; # All visible outputs
         "Alt+Shift+4" = ''exec grimshot --notify save anything ~/Desktop/"Screenshot $(date '+%Y-%m-%d at %I.%M.%S %p').png"'';
 
-
         # Screen recording
         #"${modifier}+Print" = "exec wayrecorder --notify screen";
         #"${modifier}+Shift+Print" = "exec wayrecorder --notify --input area";
@@ -122,14 +120,14 @@
         "${modifier}+Shift+Ctrl+minus" = "move scratchpad"; # Change to control alt down
         "${modifier}+Shift+Ctrl+equal" = "scratchpad show"; # change to control alt up
 
-        "${modifier}+r" = "mode resize"; #??? orrresize mode
+        "${modifier}+r" = "mode resize"; # ??? orrresize mode
 
         "${modifier}+Shift+Space" = "floating toggle";
         "${modifier}+Space" = "focus mode_toggle";
         "${modifier}+u" = "focus parent";
 
         "${modifier}+w" = "layout toggle split";
-        "${modifier}+s" = "layout tabbed"; #macos is stacked layout
+        "${modifier}+s" = "layout tabbed"; # macos is stacked layout
         "${modifier}+e" = "layout default";
 
         #"${modifier}+o" = "inhibit_idle open; border normal; mark --add inhibiting_idle";
@@ -139,14 +137,14 @@
         #"${modifier}+Shift+t" = "exec ${pkgs.flashfocus}/bin/flash_window";
 
         # Change focused window
-        "${modifier}+${left}" =   "focus left";
-        "${modifier}+${down}" =   "focus down";
-        "${modifier}+${up}" =     "focus up";
-        "${modifier}+${right}" =  "focus right";
-        "${modifier}+Left" =      "focus left";
-        "${modifier}+Down" =      "focus down";
-        "${modifier}+Up" =        "focus up";
-        "${modifier}+Right" =     "focus right";
+        "${modifier}+${left}" = "focus left";
+        "${modifier}+${down}" = "focus down";
+        "${modifier}+${up}" = "focus up";
+        "${modifier}+${right}" = "focus right";
+        "${modifier}+Left" = "focus left";
+        "${modifier}+Down" = "focus down";
+        "${modifier}+Up" = "focus up";
+        "${modifier}+Right" = "focus right";
 
         #FIXME: make this swap window in place! Currently it rotates.
         #"${modifier}+Shift+${left}" =   "mark --add \"_swap\", focus left,  swap container with mark \"_swap\", unmark \"_swap\"";
@@ -159,24 +157,24 @@
         #"${modifier}+Shift+Right" =     "mark --add \"_swap\", focus right, swap container with mark \"_swap\", unmark \"_swap\"";
 
         # Navigate to next/prev workspace
-        "${modifier}+Ctrl+${left}" =    "workspace prev";
-        "${modifier}+Ctrl+${down}" =    "workspace next";
-        "${modifier}+Ctrl+${up}" =      "workspace prev";
-        "${modifier}+Ctrl+${right}" =   "workspace next";
-        "${modifier}+Ctrl+Left" =       "workspace prev";
-        "${modifier}+Ctrl+Down" =       "workspace next";
-        "${modifier}+Ctrl+Up" =         "workspace prev";
-        "${modifier}+Ctrl+Right" =      "workspace next";
+        "${modifier}+Ctrl+${left}" = "workspace prev";
+        "${modifier}+Ctrl+${down}" = "workspace next";
+        "${modifier}+Ctrl+${up}" = "workspace prev";
+        "${modifier}+Ctrl+${right}" = "workspace next";
+        "${modifier}+Ctrl+Left" = "workspace prev";
+        "${modifier}+Ctrl+Down" = "workspace next";
+        "${modifier}+Ctrl+Up" = "workspace prev";
+        "${modifier}+Ctrl+Right" = "workspace next";
 
         # Move window to next/prev workspace and follow focus
-        "Ctrl+Shift+${left}" =   "move container to workspace prev, workspace prev";
-        "Ctrl+Shift+${down}" =   "move container to workspace next, workspace next";
-        "Ctrl+Shift+${up}" =     "move container to workspace prev, workspace prev";
-        "Ctrl+Shift+${right}" =  "move container to workspace next, workspace next";
-        "Ctrl+Shift+Left" =      "move container to workspace prev, workspace prev";
-        "Ctrl+Shift+Down" =      "move container to workspace next, workspace next";
-        "Ctrl+Shift+Up" =        "move container to workspace prev, workspace prev";
-        "Ctrl+Shift+Right" =     "move container to workspace next, workspace next";
+        "Ctrl+Shift+${left}" = "move container to workspace prev, workspace prev";
+        "Ctrl+Shift+${down}" = "move container to workspace next, workspace next";
+        "Ctrl+Shift+${up}" = "move container to workspace prev, workspace prev";
+        "Ctrl+Shift+${right}" = "move container to workspace next, workspace next";
+        "Ctrl+Shift+Left" = "move container to workspace prev, workspace prev";
+        "Ctrl+Shift+Down" = "move container to workspace next, workspace next";
+        "Ctrl+Shift+Up" = "move container to workspace prev, workspace prev";
+        "Ctrl+Shift+Right" = "move container to workspace next, workspace next";
 
         # Move focus to workspace n
         "${modifier}+1" = "workspace number 1";
@@ -206,100 +204,104 @@
       };
     };
 
-    extraConfig = let inherit (config.colorscheme) colors; in ''
-    set $mod Mod4
-      # Idle configuration        
-      exec swayidle -w \
-      timeout 7320 'swaylock -f -c 000000' \
-      timeout 8000 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-      before-sleep 'swaylock -f -c 000000'
+    extraConfig =
+      let
+        inherit (config.colorscheme) colors;
+      in
+      ''
+        set $mod Mod4
+          # Idle configuration        
+          exec swayidle -w \
+          timeout 7320 'swaylock -f -c 000000' \
+          timeout 8000 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+          before-sleep 'swaylock -f -c 000000'
 
-      # You can get the names of your inputs by running: swaymsg -t get_inputs
-      # Read `man 5 sway-input` for more information about this section.
-      # Launch the network manager widget!
-      exec nm-applet
+          # You can get the names of your inputs by running: swaymsg -t get_inputs
+          # Read `man 5 sway-input` for more information about this section.
+          # Launch the network manager widget!
+          exec nm-applet
 
-      #FIXME: update this to be above! moves windows.
-      # Swap positions of the current window with the one on $direction
-      bindsym $mod+Shift+Left  mark --add "_swap", focus left,  swap container with mark "_swap", focus left,  unmark "_swap"
-      bindsym $mod+Shift+Down  mark --add "_swap", focus down,  swap container with mark "_swap", focus down,  unmark "_swap"
-      bindsym $mod+Shift+Up    mark --add "_swap", focus up,    swap container with mark "_swap", focus up,    unmark "_swap"
-      bindsym $mod+Shift+Right mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"
+          #FIXME: update this to be above! moves windows.
+          # Swap positions of the current window with the one on $direction
+          bindsym $mod+Shift+Left  mark --add "_swap", focus left,  swap container with mark "_swap", focus left,  unmark "_swap"
+          bindsym $mod+Shift+Down  mark --add "_swap", focus down,  swap container with mark "_swap", focus down,  unmark "_swap"
+          bindsym $mod+Shift+Up    mark --add "_swap", focus up,    swap container with mark "_swap", focus up,    unmark "_swap"
+          bindsym $mod+Shift+Right mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"
 
-      # SET workspace to specific output
-      workspace 1 output DP-4
-      workspace 2 output DP-3
-      workspace 3 output DP-2
+          # SET workspace to specific output
+          workspace 1 output DP-4
+          workspace 2 output DP-3
+          workspace 3 output DP-2
 
-      # Launch the bluetooth applet
-      exec blueman-applet
+          # Launch the bluetooth applet
+          exec blueman-applet
 
-      # Delayed launch of the bluetooth applet
-      exec "sleep 5 && blueman-applet"
+          # Delayed launch of the bluetooth applet
+          exec "sleep 5 && blueman-applet"
 
-      # autotile!
-      exec autotiling
+          # autotile!
+          exec autotiling
 
-      #exec "mako --config ~/.makoe"
+          #exec "mako --config ~/.makoe"
 
-      # STYLIZE!
-      gaps inner 13
-      gaps top -2
-      corner_radius 8
+          # STYLIZE!
+          gaps inner 13
+          gaps top -2
+          corner_radius 8
 
-      #FIX waybar tooltips!
-      for_window [app_id="waybar" floating] {
-        move position cursor
-        move down 120px # adjust if some menus still don't fit
-      }
+          #FIX waybar tooltips!
+          for_window [app_id="waybar" floating] {
+            move position cursor
+            move down 120px # adjust if some menus still don't fit
+          }
 
-      # Enable csd borders # options are: none | normal | csd | pixel [<n>]
-      bindsym $mod+Shift+B exec swaymsg border toggle
-      
-      #for all windows, brute-force use of "pixel"
-      for_window [shell="xdg_shell"] border pixel 2
-      for_window [shell="xwayland"] border pixel 2
+          # Enable csd borders # options are: none | normal | csd | pixel [<n>]
+          bindsym $mod+Shift+B exec swaymsg border toggle
+          
+          #for all windows, brute-force use of "pixel"
+          for_window [shell="xdg_shell"] border pixel 2
+          for_window [shell="xwayland"] border pixel 2
 
-      # Window background blur
-      blur on #FIXME: TURN ON! Floating window loses its borders...
-      #blur_xray on
-      blur_passes 5
-      blur_radius 5
+          # Window background blur
+          blur on #FIXME: TURN ON! Floating window loses its borders...
+          #blur_xray on
+          blur_passes 5
+          blur_radius 5
 
-      for_window [tiling] shadows off
-      for_window [floating] shadows on
-      #shadows_on_csd disable
-      shadow_blur_radius 30
-      shadow_color #000000ff
+          for_window [tiling] shadows off
+          for_window [floating] shadows on
+          #shadows_on_csd disable
+          shadow_blur_radius 30
+          shadow_color #000000ff
 
-      # inactive window fade amount. 0.0 = no dimming, 1.0 = fully dimmed
-      #default_dim_inactive .3
-      #dim_inactive_colors.unfocused "#000000"
-      #dim_inactive_colors.urgent "#900000"
+          # inactive window fade amount. 0.0 = no dimming, 1.0 = fully dimmed
+          #default_dim_inactive .3
+          #dim_inactive_colors.unfocused "#000000"
+          #dim_inactive_colors.urgent "#900000"
 
-      # HIDE CURSOR AUTOMATICALLY
-      seat * hide_cursor 8000
+          # HIDE CURSOR AUTOMATICALLY
+          seat * hide_cursor 8000
 
-      # HIDE TITLEBAR!
-      # SET BORDER TO 2 PIXELS!
-      default_border pixel 2
-      default_floating_border pixel 2
-      client.unfocused "#808080" "#808080" "#808080" "#808080" "#808080"
-      client.focused ${colors.base0C} ${colors.base0C} ${colors.base0C} ${colors.base0C}
+          # HIDE TITLEBAR!
+          # SET BORDER TO 2 PIXELS!
+          default_border pixel 2
+          default_floating_border pixel 2
+          client.unfocused "#808080" "#808080" "#808080" "#808080" "#808080"
+          client.focused ${colors.base0C} ${colors.base0C} ${colors.base0C} ${colors.base0C}
 
-      exec {
-        gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
-        gsettings set org.gnome.desktop.interface icon-theme 'elementary'
-        gsettings set org.gnome.desktop.interface cursor-theme 'elementary'
-        gsettings set org.gnome.desktop.interface font-name 'Roboto Slab 10'
-      }
+          exec {
+            gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+            gsettings set org.gnome.desktop.interface icon-theme 'elementary'
+            gsettings set org.gnome.desktop.interface cursor-theme 'elementary'
+            gsettings set org.gnome.desktop.interface font-name 'Roboto Slab 10'
+          }
 
-      # Fix zoom
-      for_window [app_id="zoom"] floating enable
-      for_window [app_id="zoom" title="Choose ONE of the audio conference options"] floating enable
-      for_window [app_id="zoom" title="zoom"] floating enable
-      for_window [app_id="zoom" title="Zoom Meeting"] floating disable
-      for_window [app_id="zoom" title="Zoom - Free Account"] floating disable
+          # Fix zoom
+          for_window [app_id="zoom"] floating enable
+          for_window [app_id="zoom" title="Choose ONE of the audio conference options"] floating enable
+          for_window [app_id="zoom" title="zoom"] floating enable
+          for_window [app_id="zoom" title="Zoom Meeting"] floating disable
+          for_window [app_id="zoom" title="Zoom - Free Account"] floating disable
       '';
-    };
-  }
+  };
+}

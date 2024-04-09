@@ -6,8 +6,8 @@
     interactiveShellInit = ''
       set fish_greeting "you must be tired."
     '';
-    plugins = [ 
-       # oh-my-fish
+    plugins = [
+      # oh-my-fish
     ];
   };
 }

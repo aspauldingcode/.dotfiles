@@ -1,16 +1,12 @@
-
 { pkgs, ... }:
 
 # NIXSTATION-specific packages
 {
-  imports = [
-  ]; 
+  imports = [ ];
   nixpkgs = {
     config = {
       allowUnfree = true;
-      permittedInsecurePackages = [
-        "electron-19.1.9"
-      ];
+      permittedInsecurePackages = [ "electron-19.1.9" ];
       allowUnfreePredicate = (_: true);
       allowUnsupportedSystem = false;
       allowBroken = false;
@@ -19,45 +15,45 @@
 
   home = {
     packages = with pkgs; [
-    #darling REQUIRES  Security wrapper SETUID!!!
-    #darling-dmg
-    lsof
-    wget
-    etcher
-    standardnotes
-    gcal
-    fzf
-    libnotify
-    checkra1n
-    lutris # TF man, NOTHING is working with this??
-    bottles-unwrapped
-    ardour
-    bitwig-studio
-    lmms
-    renoise
-    zrythm
-    vital
-    # dexed
-    distrho
-    # wine
-    # wine64
-    # wine-wayland
-    #winePackages.waylandFull
-    wineWow64Packages.waylandFull
-    #winePackages.stableFull
-    #wine64Packages.stableFull
-    wineasio
-    winetricks
-    cava
-    lavat
-    pfetch
-    zoom-us
-    spotify-unwrapped
-    android-studio
-    corefonts
-    beeper
-    sl
-    obsidian
+      #darling REQUIRES  Security wrapper SETUID!!!
+      #darling-dmg
+      lsof
+      wget
+      etcher
+      standardnotes
+      gcal
+      fzf
+      libnotify
+      checkra1n
+      lutris # TF man, NOTHING is working with this??
+      bottles-unwrapped
+      ardour
+      bitwig-studio
+      lmms
+      renoise
+      zrythm
+      vital
+      # dexed
+      distrho
+      # wine
+      # wine64
+      # wine-wayland
+      #winePackages.waylandFull
+      wineWow64Packages.waylandFull
+      #winePackages.stableFull
+      #wine64Packages.stableFull
+      wineasio
+      winetricks
+      cava
+      lavat
+      pfetch
+      zoom-us
+      spotify-unwrapped
+      android-studio
+      corefonts
+      beeper
+      sl
+      obsidian
       # davinci-resolve 
       ocl-icd
       rofi-wayland-unwrapped
@@ -112,23 +108,24 @@
       brave
       transmission-gtk
       calcurse
-      delta 
+      delta
       gnupg
       audacity
-      pinentry 
+      pinentry
       git-crypt
       gitflow
       cowsay
       spotify-unwrapped
-      autotiling waydroid
-      pcmanfm 
-      w3m 
+      autotiling
+      waydroid
+      pcmanfm
+      w3m
       obs-studio
-      audacity 
-      docker 
+      audacity
+      docker
       home-manager
-      android-tools 
-      xz 
+      android-tools
+      xz
       element
       OVMF
       edk2
@@ -151,50 +148,57 @@
       arduino-language-server
       nodePackages_latest.vim-language-server
       #python311Packages.python-lsp-server
-      blueman 
-      jq 
-      flameshot 
-      fd 
+      blueman
+      jq
+      flameshot
+      fd
       ripgrep
-      idevicerestore 
-      usbmuxd 
-      libusbmuxd 
+      idevicerestore
+      usbmuxd
+      libusbmuxd
       libimobiledevice
-      avahi 
-      sshfs 
-      pciutils 
-      socat 
+      avahi
+      sshfs
+      pciutils
+      socat
       lolcat
-      pmbootstrap 
-      libusb1 
-      xarchiver 
-      gimp 
+      pmbootstrap
+      libusb1
+      xarchiver
+      gimp
       zip
       thefuck
       ffmpeg-full
       sway-contrib.grimshot
-      (python311.withPackages(ps: with ps; [
-        toml
-        python-lsp-server
-        pyls-isort
-        flake8
-        evdev
-        pynput
-        # pygame
-        matplotlib
-        libei
-        keyboard
-        sympy
-        numpy
-      ]))
+      (python311.withPackages (
+        ps: with ps; [
+          toml
+          python-lsp-server
+          pyls-isort
+          flake8
+          evdev
+          pynput
+          # pygame
+          matplotlib
+          libei
+          keyboard
+          sympy
+          numpy
+        ]
+      ))
       (prismlauncher.override {
-        jdks = [ jdk8 jdk17 jdk19 ]; 
+        jdks = [
+          jdk8
+          jdk17
+          jdk19
+          # Minecraft requires jdk21 SOON!
+        ];
       })
       #fix-wm
       (pkgs.writeShellScriptBin "fix-wm" ''
-      pkill waybar && sway reload
-      sleep 4       #FIX waybar cava init issue:
-      nohup ffplay ~/.dotfiles/users/alex/NIXSTATION64/waybar/silence.wav -t 4 -nodisp -autoexit > /dev/null 2>&1 &
+        pkill waybar && sway reload
+        sleep 4       #FIX waybar cava init issue:
+        nohup ffplay ~/.dotfiles/users/alex/NIXSTATION64/waybar/silence.wav -t 4 -nodisp -autoexit > /dev/null 2>&1 &
       '')
       #search
       (pkgs.writeShellScriptBin "search" ''
