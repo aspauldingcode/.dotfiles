@@ -1,4 +1,11 @@
-{ inputs, lib, config, pkgs, mobile-nixos, ... }:
+{
+  inputs,
+  lib,
+  config,
+  pkgs,
+  mobile-nixos,
+  ...
+}:
 {
   imports = [
     ./hardware-configuration.nix
@@ -13,8 +20,9 @@
   boot = {
     # choose your kernel
     #kernelPackages = pkgs.linuxPackages_latest;      # standard
-    kernelPackages = pkgs.linuxPackages-rt_latest;   # real-time
-    loader = { # TODO: Use whatever bootloader you prefer!
+    kernelPackages = pkgs.linuxPackages-rt_latest; # real-time
+    loader = {
+      # TODO: Use whatever bootloader you prefer!
       systemd-boot.enable = true; # switch to dinit for mac/linux/bsd?
       efi.canTouchEfiVariables = true;
     };
@@ -57,7 +65,7 @@
       plasma5Packages.kwallet
       plasma5Packages.kwallet-pam
       kwalletcli
-    ]; 
+    ];
 
     variables = rec {
       QT_QPA_PLATFORMTHEME = "qt5ct";
@@ -102,7 +110,7 @@
     cp /home/alex/.dotfiles/users/susu/face.png /var/lib/AccountsService/icons/susu
   '';
 
-# services
+  # services
   services = {
     # PRETTY LOGIN SCREEN! (FIXME needs to be configured with osx sddm theme)
     xserver = {
@@ -111,22 +119,23 @@
         sddm = {
           enable = true;
           wayland.enable = true;
-          theme = "${import ./sddm-themes.nix {inherit pkgs; }}";
+          theme = "${import ./sddm-themes.nix { inherit pkgs; }}";
           #theme = "WhiteSur"; # I Don't like this one as much...
         };
       };
       desktopManager = {
-      	plasma5 = { 
-        	enable = true;
-        	runUsingSystemd = false;
-      	};
-	mate = {
-		enable = true;
-		# runUsingSystemd = false;
-	};	
+        plasma5 = {
+          enable = true;
+          runUsingSystemd = false;
+        };
+        mate = {
+          enable = true;
+          # runUsingSystemd = false;
+        };
       };
     };
-    pipewire = { # fix for pipewire audio:
+    pipewire = {
+      # fix for pipewire audio:
       enable = true;
       alsa.enable = true;
       pulse.enable = true;
@@ -137,16 +146,17 @@
     udisks2.enable = true;
 
     # This setups a SSH server. Very important if you're setting up a headless system.
-    openssh = { #be sure to check allowed firewall ports
+    openssh = {
+      # be sure to check allowed firewall ports
       enable = true;
       settings = {
         #PermitRootLogin = "no"; # Forbid root login through SSH.
         PasswordAuthentication = false; # Use keys only. Remove if you want to SSH using password (not recommended)
-        X11Forwarding = true; 
+        X11Forwarding = true;
         KbdInteractiveAuthentication = false;
         #AllowUsers = [ "alex" ];
-        };
       };
+    };
 
     # Network Discovery
     avahi = {
@@ -168,27 +178,57 @@
       browsing = true;
       defaultShared = true;
     };
-
   };
 
   security = {
     sudo = {
       wheelNeedsPassword = false;
-      extraRules = [{
-        users = [ "privileged_user" ];
-        commands = [{
-          command = "ALL";
-          options = [ "NOPASSWD" ]; # "SETENV" #
-        }];
-      }];
+      extraRules = [
+        {
+          users = [ "privileged_user" ];
+          commands = [
+            {
+              command = "ALL";
+              options = [ "NOPASSWD" ]; # "SETENV" #
+            }
+          ];
+        }
+      ];
     };
     polkit.enable = true;
+    pam.loginLimits = [
+      {
+        domain = "*";
+        type = "-";
+        item = "memlock";
+        value = "infinity";
+      }
+      {
+        domain = "*";
+        type = "-";
+        item = "nofile";
+        value = "65536";
+      }
+    ];
   };
 
   # allow AirPrinter through firewall
   networking.firewall = {
-    allowedTCPPorts = [ 631 7000 7001 7100 22 ];
-    allowedUDPPorts = [ 631 5353 6000 6001 7011 22 ];
+    allowedTCPPorts = [
+      631
+      7000
+      7001
+      7100
+      22
+    ];
+    allowedUDPPorts = [
+      631
+      5353
+      6000
+      6001
+      7011
+      22
+    ];
   };
 
   # programs
@@ -210,10 +250,16 @@
     alex = {
       isNormalUser = true;
       description = "Alex Spaulding";
-      extraGroups =
-        [ "networkmanager" "wheel" "docker" "kvm" "libvirtd" "adbusers" ];
-        openssh.authorizedKeys.keys = [
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINKfaO41wp3p/dkpuqIP6tj78SCrn2RSQUG2OSiHAv7j aspauldingcode@gmail.com"
+      extraGroups = [
+        "networkmanager"
+        "wheel"
+        "docker"
+        "kvm"
+        "libvirtd"
+        "adbusers"
+      ];
+      openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINKfaO41wp3p/dkpuqIP6tj78SCrn2RSQUG2OSiHAv7j aspauldingcode@gmail.com"
         # TODO: Add your SSH public key(s) here, if you plan on using SSH to connect
       ];
       shell = pkgs.zsh;
@@ -234,12 +280,18 @@
     powerline-symbols
     jetbrains-mono
     font-awesome_5
-    (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" "Hack" ]; })
+    (nerdfonts.override {
+      fonts = [
+        "NerdFontsSymbolsOnly"
+        "Hack"
+      ];
+    })
     dejavu_fonts
   ];
 
   nixpkgs = {
-    overlays = [ # You can add overlays here
+    overlays = [
+      # You can add overlays here
       # If you want to use overlays exported from other flakes:
       # neovim-nightly-overlay.overlays.default
 
@@ -269,28 +321,31 @@
     registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
     # This will additionally add your inputs to the system's legacy channels
     # Making legacy nix commands consistent as well, awesome!
-    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}")
-    config.nix.registry;
-    settings = { # Nix Settings
-    auto-optimise-store = true; # Auto Optimize nix store.
-    experimental-features =
-      [ "nix-command" "flakes" ]; # Enable experimental features.
+    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
+    settings = {
+      # Nix Settings
+      auto-optimise-store = true; # Auto Optimize nix store.
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ]; # Enable experimental features.
     };
     #trusted-users = [ "root" "alex" "susu"]; #fix trusted user issue
   };
 
-  virtualisation = { # enable virtualization support
-  docker.enable = true;
-  libvirtd.enable = true;
-  waydroid.enable = true;
-  lxd.enable = true;
-};
-
-system = {
-  autoUpgrade = {
-    enable = true;
-    allowReboot = false;
+  virtualisation = {
+    # enable virtualization support
+    docker.enable = true;
+    libvirtd.enable = true;
+    waydroid.enable = true;
+    lxd.enable = true;
   };
+
+  system = {
+    autoUpgrade = {
+      enable = true;
+      allowReboot = false;
+    };
     # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
     stateVersion = "23.05"; # Did you read the comment?
   };

@@ -1,4 +1,9 @@
-{ nix-colors, config, pkgs, ... }:
+{
+  nix-colors,
+  config,
+  pkgs,
+  ...
+}:
 
 # Configure GTK, QT themes, color schemes.. USE NIXOS MODULE
 #let 
@@ -7,12 +12,12 @@
 #in
 
 let
-  inherit (nix-colors.lib-contrib {inherit pkgs;}) gtkThemeFromScheme; 
+  inherit (nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
 in
 {
 
   #colorScheme = nix-colors.colorSchemes.${theme};
-  
+
   #home.pointerCursor = {
   #    name = "Bibata-Modern-Ice";
   #    package = pkgs.bibata-cursors;
@@ -27,18 +32,18 @@ in
     #theme = {
     #  name = "${config.colorScheme.slug}";
     #  package = gtkThemeFromScheme {scheme = config.colorScheme;};
-      #name = "WhiteSur-GTK-Theme";
-      #package = pkgs.whitesur-gtk-theme;
-      #name = "adw-gtk3";
-      #package = pkgs.adw-gtk3;
+    #name = "WhiteSur-GTK-Theme";
+    #package = pkgs.whitesur-gtk-theme;
+    #name = "adw-gtk3";
+    #package = pkgs.adw-gtk3;
     #};
     #iconTheme = {
-      #name = "WhiteSur-GTK-Icons";
-      #package = pkgs.whitesur-icon-theme;
-      #name = "Gruvbox-Dark-gtk";
-      #package = pkgs.gruvbox-dark-gtk;
-      #name = "breeze";
-      #package = ;
+    #name = "WhiteSur-GTK-Icons";
+    #package = pkgs.whitesur-icon-theme;
+    #name = "Gruvbox-Dark-gtk";
+    #package = pkgs.gruvbox-dark-gtk;
+    #name = "breeze";
+    #package = ;
     #};
   };
   qt = {
@@ -47,7 +52,7 @@ in
     # name of gtk theme
     style = {
       name = "${config.colorScheme.slug}";
-      package = gtkThemeFromScheme {scheme = config.colorScheme;};
+      package = gtkThemeFromScheme { scheme = config.colorScheme; };
       #name = "whitesur-kde-unstable";
       #package = pkgs.whitesur-kde;
       #name = "breeze-dark"; # WORKS
@@ -56,4 +61,3 @@ in
     };
   };
 }
-

@@ -1,11 +1,16 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 
 {
-	programs = {
-		git = {
-			enable = true;
-			userName  = "aspauldingcode";
-			userEmail = "aspauldingcode@gmail.com";
-		};
-	};
+  programs = {
+    git = {
+      enable = true;
+      userName = "aspauldingcode";
+      userEmail = "aspauldingcode@gmail.com";
+    };
+  };
 }

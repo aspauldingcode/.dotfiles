@@ -3,7 +3,7 @@
 {
   home.packages = with pkgs; [
     #ueberzug
-    ueberzugpp #required for yazi Window System Protocol to preview images.
+    ueberzugpp # required for yazi Window System Protocol to preview images.
   ];
 
   programs.alacritty = {
@@ -12,9 +12,9 @@
       window = {
         padding.x = 0;
         padding.y = 10;
-        opacity   = 0.9;
+        opacity = 0.9;
         class.instance = "Alacritty";
-        class.general  = "Alacritty";
+        class.general = "Alacritty";
         decorations = "None";
       };
 
@@ -39,34 +39,35 @@
         size = 9.0;
       };
 
-        # Becomes either 'dark' or 'light', based on your colors! (in qutebrowser)
-        #webppage.preferred_color_scheme = "${config.colorScheme.kind}";
+      # Becomes either 'dark' or 'light', based on your colors! (in qutebrowser)
+      #webppage.preferred_color_scheme = "${config.colorScheme.kind}";
 
-        colors = {
-          primary = {
-            foreground = "#${config.colorScheme.colors.base05}";
-            background = "#${config.colorScheme.colors.base00}";
-          };
+      colors = {
+        primary = {
+          foreground = "#${config.colorScheme.colors.base05}";
+          background = "#${config.colorScheme.colors.base00}";
+        };
         #cursor = {
         #text    ="0xEBEBEB";
         #cursor  ="0xEBEBEB";
         #};
-        normal = {#TRYING TO GRUVBOX IT
-        black   ="#${config.colorScheme.colors.base00}";
-        red     ="#${config.colorScheme.colors.base08}";
-        green   ="#${config.colorScheme.colors.base0B}";
-        yellow  ="#${config.colorScheme.colors.base0A}";
-        blue    ="#${config.colorScheme.colors.base0D}";
+        normal = {
+          # TRYING TO GRUVBOX IT
+          black = "#${config.colorScheme.colors.base00}";
+          red = "#${config.colorScheme.colors.base08}";
+          green = "#${config.colorScheme.colors.base0B}";
+          yellow = "#${config.colorScheme.colors.base0A}";
+          blue = "#${config.colorScheme.colors.base0D}";
           # purple  ="#${config.colorScheme.colors.base0E}";
           # aqua    ="#${config.colorScheme.colors.base0C}";
           # gray    ="#${config.colorScheme.colors.base05}";
         };
         bright = {
-          black   ="#${config.colorScheme.colors.base03}";
-          red     ="#${config.colorScheme.colors.base08}";
-          green   ="#${config.colorScheme.colors.base0B}";
-          yellow  ="#${config.colorScheme.colors.base0A}";
-          blue    ="#${config.colorScheme.colors.base0D}";
+          black = "#${config.colorScheme.colors.base03}";
+          red = "#${config.colorScheme.colors.base08}";
+          green = "#${config.colorScheme.colors.base0B}";
+          yellow = "#${config.colorScheme.colors.base0A}";
+          blue = "#${config.colorScheme.colors.base0D}";
           # purple  ="#${config.colorScheme.colors.base0E}";
           # aqua    ="#${config.colorScheme.colors.base0C}";
           # gray    ="#${config.colorScheme.colors.base07}";
@@ -76,7 +77,7 @@
 
       cursor = {
         style = {
-          shape = "Block"; 
+          shape = "Block";
           blinking = "On";
         };
 
@@ -85,7 +86,7 @@
       live_config_reload = true;
 
       selection = {
-        save_to_clipboard = true; #copy on selection
+        save_to_clipboard = true; # copy on selection
       };
 
       keyboard.bindings = [
@@ -109,12 +110,12 @@
           mods = "Control";
           action = "Paste";
         }
-    {
-      key = "PageUp";
+        {
+          key = "PageUp";
           mode = "~Alt";
           action = "ScrollPageUp";
         }
-        { 
+        {
           key = "PageDown";
           mode = "~Alt";
           action = "ScrollPageDown";
@@ -123,4 +124,3 @@
     };
   };
 }
-

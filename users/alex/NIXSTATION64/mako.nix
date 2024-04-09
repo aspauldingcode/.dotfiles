@@ -9,9 +9,9 @@
     anchor = "top-right";
     borderSize = 2;
     borderColor = "#${config.colorScheme.colors.base0C}";
-    borderRadius = 10;
+    borderRadius = 8;
     defaultTimeout = 5000;
     ignoreTimeout = false;
-    backgroundColor = "#${config.colorScheme.colors.base00}";
+    backgroundColor = "#${config.colorScheme.colors.base00}E6";
   };
 }

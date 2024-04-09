@@ -29,25 +29,25 @@
       set $wm_setting_app_browser          open -na "Brave Browser"
       set $wm_setting_app_launcher         dmenu_run
       # set $wm_setting_app_compositor       picom
-      
+
       set $wm_color_border_active_bg       #81A1C1
       set $wm_color_border_active_fg       #3B4252
       set $wm_color_border_inactive_bg     #3B4252
       set $wm_color_border_inactive_fg     #D8DEE9
       set $wm_color_background             #2E3440
-      
+
       set $bar_setting_position            top
       set $bar_setting_mode                dock # dock|hide|invisible|toggle
       #set $bar_setting_font                pango:Source JetBrains Mono, Regular 12
       set $bar_setting_separator           " - "
       set $bar_setting_statusCommand       i3status
       set $bar_setting_trayoutput          full
-      
+
       set $bar_color_background            #3B4252
       set $bar_color_foreground            #D8DEE9
       set $bar_color_statusline            #D8DEE9
       set $bar_color_separator             #D8DEE9
-      
+
       set $bar_color_workspace_focused_bg  #A3BE8C
       set $bar_color_workspace_focused_fg  #2E3440
       set $bar_color_workspace_active_bg   #EBCB8B
@@ -60,16 +60,16 @@
       # ### Applications ###
       # # Start a terminal emulator
       bindsym $mod+Return exec $wm_setting_app_terminal
-      
+
       # # Start a web browser
       bindsym $mod+Mod3+Space exec $wm_setting_app_browser
-      
+
       # # Start a program launcher
       bindsym $mod+d exec $wm_setting_app_launcher
-      
+
       # # Run a window compositor (for effects like transparency or full VSync)
       # exec_always --no-startup-id $wm_setting_app_compositor
-      
+
       # ### Workspaces ### 
       # NOTE: Might need to use yabai for this! Using macOS by the way.
       set $ws1  "    1    "
@@ -82,7 +82,7 @@
       set $ws8  "    8    "
       set $ws9  "    9    "
       set $ws10 "    10    "
-      
+
       # # Switch to workspace n
       bindsym $mod+1 workspace $ws1
       bindsym $mod+2 workspace $ws2
@@ -94,7 +94,7 @@
       bindsym $mod+8 workspace $ws8
       bindsym $mod+9 workspace $ws9
       bindsym $mod+0 workspace $ws10
-      
+
       # # Move focused container to workspace n            
       bindsym $mod+$smod+1 move container to workspace $ws1, workspace number $ws1, exec "yabai -m window --space 1; yabai -m space --focus 1"
       bindsym $mod+$smod+2 move container to workspace $ws2, workspace number $ws2, exec "yabai -m window --space 2; yabai -m space --focus 2"
@@ -113,13 +113,13 @@
       bindsym $mod+$wm_setting_key_down        focus down
       bindsym $mod+$wm_setting_key_up          focus up
       bindsym $mod+$wm_setting_key_right       focus right
-      
+
       # # Move focused window
       #bindsym $mod+$smod+$wm_setting_key_left  move left
       #bindsym $mod+$smod+$wm_setting_key_down  move down
       #bindsym $mod+$smod+$wm_setting_key_up    move up
       #bindsym $mod+$smod+$wm_setting_key_right move right
-      
+
       #FIXME: update this to be above! moves windows.
       # Swap positions of the current window with the one on $direction
       bindsym $mod+Shift+Left  mark --add "_swap", focus left,  swap container with mark "_swap", focus left,  unmark "_swap"
@@ -146,25 +146,25 @@
       #         bindsym $smod+$wm_setting_key_down  gaps horizontal plus 5
       #         bindsym $smod+$wm_setting_key_up    gaps vertical minus 5
       #         bindsym $smod+$wm_setting_key_right gaps vertical plus 5
-      
+
       # #	Back to normal: Enter or Escape or $mod+r
       #         bindsym Return mode "default"
       #         bindsym Escape mode "default"
       #         bindsym $mod+r mode "default"
       # }
-      
+
       # bindsym $mod+r mode "resize"
-      
+
       # ### Gaps (Requires i3 version 4.22 and above!) ###
       # gaps horizontal $wm_setting_gap_width
       # gaps vertical   $wm_setting_gap_heigth
       # smart_gaps on
-      
+
       # ### Borders ###
       # default_border pixel $wm_setting_border_size
       # default_floating_border pixel $wm_setting_border_size
       # smart_borders on
-      
+
       # ### Colors ###
       # # class                 border                       background                   text                         indicator                    child_border
       # client.focused          $wm_color_border_active_bg   $wm_color_border_active_bg   $wm_color_border_active_fg   $wm_color_border_active_bg   $wm_color_border_active_bg
@@ -173,7 +173,7 @@
       # client.urgent           $wm_color_border_inactive_bg $wm_color_border_inactive_bg $wm_color_border_inactive_fg $wm_color_border_inactive_bg $wm_color_border_inactive_bg
       # client.placeholder      $wm_color_border_inactive_bg $wm_color_border_inactive_bg $wm_color_border_inactive_fg $wm_color_border_inactive_bg $wm_color_border_inactive_bg
       # client.background       $wm_color_background
-      
+
       # ### i3bar ###
       # bar {
       #         position         $bar_setting_position
@@ -194,26 +194,26 @@
       #                 urgent_workspace   $bar_color_workspace_urgent_bg   $bar_color_workspace_urgent_bg   $bar_color_workspace_urgent_fg
       #         }
       # }
-      
+
       # ### Miscellaneous settings ###
       # # Set the font used for titlebars (which are hidden here)
       font $wm_setting_font
-      
+
       # # Use Mouse+$mod to drag floating windows to their wanted position (Mod2, like yabai!)
       floating_modifier Mod1
-      
+
       # # Enter fullscreen mode for the focused window
       bindsym $mod+$smod+f fullscreen toggle
-      
+
       # # Toggle between tiling and floating
       bindsym $mod+$smod+space floating toggle
-      
+
       # # Kill the focused window
       bindsym $mod+$smod+q kill
-      
+
       # # Restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
       bindsym $mod+$smod+r restart
-      
+
       # # Exit i3 (logs you out of your X session)
       # bindsym $mod+$smod+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 

@@ -5,5 +5,5 @@
 
     home.file.
     or 
-    xdo.configFile.something. -= 
+    xdo.configFile.something. = 
 }
