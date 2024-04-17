@@ -27,7 +27,7 @@
       # using macOS by the way!!!
       set $wm_setting_app_terminal         xterm
       set $wm_setting_app_browser          open -na "Brave Browser"
-      set $wm_setting_app_launcher         dmenu_run
+      # set $wm_setting_app_launcher         /opt/local/bin/dmenu_run
       # set $wm_setting_app_compositor       picom
 
       set $wm_color_border_active_bg       #81A1C1
@@ -65,7 +65,7 @@
       bindsym $mod+Mod3+Space exec $wm_setting_app_browser
 
       # # Start a program launcher
-      bindsym $mod+d exec $wm_setting_app_launcher
+      bindsym $mod+d exec /opt/local/bin/dmenu_run
 
       # # Run a window compositor (for effects like transparency or full VSync)
       # exec_always --no-startup-id $wm_setting_app_compositor
@@ -218,7 +218,9 @@
       # bindsym $mod+$smod+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
       #autotile using autotiling: (requires it to be compiled for aarch64-darwin!)
-      exec autotiling
+      #exec autotiling
+      exec "/opt/local/bin/python3.11 ~/.dotfiles/i3ipc-python-master/autotiling.py"
+      bindsym $mod+g exec "/opt/local/bin/python3.11 ~/.dotfiles/i3ipc-python-master/autotiling.py"
 
       # auto split v/h
       #for_window [class=.*] layout toggle split

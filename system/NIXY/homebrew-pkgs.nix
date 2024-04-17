@@ -64,6 +64,7 @@
       "discord"
       "asset-catalog-tinkerer"
       "themeengine"
+      "google-assistant"
     ];
     whalebrews = [
       #"wget" #FAILS

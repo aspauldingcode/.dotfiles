@@ -25,9 +25,20 @@ o.wrap = false
 -- o.textwidth = 80
 -- o.formatoptions = "t"
 
+
+-- LSP
 -- Map <Leader>f to run LSP format
 vim.api.nvim_set_keymap('n', '<Leader>f', '<cmd>lua vim.lsp.buf.format()<CR>',
     { noremap = true, silent = true })
+
+-- Define the function to toggle lsp_lines
+local function toggle_lsp_lines()
+    require("lsp_lines").toggle()
+end
+
+-- Set the keymap
+vim.api.nvim_set_keymap('', '<Leader>l', ':lua require("lsp_lines").toggle()<CR>',
+    { noremap = true, silent = true, desc = 'Toggle lsp_lines' })
 
 -- Set listchars
 vim.o.listchars = 'nbsp:␣,eol:↲,tab:»\\ ,extends:›,precedes:‹,trail:•'
@@ -60,24 +71,24 @@ vim.cmd('filetype plugin indent on')
 
 -- Keybinds
 local function map(mode, combo, mapping, opts)
-    local options = {noremap = true}
+    local options = { noremap = true }
     if opts then
         options = vim.tbl_extend('force', options, opts)
     end
     vim.api.nvim_set_keymap(mode, combo, mapping, options)
 end
-map('n', '<C-Tab>', ':NvimTreeToggle <CR>', {noremap = true})
-map('n', '<C-d>', ':Telescope find_files <CR>', {noremap = true})
-map('n', '<C-f>', ':Telescope live_grep <CR>', {noremap = true})
-map('i', '<C-l>', '<Esc>:left <CR>', {noremap = true})   -- align text left
-map('i', '<C-e>', '<Esc>:center <CR>', {noremap = true}) -- center text
-map('i', '<C-r>', '<Esc>:right <CR>', {noremap = true})  -- align text right
-map('n', '<C-l>', ':left <CR>', {noremap = true})        -- align text left
-map('n', '<C-e>', ':center <CR>', {noremap = true})      -- center text
-map('n', '<C-r>', ':right <CR>', {noremap = true})       -- align text right
-map('n', '<C-S-Z>', ':redo <CR>', {noremap = true})
-map('n', '<C-y>', ':redo <CR>', {noremap = true})
-map('n', '<C-z>', ':undo <CR>', {noremap = true})
+map('n', '<C-Tab>', ':NvimTreeToggle <CR>', { noremap = true })
+map('n', '<C-d>', ':Telescope find_files <CR>', { noremap = true })
+map('n', '<C-f>', ':Telescope live_grep <CR>', { noremap = true })
+map('i', '<C-l>', '<Esc>:left <CR>', { noremap = true }) -- align text left
+map('i', '<C-e>', '<Esc>:center <CR>', { noremap = true }) -- center text
+map('i', '<C-r>', '<Esc>:right <CR>', { noremap = true }) -- align text right
+map('n', '<C-l>', ':left <CR>', { noremap = true })      -- align text left
+map('n', '<C-e>', ':center <CR>', { noremap = true })    -- center text
+map('n', '<C-r>', ':right <CR>', { noremap = true })     -- align text right
+map('n', '<C-S-Z>', ':redo <CR>', { noremap = true })
+map('n', '<C-y>', ':redo <CR>', { noremap = true })
+map('n', '<C-z>', ':undo <CR>', { noremap = true })
 
 -- Enable line wrapping at whitespace
 vim.api.nvim_win_set_option(0, 'wrap', true)
@@ -87,20 +98,20 @@ vim.api.nvim_win_set_option(0, 'showbreak', ' ')
 
 -- Toggle line wrapping
 function ToggleWrap()
-  local wrap_state = vim.wo.wrap
-  local linebreak_state = vim.wo.linebreak
+    local wrap_state = vim.wo.wrap
+    local linebreak_state = vim.wo.linebreak
 
-  if wrap_state then
-    vim.wo.wrap = false
-    vim.wo.linebreak = false
-    vim.wo.breakindent = false
-    print("Wrap disabled")
-  else
-    vim.wo.wrap = true
-    vim.wo.linebreak = true
-    vim.wo.breakindent = true
-    print("Wrap enabled")
-  end
+    if wrap_state then
+        vim.wo.wrap = false
+        vim.wo.linebreak = false
+        vim.wo.breakindent = false
+        print("Wrap disabled")
+    else
+        vim.wo.wrap = true
+        vim.wo.linebreak = true
+        vim.wo.breakindent = true
+        print("Wrap enabled")
+    end
 end
 
 -- Set a key mapping for toggling line wrapping

@@ -536,6 +536,9 @@
           sections.lualine_c = [ "lsp_progress" ]; # Install lsp_progress!
         };
         noice.lsp.progress.enabled = true;
+        
+        # nvim window tabs!
+        bufferline.enable = true;
 
         ## VISUAL FIXES
         # startup screen #FIXME: USE TOILET BANNER TO SAY HELLO!

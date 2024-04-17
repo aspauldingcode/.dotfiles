@@ -250,14 +250,166 @@
            if [ "$hidden_status" == "off" ]; then
                STATE="on"
                sketchybar --bar hidden=on
+               yabai -m config external_bar all:0:0
            else
                STATE="off"
                sketchybar --bar hidden=off
+               yabai -m config external_bar all:45:0
            fi
        }
 
        # Example usage
        toggle_sketchybar
+    '')
+
+    #toggle-gaps
+    (pkgs.writeShellScriptBin "toggle-gaps" ''
+                  # Initialize a variable to store the current state
+      state_file="/tmp/gaps_state"
+
+      # Initialize the state file if it doesn't exist
+      if [ ! -f "$state_file" ]; then
+          echo "off" > "$state_file"
+      fi
+
+      # Read the current state from the state file
+      gaps_state=$(cat "$state_file")
+
+      toggle() {
+          if [ "$gaps_state" == "off" ]; then
+              on
+              echo "on" > "$state_file"
+          else
+              off
+              echo "off" > "$state_file"
+          fi
+      }
+
+      on() {
+          yabai -m config top_padding     15
+          yabai -m config bottom_padding  15
+          yabai -m config left_padding    15
+          yabai -m config right_padding   15
+          yabai -m config window_gap      15
+      }
+
+      off() {
+          yabai -m config top_padding     0
+          yabai -m config bottom_padding  0
+          yabai -m config left_padding    0
+          yabai -m config right_padding   0
+          yabai -m config window_gap      0
+      }
+
+      if [ "$#" -eq 0 ]; then
+          toggle
+      elif [ "$1" == "on" ]; then
+          on
+          echo "on" > "$state_file"
+      elif [ "$1" == "off" ]; then
+          off
+          echo "off" > "$state_file"
+      else
+          echo "Invalid argument. Usage: $0 [on|off]"
+      fi
+
+    '')
+
+    # spaces-focus
+    (pkgs.writeShellScriptBin "spaces-focus" ''
+      # Define variables
+      # How many displays are there?
+      max_displays=$(yabai -m query --displays | jq 'max_by(.index) | .index')
+      # How many spaces are there?
+      max_spaces=$(yabai -m query --spaces | jq 'max_by(.index) | .index')
+      # Current active space!
+      current_space=$(yabai -m query --spaces --space | jq -r '.index')
+      # Current active display!
+      current_display=$(yabai -m query --displays --display | jq -r '.index')
+      # Accept desired space number as input argument
+      if [ $# -ne 1 ]; then
+      echo "Usage: $0 <desired_space_number>"
+      exit 1
+      fi
+      n=$1
+      # Focus on a space
+      # If space n is not created, create it
+      if [ $n -gt $max_spaces ]; then
+        iterations=$((n - max_spaces))
+        for ((i=0; i<iterations; i++)); do
+          yabai -m space --create
+          #reassign max_spaces:
+          max_spaces=$(yabai -m query --spaces | jq 'max_by(.index) | .index')
+        done
+      fi
+      # then, focus on space n
+      yabai -m space --focus $n
+    '')
+
+    # move-to-soace
+    (pkgs.writeShellScriptBin "move-to-space" ''
+      # Define variables
+      # How many displays are there?
+      max_displays=$(yabai -m query --displays | jq 'max_by(.index) | .index')
+      # How many spaces are there?
+      max_spaces=$(yabai -m query --spaces | jq 'max_by(.index) | .index')
+      # Current active space!
+      current_space=$(yabai -m query --spaces --space | jq -r '.index')
+      # Current active display!
+      current_display=$(yabai -m query --displays --display | jq -r '.index')
+      # Accept desired space number as input argument
+      if [ $# -ne 1 ]; then
+      echo "Usage: $0 <desired_space_number>"
+      exit 1
+      fi
+      n=$1
+      # Focus on a space
+      # If space n is not created, create it
+      if [ $n -gt $max_spaces ]; then
+        iterations=$((n - max_spaces))
+        for ((i=0; i<iterations; i++)); do
+          yabai -m space --create
+          #reassign max_spaces:
+          max_spaces=$(yabai -m query --spaces | jq 'max_by(.index) | .index')
+        done
+      fi
+      # then, move window to space n
+      yabai -m window --space $n
+      # then, focus on space n
+      yabai -m space --focus $n
+    '')
+
+    #toggle-menubar
+    (pkgs.writeShellScriptBin "toggle-menubar" ''
+            # Function to toggle the macOS menu bar
+      toggle_menubar() {
+          current_opacity=$(osascript -e 'tell application "System Events" to tell dock preferences to get autohide menu bar')
+          if [[ "$current_opacity" == "true" ]]; then
+              osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to false'
+              yabai -m config menubar_opacity 1.0
+              echo "Menu bar turned ON"
+          else
+              osascript -e 'delay 0.5' -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to true'
+              yabai -m config menubar_opacity 0.0
+              echo "Menu bar turned OFF"
+          fi
+      }
+
+            # Main
+      if [[ "$#" -eq 0 ]]; then
+          toggle_menubar
+      elif [[ "$#" -eq 1 && ($1 == "on" || $1 == "off") ]]; then
+          if [[ "$1" == "on" ]]; then
+              osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to false'
+              echo "Menu bar turned ON"
+          else
+              osascript -e 'delay 0.5' -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to true'
+              echo "Menu bar turned OFF"
+          fi
+      else
+          echo "Usage: $0 <on | off>"
+          exit 1
+      fi
     '')
 
     #toggle-float
