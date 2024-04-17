@@ -54,7 +54,7 @@
       beeper
       sl
       obsidian
-      # davinci-resolve 
+      davinci-resolve 
       ocl-icd
       rofi-wayland-unwrapped
       vscode
