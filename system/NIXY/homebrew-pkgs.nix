@@ -65,6 +65,7 @@
       "asset-catalog-tinkerer"
       "themeengine"
       "google-assistant"
+      "gimp"
     ];
     whalebrews = [
       #"wget" #FAILS

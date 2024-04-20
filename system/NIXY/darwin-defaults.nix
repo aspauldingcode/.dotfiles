@@ -41,7 +41,7 @@
         "com.apple.sound.beep.volume" = 0.0; # mute beep/alert volume
         "com.apple.sound.beep.feedback" = 1; # enable volume changed feedback.
       };
-      SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true; # always up to date
+      SoftwareUpdate.AutomaticallyInstallMacOSUpdates = false; # always up to date
       spaces = {
         spans-displays = false; # Required false for yabai!
       };
@@ -85,6 +85,9 @@
         #  "com.apple.Safari" = {
         #    "com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled" = true;
         #  };
+        "/Library/Preferences/com.apple.security.libraryvalidation" = {
+          DisableLibraryValidation = true; # required for macEnhance!
+        };
       };
       CustomUserPreferences = {
         # per user
