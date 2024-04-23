@@ -70,6 +70,7 @@ case "$SENDER" in
     #echo "Mouse left hover of $NAME icon" >> /tmp/sketchybar_debug.log
     ;;
   "mouse.clicked")
+      open https://calendar.google.com/calendar/
     #sketchybar --set $NAME popup.drawing=toggle
     #echo "Mouse clicked on $NAME icon" >> /tmp/sketchybar_debug.log
     ;;

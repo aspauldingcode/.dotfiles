@@ -1,7 +1,20 @@
-{ pkgs, ... }:
+{ pkgs, config, lib, ... }:
 # NIXY-specific packages
 
 {
+  # Copy Home-Manager Nix GUI apps to ~/Applications on darwin:
+  home.activation = {
+    rsync-home-manager-applications = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      rsyncArgs="--archive --checksum --chmod=-w --copy-unsafe-links --delete"
+      apps_source="$genProfilePath/home-path/Applications"
+      moniker="Home Manager Trampolines"
+      app_target_base="${config.home.homeDirectory}/Applications"
+      app_target="$app_target_base/$moniker"
+      mkdir -p "$app_target"
+      ${pkgs.rsync}/bin/rsync $rsyncArgs "$apps_source/" "$app_target"
+    '';
+  };
+
   nixpkgs = {
     config = {
       allowUnfree = true;
@@ -19,6 +32,7 @@
     cowsay
     newsboat
     nmap
+    darwin.cctools-port # is it needed tho?
     tshark
     termshark
     # wireshark
@@ -291,6 +305,7 @@
           yabai -m config left_padding    15
           yabai -m config right_padding   15
           yabai -m config window_gap      15
+          borders style=round
       }
 
       off() {
@@ -298,7 +313,8 @@
           yabai -m config bottom_padding  0
           yabai -m config left_padding    0
           yabai -m config right_padding   0
-          yabai -m config window_gap      0
+          yabai -m config window_gap      5
+          borders style=square
       }
 
       if [ "$#" -eq 0 ]; then
