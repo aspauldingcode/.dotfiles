@@ -2,14 +2,20 @@
 
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
+source "$HOME/.config/sketchybar/plugins/print_spaces.sh"
+source "$HOME/.config/sketchybar/plugins/spaces_focus.sh"
+source "$HOME/.config/sketchybar/plugins/spaces_clear.sh"
+source "$HOME/.config/sketchybar/plugins/move_to_space.sh"
+source "$HOME/.config/sketchybar/plugins/dismiss_notifications.sh"
+source "$HOME/.config/sketchybar/plugins/toggle_menubar.sh"
+source "$HOME/.config/sketchybar/plugins/toggle_sketchybar.sh"
+source "$HOME/.config/sketchybar/plugins/toggle_darkmode.sh"
+source "$HOME/.config/sketchybar/plugins/toggle_gaps.sh"
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 ITEM_DIR="$HOME/.config/sketchybar/items"
 SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
 POPUP_TOGGLE_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
-
-# ACTIVE_SPACE=$(yabai -m query --spaces --space | jq '.index')
-SPACE_ICONS=("1" "2" "3" "4" "5" "6" "7" "8" "9" "10")
 
 bar=(
   height=40
@@ -173,171 +179,27 @@ space_bg=(
 
 ## Adding sketchybar Items:
 
-
-
-
-
-
 # Left Items
 sketchybar --add item apple left \
   --set apple "${apple[@]}" \
   --subscribe apple mouse.clicked mouse.entered mouse.exited mouse.exited.global
 
-
-
-
-
-# Stupid spaces!
-# REMOVE ALL SPACES to start clean.
-# DISPLAY_INFO=$(yabai -m query --displays)
-# num_displays=$(echo "$DISPLAY_INFO" | jq length)
-# while true; do
-#   # Get the current number of spaces
-#   max_space_index=$(yabai -m query --spaces | jq 'max_by(.index) | .index')
-#   echo "Max Space Index: $max_space_index"
-#   # Initial check for empty spaces
-#   for ((sid=1; sid<=max_space_index; sid++)); do
-#     windows_count=$(yabai -m query --spaces --space $sid | jq '.windows | length')
-#     echo "Space $sid has $windows_count windows"
-#     if [ "$windows_count" -eq 0 ]; then
-#       echo "Removing Space $sid"
-#       if yabai -m space $sid --destroy 2>&1 | grep -q "acting space is the last user-space on the source display and cannot be destroyed"; then
-#         echo "Encountered the specific error. Exiting the loop."
-#         exit
-#       fi
-#     fi
-#   done
-#   # Repeatedly check for and remove empty spaces
-#   removed=false
-#   # Iterate through spaces dynamically
-#   for ((sid=1; sid<=max_space_index; sid++)); do
-#     # Check if the space still exists
-#     if yabai -m query --spaces --space $sid >/dev/null 2>&1; then
-#       windows_count=$(yabai -m query --spaces --space $sid | jq '.windows | length')
-#       echo "Space $sid has $windows_count windows"
-#       if [ "$windows_count" -eq 0 ]; then
-#         echo "Removing Space $sid"
-#         if yabai -m space $sid --destroy 2>&1 | grep -q "acting space is the last user-space on the source display and cannot be destroyed"; then
-#           echo "Encountered the specific error. Exiting the loop."
-#           exit
-#         fi
-#         removed=true
-#         break  # Exit the loop to recheck indices
-#       fi
-#     fi
-#   done
-#   # Break out of the loop if no empty spaces were removed
-#   if [ "$removed" = false ]; then
-#     break
-#   fi
-# done
-
-#Define variables!
-#How many displays are there?
-max_displays=$(yabai -m query --displays | jq 'max_by(.index) | .index')
-
-#How many spaces are there?
-max_spaces=$(yabai -m query --spaces | jq 'max_by(.index) | .index' )
-
-#Current active space!
-current_space=$(yabai -m query --spaces --space | jq -r '.index')
-
-#Current active display!
-current_display=$(yabai -m query --displays --display | jq -r '.index')
-
-#how to destroy spaces on all displays?
-# for loop through max_displays
-# for i in max_displays:
-#destroy empty spaces on source display
-#for loop:
-# $(yabai -m space 1 --destroy)
-#until you hit this error:
-#"acting space is the last user-space on the source display and cannot be destroyed."
-#Then
-#destory empty spaces on the next display
-#for loop
-# $(yabai -m space max_displays[i] --destroy) # kinda like this?
-
-
-#focus on a space
-#yabai -m spsace --focus n 
-# if space n is not created, create it 
-# the error will be:
-# could not locate space with mission-control index 'n'.
-# n needs to be the variable of the space number.
-# better way is "for max_spaces, does n exceed it?"
-# if n > max_spaces, 
-#     run the folling (n - max_spaces) times to reach output of space n available
-#     iterations=(n - max_spaces)
-#     for iterations, 
-#         yabai -m space --create
-# fi
-# yabai -m space --focus n
-
-
-
-
-#Define variables!
-#How many displays are there?
-max_displays=$(yabai -m query --displays | jq 'max_by(.index) | .index')
-
-#How many spaces are there?
-max_spaces=$(yabai -m query --spaces | jq 'max_by(.index) | .index' )
-
-#Current active space!
-current_space=$(yabai -m query --spaces --space | jq -r '.index')
-
-#Current active display!
-current_display=$(yabai -m query --displays --display | jq -r '.index')
-
-# Focus on a space
-# If space n is not created, create it
-# n=5 # Change n to the desired space number
-# if [ $n -gt $max_spaces ]; then
-#     iterations=$((n - max_spaces))
-#     for ((i=0; i<iterations; i++)); do
-#         yabai -m space --create
-#         #reassign max_spaces:
-#         max_spaces=$(yabai -m query --spaces | jq 'max_by(.index) | .index')
-#     done
-# fi
-# # then, focus on space n
-# yabai -m space --focus $n
-
-
-
-
-
-
-# Add only open spaces to Sketchybar
-for ((i=1; i<=max_spaces; i++)); do
-  sid=$(($i))
-  sketchybar --add space space.$sid left \
-    --set space.$sid space=$sid \
-    ignore_association=on \
-    icon=${SPACE_ICONS[i-1]} \
-    background.color=0x44ffffff \
-    icon.highlight_color=0x00000000 \
-    background.corner_radius=5 \
-    icon.padding_left=5 \
-    icon.padding_right=5 \
-    background.height=20 \
-    background.drawing=off \
-    label.drawing=off \
-    script="$PLUGIN_DIR/space.sh" \
-    click_script="yabai -m space --focus $sid" \
-    icon.font="JetBrains Mono:Regular:13.0"
+# Store the output of the print-spaces command in a variable
+active_spaces=($PRINT_SPACES)
+#Loop through each space in the output
+for i in "${!active_spaces[@]}"; do
+    sid="${active_spaces[i]}"
+    space=(
+        icon="${active_spaces[i]}"
+        icon.padding_left=5
+        icon.padding_right=5
+        ignore_association=on
+        label.drawing=off
+        script="$PLUGIN_DIR/space.sh"
+        click_script="$SPACES_FOCUS $sid"
+    )
+  sketchybar --add space space."$sid" left --set space."$sid" "${space[@]}"
 done
-
-
-
-
-
-
-
-
-
-
 
 sketchybar --add item separator_left left \
   --set separator_left "${separator_left[@]}" \
@@ -355,17 +217,6 @@ sketchybar --add item separator_left left \
 sketchybar --add item active_app left \
    --set active_app "${active_app[@]}" \
    --subscribe front_app front_app_switched
-
-
-
-
-
-
-
-
-
-
-
 
 # Center Items
 sketchybar --add item volume center \
@@ -416,7 +267,7 @@ brackets=(
   background.border_width=2
 )
 
-sketchybar --add bracket lbracket apple separator_left front_app left \
+sketchybar --add bracket lbracket apple space separator_left front_app left \
   --set lbracket "${brackets[@]}"
 sketchybar --add bracket cbracket volume datetime cava spotify center \
   --set cbracket "${brackets[@]}"

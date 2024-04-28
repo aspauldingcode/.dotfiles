@@ -34,6 +34,7 @@
       lutris # TF man, NOTHING is working with this??
       bottles-unwrapped
       ardour
+      darwin.cctools-port # is it needed tho? 
       bitwig-studio
       lmms
       renoise

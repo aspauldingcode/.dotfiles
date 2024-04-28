@@ -20,11 +20,11 @@
       "borders"
       "yazi"
       "cava"
-      "fftw" 
-      "ncurses" 
-      "libtool" 
-      "automake" 
-      "autoconf-archive" 
+      "fftw"
+      "ncurses"
+      "libtool"
+      "automake"
+      "autoconf-archive"
       "pkgconf"
       "portaudio"
       "iniparser"
@@ -32,6 +32,7 @@
       "cliclick"
       "iproute2mac"
       "gtk-mac-integration" # build gtk mac apps?
+      "whalebrew"
       # "meson"
       # "libev" #god dammit not working to compile i3 with gaps support
       #"okular" # FAILS
@@ -39,16 +40,16 @@
       #"ki18n" # FAILS
     ];
     #masApps = [ # FAILS
-      #497799835 # Xcode 
+    #497799835 # Xcode 
     #];
     casks = [
-      "xquartz" #what an ugly app
+      "xquartz" # what an ugly app
       "alacritty"
       "hammerspoon"
       "phoenix"
       "dmenu-mac"
       "kitty"
-      "macforge"
+      # "macforge"
       "element"
       "brave-browser"
       "alt-tab"
@@ -65,10 +66,12 @@
       "asset-catalog-tinkerer"
       "themeengine"
       "google-assistant"
+      "gimp"
+      "docker"
     ];
     whalebrews = [
       #"wget" #FAILS
-      #"whalesay" #FAILS
+      # "whalesay" # FAILS
     ];
     taps = [
       #"user/repo"  # Additional Homebrew tap
