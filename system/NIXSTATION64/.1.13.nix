@@ -22,26 +22,15 @@
     win-spice
     gnome.adwaita-icon-theme
   ];
-  # enable nested virtualization
-  boot.extraModprobeConfig = "options kvm_intel nested=1";
 
   # Manage the virtualisation services
   virtualisation = {
     libvirtd = {
       enable = true;
       qemu = {
-        package = pkgs.qemu_kvm;
-        runAsRoot = true;
         swtpm.enable = true;
-        ovmf = {
-          enable = true;
-          packages = [
-            (pkgs.OVMFFull.override {
-              secureBoot = true;
-              tpmSupport = true;
-            }).fd
-          ];
-        };
+        ovmf.enable = true;
+        ovmf.packages = [ pkgs.OVMFFull.fd ];
       };
     };
     kvmgt.enable = true;

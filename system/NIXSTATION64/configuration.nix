@@ -75,9 +75,46 @@
   # Enable networking
   networking = {
     hostName = "NIXSTATION64";
-    networkmanager.enable = true;
+    domain = "local";
+    networkmanager = {
+      enable = true;
+      # connectionConfig = "connection.mdns=2";
+    };
+    #   useDHCP = false;
+    #   useNetworkd = true;
+    #   useHostResolvConf = false;
+    #   firewall = {
+    #     enable = false; # temp disable firewall?
+    #     allowedTCPPorts = [
+    #       631
+    #       7000
+    #       7001
+    #       7100
+    #       22
+    #       25565
+    #     ];
+    #     allowedUDPPorts = [
+    #       631
+    #       5353
+    #       6000
+    #       6001
+    #       7011
+    #       22
+    #       25565
+    #     ];
+    #   };
+    # };
+    # systemd.network = {
+    #   networks = {
+    #     "wlp56s0" = {
+    #       name = "wlp56s0";
+    #       DHCP = "ipv4";
+    #       networkConfig = {
+    #         MulticastDNS = true;
+    #       };
+    #     };
+    #   };
   };
-
   # time settings
   time.timeZone = "America/Denver";
 
@@ -129,7 +166,7 @@
           runUsingSystemd = false;
         };
         mate = {
-          enable = true;
+          enable = false;
           # runUsingSystemd = false;
         };
       };
@@ -157,17 +194,29 @@
         #AllowUsers = [ "alex" ];
       };
     };
+    resolved = {
+      enable = false;
+      fallbackDns = [
+        "8.8.8.8"
+        "2001:4860:4860::8844"
+      ];
+      llmnr = "true";
+    };
 
     # Network Discovery
     avahi = {
       enable = true;
       nssmdns4 = true; # Printing
       openFirewall = true;
+      ipv4 = true;
+      ipv6 = true;
+      reflector = true;
       publish = {
         enable = true;
         addresses = true;
         workstation = true;
         userServices = true;
+        hinfo = true;
         domain = true;
       };
     };
@@ -209,25 +258,6 @@
         item = "nofile";
         value = "65536";
       }
-    ];
-  };
-
-  # allow AirPrinter through firewall
-  networking.firewall = {
-    allowedTCPPorts = [
-      631
-      7000
-      7001
-      7100
-      22
-    ];
-    allowedUDPPorts = [
-      631
-      5353
-      6000
-      6001
-      7011
-      22
     ];
   };
 

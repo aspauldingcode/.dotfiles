@@ -166,15 +166,15 @@
         "${modifier}+Ctrl+Up" = "workspace prev";
         "${modifier}+Ctrl+Right" = "workspace next";
 
-        # Move window to next/prev workspace and follow focus
-        "Ctrl+Shift+${left}" = "move container to workspace prev, workspace prev";
-        "Ctrl+Shift+${down}" = "move container to workspace next, workspace next";
-        "Ctrl+Shift+${up}" = "move container to workspace prev, workspace prev";
-        "Ctrl+Shift+${right}" = "move container to workspace next, workspace next";
-        "Ctrl+Shift+Left" = "move container to workspace prev, workspace prev";
-        "Ctrl+Shift+Down" = "move container to workspace next, workspace next";
-        "Ctrl+Shift+Up" = "move container to workspace prev, workspace prev";
-        "Ctrl+Shift+Right" = "move container to workspace next, workspace next";
+        #FIXME: (CHOOSE BETTER BINDS) Move window to next/prev workspace and follow focus
+        # "Ctrl+Shift+${left}" = "move container to workspace prev, workspace prev";
+        # "Ctrl+Shift+${down}" = "move container to workspace next, workspace next";
+        # "Ctrl+Shift+${up}" = "move container to workspace prev, workspace prev";
+        # "Ctrl+Shift+${right}" = "move container to workspace next, workspace next";
+        # "Ctrl+Shift+Left" = "move container to workspace prev, workspace prev";
+        # "Ctrl+Shift+Down" = "move container to workspace next, workspace next";
+        # "Ctrl+Shift+Up" = "move container to workspace prev, workspace prev";
+        # "Ctrl+Shift+Right" = "move container to workspace next, workspace next";
 
         # Move focus to workspace n
         "${modifier}+1" = "workspace number 1";

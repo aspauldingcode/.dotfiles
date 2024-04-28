@@ -19,9 +19,15 @@
       #darling-dmg
       lsof
       wget
+      ncdu
       etcher
       standardnotes
       gcal
+      nwg-dock
+      nwg-drawer
+      nwg-displays
+      nwg-launchers
+      nwg-bar
       fzf
       libnotify
       checkra1n
@@ -54,7 +60,6 @@
       beeper
       sl
       obsidian
-      davinci-resolve 
       ocl-icd
       rofi-wayland-unwrapped
       vscode
@@ -106,6 +111,7 @@
       element-desktop
       blender
       brave
+      firefox-esr
       transmission-gtk
       calcurse
       delta

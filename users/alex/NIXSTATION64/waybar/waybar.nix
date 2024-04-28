@@ -119,7 +119,7 @@ in
         "custom/datetime" = {
           interval = 60;
           return-type = "json";
-          format = " {}";
+          format = " {}";
           exec = jsonOutput "menu" {
             text = "$DATETIME"; # date "+%a, %b %d  %I:%M %p
             pre = ''
