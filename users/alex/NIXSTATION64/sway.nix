@@ -120,9 +120,9 @@
         "${modifier}+Shift+Ctrl+minus" = "move scratchpad"; # Change to control alt down
         "${modifier}+Shift+Ctrl+equal" = "scratchpad show"; # change to control alt up
 
-        "${modifier}+r" = "mode resize"; # ??? orrresize mode
+        "${modifier}+r" = "exec python3.11 ~/.dotfiles/i3-tools-master/rotate_layout.py 0 -m -f"; # ??? orrresize mode
 
-        "${modifier}+Shift+Space" = "floating toggle";
+        "${modifier}+Shift+Space" = "floating toggle ; [floating] resize set 80ppt 80ppt ; move position center";
         "${modifier}+Space" = "focus mode_toggle";
         "${modifier}+u" = "focus parent";
 
@@ -130,6 +130,19 @@
         "${modifier}+s" = "layout tabbed"; # macos is stacked layout
         "${modifier}+e" = "layout default";
 
+        "${modifier}+b" = "split horizontal";
+        "${modifier}+v" = "split vertical";
+
+        # Move floating windows
+        # "${modifier}+Alt+Ctrl+${left}" = "move left 20px";
+        # "${modifier}+Alt+Ctrl+${down}" = "move down 20px";
+        # "${modifier}+Alt+Ctrl+${up}" = "move up 20px";
+        # "${modifier}+Alt+Ctrl+${right}" = "move right 20px";
+        # "${modifier}+Alt+Ctrl+Left" = "move left 20px";
+        # "${modifier}+Alt+Ctrl+Down" = "move down 20px";
+        # "${modifier}+Alt+Ctrl+Up" = "move up 20px";
+        # "${modifier}+Alt+Ctrl+Right" = "move right 20px";
+        #
         #"${modifier}+o" = "inhibit_idle open; border normal; mark --add inhibiting_idle";
         #"${modifier}+Shift+o" = "inhibit_idle none; border pixel; unmark inhibiting_idle";
 
@@ -146,15 +159,26 @@
         "${modifier}+Up" = "focus up";
         "${modifier}+Right" = "focus right";
 
-        #FIXME: make this swap window in place! Currently it rotates.
-        #"${modifier}+Shift+${left}" =   "mark --add \"_swap\", focus left,  swap container with mark \"_swap\", unmark \"_swap\"";
-        #"${modifier}+Shift+${down}" =   "mark --add \"_swap\", focus down,  swap container with mark \"_swap\", unmark \"_swap\"";
-        #"${modifier}+Shift+${up}" =     "mark --add \"_swap\", focus up,    swap container with mark \"_swap\", unmark \"_swap\"";
-        #"${modifier}+Shift+${right}" =  "mark --add \"_swap\", focus right, swap container with mark \"_swap\", unmark \"_swap\"";        "${modifier}+Shift+Left" =      "swap left";
-        #"${modifier}+Shift+Left" =      "mark --add \"_swap\", focus left,  swap container with mark \"_swap\", unmark \"_swap\"";
-        #"${modifier}+Shift+Down" =      "mark --add \"_swap\", focus down,  swap container with mark \"_swap\", unmark \"_swap\"";
-        #"${modifier}+Shift+Up" =        "mark --add \"_swap\", focus up,    swap container with mark \"_swap\", unmark \"_swap\"";
-        #"${modifier}+Shift+Right" =     "mark --add \"_swap\", focus right, swap container with mark \"_swap\", unmark \"_swap\"";
+        #FIXME: Try NOT to swap a floating window? 
+        # Move windows (swap if tiled, move 20px if floating
+        "${modifier}+Shift+${left}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus left, swap container with mark "_swap", focus left, unmark "_swap"; [floating con_id="__focused__"] move left 20px'';
+        "${modifier}+Shift+${down}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus down, swap container with mark "_swap", focus down, unmark "_swap"; [floating con_id="__focused__"] move down 20px'';
+        "${modifier}+Shift+${up}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus up, swap container with mark "_swap", focus up, unmark "_swap"; [floating con_id="__focused__"] move up 20px'';
+        "${modifier}+Shift+${right}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"; [floating con_id="__focused__"] move right 20px'';
+        "${modifier}+Shift+Left" = ''mark --add "_swap", focus left, swap container with mark "_swap", focus left, unmark "_swap"; [floating con_id="__focused__"] move left 20px'';
+        "${modifier}+Shift+Down" = ''mark --add "_swap", focus down, swap container with mark "_swap", focus down, unmark "_swap"; [floating con_id="__focused__"] move down 20px'';
+        "${modifier}+Shift+Up" = ''mark --add "_swap", focus up, swap container with mark "_swap", focus up, unmark "_swap"; [floating con_id="__focused__"] move up 20px'';
+        "${modifier}+Shift+Right" = ''mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"; [floating con_id="__focused__"] move right 20px'';
+
+        # Swap positions of the current window with the one on $direction
+        # "${modifier}+Shift+${left}" = ''mark --add "_swap", focus left,  swap container with mark "_swap", focus left,  unmark "_swap"'';
+        # "${modifier}+Shift+${down}" = ''mark --add "_swap", focus down,  swap container with mark "_swap", focus down,  unmark "_swap"'';
+        # "${modifier}+Shift+${up}" = ''mark --add "_swap", focus up,    swap container with mark "_swap", focus up,    unmark "_swap"'';
+        # "${modifier}+Shift+${right}" = ''mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"'';
+        # "${modifier}+Shift+Left" = ''mark --add "_swap", focus left,  swap container with mark "_swap", focus left,  unmark "_swap"'';
+        # "${modifier}+Shift+Down" = ''mark --add "_swap", focus down,  swap container with mark "_swap", focus down,  unmark "_swap"'';
+        # "${modifier}+Shift+Up" = ''mark --add "_swap", focus up,    swap container with mark "_swap", focus up,    unmark "_swap"'';
+        # "${modifier}+Shift+Right" = ''mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"'';
 
         # Navigate to next/prev workspace
         "${modifier}+Ctrl+${left}" = "workspace prev";
@@ -220,13 +244,6 @@
           # Read `man 5 sway-input` for more information about this section.
           # Launch the network manager widget!
           exec nm-applet
-
-          #FIXME: update this to be above! moves windows.
-          # Swap positions of the current window with the one on $direction
-          bindsym $mod+Shift+Left  mark --add "_swap", focus left,  swap container with mark "_swap", focus left,  unmark "_swap"
-          bindsym $mod+Shift+Down  mark --add "_swap", focus down,  swap container with mark "_swap", focus down,  unmark "_swap"
-          bindsym $mod+Shift+Up    mark --add "_swap", focus up,    swap container with mark "_swap", focus up,    unmark "_swap"
-          bindsym $mod+Shift+Right mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"
 
           # SET workspace to specific output
           workspace 1 output DP-4

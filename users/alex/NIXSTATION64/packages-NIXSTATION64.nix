@@ -34,7 +34,7 @@
       lutris # TF man, NOTHING is working with this??
       bottles-unwrapped
       ardour
-      darwin.cctools-port # is it needed tho? 
+      # darwin.cctools-port # is it needed tho? MARKED BROKEN NIXOS
       bitwig-studio
       lmms
       renoise
@@ -191,6 +191,7 @@
           keyboard
           sympy
           numpy
+          i3ipc
         ]
       ))
       (prismlauncher.override {
