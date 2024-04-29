@@ -312,50 +312,49 @@
             ${modifier} - right :     if [ "$(yabai -m query --spaces --space | jq -r '.type')" = "stack" ]; then yabai -m window --focus stack.prev; else yabai -m window --focus east; fi
             
            # swap managed window (or move if floating) 
-           ${modifier} + shift - ${left} :   yabai -m window --swap west ||  yabai -m window --move rel:-20:0
-           ${modifier} + shift - ${down} :   yabai -m window --swap south || yabai -m window --move rel:0:20
-           ${modifier} + shift - ${up} :     yabai -m window --swap north || yabai -m window --move rel:0:-20
-           ${modifier} + shift - ${right} :  yabai -m window --swap east ||  yabai -m window --move rel:20:0
-           ${modifier} + shift - left :      yabai -m window --swap west ||  yabai -m window --move rel:-20:0
-           ${modifier} + shift - down :      yabai -m window --swap south || yabai -m window --move rel:0:20
-           ${modifier} + shift - up :        yabai -m window --swap north || yabai -m window --move rel:0:-20
-           ${modifier} + shift - right :     yabai -m window --swap east ||  yabai -m window --move rel:20:0
+           ${modifier} + shift - ${left} :   yabai -m window --swap west ||  yabai -m window --move rel:-30:0
+           ${modifier} + shift - ${down} :   yabai -m window --swap south || yabai -m window --move rel:0:30
+           ${modifier} + shift - ${up} :     yabai -m window --swap north || yabai -m window --move rel:0:-30
+           ${modifier} + shift - ${right} :  yabai -m window --swap east ||  yabai -m window --move rel:30:0
+           ${modifier} + shift - left :      yabai -m window --swap west ||  yabai -m window --move rel:-30:0
+           ${modifier} + shift - down :      yabai -m window --swap south || yabai -m window --move rel:0:30
+           ${modifier} + shift - up :        yabai -m window --swap north || yabai -m window --move rel:0:-30
+           ${modifier} + shift - right :     yabai -m window --swap east ||  yabai -m window --move rel:30:0
 
            # increase window size
-           ${modifier} + ctrl - ${left} :  yabai -m window --resize left:-20:0
-           ${modifier} + ctrl - ${down} :  yabai -m window --resize bottom:0:20
-           ${modifier} + ctrl - ${up} :    yabai -m window --resize top:0:-20
-           ${modifier} + ctrl - ${right} : yabai -m window --resize right:20:0
-           ${modifier} + ctrl - left :     yabai -m window --resize left:-20:0
-           ${modifier} + ctrl - down :     yabai -m window --resize bottom:0:20
-           ${modifier} + ctrl - up :       yabai -m window --resize top:0:-20
-           ${modifier} + ctrl - right :    yabai -m window --resize right:20:0
+           ${modifier} + ctrl - ${left} :  yabai -m window --resize left:-30:0
+           ${modifier} + ctrl - ${down} :  yabai -m window --resize bottom:0:30
+           ${modifier} + ctrl - ${up} :    yabai -m window --resize top:0:-30
+           ${modifier} + ctrl - ${right} : yabai -m window --resize right:30:0
+           ${modifier} + ctrl - left :     yabai -m window --resize left:-30:0
+           ${modifier} + ctrl - down :     yabai -m window --resize bottom:0:30
+           ${modifier} + ctrl - up :       yabai -m window --resize top:0:-30
+           ${modifier} + ctrl - right :    yabai -m window --resize right:30:0
 
            # decrease window size
-           ${modifier} + shift + ctrl - ${left} :  yabai -m window --resize left:20:0
-           ${modifier} + shift + ctrl - ${down} :  yabai -m window --resize bottom:0:-20
-           ${modifier} + shift + ctrl - ${up} :    yabai -m window --resize top:0:20
-           ${modifier} + shift + ctrl - ${right} : yabai -m window --resize right:-20:0
-           ${modifier} + shift + ctrl - left :     yabai -m window --resize left:20:0
-           ${modifier} + shift + ctrl - down :     yabai -m window --resize bottom:0:-20
-           ${modifier} + shift + ctrl - up :       yabai -m window --resize top:0:20
-           ${modifier} + shift + ctrl - right :    yabai -m window --resize right:-20:0
+           ${modifier} + shift + ctrl - ${left} :  yabai -m window --resize left:30:0
+           ${modifier} + shift + ctrl - ${down} :  yabai -m window --resize bottom:0:-30
+           ${modifier} + shift + ctrl - ${up} :    yabai -m window --resize top:0:30
+           ${modifier} + shift + ctrl - ${right} : yabai -m window --resize right:-30:0
+           ${modifier} + shift + ctrl - left :     yabai -m window --resize left:30:0
+           ${modifier} + shift + ctrl - down :     yabai -m window --resize bottom:0:-30
+           ${modifier} + shift + ctrl - up :       yabai -m window --resize top:0:30
+           ${modifier} + shift + ctrl - right :    yabai -m window --resize right:-30:0
 
             # set insertion point in focused container
             ${modifier} - b : yabai -m window --insert east
             ${modifier} - v : yabai -m window --insert south
 
             # rotate tree
-            ${modifier} - r : yabai -m space --rotate 90
-            ${modifier} - t : yabai -m space --rotate 270
+            ${modifier} - r : yabai -m space --rotate 270
+            ${modifier} - t : yabai -m space --rotate 90
 
             # toggle layout
             ${modifier} - s : yabai -m space --layout stack
             ${modifier} - e : yabai -m space --layout bsp
 
             # float / unfloat window and center on screen
-            ${modifier} + shift - space : yabai -m window --toggle float; \
-                      yabai -m window --grid 4:4:1:1:2:2
+            ${modifier} + shift - space : yabai -m window --toggle float; yabai -m window --grid 60:60:5:5:50:50
 
             # # toggle sticky(+float), topmost, picture-in-picture
             # ${modifier} - p : yabai -m window --toggle sticky; \
