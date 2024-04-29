@@ -1,0 +1,77 @@
+
+#!/bin/bash
+
+state_file="/tmp/gaps_state"
+
+# Read the current state from the state file, if it exists
+if [ -f "$state_file" ]; then
+    gaps_state=$(cat "$state_file")
+else
+    # If the state file doesn't exist, initialize it with "off"
+    echo "off" > "$state_file"
+    gaps_state=$(cat "$state_file")
+fi
+
+toggle_gaps() {
+    if [ "$1" == "on" ]; then
+        yabai -m config top_padding     15
+        yabai -m config bottom_padding  15
+        yabai -m config left_padding    15
+        yabai -m config right_padding   15
+        yabai -m config window_gap      15
+    elif [ "$1" == "off" ]; then
+        yabai -m config top_padding     0
+        yabai -m config bottom_padding  0
+        yabai -m config left_padding    0
+        yabai -m config right_padding   0
+        yabai -m config window_gap      0
+    fi
+}
+
+# Function to check if the focused window is in Zoom fullscreen mode and toggle it
+toggle_zoom_fullscreen() {
+  # Get information about the currently focused window
+  window_info=$(yabai -m query --windows --window | jq -r '.["has-fullscreen-zoom"]')
+
+  # Toggle Zoom fullscreen mode
+  yabai -m window --toggle zoom-fullscreen
+
+  # Output the state of Zoom fullscreen mode
+  if [ "$window_info" == "false" ]; then
+      echo "Zoom fullscreen mode enabled"
+  else
+      echo "Zoom fullscreen mode disabled"
+  fi
+}
+
+# Function to disable gaps, sketchybar, menubar, and enable Zoom fullscreen
+enable_fullscreen() {
+  toggle_gaps off
+  toggle-sketchybar off
+  toggle-menubar off
+  toggle_zoom_fullscreen
+}
+
+# Function to enable gaps, sketchybar, menubar, and disable Zoom fullscreen
+disable_fullscreen() {
+  toggle_gaps $gaps_state
+  toggle-sketchybar on
+  toggle-menubar on
+  toggle_zoom_fullscreen
+}
+
+# Main function to toggle fullscreen
+toggle_fullscreen() {
+  # Check if Zoom fullscreen mode is enabled
+  window_info=$(yabai -m query --windows --window | jq -r '.["has-fullscreen-zoom"]')
+  if [ "$window_info" == "false" ]; then
+      # Zoom fullscreen mode is disabled, enable fullscreen
+      enable_fullscreen
+  else
+      # Zoom fullscreen mode is enabled, disable fullscreen
+      disable_fullscreen
+  fi
+}
+
+# Call the toggle_fullscreen function
+toggle_fullscreen

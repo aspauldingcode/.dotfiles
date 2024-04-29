@@ -264,21 +264,51 @@
     #toggle-sketchybar
     (pkgs.writeShellScriptBin "toggle-sketchybar" ''
       toggle_sketchybar() {
-           local hidden_status=$(sketchybar --query bar | jq -r '.hidden')
+          local hidden_status=$(sketchybar --query bar | jq -r '.hidden')
+          local sketchybar_state_file="/tmp/sketchybar_state"
 
-           if [ "$hidden_status" == "off" ]; then
-               STATE="on"
-               sketchybar --bar hidden=on
-               yabai -m config external_bar all:0:0
-           else
-               STATE="off"
-               sketchybar --bar hidden=off
-               yabai -m config external_bar all:45:0
-           fi
-       }
+          # Check if the sketchybar state file exists
+          if [ ! -f "$sketchybar_state_file" ]; then
+              # If the state file doesn't exist, initialize it with the current state
+              echo "$hidden_status" > "$sketchybar_state_file"
+          fi
 
-       # Example usage
-       toggle_sketchybar
+          if [ "$1" == "on" ]; then
+              if [ "$hidden_status" == "off" ]; then
+                  echo "Sketchybar is already toggled on"
+              else
+                  sketchybar --bar hidden=off
+                  yabai -m config external_bar all:45:0
+                  echo "Sketchybar toggled on"
+                  echo "on" > "$sketchybar_state_file"  # Write state to file
+              fi
+          elif [ "$1" == "off" ]; then
+              if [ "$hidden_status" == "on" ]; then
+                  echo "Sketchybar is already toggled off"
+              else
+                  sketchybar --bar hidden=on
+                  yabai -m config external_bar all:0:0
+                  echo "Sketchybar toggled off"
+                  echo "off" > "$sketchybar_state_file"  # Write state to file
+              fi
+          else
+              # No arguments provided, toggle based on current state
+              if [ "$hidden_status" == "off" ]; then
+                  sketchybar --bar hidden=on
+                  yabai -m config external_bar all:0:0
+                  echo "Sketchybar toggled off"
+                  echo "off" > "$sketchybar_state_file"  # Write state to file
+              else
+                  sketchybar --bar hidden=off
+                  yabai -m config external_bar all:45:0
+                  echo "Sketchybar toggled on"
+                  echo "on" > "$sketchybar_state_file"  # Write state to file
+              fi
+          fi
+      }
+
+      # Example usage
+      toggle_sketchybar "$1"
     '')
 
     #toggle-gaps
@@ -456,6 +486,58 @@
       yabai -m space --focus $n
     '')
 
+    # toggle-dock
+    (pkgs.writeShellScriptBin "toggle-dock" ''
+      dock_state_file="/tmp/dock_state"
+
+      toggle_dock() {
+          local dock_status=$(osascript -e 'tell application "System Events" to get autohide of dock preferences')
+
+          if [ $# -eq 0 ]; then
+              # No arguments provided, toggle based on current state
+              if [ "$dock_status" = "true" ]; then
+                  osascript -e 'tell application "System Events" to set autohide of dock preferences to false'
+                  echo "Dock toggled on"
+                  echo "on" > "$dock_state_file"  # Save state to file
+              else
+                  osascript -e 'tell application "System Events" to set autohide of dock preferences to true'
+                  echo "Dock toggled off"
+                  echo "off" > "$dock_state_file"  # Save state to file
+              fi
+          elif [ "$1" = "on" ]; then
+              if [ "$dock_status" = "true" ]; then
+                  osascript -e 'tell application "System Events" to set autohide of dock preferences to false'
+                  echo "Dock toggled on"
+                  echo "on" > "$dock_state_file"  # Save state to file
+              else
+                  echo "Dock is already toggled on"
+              fi
+          elif [ "$1" = "off" ]; then
+              if [ "$dock_status" = "false" ]; then
+                  osascript -e 'tell application "System Events" to set autohide of dock preferences to true'
+                  echo "Dock toggled off"
+                  echo "off" > "$dock_state_file"  # Save state to file
+              else
+                  echo "Dock is already toggled off"
+              fi
+          else
+              # Invalid argument, toggle based on current state
+              if [ "$dock_status" = "true" ]; then
+                  osascript -e 'tell application "System Events" to set autohide of dock preferences to false'
+                  echo "Dock toggled on"
+                  echo "on" > "$dock_state_file"  # Save state to file
+              else
+                  osascript -e 'tell application "System Events" to set autohide of dock preferences to true'
+                  echo "Dock toggled off"
+                  echo "off" > "$dock_state_file"  # Save state to file
+              fi
+          fi
+      }
+
+      # Example usage
+      toggle_dock "$1"
+    '')
+
     #toggle-menubar
     (pkgs.writeShellScriptBin "toggle-menubar" ''
             # Function to toggle the macOS menu bar
@@ -531,6 +613,124 @@
     # toggle-darkmode
     (pkgs.writeShellScriptBin "toggle-darkmode" ''
       osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to not dark mode'
+    '')
+
+    # statefile-reader
+    (pkgs.writeShellScriptBin "statefile-reader" ''
+      gaps_state_file="/tmp/gaps_state"
+      sketchybar_state_file="/tmp/sketchybar_state"
+      dock_state_file="/tmp/dock_state"
+      menubar_state_file="/tmp/menubar_state"
+      darkmode_state_file="/tmp/darkmode_state"
+
+      # Function to read state from file
+      read_state() {
+          if [ -f "$1" ]; then
+              cat "$1"
+          else
+              echo "off"
+          fi
+      }
+
+      # Read the current state from the state files, if they exist
+      gaps_state=$(read_state "$gaps_state_file")
+      sketchybar_state=$(read_state "$sketchybar_state_file")
+      dock_state=$(read_state "$dock_state_file")
+      menubar_state=$(read_state "$menubar_state_file")
+      darkmode_state=$(read_state "$darkmode_state_file")
+
+      # Function to check dark mode status and update darkmode state file
+      check_darkmode_status() {
+          darkmode_status=$(osascript -e 'tell application "System Events" to tell appearance preferences to get dark mode')
+          if [ "$darkmode_status" = "true" ]; then
+              darkmode_state="on"
+          else
+              darkmode_state="off"
+          fi
+          echo "$darkmode_state" > "$darkmode_state_file"
+      }
+
+      # Call the function to check dark mode status
+      check_darkmode_status
+
+      # Update the sketchybar state
+      sketchybar_hidden_status=$(sketchybar --query bar | jq -r '.hidden')
+      if [ "$sketchybar_hidden_status" = "on" ]; then
+          sketchybar_state="off"
+      elif [ "$sketchybar_hidden_status" = "off" ]; then 
+          sketchybar_state="on"
+      fi
+
+      # Update the dock state
+      dock_status=$(osascript -e 'tell application "System Events" to get autohide of dock preferences')
+      if [ "$dock_status" = "true" ]; then
+          dock_state="off"
+      elif [ "$dock_status" = "false" ]; then
+          dock_state="on"
+      fi
+
+      echo "Gaps is: $gaps_state"
+      echo "Sketchybar is: $sketchybar_state"
+      echo "Dock is: $dock_state"
+      echo "Menubar is: $menubar_state"
+      echo "Dark Mode is: $darkmode_state"
+    '')
+
+    # toggle-instant-fullscreen
+    (pkgs.writeShellScriptBin "toggle-instant-fullscreen" ''
+      # Function to disable gaps, sketchybar, menubar, and enable Zoom fullscreen
+      enable_fullscreen() {
+        toggle-gaps off
+        toggle-sketchybar off
+        toggle-menubar off
+        toggle-dock off
+        yabai -m window --toggle zoom-fullscreen
+      }
+
+      # Function to enable gaps, sketchybar, menubar, and disable Zoom fullscreen
+      disable_fullscreen() {
+        # toggle-gaps "$gaps_restore_state"
+        # toggle-sketchybar "$sketchybar_restore_state"
+        # toggle-menubar "$menubar_restore_state"
+        # toggle-dock "$dock_restore_state"
+        toggle-gaps "on"
+        toggle-sketchybar "on"
+        toggle-menubar "on"
+        # toggle-dock "on"
+        yabai -m window --toggle zoom-fullscreen
+      }
+
+
+      # Function to check if the focused window is in Zoom fullscreen mode and toggle it
+      toggle_fullscreen() {
+        # Get information about the currently focused window
+        window_info=$(yabai -m query --windows --window | jq -r '.["has-fullscreen-zoom"]')
+
+        # Output the state of Zoom fullscreen mode
+        if [ "$window_info" == "false" ]; then
+          echo "Zoom fullscreen mode is disabled. enabling..."
+          
+          # Define the paths to the state files
+          gaps_state_file="/tmp/gaps_state"
+          sketchybar_state_file="/tmp/sketchybar_state"
+          menubar_state_file="/tmp/menubar_state"
+          dock_state_file="/tmp/dock_state"
+
+          # Read the current states from the state files
+          gaps_restore_state=$(cat "$gaps_state_file" 2>/dev/null)
+          sketchybar_restore_state=$(cat "$sketchybar_state_file" 2>/dev/null)
+          menubar_restore_state=$(cat "$menubar_state_file" 2>/dev/null)
+          dock_restore_state=$(cat "$dock_state_file" 2>/dev/null)
+
+          enable_fullscreen
+        else
+          echo "Zoom fullscreen mode is enabled. disabling..."
+          disable_fullscreen
+        fi
+      }
+
+      # Call the toggle_fullscreen function
+      toggle_fullscreen
     '')
 
     #search

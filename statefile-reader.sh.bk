@@ -1,0 +1,53 @@
+gaps_state_file="/tmp/gaps_state"
+sketchybar_state_file="/tmp/sketchybar_state"
+dock_state_file="/tmp/dock_state"
+menubar_state_file="/tmp/menubar_state"
+
+# Function to read state from file
+read_state() {
+    if [ -f "$1" ]; then
+        cat "$1"
+    else
+        echo "off"
+    fi
+}
+
+# Read the current state from the state files, if they exist
+gaps_state=$(read_state "$gaps_state_file")
+sketchybar_state=$(read_state "$sketchybar_state_file")
+dock_state=$(read_state "$dock_state_file")
+
+# Function to check menubar status and update menubar state file
+check_menubar_status() {
+    menubar_status=$(osascript -e 'tell application "System Events" to tell dock preferences to get autohide menu bar')
+    if [ "$menubar_status" = "true" ]; then
+        menubar_state="off"
+    else
+        menubar_state="on"
+    fi
+    echo "$menubar_state" > "$menubar_state_file"
+}
+
+# Call the function to check menubar status
+check_menubar_status
+
+# Update the sketchybar state
+sketchybar_hidden_status=$(sketchybar --query bar | jq -r '.hidden')
+if [ "$sketchybar_hidden_status" = "on" ]; then
+    sketchybar_state="off"
+elif [ "$sketchybar_hidden_status" = "off" ]; then 
+    sketchybar_state="on"
+fi
+
+# Update the dock state
+dock_status=$(osascript -e 'tell application "System Events" to get autohide of dock preferences')
+if [ "$dock_status" = "true" ]; then
+    dock_state="off"
+elif [ "$dock_status" = "false" ]; then
+    dock_state="on"
+fi
+
+echo "Gaps is: $gaps_state"
+echo "Sketchybar is: $sketchybar_state"
+echo "Dock is: $dock_state"
+echo "Menubar is: $menubar_state"
