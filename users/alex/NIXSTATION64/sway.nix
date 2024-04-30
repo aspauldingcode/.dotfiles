@@ -122,7 +122,7 @@
 
         "${modifier}+r" = "exec python3.11 ~/.dotfiles/i3-tools-master/rotate_layout.py 0 -m -f"; # ??? orrresize mode
 
-        "${modifier}+Shift+Space" = "floating toggle ; [floating] resize set 80ppt 80ppt ; move position center";
+        "${modifier}+Shift+Space" = "floating toggle ; [floating] resize set 81ppt 81ppt ; move position center";
         "${modifier}+Space" = "focus mode_toggle";
         "${modifier}+u" = "focus parent";
 
@@ -161,10 +161,10 @@
 
         #FIXME: Try NOT to swap a floating window? 
         # Move windows (swap if tiled, move 20px if floating
-        "${modifier}+Shift+${left}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus left, swap container with mark "_swap", focus left, unmark "_swap"; [floating con_id="__focused__"] move left 20px'';
-        "${modifier}+Shift+${down}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus down, swap container with mark "_swap", focus down, unmark "_swap"; [floating con_id="__focused__"] move down 20px'';
-        "${modifier}+Shift+${up}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus up, swap container with mark "_swap", focus up, unmark "_swap"; [floating con_id="__focused__"] move up 20px'';
-        "${modifier}+Shift+${right}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"; [floating con_id="__focused__"] move right 20px'';
+        # "${modifier}+Shift+${left}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus left, swap container with mark "_swap", focus left, unmark "_swap"; [floating con_id="__focused__"] move left 20px'';
+        # "${modifier}+Shift+${down}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus down, swap container with mark "_swap", focus down, unmark "_swap"; [floating con_id="__focused__"] move down 20px'';
+        # "${modifier}+Shift+${up}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus up, swap container with mark "_swap", focus up, unmark "_swap"; [floating con_id="__focused__"] move up 20px'';
+        # "${modifier}+Shift+${right}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"; [floating con_id="__focused__"] move right 20px'';
         "${modifier}+Shift+Left" = ''mark --add "_swap", focus left, swap container with mark "_swap", focus left, unmark "_swap"; [floating con_id="__focused__"] move left 20px'';
         "${modifier}+Shift+Down" = ''mark --add "_swap", focus down, swap container with mark "_swap", focus down, unmark "_swap"; [floating con_id="__focused__"] move down 20px'';
         "${modifier}+Shift+Up" = ''mark --add "_swap", focus up, swap container with mark "_swap", focus up, unmark "_swap"; [floating con_id="__focused__"] move up 20px'';
@@ -223,6 +223,24 @@
         "${modifier}+Shift+8" = "move container to workspace number 8, workspace number 8";
         "${modifier}+Shift+9" = "move container to workspace number 9, workspace number 9";
         "${modifier}+Shift+0" = "move container to workspace number 10, workspace number 10";
+
+        "${modifier}+Alt+${left}" = "resize grow left 20px";
+        "${modifier}+Alt+${down}" = "resize grow down 20px";
+        "${modifier}+Alt+${up}" = "resize grow up 20px";
+        "${modifier}+Alt+${right}" = "resize grow right 20px";
+        "${modifier}+Alt+Left" = "resize grow left 20px";
+        "${modifier}+Alt+Down" = "resize grow down 20px";
+        "${modifier}+Alt+Up" = "resize grow up 20px";
+        "${modifier}+Alt+Right" = "resize grow right 20px";
+
+        "${modifier}+Alt+Shift+${left}" = "resize shrink left 20px";
+        "${modifier}+Alt+Shift+${down}" = "resize shrink down 20px";
+        "${modifier}+Alt+Shift+${up}" = "resize shrink up 20px";
+        "${modifier}+Alt+Shift+${right}" = "resize shrink right 20px";
+        "${modifier}+Alt+Shift+Left" = "resize shrink left 20px";
+        "${modifier}+Alt+Shift+Down" = "resize shrink down 20px";
+        "${modifier}+Alt+Shift+Up" = "resize shrink up 20px";
+        "${modifier}+Alt+Shift+Right" = "resize shrink right 20px";
 
         "${modifier}+Shift+R" = "reload";
       };
