@@ -1,0 +1,409 @@
+{
+  inputs,
+  lib,
+  config,
+  pkgs,
+  mobile-nixos,
+  apple-silicon,
+  ...
+}:
+{
+  imports = [
+    ./hardware-configuration.nix
+    # Include the necessary packages and configurations for Apple Silicon Support
+    apple-silicon.nixosModules.apple-silicon-support
+    # ("${mobile-nixos}/lib/configuration.nix" { device = "oneplus-fajita"; })
+    ./packages.nix
+    ./virtual-machines.nix
+    ./theme.nix
+    #./wg-quick.nix
+  ];
+  
+  # asahi linux overlay
+  nixpkgs.overlays = [ apple-silicon.overlays.apple-silicon-overlay ];
+
+  # enable GPU support
+  hardware.asahi.useExperimentalGPUDriver = true;
+
+  # backlight control
+  programs.light.enable = true;
+  services.actkbd = {
+    enable = true;
+    bindings = [
+      { keys = [ 225 ]; events = [ "key" ]; command = "/run/current-system/sw/bin/light -A 10";  }
+      { keys = [ 224 ]; events = [ "key" ]; command = "/run/current-system/sw/bin/light -U 10";  }      
+    ];
+  };
+
+  # Bootloader.
+  boot = {
+    # choose your kernel
+    loader = {
+      # TODO: Use whatever bootloader you prefer!
+      systemd-boot.enable = true; # switch to dinit for mac/linux/bsd?
+      efi.canTouchEfiVariables = false; # NOT true for m1 macbook air!
+    };
+  };
+
+  # This is using a rec (recursive) expression to set and access XDG_BIN_HOME within the expression
+  # For more on rec expressions see https://nix.dev/tutorials/first-steps/nix-language#recursive-attribute-set-rec
+  # environment.sessionVariables = rec {
+  #   XDG_CACHE_HOME  = "$HOME/.cache";
+  #   XDG_CONFIG_HOME = "$HOME/.config";
+  #   XDG_DATA_HOME   = "$HOME/.local/share";
+  #   XDG_STATE_HOME  = "$HOME/.local/state";
+  #   
+  #   # Not officially in the specification
+  #   XDG_BIN_HOME    = "$HOME/.local/bin";
+  #   PATH = [ 
+  #     "${XDG_BIN_HOME}"
+  #   ];
+  # };
+
+  environment = {
+    # systemPackages = with pkgs; [ #FIXME: INCLUDE IN SDDM THEMES INSTEAD!
+    #   # Get tokyo dark theme from github in sddm-themes.nix then call it here
+    #   # (callPackage ./sddm-themes.nix{}).tokyo-night-sddm
+    #   # (pkgs.callPackage ./sddm-themes.nix {})
+    #   (pkgs.libsForQt5.callPackage ./sddm_themes.nix {})
+    #   # libsForQt5.qt5.qtgraphicaleffects  # required for tokyo-night-sddm
+    #   # libsForQt5.qt5.qtsvg               # add qtsvg
+    #   # libsForQt5.qt5.qtbase              # add qtbase
+    #   # libsForQt5.qt5.qtquickcontrols2    # add qtquickcontrols2
+    #   # libsForQt5.qt5.qtdeclarative       # add qtdeclarative (for QML support)
+    # ];
+
+    plasma5.excludePackages = with pkgs; [
+      plasma5Packages.oxygen
+      xwayland
+      plasma5Packages.konsole
+      xterm
+      plasma5Packages.kwalletmanager
+      plasma5Packages.kwallet
+      plasma5Packages.kwallet-pam
+      kwalletcli
+    ];
+
+    variables = rec {
+      QT_QPA_PLATFORMTHEME = "qt5ct";
+      #QT_STYLE_OVERRIDE     = "qt5ct";
+    };
+  };
+  # Enable networking
+  networking = {
+    hostName = "NIXY2";
+    domain = "local";
+    wireless.iwd = {
+	enable = true;
+	settings = {
+		General.EnableNetworkConfiguration = true;
+		Settings.AutoConnect = true;
+	};
+    };
+    networkmanager = {
+      enable = true;
+      wifi.backend = "iwd";
+      # connectionConfig = "connection.mdns=2";
+    };
+    #   useDHCP = false;
+    #   useNetworkd = true;
+    #   useHostResolvConf = false;
+    #   firewall = {
+    #     enable = false; # temp disable firewall?
+    #     allowedTCPPorts = [
+    #       631
+    #       7000
+    #       7001
+    #       7100
+    #       22
+    #       25565
+    #     ];
+    #     allowedUDPPorts = [
+    #       631
+    #       5353
+    #       6000
+    #       6001
+    #       7011
+    #       22
+    #       25565
+    #     ];
+    #   };
+    # };
+    # systemd.network = {
+    #   networks = {
+    #     "wlp56s0" = {
+    #       name = "wlp56s0";
+    #       DHCP = "ipv4";
+    #       networkConfig = {
+    #         MulticastDNS = true;
+    #       };
+    #     };
+    #   };
+  };
+  # time settings
+  time.timeZone = "America/Denver";
+
+  # Enable Bluetooth
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true; # FIXME
+
+  #add opengl (to fix Qemu)
+  hardware.opengl.enable = true;
+
+  # Select internationalisation properties.
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    extraLocaleSettings = {
+      LC_ADDRESS = "en_US.UTF-8";
+      LC_IDENTIFICATION = "en_US.UTF-8";
+      LC_MEASUREMENT = "en_US.UTF-8";
+      LC_MONETARY = "en_US.UTF-8";
+      LC_NAME = "en_US.UTF-8";
+      LC_NUMERIC = "en_US.UTF-8";
+      LC_PAPER = "en_US.UTF-8";
+      LC_TELEPHONE = "en_US.UTF-8";
+      LC_TIME = "en_US.UTF-8";
+    };
+  };
+
+  # grab user profile pictures
+  system.activationScripts.script.text = ''
+    cp /home/alex/.dotfiles/users/alex/face.png /var/lib/AccountsService/icons/alex
+    cp /home/alex/.dotfiles/users/susu/face.png /var/lib/AccountsService/icons/susu
+  '';
+
+  # services
+  services = {
+    # PRETTY LOGIN SCREEN! (FIXME needs to be configured with osx sddm theme)
+    xserver = {
+      enable = true;
+      displayManager = {
+        sddm = {
+          enable = true;
+          wayland.enable = true;
+          theme = "${import ./sddm-themes.nix { inherit pkgs; }}";
+          #theme = "WhiteSur"; # I Don't like this one as much...
+        };
+      };
+      desktopManager = {
+        plasma5 = {
+          enable = true;
+          runUsingSystemd = false;
+        };
+        mate = {
+          enable = false;
+          # runUsingSystemd = false;
+        };
+	xfce.enable = true;
+      };
+      windowManager.i3.enable = true;
+    };
+    pipewire = {
+      # fix for pipewire audio:
+      enable = true;
+      alsa.enable = true;
+      pulse.enable = true;
+      jack.enable = true;
+    };
+
+    #getty.autologinUser = "alex"; # Enable automatic login for the user.
+    udisks2.enable = true;
+
+    # This setups a SSH server. Very important if you're setting up a headless system.
+    openssh = {
+      # be sure to check allowed firewall ports
+      enable = true;
+      settings = {
+        #PermitRootLogin = "no"; # Forbid root login through SSH.
+        PasswordAuthentication = false; # Use keys only. Remove if you want to SSH using password (not recommended)
+        X11Forwarding = true;
+        KbdInteractiveAuthentication = false;
+        #AllowUsers = [ "alex" ];
+      };
+    };
+    resolved = {
+      enable = false;
+      fallbackDns = [
+        "8.8.8.8"
+        "2001:4860:4860::8844"
+      ];
+      llmnr = "true";
+    };
+
+    # Network Discovery
+    avahi = {
+      enable = true;
+      nssmdns4 = true; # Printing
+      openFirewall = true;
+      ipv4 = true;
+      ipv6 = true;
+      reflector = true;
+      publish = {
+        enable = true;
+        addresses = true;
+        workstation = true;
+        userServices = true;
+        hinfo = true;
+        domain = true;
+      };
+    };
+
+    printing = {
+      listenAddresses = [ "*:631" ];
+      allowFrom = [ "all" ];
+      browsing = true;
+      defaultShared = true;
+    };
+  };
+
+  security = {
+    sudo = {
+      wheelNeedsPassword = false;
+      extraRules = [
+        {
+          users = [ "privileged_user" ];
+          commands = [
+            {
+              command = "ALL";
+              options = [ "NOPASSWD" ]; # "SETENV" #
+            }
+          ];
+        }
+      ];
+    };
+    polkit.enable = true;
+    pam.loginLimits = [
+      {
+        domain = "*";
+        type = "-";
+        item = "memlock";
+        value = "infinity";
+      }
+      {
+        domain = "*";
+        type = "-";
+        item = "nofile";
+        value = "65536";
+      }
+    ];
+  };
+
+  # programs
+  programs = {
+    fish.enable = false;
+    zsh.enable = true;
+    ssh.enableAskPassword = false;
+    adb.enable = true; # Enable Android De-Bugging.
+    gnome-disks.enable = true; # GNOME Disks daemon, UDisks2 GUI
+    xwayland.enable = false;
+    sway = {
+      enable = true;
+      package = pkgs.swayfx;
+    };
+  };
+
+  # Define a user account. Don't forget to set a password with ‘passwd’.
+  users.users = {
+    alex = {
+      isNormalUser = true;
+      description = "Alex Spaulding";
+      extraGroups = [
+        "networkmanager"
+        "wheel"
+        "docker"
+        "kvm"
+        "libvirtd"
+        "adbusers"
+      ];
+      openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINKfaO41wp3p/dkpuqIP6tj78SCrn2RSQUG2OSiHAv7j aspauldingcode@gmail.com"
+        # TODO: Add your SSH public key(s) here, if you plan on using SSH to connect
+      ];
+      shell = pkgs.zsh;
+      openssh.authorizedKeys.keyFiles = [ ./../extraConfig/id_ed25519_NIXY.pub ];
+    };
+
+    susu = {
+      isNormalUser = true;
+      description = "Su Su Oo";
+      extraGroups = [ "networkmanager" ];
+    };
+  };
+
+  # fonts
+  fonts.packages = with pkgs; [
+    # font-awesome
+    powerline-fonts
+    powerline-symbols
+    jetbrains-mono
+    font-awesome_5
+    (nerdfonts.override {
+      fonts = [
+        "NerdFontsSymbolsOnly"
+        "Hack"
+      ];
+    })
+    dejavu_fonts
+  ];
+
+  #nixpkgs = {
+    #overlays = [
+      # You can add overlays here
+      # If you want to use overlays exported from other flakes:
+      # neovim-nightly-overlay.overlays.default
+
+      # Or define it inline, for example:
+      # (final: prev: {
+      #   hi = final.hello.overrideAttrs (oldAttrs: {
+      #     patches = [ ./change-hello-to-hi.patch ];
+      #   });
+      # })
+    #];
+
+    # config = { # Configure your nixpkgs instance
+    # # allowUnfree = true; # Allow unfree packages #FIXME: DOES THIS EVEN WORK?
+    # allowUnfreePredicate = pkg:
+    # builtins.elem (lib.getName pkg) [
+    #   # Add additional package names here
+    #   #"hello-unfree"
+    #   "oneplus-sdm845-firmware-x"
+    # ];
+    # };
+  #};
+
+  # nix
+  nix = {
+    # This will add each flake input as a registry
+    # To make nix3 commands consistent with your flake
+    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
+    # This will additionally add your inputs to the system's legacy channels
+    # Making legacy nix commands consistent as well, awesome!
+    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
+    settings = {
+      # Nix Settings
+      auto-optimise-store = true; # Auto Optimize nix store.
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ]; # Enable experimental features.
+    };
+    #trusted-users = [ "root" "alex" "susu"]; #fix trusted user issue
+  };
+
+  virtualisation = {
+    # enable virtualization support
+    docker.enable = true;
+    libvirtd.enable = true;
+    #waydroid.enable = true;
+    lxd.enable = true;
+  };
+
+  system = {
+    autoUpgrade = {
+      enable = true;
+      allowReboot = false;
+    };
+    # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+    stateVersion = "23.05"; # Did you read the comment?
+  };
+}

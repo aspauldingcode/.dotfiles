@@ -2,26 +2,28 @@
   description = "Universal Flake by Alex - macOS and NixOS";
 
   inputs = {
-    #nixpkgs.url =               "github:nixos/nixpkgs/nixos-23.11";
-    #pkgs-unstable.url =         "github:nixos/nixpkgs/nixpkgs-unstable"; # to make stable/unstable
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    home-manager.url = "github:nix-community/home-manager/master";
+    nix-colors.url = "github:misterio77/nix-colors";
+
     nix-darwin = {
       url = "github:lnl7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    home-manager.url = "github:nix-community/home-manager/master";
 
     nixvim = {
       url = "github:nix-community/nixvim";
-      # If you are not running an unstable channel of nixpkgs, select the corresponding branch of nixvim.
-      #url = "github:nix-community/nixvim/nixos-23.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nix-colors.url = "github:misterio77/nix-colors";
     mobile-nixos = {
       url = "github:NixOS/mobile-nixos";
       flake = false;
+    };
+
+    apple-silicon = {
+	url = "github:tpwrules/nixos-apple-silicon";
+	inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
@@ -35,6 +37,7 @@
       flake-parts,
       nix-colors,
       mobile-nixos,
+      apple-silicon,
     }:
     let
       inherit (self) inputs;
@@ -47,6 +50,7 @@
           home-manager
           flake-parts
           nix-colors
+	  apple-silicon
           self
           ;
       };
@@ -99,6 +103,31 @@
           specialArgs = commonSpecialArgs;
           modules = [ ./system/NIXEDUP/configuration.nix ];
         };
+	NIXY2 = nixpkgs.lib.nixosSystem {
+          pkgs = import nixpkgs {
+            system = "aarch64-linux";
+            config = {
+              allowUnfree = true;
+              permittedInsecurePackages = [ "electron-19.1.9" ];
+            };
+          };
+          specialArgs = commonSpecialArgs; # // { extraPkgs = [ mobile-nixos ]; };
+          modules = [
+            ./system/NIXY2/configuration.nix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                users.alex = import ./users/alex/NIXY2/home-NIXY2.nix;
+                # Optionally, use home-manager.extraSpecialArgs to pass
+                # arguments to home.nix
+                extraSpecialArgs = commonExtraSpecialArgs;
+              };
+            }
+          ];
+        };
+
       };
 
       # Define Darwin (macOS) configurations
