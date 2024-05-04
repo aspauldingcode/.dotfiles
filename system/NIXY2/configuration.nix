@@ -23,10 +23,10 @@
   nixpkgs.overlays = [ apple-silicon.overlays.apple-silicon-overlay ];
 
   # try to fix peripheralFirmwareExtraction...
-  hardware.asahi.extractPeripheralFirmware = false; #FIXME: return to true!
+  hardware.asahi.extractPeripheralFirmware = true; #FIXME: return to true!
 
   # enable GPU support
-  #hardware.asahi.useExperimentalGPUDriver = true;
+  hardware.asahi.useExperimentalGPUDriver = true;
 
   # backlight control
   programs.light.enable = true;
@@ -104,7 +104,7 @@
 	};
     };
     networkmanager = {
-      enable = true;
+      enable = false;
       wifi.backend = "iwd";
       # connectionConfig = "connection.mdns=2";
     };
