@@ -8,18 +8,18 @@
 }:
 
 {
-  programs.darling.enable = true; # install darling with setuid wrapper
+  #programs.darling.enable = true; # install darling with setuid wrapper
 
   environment.systemPackages = with pkgs; [
     neovim
-    zellij
-    libsForQt5.qt5.qtbase
-    libsForQt5.qt5.qtsvg
-    libsForQt5.qt5.qtquickcontrols2
-    libsForQt5.kdialog
-    libsForQt5.qt5.qtgraphicaleffects
-    libsForQt5.dolphin
-    libsForQt5.qt5ct
+    #zellij
+    #libsForQt5.qt5.qtbase
+    #libsForQt5.qt5.qtsvg
+    #libsForQt5.qt5.qtquickcontrols2
+    #libsForQt5.kdialog
+    #libsForQt5.qt5.qtgraphicaleffects
+    #libsForQt5.dolphin
+    #libsForQt5.qt5ct
     # libsForQt5.breeze-qt5
     # libsForQt5.breeze-gtk
     # libsForQt5.breeze-icons
@@ -27,9 +27,9 @@
     # libsForQt5.breeze-grublouvre
 
     #macOS THEME
-    whitesur-kde
-    whitesur-gtk-theme
-    whitesur-icon-theme
+    #whitesur-kde
+    #whitesur-gtk-theme
+    #whitesur-icon-theme
     # whitesur-cursors
 
     ranger
@@ -38,50 +38,49 @@
     ueberzugpp # replacement for depricated inline terminal image previewer
     yazi
     grim
-    krita
-    libreoffice-fresh
+    #krita
+    #libreoffice-fresh
     xdg-desktop-portal-wlr
     gtkdialog
     pcmanfm
     wofi-emoji
     htop
     fim
-    gparted
+    #gparted
     killall
     tree
     zsh
     curl
-    lazygit
+    #lazygit
     wget
     git
-    pstree
-    zoxide
-    dnsmasq
-    udftools
-    element
-    appimage-run
-    tree-sitter
-    jdk20
-    python311
-    nodejs
-    ncurses6
-    flex
-    bison
-    gnumake
+    #pstree
+    #zoxide
+    #dnsmasq
+    #udftools
+    #appimage-run
+    #tree-sitter
+    #jdk20
+    #python311
+    #nodejs
+    #ncurses6
+    #flex
+    #bison
+    #gnumake
     gcc
-    openssl
-    dtc
-    gnome-themes-extra
-    cargo
-    nodePackages_latest.npm
-    perl
+    #openssl
+    #dtc
+    #gnome-themes-extra
+    #cargo
+    #nodePackages_latest.npm
+    #perl
     hexedit
-    virt-manager
-    uxplay
+    #virt-manager
+    #uxplay
 
     #rebuild #sudo nixos-rebuild switch --show-trace --option eval-cache false --flake .#NIXY2
     (pkgs.writeShellScriptBin "rebuild" ''
-      # NIXSTATION64(x86_64-linux)
+      # NIXY2(aarch64-linux)
       cd ~/.dotfiles
       sudo nixos-rebuild switch --show-trace --flake .#NIXY2 
       #home-manager switch --flake .#alex@NIXY2

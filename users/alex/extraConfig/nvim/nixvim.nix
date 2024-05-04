@@ -497,14 +497,14 @@
         # file search/fuzzyfinder
         telescope = {
           enable = true;
-          keymaps = {
+          #keymaps = {
 
-            "<C-p>" = {
-              action = "git_files";
-              desc = "Telescope Git Files";
-            };
-            "<leader>fg" = "live_grep";
-          };
+           # "<C-p>" = {
+           #   action = "git_files";
+           #   desc = "Telescope Git Files";
+        #    };
+         #   "<leader>fg" = "live_grep";
+          #};
         };
 
         # code-completion

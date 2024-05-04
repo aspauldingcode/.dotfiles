@@ -14,7 +14,7 @@
     apple-silicon.nixosModules.apple-silicon-support
     # ("${mobile-nixos}/lib/configuration.nix" { device = "oneplus-fajita"; })
     ./packages.nix
-    ./virtual-machines.nix
+    #./virtual-machines.nix
     ./theme.nix
     #./wg-quick.nix
   ];
@@ -22,8 +22,11 @@
   # asahi linux overlay
   nixpkgs.overlays = [ apple-silicon.overlays.apple-silicon-overlay ];
 
+  # try to fix peripheralFirmwareExtraction...
+  hardware.asahi.extractPeripheralFirmware = false; #FIXME: return to true!
+
   # enable GPU support
-  hardware.asahi.useExperimentalGPUDriver = true;
+  #hardware.asahi.useExperimentalGPUDriver = true;
 
   # backlight control
   programs.light.enable = true;
@@ -177,23 +180,23 @@
     # PRETTY LOGIN SCREEN! (FIXME needs to be configured with osx sddm theme)
     xserver = {
       enable = true;
-      displayManager = {
-        sddm = {
-          enable = true;
-          wayland.enable = true;
-          theme = "${import ./sddm-themes.nix { inherit pkgs; }}";
-          #theme = "WhiteSur"; # I Don't like this one as much...
-        };
-      };
+      #displayManager = {
+      #  sddm = {
+      #    enable = true;
+      #    wayland.enable = true;
+      #    theme = "${import ./sddm-themes.nix { inherit pkgs; }}";
+      #    #theme = "WhiteSur"; # I Don't like this one as much...
+      #  };
+      #};
       desktopManager = {
-        plasma5 = {
-          enable = true;
-          runUsingSystemd = false;
-        };
-        mate = {
-          enable = false;
-          # runUsingSystemd = false;
-        };
+      #  plasma5 = {
+      #    enable = true;
+      #    runUsingSystemd = false;
+      #  };
+      #  mate = {
+      #    enable = false;
+      #    # runUsingSystemd = false;
+      #  };
 	xfce.enable = true;
       };
       windowManager.i3.enable = true;

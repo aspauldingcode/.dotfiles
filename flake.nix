@@ -127,7 +127,6 @@
             }
           ];
         };
-
       };
 
       # Define Darwin (macOS) configurations

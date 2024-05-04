@@ -1,6 +1,6 @@
 { pkgs, ... }:
 
-# NIXSTATION-specific packages
+# NIXY2-specific packages
 {
   imports = [ ];
   nixpkgs = {
@@ -15,168 +15,48 @@
 
   home = {
     packages = with pkgs; [
-      #darling REQUIRES  Security wrapper SETUID!!!
-      #darling-dmg
-      lsof
-      wget
-      ncdu
-      etcher
-      standardnotes
-      gcal
-      nwg-dock
-      nwg-drawer
-      nwg-displays
-      nwg-launchers
-      nwg-bar
+      #wget
+      #ncdu
+      #gcal
       fzf
       libnotify
-      checkra1n
-      lutris # TF man, NOTHING is working with this??
-      bottles-unwrapped
-      ardour
-      # darwin.cctools-port # is it needed tho? MARKED BROKEN NIXOS
-      bitwig-studio
-      lmms
-      renoise
-      zrythm
-      vital
-      # dexed
-      distrho
-      # wine
-      # wine64
-      # wine-wayland
-      #winePackages.waylandFull
-      wineWow64Packages.waylandFull
-      #winePackages.stableFull
-      #wine64Packages.stableFull
-      wineasio
-      winetricks
+      #checkra1n
       cava
       lavat
       pfetch
-      zoom-us
-      spotify-unwrapped
-      android-studio
+      #zoom-us
       corefonts
-      beeper
-      sl
-      obsidian
-      ocl-icd
-      rofi-wayland-unwrapped
-      vscode
+      #sl
+      #obsidian
       bemenu
-      #wofiPower
-      #wofiWindowJump
-      #dunst
-      gnomeExtensions.dark-variant
-      eww
-      glpaper
-      sassc
-      glib
-      lxappearance
-      gtk-layer-shell
-      i3status-rust
-      imv
-      gpm
-      lavalauncher
-      obs-studio-plugins.wlrobs
-      obs-studio-plugins.obs-vkcapture
-      swayr
-      swayrbar
-      #sway-unwrapped
-      swaybg
-      #swayidle
-      #swaylock
-      swaylock-effects
-      #swww
-      pinentry-bemenu
-      waypipe
-      #wayprompt
-      wayvnc
-      wbg
-      wev
-      #wf-recorder
+      #gnomeExtensions.dark-variant
       wl-clipboard
-      wl-gammactl
-      gammastep
-      geoclue2
-      wl-screenrec
-      wlogout
-      wlroots
-      wlsunset
-      wofi
-      wshowkeys
       wtype
-      clipman
-      #etcher
-      element-desktop
-      blender
-      brave
+      #element-desktop
+      #brave
       firefox-esr
-      transmission-gtk
-      calcurse
-      delta
-      gnupg
-      audacity
-      pinentry
-      git-crypt
-      gitflow
+      #transmission-gtk
       cowsay
-      spotify-unwrapped
       autotiling
-      #waydroid
-      pcmanfm
-      w3m
-      obs-studio
-      audacity
-      docker
-      home-manager
-      android-tools
-      xz
-      element
-      OVMF
-      edk2
       busybox
-      #LSP PACKAGES for NVIM 
-      ##NOTWORKING?!!?!?!?!? FIXME
-      #rnix-lsp
-      # FIND MORE INFO: https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-      nil
-      nodePackages_latest.typescript-language-server
-      nodePackages_latest.typescript
-      nodePackages_latest.pyright
-      nodePackages_latest.bash-language-server
-      nodePackages.yaml-language-server
-      nodePackages_latest.dockerfile-language-server-nodejs
-      jdt-language-server
-      kotlin-language-server
-      lua-language-server
-      cmake-language-server
-      arduino-language-server
-      nodePackages_latest.vim-language-server
-      #python311Packages.python-lsp-server
-      blueman
-      jq
-      flameshot
-      fd
-      ripgrep
-      idevicerestore
-      usbmuxd
-      libusbmuxd
-      libimobiledevice
-      avahi
-      sshfs
-      pciutils
-      socat
-      lolcat
-      pmbootstrap
-      libusb1
-      xarchiver
-      gimp
-      zip
-      thefuck
-      ffmpeg-full
-      sway-contrib.grimshot
+      #nil
+      #blueman
+      #jq
+      #fd
+      #ripgrep
+      #idevicerestore
+      #usbmuxd
+      #libusbmuxd
+      #libimobiledevice
+      #avahi
+      #sshfs
+      #pciutils
+      #socat
+      #lolcat
+      #libusb1
+      #zip
+      #thefuck
+      #sway-contrib.grimshot
       (python311.withPackages (
         ps: with ps; [
           toml

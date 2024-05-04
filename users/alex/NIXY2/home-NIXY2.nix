@@ -5,16 +5,16 @@
   imports = [
     nix-colors.homeManagerModules.default
     ./packages-NIXY2.nix
-    ./sway.nix
-    ./../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
-    ./theme.nix # theme of system.
+    #./sway.nix
+    #./../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
+    #./theme.nix # theme of system.
     ./git.nix
     ./alacritty.nix
-    ./yazi/yazi.nix
-    ./mimeapps.nix
+    #./yazi/yazi.nix
+    #./mimeapps.nix
     ./mako.nix
-    ./discocss.nix
-    ./betterdiscord.nix
+    #./discocss.nix
+    #./betterdiscord.nix
     ./fish.nix
     ./zsh.nix
     # ./zellij.nix
