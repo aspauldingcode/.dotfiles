@@ -42,6 +42,8 @@
     # wireshark
     # nmapsi4
     #ruby
+    swayr
+    swayrbar
     qemu
     spotify
     obsidian

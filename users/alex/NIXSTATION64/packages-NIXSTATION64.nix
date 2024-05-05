@@ -19,15 +19,35 @@
       #darling-dmg
       lsof
       wget
+
+      # dependencies for menu-continuous
+      # cmake
+      # procps
+      # musl
+      # rocmPackages.llvm.clang
+      # libdbusmenu
+      # libsForQt5.baloo
+      # # libsForQt5.libdbusmenu
+      # # libdbusmenu-gtk2
+      # # libdbusmenu-gtk3
+      #
+      # libsForQt5.applet-window-appmenu
+
       ncdu
       etcher
-      standardnotes
       gcal
-      nwg-dock
-      nwg-drawer
-      nwg-displays
-      nwg-launchers
-      nwg-bar
+      # nwg-dock
+      # nwg-drawer
+      # nwg-displays
+      # nwg-launchers
+      # nwg-bar
+      # nwg-panel
+
+      #not available yet
+      # hybridbar
+
+      albert
+
       fzf
       libnotify
       checkra1n
@@ -206,7 +226,7 @@
       (pkgs.writeShellScriptBin "fix-wm" ''
         pkill waybar && sway reload
         sleep 4       #FIX waybar cava init issue:
-        nohup ffplay ~/.dotfiles/users/alex/NIXSTATION64/waybar/silence.wav -t 4 -nodisp -autoexit > /dev/null 2>&1 &
+        nohup ffplay ~/.dotfiles/users/alex/NIXSTATION64/waybar/silence.wav -t 5 -nodisp -autoexit > /dev/null 2>&1 &
       '')
       #search
       (pkgs.writeShellScriptBin "search" ''
@@ -235,6 +255,17 @@
         echo "Wine wine-$wine_version win32"
         else
         echo "Unknown-Architecture"
+        fi
+      '')
+
+      (pkgs.writeShellScriptBin "toggle-waybar" ''
+        # Try to send SIGUSR1 signal to waybar
+        killall -SIGUSR1 waybar
+
+        # Check if waybar was killed
+        if [ $? -ne 0 ]; then
+            # If no process was killed, run waybar and detach its output
+            waybar >/dev/null 2>&1 &
         fi
       '')
     ];

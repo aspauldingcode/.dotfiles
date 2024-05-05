@@ -5,7 +5,8 @@
 
   wayland.windowManager.sway = {
     enable = true;
-    package = null;
+    package = pkgs.swayfx; # set to pkgs.swayfx? broken on Asahi NixOS
+    checkConfig = false; # so I can keep swayfx settings
     config = rec {
       bars = [
         { command = "${pkgs.waybar}/bin/waybar"; } # FIXME: WHY ARE THERE TWO WAYBARS at launch?
@@ -16,6 +17,13 @@
       up = "k";
       right = "l";
       output = {
+      	eDP-1 = {
+	  res = "2560x1600";
+	  #pos =
+	  scale = "2.0";
+	  scale_filter = "nearest";
+	  transform = "normal";
+	};
         DP-4 = {
           res = "1920x1080";
           pos = "0,0";
@@ -57,13 +65,10 @@
         "${modifier}+q" = "exec wtype -M ctrl -P w -m ctrl -p w";
         "${modifier}+a" = "exec show-all-windows";
         "${modifier}+d" = "exec ${menu}";
-        # "${modifier}+m" = "" # toggle-global-menubar
         "${modifier}+m" = "exec toggle-waybar";
-        # "${modifier}+Space" = "" # toggle nwg-dock
-
-        # "${modifier}+m" = "exec docker start -ai 8b83fcdf83af"; # MacOS VM
         "Control+Alt+Delete" = "exec sudo reboot";
         "Control+Shift+Alt+Delete" = "exec sudo shutdown now";
+
         # implement window switcher based on wofi
         #"${modifier}+Tab" = "exec ${wofiWindowJump}";
         # power menu
@@ -271,6 +276,7 @@
           workspace 1 output DP-4
           workspace 2 output DP-3
           workspace 3 output DP-2
+	  workspace 4 output eDP-1
 
           # Launch the bluetooth applet
           exec blueman-applet
@@ -302,14 +308,14 @@
           for_window [shell="xwayland"] border pixel 2
 
           # Window background blur
-          blur on #FIXME: TURN ON! Floating window loses its borders...
-          #blur_xray on
+          #blur on #FIXME: TURN ON! Floating window loses its borders...
+          blur_xray on
           blur_passes 5
           blur_radius 5
 
           for_window [tiling] shadows off
           for_window [floating] shadows on
-          #shadows_on_csd disable
+          shadows_on_csd disable
           shadow_blur_radius 30
           shadow_color #000000ff
 
