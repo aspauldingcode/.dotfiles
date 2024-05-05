@@ -78,6 +78,9 @@
     hexedit
     virt-manager
     uxplay
+    
+        (pkgs.callPackage ./hybridbar.nix { })
+
 
     #rebuild #sudo nixos-rebuild switch --show-trace --option eval-cache false --flake .#NIXSTATION64
     (pkgs.writeShellScriptBin "rebuild" ''

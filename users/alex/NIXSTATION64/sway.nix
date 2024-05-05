@@ -57,7 +57,11 @@
         "${modifier}+q" = "exec wtype -M ctrl -P w -m ctrl -p w";
         "${modifier}+a" = "exec show-all-windows";
         "${modifier}+d" = "exec ${menu}";
-        "${modifier}+m" = "exec docker start -ai 8b83fcdf83af"; # MacOS VM
+        # "${modifier}+m" = "" # toggle-global-menubar
+        "${modifier}+m" = "exec toggle-waybar";
+        # "${modifier}+Space" = "" # toggle nwg-dock
+
+        # "${modifier}+m" = "exec docker start -ai 8b83fcdf83af"; # MacOS VM
         "Control+Alt+Delete" = "exec sudo reboot";
         "Control+Shift+Alt+Delete" = "exec sudo shutdown now";
         # implement window switcher based on wofi
