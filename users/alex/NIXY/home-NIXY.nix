@@ -32,7 +32,7 @@
     ./i3.nix
     ./sketchybar/sketchybar.nix
     ./yabai.nix # contains skhd and borders config.
-    #./phoenix/phoenix.nix # new window-manager for macOS!
+    ./phoenix/phoenix.nix # new window-manager for macOS!
   ];
 
   home = {
