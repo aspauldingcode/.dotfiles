@@ -151,7 +151,10 @@
   services.blueman.enable = true; # FIXME
 
   #add opengl (to fix Qemu)
-  hardware.opengl.enable = true;
+#hardware.opengl = {
+#  enable = true;
+#  package = (pkgs.mesa.override { galliumDrivers = [ "i915" ]; }).drivers;
+#};
 
   # Select internationalisation properties.
   i18n = {

@@ -5,7 +5,7 @@
   imports = [
     nix-colors.homeManagerModules.default
     ./packages-NIXY2.nix
-    #./sway.nix
+    ./sway.nix
     #./../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
     #./theme.nix # theme of system.
     ./git.nix

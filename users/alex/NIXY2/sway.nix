@@ -5,7 +5,7 @@
 
   wayland.windowManager.sway = {
     enable = true;
-    package = null;
+    package = null; # set to pkgs.swayfx? broken on Asahi NixOS
     config = rec {
       bars = [
         { command = "${pkgs.waybar}/bin/waybar"; } # FIXME: WHY ARE THERE TWO WAYBARS at launch?
@@ -16,6 +16,13 @@
       up = "k";
       right = "l";
       output = {
+      	eDP-1 = {
+	  res = "2560x1600";
+	  #pos =
+	  scale = "2.0";
+	  scale_filter = "nearest";
+	  transform = "normal";
+	};
         DP-4 = {
           res = "1920x1080";
           pos = "0,0";
@@ -34,7 +41,7 @@
         };
         "*" = {
           # change background for all outputs
-          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/sweden.png fill"; # ghibliwp.jpg, sweden.png
+          #bg = "/home/alex/.dotfiles/users/alex/extraConfig/wallpapers/sweden.png fill"; # ghibliwp.jpg, sweden.png
         };
       };
       # Use alacritty as default terminal
@@ -267,6 +274,7 @@
           workspace 1 output DP-4
           workspace 2 output DP-3
           workspace 3 output DP-2
+	  workspace 4 output eDP-1
 
           # Launch the bluetooth applet
           exec blueman-applet
@@ -282,7 +290,7 @@
           # STYLIZE!
           gaps inner 13
           gaps top -2
-          corner_radius 8
+          #corner_radius 8
 
           #FIX waybar tooltips!
           for_window [app_id="waybar" floating] {
@@ -298,16 +306,16 @@
           for_window [shell="xwayland"] border pixel 2
 
           # Window background blur
-          blur on #FIXME: TURN ON! Floating window loses its borders...
+          #blur on #FIXME: TURN ON! Floating window loses its borders...
           #blur_xray on
-          blur_passes 5
-          blur_radius 5
+          #blur_passes 5
+          #blur_radius 5
 
           for_window [tiling] shadows off
           for_window [floating] shadows on
           #shadows_on_csd disable
-          shadow_blur_radius 30
-          shadow_color #000000ff
+          #shadow_blur_radius 30
+          #shadow_color #000000ff
 
           # inactive window fade amount. 0.0 = no dimming, 1.0 = fully dimmed
           #default_dim_inactive .3

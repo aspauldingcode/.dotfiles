@@ -33,7 +33,7 @@
       wl-clipboard
       wtype
       #element-desktop
-      #brave
+      brave
       firefox-esr
       #transmission-gtk
       cowsay
@@ -55,8 +55,8 @@
       #lolcat
       #libusb1
       #zip
-      #thefuck
-      #sway-contrib.grimshot
+      thefuck
+      sway-contrib.grimshot
       (python311.withPackages (
         ps: with ps; [
           toml
@@ -79,6 +79,7 @@
           jdk8
           jdk17
           jdk19
+	  jdk21
           # Minecraft requires jdk21 SOON!
         ];
       })
