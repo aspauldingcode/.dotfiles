@@ -5,7 +5,8 @@
 
   wayland.windowManager.sway = {
     enable = true;
-    package = null; # set to pkgs.swayfx? broken on Asahi NixOS
+    package = pkgs.swayfx; # set to pkgs.swayfx? broken on Asahi NixOS
+    checkConfig = false; # so I can keep swayfx settings
     config = rec {
       bars = [
         { command = "${pkgs.waybar}/bin/waybar"; } # FIXME: WHY ARE THERE TWO WAYBARS at launch?
@@ -41,7 +42,7 @@
         };
         "*" = {
           # change background for all outputs
-          #bg = "/home/alex/.dotfiles/users/alex/extraConfig/wallpapers/sweden.png fill"; # ghibliwp.jpg, sweden.png
+          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/sweden.png fill"; # ghibliwp.jpg, sweden.png
         };
       };
       # Use alacritty as default terminal
@@ -64,9 +65,10 @@
         "${modifier}+q" = "exec wtype -M ctrl -P w -m ctrl -p w";
         "${modifier}+a" = "exec show-all-windows";
         "${modifier}+d" = "exec ${menu}";
-        "${modifier}+m" = "exec docker start -ai 8b83fcdf83af"; # MacOS VM
+        "${modifier}+m" = "exec toggle-waybar";
         "Control+Alt+Delete" = "exec sudo reboot";
         "Control+Shift+Alt+Delete" = "exec sudo shutdown now";
+
         # implement window switcher based on wofi
         #"${modifier}+Tab" = "exec ${wofiWindowJump}";
         # power menu
@@ -290,7 +292,7 @@
           # STYLIZE!
           gaps inner 13
           gaps top -2
-          #corner_radius 8
+          corner_radius 8
 
           #FIX waybar tooltips!
           for_window [app_id="waybar" floating] {
@@ -307,15 +309,15 @@
 
           # Window background blur
           #blur on #FIXME: TURN ON! Floating window loses its borders...
-          #blur_xray on
-          #blur_passes 5
-          #blur_radius 5
+          blur_xray on
+          blur_passes 5
+          blur_radius 5
 
           for_window [tiling] shadows off
           for_window [floating] shadows on
-          #shadows_on_csd disable
-          #shadow_blur_radius 30
-          #shadow_color #000000ff
+          shadows_on_csd disable
+          shadow_blur_radius 30
+          shadow_color #000000ff
 
           # inactive window fade amount. 0.0 = no dimming, 1.0 = fully dimmed
           #default_dim_inactive .3
