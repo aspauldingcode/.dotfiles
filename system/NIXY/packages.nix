@@ -31,7 +31,8 @@
     ## macosINSTANTView?
     wget
     zellij
-    neofetch
+    # neofetch
+    pfetch
     htop
     git
     tree

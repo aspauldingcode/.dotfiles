@@ -222,8 +222,6 @@
         in
         # bash
         ''
-           # alt + a / u / o / s are blocked due to umlaute
-
            # FIXME: use kitty terminal for yazi filemanager only.
 
            # Launch shortcuts
@@ -342,7 +340,7 @@
            ${modifier} - e : yabai -m space --layout bsp
 
            # float / unfloat window and center on screen
-           ${modifier} - space : yabai -m window --toggle float; yabai -m window --grid 60:60:5:5:50:50
+           ${modifier} + shift - space : yabai -m window --toggle float; yabai -m window --grid 60:60:5:5:50:50
 
            # # toggle sticky(+float), topmost, picture-in-picture
            # ${modifier} - p : yabai -m window --toggle sticky; \
@@ -354,11 +352,11 @@
 
 
            # toggle sketchybar
-           ${modifier} + shift - m : toggle-sketchybar
+           ${modifier} - m : toggle-sketchybar
 
            # toggle native macOS menubar, or dock
-           ${modifier} - m : toggle-menubar
-           ${modifier} + shift - space : toggle-dock
+           ${modifier} + shift - m : toggle-menubar
+           ${modifier} - space : toggle-dock
 
            # toggle gaps
            ${modifier} - g : toggle-gaps
@@ -395,11 +393,12 @@
 
         options=(
           style=round
+          order=above
           width=5.0
           hidpi=on
           active_color=0xff"${colors.base0C}"
           inactive_color=0xff"${colors.base03}"
-          blacklist="google chrome, vmware fusion, xquartz"
+          blacklist="google chrome, vmware fusion, xquartz, dmenu-mac"
         )
 
         borders "''${options[@]}"  

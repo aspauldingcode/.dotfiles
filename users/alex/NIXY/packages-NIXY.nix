@@ -32,7 +32,6 @@
   home.packages = with pkgs; [
     # autotiling
     calcurse
-    pfetch
     chatgpt-cli
     cowsay
     newsboat
@@ -343,6 +342,7 @@
           yabai -m config right_padding   15
           yabai -m config window_gap      15
           borders style=round
+          borders order=above
       }
 
       off() {
@@ -352,6 +352,7 @@
           yabai -m config right_padding   0
           yabai -m config window_gap      5
           borders style=square
+          borders order=below
       }
 
       if [ "$#" -eq 0 ]; then
@@ -697,7 +698,7 @@
         # toggle-dock "$dock_restore_state"
         toggle-gaps "on"
         toggle-sketchybar "on"
-        toggle-menubar "on"
+        # toggle-menubar "on"
         # toggle-dock "on"
         yabai -m window --toggle zoom-fullscreen
       }
