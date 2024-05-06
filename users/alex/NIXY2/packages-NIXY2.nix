@@ -24,6 +24,7 @@
       cava
       lavat
       pfetch
+      android-tools
       #zoom-us
       corefonts
       #sl
@@ -118,6 +119,18 @@
         echo "Unknown-Architecture"
         fi
       '')
+
+      (pkgs.writeShellScriptBin "toggle-waybar" ''
+        # Try to send SIGUSR1 signal to waybar
+        killall -SIGUSR1 waybar
+
+        # Check if waybar was killed
+        if [ $? -ne 0 ]; then
+            # If no process was killed, run waybar and detach its output
+            waybar >/dev/null 2>&1 &
+        fi
+      '')
+
     ];
   };
 }
