@@ -34,7 +34,6 @@
       # libsForQt5.applet-window-appmenu
 
       ncdu
-      etcher
       gcal
       # nwg-dock
       # nwg-drawer
@@ -51,17 +50,7 @@
       fzf
       libnotify
       checkra1n
-      lutris # TF man, NOTHING is working with this??
-      bottles-unwrapped
-      ardour
       # darwin.cctools-port # is it needed tho? MARKED BROKEN NIXOS
-      bitwig-studio
-      lmms
-      renoise
-      zrythm
-      vital
-      # dexed
-      distrho
       # wine
       # wine64
       # wine-wayland
@@ -133,22 +122,11 @@
       blender
       brave
       firefox-esr
-      transmission-gtk
-      calcurse
-      delta
-      gnupg
-      audacity
-      pinentry
-      git-crypt
-      gitflow
-      cowsay
       spotify-unwrapped
       autotiling
       waydroid
       pcmanfm
       w3m
-      obs-studio
-      audacity
       docker
       home-manager
       android-tools

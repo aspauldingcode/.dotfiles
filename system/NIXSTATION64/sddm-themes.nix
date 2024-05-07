@@ -13,10 +13,11 @@ let
 in
 pkgs.stdenv.mkDerivation {
   name = "sddm-theme-sonoma-v2";
-  src = pkgs.fetchurl {
-    url = "https://files04.pling.com/api/files/download/j/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE3MDcwNjcxNzEiLCJ1IjpudWxsLCJsdCI6ImRvd25sb2FkIiwicyI6ImNlYjNlMDY1MDZhMWRlNWRkYWIzNWMzODM4YmUwMDMxOTQ2Zjg1NDM0M2RmZWEwNTM1OTQzNTRmZjk2NGQ4YjUyMThlMjRjNGZhZTZjN2YxZTNlNGJjYzAwMGZkYWJiOTNmMGM4OGQ4YjNmZmMwODMwODliOTEyNmVlNjA4YWU1IiwidCI6MTcwOTMzODkxNiwic3RmcCI6bnVsbCwic3RpcCI6bnVsbH0.tVNB03J5rYoFyHyEaiTAMCprZSwSXpE6L6u3oNqG3p0/Apple-Sonoma-v3.tar.xz";
-    sha256 = "sha256-GISzO/xQQrl3PUlK8u1QtQ2iIdaO2lDKuOX+rKMbQGA=";
-  };
+  # src = pkgs.fetchurl {
+  #   url = "https://files04.pling.com/api/files/download/j/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE3MDcwNjcxNzEiLCJ1IjpudWxsLCJsdCI6ImRvd25sb2FkIiwicyI6ImNlYjNlMDY1MDZhMWRlNWRkYWIzNWMzODM4YmUwMDMxOTQ2Zjg1NDM0M2RmZWEwNTM1OTQzNTRmZjk2NGQ4YjUyMThlMjRjNGZhZTZjN2YxZTNlNGJjYzAwMGZkYWJiOTNmMGM4OGQ4YjNmZmMwODMwODliOTEyNmVlNjA4YWU1IiwidCI6MTcwOTMzODkxNiwic3RmcCI6bnVsbCwic3RpcCI6bnVsbH0.tVNB03J5rYoFyHyEaiTAMCprZSwSXpE6L6u3oNqG3p0/Apple-Sonoma-v3.tar.xz";
+  #   sha256 = "sha256-GISzO/xQQrl3PUlK8u1QtQ2iIdaO2lDKuOX+rKMbQGA=";
+  # };
+  src = ./Apple-Sonoma-v3.tar.xz;
 
   installPhase = ''
     mkdir -p $out

@@ -305,7 +305,7 @@
           blur on #FIXME: TURN ON! Floating window loses its borders...
           #blur_xray on
           blur_passes 5
-          blur_radius 5
+          blur_radius 3
 
           for_window [tiling] shadows off
           for_window [floating] shadows on
