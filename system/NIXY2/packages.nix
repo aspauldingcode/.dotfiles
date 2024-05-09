@@ -84,7 +84,7 @@ environment.sessionVariables.NIXOS_OZONE_WL = "1";
     (pkgs.writeShellScriptBin "rebuild" ''
       # NIXY2(aarch64-linux)
       cd ~/.dotfiles
-      sudo nixos-rebuild switch --show-trace --impure --flake .#NIXY2 
+      sudo nixos-rebuild switch --show-trace --flake .#NIXY2 
       #home-manager switch --flake .#alex@NIXY2
       echo "Done. Running 'fix-wm'..."
       fix-wm

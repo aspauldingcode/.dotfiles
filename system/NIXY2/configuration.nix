@@ -24,9 +24,13 @@
 
   # try to fix peripheralFirmwareExtraction...
   hardware.asahi.extractPeripheralFirmware = true; #FIXME: return to true!
+  hardware.asahi.peripheralFirmwareDirectory = ./firmware;
 
   # enable GPU support
   hardware.asahi.useExperimentalGPUDriver = true;
+
+  # Enable asahi speaker support
+  sound.enable = true;
 
   # backlight control
   programs.light.enable = true;
