@@ -31,6 +31,7 @@
 
   home.packages = with pkgs; [
     # autotiling
+    ncdu
     calcurse
     chatgpt-cli
     cowsay
@@ -42,9 +43,6 @@
     # wireshark
     # nmapsi4
     #ruby
-    swayr
-    swayrbar
-    qemu
     spotify
     obsidian
     sl
