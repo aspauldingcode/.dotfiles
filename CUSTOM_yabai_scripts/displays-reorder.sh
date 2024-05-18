@@ -19,12 +19,19 @@ reorder_displays() {
             display_labels+=("$i")
         done
 
-        # Display a dialog box for user input
-        label_index=$(osascript -e "tell application \"Finder\" to choose from list {\"${display_labels[@]}\"} with prompt \"Select the label for display $display_index:\" default items {\"1\"}" | tr -d '[:space:]')
+        # Display a dialog box for user input using AppleScript
+        local script="try
+                        tell application \"System Events\"
+                            choose from list {\"${display_labels[@]}\"} with prompt \"Which display is this?\" default items {\"1\"}
+                        end tell
+                      on error error_message number error_number
+                        return \"Error: \" & error_message & \" (Number \" & error_number & \")\"
+                      end try"
+        label_index=$(osascript -e "$script" | tr -d '[:space:]')
 
-        # Check if input is empty
-        if [ -z "$label_index" ]; then
-            echo "Error: Label cannot be empty. Please try again."
+        # Check if input is empty or an error occurred
+        if [ -z "$label_index" ] || [[ "$label_index" == Error:* ]]; then
+            echo "Error: Label cannot be empty or there was an error. Please try again."
             prompt_for_label "$display_index" assigned_labels[@]
             return
         fi

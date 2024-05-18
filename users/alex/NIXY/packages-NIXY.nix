@@ -65,6 +65,7 @@
     # python39
     (pkgs.python311.withPackages (
       ps: [
+        ps.tkinter
         #ps.pygame
         ps.cx-freeze
         # ps.pep517
@@ -341,6 +342,7 @@
           yabai -m config window_gap      15
           borders style=round
           borders order=above
+          borders width=2.0
       }
 
       off() {
@@ -351,6 +353,7 @@
           yabai -m config window_gap      5
           borders style=square
           borders order=below
+          borders width=5.0
       }
 
       if [ "$#" -eq 0 ]; then

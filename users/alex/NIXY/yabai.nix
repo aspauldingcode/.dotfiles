@@ -38,13 +38,14 @@
         yabai -m config mouse_action2               resize
         yabai -m config mouse_drop_action           swap
         yabai -m config focus_follows_mouse         autoraise # autofocus | autoraise
-        yabai -m config mouse_follows_focus         on #FIXME: configure apps so I can turn this on.
+        yabai -m config mouse_follows_focus         on
 
         # window appearance
         yabai -m config window_shadow               float # floating windows only
         yabai -m config window_opacity              on
         yabai -m config window_opacity_duration     0.1
-        #yabai -m config window_animation_duration	  0.35
+        yabai -m config window_animation_duration	  0.35 #commented out
+        yabai -m config window_animation_easing     ease_in_out_circ
         yabai -m config window_opacity_duration     0.35
         yabai -m config normal_window_opacity	      0.95
         yabai -m config active_window_opacity	      1.0
@@ -57,6 +58,7 @@
         yabai -m config window_placement            second_child
         yabai -m config window_origin_display       default
         yabai -m config display_arrangement_order horizontal # default | vertical
+        yabai -m config window_zoom_persist         on
 
         # floating windows are always on top
         # when enabling this option, overlays in chrome are hidden
@@ -394,7 +396,7 @@
         options=(
           style=round
           order=above
-          width=5.0
+          width=2.0
           hidpi=on
           active_color=0xff"${colors.base0C}"
           inactive_color=0xff"${colors.base03}"

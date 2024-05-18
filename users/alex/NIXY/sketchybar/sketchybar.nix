@@ -17,12 +17,11 @@ let
   '';
 
   print_spaces = pkgs.writeShellScript "print_spaces" ''
-    PRINT_SPACES() {
     # Query for spaces with windows
-    spaces_with_windows=($(yabai -m query --spaces | jq -r '.[] | select(.windows | length > 0) | .index'))
+    spaces_with_windows=($(yabai -m query --spaces | jq -r '.[] | select(.windows | length > 0) | .label'))
 
     # Query for the active space
-    active_space=$(yabai -m query --spaces --space | jq -r '.index')
+    active_space=$(yabai -m query --spaces --space | jq -r '.label')
 
     # active space per display
     # Query for the total number of displays
@@ -34,7 +33,7 @@ let
     # Loop through each display
     for ((display=1; display<=$total_displays; display++)); do
         # Query for spaces on the current display that are visible
-        spaces=$(yabai -m query --spaces --display $display | jq -r '.[] | select(.["is-visible"] == true) | .index')
+        spaces=$(yabai -m query --spaces --display $display | jq -r '.[] | select(.["is-visible"] == true) | .label')
 
         # Add visible spaces to the active_display_spaces array
         for space in $spaces; do
@@ -43,11 +42,8 @@ let
     done
 
     # Combine spaces with windows and active spaces on all displays
-    print=($(echo "''${spaces_with_windows[@]}" "''${active_display_spaces[@]}" | tr ' ' '\n' | sort -nu))
-
+    print=($(echo "''${spaces_with_windows[@]}" "''${active_display_spaces[@]}" | tr ' ' '\n' | sort -u | sort -t '_' -k 2n))
     echo "''${print[@]}"
-    }
-    export -f PRINT_SPACES
   '';
 
   spaces_focus = pkgs.writeShellScript "spaces_focus" ''

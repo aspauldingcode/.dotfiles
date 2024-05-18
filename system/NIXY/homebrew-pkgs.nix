@@ -47,6 +47,7 @@
       "alacritty"
       "hammerspoon"
       "phoenix"
+      "prismlauncher"
       "dmenu-mac"
       "kitty"
       # "macforge"

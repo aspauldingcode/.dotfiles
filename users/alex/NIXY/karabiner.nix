@@ -118,108 +118,108 @@
                       }
                     ];
                   }
-                  {
-                    description = "Swap Alt and Control for Alacritty";
-                    manipulators = [
-                      {
-                        type = "basic";
-                        from = {
-                          "key_code" = "left_alt";
-                          modifiers = {
-                            mandatory = [ "left_control" ];
-                          };
-                        };
-                        to = [
-                          {
-                            "key_code" = "left_alt";
-                            modifiers = [ "left_command" ];
-                          }
-                        ];
-                        conditions = [
-                          {
-                            type = "frontmost_application_if";
-                            "bundle_identifiers" = [ "^org\\.alacritty$" ];
-                          }
-                        ];
-                      }
-                      {
-                        type = "basic";
-                        from = {
-                          "key_code" = "left_alt";
-                          modifiers = {
-                            mandatory = [ "left_command" ];
-                          };
-                        };
-                        to = [
-                          {
-                            "key_code" = "left_alt";
-                            modifiers = [ "left_control" ];
-                          }
-                        ];
-                        conditions = [
-                          {
-                            type = "frontmost_application_if";
-                            "bundle_identifiers" = [ "^org\\.alacritty$" ];
-                          }
-                        ];
-                      }
-                    ];
-                  }
-                  {
-                    description = "Swap Control + Shift with Command + Shift in Alacritty";
-                    manipulators = [
-                      {
-                        type = "basic";
-                        from = {
-                          "key_code" = "left_shift";
-                          modifiers = {
-                            mandatory = [ "left_control" ];
-                          };
-                        };
-                        to = [
-                          {
-                            "key_code" = "left_shift";
-                            modifiers = [ "left_command" ];
-                          }
-                        ];
-                        conditions = [
-                          {
-                            type = "frontmost_application_if";
-                            "bundle_identifiers" = [ "^org\\.alacritty$" ];
-                          }
-                        ];
-                      }
-                    ];
-                  }
-                  {
-                    description = "Replace Command+Shift+C with Control+C in Alacritty";
-                    manipulators = [
-                      {
-                        type = "basic";
-                        from = {
-                          "key_code" = "c";
-                          modifiers = {
-                            mandatory = [
-                              "left_command"
-                              "left_shift"
-                            ];
-                          };
-                        };
-                        to = [
-                          {
-                            "key_code" = "c";
-                            modifiers = [ "left_control" ];
-                          }
-                        ];
-                        conditions = [
-                          {
-                            type = "frontmost_application_if";
-                            "bundle_identifiers" = [ "^org\\.alacritty$" ];
-                          }
-                        ];
-                      }
-                    ];
-                  }
+                  # {
+                  #   description = "Swap Alt and Control for Alacritty";
+                  #   manipulators = [
+                  #     {
+                  #       type = "basic";
+                  #       from = {
+                  #         "key_code" = "left_alt";
+                  #         modifiers = {
+                  #           mandatory = [ "left_control" ];
+                  #         };
+                  #       };
+                  #       to = [
+                  #         {
+                  #           "key_code" = "left_alt";
+                  #           modifiers = [ "left_command" ];
+                  #         }
+                  #       ];
+                  #       conditions = [
+                  #         {
+                  #           type = "frontmost_application_if";
+                  #           "bundle_identifiers" = [ "^org\\.alacritty$" ];
+                  #         }
+                  #       ];
+                  #     }
+                  #     {
+                  #       type = "basic";
+                  #       from = {
+                  #         "key_code" = "left_alt";
+                  #         modifiers = {
+                  #           mandatory = [ "left_command" ];
+                  #         };
+                  #       };
+                  #       to = [
+                  #         {
+                  #           "key_code" = "left_alt";
+                  #           modifiers = [ "left_control" ];
+                  #         }
+                  #       ];
+                  #       conditions = [
+                  #         {
+                  #           type = "frontmost_application_if";
+                  #           "bundle_identifiers" = [ "^org\\.alacritty$" ];
+                  #         }
+                  #       ];
+                  #     }
+                  #   ];
+                  # }
+                  # {
+                  #   description = "Swap Control + Shift with Command + Shift in Alacritty";
+                  #   manipulators = [
+                  #     {
+                  #       type = "basic";
+                  #       from = {
+                  #         "key_code" = "left_shift";
+                  #         modifiers = {
+                  #           mandatory = [ "left_control" ];
+                  #         };
+                  #       };
+                  #       to = [
+                  #         {
+                  #           "key_code" = "left_shift";
+                  #           modifiers = [ "left_command" ];
+                  #         }
+                  #       ];
+                  #       conditions = [
+                  #         {
+                  #           type = "frontmost_application_if";
+                  #           "bundle_identifiers" = [ "^org\\.alacritty$" ];
+                  #         }
+                  #       ];
+                  #     }
+                  #   ];
+                  # }
+                  # {
+                  #   description = "Replace Command+Shift+C with Control+C in Alacritty";
+                  #   manipulators = [
+                  #     {
+                  #       type = "basic";
+                  #       from = {
+                  #         "key_code" = "c";
+                  #         modifiers = {
+                  #           mandatory = [
+                  #             "left_command"
+                  #             "left_shift"
+                  #           ];
+                  #         };
+                  #       };
+                  #       to = [
+                  #         {
+                  #           "key_code" = "c";
+                  #           modifiers = [ "left_control" ];
+                  #         }
+                  #       ];
+                  #       conditions = [
+                  #         {
+                  #           type = "frontmost_application_if";
+                  #           "bundle_identifiers" = [ "^org\\.alacritty$" ];
+                  #         }
+                  #       ];
+                  #     }
+                  #   ];
+                  # }
                 ];
               };
               devices = [
