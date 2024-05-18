@@ -6,6 +6,7 @@
   wayland.windowManager.sway = {
     enable = true;
     package = null;
+    checkConfig = false;
     config = rec {
       bars = [
         { command = "${pkgs.waybar}/bin/waybar"; } # FIXME: WHY ARE THERE TWO WAYBARS at launch?
@@ -34,7 +35,7 @@
         };
         "*" = {
           # change background for all outputs
-          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/sweden.png fill"; # ghibliwp.jpg, sweden.png
+          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/light_noise.png fill"; # ghibliwp.jpg, sweden.png
         };
       };
       # Use alacritty as default terminal
@@ -304,8 +305,8 @@
           # Window background blur
           blur on #FIXME: TURN ON! Floating window loses its borders...
           #blur_xray on
-          blur_passes 5
-          blur_radius 3
+          blur_passes 2
+          blur_radius 10
 
           for_window [tiling] shadows off
           for_window [floating] shadows on
