@@ -184,36 +184,33 @@ sketchybar --add item apple left \
   --set apple "${apple[@]}" \
   --subscribe apple mouse.clicked mouse.entered mouse.exited mouse.exited.global
 
-# Store the output of the print-spaces command in a variable
-active_spaces=($($PRINT_SPACES))
- Query for the total number of displays
+# Gather all space labels from all displays
+all_spaces=()
 total_displays=$(yabai -m query --displays | jq 'length')
-
-# Loop through each display
 for ((display=1; display<=$total_displays; display++)); do
-    echo "Display: $display"
-    # Query for all spaces on the current display by label
     spaces=($(yabai -m query --spaces --display $display | jq -r '.[] | .label'))
-    echo "Spaces on display $display: ${spaces[@]}"
-    
-    for sid in "${spaces[@]}"; do
-        # Remove the underscore prefix from the label to use as an integer
-        sid_cleaned="${sid#_}"
-        echo "Adding space $sid_cleaned to SketchyBar on all displays"
-        space_config=(
-            space="$sid_cleaned"
-            ignore_association=on  # This ensures the space item appears on all displays
-            icon="$sid_cleaned"
-            icon.padding_left=5
-            icon.padding_right=5
-            label.drawing=off
-            script="$PLUGIN_DIR/space.sh"
-            click_script="yabai -m space --focus $sid"
-        )
-        # Add each space as an item in SketchyBar
-        sketchybar --add space space."$sid_cleaned" left --set space."$sid_cleaned" "${space_config[@]}" \
-        --subscribe space space_change space_windows_change front_app_switched display_change
-    done
+    all_spaces+=("${spaces[@]}")
+done
+
+# Sort space labels numerically based on the integer part after the underscore
+IFS=$'\n' sorted_spaces=($(sort -t '_' -k 2n <<< "${all_spaces[*]}"))
+unset IFS
+
+# Add sorted space items to SketchyBar
+for sid in "${sorted_spaces[@]}"; do
+    sid_cleaned="${sid#_}"
+    space_config=(
+        space="$sid_cleaned"
+        ignore_association=on
+        icon="$sid_cleaned"
+        icon.padding_left=5
+        icon.padding_right=5
+        label.drawing=off
+        script="$PLUGIN_DIR/space.sh"
+        click_script="yabai -m space --focus $sid"
+    )
+    sketchybar --add space space."$sid_cleaned" left --set space."$sid_cleaned" "${space_config[@]}" \
+    --subscribe space space_change space_windows_change front_app_switched display_change
 done
 
 sketchybar --add item separator_left left \
