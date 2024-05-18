@@ -192,16 +192,18 @@ total_displays=$(yabai -m query --displays | jq 'length')
 # Loop through each display
 for ((display=1; display<=$total_displays; display++)); do
     echo "Display: $display"
-    # Query for all spaces on the current display
-    spaces=($(yabai -m query --spaces --display $display | jq -r '.[] | .index'))
+    # Query for all spaces on the current display by label
+    spaces=($(yabai -m query --spaces --display $display | jq -r '.[] | .label'))
     echo "Spaces on display $display: ${spaces[@]}"
     
     for sid in "${spaces[@]}"; do
-        echo "Adding space $sid to SketchyBar on all displays"
+        # Remove the underscore prefix from the label to use as an integer
+        sid_cleaned="${sid#_}"
+        echo "Adding space $sid_cleaned to SketchyBar on all displays"
         space_config=(
-            space="$sid"
+            space="$sid_cleaned"
             ignore_association=on  # This ensures the space item appears on all displays
-            icon="$sid"
+            icon="$sid_cleaned"
             icon.padding_left=5
             icon.padding_right=5
             label.drawing=off
@@ -209,7 +211,7 @@ for ((display=1; display<=$total_displays; display++)); do
             click_script="yabai -m space --focus $sid"
         )
         # Add each space as an item in SketchyBar
-        sketchybar --add space space."$sid" left --set space."$sid" "${space_config[@]}" \
+        sketchybar --add space space."$sid_cleaned" left --set space."$sid_cleaned" "${space_config[@]}" \
         --subscribe space space_change space_windows_change front_app_switched display_change
     done
 done
