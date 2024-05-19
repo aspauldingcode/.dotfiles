@@ -2,15 +2,7 @@
 
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
-source "$HOME/.config/sketchybar/plugins/print_spaces.sh"
-source "$HOME/.config/sketchybar/plugins/spaces_focus.sh"
-source "$HOME/.config/sketchybar/plugins/spaces_clear.sh"
-source "$HOME/.config/sketchybar/plugins/move_to_space.sh"
-source "$HOME/.config/sketchybar/plugins/dismiss_notifications.sh"
-source "$HOME/.config/sketchybar/plugins/toggle_menubar.sh"
-source "$HOME/.config/sketchybar/plugins/toggle_sketchybar.sh"
-source "$HOME/.config/sketchybar/plugins/toggle_darkmode.sh"
-source "$HOME/.config/sketchybar/plugins/toggle_gaps.sh"
+# source "$HOME/.config/sketchybar/plugins/print_spaces.sh"
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 ITEM_DIR="$HOME/.config/sketchybar/items"
@@ -171,14 +163,7 @@ apple=(
   popup.align=left
 )
 
-space_bg=(
-  background.color=$SPACEBG
-  background.height=19
-  background.corner_radius=50
-)
-
 ## Adding sketchybar Items:
-
 # Left Items
 sketchybar --add item apple left \
   --set apple "${apple[@]}" \
@@ -197,8 +182,10 @@ IFS=$'\n' sorted_spaces=($(sort -t '_' -k 2n <<< "${all_spaces[*]}"))
 unset IFS
 
 # Add sorted space items to SketchyBar
+all_space_ids=()  # Initialize an empty array to store space identifiers
 for sid in "${sorted_spaces[@]}"; do
     sid_cleaned="${sid#_}"
+    all_space_ids+=("space.$sid_cleaned")  # Add each space identifier to the array
     space_config=(
         space="$sid_cleaned"
         ignore_association=on
@@ -212,6 +199,7 @@ for sid in "${sorted_spaces[@]}"; do
     sketchybar --add space space."$sid_cleaned" left --set space."$sid_cleaned" "${space_config[@]}" \
     --subscribe space space_change space_windows_change front_app_switched display_change
 done
+export all_space_ids  # Make it available for other scripts
 
 sketchybar --add item separator_left left \
   --set separator_left "${separator_left[@]}" \
