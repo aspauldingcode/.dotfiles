@@ -72,16 +72,16 @@
 
       # ### Workspaces ### 
       # NOTE: Might need to use yabai for this! Using macOS by the way.
-      set $ws1  "    1    "
-      set $ws2  "    2    "
-      set $ws3  "    3    "
-      set $ws4  "    4    "
-      set $ws5  "    5    "
-      set $ws6  "    6    "
-      set $ws7  "    7    "
-      set $ws8  "    8    "
-      set $ws9  "    9    "
-      set $ws10 "    10    "
+      set $ws1  "1"
+      set $ws2  "2"
+      set $ws3  "3"
+      set $ws4  "4"
+      set $ws5  "5"
+      set $ws6  "6"
+      set $ws7  "7"
+      set $ws8  "8"
+      set $ws9  "9"
+      set $ws10 "10"
 
       # # Switch to workspace n
       bindsym $mod+1 workspace $ws1
@@ -115,18 +115,11 @@
       bindsym $mod+$wm_setting_key_right       focus right
 
       # # Move focused window
-      #bindsym $mod+$smod+$wm_setting_key_left  move left
-      #bindsym $mod+$smod+$wm_setting_key_down  move down
-      #bindsym $mod+$smod+$wm_setting_key_up    move up
-      #bindsym $mod+$smod+$wm_setting_key_right move right
-
-      #FIXME: update this to be above! moves windows.
-      # Swap positions of the current window with the one on $direction
-      bindsym $mod+Shift+Left  mark --add "_swap", focus left,  swap container with mark "_swap", focus left,  unmark "_swap"
-      bindsym $mod+Shift+Down  mark --add "_swap", focus down,  swap container with mark "_swap", focus down,  unmark "_swap"
-      bindsym $mod+Shift+Up    mark --add "_swap", focus up,    swap container with mark "_swap", focus up,    unmark "_swap"
-      bindsym $mod+Shift+Right mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"
-
+      # Move and swap windows, with special handling for floating windows
+      bindsym $mod+Shift+Left mark --add "_swap", focus left, swap container with mark "_swap", focus left, unmark "_swap", [floating con_id="__focused__"] move left 20px
+      bindsym $mod+Shift+Down mark --add "_swap", focus down, swap container with mark "_swap", focus down, unmark "_swap", [floating con_id="__focused__"] move down 20px
+      bindsym $mod+Shift+Up mark --add "_swap", focus up, swap container with mark "_swap", focus up, unmark "_swap", [floating con_id="__focused__"] move up 20px
+      bindsym $mod+Shift+Right mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap", [floating con_id="__focused__"] move right 20px
 
       # # Resize window (you can also use the mouse for that)
       # mode "resize" {

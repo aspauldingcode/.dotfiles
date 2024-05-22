@@ -740,6 +740,22 @@ in
       toggle_fullscreen
     '')
 
+    #yabai_i3_switch
+        (pkgs.writeShellScriptBin "yabai_i3_switch" ''
+      # Get the name of the frontmost application
+      front_app=$(osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true')
+
+      # Check if the frontmost application is X11.bin
+      if [ "$front_app" = "X11.bin" ]; then
+          # If X11.bin is the frontmost app, set the mouse modifier to cmd
+          ${yabai} -m config mouse_modifier cmd # turns off yabai mouse shortcut
+      else
+          # If the frontmost app is not X11.bin, set the mouse modifier to alt
+          ${yabai} -m config mouse_modifier alt # enables alt modifier for yabai again
+      fi
+    '')
+
+
     #search
     (pkgs.writeShellScriptBin "search" ''
       # Check if an argument is provided

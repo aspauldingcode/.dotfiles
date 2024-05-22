@@ -197,7 +197,8 @@ for sid in "${sorted_spaces[@]}"; do
         click_script="yabai -m space --focus $sid"
     )
     sketchybar --add space space."$sid_cleaned" left --set space."$sid_cleaned" "${space_config[@]}" \
-    --subscribe space space_change space_windows_change front_app_switched display_change
+    --subscribe space space_change space_windows_change front_app_switched display_change 
+    # THESE AREN"T ALL SUBSCRIBED, ARE THEY?
 done
 export all_space_ids  # Make it available for other scripts
 
@@ -215,8 +216,7 @@ sketchybar --add item separator_left left \
     label.padding_right=15 \
     --subscribe front_app front_app_switched mouse.clicked mouse.entered mouse.exited mouse.exited.global
 sketchybar --add item active_app left \
-   --set active_app "${active_app[@]}" \
-   --subscribe front_app front_app_switched
+    --set active_app "${active_app[@]}"
 
 # Center Items
 sketchybar --add item volume center \
