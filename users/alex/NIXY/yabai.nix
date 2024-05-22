@@ -308,12 +308,8 @@
           ${modifier} - m : toggle-sketchybar
 
           # toggle native macOS menubar, or dock
-          #${modifier} + shift - m : toggle-menubar
-          #${modifier} + shift - m : bash -e "toggle-menubar"
-          #${modifier} + shift - m : osascript -e 'do shell script "open -n -a Settings"' 
-          #${modifier} + shift - m : #$#{#pkgs.toggle-menubar}/bin/toggle-menubar 
-          ${modifier} + shift - m : /etc/profiles/per-user/alex/bin/toggle-menubar
-
+          ${modifier} + shift - m : current=$(osascript -e 'tell application "System Events" to tell dock preferences to get autohide menu bar'); new_state=$(if [[ "$1" == "on" ]]; then echo false; elif [[ "$1" == "off" ]]; then echo true; else [[ "$current" == "true" ]] && echo false || echo true; fi); osascript -e "tell application \"System Events\" to tell dock preferences to set autohide menu bar to $new_state" && ${yabai} -m config menubar_opacity $(if [[ "$new_state" == "true" ]]; then echo 0.0; else echo 1.0; fi) && echo "Menu bar turned $(if [[ "$new_state" == "true" ]]; then echo OFF; else echo ON; fi)"
+          
           ${modifier} - space : toggle-dock
 
           # toggle gaps
