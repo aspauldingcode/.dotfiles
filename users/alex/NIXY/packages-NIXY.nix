@@ -5,7 +5,9 @@
   ...
 }:
 # NIXY-specific packages
-
+let 
+      osascript = "/usr/bin/osascript"; 
+    in 
 {
   # Copy Home-Manager Nix GUI apps to ~/Applications on darwin:
   home.activation = {
@@ -55,6 +57,7 @@
     cargo
     utm
     mas
+    neovim
     vscode
     audacity
     #yazi to upgrade temporarily with homebrew
@@ -137,7 +140,7 @@
 
     #mic (for sketchybar!)
     (pkgs.writeShellScriptBin "mic" ''
-      MIC_VOLUME=$(osascript -e 'input volume of (get volume settings)')
+      MIC_VOLUME=$(${osascript} -e 'input volume of (get volume settings)')
       if [[ $MIC_VOLUME -eq 0 ]]; then
       sketchybar -m --set mic icon=
       elif [[ $MIC_VOLUME -gt 0 ]]; then
@@ -147,12 +150,12 @@
 
     #mic_click (for sketchybar!)
     (pkgs.writeShellScriptBin "mic_click" ''
-      MIC_VOLUME=$(osascript -e 'input volume of (get volume settings)')
+      MIC_VOLUME=$(${osascript} -e 'input volume of (get volume settings)')
       if [[ $MIC_VOLUME -eq 0 ]]; then
-      osascript -e 'set volume input volume 25'
+      ${osascript} -e 'set volume input volume 25'
       sketchybar -m --set mic icon=
       elif [[ $MIC_VOLUME -gt 0 ]]; then
-      osascript -e 'set volume input volume 0'
+      ${osascript} -e 'set volume input volume 0'
       sketchybar -m --set mic icon=
       fi 
     '')
@@ -495,22 +498,22 @@
       dock_state_file="/tmp/dock_state"
 
       toggle_dock() {
-          local dock_status=$(osascript -e 'tell application "System Events" to get autohide of dock preferences')
+          local dock_status=$(${osascript} -e 'tell application "System Events" to get autohide of dock preferences')
 
           if [ $# -eq 0 ]; then
               # No arguments provided, toggle based on current state
               if [ "$dock_status" = "true" ]; then
-                  osascript -e 'tell application "System Events" to set autohide of dock preferences to false'
+                  ${osascript} -e 'tell application "System Events" to set autohide of dock preferences to false'
                   echo "Dock toggled on"
                   echo "on" > "$dock_state_file"  # Save state to file
               else
-                  osascript -e 'tell application "System Events" to set autohide of dock preferences to true'
+                  ${osascript} -e 'tell application "System Events" to set autohide of dock preferences to true'
                   echo "Dock toggled off"
                   echo "off" > "$dock_state_file"  # Save state to file
               fi
           elif [ "$1" = "on" ]; then
               if [ "$dock_status" = "true" ]; then
-                  osascript -e 'tell application "System Events" to set autohide of dock preferences to false'
+                  ${osascript} -e 'tell application "System Events" to set autohide of dock preferences to false'
                   echo "Dock toggled on"
                   echo "on" > "$dock_state_file"  # Save state to file
               else
@@ -518,7 +521,7 @@
               fi
           elif [ "$1" = "off" ]; then
               if [ "$dock_status" = "false" ]; then
-                  osascript -e 'tell application "System Events" to set autohide of dock preferences to true'
+                  ${osascript} -e 'tell application "System Events" to set autohide of dock preferences to true'
                   echo "Dock toggled off"
                   echo "off" > "$dock_state_file"  # Save state to file
               else
@@ -527,11 +530,11 @@
           else
               # Invalid argument, toggle based on current state
               if [ "$dock_status" = "true" ]; then
-                  osascript -e 'tell application "System Events" to set autohide of dock preferences to false'
+                  ${osascript} -e 'tell application "System Events" to set autohide of dock preferences to false'
                   echo "Dock toggled on"
                   echo "on" > "$dock_state_file"  # Save state to file
               else
-                  osascript -e 'tell application "System Events" to set autohide of dock preferences to true'
+                  ${osascript} -e 'tell application "System Events" to set autohide of dock preferences to true'
                   echo "Dock toggled off"
                   echo "off" > "$dock_state_file"  # Save state to file
               fi
@@ -543,39 +546,40 @@
     '')
 
     #toggle-menubar
-    (pkgs.writeShellScriptBin "toggle-menubar" ''
-            # Function to toggle the macOS menu bar
+    (pkgs.writeShellScriptBin "toggle-menubar" (let
+      osascript = "/usr/bin/osascript";
+    in ''
+      # Function to toggle the macOS menu bar
       toggle_menubar() {
-          current_opacity=$(osascript -e 'tell application "System Events" to tell dock preferences to get autohide menu bar')
+          current_opacity=$(${osascript} -e 'tell application "System Events" to tell dock preferences to get autohide menu bar')
           if [[ "$current_opacity" == "true" ]]; then
-              osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to false'
+              ${osascript} -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to false'
               yabai -m config menubar_opacity 1.0
               echo "Menu bar turned ON"
           else
-              osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to true'
+              ${osascript} -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to true'
               yabai -m config menubar_opacity 0.0
               echo "Menu bar turned OFF"
           fi
       }
 
-            # Main
       if [[ "$#" -eq 0 ]]; then
           toggle_menubar
       elif [[ "$#" -eq 1 && ($1 == "on" || $1 == "off") ]]; then
           if [[ "$1" == "on" ]]; then
-              osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to false'
-               yabai -m config menubar_opacity 1.0
+              ${osascript} -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to false'
+              yabai -m config menubar_opacity 1.0
               echo "Menu bar turned ON"
           else
-              osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to true'
-                yabai -m config menubar_opacity 0.0
+              ${osascript} -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to true'
+              yabai -m config menubar_opacity 0.0
               echo "Menu bar turned OFF"
           fi
       else
           echo "Usage: $0 <on | off>"
           exit 1
       fi
-    '')
+    ''))
 
     #toggle-float
     (pkgs.writeShellScriptBin "toggle-float" ''
@@ -597,7 +601,7 @@
 
     #dismiss-notifications
     (pkgs.writeShellScriptBin "dismiss-notifications" ''
-          osascript -e 'tell application "System Events"
+          ${osascript} -e 'tell application "System Events"
       	tell process "NotificationCenter"
       		if not (window "Notification Center" exists) then return
       		set alertGroups to groups of first UI element of first scroll area of first group of window "Notification Center"
@@ -616,7 +620,7 @@
 
     # toggle-darkmode
     (pkgs.writeShellScriptBin "toggle-darkmode" ''
-      osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to not dark mode'
+      ${osascript} -e 'tell app "System Events" to tell appearance preferences to set dark mode to not dark mode'
     '')
 
     # statefile-reader
@@ -645,7 +649,7 @@
 
       # Function to check dark mode status and update darkmode state file
       check_darkmode_status() {
-          darkmode_status=$(osascript -e 'tell application "System Events" to tell appearance preferences to get dark mode')
+          darkmode_status=$(${osascript} -e 'tell application "System Events" to tell appearance preferences to get dark mode')
           if [ "$darkmode_status" = "true" ]; then
               darkmode_state="on"
           else
@@ -666,7 +670,7 @@
       fi
 
       # Update the dock state
-      dock_status=$(osascript -e 'tell application "System Events" to get autohide of dock preferences')
+      dock_status=$(${osascript} -e 'tell application "System Events" to get autohide of dock preferences')
       if [ "$dock_status" = "true" ]; then
           dock_state="off"
       elif [ "$dock_status" = "false" ]; then

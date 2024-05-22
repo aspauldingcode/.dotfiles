@@ -1,16 +1,16 @@
 #!/bin/sh
 
 source "$HOME/.config/sketchybar/colors.sh"
-#source "$HOME/.config/sketchybar/space_identifiers.sh"  # Ensure this file sources the array
 source "$HOME/.config/sketchybar/plugins/sway_spaces.sh"
 
 # Query for the total number of displays
 TOTAL_DISPLAYS=$(yabai -m query --displays | jq 'length')
 
-# Reset highlights for all space items
-for id in "${all_space_ids[@]}"; do
-    sketchybar --set $id icon.highlight=off
-done
+# # Reset highlights for all space items
+# for id in "${all_space_ids[@]}"; do
+#     sketchybar --set $id icon.highlight=off
+#     echo -e "reset highlights running now"
+# done
 
 # Loop through each display
 for ((display=1; display<=$TOTAL_DISPLAYS; display++)); do
