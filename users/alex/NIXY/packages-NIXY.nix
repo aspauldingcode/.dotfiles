@@ -9,6 +9,7 @@
 let 
   yabai = "/opt/homebrew/bin/yabai";
   sketchybar = "/opt/homebrew/bin/sketchybar";
+  borders = "/opt/homebrew/bin/borders";
 in
 {
   # Copy Home-Manager Nix GUI apps to ~/Applications on darwin:
@@ -345,9 +346,9 @@ in
           ${yabai} -m config left_padding    15
           ${yabai} -m config right_padding   15
           ${yabai} -m config window_gap      15
-          borders style=round
-          borders order=above
-          borders width=2.0
+          ${borders} style=round
+          ${borders} order=above
+          ${borders} width=2.0
       }
 
       off() {
@@ -356,9 +357,9 @@ in
           ${yabai} -m config left_padding    0
           ${yabai} -m config right_padding   0
           ${yabai} -m config window_gap      5
-          borders style=square
-          borders order=below
-          borders width=5.0
+          ${borders} style=square
+          ${borders} order=below
+          ${borders} width=5.0
       }
 
       if [ "$#" -eq 0 ]; then

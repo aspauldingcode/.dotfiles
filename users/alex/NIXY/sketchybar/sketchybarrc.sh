@@ -16,7 +16,7 @@ bar=(
   color=$STATUS
   border_color=$GREY # why didn't that work?
   border_width=2
-  y_offset=10
+  y_offset=13
   sticky=off
   margin=13 # Margin around the bar
 )
@@ -214,6 +214,7 @@ sketchybar --add item separator_left left \
     icon.drawing=on \
     label.padding_left=15 \
     label.padding_right=15 \
+    updates=on \
     --subscribe front_app front_app_switched mouse.clicked mouse.entered mouse.exited mouse.exited.global
 sketchybar --add item active_app left \
     --set active_app "${active_app[@]}"

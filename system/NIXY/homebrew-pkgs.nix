@@ -12,6 +12,7 @@
     };
     brews = [
       "xinit"
+      "x11vnc"
       "xorg-server"
       "choose-gui"
       "yabai"
@@ -29,6 +30,7 @@
       "portaudio"
       "iniparser"
       "gcal"
+      "spicetify-cli"
       "cliclick"
       "iproute2mac"
       "gtk-mac-integration" # build gtk mac apps?

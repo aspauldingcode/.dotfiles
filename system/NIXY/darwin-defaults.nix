@@ -134,8 +134,8 @@
           "done_xinit_check" = 1;
           "enable_iglx" = 1;
           "login_shell" = "/bin/sh";
-          "no_auth" = 0;
-          "nolisten_tcp" = 1;
+          "no_auth" = 0; # required
+          "nolisten_tcp" = 0; # allow docker connections
           "option_sends_alt" = true; # MUST BE TRUE for using ALT as Mod1 in i3! (NOTE: disable skhd if using xquartz!)
           "startx_script" = "/opt/X11/bin/startx -- /opt/X11/bin/Xquartz";
         };

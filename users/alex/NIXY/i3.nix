@@ -27,7 +27,7 @@
       # using macOS by the way!!!
       set $wm_setting_app_terminal         xterm
       set $wm_setting_app_browser          open -na "Brave Browser"
-      # set $wm_setting_app_launcher         /opt/local/bin/dmenu_run
+      set $wm_setting_app_launcher         /opt/local/bin/dmenu_run
       # set $wm_setting_app_compositor       picom
 
       set $wm_color_border_active_bg       #81A1C1
@@ -65,7 +65,7 @@
       bindsym $mod+Mod3+Space exec $wm_setting_app_browser
 
       # # Start a program launcher
-      bindsym $mod+d exec /opt/local/bin/dmenu_run
+      bindsym $mod+d exec $wm_setting_app_launcher
 
       # # Run a window compositor (for effects like transparency or full VSync)
       # exec_always --no-startup-id $wm_setting_app_compositor
@@ -95,17 +95,12 @@
       bindsym $mod+9 workspace $ws9
       bindsym $mod+0 workspace $ws10
 
-      # # Move focused container to workspace n            
-      bindsym $mod+$smod+1 move container to workspace $ws1, workspace number $ws1, exec "yabai -m window --space 1; yabai -m space --focus 1"
-      bindsym $mod+$smod+2 move container to workspace $ws2, workspace number $ws2, exec "yabai -m window --space 2; yabai -m space --focus 2"
-      bindsym $mod+$smod+3 move container to workspace $ws3, workspace number $ws3, exec "yabai -m window --space 3; yabai -m space --focus 3"
-      bindsym $mod+$smod+4 move container to workspace $ws4, workspace number $ws4, exec "yabai -m window --space 4; yabai -m space --focus 4"
-      bindsym $mod+$smod+5 move container to workspace $ws5, workspace number $ws5, exec "yabai -m window --space 5; yabai -m space --focus 5"
-      bindsym $mod+$smod+6 move container to workspace $ws6, workspace number $ws6, exec "yabai -m window --space 6; yabai -m space --focus 6"
-      bindsym $mod+$smod+7 move container to workspace $ws7, workspace number $ws7, exec "yabai -m window --space 7; yabai -m space --focus 7"
-      bindsym $mod+$smod+8 move container to workspace $ws8, workspace number $ws8, exec "yabai -m window --space 8; yabai -m space --focus 8"
-      bindsym $mod+$smod+9 move container to workspace $ws9, workspace number $ws9, exec "yabai -m window --space 9; yabai -m space --focus 9"
-      bindsym $mod+$smod+0 move container to workspace $ws10, workspace number $ws10, exec "yabai -m window --space 10; yabai -m space --focus 10"
+     bindsym $mod+u focus parent
+     bindsym $mod+w layout toggle split
+     bindsym $mod+s layout tabbed             # macos is stacked layout
+     bindsym $mod+e layout default
+     bindsym $mod+b split horizontal
+     bindsym $mod+v split vertical
 
       # ### Window sizes and positions ###
       # # Cange focus
@@ -121,32 +116,47 @@
       bindsym $mod+Shift+Up mark --add "_swap", focus up, swap container with mark "_swap", focus up, unmark "_swap", [floating con_id="__focused__"] move up 20px
       bindsym $mod+Shift+Right mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap", [floating con_id="__focused__"] move right 20px
 
-      # # Resize window (you can also use the mouse for that)
-      # mode "resize" {
-      # #	These bindings trigger as soon as you enter the resize mode
-      #
-      # #	Pressing left will shrink the window’s width.
-      # #	Pressing right will grow the window’s width.
-      # #	Pressing up will shrink the window’s height.
-      # #	Pressing down will grow the window’s height.
-      #         bindsym $wm_setting_key_left  resize shrink width 10 px or 10 ppt
-      #         bindsym $wm_setting_key_down  resize grow height 10 px or 10 ppt
-      #         bindsym $wm_setting_key_up    resize shrink height 10 px or 10 ppt
-      #         bindsym $wm_setting_key_right resize grow width 10 px or 10 ppt
-      #
-      # #	Resize the gap width and height
-      #         bindsym $smod+$wm_setting_key_left  gaps horizontal minus 5
-      #         bindsym $smod+$wm_setting_key_down  gaps horizontal plus 5
-      #         bindsym $smod+$wm_setting_key_up    gaps vertical minus 5
-      #         bindsym $smod+$wm_setting_key_right gaps vertical plus 5
+      # Navigate to next/prev workspace
+      bindsym $mod+Ctrl+h workspace prev
+      bindsym $mod+Ctrl+j workspace next
+      bindsym $mod+Ctrl+k workspace prev
+      bindsym $mod+Ctrl+l workspace next
+      bindsym $mod+Ctrl+Left workspace prev
+      bindsym $mod+Ctrl+Down workspace next
+      bindsym $mod+Ctrl+Up workspace prev
+      bindsym $mod+Ctrl+Right workspace next
+      
+      # # Move focused container to workspace n            
+      bindsym $mod+$smod+1 move container to workspace $ws1, workspace number $ws1, exec "yabai -m window --space _1; yabai -m space --focus _1"
+      bindsym $mod+$smod+2 move container to workspace $ws2, workspace number $ws2, exec "yabai -m window --space _2; yabai -m space --focus _2"
+      bindsym $mod+$smod+3 move container to workspace $ws3, workspace number $ws3, exec "yabai -m window --space _3; yabai -m space --focus _3"
+      bindsym $mod+$smod+4 move container to workspace $ws4, workspace number $ws4, exec "yabai -m window --space _4; yabai -m space --focus _4"
+      bindsym $mod+$smod+5 move container to workspace $ws5, workspace number $ws5, exec "yabai -m window --space _5; yabai -m space --focus _5"
+      bindsym $mod+$smod+6 move container to workspace $ws6, workspace number $ws6, exec "yabai -m window --space _6; yabai -m space --focus _6"
+      bindsym $mod+$smod+7 move container to workspace $ws7, workspace number $ws7, exec "yabai -m window --space _7; yabai -m space --focus _7"
+      bindsym $mod+$smod+8 move container to workspace $ws8, workspace number $ws8, exec "yabai -m window --space _8; yabai -m space --focus _8"
+      bindsym $mod+$smod+9 move container to workspace $ws9, workspace number $ws9, exec "yabai -m window --space _9; yabai -m space --focus _9"
+      bindsym $mod+$smod+0 move container to workspace $ws10, workspace number $ws10, exec "yabai -m window --space _10; yabai -m space --focus _10"
 
-      # #	Back to normal: Enter or Escape or $mod+r
-      #         bindsym Return mode "default"
-      #         bindsym Escape mode "default"
-      #         bindsym $mod+r mode "default"
-      # }
+      # resize grow windows
+      bindsym $mod+Ctrl+h resize grow left 20px
+      bindsym $mod+Ctrl+j resize grow down 20px
+      bindsym $mod+Ctrl+k resize grow up 20px
+      bindsym $mod+Ctrl+l resize grow right 20px
+      bindsym $mod+Ctrl+Left resize grow left 20px
+      bindsym $mod+Ctrl+Down resize grow down 20px
+      bindsym $mod+Ctrl+Up resize grow up 20px
+      bindsym $mod+Ctrl+Right resize grow right 20px
 
-      # bindsym $mod+r mode "resize"
+      bindsym $mod+Ctrl+Shift+h resize shrink left 20px
+      bindsym $mod+Ctrl+Shift+j resize shrink down 20px
+      bindsym $mod+Ctrl+Shift+k resize shrink up 20px
+      bindsym $mod+Ctrl+Shift+l resize shrink right 20px
+      bindsym $mod+Ctrl+Shift+Left resize shrink left 20px
+      bindsym $mod+Ctrl+Shift+Down resize shrink down 20px
+      bindsym $mod+Ctrl+Shift+Up resize shrink up 20px
+      bindsym $mod+Ctrl+Shift+Right resize shrink right 20px
+
 
       # ### Gaps (Requires i3 version 4.22 and above!) ###
       # gaps horizontal $wm_setting_gap_width
