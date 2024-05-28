@@ -222,6 +222,9 @@ remove_unimportant_spaces() {
         if ! [[ " ${important_spaces[@]} " =~ " $space_label " ]]; then
             yabai -m space "$space_label" --destroy
             echo "Removed unimportant space: $space_label"
+            formatted_space_label="${space_label#_}"
+            sketchybar --remove "space.$formatted_space_label"
+            echo "Removed unimportant sketchybar space.$formatted_space_label"
         fi
     done
 }
@@ -238,14 +241,35 @@ generate_new_space() {
     # Rename the newly created space with the specified label
     yabai -m space --label "$new_label"
 }
-
-
-
-#!/bin/bash
-
 # Function to reorder displays
 reorder_displays() {
     local auto_flag="$1"
+
+    # Function to handle display labeling and ordering
+    handle_displays() {
+        local displays_count
+        displays_count=$(yabai -m query --displays | jq length)
+
+        # Check if the display order file exists and is non-empty
+        if [ "$auto_flag" == "--auto" ]; then
+            # Automatically set labels based on display index
+            echo "Automatically setting labels for each display..."
+            for ((display_index=1; display_index<=displays_count; display_index++)); do
+                local label="_$display_index"
+                echo "Setting label '$label' for display $display_index..."
+                yabai -m display "$display_index" --label "$label"
+                echo "$display_index: $label" >> "$HOME/.config/yabai/display_order"
+            done
+        else
+            # If not auto, prompt for labels
+            echo "Running display labeling in the current shell..."
+            local display_index=1
+            while [ $display_index -le $displays_count ]; do
+                prompt_for_label $display_index
+                ((display_index++))
+            done
+        fi
+    }
 
     # Function to prompt user for display label
     prompt_for_label() {
@@ -266,15 +290,10 @@ reorder_displays() {
             
             # Check if input is an integer and within the range
             if [[ $label_index =~ ^[1-$displays_count]$ ]]; then
-                if grep -q "^$display_index: _" "$HOME/.config/yabai/display_order"; then
-                    echo "Warning: Label for display $display_index already set. Skipping..."
-                else
-                    echo "Setting label '_$label_index' for display $display_index..."
-                    # Set the label for the display
-                    local label="_$label_index"
-                    echo "$display_index: $label" >> "$HOME/.config/yabai/display_order"
-                    yabai -m display "$display_index" --label "$label"
-                fi
+                local label="_$label_index"
+                echo "Setting label '$label' for display $display_index..."
+                echo "$display_index: $label" >> "$HOME/.config/yabai/display_order"
+                yabai -m display "$display_index" --label "$label"
                 break
             else
                 echo "Error: Please enter a valid integer between 1 and $displays_count."
@@ -282,54 +301,21 @@ reorder_displays() {
         done
     }
 
-    # Function to handle display labeling and ordering
-    handle_displays() {
-        # Main script logic
-        if [ "$auto_flag" == "--auto" ]; then
-            # Check if the display order file exists and is non-empty
-            if [ -s "$HOME/.config/yabai/display_order" ]; then
-                # Read settings from input file and apply them using yabai
-                local input_file="$HOME/.config/yabai/display_order"
-                echo "Reading settings from $input_file and applying..."
-                while IFS= read -r line; do
-                    local display_index=$(echo "$line" | cut -d':' -f1)
-                    local label=$(echo "$line" | cut -d':' -f2 | sed 's/ //g')
-                    echo "Setting label '$label' for display $display_index..."
-                    yabai -m display "$display_index" --label "$label"
-                done < "$input_file"
-            else
-                echo "Display order file is empty or doesn't exist. Running default logic."
-                auto_flag=""
-            fi
+    # Ensure the display order file exists and is valid
+    if [ -f "$HOME/.config/yabai/display_order" ]; then
+        local expected_lines=$(yabai -m query --displays | jq length)
+        local actual_lines=$(wc -l < "$HOME/.config/yabai/display_order")
+        if [ "$expected_lines" -ne "$actual_lines" ]; then
+            echo "Mismatch in display count and display order file entries. Deleting and recreating file..."
+            rm "$HOME/.config/yabai/display_order"
+            touch "$HOME/.config/yabai/display_order"
+            handle_displays "$auto_flag"
         fi
-
-        # Check the number of displays
-        local displays_count
-        displays_count=$(yabai -m query --displays | jq length)
-        
-        # If there's only one display, immediately set label _1
-        if [ "$displays_count" -eq 1 ]; then
-            if ! grep -q "^1: _" "$HOME/.config/yabai/display_order"; then
-                echo "Setting label '_1' for the only display..."
-                echo "1: _1" > "$HOME/.config/yabai/display_order"
-                yabai -m display 1 --label "_1"
-            fi
-        else
-            # Launch Alacritty in a new terminal window
-            echo "Launching Alacritty in a new terminal window..."
-            /opt/homebrew/bin/alacritty -e bash -c "
-                > $HOME/.config/yabai/display_order # Clear the file
-                local display_index=1
-                while [ \$display_index -le $displays_count ]; do
-                    prompt_for_label \$display_index
-                    ((display_index++))
-                done
-            "
-        fi
-    }
-
-    # Call function to handle display labeling and ordering
-    handle_displays "$auto_flag"
+    else
+        touch "$HOME/.config/yabai/display_order"
+        echo "Created display order file."
+        handle_displays "$auto_flag"
+    fi
 }
 
 # echo -e "\nSpaces Information:"
@@ -364,3 +350,9 @@ reorder_displays "--auto" # save the pain and agony of display ordering
 
 echo -e "\nDisplay Information with Spaces Information:"
 read_spaces_on_display_n_for_all_displays
+
+echo -e "\nPrint Space Labels:"
+read_all_spaces
+
+
+#echo -e "\n\n\n\nThe current layout:\n\n"

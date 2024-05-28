@@ -5,8 +5,8 @@
   home.file.xinitrc = {
     target = ".xinitrc";
     text = ''
-      #exec "/opt/local/bin/i3" # start i3 before xquartzwm does.
-      exec "ssh -Y -p 2222 127.0.0.1 i3" # start i3 before xquartzwm does
+      exec "/opt/local/bin/i3" # start i3 before xquartzwm does.
+      #exec "ssh -Y -p 2222 127.0.0.1 i3" # start i3 before xquartzwm does
       exec "/opt/local/bin/python3.11 ~/.dotfiles/i3ipc-python-master/autotiling.py"
       exec "xhost + ${osConfig.networking.hostName}" # https://gist.github.com/cschiewek/246a244ba23da8b9f0e7b11a68bf3285#to-forward-x11-from-inside-a-docker-container-to-a-host-running-macos
       exec "export HOSTNAME=${osConfig.networking.hostName}"

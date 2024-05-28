@@ -68,7 +68,7 @@
       "discord"
       "asset-catalog-tinkerer"
       "themeengine"
-      "google-assistant"
+      #"google-assistant"
       "gimp"
       "docker"
     ];

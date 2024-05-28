@@ -24,6 +24,3 @@ for ((display=1; display<=$TOTAL_DISPLAYS; display++)); do
     sketchybar --set space.$ACTIVE_SPACE_CLEANED icon.highlight=on icon.highlight_color=$ORANGE
 done
 sketchybar --set space.$ACTIVE_SPACE_CLEANED icon.highlight=true icon.highlight_color=$ORANGE
-
-#yabai_i3_switch # in charge of detecting if we are on a x11.bin window or not. Fixes mouse resize.
-#echo -e "\n\n\n\n\n\tEXECUTING yabai_i3_switch NOW!!!!\n\n\n\n\n"

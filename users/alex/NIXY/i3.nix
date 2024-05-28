@@ -139,25 +139,6 @@
       bindsym $mod+$smod+0 move container to workspace $ws10, workspace number $ws10, exec "yabai -m window --space _10; yabai -m space --focus _10"
 
       # resize grow windows
-      bindsym $mod+Ctrl+h resize grow left 20px
-      bindsym $mod+Ctrl+j resize grow down 20px
-      bindsym $mod+Ctrl+k resize grow up 20px
-      bindsym $mod+Ctrl+l resize grow right 20px
-      bindsym $mod+Ctrl+Left resize grow left 20px
-      bindsym $mod+Ctrl+Down resize grow down 20px
-      bindsym $mod+Ctrl+Up resize grow up 20px
-      bindsym $mod+Ctrl+Right resize grow right 20px
-
-      bindsym $mod+Ctrl+Shift+h resize shrink left 20px
-      bindsym $mod+Ctrl+Shift+j resize shrink down 20px
-      bindsym $mod+Ctrl+Shift+k resize shrink up 20px
-      bindsym $mod+Ctrl+Shift+l resize shrink right 20px
-      bindsym $mod+Ctrl+Shift+Left resize shrink left 20px
-      bindsym $mod+Ctrl+Shift+Down resize shrink down 20px
-      bindsym $mod+Ctrl+Shift+Up resize shrink up 20px
-      bindsym $mod+Ctrl+Shift+Right resize shrink right 20px
-
-
       # ### Gaps (Requires i3 version 4.22 and above!) ###
       # gaps horizontal $wm_setting_gap_width
       # gaps vertical   $wm_setting_gap_heigth
@@ -215,8 +196,7 @@
       bindsym $mod+$smod+q kill
 
       # # Restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-      bindsym $mod+$smod+r restart
-
+      bindsym $mod+$smod+r exec --no-startup-id "i3-msg restart; xrdb -merge ~/.Xresources"
       # # Exit i3 (logs you out of your X session)
       # bindsym $mod+$smod+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
