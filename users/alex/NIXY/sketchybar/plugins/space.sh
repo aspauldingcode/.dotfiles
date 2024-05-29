@@ -2,6 +2,10 @@
 
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/plugins/sway_spaces.sh"
+# source "$HOME/.config/sketchybar/plugins/add_spaces_sketchybar.sh"
+
+# # Call the function to execute the updates
+# update_sketchybar_spaces
 
 # Query for the total number of displays
 TOTAL_DISPLAYS=$(yabai -m query --displays | jq 'length')

@@ -2,11 +2,10 @@
 
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
-# source "$HOME/.config/sketchybar/plugins/print_spaces.sh"
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 ITEM_DIR="$HOME/.config/sketchybar/items"
-SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
+# SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
 POPUP_TOGGLE_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
 
 bar=(
@@ -39,6 +38,15 @@ defaults=(
 )
 
 sketchybar --default "${defaults[@]}"
+
+space_config=(
+    ignore_association=on
+    icon.padding_left=5
+    icon.padding_right=5
+    updates=on \
+    script="$PLUGIN_DIR/add_spaces_sketchybar.sh"
+    # click_script="yabai -m space --focus $sid"
+)
 
 datetime=(
   background.color=$TEMPUS         # Set this color to your background color for popups!
@@ -97,33 +105,33 @@ mail=(
   update_freq=60
 )
 
-cava=(
-  update_freq=0
-  script="$PLUGIN_DIR/cava.sh"
-  label.drawing=on
-  label.font="Hack Nerd Font Mono:Regular:13.0"
-  icon.drawing=off
-  label="cava"
-  label.padding_left=4
-  label.padding_right=4
-)
+# cava=(
+#   update_freq=0
+#   script="$PLUGIN_DIR/cava.sh"
+#   label.drawing=on
+#   label.font="Hack Nerd Font Mono:Regular:13.0"
+#   icon.drawing=off
+#   label="cava"
+#   label.padding_left=4
+#   label.padding_right=4
+# )
 
-spotify=(
-  #click_script="$POPUP_TOGGLE_SCRIPT"
-  popup.horizontal=on
-  popup.align=center
-  popup.height=100
-  icon=$SPOTIFY
-  icon.padding_right=18
-  icon.padding_left=18
-  background.color=$TEMPUS
-  background.height=19
-  background.corner_radius=10
-  #background.padding_left=3
-  background.padding_right=3
-  script="$PLUGIN_DIR/spotify.sh"
-  update_freq=5
-)
+# spotify=(
+#   #click_script="$POPUP_TOGGLE_SCRIPT"
+#   popup.horizontal=on
+#   popup.align=center
+#   popup.height=100
+#   icon=$SPOTIFY
+#   icon.padding_right=18
+#   icon.padding_left=18
+#   background.color=$TEMPUS
+#   background.height=19
+#   background.corner_radius=10
+#   #background.padding_left=3
+#   background.padding_right=3
+#   script="$PLUGIN_DIR/spotify.sh"
+#   update_freq=5
+# )
 
 ram=(
   icon=$RAM
@@ -169,38 +177,9 @@ sketchybar --add item apple left \
   --set apple "${apple[@]}" \
   --subscribe apple mouse.clicked mouse.entered mouse.exited mouse.exited.global
 
-# Gather all space labels from all displays
-all_spaces=()
-total_displays=$(yabai -m query --displays | jq 'length')
-for ((display=1; display<=$total_displays; display++)); do
-    spaces=($(yabai -m query --spaces --display $display | jq -r '.[] | .label'))
-    all_spaces+=("${spaces[@]}")
-done
-
-# Sort space labels numerically based on the integer part after the underscore
-IFS=$'\n' sorted_spaces=($(sort -t '_' -k 2n <<< "${all_spaces[*]}"))
-unset IFS
-
-# Add sorted space items to SketchyBar
-all_space_ids=()  # Initialize an empty array to store space identifiers
-for sid in "${sorted_spaces[@]}"; do
-    sid_cleaned="${sid#_}"
-    all_space_ids+=("space.$sid_cleaned")  # Add each space identifier to the array
-    space_config=(
-        space="$sid_cleaned"
-        ignore_association=on
-        icon="$sid_cleaned"
-        icon.padding_left=5
-        icon.padding_right=5
-        label.drawing=off
-        script="$PLUGIN_DIR/space.sh"
-        click_script="yabai -m space --focus $sid"
-    )
-    sketchybar --add space space."$sid_cleaned" left --set space."$sid_cleaned" "${space_config[@]}" \
-    --subscribe space space_change space_windows_change front_app_switched display_change 
-    # THESE AREN"T ALL SUBSCRIBED, ARE THEY?
-done
-export all_space_ids  # Make it available for other scripts
+sketchybar --add space space left \
+  --set space "${space_config[@]}" \
+  --subscribe space space_change space_windows_change front_app_switched display_change
 
 sketchybar --add item separator_left left \
   --set separator_left "${separator_left[@]}" \
@@ -225,22 +204,21 @@ sketchybar --add item volume center \
   --subscribe volume volume_change mouse.scrolled mouse.clicked mouse.entered mouse.exited mouse.exited.global
 sketchybar --add item datetime center \
   --set datetime "${datetime[@]}" \
-  --subscribe datetime system_woke mouse.clicked mouse.entered mouse.exited mouse.exited.global # REQUIRED events for hover popup.
-sketchybar --add item cava center \
-  --set cava "${cava[@]}"
-  # --add item spotify_label center \
-  # --set spotify_label "${spotify_label[@]}"
-sketchybar --add event spotify_change $SPOTIFY_EVENT \
-  --add item spotify center \
-  --set spotify "${spotify[@]}" \
-  --subscribe spotify mouse.clicked mouse.entered mouse.exited mouse.exited.global
+  --subscribe datetime system_woke mouse.clicked mouse.entered mouse.exited mouse.exited.global 
+
+# sketchybar --add item cava center \
+  # --set cava "${cava[@]}"
+# sketchybar --add event spotify_change $SPOTIFY_EVENT \
+  # --add item spotify center \
+  # --set spotify "${spotify[@]}" \
+  # --subscribe spotify mouse.clicked mouse.entered mouse.exited mouse.exited.global
 
 # Right Items
 sketchybar --add item ram right \
-  --set ram "${ram[@]}"
+  --set ram "${ram[@]}" \
   --subscribe ram mouse.clicked mouse.entered mouse.exited mouse.exited.global
 sketchybar --add item cpu right \
-  --set cpu "${cpu[@]}"
+  --set cpu "${cpu[@]}" \
   --subscribe cpu mouse.clicked mouse.entered mouse.exited mouse.exited.global
 sketchybar  --add item separator_right right \
   --set separator_right "${separator_right[@]}" \

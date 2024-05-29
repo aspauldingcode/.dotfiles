@@ -771,5 +771,19 @@ in
       echo "Press Ctrl+C to cancel..."
       find . -iname "*$search_term*" 2>/dev/null | fzf --preview="bat --color=always {}" --preview-window="right:60%" --height=80%
     '')
+
+    #search-rg
+    (pkgs.writeShellScriptBin "search-rg" ''
+      if [ $# -ne 1 ]; then
+          echo "Usage: $0 <search_term>"
+          exit 1
+      fi
+
+      # Perform the search using ripgrep and fzf with provided options
+      search_term=$1
+      echo "Searching for: $search_term"
+      echo "Press Ctrl+C to cancel..."
+      rg --ignore-case --context 3 --color=always "$search_term" | fzf --preview="bat --color=always --style=numbers,changes {}" --preview-window="right:60%" --height=80%
+    '')
   ];
 }

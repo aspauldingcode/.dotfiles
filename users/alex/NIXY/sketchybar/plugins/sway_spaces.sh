@@ -241,6 +241,7 @@ generate_new_space() {
     # Rename the newly created space with the specified label
     yabai -m space --label "$new_label"
 }
+
 # Function to reorder displays
 reorder_displays() {
     local auto_flag="$1"
@@ -318,6 +319,47 @@ reorder_displays() {
     fi
 }
 
+# Function to check the current active display
+check_current_active_display() {
+    local active_display=$(yabai -m query --displays | jq -r '.[] | select(.["has-focus"] == true) | .index')
+    if [ -n "$active_display" ]; then
+        echo "Current active display is: $active_display"
+    else
+        echo "No active display found."
+    fi
+}
+
+# Function to check the current active space
+check_current_active_space() {
+    local active_space=$(yabai -m query --spaces | jq -r '.[] | select(.["has-focus"] == true) | .index')
+    if [ -n "$active_space" ]; then
+        echo "Current active space is: $active_space"
+    else
+        echo "No active space found."
+    fi
+}
+
+# Function to check the label of the current active display
+check_current_active_display_label() {
+    local active_display_label=$(yabai -m query --displays | jq -r '.[] | select(.["has-focus"] == true) | .label')
+    if [ -n "$active_display_label" ]; then
+        echo "Current active display label is: $active_display_label"
+    else
+        echo "No active display label found. Running reoder-displays --auto..."
+        reorder_displays "--auto" # save the pain and agony of display ordering
+    fi
+}
+
+# Function to check the label of the current active space
+check_current_active_space_label() {
+    local active_space_label=$(yabai -m query --spaces | jq -r '.[] | select(.["has-focus"] == true) | .label')
+    if [ -n "$active_space_label" ]; then
+        echo "Current active space label is: $active_space_label"
+    else
+        echo "No active space label found."
+    fi
+}
+
 # echo -e "\nSpaces Information:"
 # read_all_spaces
 
@@ -338,21 +380,24 @@ reorder_displays() {
 # echo -e "\nPrint Space Labels Active on a Display and/or Containing a Window:"
 # print_space_labels
 
-# update spaces using yabai init program
-echo -e "\nGenerating Unique Labels:"
-generate_unique_labels
+# # update spaces using yabai init program
+# echo -e "\nGenerating Unique Labels:"
+# generate_unique_labels
 
-echo -e "\nRemoving Unnecessary Spaces:"
-remove_unimportant_spaces
+# echo -e "\nRemoving Unnecessary Spaces:"
+# remove_unimportant_spaces
 
-echo -e "\nReorder Display Labels Accordingly:"
-reorder_displays "--auto" # save the pain and agony of display ordering
+# echo -e "\nReorder Display Labels Accordingly:"
+# reorder_displays "--auto" # save the pain and agony of display ordering
 
-echo -e "\nDisplay Information with Spaces Information:"
-read_spaces_on_display_n_for_all_displays
+# echo -e "\nDisplay Information with Spaces Information:"
+# read_spaces_on_display_n_for_all_displays
 
-echo -e "\nPrint Space Labels:"
-read_all_spaces
+# echo -e "\nPrint Space Labels:"
+# read_all_spaces
 
+# check_current_active_display
+# check_current_active_display_label
 
-#echo -e "\n\n\n\nThe current layout:\n\n"
+# check_current_active_space
+# check_current_active_space_label

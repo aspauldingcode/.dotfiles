@@ -22,6 +22,8 @@ in
   xdg.configFile."sketchybar/icons.sh".source = ./icons.sh;
   xdg.configFile."sketchybar/colors.sh".source = nixy_colors;
   xdg.configFile."sketchybar/plugins/sway_spaces.sh".source = ./plugins/sway_spaces.sh;
+  xdg.configFile."sketchybar/plugins/add_spaces_sketchybar.sh".source = ./plugins/add_spaces_sketchybar.sh;
+  xdg.configFile."sketchybar/plugins/print_spaces_sketchybar.sh".source = ./plugins/print_spaces_sketchybar.sh;
   xdg.configFile."sketchybar/plugins/apple.sh".source = ./plugins/apple.sh;
   xdg.configFile."sketchybar/plugins/battery.sh".source = ./plugins/battery.sh;
   xdg.configFile."sketchybar/plugins/cpu.sh".source = ./plugins/cpu.sh;
@@ -42,6 +44,8 @@ in
   xdg.configFile."sketchybar/icons.sh".executable = true;
   xdg.configFile."sketchybar/colors.sh".executable = true;
   xdg.configFile."sketchybar/plugins/sway_spaces.sh".executable = true;
+  xdg.configFile."sketchybar/plugins/add_spaces_sketchybar.sh".executable = true;
+  xdg.configFile."sketchybar/plugins/print_spaces_sketchybar.sh".executable = true;
   xdg.configFile."sketchybar/plugins/apple.sh".executable = true;
   xdg.configFile."sketchybar/plugins/battery.sh".executable = true;
   xdg.configFile."sketchybar/plugins/cpu.sh".executable = true;

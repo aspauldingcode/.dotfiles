@@ -1,54 +1,70 @@
 #!/bin/bash
 
-while true; do
-    # Call print_spaces.sh from its location and store the output
-    relevant_spaces=($(bash ~/.dotfiles/CUSTOM_yabai_scripts/print_spaces.sh))
+source "$HOME/.config/sketchybar/colors.sh"
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
-    # Retrieve the label of the active space from yabai
-    active_space=$(yabai -m query --spaces --space | jq -r '.label' | sed 's/^_//')
+function update_sketchybar_spaces() {
+    # Get the full label from the function and extract only the numeric part
+    full_label=$(source $PLUGIN_DIR/sway_spaces.sh; check_current_active_space_label)
+    active_space_label=$(echo "$full_label" | sed 's/[^0-9]*//g')  # Remove all non-numeric characters
 
-    # Retrieve current spaces from SketchyBar before the loop
-    sketchybar_spaces=$(sketchybar --query bar | jq -r '.items[] | select(startswith("space."))')
+    relevant_spaces=($($PLUGIN_DIR/print_spaces_sketchybar.sh | tr ' ' '\n' | sed 's/^_//'))
+    relevant_spaces=($(echo "${relevant_spaces[@]}" | tr ' ' '\n' | sort -n))  # Sort spaces numerically
 
-    # Loop through each relevant space and add or update an item in SketchyBar
+    sketchybar_spaces=($(sketchybar --query bar | jq -r '.items[] | select(startswith("space."))'))
+
     for space in "${relevant_spaces[@]}"; do
-        # Trim leading underscore from the label
-        label=$(echo "$space" | sed 's/^_//')
+        label=$(echo "$space" | sed 's/^_//')  # Ensure no leading underscore
+        color="$WHITE"  # Default color
+        [[ "$label" == "$active_space_label" ]] && color="$ORANGE"  # Set color to ORANGE if it's the active space
 
-        # Determine color based on active space
-        color="0xff95A5A6"  # Gray for inactive spaces
-        background_color="0x5595A5A6"  # Slightly transparent gray
-        if [[ "$label" == "$active_space" ]]; then
-            color="0xffF1C40F"  # Yellow for active space
-            background_color="0x55F1C40F"  # Slightly transparent yellow
+        if [[ ! " ${sketchybar_spaces[*]} " =~ " space.$label " ]]; then
+            sketchybar --add item space.$label left
         fi
 
-        # Command to add or update a space item to SketchyBar with color, background, and spacing
-        sketchybar --add item space.$label left \
-                   --set space.$label \
+        sketchybar --set space.$label \
                         label="$label" \
-                        background.color="$background_color" \
                         label.color="$color" \
-                        click_script="yabai -m space --focus _$label" \
-                        padding_left=10 \
-                        padding_right=10 \
+                        click_script="yabai -m space --focus $active_space_label" \
+                        padding_left=5 \
+                        padding_right=5 \
                         drawing=on
-
-        # Remove label from sketchybar_spaces to track which spaces are still active
-        sketchybar_spaces=$(echo "$sketchybar_spaces" | grep -v "space.$label")
+        sketchybar_spaces=("${sketchybar_spaces[@]/space.$label/}")
     done
 
-    # Remove any space items from SketchyBar that no longer exist
-    for space_id in $sketchybar_spaces; do
-        sketchybar --remove $space_id
+    # Remove any remaining stale space items
+    for space_id in "${sketchybar_spaces[@]}"; do
+        if [[ -n "$space_id" ]]; then
+            sketchybar --remove "$space_id"
+        fi
     done
 
-    # Sort and reorder should be done after all removals
-    sketchybar_spaces=$(sketchybar --query bar | jq -r '.items[] | select(startswith("space."))')
-    sorted_spaces=($(echo "$sketchybar_spaces" | sort -t '_' -k 2n))
-    sketchybar --reorder ${sorted_spaces[@]}
+    source $PLUGIN_DIR/sway_spaces.sh
+    # update spaces using yabai init program
+    echo -e "\nGenerating Unique Labels:"
+    generate_unique_labels
 
-    source $HOME/.dotfiles/users/alex/NIXY/sketchybar/plugins/sway_spaces.sh
+    echo -e "\nRemoving Unnecessary Spaces:"
+    remove_unimportant_spaces
 
-    sleep 3
-done
+    echo -e "\nReorder Display Labels Accordingly:"
+    reorder_displays "--auto" # save the pain and agony of display ordering
+
+    echo -e "\nDisplay Information with Spaces Information:"
+    read_spaces_on_display_n_for_all_displays
+
+    echo -e "\nPrint Space Labels:"
+    read_all_spaces
+
+    # echo -e "\nrelevent spaces: \n$relevant_spaces"
+
+   echo $active_space_label
+    # check_current_active_display
+    # check_current_active_display_label
+
+    # check_current_active_space
+    # check_current_active_space_label
+}
+
+echo -e "\n\n\nRunning update_sketchybar_spaces\n\n\n"
+update_sketchybar_spaces
