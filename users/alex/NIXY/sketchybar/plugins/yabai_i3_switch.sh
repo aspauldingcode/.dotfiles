@@ -37,8 +37,8 @@ update_state_file
 
 # Check if the frontmost application is X11.bin
 if [ "$front_app" = "X11.bin" ]; then
-    echo "Setting mouse modifier to cmd"
-    /opt/homebrew/bin/yabai -m config mouse_modifier cmd
+    echo "Setting mouse modifier to fn"
+    /opt/homebrew/bin/yabai -m config mouse_modifier fn
 else
     echo "Setting mouse modifier to alt"
     /opt/homebrew/bin/yabai -m config mouse_modifier alt
@@ -46,7 +46,7 @@ fi
 
 # Check if the current window is fullscreen
 if [ "$is_fullscreen" = "on" ]; then
-    /opt/homebrew/bin/yabai -m config mouse_modifier cmd # turns off yabai mouse shortcut
+    /opt/homebrew/bin/yabai -m config mouse_modifier fn # turns off yabai mouse shortcut
     update_state_file
     toggle-dock off
 else

@@ -7,6 +7,7 @@
     text =
       let
         inherit (config.colorScheme) colors;
+          borders = "${config.home.homeDirectory}/Downloads/JankyBorders-main/bin/borders"; # master contains apply-to=<window-id> so use this.
       in
       # bash
       ''
@@ -27,9 +28,10 @@
         yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
 
         # bar signal configuration
-        yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
-        yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces"
-        yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
+        yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus &> /dev/null"
+        yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces &> /dev/null"
+        yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces &> /dev/null"
+        yabai -m signal --add event=window_title_changed action="sketchybar --trigger title_change &> /dev/null"
 
         # move/resize windows with mouse
         yabai -m config mouse_modifier              alt # alt is fixed as of Yabai v7.0.0!
@@ -154,7 +156,7 @@
         toggle-menubar off
 
         # Borders!
-        borders
+        ${borders}
 
         echo "yabai configuration loaded.."
       '';

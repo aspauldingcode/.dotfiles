@@ -8,6 +8,13 @@ ITEM_DIR="$HOME/.config/sketchybar/items"
 # SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
 POPUP_TOGGLE_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
 
+#events
+sketchybar --add event window_focus \
+           --add event title_change \
+           --add event windows_on_spaces \
+
+
+# module styles
 bar=(
   height=40
   corner_radius=10
@@ -192,7 +199,7 @@ sketchybar --add item separator_left left \
     label.padding_left=15 \
     label.padding_right=15 \
     updates=on \
-    --subscribe front_app front_app_switched mouse.clicked mouse.entered mouse.exited mouse.exited.global
+    --subscribe front_app front_app_switched window_focus windows_on_spaces title_change mouse.clicked mouse.entered mouse.exited mouse.exited.global
 sketchybar --add item active_app left \
     --set active_app "${active_app[@]}"
 

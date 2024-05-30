@@ -9,7 +9,8 @@
 let 
   yabai = "/opt/homebrew/bin/yabai";
   sketchybar = "/opt/homebrew/bin/sketchybar";
-  borders = "/opt/homebrew/bin/borders";
+  #borders = "/opt/homebrew/bin/borders"; # should be this.
+  borders = "${config.home.homeDirectory}/Downloads/JankyBorders-main/bin/borders"; # master contains apply-to=<window-id> so use this.
 in
 {
   # Copy Home-Manager Nix GUI apps to ~/Applications on darwin:
@@ -586,14 +587,17 @@ in
       # Function to toggle the macOS menu bar
       toggle_menubar() {
           current_opacity=$(osascript -e 'tell application "System Events" to tell dock preferences to get autohide menu bar')
+          menubar_state_file="/tmp/menubar_state"
           if [[ "$current_opacity" == "true" ]]; then
               osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to false'
               ${yabai} -m config menubar_opacity 1.0
               echo "Menu bar turned ON"
+              echo "on" > "$menubar_state_file"
           else
               ${yabai} -m config menubar_opacity 0.0
               osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to true'
               echo "Menu bar turned OFF"
+              echo "off" > "$menubar_state_file"
           fi
       }
 
@@ -604,16 +608,18 @@ in
           if [[ "$1" == "on" ]]; then
               osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to false'
               echo "Menu bar turned ON"
+              echo "on" > "/tmp/menubar_state"
           else
               osascript -e 'delay 0.5' -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to true'
               echo "Menu bar turned OFF"
+              echo "off" > "/tmp/menubar_state"
           fi
       else
           echo "Usage: $0 <on | off>"
           exit 1
       fi
     '')
-
+    
     #toggle-float
     (pkgs.writeShellScriptBin "toggle-float" ''
       # Check if the script is provided with an argument
@@ -647,15 +653,14 @@ in
         if is_fullscreen; then
           echo "Cannot toggle float on: window is in fullscreen mode."
         else
-          ${yabai} -m window --toggle float
-          ${yabai} -m window --grid 60:60:5:5:50:50
+          ${yabai} -m window --toggle float; ${yabai} -m window --grid 60:60:5:5:50:50
           echo "on" > "$floating_state_file"
         fi
       elif [ "$set_arg" = "off" ]; then
         if is_fullscreen; then
           echo "Cannot toggle float off: window is in fullscreen mode."
         else
-          ${yabai} -m window --toggle float
+          ${yabai} -m window --toggle float; ${yabai} -m window --grid 60:60:5:5:50:50
           echo "off" > "$floating_state_file"
         fi
       else
@@ -767,24 +772,36 @@ in
 
       function fullscreen_on() {
           toggle-dock off
-          if [ "$(${yabai} -m query --windows --window | jq '."is-floating"')" = "true" ]; then
-              ${yabai} -m window --move abs:0:0 && ${yabai} -m window --grid 0:0:0:0:0:0
-          else
-              ${yabai} -m window --toggle float && ${yabai} -m window --move abs:0:0 && ${yabai} -m window --grid 0:0:0:0:0:0
+          if [ "$(cat /tmp/menubar_state)" = "on" ]; then
+              toggle-menubar off
           fi
-          ${borders} style=square
-          ${borders} order=below
-          ${borders} width=5.0
+          local is_floating=$(${yabai} -m query --windows --window | jq -r '."is-floating"')
+          local current_display_frame=$(${yabai} -m query --displays --display | jq '.frame')
+          local x=$(echo "$current_display_frame" | jq -r '.x')
+          local y=$(echo "$current_display_frame" | jq -r '.y')
+
+          ${borders} apply-to=$window_id width=0
+          #${borders} style=square
+          #${borders} order=below
+          #${borders} width=5.0
+          if [ "$is_floating" = "true" ]; then
+            ${yabai} -m window --move abs:$x:$y
+            ${yabai} -m window --grid 0:0:0:0:0:0
+          else
+            ${yabai} -m window --toggle float
+            ${yabai} -m window --move abs:$x:$y
+            ${yabai} -m window --grid 0:0:0:0:0:0
+          fi
           update_state_file "on"
       }
 
       function fullscreen_off() {
+          ${borders} apply-to=$window_id width=2
+          #${borders} style=round
+          #${borders} order=above
           if [ "$(${yabai} -m query --windows --window | jq '."is-floating"')" = "true" ]; then
               ${yabai} -m window --toggle float # Restore window to its previous state
           fi
-          ${borders} style=round
-          ${borders} order=above
-          ${borders} width=2.0
           update_state_file "off"
       }
 
