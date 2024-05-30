@@ -53,6 +53,7 @@
       "dmenu-mac"
       "kitty"
       # "macforge"
+      "obs"
       "element"
       "brave-browser"
       "alt-tab"

@@ -177,14 +177,16 @@
           modifier = mod1;
           yabai = "/opt/homebrew/bin/yabai"; # Apparently required to work at all
           i3-msg = "/opt/local/bin/i3-msg";
+          alacritty = "/opt/homebrew/bin/alacritty";
         in # bash
         ''
           # FIXME: use kitty terminal for yazi filemanager only.
 
           # Launch shortcuts
-          ${modifier} - return :                open -na /opt/homebrew/bin/alacritty #FIXME: Alacritty is broken atm. Using homebrew. 
+          #${modifier} - return :                open -na ${alacritty} #FIXME: Alacritty is broken atm. Using homebrew. 
           #${modifier} - return : 		    open -a kitty -n
-          # ${modifier} - return :              alacritty
+          # ${modifier} - return :              ${alacritty}
+          ${modifier} - return :                ${alacritty} msg create-window || open -na ${alacritty}
           ${modifier} - d :                     open -a dmenu-mac
           ${mod1} + ${mod5} - space :           open -na "Brave Browser"
           ${mod1} + shift + ${mod5} - space :   open -na "Brave Browser" --args --incognito
