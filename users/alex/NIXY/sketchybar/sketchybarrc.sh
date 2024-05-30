@@ -41,8 +41,6 @@ sketchybar --default "${defaults[@]}"
 
 space_config=(
     ignore_association=on
-    icon.padding_left=5
-    icon.padding_right=5
     updates=on \
     script="$PLUGIN_DIR/add_spaces_sketchybar.sh"
     # click_script="yabai -m space --focus $sid"
@@ -246,7 +244,8 @@ brackets=(
   background.border_width=2
 )
 
-sketchybar --add bracket lbracket apple space separator_left front_app left \
+# https://felixkratz.github.io/SketchyBar/config/components#item-bracket----group-items-in-eg-colored-sections
+sketchybar --add bracket lbracket apple space '/space\..*/' separator_left front_app left \
   --set lbracket "${brackets[@]}"
 sketchybar --add bracket cbracket volume datetime cava spotify center \
   --set cbracket "${brackets[@]}"

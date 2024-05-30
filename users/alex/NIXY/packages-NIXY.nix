@@ -40,6 +40,7 @@ in
     calcurse
     chatgpt-cli
     cowsay
+    bat
     newsboat
     nmap
     darwin.cctools-port # is it needed tho?
@@ -204,6 +205,8 @@ in
       brew services restart felixkratz/formulae/sketchybar
       launchctl stop org.pqrs.karabiner.karabiner_console_user_server && launchctl start org.pqrs.karabiner.karabiner_console_user_server
       xrdb -merge ~/.Xresources
+      ${sketchybar} --reload
+      rm /tmp/fullscreen_state /tmp/dock_state /tmp/gaps_state /tmp/sketchybar_state /tmp/menubar_state /tmp/darkmode_state  #remove statefiles
       echo -ne '\n' | sudo pkill "Background Music" && "/Applications/Background Music.app/Contents/MacOS/Background Music" > /dev/null 2>&1 &
     '')
 
@@ -271,7 +274,7 @@ in
     (pkgs.writeShellScriptBin "toggle-sketchybar" ''
       toggle_sketchybar() {
           local hidden_status=$(${sketchybar} --query bar | jq -r '.hidden')
-          local ${sketchybar}_state_file="/tmp/sketchybar_state"
+          local sketchybar_state_file="/tmp/sketchybar_state"
 
           # Check if the sketchybar state file exists
           if [ ! -f "$sketchybar_state_file" ]; then
@@ -286,7 +289,7 @@ in
                   ${sketchybar} --bar hidden=off
                   ${yabai} -m config external_bar all:45:0
                   echo "Sketchybar toggled on"
-                  echo "on" > "$sketchybar_state_file"  # Write state to file
+                  echo "off" > "$sketchybar_state_file"  # Write state to file
               fi
           elif [ "$1" == "off" ]; then
               if [ "$hidden_status" == "on" ]; then
@@ -295,7 +298,7 @@ in
                   ${sketchybar} --bar hidden=on
                   ${yabai} -m config external_bar all:0:0
                   echo "Sketchybar toggled off"
-                  echo "off" > "$sketchybar_state_file"  # Write state to file
+                  echo "on" > "$sketchybar_state_file"  # Write state to file
               fi
           else
               # No arguments provided, toggle based on current state
@@ -303,12 +306,12 @@ in
                   ${sketchybar} --bar hidden=on
                   ${yabai} -m config external_bar all:0:0
                   echo "Sketchybar toggled off"
-                  echo "off" > "$sketchybar_state_file"  # Write state to file
+                  echo "on" > "$sketchybar_state_file"  # Write state to file
               else
                   ${sketchybar} --bar hidden=off
                   ${yabai} -m config external_bar all:45:0
                   echo "Sketchybar toggled on"
-                  echo "on" > "$sketchybar_state_file"  # Write state to file
+                  echo "off" > "$sketchybar_state_file"  # Write state to file
               fi
           fi
       }
@@ -319,12 +322,12 @@ in
 
     #toggle-gaps
     (pkgs.writeShellScriptBin "toggle-gaps" ''
-                  # Initialize a variable to store the current state
+      # Initialize a variable to store the current state
       state_file="/tmp/gaps_state"
 
       # Initialize the state file if it doesn't exist
       if [ ! -f "$state_file" ]; then
-          echo "off" > "$state_file"
+          echo "on" > "$state_file"
       fi
 
       # Read the current state from the state file
@@ -346,9 +349,13 @@ in
           ${yabai} -m config left_padding    15
           ${yabai} -m config right_padding   15
           ${yabai} -m config window_gap      15
+          ${yabai} -m config external_bar all:50:0
           ${borders} style=round
           ${borders} order=above
           ${borders} width=2.0
+          ${sketchybar} --bar corner_radius=10
+          ${sketchybar} --bar margin=13
+          ${sketchybar} --bar y_offset=13
       }
 
       off() {
@@ -357,9 +364,13 @@ in
           ${yabai} -m config left_padding    0
           ${yabai} -m config right_padding   0
           ${yabai} -m config window_gap      5
+          ${yabai} -m config external_bar all:42:0
           ${borders} style=square
           ${borders} order=below
           ${borders} width=5.0
+          ${sketchybar} --bar corner_radius=0
+          ${sketchybar} --bar margin=0
+          ${sketchybar} --bar y_offset=0
       }
 
       if [ "$#" -eq 0 ]; then
@@ -499,9 +510,24 @@ in
     # toggle-dock
     (pkgs.writeShellScriptBin "toggle-dock" ''
       dock_state_file="/tmp/dock_state"
+      gaps_state_file="/tmp/gaps_state"
+      sketchybar_state_file="/tmp/sketchybar_state"
 
       toggle_dock() {
           local dock_status=$(osascript -e 'tell application "System Events" to get autohide of dock preferences')
+          local gaps_status=$(cat "$gaps_state_file")
+          local sketchybar_status=$(cat "$sketchybar_state_file")
+          update_spaces_and_bar() {
+            #sleep 1
+            if [ "$gaps_status" = "on" ]; then
+                ${yabai} -m config external_bar all:50:1
+                ${yabai} -m config external_bar all:50:0
+            else
+                ${yabai} -m config external_bar all:42:1
+                ${yabai} -m config external_bar all:42:0
+            fi
+            ${borders} background_color=0x000000
+          }
 
           if [ $# -eq 0 ]; then
               # No arguments provided, toggle based on current state
@@ -509,16 +535,20 @@ in
                   osascript -e 'tell application "System Events" to set autohide of dock preferences to false'
                   echo "Dock toggled on"
                   echo "on" > "$dock_state_file"  # Save state to file
+                  update_spaces_and_bar
               else
                   osascript -e 'tell application "System Events" to set autohide of dock preferences to true'
                   echo "Dock toggled off"
                   echo "off" > "$dock_state_file"  # Save state to file
+                  update_spaces_and_bar
               fi
+
           elif [ "$1" = "on" ]; then
               if [ "$dock_status" = "true" ]; then
                   osascript -e 'tell application "System Events" to set autohide of dock preferences to false'
                   echo "Dock toggled on"
                   echo "on" > "$dock_state_file"  # Save state to file
+                  update_spaces_and_bar
               else
                   echo "Dock is already toggled on"
               fi
@@ -527,6 +557,7 @@ in
                   osascript -e 'tell application "System Events" to set autohide of dock preferences to true'
                   echo "Dock toggled off"
                   echo "off" > "$dock_state_file"  # Save state to file
+                  update_spaces_and_bar
               else
                   echo "Dock is already toggled off"
               fi
@@ -536,10 +567,12 @@ in
                   osascript -e 'tell application "System Events" to set autohide of dock preferences to false'
                   echo "Dock toggled on"
                   echo "on" > "$dock_state_file"  # Save state to file
+                  update_spaces_and_bar
               else
                   osascript -e 'tell application "System Events" to set autohide of dock preferences to true'
                   echo "Dock toggled off"
                   echo "off" > "$dock_state_file"  # Save state to file
+                  update_spaces_and_bar
               fi
           fi
       }
@@ -558,8 +591,8 @@ in
               ${yabai} -m config menubar_opacity 1.0
               echo "Menu bar turned ON"
           else
-              osascript -e 'delay 0.5' -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to true'
               ${yabai} -m config menubar_opacity 0.0
+              osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to true'
               echo "Menu bar turned OFF"
           fi
       }
@@ -585,16 +618,48 @@ in
     (pkgs.writeShellScriptBin "toggle-float" ''
       # Check if the script is provided with an argument
       if [ $# -eq 0 ]; then
-        echo "Usage: $0 <true|false>"
-        exit 1
+        # Toggle between on/off states if no argument is provided
+        floating_state_file="/tmp/floating_state"
+        if [ -f "$floating_state_file" ] && grep -q "on" "$floating_state_file"; then
+          set_arg="off"
+        else
+          set_arg="on"
+        fi
+      else
+        set_arg="$1"
       fi
 
-      # Check the value of the boolean argument
-      if [ "$1" = true ]; then
-        ${yabai} -m window --toggle float; ${yabai} -m window --grid 4:4:1:1:2:2 #FIXME: toggle on
-      elif [ "$1" = false ]; then
-        ${yabai} -m window --toggle float; ${yabai} -m window --grid 4:4:1:1:2:2 #FIXME: toggle off
+      fullscreen_state_file="/tmp/fullscreen_state"
+      window_id=$(${yabai} -m query --windows --window | jq -r '."id"')
+
+      # Function to check if the current window is in fullscreen mode
+      function is_fullscreen() {
+          grep -q "id: $window_id fullscreen: on" "$fullscreen_state_file"
+      }
+
+      # Function to check if the current window is floating
+      function is_floating() {
+          ${yabai} -m query --windows --window | jq -r '."is-floating"' | grep -q "1"
+      }
+
+      # Check the value of the argument
+      if [ "$set_arg" = "on" ]; then
+        if is_fullscreen; then
+          echo "Cannot toggle float on: window is in fullscreen mode."
+        else
+          ${yabai} -m window --toggle float
+          ${yabai} -m window --grid 60:60:5:5:50:50
+          echo "on" > "$floating_state_file"
+        fi
+      elif [ "$set_arg" = "off" ]; then
+        if is_fullscreen; then
+          echo "Cannot toggle float off: window is in fullscreen mode."
+        else
+          ${yabai} -m window --toggle float
+          echo "off" > "$floating_state_file"
+        fi
       else
+        echo "Usage: $0 <on|off>"
         exit 1
       fi
     '')
@@ -686,59 +751,61 @@ in
 
     # toggle-instant-fullscreen
     (pkgs.writeShellScriptBin "toggle-instant-fullscreen" ''
-      # Function to disable gaps, sketchybar, menubar, and enable Zoom fullscreen
-      enable_fullscreen() {
-        toggle-gaps off
-        toggle-sketchybar off
-        toggle-menubar off
-        toggle-dock off
-        ${yabai} -m window --toggle zoom-fullscreen
+      fullscreen_state_file="/tmp/fullscreen_state"
+      window_id=$(${yabai} -m query --windows --window | jq -r '."id"')
+
+      function update_state_file() {
+          local state=$1
+          if grep -q "id: $window_id " "$fullscreen_state_file"; then
+              # Update the existing line
+              sed -i "" "s/id: $window_id fullscreen: .*/id: $window_id fullscreen: $state/" "$fullscreen_state_file"
+          else
+              # Append a new line
+              echo "id: $window_id fullscreen: $state" >> "$fullscreen_state_file"
+          fi
       }
 
-      # Function to enable gaps, sketchybar, menubar, and disable Zoom fullscreen
-      disable_fullscreen() {
-        # toggle-gaps "$gaps_restore_state"
-        # toggle-sketchybar "$sketchybar_restore_state"
-        # toggle-menubar "$menubar_restore_state"
-        # toggle-dock "$dock_restore_state"
-        toggle-gaps "on"
-        toggle-sketchybar "on"
-        # toggle-menubar "on"
-        # toggle-dock "on"
-        ${yabai} -m window --toggle zoom-fullscreen
+      function fullscreen_on() {
+          toggle-dock off
+          if [ "$(${yabai} -m query --windows --window | jq '."is-floating"')" = "true" ]; then
+              ${yabai} -m window --move abs:0:0 && ${yabai} -m window --grid 0:0:0:0:0:0
+          else
+              ${yabai} -m window --toggle float && ${yabai} -m window --move abs:0:0 && ${yabai} -m window --grid 0:0:0:0:0:0
+          fi
+          ${borders} style=square
+          ${borders} order=below
+          ${borders} width=5.0
+          update_state_file "on"
       }
 
-
-      # Function to check if the focused window is in Zoom fullscreen mode and toggle it
-      toggle_fullscreen() {
-        # Get information about the currently focused window
-        window_info=$(${yabai} -m query --windows --window | jq -r '.["has-fullscreen-zoom"]')
-
-        # Output the state of Zoom fullscreen mode
-        if [ "$window_info" == "false" ]; then
-          echo "Zoom fullscreen mode is disabled. enabling..."
-          
-          # Define the paths to the state files
-          gaps_state_file="/tmp/gaps_state"
-          sketchybar_state_file="/tmp/sketchybar_state"
-          menubar_state_file="/tmp/menubar_state"
-          dock_state_file="/tmp/dock_state"
-
-          # Read the current states from the state files
-          gaps_restore_state=$(cat "$gaps_state_file" 2>/dev/null)
-          sketchybar_restore_state=$(cat "$sketchybar_state_file" 2>/dev/null)
-          menubar_restore_state=$(cat "$menubar_state_file" 2>/dev/null)
-          dock_restore_state=$(cat "$dock_state_file" 2>/dev/null)
-
-          enable_fullscreen
-        else
-          echo "Zoom fullscreen mode is enabled. disabling..."
-          disable_fullscreen
-        fi
+      function fullscreen_off() {
+          if [ "$(${yabai} -m query --windows --window | jq '."is-floating"')" = "true" ]; then
+              ${yabai} -m window --toggle float # Restore window to its previous state
+          fi
+          ${borders} style=round
+          ${borders} order=above
+          ${borders} width=2.0
+          update_state_file "off"
       }
 
-      # Call the toggle_fullscreen function
-      toggle_fullscreen
+      if [ ! -f "$fullscreen_state_file" ]; then
+          echo "id: $window_id fullscreen: false" >> "$fullscreen_state_file"
+      fi
+
+      function check_fullscreen_state() {
+          local search_id=$1
+          grep "id: $search_id fullscreen:" "$fullscreen_state_file" | tail -1 | awk '{print $NF}'
+      }
+
+      # Set the fullscreen state for the current window
+      fullscreen_state=$(check_fullscreen_state $window_id)
+
+      if [ "$fullscreen_state" = "on" ]; then
+          fullscreen_off
+      else
+          fullscreen_on
+      fi
+      ${sketchybar} --trigger front_app_switched
     '')
 
     #yabai_i3_switch
@@ -755,7 +822,6 @@ in
           ${yabai} -m config mouse_modifier alt # enables alt modifier for yabai again
       fi
     '')
-
 
     #search
     (pkgs.writeShellScriptBin "search" ''

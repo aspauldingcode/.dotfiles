@@ -6,15 +6,15 @@ PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 function update_sketchybar_spaces() {
     # Get the full label from the function and extract only the numeric part
     full_label=$(source $PLUGIN_DIR/sway_spaces.sh; check_current_active_space_label)
-    active_space_label=$(echo "$full_label" | sed 's/[^0-9]*//g')  # Remove all non-numeric characters
+    active_space_label=$(echo "$full_label" | /usr/bin/sed 's/[^0-9]*//g')  # Remove all non-numeric characters
 
-    relevant_spaces=($($PLUGIN_DIR/print_spaces_sketchybar.sh | tr ' ' '\n' | sed 's/^_//'))
+    relevant_spaces=($($PLUGIN_DIR/print_spaces_sketchybar.sh | tr ' ' '\n' | /usr/bin/sed 's/^_//'))
     relevant_spaces=($(echo "${relevant_spaces[@]}" | tr ' ' '\n' | sort -n))  # Sort spaces numerically
 
     sketchybar_spaces=($(sketchybar --query bar | jq -r '.items[] | select(startswith("space."))'))
 
     for space in "${relevant_spaces[@]}"; do
-        label=$(echo "$space" | sed 's/^_//')  # Ensure no leading underscore
+        label=$(echo "$space" | /usr/bin/sed 's/^_//')  # Ensure no leading underscore
         color="$WHITE"  # Default color
         [[ "$label" == "$active_space_label" ]] && color="$ORANGE"  # Set color to ORANGE if it's the active space
 

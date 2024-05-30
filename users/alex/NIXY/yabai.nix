@@ -26,8 +26,7 @@
         sudo yabai --load-sa
         yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
 
-        # bar configuration
-        yabai -m config external_bar all:45:0
+        # bar signal configuration
         yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
         yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces"
         yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
@@ -37,7 +36,7 @@
         yabai -m config mouse_action1               move
         yabai -m config mouse_action2               resize
         yabai -m config mouse_drop_action           swap
-        yabai -m config focus_follows_mouse         autofocus # autofocus | autoraise
+        yabai -m config focus_follows_mouse         autoraise # autofocus | autoraise # use autoraise.
         yabai -m config mouse_follows_focus         on
 
         # window appearance
@@ -74,6 +73,7 @@
         yabai -m config left_padding    15
         yabai -m config right_padding   15
         yabai -m config window_gap      15
+        yabai -m config external_bar all:50:0
 
         # rules
         yabai -m rule --add app="^System Settings$"     manage=off
@@ -295,7 +295,8 @@
           ${modifier} - e : ${yabai} -m space --layout bsp
 
           # float / unfloat window and center on screen
-          ${modifier} + shift - space : ${yabai} -m window --toggle float; ${yabai} -m window --grid 60:60:5:5:50:50
+          #${modifier} + shift - space : ${yabai} -m window --toggle float; ${yabai} -m window --grid 60:60:5:5:50:50
+          ${modifier} + shift - space : toggle-float
 
           # # toggle sticky(+float), topmost, picture-in-picture
           # ${modifier} - p : ${yabai} -m window --toggle sticky; \
@@ -344,6 +345,7 @@
         inherit (config.colorScheme) colors;
       in
       # bash
+      #FIXME: remember: active_color='gradient(top_left=0xFF0000FF,bottom_right=0xFF00FF00)'
       ''
         #!/bin/bash
 
@@ -357,7 +359,7 @@
           blacklist="google chrome, vmware fusion, xquartz, dmenu-mac"
         )
 
-        borders "''${options[@]}"  
+        borders "''${options[@]}"
       '';
   };
 }
