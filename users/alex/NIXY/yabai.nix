@@ -178,6 +178,7 @@
           yabai = "/opt/homebrew/bin/yabai"; # Apparently required to work at all
           i3-msg = "/opt/local/bin/i3-msg";
           alacritty = "/opt/homebrew/bin/alacritty";
+          dmenu-mac = "/opt/homebrew/bin/dmenu-mac";
         in # bash
         ''
           # FIXME: use kitty terminal for yazi filemanager only.
@@ -187,7 +188,7 @@
           # ${modifier} - return : 		            open -a kitty -n
           # ${modifier} - return :                ${alacritty}
           ${modifier} - return :                ${alacritty} msg create-window || open -na ${alacritty}
-          ${modifier} - d :                     open -a dmenu-mac && open -a dmenu-mac # doesn't usually open first time.
+          ${modifier} - d :                     ${dmenu-mac}
           ${mod1} + ${mod5} - space :           open -na "Brave Browser"
           ${mod1} + shift + ${mod5} - space :   open -na "Brave Browser" --args --incognito
           ${mod1} + ${mod4} + ${mod5} - space : open -na "Brave Browser" --args --tor
@@ -358,8 +359,8 @@
           order=above
           width=2.0
           hidpi=on
-          active_color=0xff"${colors.base0C}"
-          inactive_color=0xff"${colors.base03}"
+          active_color=0xff"${colors.base07}"
+          inactive_color=0xff"${colors.base05}"
           blacklist="google chrome, vmware fusion, xQuartz, dmenu-mac, X11.bin"
         )
 

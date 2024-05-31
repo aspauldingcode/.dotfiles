@@ -5,7 +5,7 @@
   homebrew = {
     enable = true;
     onActivation = {
-      #"zap" removes manually installed brews and casks
+      # "zap" removes manually installed brews and casks
       cleanup = "zap";
       autoUpdate = true;
       upgrade = true;

@@ -65,7 +65,6 @@ datetime=(
   update_freq=60                    # required for datetime clock!
   script="$PLUGIN_DIR/datetime.sh"
   popup.height=160                  # REQUIRED for popup to work properly.
-  background.corner_radius=10
 )
 
 wifi=(

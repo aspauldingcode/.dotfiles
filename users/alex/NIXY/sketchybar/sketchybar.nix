@@ -3,8 +3,8 @@
 let
   inherit (config.colorScheme) colors;
   nixy_colors = pkgs.writeShellScript "nixy-colors" ''
-    export PURPLE="0xff${colors.base0C}" # Border color.
-    export GREY="0xff${colors.base0C}"  # idk what this is for
+    export PURPLE="0xff${colors.base07}" # Border color.
+    export GREY="0xff${colors.base05}"  # idk what this is for
     export TRANSPARENT=0x00000000
     export WHITE="0xff${colors.base05}"
     export BLUE="0xE6${colors.base0D}"  # Changes background of drop-down windows 

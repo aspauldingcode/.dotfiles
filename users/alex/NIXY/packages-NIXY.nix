@@ -44,6 +44,7 @@ in
     bat
     newsboat
     nmap
+    neofetch
     darwin.cctools-port # is it needed tho?
     tshark
     termshark

@@ -63,3 +63,4 @@ case "$SENDER" in
 esac
 
 source "$HOME/.config/sketchybar/plugins/yabai_i3_switch.sh" # in charge of detecting if we are on a x11.bin window or not. Fixes mouse resize.
+yabai_i3_switch # run the working one instead. 
