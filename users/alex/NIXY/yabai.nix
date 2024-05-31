@@ -183,11 +183,11 @@
           # FIXME: use kitty terminal for yazi filemanager only.
 
           # Launch shortcuts
-          #${modifier} - return :                open -na ${alacritty} #FIXME: Alacritty is broken atm. Using homebrew. 
-          #${modifier} - return : 		    open -a kitty -n
-          # ${modifier} - return :              ${alacritty}
+          # ${modifier} - return :                open -na ${alacritty} #FIXME: Alacritty is broken atm. Using homebrew. 
+          # ${modifier} - return : 		            open -a kitty -n
+          # ${modifier} - return :                ${alacritty}
           ${modifier} - return :                ${alacritty} msg create-window || open -na ${alacritty}
-          ${modifier} - d :                     open -a dmenu-mac
+          ${modifier} - d :                     open -a dmenu-mac && open -a dmenu-mac # doesn't usually open first time.
           ${mod1} + ${mod5} - space :           open -na "Brave Browser"
           ${mod1} + shift + ${mod5} - space :   open -na "Brave Browser" --args --incognito
           ${mod1} + ${mod4} + ${mod5} - space : open -na "Brave Browser" --args --tor
@@ -360,7 +360,7 @@
           hidpi=on
           active_color=0xff"${colors.base0C}"
           inactive_color=0xff"${colors.base03}"
-          blacklist="google chrome, vmware fusion, xquartz, dmenu-mac"
+          blacklist="google chrome, vmware fusion, xQuartz, dmenu-mac, X11.bin"
         )
 
         borders "''${options[@]}"

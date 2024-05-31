@@ -7,7 +7,7 @@
       window = {
         dynamic_padding = true;
         padding.x = 0;
-        padding.y = 10;
+        #padding.y = 10;
         opacity = 0.9;
         blur = true;
         class.instance = "Alacritty";

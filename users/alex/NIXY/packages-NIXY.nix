@@ -780,10 +780,7 @@ in
           local x=$(echo "$current_display_frame" | jq -r '.x')
           local y=$(echo "$current_display_frame" | jq -r '.y')
 
-          ${borders} apply-to=$window_id width=0
-          #${borders} style=square
-          #${borders} order=below
-          #${borders} width=5.0
+          ${borders} apply-to=$window_id width=0.0 style=square order=below background_color=0xFF000000
           if [ "$is_floating" = "true" ]; then
             ${yabai} -m window --move abs:$x:$y
             ${yabai} -m window --grid 0:0:0:0:0:0
@@ -796,9 +793,7 @@ in
       }
 
       function fullscreen_off() {
-          ${borders} apply-to=$window_id width=2
-          #${borders} style=round
-          #${borders} order=above
+          ${borders} apply-to=$window_id width=2 style=round order=above background_color=0x000000
           if [ "$(${yabai} -m query --windows --window | jq '."is-floating"')" = "true" ]; then
               ${yabai} -m window --toggle float # Restore window to its previous state
           fi
@@ -817,10 +812,22 @@ in
       # Set the fullscreen state for the current window
       fullscreen_state=$(check_fullscreen_state $window_id)
 
-      if [ "$fullscreen_state" = "on" ]; then
+      if [ "$1" = "on" ]; then
+          if [ "$fullscreen_state" = "on" ]; then
+              echo "Fullscreen is already on. Running again..."
+          fi
+          fullscreen_on
+      elif [ "$1" = "off" ]; then
+          if [ "$fullscreen_state" = "off" ]; then
+              echo "Fullscreen is already off. Running again..."
+          fi
           fullscreen_off
       else
-          fullscreen_on
+          if [ "$fullscreen_state" = "on" ]; then
+              fullscreen_off
+          else
+              fullscreen_on
+          fi
       fi
       ${sketchybar} --trigger front_app_switched
     '')

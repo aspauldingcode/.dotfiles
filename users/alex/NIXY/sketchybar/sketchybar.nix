@@ -25,6 +25,7 @@ in
   xdg.configFile."sketchybar/plugins/add_spaces_sketchybar.sh".source = ./plugins/add_spaces_sketchybar.sh;
   xdg.configFile."sketchybar/plugins/print_spaces_sketchybar.sh".source = ./plugins/print_spaces_sketchybar.sh;
   xdg.configFile."sketchybar/plugins/yabai_i3_switch.sh".source = ./plugins/yabai_i3_switch.sh;
+  xdg.configFile."sketchybar/plugins/fullscreen_lock.sh".source = ./plugins/fullscreen_lock.sh;
   xdg.configFile."sketchybar/plugins/apple.sh".source = ./plugins/apple.sh;
   xdg.configFile."sketchybar/plugins/battery.sh".source = ./plugins/battery.sh;
   xdg.configFile."sketchybar/plugins/cpu.sh".source = ./plugins/cpu.sh;
@@ -48,6 +49,7 @@ in
   xdg.configFile."sketchybar/plugins/add_spaces_sketchybar.sh".executable = true;
   xdg.configFile."sketchybar/plugins/print_spaces_sketchybar.sh".executable = true;
   xdg.configFile."sketchybar/plugins/yabai_i3_switch.sh".executable = true;
+  xdg.configFile."sketchybar/plugins/fullscreen_lock.sh".executable = true;
   xdg.configFile."sketchybar/plugins/apple.sh".executable = true;
   xdg.configFile."sketchybar/plugins/battery.sh".executable = true;
   xdg.configFile."sketchybar/plugins/cpu.sh".executable = true;

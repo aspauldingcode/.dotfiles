@@ -203,6 +203,16 @@ sketchybar --add item separator_left left \
 sketchybar --add item active_app left \
     --set active_app "${active_app[@]}"
 
+sketchybar --add item fullscreen_locker left \
+  --set fullscreen_locker \
+    updates=on \
+    icon.drawing=off \
+    label.drawing=off \
+    padding=0 \
+    update_freq=1 \
+    script="$PLUGIN_DIR/fullscreen_lock.sh" \
+    --subscribe fullscreen_locker always
+    
 # Center Items
 sketchybar --add item volume center \
   --set volume "${volume[@]}" \

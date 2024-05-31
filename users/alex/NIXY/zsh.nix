@@ -57,6 +57,9 @@
                   export PATH=/opt/local/bin:$PATH
                   export PATH=/opt/local/sbin:$PATH
 
+                  # add missing paths for homebrew and orbstack
+                  export PATH="$PATH:/opt/homebrew/bin:/opt/homebrew/sbin:/Users/alex/.orbstack/bin"
+
                   # Set default editor in zsh shell
                   export EDITOR=nvim
                   export VISUAL="$EDITOR"
