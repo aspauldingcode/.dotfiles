@@ -260,12 +260,138 @@ brackets=(
   background.border_width=2
 )
 
+# add alias tray for Control Center items
+# sketchybar --add event window_focus \
+#            --add event monocle \
+#            --add event battery \
+#            --add event wifi \
+#            --clone system.label label_template \
+#            --set system.label label=sys \
+#                           position=left \
+#                           drawing=on \
+#                           script="$PLUGIN_DIR/window_title.sh" \
+#            --subscribe system.label front_app_switched \
+#            --add alias "Control Center,Battery" left \
+#            --set "Control Center,Battery" update_freq=2 \
+#                           drawing=$HAS_BATTERY \
+#                           icon.padding_left=-5 \
+#                           label.drawing=off \
+#                           background.padding_left=0 \
+#                           background.padding_right=-3 \
+#                           click_script="sketchybar -m --set \"\$NAME\" popup.drawing=toggle; sketchybar --trigger battery" \
+#            --add item battery.details popup."Control Center,Battery" \
+#            --set battery.details updates=$HAS_BATTERY \
+#                           script="$PLUGIN_DIR/battery.sh" \
+#                           label.padding_right=8 \
+#            --subscribe battery.details battery \
+#            --add alias "Control Center,WiFi" left \
+#            --set "Control Center,WiFi" update_freq=3 \
+#                           icon.drawing=off \
+#                           label.drawing=off \
+#                           background.padding_left=-4 \
+#                           background.padding_right=-4 \
+#                           click_script="sketchybar -m --set \"\$NAME\" popup.drawing=toggle; sketchybar --trigger wifi" \
+#            --add item wifi.details popup."Control Center,WiFi" \
+#            --set wifi.details updates=on \
+#                           script="$PLUGIN_DIR/wifi.sh" \
+#                           label.padding_right=5 \
+#            --subscribe wifi.details wifi \
+#            --add alias "Control Center,Sound" left \
+#            --set "Control Center,Sound" update_freq=2 \
+#                           icon.drawing=off \
+#                           label.drawing=off \
+#                           background.padding_left=-4 \
+#                           background.padding_right=-4 \
+#            --add bracket system \
+#                           system.label \
+#                           "Control Center,Battery" \
+#                           "Control Center,WiFi" \
+#                           "Control Center,Sound" \
+#            --set system background.drawing=on
+#!/bin/bash
+
+# Configuration for SketchyBar with alias items
+
+#!/bin/bash
+
+# Define the position for alias items
+position="right"  # You can change this to "center", "left", or any custom position
+
+# Add alias items with click actions
+sketchybar --add alias "Control Center,BentoBox" $position
+sketchybar --set "Control Center,BentoBox" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+    click_script="$PLUGIN_DIR/open_controlcenter.sh"
+
+sketchybar --add alias "Control Center,Clock" $position
+sketchybar --set "Control Center,Clock" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+    click_script="osascript /path/to/click_clock.scpt"
+
+sketchybar --add alias "Spotlight,Item-0" $position
+sketchybar --set "Spotlight,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+    click_script="osascript /path/to/click_spotlight.scpt"
+
+sketchybar --add alias "UnnaturalScrollWheels,Item-0" $position
+sketchybar --set "UnnaturalScrollWheels,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+    click_script="osascript /path/to/click_unnaturalscrollwheels.scpt"
+
+sketchybar --add alias "macOS InstantView,Item-0" $position
+sketchybar --set "macOS InstantView,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+    click_script="osascript /path/to/click_instantview.scpt"
+
+sketchybar --add alias "AltTab,Item-0" $position
+sketchybar --set "AltTab,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+    click_script="osascript /path/to/click_alttab.scpt"
+
+sketchybar --add alias "Karabiner-Menu,Item-0" $position
+sketchybar --set "Karabiner-Menu,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+    click_script="osascript /path/to/click_karabiner.scpt"
+
+sketchybar --add alias "Background Music,Item-0" $position
+sketchybar --set "Background Music,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+    click_script="osascript /path/to/click_backgroundmusic.scpt"
+
+# sketchybar --add alias "Control Center,WiFi" $position
+# sketchybar --set "Control Center,WiFi" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+#     click_script="osascript /path/to/click_wifi.scpt"
+
+# sketchybar --add alias "Control Center,Battery" $position
+# sketchybar --set "Control Center,Battery" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+#     click_script="osascript /path/to/click_battery.scpt"
+
+# sketchybar --add alias "Hidden Bar,hiddenbar_expandcollapse" $position
+# sketchybar --set "Hidden Bar,hiddenbar_expandcollapse" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+#     click_script="osascript /path/to/click_hiddenbar_expandcollapse.scpt"
+
+# sketchybar --add alias "Control Center,AudioVideoModule" $position
+# sketchybar --set "Control Center,AudioVideoModule" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+#     click_script="osascript /path/to/click_audiovideomodule.scpt"
+
+# sketchybar --add alias "TextInputMenuAgent,Item-0" $position
+# sketchybar --set "TextInputMenuAgent,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+#     click_script="osascript /path/to/click_textinputmenuagent.scpt"
+
+# sketchybar --add alias "Hidden Bar,hiddenbar_separate" $position
+# sketchybar --set "Hidden Bar,hiddenbar_separate" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+#     click_script="osascript /path/to/click_hiddenbar_separate.scpt"
+
+# sketchybar --add alias "Hidden Bar,hiddenbar_terminate" $position
+# sketchybar --set "Hidden Bar,hiddenbar_terminate" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+#     click_script="osascript /path/to/click_hiddenbar_terminate.scpt"
+
+# sketchybar --add alias "Control Center,UserSwitcher" $position
+# sketchybar --set "Control Center,UserSwitcher" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+#     click_script="osascript /path/to/click_userswitcher.scpt"
+
 # https://felixkratz.github.io/SketchyBar/config/components#item-bracket----group-items-in-eg-colored-sections
 sketchybar --add bracket lbracket apple space '/space\..*/' separator_left front_app left \
   --set lbracket "${brackets[@]}"
 sketchybar --add bracket cbracket volume datetime cava spotify center \
   --set cbracket "${brackets[@]}"
-sketchybar --add bracket rbracket wifi battery separator_right mail ram cpu right \
+sketchybar --add bracket rbracket "Control Center,Clock" "Control Center,BentoBox" "Hidden Bar,hiddenbar_expandcollapse" \
+  "Control Center,AudioVideoModule" "TextInputMenuAgent,Item-0" "Hidden Bar,hiddenbar_separate" \
+  "Hidden Bar,hiddenbar_terminate" "Spotlight,Item-0" "Control Center,WiFi" "Control Center,Battery" \
+  "Control Center,UserSwitcher" "UnnaturalScrollWheels,Item-0" "macOS InstantView,Item-0" \
+  "AltTab,Item-0" "Karabiner-Menu,Item-0" "Background Music,Item-0" wifi battery separator_right mail ram cpu right \
   --set rbracket "${brackets[@]}"
 
 sketchybar --update

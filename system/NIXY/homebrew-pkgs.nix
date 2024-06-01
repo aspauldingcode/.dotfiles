@@ -52,6 +52,7 @@
       "prismlauncher"
       "dmenu-mac"
       "kitty"
+      "hiddenbar"
       # "macforge"
       "obs"
       "element"

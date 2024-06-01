@@ -50,7 +50,7 @@
         yabai -m config window_opacity_duration     0.35
         yabai -m config normal_window_opacity	      0.95
         yabai -m config active_window_opacity	      1.0
-        yabai -m config insert_feedback_color       0xff${colors.base0C}
+        yabai -m config insert_feedback_color       0xff${colors.base07}
 
         # layout
         yabai -m config layout                      bsp # bsp | float
