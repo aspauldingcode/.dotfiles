@@ -7,7 +7,7 @@
     text =
       let
         inherit (config.colorScheme) colors;
-          borders = "${config.home.homeDirectory}/Downloads/JankyBorders-main/bin/borders"; # master contains apply-to=<window-id> so use this.
+          borders = "${config.home.homeDirectory}/Downloads/JankyBorders-main/bin/borders"; #FIXME: master contains apply-to=<window-id> so use this for now.
       in
       # bash
       ''
@@ -152,7 +152,7 @@
         # OPAQUE UPON ENTERING A NATIVE-FULLSCREEN SPACE,
         # AND ADJUSTED down afterwards.
 
-        # yabai -m config menubar_opacity 0.0 # Disables MacOS Menubar.
+        yabai -m config menubar_opacity 0.0 # Disables MacOS Menubar.
         toggle-menubar off
 
         # Borders!

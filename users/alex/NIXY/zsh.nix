@@ -47,6 +47,9 @@
                   # add gyr to path
                   export PATH="/Users/alex/.cargo/bin:$PATH"
 
+                  #add flameshot to path macOS
+                  export PATH="/Applications/flameshot.app/Contents/MacOS:$PATH"
+
                   # add x11 to path
                   export PATH=/opt/X11/bin:$PATH
                   export PATH=/usr/X11R6/bin:$PATH

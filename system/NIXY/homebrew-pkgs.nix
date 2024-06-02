@@ -53,8 +53,9 @@
       "dmenu-mac"
       "kitty"
       "hiddenbar"
-      # "macforge"
+      # "macforge" # out of date rn... need to use macforge beta
       "obs"
+      "flameshot"
       "element"
       "brave-browser"
       "alt-tab"

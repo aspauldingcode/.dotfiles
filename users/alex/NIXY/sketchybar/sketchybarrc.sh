@@ -319,67 +319,71 @@ position="right"  # You can change this to "center", "left", or any custom posit
 
 # Add alias items with click actions
 sketchybar --add alias "Control Center,BentoBox" $position
-sketchybar --set "Control Center,BentoBox" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+sketchybar --set "Control Center,BentoBox" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="$PLUGIN_DIR/open_controlcenter.sh"
 
 sketchybar --add alias "Control Center,Clock" $position
-sketchybar --set "Control Center,Clock" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+sketchybar --set "Control Center,Clock" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="osascript /path/to/click_clock.scpt"
 
 sketchybar --add alias "Spotlight,Item-0" $position
-sketchybar --set "Spotlight,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+sketchybar --set "Spotlight,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="osascript /path/to/click_spotlight.scpt"
 
 sketchybar --add alias "UnnaturalScrollWheels,Item-0" $position
-sketchybar --set "UnnaturalScrollWheels,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+sketchybar --set "UnnaturalScrollWheels,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="osascript /path/to/click_unnaturalscrollwheels.scpt"
 
 sketchybar --add alias "macOS InstantView,Item-0" $position
-sketchybar --set "macOS InstantView,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+sketchybar --set "macOS InstantView,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="osascript /path/to/click_instantview.scpt"
 
 sketchybar --add alias "AltTab,Item-0" $position
-sketchybar --set "AltTab,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+sketchybar --set "AltTab,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="osascript /path/to/click_alttab.scpt"
 
 sketchybar --add alias "Karabiner-Menu,Item-0" $position
-sketchybar --set "Karabiner-Menu,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+sketchybar --set "Karabiner-Menu,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="osascript /path/to/click_karabiner.scpt"
 
 sketchybar --add alias "Background Music,Item-0" $position
-sketchybar --set "Background Music,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+sketchybar --set "Background Music,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="osascript /path/to/click_backgroundmusic.scpt"
 
+sketchybar --add alias "Flameshot,Item-0" $position
+sketchybar --set "Flameshot,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+    click_script="osascript /path/to/click_flameshot.scpt"
+
 # sketchybar --add alias "Control Center,WiFi" $position
-# sketchybar --set "Control Center,WiFi" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+# sketchybar --set "Control Center,WiFi" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_wifi.scpt"
 
 # sketchybar --add alias "Control Center,Battery" $position
-# sketchybar --set "Control Center,Battery" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+# sketchybar --set "Control Center,Battery" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_battery.scpt"
 
 # sketchybar --add alias "Hidden Bar,hiddenbar_expandcollapse" $position
-# sketchybar --set "Hidden Bar,hiddenbar_expandcollapse" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+# sketchybar --set "Hidden Bar,hiddenbar_expandcollapse" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_hiddenbar_expandcollapse.scpt"
 
 # sketchybar --add alias "Control Center,AudioVideoModule" $position
-# sketchybar --set "Control Center,AudioVideoModule" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+# sketchybar --set "Control Center,AudioVideoModule" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_audiovideomodule.scpt"
 
 # sketchybar --add alias "TextInputMenuAgent,Item-0" $position
-# sketchybar --set "TextInputMenuAgent,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+# sketchybar --set "TextInputMenuAgent,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_textinputmenuagent.scpt"
 
 # sketchybar --add alias "Hidden Bar,hiddenbar_separate" $position
-# sketchybar --set "Hidden Bar,hiddenbar_separate" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+# sketchybar --set "Hidden Bar,hiddenbar_separate" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_hiddenbar_separate.scpt"
 
 # sketchybar --add alias "Hidden Bar,hiddenbar_terminate" $position
-# sketchybar --set "Hidden Bar,hiddenbar_terminate" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+# sketchybar --set "Hidden Bar,hiddenbar_terminate" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_hiddenbar_terminate.scpt"
 
 # sketchybar --add alias "Control Center,UserSwitcher" $position
-# sketchybar --set "Control Center,UserSwitcher" alias.color=$WHITE alias.scale=0.8 padding_left=0 padding_right=0 alias.update_freq=1 \
+# sketchybar --set "Control Center,UserSwitcher" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_userswitcher.scpt"
 
 # https://felixkratz.github.io/SketchyBar/config/components#item-bracket----group-items-in-eg-colored-sections
@@ -391,7 +395,9 @@ sketchybar --add bracket rbracket "Control Center,Clock" "Control Center,BentoBo
   "Control Center,AudioVideoModule" "TextInputMenuAgent,Item-0" "Hidden Bar,hiddenbar_separate" \
   "Hidden Bar,hiddenbar_terminate" "Spotlight,Item-0" "Control Center,WiFi" "Control Center,Battery" \
   "Control Center,UserSwitcher" "UnnaturalScrollWheels,Item-0" "macOS InstantView,Item-0" \
-  "AltTab,Item-0" "Karabiner-Menu,Item-0" "Background Music,Item-0" wifi battery separator_right mail ram cpu right \
+  "AltTab,Item-0" "Karabiner-Menu,Item-0" "Background Music,Item-0" "Flameshot,Item-0" wifi battery separator_right mail ram cpu right \
   --set rbracket "${brackets[@]}"
+
+printf "on\n" > "/tmp/sketchybar_state"
 
 sketchybar --update

@@ -210,6 +210,7 @@ in
       ${sketchybar} --reload
       rm /tmp/fullscreen_state /tmp/dock_state /tmp/gaps_state /tmp/sketchybar_state /tmp/menubar_state /tmp/darkmode_state  #remove statefiles
       echo -ne '\n' | sudo pkill "Background Music" && "/Applications/Background Music.app/Contents/MacOS/Background Music" > /dev/null 2>&1 &
+      dismiss-notifications
     '')
 
     #analyze-output
@@ -277,7 +278,7 @@ in
       toggle_sketchybar() {
           local hidden_status=$(${sketchybar} --query bar | jq -r '.hidden')
           local sketchybar_state_file="/tmp/sketchybar_state"
-
+          
           # Check if the sketchybar state file exists
           if [ ! -f "$sketchybar_state_file" ]; then
               # If the state file doesn't exist, initialize it with the current state
@@ -291,7 +292,7 @@ in
                   ${sketchybar} --bar hidden=off
                   ${yabai} -m config external_bar all:45:0
                   echo "Sketchybar toggled on"
-                  echo "off" > "$sketchybar_state_file"  # Write state to file
+                  echo "on" > "$sketchybar_state_file"  # Write state to file
               fi
           elif [ "$1" == "off" ]; then
               if [ "$hidden_status" == "on" ]; then
@@ -300,7 +301,7 @@ in
                   ${sketchybar} --bar hidden=on
                   ${yabai} -m config external_bar all:0:0
                   echo "Sketchybar toggled off"
-                  echo "on" > "$sketchybar_state_file"  # Write state to file
+                  echo "off" > "$sketchybar_state_file"  # Write state to file
               fi
           else
               # No arguments provided, toggle based on current state
@@ -308,12 +309,12 @@ in
                   ${sketchybar} --bar hidden=on
                   ${yabai} -m config external_bar all:0:0
                   echo "Sketchybar toggled off"
-                  echo "on" > "$sketchybar_state_file"  # Write state to file
+                  echo "off" > "$sketchybar_state_file"  # Write state to file
               else
                   ${sketchybar} --bar hidden=off
                   ${yabai} -m config external_bar all:45:0
                   echo "Sketchybar toggled on"
-                  echo "off" > "$sketchybar_state_file"  # Write state to file
+                  echo "on" > "$sketchybar_state_file"  # Write state to file
               fi
           fi
       }
@@ -520,17 +521,30 @@ in
           local gaps_status=$(cat "$gaps_state_file")
           local sketchybar_status=$(cat "$sketchybar_state_file")
           update_spaces_and_bar() {
-            #sleep 1
-            if [ "$gaps_status" = "on" ]; then
-                ${yabai} -m config external_bar all:50:1
-                ${yabai} -m config external_bar all:50:0
+            # Check if sketchybar_state file exists
+            if [ -f "/tmp/sketchybar_state" ]; then
+                sketchybar_state=$(cat "/tmp/sketchybar_state")
             else
-                ${yabai} -m config external_bar all:42:1
-                ${yabai} -m config external_bar all:42:0
+                sketchybar_state="off"
             fi
+
+            # Determine external_bar configuration based on sketchybar and gaps status
+            if [ "$sketchybar_state" = "on" ]; then
+                if [ "$gaps_status" = "on" ]; then
+                    ${yabai} -m config external_bar all:50:0
+                else
+                    ${yabai} -m config external_bar all:50:0
+                fi
+            else
+                if [ "$gaps_status" = "on" ]; then
+                    ${yabai} -m config external_bar all:0:0
+                else
+                    ${yabai} -m config external_bar all:0:0
+                fi
+            fi
+
             ${borders} background_color=0x000000
           }
-
           if [ $# -eq 0 ]; then
               # No arguments provided, toggle based on current state
               if [ "$dock_status" = "true" ]; then
