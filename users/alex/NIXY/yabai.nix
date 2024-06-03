@@ -152,7 +152,8 @@
         # OPAQUE UPON ENTERING A NATIVE-FULLSCREEN SPACE,
         # AND ADJUSTED down afterwards.
 
-        yabai -m config menubar_opacity 0.0 # Disables MacOS Menubar.
+        # yabai -m config menubar_opacity 0.0 # Disables MacOS Menubar.
+        yabai -m config menubar_opacity 1.0 # initialize so sketchybar can create alias items.
         toggle-menubar off
 
         # Borders!

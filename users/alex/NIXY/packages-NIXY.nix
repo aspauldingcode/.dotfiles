@@ -6,11 +6,12 @@
 }:
 # NIXY-specific packages
 
-let 
+let
+  jq = "/run/current-system/sw/bin/jq";
   yabai = "/opt/homebrew/bin/yabai";
   sketchybar = "/opt/homebrew/bin/sketchybar";
+  borders = "${config.home.homeDirectory}/Downloads/JankyBorders-main/bin/borders"; # master contains apply-to=<window-id> so use this for now.
   #borders = "/opt/homebrew/bin/borders"; # should be this.
-  borders = "${config.home.homeDirectory}/Downloads/JankyBorders-main/bin/borders"; # master contains apply-to=<window-id> so use this.
 in
 {
   # Copy Home-Manager Nix GUI apps to ~/Applications on darwin:
@@ -276,47 +277,64 @@ in
     #toggle-sketchybar
     (pkgs.writeShellScriptBin "toggle-sketchybar" ''
       toggle_sketchybar() {
-          local hidden_status=$(${sketchybar} --query bar | jq -r '.hidden')
-          local sketchybar_state_file="/tmp/sketchybar_state"
-          
-          # Check if the sketchybar state file exists
-          if [ ! -f "$sketchybar_state_file" ]; then
-              # If the state file doesn't exist, initialize it with the current state
-              echo "$hidden_status" > "$sketchybar_state_file"
-          fi
+        local hidden_status=$(${sketchybar} --query bar | ${jq} -r '.hidden')
+        local sketchybar_state_file="/tmp/sketchybar_state"
+        
+        # Check if the sketchybar state file exists
+        if [ ! -f "$sketchybar_state_file" ]; then
+            # If the state file doesn't exist, initialize it with the current state
+            echo "$hidden_status" > "$sketchybar_state_file"
+        fi
 
-          if [ "$1" == "on" ]; then
-              if [ "$hidden_status" == "off" ]; then
-                  echo "Sketchybar is already toggled on"
-              else
-                  ${sketchybar} --bar hidden=off
-                  ${yabai} -m config external_bar all:45:0
-                  echo "Sketchybar toggled on"
-                  echo "on" > "$sketchybar_state_file"  # Write state to file
-              fi
-          elif [ "$1" == "off" ]; then
-              if [ "$hidden_status" == "on" ]; then
-                  echo "Sketchybar is already toggled off"
-              else
-                  ${sketchybar} --bar hidden=on
-                  ${yabai} -m config external_bar all:0:0
-                  echo "Sketchybar toggled off"
-                  echo "off" > "$sketchybar_state_file"  # Write state to file
-              fi
+        update_spaces_and_bar() {
+          local sketchybar_state=$(cat "$sketchybar_state_file")
+          local gaps_status=$(cat "/tmp/gaps_state")
+          # Determine external_bar configuration based on sketchybar and gaps status
+          if [ "$sketchybar_state" = "on" ]; then
+            if [ "$gaps_status" = "on" ]; then
+                ${yabai} -m config external_bar all:50:0
+            else
+                ${yabai} -m config external_bar all:42:0
+            fi
           else
-              # No arguments provided, toggle based on current state
-              if [ "$hidden_status" == "off" ]; then
-                  ${sketchybar} --bar hidden=on
-                  ${yabai} -m config external_bar all:0:0
-                  echo "Sketchybar toggled off"
-                  echo "off" > "$sketchybar_state_file"  # Write state to file
-              else
-                  ${sketchybar} --bar hidden=off
-                  ${yabai} -m config external_bar all:45:0
-                  echo "Sketchybar toggled on"
-                  echo "on" > "$sketchybar_state_file"  # Write state to file
-              fi
+            if [ "$gaps_status" = "on" ]; then
+                ${yabai} -m config external_bar all:0:0
+            else
+                ${yabai} -m config external_bar all:0:0
+            fi
           fi
+          ${borders} background_color=0x000000
+        }
+
+        if [ "$1" == "on" ]; then
+            if [ "$hidden_status" == "off" ]; then
+                echo "Sketchybar is already toggled on"
+            else
+                ${sketchybar} --bar hidden=off
+                echo "Sketchybar toggled on"
+                echo "on" > "$sketchybar_state_file"  # Write state to file
+            fi
+        elif [ "$1" == "off" ]; then
+            if [ "$hidden_status" == "on" ]; then
+                echo "Sketchybar is already toggled off"
+            else
+                ${sketchybar} --bar hidden=on
+                echo "Sketchybar toggled off"
+                echo "off" > "$sketchybar_state_file"  # Write state to file
+            fi
+        else
+            # No arguments provided, toggle based on current state
+            if [ "$hidden_status" == "off" ]; then
+                ${sketchybar} --bar hidden=on
+                echo "Sketchybar toggled off"
+                echo "off" > "$sketchybar_state_file"  # Write state to file
+            else
+                ${sketchybar} --bar hidden=off
+                echo "Sketchybar toggled on"
+                echo "on" > "$sketchybar_state_file"  # Write state to file
+            fi
+        fi
+        update_spaces_and_bar
       }
 
       # Example usage
@@ -327,67 +345,90 @@ in
     (pkgs.writeShellScriptBin "toggle-gaps" ''
       # Initialize a variable to store the current state
       state_file="/tmp/gaps_state"
+      sketchybar_state_file="/tmp/sketchybar_state"
 
       # Initialize the state file if it doesn't exist
       if [ ! -f "$state_file" ]; then
-          echo "on" > "$state_file"
+        echo "on" > "$state_file"
       fi
 
       # Read the current state from the state file
       gaps_state=$(cat "$state_file")
 
+      # Initialize the sketchybar state file if it doesn't exist
+      if [ ! -f "$sketchybar_state_file" ]; then
+        echo "off" > "$sketchybar_state_file"
+      fi
+
+      sketchybar_state=$(cat "$sketchybar_state_file")
+
       toggle() {
-          if [ "$gaps_state" == "off" ]; then
-              on
-              echo "on" > "$state_file"
-          else
-              off
-              echo "off" > "$state_file"
-          fi
+        if [ "$gaps_state" == "off" ]; then
+          on
+          echo "on" > "$state_file"
+        else
+          off
+          echo "off" > "$state_file"
+        fi
       }
 
       on() {
-          ${yabai} -m config top_padding     15
-          ${yabai} -m config bottom_padding  15
-          ${yabai} -m config left_padding    15
-          ${yabai} -m config right_padding   15
-          ${yabai} -m config window_gap      15
-          ${yabai} -m config external_bar all:50:0
-          ${borders} style=round
-          ${borders} order=above
-          ${borders} width=2.0
-          ${sketchybar} --bar corner_radius=10
-          ${sketchybar} --bar margin=13
-          ${sketchybar} --bar y_offset=13
+        ${yabai} -m config top_padding     15
+        ${yabai} -m config bottom_padding  15
+        ${yabai} -m config left_padding    15
+        ${yabai} -m config right_padding   15
+        ${yabai} -m config window_gap      15
+        if [ "$sketchybar_state" == "off" ]; then
+          ${yabai} -m config external_bar all:0:0 # disables the bar window gap
+        else
+          ${yabai} -m config external_bar all:50:0 # enables the bar window gap
+        fi
+        ${borders} style=round
+        ${borders} order=above
+        ${borders} width=2.0
+        ${sketchybar} --bar corner_radius=10
+        ${sketchybar} --bar margin=13
+        ${sketchybar} --bar y_offset=13
       }
 
       off() {
-          ${yabai} -m config top_padding     0
-          ${yabai} -m config bottom_padding  0
-          ${yabai} -m config left_padding    0
-          ${yabai} -m config right_padding   0
-          ${yabai} -m config window_gap      5
+        ${yabai} -m config top_padding     0
+        ${yabai} -m config bottom_padding  0
+        ${yabai} -m config left_padding    0
+        ${yabai} -m config right_padding   0
+        ${yabai} -m config window_gap      5
+        if [ "$sketchybar_state" == "off" ]; then
+          ${yabai} -m config external_bar all:0:0
+        else
           ${yabai} -m config external_bar all:42:0
-          ${borders} style=square
-          ${borders} order=below
-          ${borders} width=5.0
-          ${sketchybar} --bar corner_radius=0
-          ${sketchybar} --bar margin=0
-          ${sketchybar} --bar y_offset=0
+        fi
+        ${borders} style=square
+        ${borders} order=below
+        ${borders} width=5.0
+        ${sketchybar} --bar corner_radius=0
+        ${sketchybar} --bar margin=0
+        ${sketchybar} --bar y_offset=0
       }
 
       if [ "$#" -eq 0 ]; then
-          toggle
+        toggle
       elif [ "$1" == "on" ]; then
+        if [ "$gaps_state" == "on" ]; then
+          echo "Already enabled"
+        else
           on
           echo "on" > "$state_file"
+        fi
       elif [ "$1" == "off" ]; then
+        if [ "$gaps_state" == "off" ]; then
+          echo "Already disabled"
+        else
           off
           echo "off" > "$state_file"
+        fi
       else
-          echo "Invalid argument. Usage: $0 [on|off]"
+        echo "Invalid argument. Usage: $0 [on|off]"
       fi
-
     '')
 
     # print-spaces
@@ -395,14 +436,14 @@ in
       #!/bin/bash
 
       # Query for spaces with windows
-      spaces_with_windows=($(${yabai} -m query --spaces | jq -r '.[] | select(.windows | length > 0) | .index'))
+      spaces_with_windows=($(${yabai} -m query --spaces | ${jq} -r '.[] | select(.windows | length > 0) | .index'))
 
       # Query for the active space
-      active_space=$(${yabai} -m query --spaces --space | jq -r '.index')
+      active_space=$(${yabai} -m query --spaces --space | ${jq} -r '.index')
 
       # active space per display
       # Query for the total number of displays
-      total_displays=$(${yabai} -m query --displays | jq 'length')
+      total_displays=$(${yabai} -m query --displays | ${jq} 'length')
 
       # Initialize an array to store active display spaces
       active_display_spaces=()
@@ -410,7 +451,7 @@ in
       # Loop through each display
       for ((display=1; display<=$total_displays; display++)); do
           # Query for spaces on the current display that are visible
-          spaces=$(${yabai} -m query --spaces --display $display | jq -r '.[] | select(.["is-visible"] == true) | .index')
+          spaces=$(${yabai} -m query --spaces --display $display | ${jq} -r '.[] | select(.["is-visible"] == true) | .index')
 
           # Add visible spaces to the active_display_spaces array
           for space in $spaces; do
@@ -430,10 +471,10 @@ in
 
       # count all spaces.
       # all=length(spaces)
-      max_spaces=$(${yabai} -m query --spaces | jq 'max_by(.index) | .index')
+      max_spaces=$(${yabai} -m query --spaces | ${jq} 'max_by(.index) | .index')
 
       # Query for the highest space containing a window
-      lastwindow=$(${yabai} -m query --spaces | jq '[.[] | select(.windows | length > 0) | .index] | max')
+      lastwindow=$(${yabai} -m query --spaces | ${jq} '[.[] | select(.windows | length > 0) | .index] | max')
 
       # remaining=max_spaces - last space with a window
       remaining=$((max_spaces - lastwindow))
@@ -450,13 +491,13 @@ in
     (pkgs.writeShellScriptBin "spaces-focus" ''
       # Define variables
       # How many displays are there?
-      max_displays=$(${yabai} -m query --displays | jq 'max_by(.index) | .index')
+      max_displays=$(${yabai} -m query --displays | ${jq} 'max_by(.index) | .index')
       # How many spaces are there?
-      max_spaces=$(${yabai} -m query --spaces | jq 'max_by(.index) | .index')
+      max_spaces=$(${yabai} -m query --spaces | ${jq} 'max_by(.index) | .index')
       # Current active space!
-      current_space=$(${yabai} -m query --spaces --space | jq -r '.index')
+      current_space=$(${yabai} -m query --spaces --space | ${jq} -r '.index')
       # Current active display!
-      current_display=$(${yabai} -m query --displays --display | jq -r '.index')
+      current_display=$(${yabai} -m query --displays --display | ${jq} -r '.index')
       # Accept desired space number as input argument
       if [ $# -ne 1 ]; then
       echo "Usage: $0 <desired_space_number>"
@@ -470,7 +511,7 @@ in
         for ((i=0; i<iterations; i++)); do
           ${yabai} -m space --create
           #reassign max_spaces:
-          max_spaces=$(${yabai} -m query --spaces | jq 'max_by(.index) | .index')
+          max_spaces=$(${yabai} -m query --spaces | ${jq} 'max_by(.index) | .index')
         done
       fi
       # then, focus on space n
@@ -481,13 +522,13 @@ in
     (pkgs.writeShellScriptBin "move-to-space" ''
       # Define variables
       # How many displays are there?
-      max_displays=$(${yabai} -m query --displays | jq 'max_by(.index) | .index')
+      max_displays=$(${yabai} -m query --displays | ${jq} 'max_by(.index) | .index')
       # How many spaces are there?
-      max_spaces=$(${yabai} -m query --spaces | jq 'max_by(.index) | .index')
+      max_spaces=$(${yabai} -m query --spaces | ${jq} 'max_by(.index) | .index')
       # Current active space!
-      current_space=$(${yabai} -m query --spaces --space | jq -r '.index')
+      current_space=$(${yabai} -m query --spaces --space | ${jq} -r '.index')
       # Current active display!
-      current_display=$(${yabai} -m query --displays --display | jq -r '.index')
+      current_display=$(${yabai} -m query --displays --display | ${jq} -r '.index')
       # Accept desired space number as input argument
       if [ $# -ne 1 ]; then
       echo "Usage: $0 <desired_space_number>"
@@ -501,7 +542,7 @@ in
         for ((i=0; i<iterations; i++)); do
           ${yabai} -m space --create
           #reassign max_spaces:
-          max_spaces=$(${yabai} -m query --spaces | jq 'max_by(.index) | .index')
+          max_spaces=$(${yabai} -m query --spaces | ${jq} 'max_by(.index) | .index')
         done
       fi
       # then, move window to space n
@@ -520,12 +561,13 @@ in
           local dock_status=$(osascript -e 'tell application "System Events" to get autohide of dock preferences')
           local gaps_status=$(cat "$gaps_state_file")
           local sketchybar_status=$(cat "$sketchybar_state_file")
+
           update_spaces_and_bar() {
             # Check if sketchybar_state file exists
             if [ -f "/tmp/sketchybar_state" ]; then
                 sketchybar_state=$(cat "/tmp/sketchybar_state")
             else
-                sketchybar_state="off"
+                sketchybar_state="on"
             fi
 
             # Determine external_bar configuration based on sketchybar and gaps status
@@ -533,7 +575,7 @@ in
                 if [ "$gaps_status" = "on" ]; then
                     ${yabai} -m config external_bar all:50:0
                 else
-                    ${yabai} -m config external_bar all:50:0
+                    ${yabai} -m config external_bar all:42:0
                 fi
             else
                 if [ "$gaps_status" = "on" ]; then
@@ -651,7 +693,7 @@ in
       fi
 
       fullscreen_state_file="/tmp/fullscreen_state"
-      window_id=$(${yabai} -m query --windows --window | jq -r '."id"')
+      window_id=$(${yabai} -m query --windows --window | ${jq} -r '."id"')
 
       # Function to check if the current window is in fullscreen mode
       function is_fullscreen() {
@@ -660,7 +702,7 @@ in
 
       # Function to check if the current window is floating
       function is_floating() {
-          ${yabai} -m query --windows --window | jq -r '."is-floating"' | grep -q "1"
+          ${yabai} -m query --windows --window | ${jq} -r '."is-floating"' | grep -q "1"
       }
 
       # Check the value of the argument
@@ -747,7 +789,7 @@ in
       check_darkmode_status
 
       # Update the sketchybar state
-      sketchybar_hidden_status=$(${sketchybar} --query bar | jq -r '.hidden')
+      sketchybar_hidden_status=$(${sketchybar} --query bar | ${jq} -r '.hidden')
       if [ "$sketchybar_hidden_status" = "on" ]; then
           sketchybar_state="off"
       elif [ "$sketchybar_hidden_status" = "off" ]; then 
@@ -772,7 +814,7 @@ in
     # toggle-instant-fullscreen
     (pkgs.writeShellScriptBin "toggle-instant-fullscreen" ''
       fullscreen_state_file="/tmp/fullscreen_state"
-      window_id=$(${yabai} -m query --windows --window | jq -r '."id"')
+      window_id=$(${yabai} -m query --windows --window | ${jq} -r '."id"')
 
       function update_state_file() {
           local state=$1
@@ -790,10 +832,10 @@ in
           if [ "$(cat /tmp/menubar_state)" = "on" ]; then
               toggle-menubar off
           fi
-          local is_floating=$(${yabai} -m query --windows --window | jq -r '."is-floating"')
-          local current_display_frame=$(${yabai} -m query --displays --display | jq '.frame')
-          local x=$(echo "$current_display_frame" | jq -r '.x')
-          local y=$(echo "$current_display_frame" | jq -r '.y')
+          local is_floating=$(${yabai} -m query --windows --window | ${jq} -r '."is-floating"')
+          local current_display_frame=$(${yabai} -m query --displays --display | ${jq} '.frame')
+          local x=$(echo "$current_display_frame" | ${jq} -r '.x')
+          local y=$(echo "$current_display_frame" | ${jq} -r '.y')
 
           ${borders} apply-to=$window_id width=0.0 style=square order=below background_color=0xFF000000
           if [ "$is_floating" = "true" ]; then
@@ -809,7 +851,7 @@ in
 
       function fullscreen_off() {
           ${borders} apply-to=$window_id width=2 style=round order=above background_color=0x000000
-          if [ "$(${yabai} -m query --windows --window | jq '."is-floating"')" = "true" ]; then
+          if [ "$(${yabai} -m query --windows --window | ${jq} '."is-floating"')" = "true" ]; then
               ${yabai} -m window --toggle float # Restore window to its previous state
           fi
           update_state_file "off"
@@ -860,6 +902,21 @@ in
           # If the frontmost app is not X11.bin, set the mouse modifier to alt
           ${yabai} -m config mouse_modifier alt # enables alt modifier for yabai again
       fi
+    '')
+
+    # init_alias_items
+    (pkgs.writeShellScriptBin "init_alias_items" ''
+      sleep 4
+      # Fetch the menu items from sketchybar query
+      ${sketchybar} --query default_menu_items | ${jq} -r '.[]' | while read -r item; do
+          ${sketchybar} --set "$item" alias.update_freq=0
+      done
+
+      # Sleep for 5 seconds
+      sleep 3
+
+      # Set menubar_opacity to 0.0
+      ${yabai} -m config menubar_opacity 0.0 # back to invisible!
     '')
 
     #search

@@ -186,6 +186,27 @@
       # # Use Mouse+$mod to drag floating windows to their wanted position (Mod2, like yabai!)
       floating_modifier Mod1
 
+      #disable i3 titlebars
+      # font pango:Ubuntu Bold 0
+      # for_window [class=".*"] title_format " "
+
+      # font pango:Ubuntu Bold 5
+      # for_window [class=".*"] title_format "---"
+
+      for_window [class="^.*"] border pixel 0
+
+      # toggle-dock
+      bindsym $mod+Space exec "toggle-dock"
+
+      # toggle-menubar
+      bindsym $mod+$smod+m exec "toggle-menubar"
+
+      # toggle-sketchybar
+      bindsym $mod+m exec "toggle-sketchybar"
+
+      # toggle-darkmode
+      bindsym $mod+p exec "toggle-darkmode"
+
       # # Enter fullscreen mode for the focused window
       bindsym $mod+$smod+f fullscreen toggle
 

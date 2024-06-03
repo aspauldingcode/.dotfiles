@@ -41,7 +41,7 @@ defaults=(
   popup.background.corner_radius=10
   popup.background.border_width=2
   popup.background.border_color=$PURPLE
-  popup.y_offset=8
+  popup.y_offset=0
 )
 
 sketchybar --default "${defaults[@]}"
@@ -58,6 +58,8 @@ datetime=(
   icon.padding_left=15
   label.padding_left=5
   label.padding_right=15
+  padding_left=3
+  padding_right=3
   background.height=19 
   background.corner_radius=10
   popup.horizontal=on               # FIXME: FIGURE OUT HOW TO MAKE CALENDAR WITHOUT THIS!
@@ -69,7 +71,7 @@ datetime=(
 
 wifi=(
   script="$PLUGIN_DIR/wifi.sh"
-  #click_script="$POPUP_TOGGLE_SCRIPT"
+  click_script="$PLUGIN_DIR/open_wifi.sh"
   label.padding_left=5
   label.padding_right=5
   update_freq=10
@@ -80,7 +82,7 @@ battery=(
   script="$PLUGIN_DIR/battery.sh"
   update_freq=120
   updates=on
-  #click_script="$POPUP_TOGGLE_SCRIPT"
+  click_script="$PLUGIN_DIR/open_battery.sh"
   #label.padding_left=5
   #label.padding_right=5
   icon.padding_left=6
@@ -92,14 +94,13 @@ volume=(
   script="$PLUGIN_DIR/volume.sh"
   updates=on
   icon.padding_left=10
-  label.padding_right=5
+  label.padding_right=10
 )
 
 mail=(
   # background.color=$TEMPUS
   background.height=25
   corner_radius=8
-  background.padding_left=5 # because it is leftmost of the bracket.
   icon.padding_left=5 
   icon.padding_right=5
   icon.drawing=on
@@ -317,18 +318,20 @@ brackets=(
 # Define the position for alias items
 position="right"  # You can change this to "center", "left", or any custom position
 
+/opt/homebrew/bin/yabai -m config menubar_opacity 1.0 # to make alias items visible!
+
 # Add alias items with click actions
 sketchybar --add alias "Control Center,BentoBox" $position
 sketchybar --set "Control Center,BentoBox" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="$PLUGIN_DIR/open_controlcenter.sh"
 
-sketchybar --add alias "Control Center,Clock" $position
-sketchybar --set "Control Center,Clock" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
-    click_script="osascript /path/to/click_clock.scpt"
+sketchybar --add alias "Control Center,Bluetooth" $position
+sketchybar --set "Control Center,Bluetooth" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+    click_script="$PLUGIN_DIR/open_bluetooth.sh"
 
-sketchybar --add alias "Spotlight,Item-0" $position
-sketchybar --set "Spotlight,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
-    click_script="osascript /path/to/click_spotlight.scpt"
+sketchybar --add alias "Control Center,UserSwitcher" $position
+sketchybar --set "Control Center,UserSwitcher" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+    click_script="$PLUGIN_DIR/open_user.sh"
 
 sketchybar --add alias "UnnaturalScrollWheels,Item-0" $position
 sketchybar --set "UnnaturalScrollWheels,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
@@ -348,11 +351,19 @@ sketchybar --set "Karabiner-Menu,Item-0" alias.color=$WHITE alias.scale=0.8 padd
 
 sketchybar --add alias "Background Music,Item-0" $position
 sketchybar --set "Background Music,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
-    click_script="osascript /path/to/click_backgroundmusic.scpt"
+    click_script="osascript /path/to/click_backgroundmusic.scpt" 
 
 sketchybar --add alias "Flameshot,Item-0" $position
 sketchybar --set "Flameshot,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="osascript /path/to/click_flameshot.scpt"
+
+# sketchybar --add alias "Control Center,Clock" $position
+# sketchybar --set "Control Center,Clock" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+#     click_script="osascript /path/to/click_clock.scpt"
+
+# sketchybar --add alias "Spotlight,Item-0" $position
+# sketchybar --set "Spotlight,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+#     click_script="osascript /path/to/click_spotlight.scpt"
 
 # sketchybar --add alias "Control Center,WiFi" $position
 # sketchybar --set "Control Center,WiFi" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
@@ -382,22 +393,27 @@ sketchybar --set "Flameshot,Item-0" alias.color=$WHITE alias.scale=0.8 padding_l
 # sketchybar --set "Hidden Bar,hiddenbar_terminate" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_hiddenbar_terminate.scpt"
 
-# sketchybar --add alias "Control Center,UserSwitcher" $position
-# sketchybar --set "Control Center,UserSwitcher" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
-#     click_script="osascript /path/to/click_userswitcher.scpt"
+sketchybar --add item rbracket_padding_left right --set rbracket_padding_left icon.padding_right=3 icon.padding_left=3 icon="" # because it is leftmost of the bracket.
 
 # https://felixkratz.github.io/SketchyBar/config/components#item-bracket----group-items-in-eg-colored-sections
 sketchybar --add bracket lbracket apple space '/space\..*/' separator_left front_app left \
   --set lbracket "${brackets[@]}"
 sketchybar --add bracket cbracket volume datetime cava spotify center \
-  --set cbracket "${brackets[@]}"
-sketchybar --add bracket rbracket "Control Center,Clock" "Control Center,BentoBox" "Hidden Bar,hiddenbar_expandcollapse" \
-  "Control Center,AudioVideoModule" "TextInputMenuAgent,Item-0" "Hidden Bar,hiddenbar_separate" \
-  "Hidden Bar,hiddenbar_terminate" "Spotlight,Item-0" "Control Center,WiFi" "Control Center,Battery" \
+  --set cbracket "${brackets[@]}" 
+sketchybar --add bracket rbracket "Control Center,BentoBox" "TextInputMenuAgent,Item-0" \
   "Control Center,UserSwitcher" "UnnaturalScrollWheels,Item-0" "macOS InstantView,Item-0" \
-  "AltTab,Item-0" "Karabiner-Menu,Item-0" "Background Music,Item-0" "Flameshot,Item-0" wifi battery separator_right mail ram cpu right \
-  --set rbracket "${brackets[@]}"
+  "AltTab,Item-0" "Karabiner-Menu,Item-0" "Background Music,Item-0" "Flameshot,Item-0" \
+  rbracket_padding_left wifi "Control Center,Bluetooth" battery separator_right mail ram cpu right \
+  --set rbracket "${brackets[@]}" 
 
+#initialize states
 printf "on\n" > "/tmp/sketchybar_state"
+printf "on\n" > "/tmp/gaps_state"
+dismiss-notifications # not working?
 
 sketchybar --update
+
+# Fetch the menu items from sketchybar query
+sleep 4
+/opt/homebrew/bin/sketchybar --query default_menu_items | /run/current-system/sw/bin/jq -r '.[]' | while IFS= read -r item; do /opt/homebrew/bin/sketchybar --set "$item" alias.update_freq=0; done && sleep 3
+/opt/homebrew/bin/yabai -m config menubar_opacity 0.0

@@ -51,7 +51,7 @@
         "com.apple.springing.enabled" = null;
         "com.apple.swipescrolldirection" = null;
         "com.apple.trackpad.enableSecondaryClick" = null;
-        # "com.apple.trackpad.forceClick" = null;
+        # "com.apple.trackpad.forceClick" = false; # Should disable trackpad dictionary
         "com.apple.trackpad.scaling" = null;
         "com.apple.trackpad.trackpadCornerClickBehavior" = null;
       };
@@ -131,6 +131,69 @@
           KeyRepeatInterval = "0.083333333";
           DarkenSystemColors = 1;
         };
+        "com.apple.AppleMultitouchTrackpad" = {
+          ActuateDetents = 1;
+          ActuationStrength = 0;
+          Clicking = 0;
+          DragLock = 0;
+          Dragging = 1;
+          FirstClickThreshold = 1;
+          ForceSuppressed = 1;
+          SecondClickThreshold = 1;
+          TrackpadCornerSecondaryClick = 0;
+          TrackpadFiveFingerPinchGesture = 2;
+          TrackpadFourFingerHorizSwipeGesture = 2;
+          TrackpadFourFingerPinchGesture = 2;
+          TrackpadFourFingerVertSwipeGesture = 2;
+          TrackpadHandResting = 1;
+          TrackpadHorizScroll = 1;
+          TrackpadMomentumScroll = 1;
+          TrackpadPinch = 1;
+          TrackpadRightClick = 1;
+          TrackpadRotate = 1;
+          TrackpadScroll = 1;
+          TrackpadThreeFingerDrag = 0;
+          TrackpadThreeFingerHorizSwipeGesture = 2;
+          TrackpadThreeFingerTapGesture = 0;
+          TrackpadThreeFingerVertSwipeGesture = 2;
+          TrackpadTwoFingerDoubleTapGesture = 1;
+          TrackpadTwoFingerFromRightEdgeSwipeGesture = 3;
+          USBMouseStopsTrackpad = 0;
+          UserPreferences = 1;
+          # version = 12;
+        };
+      ControlCenterPreferences = {
+        "com.apple.controlcenter" = {
+          "LastHeartbeatDateString.daily" = "2024-06-02T22:37:27Z";
+          "NSStatusItem Preferred Position AudioVideoModule" = 602;
+          "NSStatusItem Preferred Position Battery" = 284;
+          "NSStatusItem Preferred Position BentoBox" = 44;
+          "NSStatusItem Preferred Position Bluetooth" = 116;
+          "NSStatusItem Preferred Position FocusModes" = 223;
+          "NSStatusItem Preferred Position NowPlaying" = 190;
+          "NSStatusItem Preferred Position UserSwitcher" = 326;
+          "NSStatusItem Preferred Position WiFi" = 78;
+          "NSStatusItem Visible AudioVideoModule" = 1;
+          "NSStatusItem Visible Battery" = 1;
+          "NSStatusItem Visible BentoBox" = 1;
+          "NSStatusItem Visible Bluetooth" = 1;
+          "NSStatusItem Visible Clock" = 1;
+          "NSStatusItem Visible FaceTime" = 1;
+          "NSStatusItem Visible FocusModes" = 1;
+          "NSStatusItem Visible Item-0" = 0;
+          "NSStatusItem Visible Item-1" = 0;
+          "NSStatusItem Visible Item-2" = 0;
+          "NSStatusItem Visible Item-3" = 0;
+          "NSStatusItem Visible Item-4" = 0;
+          "NSStatusItem Visible Item-5" = 0;
+          "NSStatusItem Visible Item-6" = 0;
+          "NSStatusItem Visible Item-7" = 0;
+          "NSStatusItem Visible Item-8" = 0;
+          "NSStatusItem Visible NowPlaying" = 1;
+          "NSStatusItem Visible UserSwitcher" = 1;
+          "NSStatusItem Visible WiFi" = 1;
+        };
+      };
       };
       CustomUserPreferences = {
         # per user
@@ -189,9 +252,10 @@
           alwaysHiddenSectionEnabled = 1;
           areSeparatorsHidden = 0;
           globalKey = { length = 142; bytes = "0x7b22636170734c6f636b223a66616c7364223a747275657d"; };
-          isAutoHide = 1;
-          isAutoStart = 1;
+          isAutoHide = 0; # false so I can toggle?
+          isAutoStart = 0; # broke with sketchybar atm.
           isShowPreferences = 0;
+          numberOfSecondForAutoHide = 10;
           useFullStatusBarOnExpandEnabled = 0;
         };
       #   vscode = {
@@ -200,7 +264,7 @@
       #   };
       # };
       };
-      LaunchServices.LSQuarantine = false;
+      LaunchServices.LSQuarantine = false; # Finally some air to breathe.
       magicmouse.MouseButtonMode = "TwoButton"; # allow left and right click when using magic mouse.
       screencapture = {
         disable-shadow = true;
