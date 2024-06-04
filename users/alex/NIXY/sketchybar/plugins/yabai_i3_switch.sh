@@ -1,5 +1,8 @@
 #!/bin/bash
 
+yabai="/opt/homebrew/bin/yabai"
+jq="/run/current-system/sw/bin/jq"
+
 echo -e "\n\nRUNNING yabai-i3-switch.sh NOW!!!"
 
 # Path to the fullscreen state file
@@ -10,7 +13,7 @@ front_app=$(osascript -e 'tell application "System Events" to get name of first 
 echo "Frontmost application is: $front_app"
 
 # Use sketchybar to get the focused window ID
-window_id=$(/opt/homebrew/bin/yabai -m query --windows --window | jq -r '."id"')
+window_id=$($yabai -m query --windows --window | $jq -r '."id"')
 
 # Check if the window ID is in fullscreen mode
 is_fullscreen=$(/usr/bin/grep "id: $window_id fullscreen:" "$fullscreen_state_file" | /usr/bin/tail -1 | awk '{print $NF}')
@@ -38,19 +41,19 @@ update_state_file
 # Check if the frontmost application is X11.bin
 if [ "$front_app" = "X11.bin" ]; then
     echo "Setting mouse modifier to fn"
-    /opt/homebrew/bin/yabai -m config mouse_modifier fn
+    $yabai -m config mouse_modifier fn
 else
     echo "Setting mouse modifier to alt"
-    /opt/homebrew/bin/yabai -m config mouse_modifier alt
+    $yabai -m config mouse_modifier alt
 fi
 
 # Check if the current window is fullscreen
 if [ "$is_fullscreen" = "on" ]; then
-    /opt/homebrew/bin/yabai -m config mouse_modifier fn # turns off yabai mouse shortcut
+    $yabai -m config mouse_modifier fn # turns off yabai mouse shortcut
     update_state_file
     toggle-dock off
 else
     # If the window is not fullscreen, handle the non-fullscreen case
-    /opt/homebrew/bin/yabai -m config mouse_modifier alt # enables alt modifier for yabai again
+    $yabai -m config mouse_modifier alt # enables alt modifier for yabai again
     update_state_file
 fi

@@ -42,8 +42,11 @@ in
     calcurse
     chatgpt-cli
     cowsay
+    cmus
+    cmusfm
     bat
     newsboat
+    audacity
     nmap
     neofetch
     darwin.cctools-port # is it needed tho?
@@ -52,7 +55,6 @@ in
     # wireshark
     # nmapsi4
     #ruby
-    spotify
     obsidian
     sl
     fzf

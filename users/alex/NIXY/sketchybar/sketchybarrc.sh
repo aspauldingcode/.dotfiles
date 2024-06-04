@@ -2,7 +2,8 @@
 
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
-
+yabai="/opt/homebrew/bin/yabai"
+jq="/run/current-system/sw/bin/jq"
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 ITEM_DIR="$HOME/.config/sketchybar/items"
 # SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
@@ -50,7 +51,7 @@ space_config=(
     ignore_association=on
     updates=on \
     script="$PLUGIN_DIR/add_spaces_sketchybar.sh"
-    # click_script="yabai -m space --focus $sid"
+    # click_script="$yabai -m space --focus $sid"
 )
 
 datetime=(
@@ -194,7 +195,7 @@ sketchybar --add item separator_left left \
   --add item front_app left \
   --set front_app "${front_app[@]}" \
     script="$PLUGIN_DIR/front_app.sh" \
-    click_script="yabai -m window --close" \
+    click_script="$yabai -m window --close" \
     icon.drawing=on \
     label.padding_left=15 \
     label.padding_right=15 \
@@ -309,16 +310,11 @@ brackets=(
 #                           "Control Center,WiFi" \
 #                           "Control Center,Sound" \
 #            --set system background.drawing=on
-#!/bin/bash
-
-# Configuration for SketchyBar with alias items
-
-#!/bin/bash
 
 # Define the position for alias items
 position="right"  # You can change this to "center", "left", or any custom position
 
-/opt/homebrew/bin/yabai -m config menubar_opacity 1.0 # to make alias items visible!
+$yabai -m config menubar_opacity 1.0 # to make alias items visible!
 
 # Add alias items with click actions
 sketchybar --add alias "Control Center,BentoBox" $position
@@ -393,7 +389,7 @@ sketchybar --set "Flameshot,Item-0" alias.color=$WHITE alias.scale=0.8 padding_l
 # sketchybar --set "Hidden Bar,hiddenbar_terminate" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_hiddenbar_terminate.scpt"
 
-sketchybar --add item rbracket_padding_left right --set rbracket_padding_left icon.padding_right=3 icon.padding_left=3 icon="" # because it is leftmost of the bracket.
+sketchybar --add item rbracket_padding_left right --set rbracket_padding_left icon.padding_right=4 icon.padding_left=4 icon="" # because it is leftmost of the bracket.
 
 # https://felixkratz.github.io/SketchyBar/config/components#item-bracket----group-items-in-eg-colored-sections
 sketchybar --add bracket lbracket apple space '/space\..*/' separator_left front_app left \
@@ -415,5 +411,5 @@ sketchybar --update
 
 # Fetch the menu items from sketchybar query
 sleep 4
-/opt/homebrew/bin/sketchybar --query default_menu_items | /run/current-system/sw/bin/jq -r '.[]' | while IFS= read -r item; do /opt/homebrew/bin/sketchybar --set "$item" alias.update_freq=0; done && sleep 3
-/opt/homebrew/bin/yabai -m config menubar_opacity 0.0
+/opt/homebrew/bin/sketchybar --query default_menu_items | $jq -r '.[]' | while IFS= read -r item; do /opt/homebrew/bin/sketchybar --set "$item" alias.update_freq=0; done && sleep 3
+$yabai -m config menubar_opacity 0.0

@@ -5,8 +5,8 @@ source "$HOME/.config/sketchybar/icons.sh"
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 CURRENT_WIFI="$(/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I)"
-SSID="$(echo "$CURRENT_WIFI" | grep -o "SSID: .*" | sed 's/^SSID: //')"
-CURR_TX="$(echo "$CURRENT_WIFI" | grep -o "lastTxRate: .*" | sed 's/^lastTxRate: //')"
+SSID="$(printf "%s" "$CURRENT_WIFI" | grep -o "SSID: .*" | sed 's/^SSID: //')"
+CURR_TX="$(printf "%s" "$CURRENT_WIFI" | grep -o "lastTxRate: .*" | sed 's/^lastTxRate: //')"
 POPUP_OFF="sketchybar --set wifi.ssid popup.drawing=off && sketchybar --set wifi.speed popup.drawing=off"
 WIFI_INTERFACE=$(networksetup -listallhardwareports | awk '/Wi-Fi/{getline; print $2}')
 WIFI_POWER=$(networksetup -getairportpower $WIFI_INTERFACE | awk '{print $4}')

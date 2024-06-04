@@ -2,6 +2,8 @@
 
 source "$HOME/.config/sketchybar/colors.sh"
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+yabai="/opt/homebrew/bin/yabai"
+jq="/run/current-system/sw/bin/jq"
 
 function update_sketchybar_spaces() {
     # Get the full label from the function and extract only the numeric part
@@ -11,7 +13,7 @@ function update_sketchybar_spaces() {
     relevant_spaces=($($PLUGIN_DIR/print_spaces_sketchybar.sh | tr ' ' '\n' | /usr/bin/sed 's/^_//'))
     relevant_spaces=($(echo "${relevant_spaces[@]}" | tr ' ' '\n' | sort -n))  # Sort spaces numerically
 
-    sketchybar_spaces=($(sketchybar --query bar | jq -r '.items[] | select(startswith("space."))'))
+    sketchybar_spaces=($(sketchybar --query bar | $jq -r '.items[] | select(startswith("space."))'))
 
     for space in "${relevant_spaces[@]}"; do
         label=$(echo "$space" | /usr/bin/sed 's/^_//')  # Ensure no leading underscore
@@ -25,7 +27,7 @@ function update_sketchybar_spaces() {
         sketchybar --set space.$label \
                         label="$label" \
                         label.color="$color" \
-                        click_script="yabai -m space --focus $active_space_label" \
+                        click_script="$yabai -m space --focus $active_space_label" \
                         padding_left=5 \
                         padding_right=5 \
                         drawing=on
