@@ -363,6 +363,29 @@ check_current_active_space_label() {
     fi
 }
 
+reorder_space_items() {
+    # Get the bar query output
+    bar_output=$(sketchybar --query bar)
+    
+    # Extract the items from the JSON output
+    items=$(echo "$bar_output" | $jq -r '.items[]')
+    
+    # Filter out the space items (space, space.1, space.2, ...)
+    spaces=()
+    while IFS= read -r item; do
+        if [[ $item == space* ]]; then
+            spaces+=("$item")
+        fi
+    done <<< "$items"
+    
+    # Sort the space items numerically
+    IFS=$'\n' sorted_spaces=($(sort -t . -k 2n <<<"${spaces[*]}"))
+    unset IFS
+    
+    # Reorder the space items using sketchybar
+    sketchybar --reorder "${sorted_spaces[@]}"
+}
+
 # echo -e "\nSpaces Information:"
 # read_all_spaces
 

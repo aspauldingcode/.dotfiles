@@ -12,7 +12,7 @@
         blur = true;
         class.instance = "Alacritty";
         class.general = "Alacritty";
-        decorations = "Buttonless";
+        decorations = "None";   # "Full" | "None" | "Transparent" | "Buttonless"
         option_as_alt = "Both";
       };
 

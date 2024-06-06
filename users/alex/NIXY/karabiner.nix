@@ -118,6 +118,32 @@
                       }
                     ];
                   }
+                  {
+                    description = "Replace Alt+Shift+Q with Alt+Q in Alacritty";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          "key_code" = "q";
+                          modifiers = {
+                            mandatory = [ "left_option" "left_shift" ];
+                          };
+                        };
+                        to = [
+                          {
+                            "key_code" = "w";
+                            modifiers = [ "left_command" ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            "bundle_identifiers" = [ "^org\\.alacritty$" ];
+                          }
+                        ];
+                      }
+                    ];
+                  }
                   # {
                   #   description = "Swap Alt and Control for Alacritty";
                   #   manipulators = [

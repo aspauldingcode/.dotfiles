@@ -15,24 +15,26 @@ function update_sketchybar_spaces() {
 
     sketchybar_spaces=($(sketchybar --query bar | $jq -r '.items[] | select(startswith("space."))'))
 
-    for space in "${relevant_spaces[@]}"; do
-        label=$(echo "$space" | /usr/bin/sed 's/^_//')  # Ensure no leading underscore
-        color="$WHITE"  # Default color
-        [[ "$label" == "$active_space_label" ]] && color="$ORANGE"  # Set color to ORANGE if it's the active space
+for space in "${relevant_spaces[@]}"; do
+    label=$(echo "$space" | /usr/bin/sed 's/^_//')  # Ensure no leading underscore
+    color="$WHITE"  # Default color
+    [[ "$label" == "$active_space_label" ]] && color="$ORANGE"  # Set color to ORANGE if it's the active space
 
-        if [[ ! " ${sketchybar_spaces[*]} " =~ " space.$label " ]]; then
-            sketchybar --add item space.$label left
-        fi
+    # Set the properties of the cloned space item
+    sketchybar --set space.$label \
+                    label="$label" \
+                    label.color="$color" \
+                    click_script="$yabai -m space --focus _$label" \
+                    padding_left=5 \
+                    padding_right=5 \
+		            drawing=on
+                    
+    # Clone the existing space item and rename the cloned item
+    sketchybar --clone space.$label space after
 
-        sketchybar --set space.$label \
-                        label="$label" \
-                        label.color="$color" \
-                        click_script="$yabai -m space --focus $active_space_label" \
-                        padding_left=5 \
-                        padding_right=5 \
-                        drawing=on
-        sketchybar_spaces=("${sketchybar_spaces[@]/space.$label/}")
-    done
+    # Remove the original space item from the list of spaces
+    sketchybar_spaces=("${sketchybar_spaces[@]/space.$label/}")
+done
 
     # Remove any remaining stale space items
     for space_id in "${sketchybar_spaces[@]}"; do
@@ -60,12 +62,15 @@ function update_sketchybar_spaces() {
 
     # echo -e "\nrelevent spaces: \n$relevant_spaces"
 
-   echo $active_space_label
+    echo $active_space_label
     # check_current_active_display
     # check_current_active_display_label
 
     # check_current_active_space
     # check_current_active_space_label
+
+    echo -e "\nReordering space items"
+    reorder_space_items
 }
 
 echo -e "\n\n\nRunning update_sketchybar_spaces\n\n\n"

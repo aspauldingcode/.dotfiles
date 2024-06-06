@@ -406,6 +406,7 @@ sketchybar --add bracket rbracket "Control Center,BentoBox" "TextInputMenuAgent,
 printf "on\n" > "/tmp/sketchybar_state"
 printf "on\n" > "/tmp/gaps_state"
 dismiss-notifications # not working?
+rm $HOME/.config/sketchybar/calendar_init_flag # remove calendar flag at sketchybar launch
 
 sketchybar --update
 
