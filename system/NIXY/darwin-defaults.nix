@@ -258,11 +258,11 @@
           numberOfSecondForAutoHide = 10;
           useFullStatusBarOnExpandEnabled = 0;
         };
-      #   vscode = {
-      #   settings = {
-      #     "window.systemColorTheme" = "auto";
-      #   };
-      # };
+        # vscode = {
+        #   settings = {
+        #     "window.systemColorTheme" = "auto";
+        #   };
+        # };
       };
       LaunchServices.LSQuarantine = false; # Finally some air to breathe.
       magicmouse.MouseButtonMode = "TwoButton"; # allow left and right click when using magic mouse.

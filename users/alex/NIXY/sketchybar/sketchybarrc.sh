@@ -72,7 +72,7 @@ datetime=(
 
 wifi=(
   script="$PLUGIN_DIR/wifi.sh"
-  click_script="$PLUGIN_DIR/open_wifi.sh"
+  click_script="$PLUGIN_DIR/open_menubar_items.sh wifi"
   label.padding_left=5
   label.padding_right=5
   update_freq=10
@@ -83,7 +83,7 @@ battery=(
   script="$PLUGIN_DIR/battery.sh"
   update_freq=120
   updates=on
-  click_script="$PLUGIN_DIR/open_battery.sh"
+  click_script="$PLUGIN_DIR/open_menubar_items.sh battery"
   #label.padding_left=5
   #label.padding_right=5
   icon.padding_left=6
@@ -262,55 +262,6 @@ brackets=(
   background.border_width=2
 )
 
-# add alias tray for Control Center items
-# sketchybar --add event window_focus \
-#            --add event monocle \
-#            --add event battery \
-#            --add event wifi \
-#            --clone system.label label_template \
-#            --set system.label label=sys \
-#                           position=left \
-#                           drawing=on \
-#                           script="$PLUGIN_DIR/window_title.sh" \
-#            --subscribe system.label front_app_switched \
-#            --add alias "Control Center,Battery" left \
-#            --set "Control Center,Battery" update_freq=2 \
-#                           drawing=$HAS_BATTERY \
-#                           icon.padding_left=-5 \
-#                           label.drawing=off \
-#                           background.padding_left=0 \
-#                           background.padding_right=-3 \
-#                           click_script="sketchybar -m --set \"\$NAME\" popup.drawing=toggle; sketchybar --trigger battery" \
-#            --add item battery.details popup."Control Center,Battery" \
-#            --set battery.details updates=$HAS_BATTERY \
-#                           script="$PLUGIN_DIR/battery.sh" \
-#                           label.padding_right=8 \
-#            --subscribe battery.details battery \
-#            --add alias "Control Center,WiFi" left \
-#            --set "Control Center,WiFi" update_freq=3 \
-#                           icon.drawing=off \
-#                           label.drawing=off \
-#                           background.padding_left=-4 \
-#                           background.padding_right=-4 \
-#                           click_script="sketchybar -m --set \"\$NAME\" popup.drawing=toggle; sketchybar --trigger wifi" \
-#            --add item wifi.details popup."Control Center,WiFi" \
-#            --set wifi.details updates=on \
-#                           script="$PLUGIN_DIR/wifi.sh" \
-#                           label.padding_right=5 \
-#            --subscribe wifi.details wifi \
-#            --add alias "Control Center,Sound" left \
-#            --set "Control Center,Sound" update_freq=2 \
-#                           icon.drawing=off \
-#                           label.drawing=off \
-#                           background.padding_left=-4 \
-#                           background.padding_right=-4 \
-#            --add bracket system \
-#                           system.label \
-#                           "Control Center,Battery" \
-#                           "Control Center,WiFi" \
-#                           "Control Center,Sound" \
-#            --set system background.drawing=on
-
 # Define the position for alias items
 position="right"  # You can change this to "center", "left", or any custom position
 
@@ -319,39 +270,39 @@ $yabai -m config menubar_opacity 1.0 # to make alias items visible!
 # Add alias items with click actions
 sketchybar --add alias "Control Center,BentoBox" $position
 sketchybar --set "Control Center,BentoBox" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
-    click_script="$PLUGIN_DIR/open_controlcenter.sh"
+    click_script="$PLUGIN_DIR/open_menubar_items.sh controlcenter"
 
 sketchybar --add alias "Control Center,Bluetooth" $position
 sketchybar --set "Control Center,Bluetooth" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
-    click_script="$PLUGIN_DIR/open_bluetooth.sh"
+    click_script="$PLUGIN_DIR/open_menubar_items.sh bluetooth"
 
 sketchybar --add alias "Control Center,UserSwitcher" $position
 sketchybar --set "Control Center,UserSwitcher" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
-    click_script="$PLUGIN_DIR/open_user.sh"
+    click_script="$PLUGIN_DIR/open_menubar_items.sh userswitcher"
 
 sketchybar --add alias "UnnaturalScrollWheels,Item-0" $position
 sketchybar --set "UnnaturalScrollWheels,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
-    click_script="osascript /path/to/click_unnaturalscrollwheels.scpt"
+    click_script="$PLUGIN_DIR/open_menubar_items.sh unnaturalscrollwheels"
 
 sketchybar --add alias "macOS InstantView,Item-0" $position
 sketchybar --set "macOS InstantView,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
-    click_script="osascript /path/to/click_instantview.scpt"
+    click_script="$PLUGIN_DIR/open_menubar_items.sh macosinstantview"
 
 sketchybar --add alias "AltTab,Item-0" $position
 sketchybar --set "AltTab,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
-    click_script="osascript /path/to/click_alttab.scpt"
+    click_script="$PLUGIN_DIR/open_menubar_items.sh alttab"
 
 sketchybar --add alias "Karabiner-Menu,Item-0" $position
 sketchybar --set "Karabiner-Menu,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
-    click_script="osascript /path/to/click_karabiner.scpt"
+    click_script="$PLUGIN_DIR/open_menubar_items.sh karabiner-menu"
 
 sketchybar --add alias "Background Music,Item-0" $position
 sketchybar --set "Background Music,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
-    click_script="osascript /path/to/click_backgroundmusic.scpt" 
+    click_script="$PLUGIN_DIR/open_menubar_items.sh backgroundmusic"
 
 sketchybar --add alias "Flameshot,Item-0" $position
 sketchybar --set "Flameshot,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
-    click_script="osascript /path/to/click_flameshot.scpt"
+    click_script="$PLUGIN_DIR/open_menubar_items.sh flameshot"
 
 # sketchybar --add alias "Control Center,Clock" $position
 # sketchybar --set "Control Center,Clock" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \

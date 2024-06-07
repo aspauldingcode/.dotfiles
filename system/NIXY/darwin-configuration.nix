@@ -6,6 +6,7 @@
     ./darwin-sudoers.nix
     ./darwin-defaults.nix
     ./homebrew-pkgs.nix
+    ./launch-agents.nix
     ./yabai-sa.nix
     ./wg-quick.nix
     ./theme.nix

@@ -41,11 +41,7 @@ in
   xdg.configFile."sketchybar/plugins/time.sh".source = ./plugins/time.sh;
   xdg.configFile."sketchybar/plugins/volume.sh".source = ./plugins/volume.sh;
   xdg.configFile."sketchybar/plugins/wifi.sh".source = ./plugins/wifi.sh;
-  xdg.configFile."sketchybar/plugins/open_controlcenter.sh".source = ./plugins/open_controlcenter.sh;
-  xdg.configFile."sketchybar/plugins/open_battery.sh".source = ./plugins/open_battery.sh;
-  xdg.configFile."sketchybar/plugins/open_bluetooth.sh".source = ./plugins/open_bluetooth.sh;
-  xdg.configFile."sketchybar/plugins/open_wifi.sh".source = ./plugins/open_wifi.sh;
-  xdg.configFile."sketchybar/plugins/open_user.sh".source = ./plugins/open_user.sh;
+  xdg.configFile."sketchybar/plugins/open_menubar_items.sh".source = ./plugins/open_menubar_items.sh;
 
   # Specify executable for each file
   xdg.configFile."sketchybar/sketchybarrc".executable = true;
@@ -71,9 +67,5 @@ in
   xdg.configFile."sketchybar/plugins/time.sh".executable = true;
   xdg.configFile."sketchybar/plugins/volume.sh".executable = true;
   xdg.configFile."sketchybar/plugins/wifi.sh".executable = true;
-  xdg.configFile."sketchybar/plugins/open_controlcenter.sh".executable = true;
-  xdg.configFile."sketchybar/plugins/open_battery.sh".executable = true;
-  xdg.configFile."sketchybar/plugins/open_bluetooth.sh".executable = true;
-  xdg.configFile."sketchybar/plugins/open_wifi.sh".executable = true;
-  xdg.configFile."sketchybar/plugins/open_user.sh".executable = true;
+  xdg.configFile."sketchybar/plugins/open_menubar_items.sh".executable = true;
 }
