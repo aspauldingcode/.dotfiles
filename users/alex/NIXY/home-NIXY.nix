@@ -14,7 +14,7 @@
   imports = [
     nix-colors.homeManagerModules.default
     ./packages-NIXY.nix
-    ./../extraConfig/nvim/nixvim.nix
+    #./../extraConfig/nvim/nixvim.nix #FIXME: BROKEN atm
     ./theme.nix
     ./xcode/xcode.nix # FIXME: use nix-color theme
     ./alacritty.nix
@@ -33,6 +33,7 @@
     ./sketchybar/sketchybar.nix
     ./yabai.nix # contains skhd and borders config.
     ./phoenix/phoenix.nix # new window-manager for macOS!
+    ./cursor.nix # vscode with ai
   ];
 
   home = {
@@ -78,5 +79,15 @@
     # allow Home-Manager to configure itself
     home-manager.enable = true;
     ssh.addKeysToAgent = true;
+  };
+
+  launchd.agents.notificationcenter = {
+    enable = true;
+    config = {
+      ProgramArguments = [ "/bin/launchctl" "unload" "-w" "/System/Library/LaunchAgents/com.apple.notificationcenterui.plist" ];
+      RunAtLoad = true;
+      StandardOutPath = "/dev/null";
+      StandardErrorPath = "/dev/null";
+    };
   };
 }

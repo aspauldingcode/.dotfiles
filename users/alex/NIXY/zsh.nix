@@ -47,6 +47,9 @@
                   # add gyr to path
                   export PATH="/Users/alex/.cargo/bin:$PATH"
 
+                  #add flameshot to path macOS
+                  export PATH="/Applications/flameshot.app/Contents/MacOS:$PATH"
+
                   # add x11 to path
                   export PATH=/opt/X11/bin:$PATH
                   export PATH=/usr/X11R6/bin:$PATH
@@ -56,6 +59,9 @@
                   # add missing paths for i3 to work
                   export PATH=/opt/local/bin:$PATH
                   export PATH=/opt/local/sbin:$PATH
+
+                  # add missing paths for homebrew and orbstack
+                  export PATH="$PATH:/opt/homebrew/bin:/opt/homebrew/sbin:/Users/alex/.orbstack/bin"
 
                   # Set default editor in zsh shell
                   export EDITOR=nvim

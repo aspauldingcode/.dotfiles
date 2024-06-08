@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Source the yabai_labeler.sh script from ~/.dotfiles
-source ~/.dotfiles/yabai_labeler.sh
+source ~/.dotfiles/CUSTOM_yabai_scripts/yabai_labeler.sh
 
 # echo -e "\nSpaces Information:"
 # read_all_spaces

@@ -10,6 +10,15 @@
 {
   programs.darling.enable = true; # install darling with setuid wrapper
 
+  programs.thunar.enable = true;
+  programs.xfconf.enable = true;
+  programs.thunar.plugins = with pkgs.xfce; [
+    thunar-archive-plugin
+    thunar-volman
+  ];
+  services.gvfs.enable = true; # Mount, trash, and other functionalities
+  services.tumbler.enable = true; # Thumbnail support for images
+
   environment.systemPackages = with pkgs; [
     neovim
     zellij
@@ -32,6 +41,15 @@
     whitesur-icon-theme
     # whitesur-cursors
 
+    #needed for nixos mobile?sqlite
+
+    npth # Required for NixOS Mobile! The New GNU Portable Threads Library
+    sqlite
+    gnutls
+    libusb1
+
+    edl
+    payload-dumper-go
     ranger
     wl-clipboard
     neofetch
@@ -78,9 +96,8 @@
     hexedit
     virt-manager
     uxplay
-    
-        (pkgs.callPackage ./hybridbar.nix { })
 
+    (pkgs.callPackage ./hybridbar.nix { })
 
     #rebuild #sudo nixos-rebuild switch --show-trace --option eval-cache false --flake .#NIXSTATION64
     (pkgs.writeShellScriptBin "rebuild" ''

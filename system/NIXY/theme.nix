@@ -2,7 +2,7 @@
 
 # Configure GTK, QT themes, color schemes..
 let 
-  scheme = "katy"; #tomorrow-night, #gruvbox-dark-soft
+  scheme = "catppuccin-macchiato"; #tomorrow-night, #gruvbox-dark-soft, #catppuccin-macchiato, #katy are favorites
   # Choose from: https://nix-community.github.io/nixvim/colorschemes/base16/index.html#colorschemesbase16colorscheme
 in
   {

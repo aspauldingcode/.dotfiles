@@ -1,22 +1,30 @@
 #!/bin/sh
 
 source "$HOME/.config/sketchybar/colors.sh"
+source "$HOME/.config/sketchybar/plugins/sway_spaces.sh"
+# source "$HOME/.config/sketchybar/plugins/add_spaces_sketchybar.sh"
 
-# Assuming $SID is the index of the workspace in the array
-#ACTIVE=$(yabai -m query --spaces --space $SID | jq '.index') #WHEN ignore-association=off!
-ACTIVE=$(yabai -m query --spaces --has-focus $SID | jq '.index') #When ignore-association=on!
+# # Call the function to execute the updates
+# update_sketchybar_spaces
 
+# Query for the total number of displays
+TOTAL_DISPLAYS=$(yabai -m query --displays | jq 'length')
 
-# Store the output of the print-spaces command in a variable
-# active_spaces=$(print-spaces)
-
-# Loop through each space in the output
-# for space in $active_spaces; do
-#     echo "Active space: $space"
+# # Reset highlights for all space items
+# for id in "${all_space_ids[@]}"; do
+#     sketchybar --set $id icon.highlight=off
+#     echo -e "reset highlights running now"
 # done
 
-sketchybar --set $NAME icon.highlight=$SELECTED icon.highlight_color=$ORANGE
-
-# FIXME: Set font style to Bold or Regular for the current space
-# sketchybar --set ${NAME[$ACTIVE]} font.style="Bold"
-
+# Loop through each display
+for ((display=1; display<=$TOTAL_DISPLAYS; display++)); do
+    # Query for the active space on the current display
+    ACTIVE_SPACE_LABEL=$(yabai -m query --spaces --display $display | jq -r '.[] | select(.["is-visible"] == true) | .label')
+    
+    # Extract the numeric part of the label, removing the underscore
+    ACTIVE_SPACE_CLEANED="${ACTIVE_SPACE_LABEL#_}"
+    
+    # Highlight the active space on SketchyBar using the cleaned label
+    sketchybar --set space.$ACTIVE_SPACE_CLEANED icon.highlight=on icon.highlight_color=$ORANGE
+done
+sketchybar --set space.$ACTIVE_SPACE_CLEANED icon.highlight=true icon.highlight_color=$ORANGE

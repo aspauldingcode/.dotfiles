@@ -6,6 +6,7 @@
     ./darwin-sudoers.nix
     ./darwin-defaults.nix
     ./homebrew-pkgs.nix
+    ./launch-agents.nix
     ./yabai-sa.nix
     ./wg-quick.nix
     ./theme.nix
@@ -46,50 +47,50 @@
   programs.fish.enable = true; #NOT Borne COMPAT? 
   users.users.alex.shell = pkgs.zsh; 
   nix = {
-     # https://nixos.wiki/wiki/Distributed_build
-     # distributedBuilds = false; # set true after configuration
-     # buildMachines = [ ]; #FIXME: add NIXSTATION64 as a builder!
-     # below are per build machine (* is the entry of the machine in the list above)
-     # buildMachines.*.hostName = ""; # Example: "nixbuilder.example.org"
-     # buildMachines.*.mandatoryFeatures
-     # buildMachines.*.maxJobs
-     # nix.buildMachines.*.protocol
-     # nix.buildMachines.*.publicHostKey
-     # nix.buildMachines.*.speedFactor
-     # nix.buildMachines.*.sshKey
-     # nix.buildMachines.*.sshUser
-     # nix.buildMachines.*.supportedFeatures = [ "kvm" "big-parallel" ];
-     # nix.buildMachines.*.systems = [ "x86_64-linux" "aarch64-linux" ];
+    # https://nixos.wiki/wiki/Distributed_build
+    # distributedBuilds = false; # set true after configuration
+    # buildMachines = [ ]; #FIXME: add NIXSTATION64 as a builder!
+    # below are per build machine (* is the entry of the machine in the list above)
+    # buildMachines.*.hostName = ""; # Example: "nixbuilder.example.org"
+    # buildMachines.*.mandatoryFeatures
+    # buildMachines.*.maxJobs
+    # nix.buildMachines.*.protocol
+    # nix.buildMachines.*.publicHostKey
+    # nix.buildMachines.*.speedFactor
+    # nix.buildMachines.*.sshKey
+    # nix.buildMachines.*.sshUser
+    # nix.buildMachines.*.supportedFeatures = [ "kvm" "big-parallel" ];
+    # nix.buildMachines.*.systems = [ "x86_64-linux" "aarch64-linux" ];
 
-     gc = {
-       automatic = true;
-       interval = {
-         Hour = 24; # Automaitcally collect garbage each day
-       };
-       options = ""; # Example: "--max-freed $((64 * 1024**3))"
-     };
-     settings = {
-       auto-optimise-store = true;
-       # FIXME: add cahcix.nixos.org so I don't have to rebuild home-manager all the time
-       # substituters = [ 
-       #   "https://cache.nixos.org/" 
-       # ];
-       # trusted-public-keys = [ 
-       #   "hydra.nixos.org-1:CNHJZBh9K4tP3EKF6FkkgeVYsS3ohTl+oS0Qa8bezVs=" 
-       # ]; # By default, only the key for cache.nixos.org is included
-       # trusted-substituters = [
-       #   "https://hydra.nixos.org/"
-       # ];
-       trusted-users = [
-         "root"
-         "@admin" # anyone in the wheel group
-       ];
-     };
-     extraOptions = ''
-     extra-platforms = aarch64-darwin x86_64-darwin
-     experimental-features = nix-command flakes
-     '';
-   };
+    gc = {
+      automatic = true;
+      interval = {
+        Hour = 24; # Automaitcally collect garbage each day
+      };
+      options = "--delete-older-than 30d --delete-old-generations 10"; 
+    };
+    settings = {
+      auto-optimise-store = true;
+      # FIXME: add cahcix.nixos.org so I don't have to rebuild home-manager all the time
+      # substituters = [ 
+      #   "https://cache.nixos.org/" 
+      # ];
+      # trusted-public-keys = [ 
+      #   "hydra.nixos.org-1:CNHJZBh9K4tP3EKF6FkkgeVYsS3ohTl+oS0Qa8bezVs=" 
+      # ]; # By default, only the key for cache.nixos.org is included
+      # trusted-substituters = [
+      #   "https://hydra.nixos.org/"
+      # ];
+      trusted-users = [
+        "root"
+        "@admin" # anyone in the wheel group
+      ];
+    };
+    extraOptions = ''
+    extra-platforms = aarch64-darwin x86_64-darwin
+    experimental-features = nix-command flakes
+    '';
+  };
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog
   system.stateVersion = 4;

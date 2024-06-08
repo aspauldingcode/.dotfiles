@@ -5,13 +5,14 @@
   homebrew = {
     enable = true;
     onActivation = {
-      #"zap" removes manually installed brews and casks
+      # "zap" removes manually installed brews and casks
       cleanup = "zap";
       autoUpdate = true;
       upgrade = true;
     };
     brews = [
       "xinit"
+      "x11vnc"
       "xorg-server"
       "choose-gui"
       "yabai"
@@ -29,6 +30,7 @@
       "portaudio"
       "iniparser"
       "gcal"
+      "spicetify-cli"
       "cliclick"
       "iproute2mac"
       "gtk-mac-integration" # build gtk mac apps?
@@ -47,9 +49,13 @@
       "alacritty"
       "hammerspoon"
       "phoenix"
+      "prismlauncher"
       "dmenu-mac"
       "kitty"
-      # "macforge"
+      #"hiddenbar" #FIXME: disable for now, add back to build a working toggle.
+      # "macforge" # out of date rn... need to use macforge beta
+      "obs"
+      "flameshot"
       "element"
       "brave-browser"
       "alt-tab"
@@ -65,7 +71,7 @@
       "discord"
       "asset-catalog-tinkerer"
       "themeengine"
-      "google-assistant"
+      #"google-assistant"
       "gimp"
       "docker"
     ];

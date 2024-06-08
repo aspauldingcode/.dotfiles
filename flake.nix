@@ -95,6 +95,7 @@
                 # Optionally, use home-manager.extraSpecialArgs to pass
                 # arguments to home.nix
                 extraSpecialArgs = commonExtraSpecialArgs;
+                backupFileExtension = "backup";
               };
             }
           ];
@@ -124,6 +125,7 @@
                 # Optionally, use home-manager.extraSpecialArgs to pass
                 # arguments to home.nix
                 extraSpecialArgs = commonExtraSpecialArgs;
+                backupFileExtension = "backup";
               };
             }
           ];
@@ -163,6 +165,7 @@
                 # Optionally, use home-manager.extraSpecialArgs to pass
                 # arguments to home.nix
                 extraSpecialArgs = commonExtraSpecialArgs;
+                backupFileExtension = "backup";
               };
             }
           ];
