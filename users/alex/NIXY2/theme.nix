@@ -13,9 +13,10 @@
 
 let
   inherit (nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
+  theme = "gruvbox-dark-soft"; 
 in
 {
-  #colorScheme = nix-colors.colorSchemes.${theme};
+  colorScheme = nix-colors.colorSchemes.${theme};
 
   home.pointerCursor = {
     name = "Bibata-Modern-Ice";

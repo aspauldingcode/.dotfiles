@@ -1,16 +1,16 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ./waybar/waybar.nix ];
+  #imports = [ ./waybar/waybar.nix ];
 
   wayland.windowManager.sway = {
     enable = true;
     package = pkgs.swayfx; # set to pkgs.swayfx? broken on Asahi NixOS
     checkConfig = false; # so I can keep swayfx settings
     config = rec {
-      bars = [
-        { command = "${pkgs.waybar}/bin/waybar"; } # FIXME: WHY ARE THERE TWO WAYBARS at launch?
-      ];
+      #bars = [
+      #  { command = "${pkgs.waybar}/bin/waybar"; } # FIXME: WHY ARE THERE TWO WAYBARS at launch?
+      #];
       modifier = "Mod4";
       left = "h";
       down = "j";

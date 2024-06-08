@@ -61,6 +61,7 @@
           nixvim
           flake-parts
           nix-colors
+	  apple-silicon
           self
           ;
       };

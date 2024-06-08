@@ -33,7 +33,7 @@ environment.sessionVariables.NIXOS_OZONE_WL = "1";
     #whitesur-gtk-theme
     #whitesur-icon-theme
     # whitesur-cursors
-
+    wireplumber
     ranger
     wl-clipboard
     neofetch

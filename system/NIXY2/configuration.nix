@@ -22,15 +22,15 @@
   # asahi linux overlay
   nixpkgs.overlays = [ apple-silicon.overlays.apple-silicon-overlay ];
 
-  # try to fix peripheralFirmwareExtraction...
-  hardware.asahi.extractPeripheralFirmware = true; #FIXME: return to true!
-  hardware.asahi.peripheralFirmwareDirectory = ./firmware;
+  # Fix peripheralFirmwareExtraction...
+  hardware.asahi.extractPeripheralFirmware = false;
+  #hardware.asahi.peripheralFirmwareDirectory = ./firmware;
 
   # enable GPU support
   hardware.asahi.useExperimentalGPUDriver = true;
 
   # Enable asahi speaker support
-  sound.enable = true;
+  #sound.enable = true;
 
   # backlight control
   programs.light.enable = true;
@@ -208,13 +208,13 @@
       };
       windowManager.i3.enable = true;
     };
-    pipewire = {
-      # fix for pipewire audio:
-      enable = true;
-      alsa.enable = true;
-      pulse.enable = true;
-      jack.enable = true;
-    };
+    #pipewire = {
+    #  # fix for pipewire audio:
+    #  enable = true;
+    #  alsa.enable = true;
+    #  pulse.enable = true;
+    #  jack.enable = true;
+    #};
 
     #getty.autologinUser = "alex"; # Enable automatic login for the user.
     udisks2.enable = true;
