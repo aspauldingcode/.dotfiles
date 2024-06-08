@@ -209,11 +209,8 @@ sketchybar --add item fullscreen_locker left \
     updates=on \
     icon.drawing=off \
     label.drawing=off \
-    padding=0 \
     update_freq=1 \
-    script="$PLUGIN_DIR/fullscreen_lock.sh" \
-    --subscribe fullscreen_locker always
-    
+    script="$PLUGIN_DIR/fullscreen_lock.sh"
 # Center Items
 sketchybar --add item volume center \
   --set volume "${volume[@]}" \
@@ -245,8 +242,8 @@ sketchybar --add item battery right \
   --set battery "${battery[@]}" \
   --subscribe battery power_source_change system_woke mouse.entered mouse.exited mouse.exited.global
 
-rm -f /tmp/sketchybar_speed
-rm -f /tmp/sketchybar_wifi
+[ -f "/tmp/sketchybar_speed" ] && rm "/tmp/sketchybar_speed"
+[ -f "/tmp/sketchybar_wifi" ] && rm "/tmp/sketchybar_wifi"
 sketchybar --add item wifi right \
   --set wifi "${wifi[@]}" \
   --subscribe wifi system_woke mouse.entered mouse.exited mouse.exited.global
@@ -357,11 +354,14 @@ sketchybar --add bracket rbracket "Control Center,BentoBox" "TextInputMenuAgent,
 printf "on\n" > "/tmp/sketchybar_state"
 printf "on\n" > "/tmp/gaps_state"
 dismiss-notifications # not working?
-rm $HOME/.config/sketchybar/calendar_init_flag # remove calendar flag at sketchybar launch
-
+if [ -f "$HOME/.config/sketchybar/calendar_init_flag" ]; then
+    rm "$HOME/.config/sketchybar/calendar_init_flag" # remove calendar flag at sketchybar launch if it exists
+fi
 sketchybar --update
 
 # Fetch the menu items from sketchybar query
 sleep 4
 /opt/homebrew/bin/sketchybar --query default_menu_items | $jq -r '.[]' | while IFS= read -r item; do /opt/homebrew/bin/sketchybar --set "$item" alias.update_freq=0; done && sleep 3
 $yabai -m config menubar_opacity 0.0
+
+

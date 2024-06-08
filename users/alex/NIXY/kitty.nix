@@ -146,7 +146,7 @@
 
         # black
         color0   #${colors.base00}
-        color8   #${colors.base00}
+        color8   #${colors.base03}
 
         # red
         color1   #${colors.base08}
@@ -174,7 +174,7 @@
 
         # white
         color7   #${colors.base05}
-        color15  #${colors.base05}
+        color15  #${colors.base07}
 
         # Key mapping
         # For a list of key names, see: http://www.glfw.org/docs/latest/group__keys.html

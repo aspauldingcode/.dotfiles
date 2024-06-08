@@ -51,9 +51,9 @@
         "com.apple.springing.enabled" = null;
         "com.apple.swipescrolldirection" = null;
         "com.apple.trackpad.enableSecondaryClick" = null;
-        # "com.apple.trackpad.forceClick" = false; # Should disable trackpad dictionary
         "com.apple.trackpad.scaling" = null;
         "com.apple.trackpad.trackpadCornerClickBehavior" = null;
+        AppleFontSmoothing = 0; # Add this line
       };
       SoftwareUpdate.AutomaticallyInstallMacOSUpdates = false; # always up to date?
       alf.allowdownloadsignedenabled = null;

@@ -23,19 +23,37 @@
 
       font = {
         normal = {
-          family = "Hack Nerd Font Mono";
+          family = "JetBrains Mono";
           style = "Regular";
         };
         bold = {
-          family = "Hack Nerd Font Mono";
+          family = "JetBrains Mono";
           style = "Bold";
         };
         italic = {
-          family = "Hack Nerd Font Mono";
+          family = "JetBrains Mono";
           style = "Italic";
         };
-        size = 12.0;
+        size = 12.5;  # Slightly larger to reduce blurriness
+        offset = {
+          x = 0;
+          y = 0;
+        };
+        glyph_offset = {
+          x = 0;
+          y = 0;
+        };
+        # use_thin_strokes = true;  # Enable this to make the fonts thinner
       };
+
+      # dpi = {
+      #   x = 96;  # Adjust according to your screen's DPI, common values are 96, 110, 120
+      #   y = 96;
+      # };
+
+      # Enable hinting and antialiasing
+      # hinting = "slight";  # Options: none, slight, medium, full
+      # antialiasing = "subpixel";  # Options: none, grayscale, subpixel
 
       # Becomes either 'dark' or 'light', based on your colors! (in qutebrowser)
       #webppage.preferred_color_scheme = "${config.colorScheme.kind}";
@@ -91,8 +109,8 @@
         };
 
         selection = {
-          text = "#${config.colorScheme.colors.base00}";  # Default Background
-          background = "#${config.colorScheme.colors.base05}";  # Default Foreground, Caret, Delimiters, Operators
+          text = "#${config.colorScheme.colors.base08}";  # Default Background
+          background = "#${config.colorScheme.colors.base02}";  # Default Foreground, Caret, Delimiters, Operators
         };
 
         normal = {

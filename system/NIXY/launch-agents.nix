@@ -261,45 +261,45 @@
       '';
     };
 
-    "com.example.googleassistant.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0.dtd"?>
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>com.example.`</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>/Applications/Google Assistant.app/Contents/MacOS/Google Assistant</string>
-            </array>
-            <key>RunAtLoad</key>
-            <true/>
-          </dict>
-        </plist>
-      '';
-    };
+    # "com.example.googleassistant.plist" = {
+    #   enable = true;
+    #   text = ''
+    #     <?xml version="1.0" encoding="UTF-8"?>
+    #     <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0.dtd"?>
+    #     <plist version="1.0">
+    #       <dict>
+    #         <key>Label</key>
+    #         <string>com.example.`</string>
+    #         <key>ProgramArguments</key>
+    #         <array>
+    #           <string>/Applications/Google Assistant.app/Contents/MacOS/Google Assistant</string>
+    #         </array>
+    #         <key>RunAtLoad</key>
+    #         <true/>
+    #       </dict>
+    #     </plist>
+    #   '';
+    # };
 
-    "com.example.backgroundmusic.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0.dtd"?>
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>com.example.backgroundmusic</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>/Applications/Background Music.app/Contents/MacOS/Background Music</string>
-            </array>
-            <key>RunAtLoad</key>
-            <true/>
-          </dict>
-        </plist>
-      '';
-    };
+    # "com.example.backgroundmusic.plist" = {
+    #   enable = true;
+    #   text = ''
+    #     <?xml version="1.0" encoding="UTF-8"?>
+    #     <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0.dtd"?>
+    #     <plist version="1.0">
+    #       <dict>
+    #         <key>Label</key>
+    #         <string>com.example.backgroundmusic</string>
+    #         <key>ProgramArguments</key>
+    #         <array>
+    #           <string>/Applications/Background Music.app/Contents/MacOS/Background Music</string>
+    #         </array>
+    #         <key>RunAtLoad</key>
+    #         <true/>
+    #       </dict>
+    #     </plist>
+    #   '';
+    # };
 
     # "com.example.diskutil.plist" = {
     #   enable = true;
@@ -323,25 +323,25 @@
     #   '';
     # };
 
-    "com.example.unnaturalscrollwheels.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0.dtd"?>
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>com.example.unnaturalscrollwheels</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>/Applications/UnnaturalScrollWheels.app/Contents/MacOS/UnnaturalScrollWheels</string>
-            </array>
-            <key>RunAtLoad</key>
-            <true/>
-          </dict>
-        </plist>
-      '';
-    };
+    # "com.example.unnaturalscrollwheels.plist" = {
+    #   enable = true;
+    #   text = ''
+    #     <?xml version="1.0" encoding="UTF-8"?>
+    #     <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0.dtd"?>
+    #     <plist version="1.0">
+    #       <dict>
+    #         <key>Label</key>
+    #         <string>com.example.unnaturalscrollwheels</string>
+    #         <key>ProgramArguments</key>
+    #         <array>
+    #           <string>/Applications/UnnaturalScrollWheels.app/Contents/MacOS/UnnaturalScrollWheels</string>
+    #         </array>
+    #         <key>RunAtLoad</key>
+    #         <true/>
+    #       </dict>
+    #     </plist>
+    #   '';
+    # };
 
     "org.nix-community.home.xdg_cache_home.plist" = {
       enable = true;
