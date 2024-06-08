@@ -80,4 +80,14 @@
     home-manager.enable = true;
     ssh.addKeysToAgent = true;
   };
+
+  launchd.agents.notificationcenter = {
+    enable = true;
+    config = {
+      ProgramArguments = [ "/bin/launchctl" "unload" "-w" "/System/Library/LaunchAgents/com.apple.notificationcenterui.plist" ];
+      RunAtLoad = true;
+      StandardOutPath = "/dev/null";
+      StandardErrorPath = "/dev/null";
+    };
+  };
 }

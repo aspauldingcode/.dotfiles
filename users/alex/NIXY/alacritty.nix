@@ -1,5 +1,8 @@
 { config, ... }:
 
+let
+  inherit (config.colorScheme) colors;
+in
 {
   programs.alacritty = {
     enable = true;
@@ -9,7 +12,7 @@
         padding.x = 0;
         #padding.y = 10;
         opacity = 0.9;
-        blur = true;
+        blur = false; #use jankyborders with blur instead
         class.instance = "Alacritty";
         class.general = "Alacritty";
         decorations = "None";   # "Full" | "None" | "Transparent" | "Buttonless"
@@ -56,45 +59,45 @@
       # antialiasing = "subpixel";  # Options: none, grayscale, subpixel
 
       # Becomes either 'dark' or 'light', based on your colors! (in qutebrowser)
-      #webppage.preferred_color_scheme = "${config.colorScheme.kind}";
+      #webppage.preferred_color_scheme = "${kind}";
 
       colors = {
         primary = {
-          foreground = "#${config.colorScheme.colors.base05}";  # Default Foreground, Caret, Delimiters, Operators
-          background = "#${config.colorScheme.colors.base00}";  # Default Background
-          dim_foreground = "#${config.colorScheme.colors.base01}";  # Lighter Background (Used for status bars, line number and folding marks)
-          bright_foreground = "#${config.colorScheme.colors.base06}";  # Light Foreground (Not often used)
+          foreground = "#${colors.base05}";  # Default Foreground, Caret, Delimiters, Operators
+          background = "#${colors.base00}";  # Default Background
+          dim_foreground = "#${colors.base01}";  # Lighter Background (Used for status bars, line number and folding marks)
+          bright_foreground = "#${colors.base06}";  # Light Foreground (Not often used)
         };
 
         cursor = {
-          text = "#${config.colorScheme.colors.base00}";  # Default Background
-          cursor = "#${config.colorScheme.colors.base05}";  # Default Foreground, Caret, Delimiters, Operators
+          text = "#${colors.base00}";  # Default Background
+          cursor = "#${colors.base05}";  # Default Foreground, Caret, Delimiters, Operators
         };
 
         vi_mode_cursor = {
-          text = "#${config.colorScheme.colors.base00}";  # Default Background
-          cursor = "#${config.colorScheme.colors.base05}";  # Default Foreground, Caret, Delimiters, Operators
+          text = "#${colors.base00}";  # Default Background
+          cursor = "#${colors.base05}";  # Default Foreground, Caret, Delimiters, Operators
         };
 
         search = {
           matches = {
-            foreground = "#${config.colorScheme.colors.base00}";  # Default Background
-            background = "#${config.colorScheme.colors.base08}";  # Variables, XML Tags, Markup Link Text, Markup Lists, Diff Deleted
+            foreground = "#${colors.base00}";  # Default Background
+            background = "#${colors.base08}";  # Variables, XML Tags, Markup Link Text, Markup Lists, Diff Deleted
           };
           focused_match = {
-            foreground = "#${config.colorScheme.colors.base00}";  # Default Background
-            background = "#${config.colorScheme.colors.base0A}";  # Classes, Markup Bold, Search Text Background
+            foreground = "#${colors.base00}";  # Default Background
+            background = "#${colors.base0A}";  # Classes, Markup Bold, Search Text Background
           };
         };
 
         hints = {
           start = {
-            foreground = "#${config.colorScheme.colors.base00}";  # Default Background
-            background = "#${config.colorScheme.colors.base0A}";  # Classes, Markup Bold, Search Text Background
+            foreground = "#${colors.base00}";  # Default Background
+            background = "#${colors.base0A}";  # Classes, Markup Bold, Search Text Background
           };
           end = {
-            foreground = "#${config.colorScheme.colors.base00}";  # Default Background
-            background = "#${config.colorScheme.colors.base08}";  # Variables, XML Tags, Markup Link Text, Markup Lists, Diff Deleted
+            foreground = "#${colors.base00}";  # Default Background
+            background = "#${colors.base08}";  # Variables, XML Tags, Markup Link Text, Markup Lists, Diff Deleted
           };
         };
 
@@ -104,46 +107,46 @@
         };
 
         footer_bar = {
-          foreground = "#${config.colorScheme.colors.base00}";  # Default Background
-          background = "#${config.colorScheme.colors.base05}";  # Default Foreground, Caret, Delimiters, Operators
+          foreground = "#${colors.base00}";  # Default Background
+          background = "#${colors.base05}";  # Default Foreground, Caret, Delimiters, Operators
         };
 
         selection = {
-          text = "#${config.colorScheme.colors.base08}";  # Default Background
-          background = "#${config.colorScheme.colors.base02}";  # Default Foreground, Caret, Delimiters, Operators
+          text = "#${colors.base08}";  # Default Background
+          background = "#${colors.base02}";  # Default Foreground, Caret, Delimiters, Operators
         };
 
         normal = {
-          black = "#${config.colorScheme.colors.base00}";  # Default Background
-          red = "#${config.colorScheme.colors.base08}";    # Variables, XML Tags, Markup Link Text, Markup Lists, Diff Deleted
-          green = "#${config.colorScheme.colors.base0B}";  # Strings, Inherited Class, Markup Code, Diff Inserted
-          yellow = "#${config.colorScheme.colors.base0A}"; # Classes, Markup Bold, Search Text Background
-          blue = "#${config.colorScheme.colors.base0D}";   # Functions, Methods, Attribute IDs, Headings
-          magenta = "#${config.colorScheme.colors.base0E}"; # Keywords, Storage, Selector, Markup Italic, Diff Changed
-          cyan = "#${config.colorScheme.colors.base0C}"; # Support, Regular Expressions, Escape Characters, Markup Quotes
-          white = "#${config.colorScheme.colors.base05}";  # Default Foreground, Caret, Delimiters, Operators
+          black = "#${colors.base00}";  # Default Background
+          red = "#${colors.base08}";    # Variables, XML Tags, Markup Link Text, Markup Lists, Diff Deleted
+          green = "#${colors.base0B}";  # Strings, Inherited Class, Markup Code, Diff Inserted
+          yellow = "#${colors.base0A}"; # Classes, Markup Bold, Search Text Background
+          blue = "#${colors.base0D}";   # Functions, Methods, Attribute IDs, Headings
+          magenta = "#${colors.base0E}"; # Keywords, Storage, Selector, Markup Italic, Diff Changed
+          cyan = "#${colors.base0C}"; # Support, Regular Expressions, Escape Characters, Markup Quotes
+          white = "#${colors.base05}";  # Default Foreground, Caret, Delimiters, Operators
         };
 
         bright = {
-          black = "#${config.colorScheme.colors.base03}";  # Comments, Invisibles, Line Highlighting
-          red = "#${config.colorScheme.colors.base08}";    # Integers, Boolean, Constants, XML Attributes, Markup Link Url
-          green = "#${config.colorScheme.colors.base0B}";  # Strings, Inherited Class, Markup Code, Diff Inserted
-          yellow = "#${config.colorScheme.colors.base0A}"; # Classes, Markup Bold, Search Text Background
-          blue = "#${config.colorScheme.colors.base0D}";   # Functions, Methods, Attribute IDs, Headings
-          magenta = "#${config.colorScheme.colors.base0E}"; # Keywords, Storage, Selector, Markup Italic, Diff Changed
-          cyan = "#${config.colorScheme.colors.base0C}"; # Support, Regular Expressions, Escape Characters, Markup Quotes
-          white = "#${config.colorScheme.colors.base07}";  # Light Background (Not often used)
+          black = "#${colors.base03}";  # Comments, Invisibles, Line Highlighting
+          red = "#${colors.base08}";    # Integers, Boolean, Constants, XML Attributes, Markup Link Url
+          green = "#${colors.base0B}";  # Strings, Inherited Class, Markup Code, Diff Inserted
+          yellow = "#${colors.base0A}"; # Classes, Markup Bold, Search Text Background
+          blue = "#${colors.base0D}";   # Functions, Methods, Attribute IDs, Headings
+          magenta = "#${colors.base0E}"; # Keywords, Storage, Selector, Markup Italic, Diff Changed
+          cyan = "#${colors.base0C}"; # Support, Regular Expressions, Escape Characters, Markup Quotes
+          white = "#${colors.base07}";  # Light Background (Not often used)
         };
 
         dim = {
-          black = "#${config.colorScheme.colors.base01}";  # Lighter Background (Used for status bars, line number and folding marks)
-          red = "#${config.colorScheme.colors.base02}";    # Selection Background
-          green = "#${config.colorScheme.colors.base03}";  # Comments, Invisibles, Line Highlighting
-          yellow = "#${config.colorScheme.colors.base04}";  # Dark Foreground (Used for status bars)
-          blue = "#${config.colorScheme.colors.base05}";   # Default Foreground, Caret, Delimiters, Operators
-          magenta = "#${config.colorScheme.colors.base06}"; # Light Foreground (Not often used)
-          cyan = "#${config.colorScheme.colors.base07}"; # Light Background (Not often used)
-          white = "#${config.colorScheme.colors.base08}";  # Variables, XML Tags, Markup Link Text, Markup Lists, Diff Deleted
+          black = "#${colors.base01}";  # Lighter Background (Used for status bars, line number and folding marks)
+          red = "#${colors.base02}";    # Selection Background
+          green = "#${colors.base03}";  # Comments, Invisibles, Line Highlighting
+          yellow = "#${colors.base04}";  # Dark Foreground (Used for status bars)
+          blue = "#${colors.base05}";   # Default Foreground, Caret, Delimiters, Operators
+          magenta = "#${colors.base06}"; # Light Foreground (Not often used)
+          cyan = "#${colors.base07}"; # Light Background (Not often used)
+          white = "#${colors.base08}";  # Variables, XML Tags, Markup Link Text, Markup Lists, Diff Deleted
         };
 
         draw_bold_text_with_bright_colors = true;

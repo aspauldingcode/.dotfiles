@@ -12,6 +12,7 @@ let
   sketchybar = "/opt/homebrew/bin/sketchybar";
   borders = "${config.home.homeDirectory}/Downloads/JankyBorders-main/bin/borders"; # master contains apply-to=<window-id> so use this for now.
   #borders = "/opt/homebrew/bin/borders"; # should be this.
+  inherit (config.colorScheme) colors;
 in
 {
   # Copy Home-Manager Nix GUI apps to ~/Applications on darwin:
@@ -305,7 +306,7 @@ in
                 ${yabai} -m config external_bar all:0:0
             fi
           fi
-          ${borders} background_color=0x000000
+          ${borders} background_color=0x11${colors.base00} blur_radius=15.0
         }
 
         if [ "$1" == "on" ]; then
@@ -385,9 +386,7 @@ in
         else
           ${yabai} -m config external_bar all:50:0 # enables the bar window gap
         fi
-        ${borders} style=round
-        ${borders} order=above
-        ${borders} width=2.0
+        ${borders} style=round order=above width=2.0
         ${sketchybar} --bar corner_radius=10
         ${sketchybar} --bar margin=13
         ${sketchybar} --bar y_offset=13
@@ -404,9 +403,7 @@ in
         else
           ${yabai} -m config external_bar all:42:0
         fi
-        ${borders} style=square
-        ${borders} order=below
-        ${borders} width=5.0
+        ${borders} style=square order=below width=5.0
         ${sketchybar} --bar corner_radius=0
         ${sketchybar} --bar margin=0
         ${sketchybar} --bar y_offset=0
@@ -587,7 +584,7 @@ in
                 fi
             fi
 
-            ${borders} background_color=0x000000
+            ${borders} background_color=0x11${colors.base00} blur_radius=15.0
           }
           if [ $# -eq 0 ]; then
               # No arguments provided, toggle based on current state
@@ -839,7 +836,7 @@ in
           local x=$(echo "$current_display_frame" | ${jq} -r '.x')
           local y=$(echo "$current_display_frame" | ${jq} -r '.y')
 
-          ${borders} apply-to=$window_id width=0.0 style=square order=below background_color=0xFF000000
+          ${borders} apply-to=$window_id width=0.0 style=square order=below background_color=0xff${colors.base00} blur_radius=0.0
           if [ "$is_floating" = "true" ]; then
             ${yabai} -m window --move abs:$x:$y
             ${yabai} -m window --grid 0:0:0:0:0:0
@@ -852,7 +849,7 @@ in
       }
 
       function fullscreen_off() {
-          ${borders} apply-to=$window_id width=2 style=round order=above background_color=0x000000
+          ${borders} apply-to=$window_id width=2 style=round order=above background_color=0x11${colors.base00} blur_radius=15.0
           if [ "$(${yabai} -m query --windows --window | ${jq} '."is-floating"')" = "true" ]; then
               ${yabai} -m window --toggle float # Restore window to its previous state
           fi

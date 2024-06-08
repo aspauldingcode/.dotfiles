@@ -1,12 +1,14 @@
 { config, pkgs, ... }:
 
+let
+  inherit (config.colorScheme) colors;
+in
 {
   home.file.yabai = {
     executable = true;
     target = ".config/yabai/yabairc";
     text =
       let
-        inherit (config.colorScheme) colors;
           borders = "${config.home.homeDirectory}/Downloads/JankyBorders-main/bin/borders"; #FIXME: master contains apply-to=<window-id> so use this for now.
       in
       # bash
@@ -347,9 +349,6 @@
     executable = true;
     target = ".config/borders/bordersrc";
     text =
-      let
-        inherit (config.colorScheme) colors;
-      in
       # bash
       #FIXME: remember: active_color='gradient(top_left=0xFF0000FF,bottom_right=0xFF00FF00)'
       ''
@@ -359,9 +358,11 @@
           style=round
           order=above
           width=2.0
+          background_color=0x11${colors.base00}
+          blur_radius=15.0
           hidpi=on
-          active_color=0xff"${colors.base07}"
-          inactive_color=0xff"${colors.base05}"
+          active_color=0xff${colors.base07}
+          inactive_color=0xff${colors.base05}
           blacklist="google chrome, vmware fusion, xQuartz, dmenu-mac, X11.bin"
         )
 

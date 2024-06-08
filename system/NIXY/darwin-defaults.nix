@@ -35,13 +35,16 @@
         AppleShowAllFiles = true;
         NSScrollAnimationEnabled = false;
         NSAutomaticWindowAnimationsEnabled = false;
-        NSWindowResizeTime = 0.0;
+        NSWindowResizeTime = 0.001; # Increase Window Resize Speed for Cocoa Applications
         NSUseAnimatedFocusRing = false;
         NSAutomaticCapitalizationEnabled = false;
-        NSAutomaticSpellingCorrectionEnabled = false;
+        NSAutomaticSpellingCorrectionEnabled = false; # Disable Auto-correct System-wide
+        NSAutomaticDashSubstitutionEnabled = false; # Disable Smart Dashes System-wide
+        NSAutomaticPeriodSubstitutionEnabled = false; # Disable Automatic Period Substitution System-wide
+        NSAutomaticQuoteSubstitutionEnabled = false; # Disable Smart Quotes System-wide
         _HIHideMenuBar = true; # Auto-hide window bar
         AppleEnableMouseSwipeNavigateWithScrolls = false;
-        AppleEnableSwipeNavigateWithScrolls = false;
+        AppleEnableSwipeNavigateWithScrolls = false; # Disable Smooth Scrolling
         "com.apple.sound.beep.volume" = 0.0; # mute beep/alert volume
         "com.apple.sound.beep.feedback" = 1; # enable volume changed feedback.
         NSWindowShouldDragOnGesture = null;
@@ -63,10 +66,10 @@
       };
       dock = {
         autohide = false;
-        autohide-delay = 1000.0; # defaults write com.apple.dock autohide-delay -float 1000; killall Dock
+        autohide-delay = 0.0; # Remove Delay When Hiding the Dock
         autohide-time-modifier = null; # 0.001 or null?
-        dashboard-in-overlay = true;
-        expose-animation-duration = 1.0e-3; # or null?
+        dashboard-in-overlay = false; # Disable the Dashboard
+        expose-animation-duration = 0.1; # Speed Up Mission Control Animations
         expose-group-by-app = null;
         launchanim = false;
         orientation = "bottom";
@@ -81,7 +84,7 @@
         magnification = null;
         mineffect = null;
         minimize-to-application = null;
-        show-process-indicators = null;
+        show-process-indicators = false; # Disable Spring Loading for All Dock Items
         static-only = null;
         tilesize = 40;
       };
@@ -106,6 +109,7 @@
         mouseDriverCursorSize = 1.2; # Cursor size
         reduceMotion = true;
         reduceTransparency = true;
+        # CGDisableCursorLocationMagnification = true; # Disables shake to find cursor
       };
       ".GlobalPreferences" = {
         "com.apple.mouse.scaling" = 8.0; # Set to -1.0 to disable mouse acceleration.
@@ -116,6 +120,33 @@
         # for the whole system
         NSGlobalDomain = {
           TISRomanSwitchState = 1;
+          # General UI/UX Animation and Behavior Modifications
+          # Disable various system animations
+          # Run these commands manually in the terminal to set preferences
+          "NSAutomaticWindowAnimationsEnabled" = false; # Disable automatic window animations
+          "NSScrollAnimationEnabled" = false; # Disable scroll animations
+          "NSWindowResizeTime" = 0.001; # Speed up window resize time
+          "QLPanelAnimationDuration" = 0; # Disable Quick Look panel animations
+          "NSScrollViewRubberbanding" = false; # Disable rubberband scrolling
+          "NSDocumentRevisionsWindowTransformAnimation" = false; # Disable document revisions window transform animations
+          "NSToolbarFullScreenAnimationDuration" = 0; # Disable full screen toolbar animations
+          "NSBrowserColumnAnimationSpeedMultiplier" = 0; # Disable browser column animation speed
+        };
+        "com.apple.dock" = {
+          # Dock-specific animations and delays
+          "autohide-time-modifier" = 0; # Remove animation time for auto-hiding the dock
+          "autohide-delay" = 0; # Remove delay for auto-hiding the dock
+          "expose-animation-duration" = 0; # Speed up Mission Control animations
+          "springboard-show-duration" = 0; # Disable Launchpad show animation
+          "springboard-hide-duration" = 0; # Disable Launchpad hide animation
+          "springboard-page-duration" = 0; # Disable Launchpad page transition animations
+        };
+        "com.apple.finder" = {
+          "DisableAllAnimations" = true; # Disable all Finder animations
+        };
+        "com.apple.Mail" = {
+          "DisableSendAnimations" = true; # Disable send animations in Mail app
+          "DisableReplyAnimations" = true; # Disable reply animations in Mail app
         };
         "com.apple.Safari" = {
           "com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled" = true;
@@ -194,7 +225,6 @@
           "NSStatusItem Visible WiFi" = 1;
         };
       };
-      };
       CustomUserPreferences = {
         # per user
         NSGlobalDomain = {
@@ -258,18 +288,14 @@
           numberOfSecondForAutoHide = 10;
           useFullStatusBarOnExpandEnabled = 0;
         };
-        # vscode = {
-        #   settings = {
-        #     "window.systemColorTheme" = "auto";
-        #   };
-        # };
       };
       LaunchServices.LSQuarantine = false; # Finally some air to breathe.
       magicmouse.MouseButtonMode = "TwoButton"; # allow left and right click when using magic mouse.
       screencapture = {
-        disable-shadow = true;
-        # location = "${config.home.homeDirectory}/Desktop"; # save captures to the Desktop (backed by icloud!)
+        disable-shadow = true; # Disable Shadow in Screenshots
+        location = "~/Desktop/Screenshots"; # Change Default Screenshot Location
         type = "png";
+        "include-date" = true; # Include date in screenshot file names
       };
       screensaver = {
         askForPassword = true;
@@ -281,4 +307,5 @@
       };
     };
   };
+};
 }
