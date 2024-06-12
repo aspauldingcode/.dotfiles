@@ -1,7 +1,10 @@
 #!/bin/sh
 
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+
 source "$HOME/.config/sketchybar/colors.sh"
-source "$HOME/.config/sketchybar/plugins/sway_spaces.sh"
+source "$HOME/.config/sketchybar/icons.sh"
+source "$PLUGIN_DIR/detect_arch.sh"
 # source "$HOME/.config/sketchybar/plugins/add_spaces_sketchybar.sh"
 
 # # Call the function to execute the updates

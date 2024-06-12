@@ -1,6 +1,15 @@
 { config, pkgs, ... }:
 
 let
+  systemType = pkgs.stdenv.hostPlatform.system;
+  homebrewPath = if systemType == "aarch64-darwin" then "/opt/homebrew/bin" else if systemType == "x86_64-darwin" then "/usr/local/bin" else throw "Homebrew Unsupported architecture: ${systemType}";
+  yabai = "${homebrewPath}/yabai";
+  sketchybar = "${homebrewPath}/sketchybar";
+  borders = "${homebrewPath}/borders";
+  i3-msg = "${homebrewPath}/i3-msg";
+  alacritty = "${homebrewPath}/alacritty";
+  dmenu-mac = "${homebrewPath}/dmenu-mac";
+  jq = "/run/current-system/sw/bin/jq";
   inherit (config.colorScheme) colors;
 in
 {
@@ -8,9 +17,6 @@ in
     executable = true;
     target = ".config/yabai/yabairc";
     text =
-      let
-          borders = "${config.home.homeDirectory}/Downloads/JankyBorders-main/bin/borders"; #FIXME: master contains apply-to=<window-id> so use this for now.
-      in
       # bash
       ''
         #!/usr/bin/env sh
@@ -179,10 +185,6 @@ in
           mod5 = "ctrl";
           modifier = mod1;
           smod = "shift";
-          yabai = "/opt/homebrew/bin/yabai"; # Apparently required to work at all
-          i3-msg = "/opt/local/bin/i3-msg";
-          alacritty = "/opt/homebrew/bin/alacritty";
-          dmenu-mac = "/opt/homebrew/bin/dmenu-mac";
         in # bash
         ''
           # FIXME: use kitty terminal for yazi filemanager only.

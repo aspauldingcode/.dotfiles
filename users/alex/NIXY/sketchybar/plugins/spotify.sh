@@ -2,8 +2,11 @@
 #FIXME: https://github.com/FelixKratz/SketchyBar/discussions/12#discussioncomment-1455842
 #Adds Spotify Player Controls
 
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
+source "$PLUGIN_DIR/detect_arch.sh"
 
 # Function to truncate or append "..." to a string based on length
 truncate_or_append_ellipsis() {

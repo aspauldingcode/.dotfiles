@@ -1,11 +1,11 @@
 #!/bin/sh
 
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
-yabai="/opt/homebrew/bin/yabai"
-jq="/run/current-system/sw/bin/jq"
-PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
-ITEM_DIR="$HOME/.config/sketchybar/items"
+source "$PLUGIN_DIR/detect_arch.sh"
+
 # SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
 POPUP_TOGGLE_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
 
@@ -92,6 +92,13 @@ battery=(
 
 volume=(
   script="$PLUGIN_DIR/volume.sh"
+  updates=on
+  icon.padding_left=10
+  label.padding_right=4
+)
+
+backlight=(
+  script="$PLUGIN_DIR/backlight.sh"
   updates=on
   icon.padding_left=10
   label.padding_right=4
@@ -214,6 +221,11 @@ sketchybar --add item fullscreen_locker left \
 sketchybar --add item volume center \
   --set volume "${volume[@]}" \
   --subscribe volume volume_change mouse.scrolled mouse.clicked mouse.entered mouse.exited mouse.exited.global
+
+sketchybar --add item backlight center \
+  --set backlight "${backlight[@]}" \
+  --subscribe backlight brightness_change mouse.scrolled mouse.clicked mouse.entered mouse.exited mouse.exited.global
+
 sketchybar --add item datetime center \
   --set datetime "${datetime[@]}" \
   --subscribe datetime system_woke mouse.clicked mouse.entered mouse.exited mouse.exited.global 
@@ -341,7 +353,7 @@ sketchybar --add item rbracket_padding_left right --set rbracket_padding_left ic
 # https://felixkratz.github.io/SketchyBar/config/components#item-bracket----group-items-in-eg-colored-sections
 sketchybar --add bracket lbracket apple space '/space\..*/' separator_left front_app left \
   --set lbracket "${brackets[@]}"
-sketchybar --add bracket cbracket volume datetime cava spotify center \
+sketchybar --add bracket cbracket volume backlight datetime cava spotify center \
   --set cbracket "${brackets[@]}" 
 sketchybar --add bracket rbracket "Control Center,BentoBox" "TextInputMenuAgent,Item-0" \
   "Control Center,UserSwitcher" "UnnaturalScrollWheels,Item-0" "macOS InstantView,Item-0" \

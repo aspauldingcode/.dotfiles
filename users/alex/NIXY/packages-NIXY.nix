@@ -4,14 +4,14 @@
   lib,
   ...
 }:
-# NIXY-specific packages
 
 let
+  systemType = pkgs.stdenv.hostPlatform.system;
+  homebrewPath = if systemType == "aarch64-darwin" then "/opt/homebrew/bin" else if systemType == "x86_64-darwin" then "/usr/local/bin" else throw "Homebrew Unsupported architecture: ${systemType}";
   jq = "/run/current-system/sw/bin/jq";
-  yabai = "/opt/homebrew/bin/yabai";
-  sketchybar = "/opt/homebrew/bin/sketchybar";
-  borders = "${config.home.homeDirectory}/Downloads/JankyBorders-main/bin/borders"; # master contains apply-to=<window-id> so use this for now.
-  #borders = "/opt/homebrew/bin/borders"; # should be this.
+  yabai = "${homebrewPath}/yabai";
+  sketchybar = "${homebrewPath}/sketchybar";
+  borders = "${homebrewPath}/borders";
   inherit (config.colorScheme) colors;
 in
 {

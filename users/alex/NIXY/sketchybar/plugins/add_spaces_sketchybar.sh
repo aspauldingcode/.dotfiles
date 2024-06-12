@@ -1,9 +1,10 @@
 #!/bin/bash
 
-source "$HOME/.config/sketchybar/colors.sh"
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
-yabai="/opt/homebrew/bin/yabai"
-jq="/run/current-system/sw/bin/jq"
+
+source "$HOME/.config/sketchybar/colors.sh"
+source "$HOME/.config/sketchybar/icons.sh"
+source "$PLUGIN_DIR/detect_arch.sh"
 
 function update_sketchybar_spaces() {
     # Get the full label from the function and extract only the numeric part

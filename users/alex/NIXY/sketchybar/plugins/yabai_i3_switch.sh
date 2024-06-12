@@ -1,7 +1,10 @@
 #!/bin/bash
 
-yabai="/opt/homebrew/bin/yabai"
-jq="/run/current-system/sw/bin/jq"
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+
+source "$HOME/.config/sketchybar/colors.sh"
+source "$HOME/.config/sketchybar/icons.sh"
+source "$PLUGIN_DIR/detect_arch.sh"
 
 echo -e "\n\nRUNNING yabai-i3-switch.sh NOW!!!"
 

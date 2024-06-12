@@ -1,5 +1,11 @@
 #!/bin/sh
 
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+
+source "$HOME/.config/sketchybar/colors.sh"
+source "$HOME/.config/sketchybar/icons.sh"
+source "$PLUGIN_DIR/detect_arch.sh"
+
 #FIXME: USE https://github.com/FelixKratz/SketchyBar/discussions/12#discussioncomment-1633997
 update_sketchybar() {
     CURRENT_APP_NAME_AND_WINDOW=$(osascript -e 'global frontApp, frontAppName, windowTitle

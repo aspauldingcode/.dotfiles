@@ -268,6 +268,7 @@ in
           on-scroll-up = "light -A 5";
           on-scroll-down = "light -U 5";
         };
+        
         # "custom/spotify" = {
         #   interval = 1;
         #   return-type = "json";
