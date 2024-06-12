@@ -14,7 +14,6 @@ sketchybar --add event window_focus \
            --add event title_change \
            --add event windows_on_spaces \
 
-
 # module styles
 bar=(
   height=40
@@ -95,7 +94,7 @@ volume=(
   script="$PLUGIN_DIR/volume.sh"
   updates=on
   icon.padding_left=10
-  label.padding_right=10
+  label.padding_right=4
 )
 
 mail=(
@@ -111,16 +110,16 @@ mail=(
   update_freq=60
 )
 
-# cava=(
-#   update_freq=0
-#   script="$PLUGIN_DIR/cava.sh"
-#   label.drawing=on
-#   label.font="Hack Nerd Font Mono:Regular:13.0"
-#   icon.drawing=off
-#   label="cava"
-#   label.padding_left=4
-#   label.padding_right=4
-# )
+cava=(
+  update_freq=0
+  script="$PLUGIN_DIR/cava.sh"
+  label.drawing=on
+  label.font="Hack Nerd Font Mono:Regular:13.0"
+  icon.drawing=off
+  label="cava"
+  label.padding_left=4
+  label.padding_right=10
+)
 
 # spotify=(
 #   #click_script="$POPUP_TOGGLE_SCRIPT"
@@ -219,12 +218,12 @@ sketchybar --add item datetime center \
   --set datetime "${datetime[@]}" \
   --subscribe datetime system_woke mouse.clicked mouse.entered mouse.exited mouse.exited.global 
 
-# sketchybar --add item cava center \
-  # --set cava "${cava[@]}"
-# sketchybar --add event spotify_change $SPOTIFY_EVENT \
-  # --add item spotify center \
-  # --set spotify "${spotify[@]}" \
-  # --subscribe spotify mouse.clicked mouse.entered mouse.exited mouse.exited.global
+sketchybar --add item cava center \
+  --set cava "${cava[@]}"
+sketchybar --add event spotify_change $SPOTIFY_EVENT \
+  --add item spotify center \
+  --set spotify "${spotify[@]}" \
+  --subscribe spotify mouse.clicked mouse.entered mouse.exited mouse.exited.global
 
 # Right Items
 sketchybar --add item ram right \
@@ -361,7 +360,7 @@ sketchybar --update
 
 # Fetch the menu items from sketchybar query
 sleep 4
-/opt/homebrew/bin/sketchybar --query default_menu_items | $jq -r '.[]' | while IFS= read -r item; do /opt/homebrew/bin/sketchybar --set "$item" alias.update_freq=0; done && sleep 3
+/opt/homebrew/bin/sketchybar --query default_menu_items | $jq -r '.[]' | while IFS= read -r item; do /opt/homebrew/bin/sketchybar --set "$item" alias.update_freq=0; done && sleep 4
 $yabai -m config menubar_opacity 0.0
 
 

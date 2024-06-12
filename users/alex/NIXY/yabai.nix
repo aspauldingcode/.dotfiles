@@ -178,6 +178,7 @@ in
           mod4 = "cmd";
           mod5 = "ctrl";
           modifier = mod1;
+          smod = "shift";
           yabai = "/opt/homebrew/bin/yabai"; # Apparently required to work at all
           i3-msg = "/opt/local/bin/i3-msg";
           alacritty = "/opt/homebrew/bin/alacritty";
@@ -193,15 +194,15 @@ in
           ${modifier} - return :                ${alacritty} msg create-window || open -na ${alacritty}
           ${modifier} - d :                     ${dmenu-mac}
           ${mod1} + ${mod5} - space :           open -na "Brave Browser"
-          ${mod1} + shift + ${mod5} - space :   open -na "Brave Browser" --args --incognito
+          ${mod1} + ${smod} + ${mod5} - space :   open -na "Brave Browser" --args --incognito
           ${mod1} + ${mod4} + ${mod5} - space : open -na "Brave Browser" --args --tor
           ${mod4} + ${mod5} - 0x33 :            sudo reboot # using cmd ctrl backspace
-          ${mod4} + ${mod5} + shift - 0x33 :    sudo shutdown -h now # using cmd ctrl backspace
+          ${mod4} + ${mod5} + ${smod} - 0x33 :    sudo shutdown -h now # using cmd ctrl backspace
           ${mod4} + ${mod5} - delete :          sudo reboot
-          ${mod4} + ${mod5} + shift - delete :  sudo shutdown -h now
-          ${modifier} + shift - q :             ${yabai} -m window --close
+          ${mod4} + ${mod5} + ${smod} - delete :  sudo shutdown -h now
+          ${modifier} + ${smod} - q :             ${yabai} -m window --close
           ${modifier} - f :                     ${yabai} -m window --toggle zoom-fullscreen 
-          ${modifier} + shift - f :             toggle-instant-fullscreen
+          ${modifier} + ${smod} - f :             toggle-instant-fullscreen
 
           # Move focus to next/prev workspace
           ${mod1} + ${mod4} - ${left} :   ${yabai} -m space --focus prev
@@ -213,19 +214,19 @@ in
           ${mod1} + ${mod4} - up :        ${yabai} -m space --focus next
           ${mod1} + ${mod4} - right :     ${yabai} -m space --focus next
 
-          # move focused window to workspace n & follow focus
-          ${modifier} + shift - 1 : move-to-space _1
-          ${modifier} + shift - 2 : move-to-space _2
-          ${modifier} + shift - 3 : move-to-space _3
-          ${modifier} + shift - 4 : move-to-space _4
-          ${modifier} + shift - 5 : move-to-space _5
-          ${modifier} + shift - 6 : move-to-space _6
-          ${modifier} + shift - 7 : move-to-space _7
-          ${modifier} + shift - 8 : move-to-space _8
-          ${modifier} + shift - 9 : move-to-space _9
-          ${modifier} + shift - 0 : move-to-space _10
-           
-          # move focused space to workspace n
+          # Move focused window to workspace N and follow focus
+          ${modifier} + ${smod} - 1 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _1
+          ${modifier} + ${smod} - 2 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _2
+          ${modifier} + ${smod} - 3 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _3
+          ${modifier} + ${smod} - 4 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _4
+          ${modifier} + ${smod} - 5 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _5
+          ${modifier} + ${smod} - 6 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _6
+          ${modifier} + ${smod} - 7 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _7
+          ${modifier} + ${smod} - 8 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _8
+          ${modifier} + ${smod} - 9 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _9
+          ${modifier} + ${smod} - 0 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _10
+          
+          # move focus to workspace n
           ${modifier} - 1 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_1")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _1); ${yabai} -m space --focus _1
           ${modifier} - 2 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_2")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _2); ${yabai} -m space --focus _2
           ${modifier} - 3 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_3")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _3); ${yabai} -m space --focus _3
@@ -237,18 +238,18 @@ in
           ${modifier} - 9 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_9")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _9); ${yabai} -m space --focus _9
           ${modifier} - 0 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_10")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _10); ${yabai} -m space --focus _10
 
-          ${modifier} + shift - y : ${yabai} -m space --mirror y-axis
-          ${modifier} + shift - x : ${yabai} -m space --mirror x-axis
+          ${modifier} + ${smod} - y : ${yabai} -m space --mirror y-axis
+          ${modifier} + ${smod} - x : ${yabai} -m space --mirror x-axis
 
           # send window to next/prev space and follow focus
-          ${mod4} + shift - ${left} :   ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-          ${mod4} + shift - ${down} :   ${yabai} -m window --space next; ${yabai} -m space --focus next
-          ${mod4} + shift - ${up} :     ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-          ${mod4} + shift - ${right} :  ${yabai} -m window --space next; ${yabai} -m space --focus next
-          ${mod4} + shift - left :      ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-          ${mod4} + shift - down :      ${yabai} -m window --space next; ${yabai} -m space --focus next
-          ${mod4} + shift - up :        ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-          ${mod4} + shift - right :     ${yabai} -m window --space next; ${yabai} -m space --focus next
+          ${mod4} + ${smod} - ${left} :   ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+          ${mod4} + ${smod} - ${down} :   ${yabai} -m window --space next; ${yabai} -m space --focus next
+          ${mod4} + ${smod} - ${up} :     ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+          ${mod4} + ${smod} - ${right} :  ${yabai} -m window --space next; ${yabai} -m space --focus next
+          ${mod4} + ${smod} - left :      ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+          ${mod4} + ${smod} - down :      ${yabai} -m window --space next; ${yabai} -m space --focus next
+          ${mod4} + ${smod} - up :        ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+          ${mod4} + ${smod} - right :     ${yabai} -m window --space next; ${yabai} -m space --focus next
 
           # focus window in stacked, else in bsp
           ${modifier} - ${left} :   if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus west; fi
@@ -261,14 +262,14 @@ in
           ${modifier} - right :     if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus east; fi
            
           # swap managed window (or move if floating) 
-          ${modifier} + shift - ${left} :   ${yabai} -m window --swap west ||  ${yabai} -m window --move rel:-30:0
-          ${modifier} + shift - ${down} :   ${yabai} -m window --swap south || ${yabai} -m window --move rel:0:30
-          ${modifier} + shift - ${up} :     ${yabai} -m window --swap north || ${yabai} -m window --move rel:0:-30
-          ${modifier} + shift - ${right} :  ${yabai} -m window --swap east ||  ${yabai} -m window --move rel:30:0
-          ${modifier} + shift - left :      ${yabai} -m window --swap west ||  ${yabai} -m window --move rel:-30:0
-          ${modifier} + shift - down :      ${yabai} -m window --swap south || ${yabai} -m window --move rel:0:30
-          ${modifier} + shift - up :        ${yabai} -m window --swap north || ${yabai} -m window --move rel:0:-30
-          ${modifier} + shift - right :     ${yabai} -m window --swap east ||  ${yabai} -m window --move rel:30:0
+          ${modifier} + ${smod} - ${left} :   ${yabai} -m window --swap west ||  ${yabai} -m window --move rel:-30:0
+          ${modifier} + ${smod} - ${down} :   ${yabai} -m window --swap south || ${yabai} -m window --move rel:0:30
+          ${modifier} + ${smod} - ${up} :     ${yabai} -m window --swap north || ${yabai} -m window --move rel:0:-30
+          ${modifier} + ${smod} - ${right} :  ${yabai} -m window --swap east ||  ${yabai} -m window --move rel:30:0
+          ${modifier} + ${smod} - left :      ${yabai} -m window --swap west ||  ${yabai} -m window --move rel:-30:0
+          ${modifier} + ${smod} - down :      ${yabai} -m window --swap south || ${yabai} -m window --move rel:0:30
+          ${modifier} + ${smod} - up :        ${yabai} -m window --swap north || ${yabai} -m window --move rel:0:-30
+          ${modifier} + ${smod} - right :     ${yabai} -m window --swap east ||  ${yabai} -m window --move rel:30:0
 
           # increase window size
           ${modifier} + ctrl - ${left} :  ${yabai} -m window --resize left:-30:0
@@ -281,14 +282,14 @@ in
           ${modifier} + ctrl - right :    ${yabai} -m window --resize right:30:0
 
           # decrease window size
-          ${modifier} + shift + ctrl - ${left} :  ${yabai} -m window --resize left:30:0
-          ${modifier} + shift + ctrl - ${down} :  ${yabai} -m window --resize bottom:0:-30
-          ${modifier} + shift + ctrl - ${up} :    ${yabai} -m window --resize top:0:30
-          ${modifier} + shift + ctrl - ${right} : ${yabai} -m window --resize right:-30:0
-          ${modifier} + shift + ctrl - left :     ${yabai} -m window --resize left:30:0
-          ${modifier} + shift + ctrl - down :     ${yabai} -m window --resize bottom:0:-30
-          ${modifier} + shift + ctrl - up :       ${yabai} -m window --resize top:0:30
-          ${modifier} + shift + ctrl - right :    ${yabai} -m window --resize right:-30:0
+          ${modifier} + ${smod} + ctrl - ${left} :  ${yabai} -m window --resize left:30:0
+          ${modifier} + ${smod} + ctrl - ${down} :  ${yabai} -m window --resize bottom:0:-30
+          ${modifier} + ${smod} + ctrl - ${up} :    ${yabai} -m window --resize top:0:30
+          ${modifier} + ${smod} + ctrl - ${right} : ${yabai} -m window --resize right:-30:0
+          ${modifier} + ${smod} + ctrl - left :     ${yabai} -m window --resize left:30:0
+          ${modifier} + ${smod} + ctrl - down :     ${yabai} -m window --resize bottom:0:-30
+          ${modifier} + ${smod} + ctrl - up :       ${yabai} -m window --resize top:0:30
+          ${modifier} + ${smod} + ctrl - right :    ${yabai} -m window --resize right:-30:0
 
           # set insertion point in focused container
           ${modifier} - b : ${yabai} -m window --insert east
@@ -303,8 +304,8 @@ in
           ${modifier} - e : ${yabai} -m space --layout bsp
 
           # float / unfloat window and center on screen
-          #${modifier} + shift - space : ${yabai} -m window --toggle float; ${yabai} -m window --grid 60:60:5:5:50:50
-          ${modifier} + shift - space : toggle-float
+          #${modifier} + ${smod} - space : ${yabai} -m window --toggle float; ${yabai} -m window --grid 60:60:5:5:50:50
+          ${modifier} + ${smod} - space : toggle-float
 
           # # toggle sticky(+float), topmost, picture-in-picture
           # ${modifier} - p : ${yabai} -m window --toggle sticky; \
@@ -312,14 +313,14 @@ in
           #           ${yabai} -m window --toggle pip
 
           # equalize windows
-          # alt + shift - u : ${yabai} -m space --balance
+          # ${modifier} + ${smod} - u : ${yabai} -m space --balance
 
           # toggle sketchybar
           ${modifier} - m : toggle-sketchybar
 
           # toggle native macOS menubar, or dock
-          #${modifier} + shift - m : current=$(osascript -e 'tell application "System Events" to tell dock preferences to get autohide menu bar'); new_state=$(if [[ "$1" == "on" ]]; then echo false; elif [[ "$1" == "off" ]]; then echo true; else [[ "$current" == "true" ]] && echo false || echo true; fi); osascript -e "tell application \"System Events\" to tell dock preferences to set autohide menu bar to $new_state" && ${yabai} -m config menubar_opacity $(if [[ "$new_state" == "true" ]]; then echo 0.0; else echo 1.0; fi) && echo "Menu bar turned $(if [[ "$new_state" == "true" ]]; then echo OFF; else echo ON; fi)"
-          ${modifier} + shift - m : toggle-menubar
+          #${modifier} + ${smod} - m : current=$(osascript -e 'tell application "System Events" to tell dock preferences to get autohide menu bar'); new_state=$(if [[ "$1" == "on" ]]; then echo false; elif [[ "$1" == "off" ]]; then echo true; else [[ "$current" == "true" ]] && echo false || echo true; fi); osascript -e "tell application \"System Events\" to tell dock preferences to set autohide menu bar to $new_state" && ${yabai} -m config menubar_opacity $(if [[ "$new_state" == "true" ]]; then echo 0.0; else echo 1.0; fi) && echo "Menu bar turned $(if [[ "$new_state" == "true" ]]; then echo OFF; else echo ON; fi)"
+          ${modifier} + ${smod} - m : toggle-menubar
 
           ${modifier} - space : toggle-dock
 
@@ -333,7 +334,7 @@ in
           ${modifier} - c : dismiss-notifications
 
           # reload
-          ${modifier} + shift - r : fix-wm
+          ${modifier} + ${smod} - r : fix-wm
 
           # Blacklist applications
           .blacklist [
