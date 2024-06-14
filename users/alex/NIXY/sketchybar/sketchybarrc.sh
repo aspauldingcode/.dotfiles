@@ -3,6 +3,7 @@
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
 source "$HOME/.config/sketchybar/colors.sh"
+source "$HOME/.config/sketchybar/start_programs_correctly.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 source "$PLUGIN_DIR/detect_arch.sh"
 
@@ -369,6 +370,10 @@ printf "on\n" > "/tmp/gaps_state"
 dismiss-notifications # not working?
 if [ -f "$HOME/.config/sketchybar/calendar_init_flag" ]; then
     rm "$HOME/.config/sketchybar/calendar_init_flag" # remove calendar flag at sketchybar launch if it exists
+fi
+if [ ! -f "/tmp/programs_started_state" ]; then
+    $start_programs_correctly # sourced from start_programs_correctly.sh
+    echo "programs started already since sketchybar first initialized." > "/tmp/programs_started_state"
 fi
 sketchybar --update
 

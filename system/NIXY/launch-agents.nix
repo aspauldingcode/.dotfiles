@@ -20,31 +20,8 @@
           </dict>
         </plist>
       '';
-    }; 
-
-    "com.example.hidecursor.plist" = {
-      enable = true;
-    text = ''
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>Label</key>
-    <string>com.example.hidecursor</string>
-    <key>ProgramArguments</key>
-    <array>
-        <string>/bin/bash</string>
-        <string>/Users/alex/hide_cursor.sh</string>
-    </array>
-    <key>RunAtLoad</key>
-    <true/>
-    <key>StartInterval</key>
-    <integer>5</integer>
-</dict>
-</plist>
-    '';
     };
-
+    
     "com.koekeishiya.skhd.plist" = {
       enable = true;
       text = ''
@@ -279,6 +256,35 @@
             </array>
             <key>RunAtLoad</key>
             <true/>
+          </dict>
+        </plist>
+      '';
+    };
+
+    "com.example.startprograms.plist" = {
+      enable = true;
+      text = ''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0.dtd"?>
+        <plist version="1.0">
+          <dict>
+            <key>Label</key>
+            <string>com.example.startprograms</string>
+            <key>ProgramArguments</key>
+            <array>
+              <string>${pkgs.start_programs_correctly}/bin/start_programs_correctly</string>
+            </array>
+            <key>EnvironmentVariables</key>
+            <dict>
+              <key>USER</key>
+              <string>${builtins.getEnv "USER"}</string>
+            </dict>
+            <key>RunAtLoad</key>
+            <true/>
+            <key>StandardErrorPath</key>
+            <string>/tmp/com.example.startprograms.err</string>
+            <key>StandardOutPath</key>
+            <string>/tmp/com.example.startprograms.out</string>
           </dict>
         </plist>
       '';

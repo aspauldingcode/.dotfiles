@@ -8,10 +8,11 @@
 let
   systemType = pkgs.stdenv.hostPlatform.system;
   homebrewPath = if systemType == "aarch64-darwin" then "/opt/homebrew/bin" else if systemType == "x86_64-darwin" then "/usr/local/bin" else throw "Homebrew Unsupported architecture: ${systemType}";
-  jq = "/run/current-system/sw/bin/jq";
+  jq = "${pkgs.jq}/bin/jq";
   yabai = "${homebrewPath}/yabai";
   sketchybar = "${homebrewPath}/sketchybar";
   borders = "${homebrewPath}/borders";
+  skhd = "${homebrewPath}/skhd";
   inherit (config.colorScheme) colors;
 in
 {
@@ -207,14 +208,18 @@ in
     #fix-wm
     (pkgs.writeShellScriptBin "fix-wm" ''
       ${yabai} --stop-service && ${yabai} --start-service #helps with adding initial service
-      skhd --stop-service && skhd --start-service #otherwise, I have to run manually first time.
-      brew services restart felixkratz/formulae/sketchybar
+      ${skhd} --stop-service && ${skhd} --start-service #otherwise, I have to run manually first time.
+      # brew services restart felixkratz/formulae/sketchybar
       launchctl stop org.pqrs.karabiner.karabiner_console_user_server && launchctl start org.pqrs.karabiner.karabiner_console_user_server
       xrdb -merge ~/.Xresources
-      ${sketchybar} --reload
+      killall -HUP sketchybar
       rm /tmp/fullscreen_state /tmp/dock_state /tmp/gaps_state /tmp/sketchybar_state /tmp/menubar_state /tmp/darkmode_state  #remove statefiles
       echo -ne '\n' | sudo pkill "Background Music" && "/Applications/Background Music.app/Contents/MacOS/Background Music" > /dev/null 2>&1 &
       dismiss-notifications
+      if [ ! -f "/tmp/programs_started_state" ]; then
+        ${pkgs.start_programs_correctly}/bin/start_programs_correctly #run only once.
+        echo "programs started already with fix-wm." > "/tmp/programs_started_state"
+      fi
     '')
 
     #analyze-output

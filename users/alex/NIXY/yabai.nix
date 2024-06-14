@@ -9,7 +9,7 @@ let
   i3-msg = "${homebrewPath}/i3-msg";
   alacritty = "${homebrewPath}/alacritty";
   dmenu-mac = "${homebrewPath}/dmenu-mac";
-  jq = "/run/current-system/sw/bin/jq";
+  jq = "${pkgs.jq}bin/jq";
   inherit (config.colorScheme) colors;
 in
 {
@@ -336,7 +336,7 @@ in
           ${modifier} - c : dismiss-notifications
 
           # reload
-          ${modifier} + ${smod} - r : fix-wm
+          ${modifier} + ${smod} - r : fix-wm; borders background_color=0x11${colors.base00} blur_radius=15.0
 
           # Blacklist applications
           .blacklist [

@@ -15,12 +15,19 @@ let
     export SPACEBG=0xFF808080 #Didn't change much?
     export MIDNIGHT="0xE6${colors.base03}" # Only worked on the mail icon?
   '';
+  start_programs_correctly = pkgs.writeShellScript "start_programs_correctly" ''
+    start_programs_correctly() {
+      ${pkgs.start_programs_correctly}/bin/start_programs_correctly
+    }
+    start_programs_correctly
+  '';
 in
 {
   # ALL MUST BE MARKED AS EXECUTABLE!
   xdg.configFile."sketchybar/sketchybarrc".source = ./sketchybarrc.sh;
   xdg.configFile."sketchybar/icons.sh".source = ./icons.sh;
   xdg.configFile."sketchybar/colors.sh".source = nixy_colors;
+  xdg.configFile."sketchybar/start_programs_correctly.sh".source = start_programs_correctly;
   xdg.configFile."sketchybar/plugins/detect_arch.sh".source = ./plugins/detect_arch.sh;
   xdg.configFile."sketchybar/plugins/sway_spaces.sh".source = ./plugins/sway_spaces.sh;
   xdg.configFile."sketchybar/plugins/add_spaces_sketchybar.sh".source = ./plugins/add_spaces_sketchybar.sh;
@@ -49,6 +56,7 @@ in
   xdg.configFile."sketchybar/sketchybarrc".executable = true;
   xdg.configFile."sketchybar/icons.sh".executable = true;
   xdg.configFile."sketchybar/colors.sh".executable = true;
+  xdg.configFile."sketchybar/start_programs_correctly.sh".executable = true;
   xdg.configFile."sketchybar/plugins/detect_arch.sh".executable = true;
   xdg.configFile."sketchybar/plugins/sway_spaces.sh".executable = true;
   xdg.configFile."sketchybar/plugins/add_spaces_sketchybar.sh".executable = true;

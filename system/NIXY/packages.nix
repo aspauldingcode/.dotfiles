@@ -6,6 +6,7 @@
 }:
 
 {
+
   # copy Nix-Darwin GUI apps to ~/Applications
   system.activationScripts.postUserActivation.text = ''
     rsyncArgs="--archive --checksum --chmod=-w --copy-unsafe-links --delete"
@@ -24,6 +25,7 @@
       allowUnfreePredictate = (_: true);
     };
   };
+
 
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget

@@ -66,6 +66,11 @@
                   # Set default editor in zsh shell
                   export EDITOR=nvim
                   export VISUAL="$EDITOR"
+		  
+		  # COPY man pages contents
+		  function mancp() {
+	        	man "$1" | col -b | pbcopy
+		  }
             '';
       };
       # GET YEETED! Hello print on terminal go byebye
