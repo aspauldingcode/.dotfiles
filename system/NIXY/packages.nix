@@ -63,7 +63,8 @@
     fd # find tool
     ripgrep
     (pkgs.callPackage ./instantview.nix { })
-    # (pkgs.callPackage ./macforge.nix { })
+    (pkgs.callPackage ./macforge.nix { })
+    (pkgs.callPackage ./cursorcerer.nix { })
   ];
 
   system.activationScripts.extraActivation.text = ''

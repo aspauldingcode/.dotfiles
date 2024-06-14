@@ -13,3 +13,4 @@ fi
 # define software fullpaths
 yabai="${homebrewPath}/yabai"
 jq="/run/current-system/sw/bin/jq"
+osascript="/usr/bin/osascript"

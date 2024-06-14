@@ -65,6 +65,7 @@ in
         primary = {
           foreground = "#${colors.base05}";  # Default Foreground, Caret, Delimiters, Operators
           background = "#${colors.base00}";  # Default Background
+
           dim_foreground = "#${colors.base01}";  # Lighter Background (Used for status bars, line number and folding marks)
           bright_foreground = "#${colors.base06}";  # Light Foreground (Not often used)
         };

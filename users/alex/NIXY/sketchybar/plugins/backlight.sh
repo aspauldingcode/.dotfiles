@@ -29,7 +29,7 @@ brightness_change() {
 }
 
 sketchybar --add item backlight.popup popup.backlight \
-  --set backlight.popup label="$(system_profiler SPDisplaysDataType -xml | awk -F'<|>' '/<key>spdisplays_brightness<\/key>/{getline; print $3}' | awk '{printf "%.0f", $1*100}')" \
+  --set backlight.popup label="Display Brightness" \
   label.padding_left=10 \
   label.padding_right=10 \
 
@@ -69,3 +69,4 @@ case "$SENDER" in
   # Update brightness info periodically
   ;;
 esac
+

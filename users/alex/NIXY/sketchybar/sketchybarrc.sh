@@ -12,7 +12,7 @@ POPUP_TOGGLE_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
 #events
 sketchybar --add event window_focus \
            --add event title_change \
-           --add event windows_on_spaces \
+           --add event windows_on_spaces
 
 # module styles
 bar=(
@@ -94,14 +94,14 @@ volume=(
   script="$PLUGIN_DIR/volume.sh"
   updates=on
   icon.padding_left=10
-  label.padding_right=4
+  label.padding_right=5
 )
 
 backlight=(
   script="$PLUGIN_DIR/backlight.sh"
   updates=on
-  icon.padding_left=10
-  label.padding_right=4
+  icon.padding_left=5
+  label.padding_right=5
 )
 
 mail=(
@@ -194,19 +194,21 @@ sketchybar --add space space left \
   --subscribe space space_change space_windows_change front_app_switched display_change
 
 sketchybar --add item separator_left left \
-  --set separator_left "${separator_left[@]}" \
+  --set separator_left \
     icon= \
     padding_left=8 \
-    label.drawing=off \
-  --add item front_app left \
-  --set front_app "${front_app[@]}" \
+    label.drawing=off
+
+sketchybar --add item front_app left \
+  --set front_app \
     script="$PLUGIN_DIR/front_app.sh" \
-    click_script="$yabai -m window --close" \
+    click_script="if [ \"$($yabai -m query --windows --window | $jq -r '.app')\" = \"Alacritty\" ]; then $osascript -e 'tell application \"System Events\" to keystroke \"w\" using {command down}'; else $yabai -m window --close; fi" \
     icon.drawing=on \
     label.padding_left=15 \
     label.padding_right=15 \
     updates=on \
-    --subscribe front_app front_app_switched window_focus windows_on_spaces title_change mouse.clicked mouse.entered mouse.exited mouse.exited.global
+  --subscribe front_app front_app_switched window_focus windows_on_spaces title_change mouse.clicked mouse.entered mouse.exited mouse.exited.global
+
 sketchybar --add item active_app left \
     --set active_app "${active_app[@]}"
 

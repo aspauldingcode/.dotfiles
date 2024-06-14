@@ -3,6 +3,11 @@
 ##SYSTEM DEFAULTS!!!! MACOS defaults config.
 {
   system = {
+    activationScripts.postUserActivation.text = ''
+    # Following line should allow us to avoid a logout/login cycle
+    /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+  '';
+
     startup.chime = false; # MUTE STARTUP CHIME!
     defaults = {
       finder = {
@@ -288,6 +293,12 @@
           numberOfSecondForAutoHide = 10;
           useFullStatusBarOnExpandEnabled = 0;
         };
+        "com.apple.desktopservices" = {
+        # Avoid creating .DS_Store files on network or USB volumes
+        DSDontWriteNetworkStores = true;
+        DSDontWriteUSBStores = true;
+      };
+
       };
       LaunchServices.LSQuarantine = false; # Finally some air to breathe.
       magicmouse.MouseButtonMode = "TwoButton"; # allow left and right click when using magic mouse.

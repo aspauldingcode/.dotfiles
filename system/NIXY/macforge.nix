@@ -18,7 +18,7 @@ pkgs.stdenv.mkDerivation {
     in
     ''
       mkdir -p $out/Applications
-      ${unzip} $src/Beta/MacForge/MacForge-1.2.2-3.zip
-      cp -r $src/MacForge.app $out/Applications/
+      ${unzip} "$src"/'Beta/MacForge/MacForge.1.2.2-3.zip' -d $out/temp
+      cp -r "$out/temp"/'MacForge.app' $out/Applications/
     '';
 }

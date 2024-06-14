@@ -20,6 +20,29 @@
           </dict>
         </plist>
       '';
+    }; 
+
+    "com.example.hidecursor.plist" = {
+      enable = true;
+    text = ''
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.example.hidecursor</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/alex/hide_cursor.sh</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>StartInterval</key>
+    <integer>5</integer>
+</dict>
+</plist>
+    '';
     };
 
     "com.koekeishiya.skhd.plist" = {

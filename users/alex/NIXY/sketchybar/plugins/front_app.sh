@@ -8,7 +8,7 @@ source "$PLUGIN_DIR/detect_arch.sh"
 
 #FIXME: USE https://github.com/FelixKratz/SketchyBar/discussions/12#discussioncomment-1633997
 update_sketchybar() {
-    CURRENT_APP_NAME_AND_WINDOW=$(osascript -e 'global frontApp, frontAppName, windowTitle
+    CURRENT_APP_NAME_AND_WINDOW=$($osascript -e 'global frontApp, frontAppName, windowTitle
 
     set windowTitle to ""
     tell application "System Events"
@@ -58,9 +58,20 @@ case "$SENDER" in
     #echo "Mouse left hover of $NAME icon" >> /tmp/sketchybar_debug.log
     ;;
   "mouse.clicked")
-    #sketchybar --set datetime popup.drawing=toggle
-    #echo "Mouse clicked on $NAME icon" >> /tmp/sketchybar_debug.log
-    # toggle_battery_popup
+    # Get the front window information
+    WINDOW_INFO=$(yabai -m query --windows --window)
+    APP_NAME=$(echo "$WINDOW_INFO" | jq -r '.app')
+
+    # Function to send Command + W to close the window
+    send_command_w() {
+      $osascript -e 'tell application "System Events" to keystroke "w" using {command down}'
+    }
+
+    # Check if the front application is Alacritty
+    if [ "$APP_NAME" = "Alacritty" ]; then
+      # Send Command + W to close the window
+      send_command_w
+    fi
     ;;
   "routine")
     # Update battery info periodically

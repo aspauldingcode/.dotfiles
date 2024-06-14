@@ -30,6 +30,7 @@
     ./btop.nix
     ./xinit.nix
     ./i3.nix
+    ./qutebrowser.nix
     ./sketchybar/sketchybar.nix
     ./yabai.nix # contains skhd and borders config.
     ./phoenix/phoenix.nix # new window-manager for macOS!

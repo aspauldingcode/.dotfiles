@@ -330,7 +330,7 @@ in
           ${modifier} - g : toggle-gaps
 
           # toggle-darkmode
-          ${modifier} - p : toggle-darkmode
+          ${modifier} - p : toggle-darkmode && toggle-theme && ${sketchybar} --reload
 
           # clear notifications 
           ${modifier} - c : dismiss-notifications
