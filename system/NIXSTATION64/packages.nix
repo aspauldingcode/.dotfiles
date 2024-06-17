@@ -47,7 +47,7 @@
     sqlite
     gnutls
     libusb1
-
+    networkmanagerapplet
     edl
     payload-dumper-go
     ranger
@@ -79,9 +79,8 @@
     element
     appimage-run
     tree-sitter
-    jdk20
     python311
-    nodejs
+    # nodejs
     ncurses6
     flex
     bison
@@ -91,14 +90,15 @@
     dtc
     gnome-themes-extra
     cargo
-    nodePackages_latest.npm
+    # nodePackages_latest.npm
     perl
     hexedit
     virt-manager
     uxplay
 
     (pkgs.callPackage ./hybridbar.nix { })
-
+    (pkgs.callPackage ./cursor.nix { })
+    
     #rebuild #sudo nixos-rebuild switch --show-trace --option eval-cache false --flake .#NIXSTATION64
     (pkgs.writeShellScriptBin "rebuild" ''
       # NIXSTATION64(x86_64-linux)

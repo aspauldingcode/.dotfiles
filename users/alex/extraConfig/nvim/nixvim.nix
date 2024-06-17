@@ -172,7 +172,7 @@
             #   installLanguageServer = true;
             # };
             bashls = {
-              enable = true;
+              enable = false;
               # installLanguageServer = true;
             };
             # beancount = {
@@ -499,11 +499,11 @@
           enable = true;
           #keymaps = {
 
-           # "<C-p>" = {
-           #   action = "git_files";
-           #   desc = "Telescope Git Files";
-        #    };
-         #   "<leader>fg" = "live_grep";
+          # "<C-p>" = {
+          #   action = "git_files";
+          #   desc = "Telescope Git Files";
+          #    };
+          #   "<leader>fg" = "live_grep";
           #};
         };
 
@@ -536,7 +536,7 @@
           sections.lualine_c = [ "lsp_progress" ]; # Install lsp_progress!
         };
         noice.lsp.progress.enabled = true;
-        
+
         # nvim window tabs!
         bufferline.enable = true;
 

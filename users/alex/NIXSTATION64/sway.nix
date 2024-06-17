@@ -23,12 +23,12 @@
           transform = "270";
           #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
         };
-        DP-3 = {
+        DP-7 = {
           res = "1920x1080";
           pos = "1080,450";
           #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
         };
-        DP-2 = {
+        DP-5 = {
           res = "1920x1080";
           pos = "3000,450";
           #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
@@ -247,6 +247,8 @@
         "${modifier}+Alt+Shift+Up" = "resize shrink up 20px";
         "${modifier}+Alt+Shift+Right" = "resize shrink right 20px";
 
+        "${modifier}+g" = "";
+
         "${modifier}+Shift+R" = "reload";
       };
     };
@@ -256,6 +258,15 @@
         inherit (config.colorscheme) colors;
       in
       ''
+
+        # try to swayipc waybar:
+        bar {
+            swaybar_command waybar
+            position top
+            mode hide
+            modifier Mod4
+        }
+
         set $mod Mod4
           # Idle configuration        
           exec swayidle -w \
@@ -270,8 +281,8 @@
 
           # SET workspace to specific output
           workspace 1 output DP-4
-          workspace 2 output DP-3
-          workspace 3 output DP-2
+          workspace 2 output DP-7
+          workspace 3 output DP-5
 
           # Launch the bluetooth applet
           exec blueman-applet
@@ -281,8 +292,6 @@
 
           # autotile!
           exec autotiling
-
-          #exec "mako --config ~/.makoe"
 
           # STYLIZE!
           gaps inner 13
@@ -326,8 +335,8 @@
           # SET BORDER TO 2 PIXELS!
           default_border pixel 2
           default_floating_border pixel 2
-          client.unfocused "#808080" "#808080" "#808080" "#808080" "#808080"
-          client.focused ${colors.base0C} ${colors.base0C} ${colors.base0C} ${colors.base0C}
+          client.unfocused ${colors.base00} ${colors.base00} ${colors.base00} ${colors.base00}
+          client.focused ${colors.base05} ${colors.base05} ${colors.base05} ${colors.base05}
 
           exec {
             gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'

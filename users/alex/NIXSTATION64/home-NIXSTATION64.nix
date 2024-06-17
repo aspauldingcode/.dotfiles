@@ -18,6 +18,7 @@
     ./fish.nix
     ./zsh.nix
     # ./zellij.nix
+    ./cursor.nix
     ./btop.nix # btop theme!
   ];
 

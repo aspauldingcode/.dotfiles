@@ -19,7 +19,6 @@
       #darling-dmg
       lsof
       wget
-
       # dependencies for menu-continuous
       # cmake
       # procps
@@ -140,18 +139,16 @@
       #rnix-lsp
       # FIND MORE INFO: https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
       nil
-      nodePackages_latest.typescript-language-server
-      nodePackages_latest.typescript
-      nodePackages_latest.pyright
-      nodePackages_latest.bash-language-server
-      nodePackages.yaml-language-server
-      nodePackages_latest.dockerfile-language-server-nodejs
+      # nodePackages_latest.typescript-language-server
+      # nodePackages_latest.typescript
+      # nodePackages.yaml-language-server
+      # nodePackages_latest.dockerfile-language-server-nodejs
       jdt-language-server
       kotlin-language-server
       lua-language-server
       cmake-language-server
       arduino-language-server
-      nodePackages_latest.vim-language-server
+      # nodePackages_latest.vim-language-server
       #python311Packages.python-lsp-server
       blueman
       jq
@@ -196,7 +193,7 @@
         jdks = [
           jdk8
           jdk17
-          jdk19
+          # jdk19
           # Minecraft requires jdk21 SOON!
         ];
       })

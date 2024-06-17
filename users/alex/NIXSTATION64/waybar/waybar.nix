@@ -1,19 +1,20 @@
 { config, pkgs, ... }:
 
-/* Making Waybar follow the Gtk theme
-   Gtk CSS has some global theme variables, and by using these instead of hardcoded values, Waybar will automatically follow your Gtk theme. An example:
+/*
+  Making Waybar follow the Gtk theme
+  Gtk CSS has some global theme variables, and by using these instead of hardcoded values, Waybar will automatically follow your Gtk theme. An example:
 
-   window#waybar {
-     background: @theme_base_color;
-     border-bottom: 1px solid @unfocused_borders;
-     color: @theme_text_color;
-   }
-   The Gtk theme variables can be further refined by using the shade, mix, and/or alpha modifiers. For example, if you want to make the bar 25 % lighter and 10 % transparent, you can style the background like this:
+  window#waybar {
+    background: @theme_base_color;
+    border-bottom: 1px solid @unfocused_borders;
+    color: @theme_text_color;
+  }
+  The Gtk theme variables can be further refined by using the shade, mix, and/or alpha modifiers. For example, if you want to make the bar 25 % lighter and 10 % transparent, you can style the background like this:
 
-   window#waybar {
-     background: shade(alpha(@borders, 0.9), 1.25);
-   }
-   For a list of valid Gtk theme variables, check out Gnome's stylesheet on Gitlab.
+  window#waybar {
+    background: shade(alpha(@borders, 0.9), 1.25);
+  }
+  For a list of valid Gtk theme variables, check out Gnome's stylesheet on Gitlab.
 */
 
 let
@@ -64,9 +65,9 @@ in
 {
   programs.waybar = {
     enable = true;
-    package = pkgs.waybar.overrideAttrs (
-      oa: { mesonFlags = (oa.mesonFlags or [ ]) ++ [ "-Dexperimental=true" ]; }
-    );
+    package = pkgs.waybar.overrideAttrs (oa: {
+      mesonFlags = (oa.mesonFlags or [ ]) ++ [ "-Dexperimental=true" ];
+    });
     systemd.enable = false; # FIXME: set true because otherwise it fails to start sometimes or just dies when bootstrapped to sway
     settings = {
       primary = {
@@ -92,7 +93,7 @@ in
           #"custom/gpg-agent"
           # "custom/spotify"
           "cava"
-          "custom/currentplayer"
+          # "custom/currentplayer" maybe get this into cava instead.
           # "custom/player"
         ];
 
@@ -491,12 +492,12 @@ in
         }
         window#waybar {
           background-color: #${colors.base00};
-          border: 2px solid #${colors.base0C};
+          border: 2px solid #${colors.base05};
           border-radius: 30px;
         }
 
         window#waybar.hidden {
-          opacity: 0.2;
+            opacity: 0.2;
         }
 
         /*
@@ -510,7 +511,7 @@ in
 
         .modules-left {
           background-color: #${colors.base00};
-          border: 2px solid #${colors.base0C};
+          border: 2px solid #${colors.base05};
           border-radius: 30px;
           margin-left: 21px;
           margin-top: 7px;
@@ -523,7 +524,7 @@ in
 
         .modules-center {
           background-color: #${colors.base00};
-          border: 2px solid #${colors.base0C};
+          border: 2px solid #${colors.base05};
           border-radius: 30px;
           margin-top: 7px;
           margin-bottom: 7px;
@@ -535,7 +536,7 @@ in
 
         .modules-right {
           background-color: #${colors.base00};
-          border: 2px solid #${colors.base0C};
+          border: 2px solid #${colors.base05};
           border-radius: 30px;
           margin-right: 21px;
           margin-top: 7px;
@@ -547,13 +548,13 @@ in
         }
 
         window#waybar {
-          opacity: 0.85;
+          opacity: 1.0;
           border-radius: 10px;
         }
 
         #custom-menu {
           background-color: #${colors.base02};
-          /* border: 0px solid #${colors.base0C}; */
+          /* border: 0px solid #${colors.base05}; */
           border-radius: 30px;
           padding-left: 14px;
           padding-right: 18px;
@@ -561,7 +562,7 @@ in
 
         #custom-currentplayer { /* SPOTIFY ICON */
           background-color: #${colors.base02};
-          border: 0px solid #${colors.base0C};
+          border: 0px solid #${colors.base05};
           border-radius: 30px;
           padding-left: 18px;
           padding-right: 14px;
@@ -626,7 +627,7 @@ in
           font-family: 'JetBrains Mono', Regular;
           font-size: 9pt;
           background-color: #${colors.base02};
-          border: 0px solid #${colors.base0C};
+          border: 0px solid #${colors.base05};
           border-radius: 30px;
           padding-left: 16px;
           padding-right: 16px;
@@ -635,19 +636,19 @@ in
 
         /* #clock-popup { */
         /*   background-color: #${colors.base02}; */
-        /*   border: 2px solid #${colors.base0C}; */
+        /*   border: 2px solid #${colors.base05}; */
         /*   border-radius: 10px; */
         /*   font-size: 16px; */
         /* } */
 
         #custom-hostname {
-          background-color: #${colors.base0C};
+          background-color: #${colors.base05};
           border-radius: 30px;
         }
 
         #pulseaudio {
           background-color: #${colors.base00};
-          border: 0px solid #${colors.base0C};
+          border: 0px solid #${colors.base05};
           border-radius: 30px;
           color: #${colors.base05};
           padding-left: 8px;
@@ -682,7 +683,7 @@ in
         .mail
         {
           background-color: #${colors.base02};
-          border: 0px solid #${colors.base0C};
+          border: 0px solid #${colors.base05};
           border-radius: 30px;
           padding-left: 16px;
           padding-right: 16px;
@@ -705,7 +706,7 @@ in
         }
         #memory {
           background-color: #${colors.base02};
-          border: 0px solid #${colors.base0C};
+          border: 0px solid #${colors.base05};
           border-radius: 30px;
           padding-left: 16px;
           padding-right: 16px;
@@ -714,7 +715,7 @@ in
 
         tooltip {
           background-color: #${colors.base00};
-          border: 2px solid #${colors.base0C};
+          border: 2px solid #${colors.base05};
           border-radius: 10px;
           margin-top: 20px;
         }
