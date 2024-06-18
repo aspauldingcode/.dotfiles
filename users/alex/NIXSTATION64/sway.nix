@@ -247,7 +247,7 @@
         "${modifier}+Alt+Shift+Up" = "resize shrink up 20px";
         "${modifier}+Alt+Shift+Right" = "resize shrink right 20px";
 
-        "${modifier}+g" = "";
+        "${modifier}+g" = "exec toggle-gaps";
 
         "${modifier}+Shift+R" = "reload";
       };
@@ -259,13 +259,13 @@
       in
       ''
 
-        # try to swayipc waybar:
-        bar {
-            swaybar_command waybar
-            position top
-            mode hide
-            modifier Mod4
-        }
+        # # try to swayipc waybar:
+        # bar {
+        #     swaybar_command waybar
+        #     position top
+        #     mode hide
+        #     modifier Mod4
+        # }
 
         set $mod Mod4
           # Idle configuration        
