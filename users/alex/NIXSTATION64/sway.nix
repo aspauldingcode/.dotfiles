@@ -17,7 +17,7 @@
       up = "k";
       right = "l";
       output = {
-        DP-4 = {
+        DP-5 = {
           res = "1920x1080";
           pos = "0,0";
           transform = "270";
@@ -28,7 +28,7 @@
           pos = "1080,450";
           #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
         };
-        DP-5 = {
+        DP-4 = {
           res = "1920x1080";
           pos = "3000,450";
           #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
@@ -280,9 +280,9 @@
           exec nm-applet
 
           # SET workspace to specific output
-          workspace 1 output DP-4
+          workspace 1 output DP-5
           workspace 2 output DP-7
-          workspace 3 output DP-5
+          workspace 3 output DP-4
 
           # Launch the bluetooth applet
           exec blueman-applet
