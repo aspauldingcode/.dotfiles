@@ -40,7 +40,7 @@ in
 
   home.packages = with pkgs; [
     # autotiling
-    ncdu
+    #ncdu
     calcurse
     chatgpt-cli
     cowsay
@@ -212,7 +212,7 @@ in
       # brew services restart felixkratz/formulae/sketchybar
       launchctl stop org.pqrs.karabiner.karabiner_console_user_server && launchctl start org.pqrs.karabiner.karabiner_console_user_server
       xrdb -merge ~/.Xresources
-      killall -HUP sketchybar
+      ${sketchybar} --reload # allows start_programs_correctly" package to run.
       rm /tmp/fullscreen_state /tmp/dock_state /tmp/gaps_state /tmp/sketchybar_state /tmp/menubar_state /tmp/darkmode_state  #remove statefiles
       echo -ne '\n' | sudo pkill "Background Music" && "/Applications/Background Music.app/Contents/MacOS/Background Music" > /dev/null 2>&1 &
       dismiss-notifications

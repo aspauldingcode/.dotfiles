@@ -14,8 +14,7 @@
   # Allow Unfree
   nixpkgs.config.allowUnsupportedSystem = true;
 
-  fonts.fontDir.enable = true;
-  fonts.fonts = with pkgs; [
+  fonts.packages = with pkgs; [
     dejavu_fonts
     powerline-fonts
     powerline-symbols
@@ -65,7 +64,7 @@
     gc = {
       automatic = true;
       interval = {
-        Hour = 24; # Automaitcally collect garbage each day
+        Hour = 23; # Automaitcally collect garbage each day
       };
       options = "--delete-older-than 30d --delete-old-generations 10"; 
     };

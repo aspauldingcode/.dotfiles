@@ -2,18 +2,21 @@
   description = "Universal Flake by Alex - macOS and NixOS";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    home-manager.url = "github:nix-community/home-manager/master";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05"; # Set to the desired stable version
+    home-manager = {
+      url = "github:nix-community/home-manager/release-24.05";
+      inputs.nixpkgs.follows = "nixpkgs"; # Ensure home-manager follows the stable nixpkgs version
+    };
     nix-colors.url = "github:misterio77/nix-colors";
 
     nix-darwin = {
       url = "github:lnl7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs"; # Follows the stable nixpkgs version
     };
 
     nixvim = {
       url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs"; # Follows the stable nixpkgs version
     };
 
     mobile-nixos = {
@@ -22,8 +25,8 @@
     };
 
     apple-silicon = {
-	url = "github:tpwrules/nixos-apple-silicon";
-	inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:tpwrules/nixos-apple-silicon";
+      inputs.nixpkgs.follows = "nixpkgs"; # Follows the stable nixpkgs version
     };
   };
 
@@ -50,7 +53,7 @@
           home-manager
           flake-parts
           nix-colors
-	  apple-silicon
+          apple-silicon
           self
           ;
       };
@@ -104,7 +107,7 @@
           specialArgs = commonSpecialArgs;
           modules = [ ./system/NIXEDUP/configuration.nix ];
         };
-	NIXY2 = nixpkgs.lib.nixosSystem {
+        NIXY2 = nixpkgs.lib.nixosSystem {
           pkgs = import nixpkgs {
             system = "aarch64-linux";
             config = {
@@ -205,7 +208,8 @@
                   fi
 
                   # Step 5: Wait for MacForge to open by checking with a loop
-                  while true; do
+                  timeout=30
+                  while [ $timeout -gt 0 ]; do
                     macforge_window=$(${yabai} -m query --windows | ${jq} 'map(select(.app == "MacForge")) | .[0]')
                     macforge_id=$(echo "$macforge_window" | ${jq} -r '.id')
                     if [ -n "$macforge_id" ] && [ "$macforge_id" != "null" ]; then
@@ -213,7 +217,16 @@
                       break
                     fi
                     log_debug "Waiting for MacForge window to appear..."
+                    sleep 1
+                    ((timeout--))
                   done
+
+                  if [ $timeout -le 0 ]; then
+                    log_debug "MacForge window did not appear after 30 seconds. Attempting to kill and relaunch."
+                    pkill -x "MacForge"
+                    open -a MacForge -j
+                    log_debug "MacForge relaunched."
+                  fi
 
                   # Step 6: Clear any existing scratchpad assignments
                   existing_scratchpads=$(${yabai} -m query --windows | ${jq} 'map(select(.scratchpad != "")) | .[].id')

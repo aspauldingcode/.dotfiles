@@ -71,6 +71,9 @@
 		  function mancp() {
 	        	man "$1" | col -b | pbcopy
 		  }
+
+		  # Add ruby gems path?
+		  export PATH="$PATH:$(ruby -e 'puts Gem.user_dir')/bin"
             '';
       };
       # GET YEETED! Hello print on terminal go byebye

@@ -33,6 +33,9 @@
       "spicetify-cli"
       "cliclick"
       "iproute2mac"
+      # "ruby@3.2"
+      # "rbenv"
+      # "ruby-build"
       "gtk-mac-integration" # build gtk mac apps?
       "whalebrew"
       # "meson"

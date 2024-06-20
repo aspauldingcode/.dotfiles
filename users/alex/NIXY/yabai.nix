@@ -329,9 +329,15 @@ in
           # toggle gaps
           ${modifier} - g : toggle-gaps
 
-          # toggle-darkmode
-          ${modifier} - p : toggle-darkmode && toggle-theme && ${sketchybar} --reload
+          # toggle-darkmode FIXME: NOT WORKING!
+          ${modifier} - p : toggle-darkmode && toggle-theme && ${sketchybar} --reload 
 
+          # send to scratchpad. (alt + shift + -)
+          ${modifier} + ${smod} - 0x1B : window_id=$(${yabai} -m query --windows --window | ${jq} -r '.id') && ${yabai} -m window $window_id --scratchpad scratchpad; window_id=$(${yabai} -m query --windows --window | ${jq} -r '.id'); ${yabai} -m window $window_id --scratchpad scratchpad; ${yabai} -m window --toggle scratchpad
+          
+          # recover most recent scratchpad window.. (alt + shift + =)
+          ${modifier} + ${smod} - 0x18 : window_id=$(${yabai} -m query --windows --window | ${jq} -r '.id') && ${yabai} -m window $window_id --scratchpad recover
+          
           # clear notifications 
           ${modifier} - c : dismiss-notifications
 
@@ -366,7 +372,7 @@ in
           hidpi=on
           active_color=0xff${colors.base07}
           inactive_color=0xff${colors.base05}
-          blacklist="google chrome, vmware fusion, xQuartz, dmenu-mac, X11.bin"
+          blacklist="google chrome,vmware fusion,xQuartz,dmenu-mac,X11.bin,MacForge"
         )
 
         borders "''${options[@]}"

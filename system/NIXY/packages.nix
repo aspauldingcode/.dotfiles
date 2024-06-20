@@ -43,6 +43,8 @@
     #darwin.iproute2mac #MUST BE BREW PACKAGE?
     ncurses6
     hexedit
+    ruby_3_3
+    rbenv
     # javaPackages.openjfx19
     #inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk20
     #python311
@@ -69,7 +71,7 @@
     (pkgs.callPackage ./cursorcerer.nix { })
   ];
 
-  system.activationScripts.extraActivation.text = ''
-    ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk20}/zulu-20.jdk" "/Library/Java/JavaVirtualMachines/"
-  '';
+  #system.activationScripts.extraActivation.text = ''
+  #  ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk20}/zulu-20.jdk" "/Library/Java/JavaVirtualMachines/"
+  #'';
 }
