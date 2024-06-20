@@ -19,6 +19,9 @@
       #darling-dmg
       lsof
       wget
+      wlvncc
+      tigervnc
+      nmap
       # dependencies for menu-continuous
       # cmake
       # procps
@@ -202,6 +205,7 @@
         pkill waybar && sway reload
         sleep 4       #FIX waybar cava init issue:
         nohup ffplay ~/.dotfiles/users/alex/NIXSTATION64/waybar/silence.wav -t 5 -nodisp -autoexit > /dev/null 2>&1 &
+        rm /tmp/sway_gaps_state # remove the initial states for gaps.
       '')
       #search
       (pkgs.writeShellScriptBin "search" ''
@@ -243,6 +247,102 @@
             waybar >/dev/null 2>&1 &
         fi
       '')
+
+      #toggle-gaps
+      (pkgs.writeShellScriptBin "toggle-gaps" ''
+        #!/bin/sh
+
+        # Define a file to keep track of the state
+        state_file="/tmp/sway_gaps_state"
+
+        # Function to check current state
+        check_state() {
+            if [ -f "$state_file" ]; then
+                state=$(cat "$state_file")
+                echo "Gaps are currently $state"
+            else
+                echo "State file not found. Gaps are assumed to be off."
+            fi
+        }
+
+        # Check if the state file exists and read the current state
+        if [ -f "$state_file" ]; then
+            state=$(cat "$state_file")
+        else
+            state="off"
+            echo "$state" > "$state_file"
+        fi
+
+        # Function to turn gaps on
+        turn_gaps_on() {
+            swaymsg -q gaps inner all set 13 > /dev/null 2>&1
+            swaymsg -q gaps outer all set -2 > /dev/null 2>&1
+            swaymsg -q corner radius all set 8 > /dev/null 2>&1
+            echo "on" > "$state_file"
+        }
+
+        # Function to turn gaps off
+        turn_gaps_off() {
+            swaymsg -q gaps inner all set 0 > /dev/null 2>&1
+            swaymsg -q gaps outer all set 0 > /dev/null 2>&1
+            swaymsg -q corner radius all set 0 > /dev/null 2>&1
+            echo "off" > "$state_file"
+        }
+
+        # Process command-line arguments
+        case "$1" in
+            on)
+                if [ "$state" = "on" ]; then
+                    echo "Gaps are already on."
+                else
+                    turn_gaps_on
+                fi
+                ;;
+            off)
+                if [ "$state" = "off" ]; then
+                    echo "Gaps are already off."
+                else
+                    turn_gaps_off
+                fi
+                ;;
+            status)
+                check_state
+                ;;
+            *)
+                # Toggle the state if no or invalid argument is provided
+                if [ "$state" = "off" ]; then
+                    turn_gaps_on
+                else
+                    turn_gaps_off
+                fi
+                ;;
+        esac
+      '')
+       #update-watch
+      (pkgs.writeShellScriptBin "watch-update" ''
+        #!/bin/sh
+
+        # Set the device serial number
+        device_serial="4030658"
+
+        # Check if the specific device is connected and authorized
+        adb devices | grep -w "$device_serial" >/dev/null
+
+        if [ $? -eq 0 ]; then
+            echo "Device $device_serial is connected."
+
+            # Proceed with commands for the specific device
+            # Example: Set the date on the device
+            new_date=$(date +"%m%d%H%M%Y.%S")
+            adb -s $device_serial shell date $new_date
+            adb -s $device_serial shell date
+            adb -s $device_serial shell opkg update && opkg upgrade # update watch.
+            adb -s $device_serial shell opkg install ssh bash-completion neofetch 
+        else
+            echo "Device $device_serial (Oppo Watch BelugaXL) is not connected or unauthorized."
+            exit 1
+        fi
+        '')
     ];
   };
 }

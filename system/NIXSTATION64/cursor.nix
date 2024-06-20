@@ -5,6 +5,7 @@
   appimageTools,
   makeWrapper,
 }:
+
 let
   pname = "cursor";
   version = "latest"; # Specify the correct version if available
@@ -16,13 +17,14 @@ let
   appimage = appimageTools.wrapType2 { inherit version pname src; };
   appimageContents = appimageTools.extractType2 { inherit version pname src; };
 in
-mkDerivation rec {
-  inherit name pname;
+mkDerivation {
+  pname = pname;
+  version = version;
   src = appimage;
   nativeBuildInputs = [ makeWrapper ];
   installPhase = ''
     runHook preInstall
-    mv bin/${name} bin/${pname}
+    mv bin/${pname}-${version} bin/${pname}
     mkdir -p $out/bin
     cp -r bin/${pname} $out/bin
     mkdir -p $out/share/${pname}
