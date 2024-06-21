@@ -97,7 +97,7 @@
     uxplay
 
     (pkgs.callPackage ./hybridbar.nix { })
-    # (pkgs.callPackage ./cursor.nix { }) # FIXME: broken atm.
+    (pkgs.callPackage ./cursor.nix { }) # FIXME: broken atm.
     
     #rebuild #sudo nixos-rebuild switch --show-trace --option eval-cache false --flake .#NIXSTATION64
     (pkgs.writeShellScriptBin "rebuild" ''

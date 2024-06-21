@@ -580,7 +580,7 @@ in
           color: #${colors.base04};
           padding: 0px;
           padding-left: 4px;
-          margin: -8 0px;
+          margin: -8px 0px;
           font-size: 9pt;
         }
 

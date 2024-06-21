@@ -1,52 +1,34 @@
-{
-  lib,
-  fetchurl,
-  mkDerivation,
-  appimageTools,
-  makeWrapper,
-}:
+{ pkgs, lib, ... }:
 
 let
   pname = "cursor";
-  version = "latest"; # Specify the correct version if available
+  version = "0.35.0";
   name = "${pname}-${version}";
-  src = fetchurl {
+
+  src = pkgs.fetchurl {
     url = "https://downloader.cursor.sh/linux/appImage/x64";
-    hash = "sha256-INSERT_HASH_HERE"; # Replace with the actual hash
+    sha256 = "sha256-Fsy9OVP4vryLHNtcPJf0vQvCuu4NEPDTN2rgXO3Znwo=";
   };
-  appimage = appimageTools.wrapType2 { inherit version pname src; };
-  appimageContents = appimageTools.extractType2 { inherit version pname src; };
+
+  appimageContents = pkgs.appimageTools.extractType2 { inherit name src; };
 in
-mkDerivation {
-  pname = pname;
-  version = version;
-  src = appimage;
-  nativeBuildInputs = [ makeWrapper ];
-  installPhase = ''
-    runHook preInstall
-    mv bin/${pname}-${version} bin/${pname}
-    mkdir -p $out/bin
-    cp -r bin/${pname} $out/bin
-    mkdir -p $out/share/${pname}
-    cp -a ${appimageContents}/locales $out/share/${pname}
-    cp -a ${appimageContents}/resources $out/share/${pname}
-    cp -a ${appimageContents}/usr/share/icons $out/share/icons
-    install -Dm 644 ${appimageContents}/${pname}.desktop -t $out/share/applications/
-    substituteInPlace $out/share/applications/${pname}.desktop --replace "AppRun" "${pname}"
-    wrapProgram $out/bin/${pname} \
-      --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations}} --no-update"
-    runHook postInstall
+pkgs.appimageTools.wrapType2 rec {
+  inherit name src;
+
+  extraInstallCommands = ''
+    mv $out/bin/${name} $out/bin/${pname}
+    install -m 444 -D ${appimageContents}/cursor.desktop $out/share/applications/${pname}.desktop
+
+    install -m 444 -D ${appimageContents}/${pname}.png $out/share/icons/hicolor/512x512/apps/${pname}.png
+
+    substituteInPlace $out/share/applications/${pname}.desktop \
+    	--replace 'Exec=AppRun --no-sandbox %U' 'Exec=${pname} %U'
   '';
+
   meta = with lib; {
-    description = "Cursor is a powerful tool for code editing and collaboration.";
-    longDescription = ''
-      Cursor is a state-of-the-art code editor designed to streamline coding
-      and collaboration. It offers advanced features and a modern interface
-      to enhance productivity for developers.
-    '';
-    homepage = "https://cursor.com";
-    license = licenses.unfree;
-    maintainers = with maintainers; [ yourName ]; # Replace with your actual username
+    description = "The AI Code Editor; built to make you extraordinarily productive, Cursor is the best way to code with AI.";
+    homepage = "https://www.cursor.com/";
+    maintainers = [ ];
     platforms = [ "x86_64-linux" ];
   };
 }
