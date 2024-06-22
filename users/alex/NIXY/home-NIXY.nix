@@ -15,8 +15,9 @@
     ./yazi/yazi.nix
     ./betterdiscord.nix
     ./git.nix
-    ./fish.nix
-    ./zsh.nix
+    # ./fish.nix
+    # ./zsh.nix
+    ./shells.nix
     ./karabiner.nix
     ./cava.nix
     #./zellij.nix
