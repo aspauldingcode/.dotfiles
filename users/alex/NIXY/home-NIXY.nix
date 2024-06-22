@@ -1,11 +1,4 @@
-{
-  home-manager,
-  lib,
-  config,
-  pkgs,
-  nix-colors,
-  ...
-}:
+{ lib, nix-colors, ... }:
 
 # let
 #   android-sdk = pkgs.android_sdk; # Replace with the actual Android SDK package name
@@ -14,7 +7,7 @@
   imports = [
     nix-colors.homeManagerModules.default
     ./packages-NIXY.nix
-    ./../extraConfig/nvim/nixvim.nix #FIXME: BROKEN atm
+    ./../extraConfig/nvim/nixvim.nix # FIXME: BROKEN atm
     ./theme.nix
     ./xcode/xcode.nix # FIXME: use nix-color theme
     ./alacritty.nix
@@ -53,13 +46,7 @@
     };
   };
 
-  # Enable nix flakes and nix command?
-  #nix = {
-  # package = pkgs.nix;
-  # settings.experimental-features = [ "nix-command" "flakes" ];
-  #};
-
-  # disable Volumw/Brightness HUD on macOS at login!
+  # disable Volume/Brightness HUD on macOS at login!
   launchd.agents.xdg_cache_home = {
     enable = true;
     config = {
@@ -85,7 +72,12 @@
   launchd.agents.notificationcenter = {
     enable = true;
     config = {
-      ProgramArguments = [ "/bin/launchctl" "unload" "-w" "/System/Library/LaunchAgents/com.apple.notificationcenterui.plist" ];
+      ProgramArguments = [
+        "/bin/launchctl"
+        "unload"
+        "-w"
+        "/System/Library/LaunchAgents/com.apple.notificationcenterui.plist"
+      ];
       RunAtLoad = true;
       StandardOutPath = "/dev/null";
       StandardErrorPath = "/dev/null";

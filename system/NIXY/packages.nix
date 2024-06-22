@@ -6,7 +6,6 @@
 }:
 
 {
-
   # copy Nix-Darwin GUI apps to ~/Applications
   system.activationScripts.postUserActivation.text = ''
     rsyncArgs="--archive --checksum --chmod=-w --copy-unsafe-links --delete"
@@ -25,7 +24,6 @@
       allowUnfreePredictate = (_: true);
     };
   };
-
 
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
@@ -74,4 +72,9 @@
   #system.activationScripts.extraActivation.text = ''
   #  ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk20}/zulu-20.jdk" "/Library/Java/JavaVirtualMachines/"
   #'';
+
+  # Fixes cursorcerer symlink!
+  system.activationScripts.extraActivation.text = ''
+    ln -sf "${pkgs.callPackage ./cursorcerer.nix { }}/Cursorcerer.prefPane" "/Library/PreferencePanes/"
+  '';
 }
