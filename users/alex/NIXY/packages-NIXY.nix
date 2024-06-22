@@ -68,7 +68,6 @@ in
     cargo
     utm
     mas
-    neovim
     vscode
     audacity
     #yazi to upgrade temporarily with homebrew
