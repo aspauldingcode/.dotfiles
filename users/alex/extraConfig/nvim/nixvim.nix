@@ -19,6 +19,7 @@
 
   # nixvim specific dependencies
   home.packages = with pkgs; [
+    luajitPackages.lua-utils-nvim
     # linters:
     #pylint #python #NO SUCH FILE OR DIRECTORY?
     # python311Packages.flake8
@@ -74,7 +75,7 @@
     {
       enable = true;
       enableMan = false;
-      options = {
+      opts = {
         number = true; # Show line numbers
         relativenumber = true; # Show relative line numbers
         shiftwidth = 4; # Tab width should be 4
@@ -328,7 +329,7 @@
             #   enable = true;
             #   installLanguageServer = true;
             # };
-            nil_ls = {
+            nil-ls = {
               enable = true;
               # installLanguageServer = true;
             };
@@ -479,7 +480,9 @@
         };
         treesitter-context = {
           enable = true;
-          maxLines = 3; # limit to not hog up screenspace.
+          settings = {
+            max_lines = 3; # limit to not hog up screenspace.
+          };
         };
 
         #wtf.enable = true; ChatGPT error explanations!
@@ -582,55 +585,57 @@
           };
         };
         #commenting
-        comment-nvim.enable = true;
+        comment.enable = true;
 
         # outline code blocks
         indent-blankline = {
           enable = true;
-          exclude = {
-            # FIXME: ADD FileTree and CHADTREE!!!
-            buftypes = [
-              "terminal"
-              "nofile"
-              "quickfix"
-              "prompt"
-            ];
-            filetypes = [
-              "lspinfo"
-              "packer"
-              "checkhealth"
-              "help"
-              "man"
-              "gitcommit"
-              "TelescopePrompt"
-              "TelescopeResults"
-              "''"
-              "nvimtree"
-              "startify"
-              "dashboard"
-            ];
-          };
-          indent = {
-            char = "▏";
-            tabChar = null;
-            highlight = null; # "|hl-IblIndent|"
-          };
-          scope = {
-            enabled = true;
-            char = null; # use indent.char
-            highlight = null; # Shows an underline on the first line of the scope
-            showExactScope = true; # Shows an underline on the first line of the scope starting at the exact start of the scope
-          };
-          whitespace = {
-            highlight = null; # use default |hl-IblWhitespace|
-            removeBlanklineTrail = true; # set false?
+          settings = {
+            exclude = {
+              # FIXME: ADD FileTree and CHADTREE!!!
+              buftypes = [
+                "terminal"
+                "nofile"
+                "quickfix"
+                "prompt"
+              ];
+              filetypes = [
+                "lspinfo"
+                "packer"
+                "checkhealth"
+                "help"
+                "man"
+                "gitcommit"
+                "TelescopePrompt"
+                "TelescopeResults"
+                "''"
+                "nvimtree"
+                "startify"
+                "dashboard"
+              ];
+            };
+            indent = {
+              char = "▏";
+              tab_char = null;
+              highlight = null; # "|hl-IblIndent|"
+            };
+            scope = {
+              enabled = true;
+              char = null; # use indent.char
+              highlight = null; # Shows an underline on the first line of the scope
+              show_exact_scope = true; # Shows an underline on the first line of the scope starting at the exact start of the scope
+            };
+            whitespace = {
+              highlight = null; # use default |hl-IblWhitespace|
+              remove_blankline_trail = true; # set false?
+            };
           };
         };
 
         #Note-taking
         obsidian = {
           enable = false; # Cross that bridge when we get there...
-          extraOptions = {
+          settings = {
             completion = {
               min_chars = 2;
               nvim_cmp = true;
@@ -680,7 +685,7 @@
 
       colorschemes.base16 = {
         enable = true;
-        customColorScheme =
+        colorscheme =
           let
             inherit (config.colorScheme) colors;
           in

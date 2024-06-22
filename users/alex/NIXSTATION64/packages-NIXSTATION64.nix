@@ -22,6 +22,7 @@
       wlvncc
       tigervnc
       nmap
+      browsh
       # dependencies for menu-continuous
       # cmake
       # procps
@@ -123,7 +124,7 @@
       element-desktop
       blender
       brave
-      firefox-esr
+      firefox
       spotify-unwrapped
       autotiling
       waydroid

@@ -47,7 +47,7 @@ in
   };
   qt = {
     enable = true;
-    platformTheme = "gtk";
+    platformTheme.name = "gtk";
     # name of gtk theme
     #style = {
     #  name = "${config.colorScheme.slug}";

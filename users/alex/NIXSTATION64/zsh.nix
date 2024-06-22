@@ -7,6 +7,7 @@
     shellAliases = {
       ll = "ls -l";
       ifstat = "ifstat-legacy";
+      firefox = "firefox-esr";
       # cat =             "lolcat";
       tf = "thefuck";
     };

@@ -149,36 +149,34 @@
 
   # services
   services = {
-    # PRETTY LOGIN SCREEN! (FIXME needs to be configured with osx sddm theme)
-    xserver = {
-      enable = true;
-      displayManager = {
-        sddm = {
-          enable = true;
-          wayland.enable = true;
-          theme = "${import ./sddm-themes.nix { inherit pkgs; }}";
-          #theme = "WhiteSur"; # I Don't like this one as much...
+    displayManager = {
+      sddm = {
+        enable = true;
+        wayland = {
+          enable = true; # Correctly placed under displayManager
         };
+        theme = "${import ./sddm-themes.nix { inherit pkgs; }}"; # Correctly placed under displayManager
       };
+    };
+    desktopManager.plasma6.enable = true;
+    xserver = {
       desktopManager = {
         plasma5 = {
-          enable = true;
+          enable = false; # Moved under xserver as required
           runUsingSystemd = false;
         };
         mate = {
-          enable = false;
-          # runUsingSystemd = false;
+          enable = false; # Moved under xserver as required
+          # runUsingSystemd = false; # Commented out as it might not be needed
         };
       };
     };
     pipewire = {
-      # fix for pipewire audio:
       enable = true;
       alsa.enable = true;
       pulse.enable = true;
       jack.enable = true;
     };
-
     #getty.autologinUser = "alex"; # Enable automatic login for the user.
     udisks2.enable = true;
 
@@ -275,7 +273,7 @@
     };
   };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # Define a user account. Don't forget to set a password with 'passwd'.
   users.users = {
     alex = {
       isNormalUser = true;
