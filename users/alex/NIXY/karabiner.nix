@@ -144,6 +144,58 @@
                       }
                     ];
                   }
+                  {
+                    description = "Replace Command+C with Control+C in Alacritty";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          "key_code" = "c";
+                          modifiers = {
+                            mandatory = [ "left_command" ];
+                          };
+                        };
+                        to = [
+                          {
+                            "key_code" = "c";
+                            modifiers = [ "left_control" ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            "bundle_identifiers" = [ "^org\\.alacritty$" ];
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
+                    description = "Replace Command+Shift+C with Control+Shift+C in Alacritty";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          "key_code" = "c";
+                          modifiers = {
+                            mandatory = [ "left_command" "left_shift" ];
+                          };
+                        };
+                        to = [
+                          {
+                            "key_code" = "c";
+                            modifiers = [ "left_control" "left_shift" ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            "bundle_identifiers" = [ "^org\\.alacritty$" ];
+                          }
+                        ];
+                      }
+                    ];
+                  }
                   # {
                   #   description = "Swap Alt and Control for Alacritty";
                   #   manipulators = [

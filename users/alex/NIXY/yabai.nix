@@ -365,10 +365,10 @@ in
 
         options=(
           style=round
-          order=above
+          order=below
           width=2.0
           background_color=0x11${colors.base00}
-          blur_radius=15.0
+          blur_radius=25.0
           hidpi=on
           active_color=0xff${colors.base07}
           inactive_color=0xff${colors.base05}

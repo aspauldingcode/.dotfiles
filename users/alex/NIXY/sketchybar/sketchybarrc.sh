@@ -3,7 +3,7 @@
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
 source "$HOME/.config/sketchybar/colors.sh"
-source "$HOME/.config/sketchybar/start_programs_correctly.sh"
+# source "$HOME/.config/sketchybar/start_programs_correctly.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 source "$PLUGIN_DIR/detect_arch.sh"
 
@@ -26,9 +26,8 @@ bar=(
   y_offset=13
   sticky=off
   margin=13 # Margin around the bar
+  blur_radius=15 # add background blur
 )
-
-sketchybar --bar "${bar[@]}"
 
 defaults=(
   updates=when_shown
@@ -183,6 +182,8 @@ apple=(
   background.padding_right=3
   popup.align=left
 )
+
+sketchybar --bar "${bar[@]}"
 
 ## Adding sketchybar Items:
 # Left Items
@@ -371,15 +372,14 @@ dismiss-notifications # not working?
 if [ -f "$HOME/.config/sketchybar/calendar_init_flag" ]; then
     rm "$HOME/.config/sketchybar/calendar_init_flag" # remove calendar flag at sketchybar launch if it exists
 fi
-if [ ! -f "/tmp/programs_started_state" ]; then
-    $start_programs_correctly # sourced from start_programs_correctly.sh
-    echo "programs started already since sketchybar first initialized." > "/tmp/programs_started_state"
-fi
+# NOT WORKING CORRECTLY: (Should only kill apps that are not injected with paintcan..)
+# if [ ! -f "/tmp/programs_started_state" ]; then
+#     $start_programs_correctly # sourced from start_programs_correctly.sh
+#     echo "programs started already since sketchybar first initialized." > "/tmp/programs_started_state"
+# fi
 sketchybar --update
 
 # Fetch the menu items from sketchybar query
 sleep 4
 /opt/homebrew/bin/sketchybar --query default_menu_items | $jq -r '.[]' | while IFS= read -r item; do /opt/homebrew/bin/sketchybar --set "$item" alias.update_freq=0; done && sleep 4
 $yabai -m config menubar_opacity 0.0
-
-

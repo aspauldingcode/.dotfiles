@@ -172,49 +172,25 @@ in
       };
 
       keyboard.bindings = [
-        # {
-        #    key = "C";
-        #    mods = "Control|Shift";
-        #    chars = "\\u0003";
-        # }
-        # {
-        #    key = "C";
-        #    mods = "Control";
-        #    action = "Copy";
-        # }
-        # {
-        #    key = "V";
-        #    mods = "Control";
-        #    action = "Paste";
-        # }
-
-        # You can use the ReceivedChar as action for Ctrl + Shift + C, so it'll have SIGINT, and your binding for ctrl+c. The new syntax for \x03 is \U0003, the migrator translates them correctly.
-
-        /*
-          # shortcuts for tmux. the leader key is control-b (0x02)
-          - { key: W,        mods: Command,       chars: "\x02&"                       }  # close tab (kill)
-          - { key: T,        mods: Command,       chars: "\x02c"                       }  # new tab
-          - { key: RBracket, mods: Command|Shift, chars: "\x02n"                       }  # select next tab
-          - { key: LBracket, mods: Command|Shift, chars: "\x02p"                       }  # select previous tab
-          - { key: RBracket, mods: Command,       chars: "\x02o"                       }  # select next pane
-          - { key: LBracket, mods: Command,       chars: "\x02;"                       }  # select last (previously used) pane
-          - { key: F,        mods: Command,       chars: "\x02/"                       }  # search (upwards) (see tmux.conf)
-        */
-
-        # {
-        #     key = "f";
-        #     mode = "";
-        #     action = "";
-        # }
         {
-          key = "PageUp";
-          mode = "~Alt";
-          action = "ScrollPageUp";
+          key = "C";
+          mods = "Control|Shift";
+          action = "Copy";
         }
         {
-          key = "PageDown";
-          mode = "~Alt";
-          action = "ScrollPageDown";
+          key = "V";
+          mods = "Control|Shift";
+          action = "Paste";
+        }
+        {
+          key = "+";
+          mods = "Control";
+          action = "IncreaseFontSize";
+        }
+        {
+          key = "-";
+          mods = "Control";
+          action = "DecreaseFontSize";
         }
       ];
     };

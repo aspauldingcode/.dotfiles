@@ -215,10 +215,11 @@ in
       rm /tmp/fullscreen_state /tmp/dock_state /tmp/gaps_state /tmp/sketchybar_state /tmp/menubar_state /tmp/darkmode_state  #remove statefiles
       echo -ne '\n' | sudo pkill "Background Music" && "/Applications/Background Music.app/Contents/MacOS/Background Music" > /dev/null 2>&1 &
       dismiss-notifications
-      if [ ! -f "/tmp/programs_started_state" ]; then
-        ${pkgs.start_programs_correctly}/bin/start_programs_correctly #run only once.
-        echo "programs started already with fix-wm." > "/tmp/programs_started_state"
-      fi
+      # NOT WORKING CORRECTLY: (Should only kill apps that are not injected with paintcan..)
+      # if [ ! -f "/tmp/programs_started_state" ]; then
+      #   ${pkgs.start_programs_correctly}/bin/start_programs_correctly #run only once.
+      #   echo "programs started already with fix-wm." > "/tmp/programs_started_state"
+      # fi
     '')
 
     #analyze-output
@@ -390,7 +391,7 @@ in
         else
           ${yabai} -m config external_bar all:50:0 # enables the bar window gap
         fi
-        ${borders} style=round order=above width=2.0
+        ${borders} style=round width=2.0 #order=above
         ${sketchybar} --bar corner_radius=10
         ${sketchybar} --bar margin=13
         ${sketchybar} --bar y_offset=13
@@ -831,6 +832,16 @@ in
       }
 
       function fullscreen_on() {
+          #first, we should check the window position, and then save it to the fullscreen statefile. also check if the current window floating.
+          if [ "$(${yabai} -m query --windows --window | ${jq} -r '."is-floating"')" = "true" ]; then
+            window_position=$(${yabai} -m query --windows --window | ${jq} -r '."frame"')
+            if grep -q "id: $window_id position:" "$fullscreen_state_file"; then
+              sed -i "" "s/id: $window_id position: .*/id: $window_id position: $window_position floating: true/" "$fullscreen_state_file"
+            else
+              echo "id: $window_id position: $window_position floating: true" >> "$fullscreen_state_file"
+            fi
+          fi
+          
           toggle-dock off
           if [ "$(cat /tmp/menubar_state)" = "on" ]; then
               toggle-menubar off
@@ -853,9 +864,30 @@ in
       }
 
       function fullscreen_off() {
-          ${borders} apply-to=$window_id width=2 style=round order=above background_color=0x11${colors.base00} blur_radius=15.0
-          if [ "$(${yabai} -m query --windows --window | ${jq} '."is-floating"')" = "true" ]; then
-              ${yabai} -m window --toggle float # Restore window to its previous state
+          ${borders} apply-to=$window_id width=2 style=round background_color=0x11${colors.base00} blur_radius=15.0 #order=above 
+          window_position=$(grep -A 4 "id: $window_id position:" "$fullscreen_state_file" | tr -d '\n' | sed 's/$/ }/')
+          echo "Window position block extracted: $window_position"  # Debugging statement
+
+          if [ -n "$window_position" ]; then
+              # Extract the position part and format it as JSON
+              position_json=$(echo "$window_position" | sed -n 's/.*position: {\(.*\)}/\1/p' | jq -R 'split(",") | map(split(":") | {(.[0] | gsub("[^a-zA-Z]";"")): (.[1] | tonumber)}) | add')
+              echo "Extracted JSON: $position_json"  # Debugging statement
+
+              # Directly parse the JSON without checking if it's null since we are assuming it's always valid
+              x=$(echo "$position_json" | jq -r '.x')
+              y=$(echo "$position_json" | jq -r '.y')
+              width=$(echo "$position_json" | jq -r '.w')
+              height=$(echo "$position_json" | jq -r '.h')
+
+              echo "Parsed x: $x, y: $y, width: $width, height: $height"  # Debugging statement
+              # Move and resize the window using the parsed coordinates
+              ${yabai} -m window --move abs:$x:$y
+              ${yabai} -m window --resize abs:$width:$height
+              sed -i "" "/id: $window_id position:/,/floating: true/d" "$fullscreen_state_file"
+          else
+              if [ "$(${yabai} -m query --windows --window | ${jq} '."is-floating"')" = "true" ]; then
+                  ${yabai} -m window --toggle float
+              fi
           fi
           update_state_file "off"
       }

@@ -68,7 +68,7 @@
       "karabiner-elements" # remap keyboard
       "unnaturalscrollwheels"
       "Beeper"
-      "background-music"
+      # "background-music"
       "sublime-text"
       "betterdiscord-installer"
       "discord"

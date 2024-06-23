@@ -30,8 +30,8 @@ in
   xdg.configFile."sketchybar/start_programs_correctly.sh".source = start_programs_correctly;
   xdg.configFile."sketchybar/plugins/detect_arch.sh".source = ./plugins/detect_arch.sh;
   xdg.configFile."sketchybar/plugins/sway_spaces.sh".source = ./plugins/sway_spaces.sh;
-  xdg.configFile."sketchybar/plugins/add_spaces_sketchybar.sh".source = ./plugins/add_spaces_sketchybar.sh;
-  xdg.configFile."sketchybar/plugins/print_spaces_sketchybar.sh".source = ./plugins/print_spaces_sketchybar.sh;
+  # xdg.configFile."sketchybar/plugins/add_spaces_sketchybar.sh".source = ./plugins/add_spaces_sketchybar.sh;
+  # xdg.configFile."sketchybar/plugins/print_spaces_sketchybar.sh".source = ./plugins/print_spaces_sketchybar.sh;
   xdg.configFile."sketchybar/plugins/yabai_i3_switch.sh".source = ./plugins/yabai_i3_switch.sh;
   xdg.configFile."sketchybar/plugins/fullscreen_lock.sh".source = ./plugins/fullscreen_lock.sh;
   xdg.configFile."sketchybar/plugins/apple.sh".source = ./plugins/apple.sh;
@@ -59,8 +59,8 @@ in
   xdg.configFile."sketchybar/start_programs_correctly.sh".executable = true;
   xdg.configFile."sketchybar/plugins/detect_arch.sh".executable = true;
   xdg.configFile."sketchybar/plugins/sway_spaces.sh".executable = true;
-  xdg.configFile."sketchybar/plugins/add_spaces_sketchybar.sh".executable = true;
-  xdg.configFile."sketchybar/plugins/print_spaces_sketchybar.sh".executable = true;
+  # xdg.configFile."sketchybar/plugins/add_spaces_sketchybar.sh".executable = true;
+  # xdg.configFile."sketchybar/plugins/print_spaces_sketchybar.sh".executable = true;
   xdg.configFile."sketchybar/plugins/yabai_i3_switch.sh".executable = true;
   xdg.configFile."sketchybar/plugins/fullscreen_lock.sh".executable = true;
   xdg.configFile."sketchybar/plugins/apple.sh".executable = true;
