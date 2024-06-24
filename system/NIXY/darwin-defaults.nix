@@ -64,8 +64,8 @@
         AppleFontSmoothing = 0; # Add this line
       };
       SoftwareUpdate.AutomaticallyInstallMacOSUpdates = false; # always up to date?
-      alf.allowdownloadsignedenabled = null;
-      alf.allowsignedenabled = null;
+      alf.allowdownloadsignedenabled = 1;
+      alf.allowsignedenabled = 1;
       spaces = {
         spans-displays = false; # Required false for yabai!
       };
@@ -167,6 +167,111 @@
           KeyRepeatInterval = "0.083333333";
           DarkenSystemColors = 1;
         };
+        "/Library/Preferences/com.apple.ARDAgent" = {
+          ARDAdmin_AppStoreURL = "macappstore://itunes.apple.com/us/app/apple-remote-desktop/id409907375";
+          Version = "3.6";
+        };
+        "/Library/Preferences/com.apple.AppleFileServer" = {
+          kerberosPrincipal = "afpserver/LKDC:SHA1.9D418C990AE27D72ECF3F1462D9014B820FED218@LKDC:SHA1.9D418C990AE27D72ECF3F1462D9014B820FED218";
+        };
+        "/Library/Preferences/com.apple.AssetCache" = {
+          Activated = 0;
+          CacheLimit = 0;
+          DataPath = "/Library/Application Support/Apple/AssetCache/Data";
+          ListenWithPeersAndParents = 1;
+          LocalSubnetsOnly = 1;
+          PeerLocalSubnetsOnly = 1;
+          Port = 0;
+          ReservedVolumeSpace = 2000000000;
+          ServerGUID = "648D7F22-D92B-48F9-A66F-031D87F18225";
+          Version = 1;
+        };
+        "/Library/Preferences/com.apple.BezelServices" = {
+          BatteryHistory = {};
+          afActionHistory = {};
+        };
+        "/Library/Preferences/com.apple.ByteRangeLocking" = {
+          DB_HASH_TABLE_MAX = 4096;
+          DB_INIT_SIZE = 2097152;
+          DB_Location = "/var/db/BRLM.db";
+          DB_PROC_TABLE_MAX = 1000;
+        };
+        "/Library/Preferences/com.apple.bluetooth" = {
+            BluetoothAutoSeekKeyboard = 1;
+            BluetoothAutoSeekPointingDevice = 1;
+            PersistentPorts =     {
+                "C0:86:B3:6F:97:7A" =         {
+                    BSDName = "OpenRunProbyShokz";
+                    BTAddress = { length = 6; bytes = "0xc086b36f977a"; };
+                    RFCOMMChannel = 1;
+                };
+            };
+            SpatialSoundProfileAllowed = 1;
+            moveAllAppleHIDsTo15 = 0;
+        };
+        "com.apple.RemoteDesktop" = {
+          DOCAllowRemoteConnections = 0;
+          RSAKeySize = 2048;
+          Text1 = "";
+          Text2 = "";
+          Text3 = "";
+          Text4 = "";
+        };
+        "com.apple.RemoteManagement" = {
+          AllowSRPForNetworkNodes = 0;
+          DisableKerberos = 0;
+          VNCLegacyConnectionsEnabled = 1;
+          allowInsecureDH = 1;
+        };
+
+        com.apple.TimeMachine = {
+              PreferencesVersion = 5;
+            };
+
+            com.apple.airport.opproam = {
+              deltaRSSI = 10;
+              disabled = false;
+              useBonjour = false;
+              useBroadcastBSSID = true;
+            };
+
+            com.apple.alf = {
+              allowdownloadsignedenabled = true;
+              allowsignedenabled = true;
+              applications = [];
+              exceptions = [
+                { path = "/usr/libexec/configd"; state = 3; }
+                { path = "/usr/sbin/mDNSResponder"; state = 3; }
+                { path = "/usr/sbin/racoon"; state = 3; }
+                { path = "/usr/bin/nmblookup"; state = 3; }
+                { path = "/System/Library/PrivateFrameworks/Admin.framework/Versions/A/Resources/readconfig"; state = 3; }
+                { path = "/usr/libexec/discoveryd"; state = 3; }
+                { path = "/usr/libexec/bootpd"; state = 3; }
+                { path = "/usr/libexec/xartstorageremoted"; state = 3; }
+                { bundleid = "com.apple.EmbeddedOSInstallService"; path = "/System/Library/PrivateFrameworks/EmbeddedOSInstall.framework/Versions/A/XPCServices/EmbeddedOSInstallService.xpc/"; state = 3; }
+              ];
+              explicitauths = [
+                { id = "org.python.python.app"; }
+                { id = "com.apple.ruby"; }
+                { id = "com.apple.a2p"; }
+                { id = "com.apple.javajdk16.cmd"; }
+                { id = "com.apple.php"; }
+                { id = "com.apple.nc"; }
+                { id = "com.apple.ksh"; }
+              ];
+              firewall = {
+                "Apple Remote Desktop" = { proc = "AppleVNCServer"; state = 1; }; # Enable VNC/Remote Desktop
+                "FTP Access" = { proc = "ftpd"; state = 1; }; # Enable FTP
+                "Personal File Sharing" = { proc = "AppleFileServer"; state = 1; }; # Enable File Sharing
+                "Personal Web Sharing" = { proc = "httpd"; state = 1; }; # Enable Web Sharing
+                "Printer Sharing" = { proc = "cupsd"; state = 1; }; # Enable Printer Sharing
+                "Remote Apple Events" = { proc = "eppc"; state = 1; }; # Enable Remote Apple Events
+                "Remote Login - SSH" = { proc = "sshd"; state = 1; }; # Enable SSH
+                "Secure Web Sharing" = { proc = "httpd"; state = 1; }; # Enable Secure Web Sharing
+                "Windows Sharing" = { proc = "smbd"; state = 1; }; # Enable SMB/Windows Sharing
+              };
+            };
+            
         "com.apple.AppleMultitouchTrackpad" = {
           ActuateDetents = 1;
           ActuationStrength = 0;
@@ -198,6 +303,7 @@
           UserPreferences = 1;
           # version = 12;
         };
+
       ControlCenterPreferences = {
         "com.apple.controlcenter" = {
           "LastHeartbeatDateString.daily" = "2024-06-02T22:37:27Z";

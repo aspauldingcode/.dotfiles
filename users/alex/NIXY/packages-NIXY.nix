@@ -751,7 +751,32 @@ in
 
     # toggle-darkmode
     (pkgs.writeShellScriptBin "toggle-darkmode" ''
-      osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to not dark mode'
+      current_mode=$(osascript -e 'tell app "System Events" to tell appearance preferences to return dark mode')
+
+      if [ -z "$1" ]; then
+        # No argument provided, toggle based on current state
+        toggle-cursor-theme
+        osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to not dark mode'
+      elif [ "$1" == "light" ]; then
+        if [ "$current_mode" == "false" ]; then
+          echo "Light mode is already on."
+        else
+          # Toggle light mode on
+          osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to false'
+          toggle-cursor-theme dark
+        fi
+      elif [ "$1" == "dark" ]; then
+        if [ "$current_mode" == "true" ]; then
+          echo "Dark mode is already on."
+        else
+          # Toggle dark mode on
+          osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to true'
+          toggle-cursor-theme light
+        fi
+      else
+        echo "Invalid argument. Please specify 'light' or 'dark' or leave empty to toggle."
+        exit 1
+      fi
     '')
 
     # statefile-reader
@@ -981,6 +1006,214 @@ in
       echo "Searching for: $search_term"
       echo "Press Ctrl+C to cancel..."
       rg --ignore-case --context 3 --color=always "$search_term" | fzf --preview="bat --color=always --style=numbers,changes {}" --preview-window="right:60%" --height=80%
+    '')
+
+    # mousecape-switcher
+    (pkgs.writeShellScriptBin "mousecape-switcher" ''
+      #!/bin/sh
+
+      # List available capes
+      echo "Available capes:"
+      CAPE_FILES=($(ls "$HOME/Library/Application Support/Mousecape/capes/"))
+      for i in "''${!CAPE_FILES[@]}"; do
+        echo "$((i+1)). ''${CAPE_FILES[$i]}"
+      done
+
+      # Prompt user to select the cape by number
+      read -p "Enter the number of the cape to apply: " CAPE_INDEX
+      CAPE_NAME=''${CAPE_FILES[$((CAPE_INDEX-1))]}
+
+      # Command to apply the cape
+      cd "$HOME/Applications/Nix Trampolines/Mousecape.app/Contents/MacOS"
+      ./mousecloak --apply "$HOME/Library/Application Support/Mousecape/capes/$CAPE_NAME"
+      echo "Applied cape: $CAPE_NAME"
+    '')
+
+    # toggle-cursor-theme
+    (pkgs.writeShellScriptBin "toggle-cursor-theme" ''
+      #!/bin/bash
+
+      # Define the two capes
+      CAPE_LIGHT="com.alex.bibata-modern-ice.cape" # for darkmode. label this light
+      CAPE_DARK="com.aspauldingcode.bibata-modern-classic.cape" # for lightmode. label this dark
+
+      # Apply the appropriate cape based on the command line argument or toggle if no argument is provided
+      if [ -z "$1" ]; then
+        # Read the current cape state
+        CURRENT_CAPE=$(cat "$HOME/Library/Application Support/Mousecape/current_cape.txt")
+        if [ "$CURRENT_CAPE" == "$CAPE_LIGHT" ]; then
+          CAPE_NAME=$CAPE_DARK
+          echo "Toggling to dark cape for light mode."
+        else
+          CAPE_NAME=$CAPE_LIGHT
+          echo "Toggling to light cape for dark mode."
+        fi
+      elif [ "$1" == "light" ]; then
+        CURRENT_CAPE=$(cat "$HOME/Library/Application Support/Mousecape/current_cape.txt")
+        if [ "$CURRENT_CAPE" == "$CAPE_LIGHT" ]; then
+          echo "Light cape for dark mode is already applied."
+          exit 0
+        else
+          CAPE_NAME=$CAPE_LIGHT
+          echo "Applying light cape for dark mode."
+        fi
+      elif [ "$1" == "dark" ]; then
+        CURRENT_CAPE=$(cat "$HOME/Library/Application Support/Mousecape/current_cape.txt")
+        if [ "$CURRENT_CAPE" == "$CAPE_DARK" ]; then
+          echo "Dark cape for light mode is already applied."
+          exit 0
+        else
+          CAPE_NAME=$CAPE_DARK
+          echo "Applying dark cape for light mode."
+        fi
+      else
+        echo "Invalid argument. Please specify 'light' or 'dark' or leave empty to toggle."
+        exit 1
+      fi
+
+      # Command to apply the selected cape
+      cd "$HOME/Applications/Nix Trampolines/Mousecape.app/Contents/MacOS"
+      ./mousecloak --apply "$HOME/Library/Application Support/Mousecape/capes/$CAPE_NAME"
+      echo "Applied cape: $CAPE_NAME"
+
+      # Save the current cape state
+      echo "$CAPE_NAME" > "$HOME/Library/Application Support/Mousecape/current_cape.txt"
+    '')
+
+    #hexdiff_check
+    (pkgs.writeShellScriptBin "hexdiff_check" ''
+      #!/bin/sh
+
+      # Function to pick a file using zenity and suppress GLib error messages
+      pick_file() {
+        zenity --file-selection --title="Select file to compare:" 2>/dev/null
+      }
+
+      # Function to format file path for display (splitting if longer than 60 characters)
+      format_filepath() {
+        local filepath=$1
+        local max_length=60
+
+        # Check if filepath length exceeds max_length
+        if [ ''${#filepath} -le $max_length ]; then
+          echo "$filepath"
+        else
+          # Split filepath into multiple lines
+          local first_part="''${filepath:0:$max_length}"
+          local remaining="''${filepath:$max_length}"
+
+          echo "$first_part"
+          while [ ''${#remaining} -gt $max_length ]; do
+            echo "''${remaining:0:$max_length}"
+            remaining="''${remaining:$max_length}"
+          done
+
+          # Print the remaining part or final line
+          if [ -n "$remaining" ]; then
+            echo "$remaining"
+          fi
+        fi
+      }
+
+      # Function to perform hex diff and format output
+      hex_diff() {
+        local file1=$1
+        local file2=$2
+
+        # Create temporary files for hex dumps
+        temp1=$(mktemp)
+        temp2=$(mktemp)
+
+        # Create hex dumps of both files
+        xxd "$file1" > "$temp1"
+        xxd "$file2" > "$temp2"
+
+        # Perform the comparison and format the output
+        diff_output=$(diff -y --suppress-common-lines "$temp1" "$temp2")
+
+        # Check if there are differences
+        if [ -z "$diff_output" ]; then
+          echo "The files are identical."
+        else
+          echo "Hexadecimal Differences:"
+          echo "$diff_output" | while IFS= read -r line; do
+            if [[ $line =~ ^[0-9a-f]+ ]]; then
+              echo "$line"
+            fi
+          done
+          # Save the diff output to a file
+          echo "$diff_output" > /tmp/hex_differences.txt
+          echo "For convenience, this diff output has been saved to /tmp/hex_differences.txt"
+        fi
+
+        # Clean up temporary files
+        rm "$temp1" "$temp2"
+      }
+
+      # Pick the first file
+      echo "Select the first file:"
+      file1=$(pick_file)
+      echo $(basename "$file1")
+
+      # Check if a file was selected
+      if [ -z "$file1" ]; then
+        echo "No file selected. Exiting."
+        exit 1
+      fi
+
+      # Pick the second file
+      echo "Select the second file:"
+      file2=$(pick_file)
+      echo $(basename "$file2")
+
+      # Check if a file was selected
+      if [ -z "$file2" ]; then
+        echo "No file selected. Exiting."
+        exit 1
+      fi
+
+
+      echo "Comparing Files:"
+
+      # Format file paths for display
+      file1_formatted=$(format_filepath "$file1")
+      file2_formatted=$(format_filepath "$file2")
+
+      # Split formatted file paths into lines
+      file1_lines=()
+      file2_lines=()
+      while IFS= read -r line; do
+        file1_lines+=("$line")
+      done <<< "$file1_formatted"
+
+      while IFS= read -r line; do
+        file2_lines+=("$line")
+      done <<< "$file2_formatted"
+
+      # Determine maximum number of lines
+      max_lines=$((''${#file1_lines[@]} > ''${#file2_lines[@]} ? ''${#file1_lines[@]} : ''${#file2_lines[@]}))
+
+      # Print the formatted output in a table format with left alignment
+      for (( i=0; i<max_lines; i++ )); do
+        file1_print="''${file1_lines[$i]:-}"
+        file2_print="''${file2_lines[$i]:-}"
+
+        printf "%-60s    |       %-60s\n" "$file1_print" "$file2_print"
+      done
+
+      # Perform hex diff between the selected files
+      hex_diff "$file1" "$file2"
+
+
+      echo "Compared Files:"
+      # Print the formatted output in a table format with left alignment
+      for (( i=0; i<max_lines; i++ )); do
+        file1_print="''${file1_lines[$i]:-}"
+        file2_print="''${file2_lines[$i]:-}"
+
+        printf "%-60s    | %-60s\n" "$file1_print" "$file2_print"
+      done
+
     '')
   ];
 }

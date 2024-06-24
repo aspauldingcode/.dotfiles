@@ -460,7 +460,7 @@
             # };
           };
         };
-        lsp-lines.enable = true;
+        lsp-lines.enable = false; #damn annoyying
         lspkind.enable = true;
 
         # treesitter conf

@@ -31,6 +31,7 @@
       "iniparser"
       "gcal"
       "spicetify-cli"
+      "zenity"
       "cliclick"
       "iproute2mac"
       # "ruby@3.2"
