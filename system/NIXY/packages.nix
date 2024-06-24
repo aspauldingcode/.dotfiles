@@ -2,6 +2,7 @@
   pkgs,
   inputs,
   config,
+  lib,
   ...
 }:
 
@@ -75,6 +76,7 @@
   #'';
 
   # Fixes cursorcerer symlink!
+  # Fixes capecursor capes.
   system.activationScripts.extraActivation.text = ''
     ln -sf "${pkgs.callPackage ./cursorcerer.nix { }}/Cursorcerer.prefPane" "/Library/PreferencePanes/"
   '';

@@ -277,7 +277,7 @@
             <key>EnvironmentVariables</key>
             <dict>
               <key>USER</key>
-              <string>${builtins.getEnv "USER"}</string>
+              <string>$HOME</string>
             </dict>
             <key>RunAtLoad</key>
             <true/>

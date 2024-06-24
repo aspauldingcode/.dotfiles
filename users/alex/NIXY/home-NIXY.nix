@@ -1,4 +1,4 @@
-{ lib, nix-colors, ... }:
+{ lib, nix-colors, config, ... }:
 
 # let
 #   android-sdk = pkgs.android_sdk; # Replace with the actual Android SDK package name
@@ -83,5 +83,11 @@
       StandardOutPath = "/dev/null";
       StandardErrorPath = "/dev/null";
     };
+  };
+
+  home.file."Library/Application Support/Mousecape/capes" = 
+  {
+    target = "Library/Application Support/Mousecape/capes/";
+    source = ../extraConfig/cursors-macOS;
   };
 }
