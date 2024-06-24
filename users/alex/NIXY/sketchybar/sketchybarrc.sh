@@ -41,6 +41,7 @@ defaults=(
   popup.background.corner_radius=10
   popup.background.border_width=2
   popup.background.border_color=$PURPLE
+  popup.blur_radius=15
   popup.y_offset=0
 )
 

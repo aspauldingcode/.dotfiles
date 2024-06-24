@@ -196,6 +196,266 @@
                       }
                     ];
                   }
+                  {
+                    description = "Replace Command + Arrow Keys with Option + Arrow Keys globally";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "left_arrow";
+                          modifiers = { 
+                            mandatory = ["left_command"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "left_arrow";
+                            modifiers = ["left_option"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "right_arrow";
+                          modifiers = { 
+                            mandatory = ["left_command"]; 
+                          }; 
+                        };
+                        to = [
+                          {
+                            key_code = "right_arrow";
+                            modifiers = ["left_option"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "up_arrow";
+                          modifiers = { 
+                            mandatory = ["left_command"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "up_arrow";
+                            modifiers = ["left_option"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "down_arrow";
+                          modifiers = { 
+                            mandatory = ["left_command"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "down_arrow";
+                            modifiers = ["left_option"];
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
+                    description = "Replace Command + Shift + Arrow Keys with Option + Shift + Arrow Keys globally";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "left_arrow";
+                          modifiers = { 
+                            mandatory = ["left_command" "left_shift"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "left_arrow";
+                            modifiers = ["left_option" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "right_arrow";
+                          modifiers = { 
+                            mandatory = ["left_command" "left_shift"]; 
+                          }; 
+                        };
+                        to = [
+                          {
+                            key_code = "right_arrow";
+                            modifiers = ["left_option" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "up_arrow";
+                          modifiers = { 
+                            mandatory = ["left_command" "left_shift"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "up_arrow";
+                            modifiers = ["left_option" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "down_arrow";
+                          modifiers = { 
+                            mandatory = ["left_command" "left_shift"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "down_arrow";
+                            modifiers = ["left_option" "left_shift"];
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
+                    description = "Replace Option + Arrow Keys with Command + Arrow Keys globally";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "left_arrow";
+                          modifiers = { 
+                            mandatory = ["left_option"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "left_arrow";
+                            modifiers = ["left_command"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "right_arrow";
+                          modifiers = { 
+                            mandatory = ["left_option"]; 
+                          }; 
+                        };
+                        to = [
+                          {
+                            key_code = "right_arrow";
+                            modifiers = ["left_command"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "up_arrow";
+                          modifiers = { 
+                            mandatory = ["left_option"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "up_arrow";
+                            modifiers = ["left_command"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "down_arrow";
+                          modifiers = { 
+                            mandatory = ["left_option"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "down_arrow";
+                            modifiers = ["left_command"];
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
+                    description = "Replace Option + Shift + Arrow Keys with Command + Shift + Arrow Keys globally";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "left_arrow";
+                          modifiers = { 
+                            mandatory = ["left_option" "left_shift"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "left_arrow";
+                            modifiers = ["left_command" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "right_arrow";
+                          modifiers = { 
+                            mandatory = ["left_option" "left_shift"]; 
+                          }; 
+                        };
+                        to = [
+                          {
+                            key_code = "right_arrow";
+                            modifiers = ["left_command" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "up_arrow";
+                          modifiers = { 
+                            mandatory = ["left_option" "left_shift"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "up_arrow";
+                            modifiers = ["left_command" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "down_arrow";
+                          modifiers = { 
+                            mandatory = ["left_option" "left_shift"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "down_arrow";
+                            modifiers = ["left_command" "left_shift"];
+                          }
+                        ];
+                      }
+                    ];
+                  }
                   # {
                   #   description = "Swap Alt and Control for Alacritty";
                   #   manipulators = [
@@ -491,3 +751,4 @@
         };
   };
 }
+

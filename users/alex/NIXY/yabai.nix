@@ -243,35 +243,35 @@ in
           ${modifier} + ${smod} - y : ${yabai} -m space --mirror y-axis
           ${modifier} + ${smod} - x : ${yabai} -m space --mirror x-axis
 
-          # send window to next/prev space and follow focus
+          # send window to next/prev space and follow focus (use alt instead of cmd with arrows to maintian built-in insertion points https://github.com/aspauldingcode/.dotfiles/issues/11#issuecomment-2185355283)
           ${mod4} + ${smod} - ${left} :   ${yabai} -m window --space prev; ${yabai} -m space --focus prev
           ${mod4} + ${smod} - ${down} :   ${yabai} -m window --space next; ${yabai} -m space --focus next
           ${mod4} + ${smod} - ${up} :     ${yabai} -m window --space prev; ${yabai} -m space --focus prev
           ${mod4} + ${smod} - ${right} :  ${yabai} -m window --space next; ${yabai} -m space --focus next
-          ${mod4} + ${smod} - left :      ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-          ${mod4} + ${smod} - down :      ${yabai} -m window --space next; ${yabai} -m space --focus next
-          ${mod4} + ${smod} - up :        ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-          ${mod4} + ${smod} - right :     ${yabai} -m window --space next; ${yabai} -m space --focus next
+          ${modifier} + ${smod} - left :      ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+          ${modifier} + ${smod} - down :      ${yabai} -m window --space next; ${yabai} -m space --focus next
+          ${modifier} + ${smod} - up :        ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+          ${modifier} + ${smod} - right :     ${yabai} -m window --space next; ${yabai} -m space --focus next
 
-          # focus window in stacked, else in bsp
+          # focus window in stacked, else in bsp (use cmd instead of alt with arrows to maintian built-in insertion points https://github.com/aspauldingcode/.dotfiles/issues/11#issuecomment-2185355283)
           ${modifier} - ${left} :   if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus west; fi
           ${modifier} - ${down} :   if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus south; fi
           ${modifier} - ${up} :     if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus north; fi
           ${modifier} - ${right} :  if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus east; fi
-          ${modifier} - left :      if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus west; fi
-          ${modifier} - down :      if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus south; fi
-          ${modifier} - up :        if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus north; fi
-          ${modifier} - right :     if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus east; fi
+          ${mod4} - left :      if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus west; fi
+          ${mod4} - down :      if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus south; fi
+          ${mod4} - up :        if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus north; fi
+          ${mod4} - right :     if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus east; fi
            
-          # swap managed window (or move if floating) 
+          # swap managed window (or move if floating) (use cmd instead of alt with arrows to maintain built-in insertion points https://github.com/aspauldingcode/.dotfiles/issues/11#issuecomment-2185355283)
           ${modifier} + ${smod} - ${left} :   ${yabai} -m window --swap west ||  ${yabai} -m window --move rel:-30:0
           ${modifier} + ${smod} - ${down} :   ${yabai} -m window --swap south || ${yabai} -m window --move rel:0:30
           ${modifier} + ${smod} - ${up} :     ${yabai} -m window --swap north || ${yabai} -m window --move rel:0:-30
           ${modifier} + ${smod} - ${right} :  ${yabai} -m window --swap east ||  ${yabai} -m window --move rel:30:0
-          ${modifier} + ${smod} - left :      ${yabai} -m window --swap west ||  ${yabai} -m window --move rel:-30:0
-          ${modifier} + ${smod} - down :      ${yabai} -m window --swap south || ${yabai} -m window --move rel:0:30
-          ${modifier} + ${smod} - up :        ${yabai} -m window --swap north || ${yabai} -m window --move rel:0:-30
-          ${modifier} + ${smod} - right :     ${yabai} -m window --swap east ||  ${yabai} -m window --move rel:30:0
+          ${mod4} + ${smod} - left :      ${yabai} -m window --swap west ||  ${yabai} -m window --move rel:-30:0
+          ${mod4} + ${smod} - down :      ${yabai} -m window --swap south || ${yabai} -m window --move rel:0:30
+          ${mod4} + ${smod} - up :        ${yabai} -m window --swap north || ${yabai} -m window --move rel:0:-30
+          ${mod4} + ${smod} - right :     ${yabai} -m window --swap east ||  ${yabai} -m window --move rel:30:0
 
           # increase window size
           ${modifier} + ctrl - ${left} :  ${yabai} -m window --resize left:-30:0

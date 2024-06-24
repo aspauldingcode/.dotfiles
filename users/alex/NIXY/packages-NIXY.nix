@@ -851,7 +851,7 @@ in
           local x=$(echo "$current_display_frame" | ${jq} -r '.x')
           local y=$(echo "$current_display_frame" | ${jq} -r '.y')
 
-          ${borders} apply-to=$window_id width=0.0 style=square order=below background_color=0xff${colors.base00} blur_radius=0.0
+          ${borders} apply-to=$window_id width=0.0 style=square order=below background_color=0xff${colors.base00} blur_radius=0.0 active_color=0xff${colors.base00} inactive_color=0xff${colors.base00}
           if [ "$is_floating" = "true" ]; then
             ${yabai} -m window --move abs:$x:$y
             ${yabai} -m window --grid 0:0:0:0:0:0
@@ -864,7 +864,7 @@ in
       }
 
       function fullscreen_off() {
-          ${borders} apply-to=$window_id width=2 style=round background_color=0x11${colors.base00} blur_radius=15.0 #order=above 
+          ${borders} apply-to=$window_id width=2 style=round background_color=0x11${colors.base00} blur_radius=15.0 active_color=0xff${colors.base07} inactive_color=0xff${colors.base05} #order=above 
           window_position=$(grep -A 4 "id: $window_id position:" "$fullscreen_state_file" | tr -d '\n' | sed 's/$/ }/')
           echo "Window position block extracted: $window_position"  # Debugging statement
 

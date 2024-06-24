@@ -67,6 +67,7 @@
     (pkgs.callPackage ./instantview.nix { })
     (pkgs.callPackage ./macforge.nix { })
     (pkgs.callPackage ./cursorcerer.nix { })
+    (pkgs.callPackage ./mousecape.nix { })
   ];
 
   #system.activationScripts.extraActivation.text = ''
