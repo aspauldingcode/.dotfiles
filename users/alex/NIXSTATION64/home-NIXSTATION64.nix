@@ -10,13 +10,13 @@
     ./theme.nix # theme of system.
     ./git.nix
     ./alacritty.nix
+    ./firefox.nix
     ./yazi/yazi.nix
     ./mimeapps.nix
     ./mako.nix
     ./discocss.nix
     ./betterdiscord.nix
-    ./fish.nix
-    ./zsh.nix
+    ./shells.nix
     # ./zellij.nix
     ./cursor.nix
     ./btop.nix # btop theme!

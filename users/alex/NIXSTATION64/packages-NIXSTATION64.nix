@@ -15,167 +15,119 @@
 
   home = {
     packages = with pkgs; [
-      #darling REQUIRES  Security wrapper SETUID!!!
-      #darling-dmg
-      lsof
-      wget
-      wlvncc
-      tigervnc
-      nmap
-      browsh
-      # dependencies for menu-continuous
-      # cmake
-      # procps
-      # musl
-      # rocmPackages.llvm.clang
-      # libdbusmenu
-      # libsForQt5.baloo
-      # # libsForQt5.libdbusmenu
-      # # libdbusmenu-gtk2
-      # # libdbusmenu-gtk3
-      #
-      # libsForQt5.applet-window-appmenu
-
-      ncdu
-      gcal
-      # nwg-dock
-      # nwg-drawer
-      # nwg-displays
-      # nwg-launchers
-      # nwg-bar
-      # nwg-panel
-
-      #not available yet
-      # hybridbar
-
-      albert
-
-      fzf
-      libnotify
-      checkra1n
-      # darwin.cctools-port # is it needed tho? MARKED BROKEN NIXOS
-      # wine
-      # wine64
-      # wine-wayland
-      #winePackages.waylandFull
-      wineWow64Packages.waylandFull
-      #winePackages.stableFull
-      #wine64Packages.stableFull
-      wineasio
-      winetricks
-      cava
-      lavat
-      pfetch
-      zoom-us
-      spotify-unwrapped
-      android-studio
-      corefonts
-      beeper
-      sl
-      obsidian
-      ocl-icd
-      rofi-wayland-unwrapped
+      # Development tools
+      arduino-language-server
+      cmake-language-server
+      jdt-language-server
+      kotlin-language-server
+      lua-language-server
       vscode
+
+      # System utilities
+      avahi
+      busybox
+      docker
+      fd
+      gcal
+      gimp
+      home-manager
+      jq
+      lsof
+      ncdu
+      nmap
+      pciutils
+      pmbootstrap
+      ripgrep
+      socat
+      sshfs
+      tigervnc
+      usbmuxd
+      wget
+      xarchiver
+      xz
+      zip
+
+      # Networking and communication
+      android-tools
+      checkra1n
+      idevicerestore
+      libimobiledevice
+      libusb1
+      libusbmuxd
+      obsidian
+      rofi-wayland-unwrapped
+      zoom-us
+
+      # Multimedia and graphics
+      blender
+      brave
+      cava
+      ffmpeg-full
+      flameshot
+      obs-studio-plugins.obs-vkcapture
+      obs-studio-plugins.wlrobs
+      spotify-unwrapped
+      sway-contrib.grimshot
+
+      # Desktop environment and window management
+      albert
+      autotiling
       bemenu
-      #wofiPower
-      #wofiWindowJump
-      #dunst
-      gnomeExtensions.dark-variant
+      clipman
       eww
       glpaper
-      sassc
-      glib
-      lxappearance
+      gnomeExtensions.dark-variant
       gtk-layer-shell
       i3status-rust
       imv
-      gpm
       lavalauncher
-      obs-studio-plugins.wlrobs
-      obs-studio-plugins.obs-vkcapture
+      lxappearance
+      pcmanfm
+      pinentry-bemenu
+      swaybg
+      swaylock-effects
       swayr
       swayrbar
-      #sway-unwrapped
-      swaybg
-      #swayidle
-      #swaylock
-      swaylock-effects
-      #swww
-      pinentry-bemenu
-      waypipe
-      #wayprompt
-      wayvnc
       wbg
       wev
-      #wf-recorder
       wl-clipboard
       wl-gammactl
-      gammastep
-      geoclue2
       wl-screenrec
-      wlogout
       wlroots
+      wlogout
       wlsunset
       wofi
       wshowkeys
       wtype
-      clipman
-      #etcher
-      element-desktop
-      blender
-      brave
-      firefox
-      spotify-unwrapped
-      autotiling
-      waydroid
-      pcmanfm
-      w3m
-      docker
-      home-manager
-      android-tools
-      xz
+
+      # Gaming and emulation
+      android-studio
       element
-      OVMF
-      edk2
-      busybox
-      #LSP PACKAGES for NVIM 
-      ##NOTWORKING?!!?!?!?!? FIXME
-      #rnix-lsp
-      # FIND MORE INFO: https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-      nil
-      # nodePackages_latest.typescript-language-server
-      # nodePackages_latest.typescript
-      # nodePackages.yaml-language-server
-      # nodePackages_latest.dockerfile-language-server-nodejs
-      jdt-language-server
-      kotlin-language-server
-      lua-language-server
-      cmake-language-server
-      arduino-language-server
-      # nodePackages_latest.vim-language-server
-      #python311Packages.python-lsp-server
-      blueman
-      jq
-      flameshot
-      fd
-      ripgrep
-      idevicerestore
-      usbmuxd
-      libusbmuxd
-      libimobiledevice
-      avahi
-      sshfs
-      pciutils
-      socat
+      element-desktop
+      wineasio
+      wineWow64Packages.waylandFull
+      winetricks
+
+      # Fonts and theming
+      corefonts
+      glib
+      sassc
+
+      # Location and time services
+      gammastep
+      geoclue2
+
+      # Miscellaneous
+      beeper
       lolcat
-      pmbootstrap
-      libusb1
-      xarchiver
-      gimp
-      zip
+      pfetch
+      ruby_3_3
+      sl
       thefuck
-      ffmpeg-full
-      sway-contrib.grimshot
+      waypipe
+      wayvnc
+      lavat
+
       (python311.withPackages (
         ps: with ps; [
           toml
@@ -319,7 +271,7 @@
                 ;;
         esac
       '')
-       #update-watch
+      #update-watch
       (pkgs.writeShellScriptBin "watch-update" ''
         #!/bin/sh
 
@@ -343,7 +295,7 @@
             echo "Device $device_serial (Oppo Watch BelugaXL) is not connected or unauthorized."
             exit 1
         fi
-        '')
+      '')
     ];
   };
 }

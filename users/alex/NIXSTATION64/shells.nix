@@ -3,7 +3,15 @@
 let
   commonSetup = ''
     # Environment and path settings
-    export PATH="/Users/alex/.cargo/bin:/Applications/flameshot.app/Contents/MacOS:/opt/X11/bin:/usr/X11R6/bin:/opt/local/bin:/opt/local/sbin:/opt/homebrew/bin:/opt/homebrew/sbin:/Users/alex/.orbstack/bin:/Users/alex/.gem/ruby/3.3.0/bin:/Users/alex/.nix-profile/bin:/etc/profiles/per-user/alex/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH"
+    export PATH="/run/wrappers/bin:/Users/alex/.cargo/bin:/Applications/flameshot.app/Contents/MacOS"
+    export PATH="$PATH:/opt/X11/bin:/usr/X11R6/bin:/opt/local/bin:/opt/local/sbin"
+    export PATH="$PATH:/opt/homebrew/bin:/opt/homebrew/sbin:/Users/alex/.orbstack/bin"
+    export PATH="$PATH:/home/alex/.local/share/gem/ruby/3.3.0/bin:/Users/alex/.gem/ruby/3.3.0/bin"
+    export PATH="$PATH:/Users/alex/.nix-profile/bin:/etc/profiles/per-user/alex/bin"
+    export PATH="$PATH:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin"
+    export PATH="$PATH:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin"
+    export PATH="$PATH:/run/wrappers/bin:/home/alex/.nix-profile/bin:/nix/profile/bin"
+    export PATH="$PATH:/home/alex/.local/state/nix/profile/bin:$PATH"
     export EDITOR=nvim
     export VISUAL="$EDITOR"
     export DISPLAY=:0
@@ -52,7 +60,7 @@ in
     nushell = {
       enable = true; # Enable nushell
       environmentVariables = {
-        PATH = "/Users/alex/.cargo/bin:/Applications/flameshot.app/Contents/MacOS:/opt/X11/bin:/usr/X11R6/bin:/opt/local/bin:/opt/local/sbin:/opt/homebrew/bin:/opt/homebrew/sbin:/Users/alex/.orbstack/bin:/Users/alex/.gem/ruby/3.3.0/bin:/Users/alex/.nix-profile/bin:/etc/profiles/per-user/alex/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH";
+        PATH = "/Users/alex/.cargo/bin:/Applications/flameshot.app/Contents/MacOS:/opt/X11/bin:/usr/X11R6/bin:/opt/local/bin:/opt/local/sbin:/opt/homebrew/bin:/opt/homebrew/sbin:/Users/alex/.orbstack/bin:/Users/alex/.gem/ruby/3.3.0/bin:/Users/alex/.nix-profile/bin:/etc/profiles/per-user/alex/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin:/run/wrappers/bin:/home/alex/.nix-profile/bin:/nix/profile/bin:/home/alex/.local/state/nix/profile/bin:$PATH";
         EDITOR = "nvim";
         VISUAL = "nvim";
         DISPLAY = ":0";

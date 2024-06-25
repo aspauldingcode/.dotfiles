@@ -65,9 +65,9 @@ in
 {
   programs.waybar = {
     enable = true;
-    package = pkgs.waybar.overrideAttrs (oa: {
-      mesonFlags = (oa.mesonFlags or [ ]) ++ [ "-Dexperimental=true" ];
-    });
+    # package = pkgs.waybar.overrideAttrs (
+    #   oa: { mesonFlags = (oa.mesonFlags or [ ]) ++ [ "-Dexperimental=true" ]; }
+    # );
     systemd.enable = false; # FIXME: set true because otherwise it fails to start sometimes or just dies when bootstrapped to sway
     settings = {
       primary = {
@@ -93,7 +93,7 @@ in
           #"custom/gpg-agent"
           # "custom/spotify"
           "cava"
-          # "custom/currentplayer" maybe get this into cava instead.
+          "custom/currentplayer"
           # "custom/player"
         ];
 
@@ -269,6 +269,7 @@ in
           on-scroll-up = "light -A 5";
           on-scroll-down = "light -U 5";
         };
+
         # "custom/spotify" = {
         #   interval = 1;
         #   return-type = "json";
@@ -492,12 +493,12 @@ in
         }
         window#waybar {
           background-color: #${colors.base00};
-          border: 2px solid #${colors.base05};
+          border: 2px solid #${colors.base0C};
           border-radius: 30px;
         }
 
         window#waybar.hidden {
-            opacity: 0.2;
+          opacity: 0.2;
         }
 
         /*
@@ -511,7 +512,7 @@ in
 
         .modules-left {
           background-color: #${colors.base00};
-          border: 2px solid #${colors.base05};
+          border: 2px solid #${colors.base0C};
           border-radius: 30px;
           margin-left: 21px;
           margin-top: 7px;
@@ -524,7 +525,7 @@ in
 
         .modules-center {
           background-color: #${colors.base00};
-          border: 2px solid #${colors.base05};
+          border: 2px solid #${colors.base0C};
           border-radius: 30px;
           margin-top: 7px;
           margin-bottom: 7px;
@@ -536,7 +537,7 @@ in
 
         .modules-right {
           background-color: #${colors.base00};
-          border: 2px solid #${colors.base05};
+          border: 2px solid #${colors.base0C};
           border-radius: 30px;
           margin-right: 21px;
           margin-top: 7px;
@@ -548,13 +549,13 @@ in
         }
 
         window#waybar {
-          opacity: 1.0;
+          opacity: 0.85;
           border-radius: 10px;
         }
 
         #custom-menu {
           background-color: #${colors.base02};
-          /* border: 0px solid #${colors.base05}; */
+          /* border: 0px solid #${colors.base0C}; */
           border-radius: 30px;
           padding-left: 14px;
           padding-right: 18px;
@@ -562,7 +563,7 @@ in
 
         #custom-currentplayer { /* SPOTIFY ICON */
           background-color: #${colors.base02};
-          border: 0px solid #${colors.base05};
+          border: 0px solid #${colors.base0C};
           border-radius: 30px;
           padding-left: 18px;
           padding-right: 14px;
@@ -580,7 +581,7 @@ in
           color: #${colors.base04};
           padding: 0px;
           padding-left: 4px;
-          margin: -8px 0px;
+          /* margin: -8 0px; */
           font-size: 9pt;
         }
 
@@ -627,7 +628,7 @@ in
           font-family: 'JetBrains Mono', Regular;
           font-size: 9pt;
           background-color: #${colors.base02};
-          border: 0px solid #${colors.base05};
+          border: 0px solid #${colors.base0C};
           border-radius: 30px;
           padding-left: 16px;
           padding-right: 16px;
@@ -636,19 +637,19 @@ in
 
         /* #clock-popup { */
         /*   background-color: #${colors.base02}; */
-        /*   border: 2px solid #${colors.base05}; */
+        /*   border: 2px solid #${colors.base0C}; */
         /*   border-radius: 10px; */
         /*   font-size: 16px; */
         /* } */
 
         #custom-hostname {
-          background-color: #${colors.base05};
+          background-color: #${colors.base0C};
           border-radius: 30px;
         }
 
         #pulseaudio {
           background-color: #${colors.base00};
-          border: 0px solid #${colors.base05};
+          border: 0px solid #${colors.base0C};
           border-radius: 30px;
           color: #${colors.base05};
           padding-left: 8px;
@@ -683,7 +684,7 @@ in
         .mail
         {
           background-color: #${colors.base02};
-          border: 0px solid #${colors.base05};
+          border: 0px solid #${colors.base0C};
           border-radius: 30px;
           padding-left: 16px;
           padding-right: 16px;
@@ -706,7 +707,7 @@ in
         }
         #memory {
           background-color: #${colors.base02};
-          border: 0px solid #${colors.base05};
+          border: 0px solid #${colors.base0C};
           border-radius: 30px;
           padding-left: 16px;
           padding-right: 16px;
@@ -715,7 +716,7 @@ in
 
         tooltip {
           background-color: #${colors.base00};
-          border: 2px solid #${colors.base05};
+          border: 2px solid #${colors.base0C};
           border-radius: 10px;
           margin-top: 20px;
         }
