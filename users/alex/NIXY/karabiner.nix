@@ -236,7 +236,7 @@
                     ];
                   }
                   {
-                    description = "Replace Command + Arrow Keys with Option + Arrow Keys globally";
+                    description = "Replace Command + Arrow Keys/Backspace with Option + Arrow Keys/Backspace globally";
                     manipulators = [
                       {
                         type = "basic";
@@ -294,6 +294,21 @@
                         to = [
                           {
                             key_code = "down_arrow";
+                            modifiers = ["left_option"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "backspace";
+                          modifiers = { 
+                            mandatory = ["left_command"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "backspace";
                             modifiers = ["left_option"];
                           }
                         ];
@@ -301,7 +316,7 @@
                     ];
                   }
                   {
-                    description = "Replace Command + Shift + Arrow Keys with Option + Shift + Arrow Keys globally";
+                    description = "Replace Command + Shift + Arrow Keys/Backspace with Option + Shift + Arrow Keys/Backspace globally";
                     manipulators = [
                       {
                         type = "basic";
@@ -359,6 +374,21 @@
                         to = [
                           {
                             key_code = "down_arrow";
+                            modifiers = ["left_option" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "backspace";
+                          modifiers = { 
+                            mandatory = ["left_command" "left_shift"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "backspace";
                             modifiers = ["left_option" "left_shift"];
                           }
                         ];

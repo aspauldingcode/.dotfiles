@@ -25,16 +25,10 @@ o.wrap = false
 -- o.textwidth = 80
 -- o.formatoptions = "t"
 
-
 -- LSP
 -- Map <Leader>f to run LSP format
 vim.api.nvim_set_keymap('n', '<Leader>f', '<cmd>lua vim.lsp.buf.format()<CR>',
     { noremap = true, silent = true })
-
--- Define the function to toggle lsp_lines
-local function toggle_lsp_lines()
-    require("lsp_lines").toggle()
-end
 
 -- Set the keymap
 vim.api.nvim_set_keymap('', '<Leader>l', ':lua require("lsp_lines").toggle()<CR>',
@@ -65,10 +59,6 @@ o.updatetime = 300
 o.cursorline = true
 vim.cmd('filetype plugin indent on')
 
--- Get rid of annoying viminfo file
--- o.viminfo = ""
--- o.viminfofile = "NONE"
-
 -- Keybinds
 local function map(mode, combo, mapping, opts)
     local options = { noremap = true }
@@ -80,12 +70,12 @@ end
 map('n', '<C-Tab>', ':NvimTreeToggle <CR>', { noremap = true })
 map('n', '<C-d>', ':Telescope find_files <CR>', { noremap = true })
 map('n', '<C-f>', ':Telescope live_grep <CR>', { noremap = true })
-map('i', '<C-l>', '<Esc>:left <CR>', { noremap = true }) -- align text left
+map('i', '<C-l>', '<Esc>:left <CR>', { noremap = true })   -- align text left
 map('i', '<C-e>', '<Esc>:center <CR>', { noremap = true }) -- center text
-map('i', '<C-r>', '<Esc>:right <CR>', { noremap = true }) -- align text right
-map('n', '<C-l>', ':left <CR>', { noremap = true })      -- align text left
-map('n', '<C-e>', ':center <CR>', { noremap = true })    -- center text
-map('n', '<C-r>', ':right <CR>', { noremap = true })     -- align text right
+map('i', '<C-r>', '<Esc>:right <CR>', { noremap = true })  -- align text right
+map('n', '<C-l>', ':left <CR>', { noremap = true })        -- align text left
+map('n', '<C-e>', ':center <CR>', { noremap = true })      -- center text
+map('n', '<C-r>', ':right <CR>', { noremap = true })       -- align text right
 map('n', '<C-S-Z>', ':redo <CR>', { noremap = true })
 map('n', '<C-y>', ':redo <CR>', { noremap = true })
 map('n', '<C-z>', ':undo <CR>', { noremap = true })
@@ -196,11 +186,3 @@ o.shortmess = "atI"
 -- FIXME: Broken after adding nvim-scrollview and gitsigns integration!
 -- Highlight column 80, 120, and beyond as ColorColumn
 vim.opt.colorcolumn = "80," .. table.concat(vim.tbl_map(tostring, vim.fn.range(120, 999)), ",")
-
---Toggle lsp-lines
--- vim.api.nvim_set_keymap(
---   "n", -- This keymap is for normal mode
---   "<Leader>l",
---   "<cmd>lua require('lsp_lines').toggle()<CR>",
---   { noremap = true, silent = true, desc = "Toggle lsp_lines" }
--- )

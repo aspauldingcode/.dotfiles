@@ -9,7 +9,6 @@
 # my universal neovim configuration with Nix Syntax using NixVim!
 {
   imports = [ inputs.nixvim.homeManagerModules.nixvim ];
-  #programs.nixvim.enable = true; # Troubleshoot nvim
   nixpkgs.config.allowUnsupportedSystemPredicate =
     pkg:
     builtins.elem (lib.getName pkg) [
@@ -18,46 +17,7 @@
     ];
 
   # nixvim specific dependencies
-  home.packages = with pkgs; [
-    luajitPackages.lua-utils-nvim
-    # linters:
-    #pylint #python #NO SUCH FILE OR DIRECTORY?
-    # python311Packages.flake8
-    #ruff # python
-    commitlint # git commits
-    lint-staged # git stage
-    sqlint # sql
-    yamllint # yaml
-    nil # nix LSP
-    # nix-linter
-    vim-vint # vimscript
-    cargo-toml-lint # cargo.toml
-    eslint_d # fast eslint
-    api-linter # linter for apis in protocol buffers
-    ls-lint # directory name linter
-    #lua54Packages.luacheck # lua
-    ktlint # kotlin
-    rslint # ts, js
-    #djlint # html
-    #scss-lint # scss BROKEN??!?? 100% yeah its broken
-    csslint # css
-    cpplint # C++ static linter
-    actionlint # github actions
-
-    # formatters:
-    #black # python uncomprimising 
-    #luaformatter # lua
-    rufo # ruby
-    jsonfmt # json
-    nixfmt-rfc-style
-    #google-java-format # java
-    ktlint # kotlin java
-    xcpretty # xcodebnuild
-    # swiftformat # swift format and linter
-    fop # xml
-    xmlformat # xml
-    commit-formatter # git
-  ];
+  home.packages = with pkgs; [ ];
 
   programs.nixvim =
     let
@@ -74,11 +34,12 @@
     in
     {
       enable = true;
-      enableMan = false;
+      enableMan = true; # enable man pages for nixvim options.
       opts = {
         number = true; # Show line numbers
         relativenumber = true; # Show relative line numbers
         shiftwidth = 4; # Tab width should be 4
+        termguicolors = true;
       };
       extraConfigLua = ''
         -- Print a little welcome message when nvim is opened!
@@ -112,10 +73,18 @@
         none-ls = {
           enable = true;
           enableLspFormat = true;
-
-          sources.formatting.nixfmt = {
-            enable = true;
-            package = pkgs.nixfmt-rfc-style;
+          sources = {
+            formatting = {
+              nixfmt = {
+                enable = true;
+                package = pkgs.nixfmt-rfc-style;
+              };
+              #trace: warning: alex profile: [DEV] Nixvim (plugins.none-ls): Some tools are declared locally but are not in the upstream list of supported plugins.
+              #-> [opentofu_fmt, typstyle, xmllint]
+              # typstyle.enable = false;
+              # opentofu_fmt.enable = false;
+              # xmllint.enable = false;
+            };
           };
           notifyFormat = "[null-ls] %s";
         };
@@ -129,10 +98,19 @@
               linter = [ "codespell" ];
             };
             nix = {
-              # formatter = [ "" ]; 
+              formatter = [ "nixfmt" ];
               linter = [ "statix" ];
             };
             java = {
+              /*
+                My favorite combination is:
+                google-java-format for auto-formatting (prevent bikeshedding about indentation and the like)
+                checkstyle with google-java-format rules
+                errorprone (prevent common, careless mistakes)
+                NullAway (prevent NullPointerExceptions)
+                infer (optionally) to be really safe :)
+                In my opinion, linters should be executable via the command-line. Hence i don't like SonarQube and sonalint.
+              */
               formatter = [ "google_java_format" ];
               #linter =   [ "" ]; 
             };
@@ -164,303 +142,306 @@
           enable = true;
           servers = {
             # https://nix-community.github.io/nixvim/plugins/lsp/
-            # ansiblels = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # astro = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
+            ansiblels = {
+              enable = false;
+              package = null;
+            };
+            astro = {
+              enable = false;
+              package = null;
+            };
             bashls = {
               enable = false;
-              # installLanguageServer = true;
+              package = ./derivations-for-nixvim/bash-language-server;
             };
-            # beancount = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
+            beancount = {
+              enable = false;
+              package = null;
+            };
             biome = {
-              enable = true;
-              # installLanguageServer = true;
+              enable = false;
+              package = null;
             };
             ccls = {
+              # C/C++/Objective-C language server
               enable = true;
-              # installLanguageServer = true;
+              package = null; # set to pkgs.packagename
             };
             clangd = {
               enable = true;
-              # installLanguageServer = true;
+              package = null; # set to pkgs.packagename
             };
             clojure-lsp = {
-              enable = true;
-              # installLanguageServer = true;
+              enable = false;
+              package = null;
             };
             cmake = {
               enable = true;
-              # installLanguageServer = true;
+              package = null; # set to pkgs.packagename
             };
             csharp-ls = {
-              enable = true;
-              # installLanguageServer = false; # NOT AVAILABLE on DARWIN
+              enable = false;
+              package = null; # NOT AVAILABLE on DARWIN
             };
             cssls = {
               enable = true;
-              # installLanguageServer = true;
+              package = null; # set to pkgs.packagename
             };
-            # dagger = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
+            dagger = {
+              enable = false;
+              package = null;
+            };
             dartls = {
-              enable = true;
-              # installLanguageServer = true;
+              enable = false;
+              package = null;
             };
-            # denols = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # dhall-lsp-server = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # digestif = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
+            denols = {
+              enable = false;
+              package = null;
+            };
+            dhall-lsp-server = {
+              enable = false;
+              package = null;
+            };
+            digestif = {
+              enable = false;
+              package = null;
+            };
             dockerls = {
-              enable = true;
-              # installLanguageServer = true;
+              enable = false;
+              package = null;
             };
             efm = {
               enable = true;
-              # installLanguageServer = true;
+              package = null;
             };
-            # elixirls = {
-            #enable = true;
-            #   installLanguageServer = true;
-            # };
-            # elmls = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # emmet_ls = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
+            elixirls = {
+              enable = false;
+              package = null;
+            };
+            elmls = {
+              enable = false;
+              package = null;
+            };
+            emmet-ls = {
+              enable = false;
+              package = null;
+            };
             eslint = {
-              enable = true;
-              # installLanguageServer = true;
+              enable = false;
+              package = null;
             };
             fsautocomplete = {
-              enable = true;
-              # installLanguageServer = false; # DOESN'T COMPILE ON DARWIN
+              enable = false;
+              package = null; # DOESN'T COMPILE ON DARWIN
             };
-            # futhark-lsp = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
+            futhark-lsp = {
+              enable = false;
+              package = null;
+            };
             gdscript = {
-              enable = true;
-              # installLanguageServer = true;
+              enable = false;
+              package = null;
             };
             gleam = {
-              enable = true;
-              # installLanguageServer = true;
+              enable = false;
+              package = null;
             };
             gopls = {
-              enable = true;
-              # installLanguageServer = true;
+              enable = false;
+              package = null;
             };
             graphql = {
-              enable = true;
-              # installLanguageServer = true;
+              enable = false;
+              package = null;
             };
             hls = {
-              enable = true;
-              # installLanguageServer = true;
+              enable = false;
+              package = null;
             };
             html = {
               enable = false;
-              # installLanguageServer = false;
+              package = null;
             };
-            #htmx = {
-            #  enable = false;
-            #  plugins.lsp.servers.htmx.package = ./htmx-lsp-derivation.nix;
-            #  installLanguageServer = false; # FAILED
-            #};
+            htmx = {
+              enable = false;
+              #  plugins.lsp.servers.htmx.package = ./htmx-lsp-derivation.nix;
+              package = null; # FAILED
+            };
             intelephense = {
-              enable = true;
-              # installLanguageServer = true;
+              enable = false;
+              package = null;
             };
-            #java-language-server = { #USING JDTLS!
-            #  enable = true;
-            #  installLanguageServer = true;
-            #};
+            java-language-server = {
+              # USING JDTLS instead!
+              enable = false;
+              package = null;
+            };
             jsonls = {
               enable = true;
-              # installLanguageServer = true;
+              package = null; # set to pkgs.packagename
             };
             julials = {
-              enable = true;
-              # installLanguageServer = true;
+              enable = false;
+              package = null;
             };
             kotlin-language-server = {
-              enable = true;
-              # installLanguageServer = true;
+              enable = false;
+              package = null;
             };
-            # leanls = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
+            leanls = {
+              enable = false;
+              package = null;
+            };
             ltex = {
-              enable = true;
-              # installLanguageServer = true;
+              enable = false;
+              package = null;
             };
             lua-ls = {
               enable = true;
-              # installLanguageServer = true;
+              package = null; # set to pkgs.packagename
             };
-            # marksman = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # metals = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
+            marksman = {
+              enable = false;
+              package = null;
+            };
+            metals = {
+              enable = false;
+              package = null;
+            };
             nil-ls = {
               enable = true;
-              # installLanguageServer = true;
+              package = null; # set to pkgs.packagename
             };
-            # nixd = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # nushell = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # ols = {
-            #   enable = true;
-            #   installLanguageServer = false; #FAILED
-            # };
-            # omnisharp = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # perlpls = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # pest_ls = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # phpactor = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # prismals = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # prolog-ls = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # pylsp = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # pylyzer = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
+            nixd = {
+              enable = false;
+              package = null;
+            };
+            nushell = {
+              enable = false;
+              package = null;
+            };
+            ols = {
+              enable = false;
+              package = null; # FAILED
+            };
+            omnisharp = {
+              enable = false;
+              package = null;
+            };
+            perlpls = {
+              enable = false;
+              package = null;
+            };
+            pest-ls = {
+              enable = false;
+              package = null;
+            };
+            phpactor = {
+              enable = false;
+              package = null;
+            };
+            prismals = {
+              enable = false;
+              package = null;
+            };
+            prolog-ls = {
+              enable = false;
+              package = null;
+            };
+            pylsp = {
+              enable = false;
+              package = null;
+            };
+            pylyzer = {
+              enable = false;
+              package = null;
+            };
             pyright = {
-              enable = true;
-              # installLanguageServer = true;
               #lsp - pyright
               #linter - flake8
               #formatter - black
+              enable = true;
+              package = null; # set to pkgs.packagename
             };
-            #rnix-lsp = {
-            #  enable = false; # using nil_ls instead!
-            #  installLanguageServer = true;
-            #};
-            #ruff-lsp = {
-            #  enable = true;
-            #  installLanguageServer = true;
-            #};
+            rnix-lsp = {
+              enable = false; # using nil_ls instead!
+              package = null;
+            };
+            ruff-lsp = {
+              enable = false;
+              package = null;
+            };
             rust-analyzer = {
               enable = true;
-              # installLanguageServer = true;
+              package = null; # set to pkgs.packagename
               installCargo = true;
               installRustc = true;
             };
-            # solargraph = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
+            solargraph = {
+              enable = false;
+              package = null;
+            };
             sourcekit = {
+              # Swift and C-based languages
               enable = true;
-              # installLanguageServer = false; # FAILED TO COMPILE ON NIXOS
+              # package = null; # set to pkgs.packagename # FAILED TO COMPILE ON NIXOS
             };
             svelte = {
-              enable = true;
-              # installLanguageServer = true;
+              enable = false;
+              package = null;
             };
             tailwindcss = {
-              enable = true;
-              # installLanguageServer = true;
+              enable = false;
+              package = null;
             };
-            # taplo = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # templ = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # terraformls = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # texlab = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
+            taplo = {
+              enable = false;
+              package = null;
+            };
+            templ = {
+              enable = false;
+              package = null;
+            };
+            terraformls = {
+              enable = false;
+              package = null;
+            };
+            texlab = {
+              enable = false;
+              package = null;
+            };
             tsserver = {
               enable = true;
-              # installLanguageServer = true;
+              package = null; # set to pkgs.packagename
             };
-            # typst-lsp = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # vls = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # volar = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
+            typst-lsp = {
+              enable = false;
+              package = null;
+            };
+            vls = {
+              enable = false;
+              package = null;
+            };
+            volar = {
+              enable = false;
+              package = null;
+            };
             vuels = {
-              enable = true;
-              # installLanguageServer = true;
+              enable = false;
+              package = null;
             };
-            # yamlls = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
-            # zls = {
-            #   enable = true;
-            #   installLanguageServer = true;
-            # };
+            yamlls = {
+              enable = false;
+              package = null;
+            };
+            zls = {
+              enable = false;
+              package = null;
+            };
           };
         };
-        lsp-lines.enable = false; #damn annoyying
+        lsp-lines.enable = false; # damn annoyying
         lspkind.enable = true;
 
         # treesitter conf
@@ -481,11 +462,9 @@
         treesitter-context = {
           enable = true;
           settings = {
-            max_lines = 3; # limit to not hog up screenspace.
+            max_lines = 5; # limit to not hog up screenspace.
           };
         };
-
-        #wtf.enable = true; ChatGPT error explanations!
 
         # Filetree
         nvim-tree = {
@@ -708,7 +687,6 @@
             base0E = "#${colors.base0E}";
             base0F = "#${colors.base0F}";
           };
-        #useTruecolor = true;
       };
 
       extraPlugins = with pkgs.vimPlugins; [
