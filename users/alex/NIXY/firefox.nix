@@ -36,105 +36,103 @@ in
 
         # ~/.mozilla/firefox/PROFILE_NAME/prefs.js | user.js
         settings = {
-          "network.proxy.socks_remote_dns" = true;
-          "browser.disableResetPrompt" = true;
-          "browser.download.panel.shown" = true;
-          "browser.download.useDownloadDir" = false;
-          "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
-          "browser.shell.checkDefaultBrowser" = false;
-          "browser.shell.defaultBrowserCheckCount" = 1;
-          "browser.bookmarks.showMobileBookmarks" = true;
-          "browser.search.isUS" = true;
-          "browser.search.region" = "US";
-          "general.useragent.locale" = "en-US";
-          "distribution.searchplugins.defaultLocale" = "en-US";
-          "browser.startup.homepage" = "https://searx.aicampground.com";
-          "browser.uiCustomization.state" = ''{"placements":{"widget-overflow-fixed-list":[],"nav-bar":["back-button","forward-button","stop-reload-button","home-button","urlbar-container","downloads-button","library-button","ublock0_raymondhill_net-browser-action","_testpilot-containers-browser-action"],"toolbar-menubar":["menubar-items"],"TabsToolbar":["tabbrowser-tabs","new-tab-button","alltabs-button"],"PersonalToolbar":["import-button","personal-bookmarks"]},"seen":["save-to-pocket-button","developer-button","ublock0_raymondhill_net-browser-action","_testpilot-containers-browser-action"],"dirtyAreaCache":["nav-bar","PersonalToolbar","toolbar-menubar","TabsToolbar","widget-overflow-fixed-list"],"currentVersion":18,"newElementCount":4}'';
-          "dom.security.https_only_mode" = true;
-          "identity.fxaccounts.enabled" = false;
-          "privacy.trackingprotection.enabled" = true;
-          "signon.rememberSignons" = false;
-          "extensions.autoDisableScopes" = 0;
-          "browser.tabs.warnOnClose" = false;
           "app.normandy.first_run" = false;
           "app.shield.optoutstudies.enabled" = false;
           "app.update.channel" = "default";
+          "browser.bookmarks.showMobileBookmarks" = true;
           "browser.contentblocking.category" = "standard";
           "browser.ctrlTab.recentlyUsedOrder" = false;
+          "browser.disableResetPrompt" = true;
+          "browser.download.panel.shown" = true;
+          "browser.download.useDownloadDir" = false;
           "browser.download.viewableInternally.typeWasRegistered.svg" = true;
           "browser.download.viewableInternally.typeWasRegistered.webp" = true;
           "browser.download.viewableInternally.typeWasRegistered.xml" = true;
           "browser.link.open_newwindow" = true;
+          "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
+          "browser.search.isUS" = true;
+          "browser.search.region" = "US";
           "browser.search.widget.inNavBar" = true;
+          "browser.shell.checkDefaultBrowser" = false;
+          "browser.shell.defaultBrowserCheckCount" = 1;
+          "browser.startup.homepage" = "https://searx.aicampground.com";
           "browser.tabs.loadInBackground" = true;
+          "browser.tabs.warnOnClose" = false;
+          "browser.uiCustomization.state" = ''{"placements":{"widget-overflow-fixed-list":[],"nav-bar":["back-button","forward-button","stop-reload-button","home-button","urlbar-container","downloads-button","library-button","ublock0_raymondhill_net-browser-action","_testpilot-containers-browser-action"],"toolbar-menubar":["menubar-items"],"TabsToolbar":["tabbrowser-tabs","new-tab-button","alltabs-button"],"PersonalToolbar":["import-button","personal-bookmarks"]},"seen":["save-to-pocket-button","developer-button","ublock0_raymondhill_net-browser-action","_testpilot-containers-browser-action"],"dirtyAreaCache":["nav-bar","PersonalToolbar","toolbar-menubar","TabsToolbar","widget-overflow-fixed-list"],"currentVersion":18,"newElementCount":4}'';
           "browser.urlbar.placeholderName" = "DuckDuckGo";
-          "browser.urlbar.showSearchSuggestionsFirst" = false;
           "browser.urlbar.quickactions.enabled" = false;
           "browser.urlbar.quickactions.showPrefs" = false;
           "browser.urlbar.shortcuts.quickactions" = false;
+          "browser.urlbar.showSearchSuggestionsFirst" = false;
           "browser.urlbar.suggest.quickactions" = false;
           "doh-rollout.balrog-migration-done" = true;
           "doh-rollout.doneFirstRun" = true;
           "dom.forms.autocomplete.formautofill" = false;
-          "general.autoScroll" = true;
+          "dom.security.https_only_mode" = true;
+          "distribution.searchplugins.defaultLocale" = "en-US";
           "extensions.activeThemeID" = "firefox-alpenglow@mozilla.org";
-          "extensions.extensions.activeThemeID" = "firefox-alpenglow@mozilla.org";
+          "extensions.autoDisableScopes" = false;
           "extensions.update.enabled" = false;
           "extensions.webcompat.enable_picture_in_picture_overrides" = true;
           "extensions.webcompat.enable_shims" = true;
           "extensions.webcompat.perform_injections" = true;
           "extensions.webcompat.perform_ua_overrides" = true;
+          "general.autoScroll" = true;
+          "general.useragent.locale" = "en-US";
+          "identity.fxaccounts.enabled" = false;
+          "network.proxy.socks_remote_dns" = true;
           "print.print_footerleft" = "";
           "print.print_footerright" = "";
           "print.print_headerleft" = "";
           "print.print_headerright" = "";
           "privacy.donottrackheader.enabled" = true;
+          "privacy.trackingprotection.enabled" = true;
           "security.webauth.u2f" = true;
           "security.webauth.webauthn" = true;
           "security.webauth.webauthn_enable_softtoken" = true;
           "security.webauth.webauthn_enable_usbtoken" = true;
+          "signon.rememberSignons" = false;
           "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
         };
       };
     };
+
     policies = {
       AppAutoUpdate = false;
       BackgroundAppUpdate = false;
       DisableBuiltinPDFViewer = true;
-      DisableFirefoxStudies = true;
       DisableFirefoxAccounts = true;
       DisableFirefoxScreenshots = true;
+      DisableFirefoxStudies = true;
       DisableForgetButton = true;
+      DisableFormHistory = true;
       DisableMasterPasswordCreation = true;
+      DisablePasswordReveal = true;
+      DisablePocket = true;
       DisableProfileImport = true;
       DisableProfileRefresh = true;
       DisableSetDesktopBackground = true;
-      DisplayMenuBar = "default-off";
-      DisablePocket = true;
       DisableTelemetry = true;
-      DisableFormHistory = true;
-      DisablePasswordReveal = true;
+      DisplayMenuBar = "default-off";
       DontCheckDefaultBrowser = true;
-      HardwareAcceleration = false;
-      OfferToSaveLogins = false;
       EnableTrackingProtection = {
         Value = true;
         Locked = true;
         Cryptomining = true;
-        Fingerprinting = true;
         EmailTracking = true;
+        Fingerprinting = true;
       };
       EncryptedMediaExtensions = {
         Enabled = true;
         Locked = true;
       };
-      ExtensionUpdate = false;
       ExtensionSettings = {
         "*" = {
           installation_mode = "blocked";
           blocked_install_message = "FUCKING FORGET IT!";
         };
       };
+      ExtensionUpdate = false;
       "3rdparty".Extensions = {
         "uBlock0@raymondhill.net".adminSettings = {
           userSettings = rec {
@@ -150,8 +148,8 @@ in
           };
           selectedFilterLists = [
             "CZE-0"
-            "adguard-generic"
             "adguard-annoyance"
+            "adguard-generic"
             "adguard-social"
             "adguard-spyware-url"
             "easylist"
@@ -168,25 +166,6 @@ in
           ];
         };
       };
-      FirefoxHome = {
-        Search = true;
-        TopSites = true;
-        SponsoredTopSites = false;
-        Highlights = true;
-        Pocket = false;
-        SponsoredPocket = false;
-        Snippets = false;
-        Locked = true;
-      };
-      FirefoxSuggest = {
-        WebSuggestions = false;
-        SponsoredSuggestions = false;
-        ImproveSuggest = false;
-        Locked = true;
-      };
-      Handlers = {
-        mimeTypes."application/pdf".action = "saveToDisk";
-      };
       extensions = {
         pdf = {
           action = "useHelperApp";
@@ -199,7 +178,27 @@ in
           ];
         };
       };
+      FirefoxHome = {
+        Highlights = true;
+        Locked = true;
+        Pocket = false;
+        Search = true;
+        Snippets = false;
+        SponsoredPocket = false;
+        SponsoredTopSites = false;
+        TopSites = true;
+      };
+      FirefoxSuggest = {
+        ImproveSuggest = false;
+        Locked = true;
+        SponsoredSuggestions = false;
+        WebSuggestions = false;
+      };
+      Handlers = {
+        mimeTypes."application/pdf".action = "saveToDisk";
+      };
       NoDefaultBookmarks = true;
+      OfferToSaveLogins = false;
       PasswordManagerEnabled = false;
       PDFjs = {
         Enabled = false;
@@ -211,8 +210,8 @@ in
       };
       PromptForDownloadLocation = true;
       Proxy = {
-        Mode = "system";
         Locked = true;
+        Mode = "system";
         SOCKSProxy = "127.0.0.1:9050";
         SOCKSVersion = 5;
         UseProxyForDNS = true;
@@ -223,13 +222,12 @@ in
         Downloads = true;
         FormData = true;
         History = false;
+        Locked = true;
+        OfflineApps = true;
         Sessions = false;
         SiteSettings = false;
-        OfflineApps = true;
-        Locked = true;
       };
       SearchEngines = {
-        PreventInstalls = true;
         Add = [
           {
             Name = "SearXNG";
@@ -239,16 +237,18 @@ in
             Description = "SearX instance ran by tiekoetter.com as onion-service";
           }
         ];
+        Default = "SearXNG";
+        PreventInstalls = true;
         Remove = [
           "Amazon.com"
           "Bing"
           "Google"
         ];
-        Default = "SearXNG";
       };
       SearchSuggestEnabled = false;
       ShowHomeButton = true;
       StartDownloadsInTempDirectory = true;
+      UseSystemPrintDialog = true;
       UserMessaging = {
         ExtensionRecommendations = false;
         FeatureRecommendations = false;
@@ -258,7 +258,6 @@ in
         UrlbarInterventions = false;
         WhatsNew = false;
       };
-      UseSystemPrintDialog = true;
     };
   };
 
