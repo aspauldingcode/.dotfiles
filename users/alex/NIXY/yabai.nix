@@ -206,15 +206,15 @@ in
           ${modifier} - f :                     ${yabai} -m window --toggle zoom-fullscreen 
           ${modifier} + ${smod} - f :             toggle-instant-fullscreen
 
-          # Move focus to next/prev workspace
-          ${mod1} + ${mod4} - ${left} :   ${yabai} -m space --focus prev
-          ${mod1} + ${mod4} - ${down} :   ${yabai} -m space --focus prev
-          ${mod1} + ${mod4} - ${up} :     ${yabai} -m space --focus next
-          ${mod1} + ${mod4} - ${right} :  ${yabai} -m space --focus next
-          ${mod1} + ${mod4} - left :      ${yabai} -m space --focus prev
-          ${mod1} + ${mod4} - down :      ${yabai} -m space --focus prev
-          ${mod1} + ${mod4} - up :        ${yabai} -m space --focus next
-          ${mod1} + ${mod4} - right :     ${yabai} -m space --focus next
+          # Move focus to next/prev workspace (conflicts with browsers)
+          # ${mod1} + ${mod4} - ${left} :   ${yabai} -m space --focus prev
+          # ${mod1} + ${mod4} - ${down} :   ${yabai} -m space --focus prev
+          # ${mod1} + ${mod4} - ${up} :     ${yabai} -m space --focus next
+          # ${mod1} + ${mod4} - ${right} :  ${yabai} -m space --focus next
+          # ${mod1} + ${mod4} - left :      ${yabai} -m space --focus prev
+          # ${mod1} + ${mod4} - down :      ${yabai} -m space --focus prev
+          # ${mod1} + ${mod4} - up :        ${yabai} -m space --focus next
+          # ${mod1} + ${mod4} - right :     ${yabai} -m space --focus next
 
           # Move focused window to workspace N and follow focus
           ${modifier} + ${smod} - 1 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _1

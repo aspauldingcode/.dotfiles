@@ -33,6 +33,7 @@
     wget
     zellij
     # neofetch
+    ncdu
     pfetch
     htop
     git

@@ -92,7 +92,7 @@
                     ];
                   }
                   {
-                    description = "Replace Command+H with Command+Y in Brave browser";
+                    description = "Replace Command+H with Command+Y in Chromium-based browsers and Firefox";
                     manipulators = [
                       {
                         type = "basic";
@@ -112,7 +112,46 @@
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            "bundle_identifiers" = [ "^com.brave.Browser$" ];
+                            "bundle_identifiers" = [
+                              "^com.brave.Browser$"
+                              "^org.mozilla.firefox$"
+                              "^com.google.Chrome$"
+                              "^org.chromium.Chromium$"
+                              "^com.microsoft.Edge$"
+                              "^com.operasoftware.Opera$"
+                            ];
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
+                    description = "Replace Command+J with Command+Option+L in Chromium-based browsers";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          "key_code" = "j";
+                          modifiers = {
+                            mandatory = [ "left_command" ];
+                          };
+                        };
+                        to = [
+                          {
+                            "key_code" = "l";
+                            modifiers = [ "left_command" "left_option" ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            "bundle_identifiers" = [
+                              "^com.brave.Browser$"
+                              "^com.google.Chrome$"
+                              "^org.chromium.Chromium$"
+                              "^com.microsoft.Edge$"
+                              "^com.operasoftware.Opera$"
+                            ];
                           }
                         ];
                       }
