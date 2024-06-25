@@ -62,6 +62,7 @@
       "flameshot"
       "element"
       "brave-browser"
+      "firefox"
       "alt-tab"
       "standard-notes"
       "orbstack"

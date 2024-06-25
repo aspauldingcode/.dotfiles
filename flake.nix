@@ -28,6 +28,11 @@
       url = "github:tpwrules/nixos-apple-silicon";
       inputs.nixpkgs.follows = "nixpkgs"; # Follows the stable nixpkgs version
     };
+
+    nur = {
+      url = "github:nix-community/nur";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -41,6 +46,7 @@
       nix-colors,
       mobile-nixos,
       apple-silicon,
+      nur,
     }:
     let
       inherit (self) inputs;
@@ -54,6 +60,7 @@
           flake-parts
           nix-colors
           apple-silicon
+          nur
           self
           ;
       };
@@ -64,6 +71,7 @@
           nixvim
           flake-parts
           nix-colors
+          nur
           self
           ;
       };
@@ -84,6 +92,9 @@
               allowUnfree = true;
               permittedInsecurePackages = [ "electron-19.1.9" ];
             };
+            overlays = [ 
+              inputs.nur.overlay
+            ];
           };
           specialArgs = commonSpecialArgs; # // { extraPkgs = [ mobile-nixos ]; };
           modules = [
@@ -114,6 +125,9 @@
               allowUnfree = true;
               permittedInsecurePackages = [ "electron-19.1.9" ];
             };
+            overlays = [ 
+              inputs.nur.overlay
+            ];
           };
           specialArgs = commonSpecialArgs; # // { extraPkgs = [ mobile-nixos ]; };
           modules = [
@@ -141,6 +155,7 @@
             system = "aarch64-darwin";
             config.allowUnfree = true;
             overlays = [
+              inputs.nur.overlay
               #install i3/sway autotiling on macos for i3 xquartz!
               (final: prev: {
                 autotiling =

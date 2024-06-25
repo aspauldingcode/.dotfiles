@@ -403,6 +403,21 @@
         "type": "github"
       }
     },
+    "nur": {
+      "locked": {
+        "lastModified": 1719283864,
+        "narHash": "sha256-SqYIFXdaQkhrWL3IVhHMmnY0nKFAp+5ZecFncASUjs0=",
+        "owner": "nix-community",
+        "repo": "nur",
+        "rev": "229a06f806fc226daf5fe7bf0a645d3b0a6b14e9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nur",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "apple-silicon": "apple-silicon",
@@ -412,7 +427,8 @@
         "nix-colors": "nix-colors",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs",
-        "nixvim": "nixvim"
+        "nixvim": "nixvim",
+        "nur": "nur"
       }
     },
     "rust-overlay": {

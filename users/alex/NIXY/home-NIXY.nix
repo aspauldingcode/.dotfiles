@@ -1,4 +1,9 @@
-{ lib, nix-colors, config, ... }:
+{
+  lib,
+  nix-colors,
+  config,
+  ...
+}:
 
 # let
 #   android-sdk = pkgs.android_sdk; # Replace with the actual Android SDK package name
@@ -22,6 +27,7 @@
     ./cava.nix
     #./zellij.nix
     ./btop.nix
+    ./firefox.nix
     ./xinit.nix
     ./i3.nix
     ./qutebrowser.nix
@@ -85,8 +91,7 @@
     };
   };
 
-  home.file."Library/Application Support/Mousecape/capes" = 
-  {
+  home.file."Library/Application Support/Mousecape/capes" = {
     target = "Library/Application Support/Mousecape/capes/";
     source = ../extraConfig/cursors-macOS;
   };
