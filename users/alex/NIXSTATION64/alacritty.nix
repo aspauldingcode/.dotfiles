@@ -153,20 +153,15 @@ in
       };
 
       keyboard.bindings = [
-        {
-          key = "C";
-          mods = "Control";
-          action = "Copy";
-        }
-        {
-          key = "C";
-          mods = "Shift|Control";
-          action = "ReceiveChar";
-        }
         # {
-        #   key = "f";
+        #   key = "C";
+        #   mods = "Control";
+        #   action = "Copy";
+        # }
+        # {
+        #   key = "C";
         #   mods = "Shift|Control";
-        #   action = "";
+        #   action = "ReceiveChar";
         # }
         {
           key = "V";
