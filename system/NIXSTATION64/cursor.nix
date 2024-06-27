@@ -2,7 +2,7 @@
 
 let
   pname = "cursor";
-  version = "0.35.0";
+  version = "0.35.1";
   name = "${pname}-${version}";
 
   src = pkgs.fetchurl {

@@ -563,8 +563,11 @@
             ];
           };
         };
-        #commenting
-        comment.enable = true;
+          #commenting
+        comment = {
+          enable = true;
+          settings.toggler.line = if pkgs.stdenv.isDarwin then "<D-/>" else "<C-/>";
+        };
 
         # outline code blocks
         indent-blankline = {

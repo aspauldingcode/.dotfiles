@@ -1,12 +1,12 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports = [ ./waybar/waybar.nix ];
 
   wayland.windowManager.sway = {
     enable = true;
-    # package = null;
-    checkConfig = false;
+    package = pkgs.swayfx;
+    checkConfig = lib.mkForce false;
     config = rec {
       bars = [
         { command = "${pkgs.waybar}/bin/waybar"; } # FIXME: WHY ARE THERE TWO WAYBARS at launch?
@@ -45,7 +45,8 @@
         { command = "alacritty"; } # FIXME: DOES ALACRITTY ACTUALLY LAUNCH?!?!?
       ];
       menu = "bemenu-run";
-
+      window.titlebar = false;
+      floating.titlebar = false;
       workspaceLayout = "default";
       keybindings = {
         "${modifier}+f" = "exec maximize"; # custom script for zoom-fullscreen NOTWORKING?

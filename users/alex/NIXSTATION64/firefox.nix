@@ -1,4 +1,9 @@
-{ pkgs, lib, ... }:
+{
+  fetchurl,
+  pkgs,
+  lib,
+  ...
+}:
 
 let
   inherit (lib) mkForce;
@@ -31,6 +36,24 @@ in
           ff2mpv
           link-cleaner
           i-dont-care-about-cookies
+          (pkgs.nur.repos.rycee.firefox-addons.buildFirefoxXpiAddon {
+            pname = "bonjourr";
+            version = "19.2.4";
+            addonId = "{4f391a9e-8717-4ba6-a5b1-488a34931fcb}";
+            url = "https://addons.mozilla.org/firefox/downloads/file/4266784/bonjourr_startpage-19.2.4.xpi";
+            sha256 = "sha256-UHf07ICiNMkZNCF/7xJ7YFfqy1SeeoXm/3b4+PZ1mWc=";
+            meta = {
+              homepage = "https://bonjourr.fr/";
+              description = "Minimalist and lightweight startpage; Improve your web browsing experience with Bonjourr, a beautiful, customizable and lightweight homepage inspired by iOS.";
+              license = lib.licenses.gpl3;
+              mozPermissions = [
+                # "storage"
+                # "unlimitedStorage"
+                "bookmarks"
+              ];
+              platforms = lib.platforms.all;
+            };
+          })
         ];
 
         # ~/.mozilla/firefox/PROFILE_NAME/prefs.js | user.js

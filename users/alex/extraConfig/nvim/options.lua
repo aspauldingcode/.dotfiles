@@ -25,6 +25,7 @@ o.wrap = false
 -- o.textwidth = 80
 -- o.formatoptions = "t"
 
+
 -- LSP
 -- Map <Leader>f to run LSP format
 vim.api.nvim_set_keymap('n', '<Leader>f', '<cmd>lua vim.lsp.buf.format()<CR>',
