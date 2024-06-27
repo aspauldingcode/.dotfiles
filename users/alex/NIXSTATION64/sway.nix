@@ -5,7 +5,7 @@
 
   wayland.windowManager.sway = {
     enable = true;
-    package = pkgs.swayfx;
+    package = null;
     checkConfig = lib.mkForce false;
     config = rec {
       bars = [
@@ -42,7 +42,7 @@
       terminal = "alacritty";
       startup = [
         # Launch alacritty on start
-        { command = "alacritty"; } # FIXME: DOES ALACRITTY ACTUALLY LAUNCH?!?!?
+        { command = "alacritty"; }
       ];
       menu = "bemenu-run";
       window.titlebar = false;
