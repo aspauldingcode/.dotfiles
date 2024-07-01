@@ -16,7 +16,7 @@ in
         dynamic_padding = true;
         padding.x = 0;
         #padding.y = 10; # pretty lavat
-        opacity = 0.9;
+        opacity = 0.9; # use 0.9
         blur = false; # use jankyborders with blur instead
         class.instance = "Alacritty";
         class.general = "Alacritty";
@@ -154,7 +154,6 @@ in
           cyan = "#${colors.base07}"; # Light Background (Not often used)
           white = "#${colors.base08}"; # Variables, XML Tags, Markup Link Text, Markup Lists, Diff Deleted
         };
-
         draw_bold_text_with_bright_colors = true;
       };
 

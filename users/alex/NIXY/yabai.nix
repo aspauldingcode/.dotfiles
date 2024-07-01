@@ -9,7 +9,7 @@ let
   i3-msg = "${homebrewPath}/i3-msg";
   alacritty = "${homebrewPath}/alacritty";
   dmenu-mac = "${homebrewPath}/dmenu-mac";
-  jq = "${pkgs.jq}bin/jq";
+  jq = "${pkgs.jq}/bin/jq";
   inherit (config.colorScheme) colors;
 in
 {
@@ -333,10 +333,13 @@ in
           ${modifier} - p : toggle-darkmode && toggle-theme && ${sketchybar} --reload 
 
           # send to scratchpad. (alt + shift + -)
-          ${modifier} + ${smod} - 0x1B : window_id=$(${yabai} -m query --windows --window | ${jq} -r '.id') && ${yabai} -m window $window_id --scratchpad scratchpad; window_id=$(${yabai} -m query --windows --window | ${jq} -r '.id'); ${yabai} -m window $window_id --scratchpad scratchpad; ${yabai} -m window --toggle scratchpad
+          ${modifier} + ${smod} - 0x1B : highest_label=$(${yabai} -m query --windows | ${jq} '[.[] | select(.scratchpad != 0 and .scratchpad_label != null) | .scratchpad_label | select(test("^_\\d+$"))] | map(sub("^_"; "")) | map(tonumber) | max + 1') && new_label="_$highest_label" && ${yabai} -m window --scratchpad $new_label && ${yabai} -m window --toggle $new_label
           
-          # recover most recent scratchpad window.. (alt + shift + =)
-          ${modifier} + ${smod} - 0x18 : window_id=$(${yabai} -m query --windows --window | ${jq} -r '.id') && ${yabai} -m window $window_id --scratchpad recover
+          # recover latest from scratchpad. (alt + shift + =)
+          ${modifier} + ${smod} - 0x18 : \
+            highest_label=$(${yabai} -m query --windows | ${jq} '[.[] | select(.scratchpad_label != null) | .scratchpad_label] | sort | last') && \
+            ${yabai} -m window --toggle $highest_label && \
+            ${yabai} -m window --scratchpad ""
           
           # clear notifications 
           ${modifier} - c : dismiss-notifications

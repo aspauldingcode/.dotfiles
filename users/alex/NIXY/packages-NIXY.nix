@@ -7,7 +7,13 @@
 
 let
   systemType = pkgs.stdenv.hostPlatform.system;
-  homebrewPath = if systemType == "aarch64-darwin" then "/opt/homebrew/bin" else if systemType == "x86_64-darwin" then "/usr/local/bin" else throw "Homebrew Unsupported architecture: ${systemType}";
+  homebrewPath =
+    if systemType == "aarch64-darwin" then
+      "/opt/homebrew/bin"
+    else if systemType == "x86_64-darwin" then
+      "/usr/local/bin"
+    else
+      throw "Homebrew Unsupported architecture: ${systemType}";
   jq = "${pkgs.jq}/bin/jq";
   yabai = "${homebrewPath}/yabai";
   sketchybar = "${homebrewPath}/sketchybar";
@@ -76,17 +82,15 @@ in
     zoom-us
     unar
     # python39
-    (pkgs.python311.withPackages (
-      ps: [
-        ps.tkinter
-        #ps.pygame
-        ps.cx-freeze
-        # ps.pep517
-        # ps.build
-        #ps.i3ipc
-        ps.matplotlib
-      ]
-    ))
+    (pkgs.python311.withPackages (ps: [
+      ps.tkinter
+      #ps.pygame
+      ps.cx-freeze
+      # ps.pep517
+      # ps.build
+      #ps.i3ipc
+      ps.matplotlib
+    ]))
 
     # rebuild
     (pkgs.writeShellScriptBin "rebuild" ''
@@ -680,7 +684,7 @@ in
           exit 1
       fi
     '')
-    
+
     #toggle-float
     (pkgs.writeShellScriptBin "toggle-float" ''
       # Check if the script is provided with an argument
@@ -755,23 +759,29 @@ in
 
       if [ -z "$1" ]; then
         # No argument provided, toggle based on current state
-        toggle-cursor-theme
-        osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to not dark mode'
+        if [ "$current_mode" == "true" ]; then
+            toggle-cursor-theme dark
+            osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to false'
+        elif [ "$current_mode" == "false" ]; then
+            toggle-cursor-theme light
+            osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to true'
+        fi
+
       elif [ "$1" == "light" ]; then
         if [ "$current_mode" == "false" ]; then
           echo "Light mode is already on."
         else
           # Toggle light mode on
-          osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to false'
           toggle-cursor-theme dark
+          osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to false'
         fi
       elif [ "$1" == "dark" ]; then
         if [ "$current_mode" == "true" ]; then
           echo "Dark mode is already on."
         else
           # Toggle dark mode on
-          osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to true'
           toggle-cursor-theme light
+          osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to true'
         fi
       else
         echo "Invalid argument. Please specify 'light' or 'dark' or leave empty to toggle."
@@ -950,7 +960,7 @@ in
     '')
 
     #yabai_i3_switch
-        (pkgs.writeShellScriptBin "yabai_i3_switch" ''
+    (pkgs.writeShellScriptBin "yabai_i3_switch" ''
       # Get the name of the frontmost application
       front_app=$(osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true')
 
