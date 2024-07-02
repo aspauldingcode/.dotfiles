@@ -16,6 +16,10 @@
     #./wg-quick.nix
   ];
 
+  # - Using PipeWire as the sound server conflicts with PulseAudio. 
+  # This option requires `hardware.pulseaudio.enable` to be set to false
+  # hardware.pulseaudio.enable = false;
+
   # Bootloader.
   boot = {
     # choose your kernel
@@ -42,6 +46,9 @@
   #     "${XDG_BIN_HOME}"
   #   ];
   # };
+
+  # https://nixos.wiki/wiki/AMD_GPU#HIP
+  systemd.tmpfiles.rules = [ "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}" ];
 
   environment = {
     # systemPackages = with pkgs; [ #FIXME: INCLUDE IN SDDM THEMES INSTEAD!
@@ -70,6 +77,7 @@
     variables = rec {
       QT_QPA_PLATFORMTHEME = "qt5ct";
       #QT_STYLE_OVERRIDE     = "qt5ct";
+      ROC_ENABLE_PRE_VEGA = "1";
     };
   };
   # Enable networking
@@ -124,6 +132,23 @@
 
   #add opengl (to fix Qemu)
   hardware.opengl.enable = true;
+  hardware.opengl.driSupport = true; # This is already enabled by default
+  hardware.opengl.driSupport32Bit = true; # For 32 bit applications
+  # For 32 bit applications 
+  hardware.opengl.extraPackages = with pkgs; [
+    rocmPackages.clr.icd
+    amdvlk
+  ];
+  hardware.opengl.extraPackages32 = with pkgs; [ driversi686Linux.amdvlk ];
+
+  # Dual Monitors
+
+  # If you encounter problems having multiple monitors connected to your GPU, adding `video` parameters for each connector to the kernel command line sometimes helps. 
+  boot.kernelParams = [
+    "video=DP-4:1920x1080@60"
+    "video=DP-6:1920x1080@60"
+    "video=DP-5:1920x10800@60"
+  ];
 
   # Select internationalisation properties.
   i18n = {
@@ -160,17 +185,32 @@
     };
     desktopManager.plasma6.enable = true;
     xserver = {
+      videoDrivers = [ "amdgpu" ];
       desktopManager = {
         plasma5 = {
-          enable = false; # Moved under xserver as required
+          enable = false;
+          mobile.enable = false; # for login remote
           runUsingSystemd = false;
+          useQtScaling = false; # enable HIDPI scaling in qt
         };
-        mate = {
-          enable = false; # Moved under xserver as required
-          # runUsingSystemd = false; # Commented out as it might not be needed
+        xfce = {
+          enable = true;
+          enableScreensaver = false;
         };
+        #phosh = {
+        #  enable = true;
+        #  user = "alex";
+        #  group = "users";
+        #};
       };
     };
+    xrdp = {
+      enable = true;
+      port = 3389; # default 3389
+      openFirewall = true;
+      defaultWindowManager = "xfce4-session";
+    };
+
     pipewire = {
       enable = true;
       alsa.enable = true;

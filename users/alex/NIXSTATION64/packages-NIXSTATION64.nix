@@ -59,7 +59,7 @@
       zoom-us
 
       # Multimedia and graphics
-      blender
+      blender-hip
       brave
       cava
       ffmpeg-full

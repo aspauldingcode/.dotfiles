@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   imports = [ ./waybar/waybar.nix ];
@@ -316,7 +321,7 @@
           blur on #FIXME: TURN ON! Floating window loses its borders...
           #blur_xray on
           blur_passes 2
-          blur_radius 10
+          blur_radius 2
 
           for_window [tiling] shadows off
           for_window [floating] shadows on
@@ -336,8 +341,9 @@
           # SET BORDER TO 2 PIXELS!
           default_border pixel 2
           default_floating_border pixel 2
-          client.unfocused ${colors.base00} ${colors.base00} ${colors.base00} ${colors.base00}
-          client.focused ${colors.base05} ${colors.base05} ${colors.base05} ${colors.base05}
+          client.unfocused ${colors.base05} ${colors.base05} ${colors.base05} ${colors.base05}
+          client.focused_inactive ${colors.base05} ${colors.base05} ${colors.base05} ${colors.base05}
+          client.focused ${colors.base07} ${colors.base07} ${colors.base07} ${colors.base07}
 
           exec {
             gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
