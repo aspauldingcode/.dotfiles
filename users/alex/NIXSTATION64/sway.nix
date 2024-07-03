@@ -6,7 +6,7 @@
 }:
 
 {
-  imports = [ ./waybar/waybar.nix ];
+  imports = [ ./waybar.nix ];
 
   wayland.windowManager.sway = {
     enable = true;
@@ -28,7 +28,7 @@
           transform = "270";
           #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
         };
-        DP-7 = {
+        DP-6 = {
           res = "1920x1080";
           pos = "1080,450";
           #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
@@ -287,7 +287,7 @@
 
           # SET workspace to specific output
           workspace 1 output DP-5
-          workspace 2 output DP-7
+          workspace 2 output DP-6
           workspace 3 output DP-4
 
           # Launch the bluetooth applet

@@ -158,7 +158,7 @@
         pkill waybar && sway reload
         sleep 4       #FIX waybar cava init issue:
         nohup ffplay ~/.dotfiles/users/alex/NIXSTATION64/waybar/silence.wav -t 5 -nodisp -autoexit > /dev/null 2>&1 &
-        rm /tmp/sway_gaps_state # remove the initial states for gaps.
+        [ -f /tmp/sway_gaps_state ] && rm /tmp/sway_gaps_state # remove the initial states for gaps if it exists.
       '')
       #search
       (pkgs.writeShellScriptBin "search" ''

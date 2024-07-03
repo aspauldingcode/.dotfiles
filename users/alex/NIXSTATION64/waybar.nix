@@ -24,9 +24,11 @@ let
   find = "${pkgs.findutils}/bin/find";
   grep = "${pkgs.gnugrep}/bin/grep";
   pgrep = "${pkgs.procps}/bin/pgrep";
+  pkill = "${pkgs.coreutils}/bin/pkill";
   tail = "${pkgs.coreutils}/bin/tail";
   wc = "${pkgs.coreutils}/bin/wc";
   xargs = "${pkgs.findutils}/bin/xargs";
+  wlsunset = "${pkgs.wlsunset}/bin/wlsunset";
 
   # timeout = "${pkgs.coreutils}/bin/timeout";
   # ping = "${pkgs.iputils}/bin/ping";
@@ -37,6 +39,7 @@ let
   playerctl = "${pkgs.playerctl}/bin/playerctl";
   playerctld = "${pkgs.playerctl}/bin/playerctld";
   pavucontrol = "${pkgs.pavucontrol}/bin/pavucontrol";
+  darling = "${pkgs.darling}/bin/darling";
   # wofi = "${pkgs.wofi}/bin/wofi";
 
   # Function to simplify making waybar outputs
@@ -88,11 +91,14 @@ in
 
         modules-center = [
           "pulseaudio"
-          #"clock"
+          "custom/backlight"
+          "custom/wlgammactl"
+          "custom/gammastep"
+          "custom/wlsunset"
           "custom/datetime"
           #"custom/gpg-agent"
           # "custom/spotify"
-          "cava"
+          # "cava" # CRASHES at the moment. Waybar v0.10.3
           "custom/currentplayer"
           # "custom/player"
         ];
@@ -104,12 +110,10 @@ in
           "battery"
           # "custom/tailscale-ping"
           # TODO: currently broken for some reason
-          # "custom/gammastep"
           #"custom/hostname"
           "custom/seperator-right"
           "cpu"
           "memory"
-          "backlight"
         ];
 
         "tray" = {
@@ -133,25 +137,22 @@ in
         };
 
         cava = {
-          # exec-if = "${playerctl} status 2>/dev/null";
-          # exec = ''${playerctl} metadata --format '{"text": "{{title}} - {{artist}}", "alt": "{{status}}", "tooltip": "{{title}} - {{artist}} ({{album}})"}' 2>/dev/null '';
-          # cava_config = "$XDG_CONFIG_HOME/cava/cava.conf";
-          framerate = 30;
-          #autosens = 1;
-          # sensitivity = 100;
-          bars = 10;
+          # cava_config = "$XDG_CONFIG_HOME/cava/config";
+          framerate = 60;
+          autosens = 1;
+          sensitivity = 100;
+          bars = 14;
           lower_cutoff_freq = 50;
-          higher_cutoff_freq = 15000;
+          higher_cutoff_freq = 10000;
           method = "pulse";
           source = "auto";
-          stereo = false;
+          stereo = true;
           reverse = false;
           bar_delimiter = 0;
           monstercat = false;
           waves = false;
           noise_reduction = 0.77;
           input_delay = 2;
-          # format = "- paused -"; # when paused, replace string with "- paused -"
           format-icons = [
             "▁"
             "▂"
@@ -163,9 +164,296 @@ in
             "█"
           ];
           actions = {
-            # on-click-right = "mode";
-            # on-click-left = "${playerctl} play-pause";
+            on-click-right = "mode";
           };
+        };
+
+        "custom/gammastep" = {
+          format = "{icon} gammastep";
+          format-source = "{icon} gammastep";
+          format-icons = [""];
+          on-scroll-down = ''
+            #!/bin/bash
+
+            # Default temperature
+            default_temp=3400
+
+            # Kill other programs
+            killall wlsunset
+            killall wl-gammactl
+
+            # Check if gammastep is currently running
+            if pgrep gammastep >/dev/null; then
+                # If gammastep is running, kill it and start with decreased temperature
+                current_temp=$(cat /tmp/gammastep_state)
+                current_temp=$((current_temp - 200))
+                if (( current_temp < 0 )); then
+                    notify-send -t 700 "Temp can't subceed 0K."
+                else
+                    killall gammastep
+                    gammastep -O "$current_temp" &
+                    echo "$current_temp" > /tmp/gammastep_state
+                    notify-send -t 700 "Temp $current_temp K"
+                fi
+            else
+                gammastep -O "$default_temp" &
+                echo "$default_temp" > /tmp/gammastep_state
+                notify-send -t 700 "RedGlow Started"
+            fi
+          '';
+          on-scroll-up = ''
+            #!/bin/bash
+
+            # Default temperature
+            default_temp=3400
+
+            # Kill other programs
+            killall wlsunset
+            killall wl-gammactl
+
+            # Check if gammastep is currently running
+            if pgrep gammastep >/dev/null; then
+                # If gammastep is running, kill it and start with increased temperature
+                current_temp=$(cat /tmp/gammastep_state)
+                current_temp=$((current_temp + 200))
+                if (( current_temp > 5000 )); then
+                    notify-send -t 700 "Temp can't exceed 5000K."
+                else
+                    killall gammastep
+                    gammastep -O "$current_temp" &
+                    echo "$current_temp" > /tmp/gammastep_state
+                    notify-send -t 700 "Temp $current_temp K"
+                fi
+            else
+                gammastep -O "$default_temp" &
+                echo "$default_temp" > /tmp/gammastep_state
+                notify-send -t 700 "RedGlow Started"
+            fi
+          '';
+          on-click = ''
+            #!/bin/bash
+
+            # Kill other programs
+            killall wlsunset
+            killall wl-gammactl
+
+            if pgrep gammastep >/dev/null; then
+                killall gammastep
+                notify-send -t 700 "RedGlow Stopped"
+            else
+                if [ -f /tmp/gammastep_state ]; then
+                    default_temp=$(cat /tmp/gammastep_state)
+                else
+                    default_temp=3400
+                fi
+                gammastep -O "$default_temp" &
+                echo "$default_temp" > /tmp/gammastep_state
+                notify-send -t 700 "RedGlow ON"
+            fi
+          '';
+        };
+
+        "custom/wlsunset" = {
+          format = "󰈋 wlsunset";
+          on-click = ''
+            #!/bin/bash
+
+            # Kill other programs
+            killall gammastep
+            killall wl-gammactl
+
+            # Source the sunvar.sh script to get the variable
+            source /tmp/wlsunset_state
+
+            if pgrep -x "wlsunset" > /dev/null
+            then
+                killall wlsunset > /dev/null 2>&1
+            else
+                if ! wlsunset -T $VAR > /dev/null 2>&1; then
+                    VAR=4100
+                    echo "VAR=$VAR" > /tmp/wlsunset_state
+                    wlsunset -T $VAR > /dev/null 2>&1 &
+                fi
+            fi
+          '';
+          on-scroll-up = ''
+            #!/bin/bash
+
+            # Kill other programs
+            killall gammastep
+            killall wl-gammactl
+
+            # Source the sunvar.sh script to get the variable
+            source /tmp/wlsunset_state
+
+            # Set min and max values
+            MIN=4100
+            MAX=6500
+
+            # Check if the variable is set. If not, set it to min
+            if [ -z "$VAR" ]
+            then
+                VAR=$MIN
+            fi
+
+            # Increase the variable by 200
+            VAR=$((VAR + 200))
+
+            # Ensure the variable does not exceed max
+            if ((VAR > MAX))
+            then
+                VAR=$MAX
+            fi
+
+            # Update the variable in /tmp/wlsunset_state
+            echo "VAR=$VAR" > /tmp/wlsunset_state
+
+            # Print the new value of VAR
+            echo "New value of VAR: $VAR"
+
+            # Check if wlsunset is running
+            if pgrep -x "wlsunset" > /dev/null
+            then
+                # If wlsunset is running, kill it
+                killall -9 "wlsunset"
+            fi
+
+            # Run wlsunset with the new value
+            wlsunset -T $VAR
+          '';
+          on-scroll-down = ''
+            ##!/bin/bash
+
+            # Kill other programs
+            killall gammastep
+            killall wl-gammactl
+
+            # Source the sunvar.sh script to get the variable
+            source /tmp/wlsunset_state
+
+            # Set min and max values
+            MIN=4100
+            MAX=6500
+
+            # Check if the variable is set. If not, set it to max
+            if [ -z "$VAR" ]
+            then
+                VAR=$MAX
+            fi
+
+            # Decrease the variable by 200
+            VAR=$((VAR - 200))
+
+            # Ensure the variable does not go below min
+            if ((VAR < MIN))
+            then
+                VAR=$MIN
+            fi
+
+            # Update the variable in /tmp/wlsunset_state
+            echo "VAR=$VAR" > /tmp/wlsunset_state
+
+            # Print the new value of VAR
+            echo "New value of VAR: $VAR"
+
+            # Check if wlsunset is running
+            if pgrep -x "wlsunset" > /dev/null
+            then
+                # If wlsunset is running, kill it
+                killall -9 "wlsunset"
+            fi
+
+            # Run wlsunset with the new value
+            wlsunset -T $VAR
+          '';
+        };
+
+        "custom/wlgammactl" = {
+          format = "{icon} wlgammactl";
+          format-source = "{icon} wlgammactl";
+          format-icons = ["󰃞"];
+          
+          on-scroll-down = ''
+            #!/bin/bash
+
+            # Default brightness
+            default_brightness=1.0
+
+            # Kill other programs
+            killall gammastep
+            killall wlsunset
+
+            # Check if wl-gammactl is currently running
+            if pgrep wl-gammactl >/dev/null; then
+                # If wl-gammactl is running, kill it and start with decreased brightness
+                current_brightness=$(cat /tmp/wl_gammactl_state)
+                current_brightness=$(awk "BEGIN {print $current_brightness - 0.05}")
+                if (( $(echo "$current_brightness < 0.5" | bc -l) )); then
+                    notify-send -t 700 "Brightness can't go below 0.5."
+                else
+                    killall wl-gammactl
+                    wl-gammactl -c 1.000 -b "$current_brightness" -g 1.000 &
+                    echo "$current_brightness" > /tmp/wl_gammactl_state
+                    notify-send -t 700 "Brightness $current_brightness"
+                fi
+            else
+                wl-gammactl -c 1.000 -b "$default_brightness" -g 1.000 &
+                echo "$default_brightness" > /tmp/wl_gammactl_state
+                notify-send -t 700 "Brightness Control Started"
+            fi
+          '';
+          
+          on-scroll-up = ''
+            ##!/bin/bash
+
+            # Default brightness
+            default_brightness=1.0
+
+            # Kill other programs
+            killall gammastep
+            killall wlsunset
+
+            # Check if wl-gammactl is currently running
+            if pgrep wl-gammactl >/dev/null; then
+                # If wl-gammactl is running, kill it and start with increased brightness
+                current_brightness=$(cat /tmp/wl_gammactl_state)
+                current_brightness=$(awk "BEGIN {print $current_brightness + 0.05}")
+                if (( $(echo "$current_brightness > 1.0" | bc -l) )); then
+                    notify-send -t 700 "Brightness can't exceed 1.0."
+                else
+                    killall wl-gammactl
+                    wl-gammactl -c 1.000 -b "$current_brightness" -g 1.000 &
+                    echo "$current_brightness" > /tmp/wl_gammactl_state
+                    notify-send -t 700 "Brightness $current_brightness"
+                fi
+            else
+                wl-gammactl -c 1.000 -b "$default_brightness" -g 1.000 &
+                echo "$default_brightness" > /tmp/wl_gammactl_state
+                notify-send -t 700 "Brightness Control Started"
+            fi
+          '';
+          
+          on-click = ''
+            ##!/bin/bash
+
+            # Kill other programs
+            killall gammastep
+            killall wlsunset
+
+            if pgrep wl-gammactl >/dev/null; then
+                killall wl-gammactl
+                notify-send -t 700 "Brightness Control Stopped"
+            else
+                if [ -f /tmp/wl_gammactl_state ]; then
+                    default_brightness=$(cat /tmp/wl_gammactl_state)
+                else
+                    default_brightness=1.0
+                fi
+                wl-gammactl -c 1.000 -b "$default_brightness" -g 1.000 &
+                echo "$default_brightness" > /tmp/wl_gammactl_state
+                notify-send -t 700 "Brightness Control ON"
+            fi
+          '';
         };
 
         pulseaudio = {
@@ -262,7 +550,9 @@ in
             󱚶  {bandwidthDownBits}'';
           on-click = ""; # FIXME: Add on-click setup for preview like macos
         };
-        backlight = {
+        
+        "custom/backlight" = {
+          exec-if = "light status 2>/dev/null";
           tooltip = false;
           format = " {}%";
           interval = 1;
@@ -322,24 +612,19 @@ in
 
         "custom/menu" = {
           return-type = "json";
-          #exec = "echo $USER@$HOSTNAME";
-          #on-click = "${systemctl} --user restart waybar";
-          #text = "󱄅";
           exec = jsonOutput "menu" {
             text = "󱄅";
             pre = ''
               OS="$(${cat} /etc/os-release | ${grep} PRETTY_NAME | ${cut} -d '"' -f2)"
               Kernel="$(uname -s -r -m)"
-              Darling="$(darling shell uname -s -r -m) (Darling)" 
               Wine="$(wine-version)"'';
+            # Darling="$(${darling} shell uname -s -r -m) (Darling)"
             tooltip = ''
               $OS
               $Kernel
-              $Darling
               $Wine'';
+            # $Darling
           };
-          #on-click-left = "wofi -S drun -x 10 -y 10 -W 25% -H 60%";
-          #on-click-right = "swaymsg scratchpad show";
         };
 
         "custom/hostname" = {
@@ -391,37 +676,6 @@ in
         #   };
         #   on-click = "";
         # };
-
-        "custom/gammastep" = {
-          interval = 5;
-          return-type = "json";
-          exec = jsonOutput "gammastep" {
-            pre = ''
-              if unit_status="$(${systemctl} --user is-active gammastep)"; then
-              status="$unit_status ($(${journalctl} --user -u gammastep.service -g 'Period: ' | ${tail} -1 | ${cut} -d ':' -f6 | ${xargs}))"
-              else
-              status="$unit_status"
-              fi
-            '';
-            alt = "\${status:-inactive}";
-            tooltip = "Gammastep is $status";
-          };
-          format = "{icon}";
-          format-icons = {
-            "activating" = "󰁪 ";
-            "deactivating" = "󰁪 ";
-            "inactive" = "? ";
-            "active (Night)" = " ";
-            "active (Nighttime)" = " ";
-            "active (Transition (Night)" = " ";
-            "active (Transition (Nighttime)" = " ";
-            "active (Day)" = " ";
-            "active (Daytime)" = " ";
-            "active (Transition (Day)" = " ";
-            "active (Transition (Daytime)" = " ";
-          };
-          on-click = "${systemctl} --user is-active gammastep && ${systemctl} --user stop gammastep || ${systemctl} --user start gammastep";
-        };
 
         "custom/currentplayer" = {
           interval = 2;
@@ -493,7 +747,7 @@ in
         }
         window#waybar {
           background-color: #${colors.base00};
-          border: 2px solid #${colors.base0C};
+          border: 2px solid #${colors.base05};
           border-radius: 30px;
         }
 
@@ -512,7 +766,7 @@ in
 
         .modules-left {
           background-color: #${colors.base00};
-          border: 2px solid #${colors.base0C};
+          border: 2px solid #${colors.base05};
           border-radius: 30px;
           margin-left: 21px;
           margin-top: 7px;
@@ -525,7 +779,7 @@ in
 
         .modules-center {
           background-color: #${colors.base00};
-          border: 2px solid #${colors.base0C};
+          border: 2px solid #${colors.base05};
           border-radius: 30px;
           margin-top: 7px;
           margin-bottom: 7px;
@@ -537,7 +791,7 @@ in
 
         .modules-right {
           background-color: #${colors.base00};
-          border: 2px solid #${colors.base0C};
+          border: 2px solid #${colors.base05};
           border-radius: 30px;
           margin-right: 21px;
           margin-top: 7px;
@@ -555,7 +809,7 @@ in
 
         #custom-menu {
           background-color: #${colors.base02};
-          /* border: 0px solid #${colors.base0C}; */
+          /* border: 0px solid #${colors.base05}; */
           border-radius: 30px;
           padding-left: 14px;
           padding-right: 18px;
@@ -563,7 +817,7 @@ in
 
         #custom-currentplayer { /* SPOTIFY ICON */
           background-color: #${colors.base02};
-          border: 0px solid #${colors.base0C};
+          border: 0px solid #${colors.base05};
           border-radius: 30px;
           padding-left: 18px;
           padding-right: 14px;
@@ -628,7 +882,7 @@ in
           font-family: 'JetBrains Mono', Regular;
           font-size: 9pt;
           background-color: #${colors.base02};
-          border: 0px solid #${colors.base0C};
+          border: 0px solid #${colors.base05};
           border-radius: 30px;
           padding-left: 16px;
           padding-right: 16px;
@@ -637,7 +891,7 @@ in
 
         /* #clock-popup { */
         /*   background-color: #${colors.base02}; */
-        /*   border: 2px solid #${colors.base0C}; */
+        /*   border: 2px solid #${colors.base05}; */
         /*   border-radius: 10px; */
         /*   font-size: 16px; */
         /* } */
@@ -649,7 +903,51 @@ in
 
         #pulseaudio {
           background-color: #${colors.base00};
-          border: 0px solid #${colors.base0C};
+          border: 0px solid #${colors.base05};
+          border-radius: 30px;
+          color: #${colors.base05};
+          padding-left: 8px;
+          padding-right: 8px;
+          margin: 0px;
+          font-size: 9pt;
+        }
+
+        #custom-backlight {
+          background-color: #${colors.base00};
+          border: 0px solid #${colors.base05};
+          border-radius: 30px;
+          color: #${colors.base05};
+          padding-left: 8px;
+          padding-right: 8px;
+          margin: 0px;
+          font-size: 9pt;
+        }
+        
+        #custom-wlgammactl {
+          background-color: #${colors.base00};
+          border: 0px solid #${colors.base05};
+          border-radius: 30px;
+          color: #${colors.base05};
+          padding-left: 8px;
+          padding-right: 8px;
+          margin: 0px;
+          font-size: 9pt;
+        }
+
+        #custom-gammastep {
+          background-color: #${colors.base00};
+          border: 0px solid #${colors.base05};
+          border-radius: 30px;
+          color: #${colors.base05};
+          padding-left: 8px;
+          padding-right: 8px;
+          margin: 0px;
+          font-size: 9pt;
+        }
+
+        #custom-wlsunset {
+          background-color: #${colors.base00};
+          border: 0px solid #${colors.base05};
           border-radius: 30px;
           color: #${colors.base05};
           padding-left: 8px;
@@ -684,7 +982,7 @@ in
         .mail
         {
           background-color: #${colors.base02};
-          border: 0px solid #${colors.base0C};
+          border: 0px solid #${colors.base05};
           border-radius: 30px;
           padding-left: 16px;
           padding-right: 16px;
@@ -707,7 +1005,7 @@ in
         }
         #memory {
           background-color: #${colors.base02};
-          border: 0px solid #${colors.base0C};
+          border: 0px solid #${colors.base05};
           border-radius: 30px;
           padding-left: 16px;
           padding-right: 16px;
@@ -716,7 +1014,7 @@ in
 
         tooltip {
           background-color: #${colors.base00};
-          border: 2px solid #${colors.base0C};
+          border: 2px solid #${colors.base05};
           border-radius: 10px;
           margin-top: 20px;
         }

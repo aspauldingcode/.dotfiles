@@ -59,6 +59,7 @@
     krita
     libreoffice-fresh
     xdg-desktop-portal-wlr
+    geoclue2
     gtkdialog
     pcmanfm
     wofi-emoji
@@ -83,6 +84,7 @@
     # nodejs
     ncurses6
     flex
+    light
     bison
     gnumake
     gcc
