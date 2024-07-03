@@ -16,9 +16,6 @@
     #./wg-quick.nix
   ];
 
-  # - Using PipeWire as the sound server conflicts with PulseAudio. 
-  # This option requires `hardware.pulseaudio.enable` to be set to false
-  # hardware.pulseaudio.enable = false;
 
   # Bootloader.
   boot = {
@@ -127,8 +124,45 @@
   time.timeZone = "America/Denver";
 
   # Enable Bluetooth
-  hardware.bluetooth.enable = true;
-  services.blueman.enable = true; # FIXME
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+  services.blueman.enable = true; # pairing for bluetooth items in systray.
+  # Using Bluetooth headset buttons to control media player
+  systemd.user.services.mpris-proxy = {
+    description = "Mpris proxy";
+    after = [ "network.target" "sound.target" ];
+    wantedBy = [ "default.target" ];
+    serviceConfig.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
+  };
+  # Enabling A2DP Sink
+  hardware.bluetooth.settings = {
+    General = {
+      Enable = "Source,Sink,Media,Socket";
+      Experimental = true; # Showing battery charge of bluetooth devices (which might lead to bugs)
+    };
+  };
+  # use pipewire instead.
+  # # Enabling extra codecs
+  # hardware.pulseaudio = {
+  #   enable = true;
+  #   package = pkgs.pulseaudioFull;
+  # };
+  # # System-Wide PulseAudio
+  # hardware.pulseaudio.configFile = pkgs.writeText "default.pa" ''
+  #   load-module module-bluetooth-policy
+  #   load-module module-bluetooth-discover
+  #   ## module fails to load with 
+  #   ##   module-bluez5-device.c: Failed to get device path from module arguments
+  #   ##   module.c: Failed to load module "module-bluez5-device" (argument: ""): initialization failed.
+  #   # load-module module-bluez5-device
+  #   # load-module module-bluez5-discover
+  # '';
+  # # set pulseaudio to automatically switch audio to the connected bluetooth device when it connects
+  # hardware.pulseaudio.extraConfig = "
+  #   load-module module-switch-on-connect
+  # ";
 
   #add opengl (to fix Qemu)
   hardware.opengl.enable = true;
@@ -217,6 +251,7 @@
       pulse.enable = true;
       jack.enable = true;
     };
+
     #getty.autologinUser = "alex"; # Enable automatic login for the user.
     udisks2.enable = true;
 

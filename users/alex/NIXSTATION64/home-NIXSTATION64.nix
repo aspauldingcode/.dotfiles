@@ -7,10 +7,10 @@
     ./packages-NIXSTATION64.nix
     ./sway.nix
     ./../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
+    ./../universals/packages/firefox/firefox.nix
     ./theme.nix # theme of system.
     ./git.nix
     ./alacritty.nix
-    ./firefox.nix
     ./yazi/yazi.nix
     ./mimeapps.nix
     ./mako.nix

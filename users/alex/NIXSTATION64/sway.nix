@@ -57,9 +57,10 @@
         "${modifier}+f" = "exec maximize"; # custom script for zoom-fullscreen NOTWORKING?
         "${modifier}+Shift+f" = "fullscreen toggle";
         "${modifier}+Return" = "exec ${terminal}";
-        "${modifier}+Alt+Space" = "exec brave";
-        "${modifier}+Shift+Alt+Space" = "exec brave --incognito";
-        "${modifier}+Control+Alt+Space" = "exec brave --tor";
+        # "${modifier}+Alt+Space" = "exec brave";
+        # "${modifier}+Shift+Alt+Space" = "exec brave --incognito";
+        "${modifier}+Alt+Space" = "exec firefox";
+        "${modifier}+Shift+Alt+Space" = "exec firefox -private-window";
         "${modifier}+Shift+q" = "kill";
         "${modifier}+q" = "exec wtype -M ctrl -P w -m ctrl -p w";
         "${modifier}+a" = "exec show-all-windows";
@@ -141,24 +142,8 @@
         "${modifier}+s" = "layout tabbed"; # macos is stacked layout
         "${modifier}+e" = "layout default";
 
-        "${modifier}+b" = "split horizontal";
-        "${modifier}+v" = "split vertical";
-
-        # Move floating windows
-        # "${modifier}+Alt+Ctrl+${left}" = "move left 20px";
-        # "${modifier}+Alt+Ctrl+${down}" = "move down 20px";
-        # "${modifier}+Alt+Ctrl+${up}" = "move up 20px";
-        # "${modifier}+Alt+Ctrl+${right}" = "move right 20px";
-        # "${modifier}+Alt+Ctrl+Left" = "move left 20px";
-        # "${modifier}+Alt+Ctrl+Down" = "move down 20px";
-        # "${modifier}+Alt+Ctrl+Up" = "move up 20px";
-        # "${modifier}+Alt+Ctrl+Right" = "move right 20px";
-        #
-        #"${modifier}+o" = "inhibit_idle open; border normal; mark --add inhibiting_idle";
-        #"${modifier}+Shift+o" = "inhibit_idle none; border pixel; unmark inhibiting_idle";
-
-        #"${modifier}+j" = "exec ${pkgs.mako}/bin/makoctl invoke"; # Invoke default action on top notification.
-        #"${modifier}+Shift+t" = "exec ${pkgs.flashfocus}/bin/flash_window";
+        "${modifier}+b" = "split horizontal"; # when toggled will preview the right screen like it will with mouse modifier
+        "${modifier}+v" = "split vertical"; # when toggled will preview the lower screen like it will with mouse modifier
 
         # Change focused window
         "${modifier}+${left}" = "focus left";
