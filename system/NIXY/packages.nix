@@ -79,10 +79,8 @@
     # Fixes cursorcerer symlink!
     ln -sf "${pkgs.callPackage ./cursorcerer.nix { }}/Cursorcerer.prefPane" "/Library/PreferencePanes/"
     # adds MacForge Plugins 
-    mkdir -p /Library/Application Support/MacEnhance/Plugins/
-    ln -sf ${../../users/alex/extraConfig/macforge-plugins/Goodbye.bundle} "/Library/Application Support/MacEnhance/Plugins/Goodbye.bundle"
-    ln -sf ${../../users/alex/extraConfig/macforge-plugins/MEMiniMe.bundle} "/Library/Application Support/MacEnhance/Plugins/MEMiniMe.bundle"
-    ln -sf ${../../users/alex/extraConfig/macforge-plugins/PaintCan.bundle} "/Library/Application Support/MacEnhance/Plugins/PaintCan.bundle"
-    ln -sf ${../../users/alex/extraConfig/macforge-plugins/StopStoplightLight.bundle} "/Library/Application Support/MacEnhance/Plugins/StopStoplightLight.bundle"
+    cd ${../../users/alex/extraConfig/macforge-plugins}
+    find . -type d -exec mkdir -p /Library/Application\ Support/MacEnhance/Plugins/{} \;
+    find . -type f -exec ln -sf ${../../users/alex/extraConfig/macforge-plugins}/{} /Library/Application\ Support/MacEnhance/Plugins/{} \;
   '';
 }
