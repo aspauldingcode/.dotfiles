@@ -13,6 +13,7 @@
     nix-colors.homeManagerModules.default
     ./packages-NIXY.nix
     ./../extraConfig/nvim/nixvim.nix # FIXME: BROKEN atm
+    ./../universals/packages/firefox/firefox.nix
     ./theme.nix
     ./xcode/xcode.nix # FIXME: use nix-color theme
     ./alacritty.nix
@@ -27,7 +28,6 @@
     ./cava.nix
     #./zellij.nix
     ./btop.nix
-    ./firefox.nix
     ./xinit.nix
     ./i3.nix
     ./qutebrowser.nix
