@@ -91,10 +91,11 @@
       wbg
       wev
       wl-clipboard
-      wl-gammactl
       wl-screenrec
       wlroots
       wlogout
+      wl-gammactl
+      gammastep
       wlsunset
       wofi
       wshowkeys
@@ -112,10 +113,6 @@
       corefonts
       glib
       sassc
-
-      # Location and time services
-      gammastep
-      geoclue2
 
       # Miscellaneous
       beeper

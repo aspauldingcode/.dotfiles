@@ -175,60 +175,62 @@ in
           on-scroll-down = ''
             #!/bin/bash
 
-            # Default temperature
-            default_temp=3400
+            # Define min and max temperatures
+            MIN_TEMP=3500
+            MAX_TEMP=6500
 
             # Kill other programs
             killall wlsunset
             killall wl-gammactl
 
-            # Check if gammastep is currently running
-            if pgrep gammastep >/dev/null; then
-                # If gammastep is running, kill it and start with decreased temperature
+            # Always kill gammastep to ensure a clean state
+            killall gammastep
+
+            # Read current temperature from state file, or set to max if file doesn't exist
+            if [ -f /tmp/gammastep_state ]; then
                 current_temp=$(cat /tmp/gammastep_state)
-                current_temp=$((current_temp - 200))
-                if (( current_temp < 2600 )); then
-                    notify-send -t 700 "Temp can't subceed 2600K."
-                else
-                    killall gammastep
-                    gammastep -O "$current_temp" &
-                    echo "$current_temp" > /tmp/gammastep_state
-                    notify-send -t 700 "Temp $current_temp K"
-                fi
             else
-                gammastep -O "$default_temp" &
-                echo "$default_temp" > /tmp/gammastep_state
-                notify-send -t 700 "RedGlow Started"
+                current_temp=$MAX_TEMP
             fi
+
+            # Decrease temperature
+            new_temp=$((current_temp - 200))
+            if [ $new_temp -lt $MIN_TEMP ]; then
+                new_temp=$MIN_TEMP
+            fi
+            gammastep -O "$new_temp" &
+            echo "$new_temp" > /tmp/gammastep_state
+            notify-send -t 700 "Temp $new_temp K"
           '';
           on-scroll-up = ''
             #!/bin/bash
 
-            # Default temperature
-            default_temp=3400
+            # Define min and max temperatures
+            MIN_TEMP=3500
+            MAX_TEMP=6500
 
             # Kill other programs
             killall wlsunset
             killall wl-gammactl
 
-            # Check if gammastep is currently running
-            if pgrep gammastep >/dev/null; then
-                # If gammastep is running, kill it and start with increased temperature
+            # Always kill gammastep to ensure a clean state
+            killall gammastep
+
+            # Read current temperature from state file, or set to min if file doesn't exist
+            if [ -f /tmp/gammastep_state ]; then
                 current_temp=$(cat /tmp/gammastep_state)
-                current_temp=$((current_temp + 200))
-                if (( current_temp > 5000 )); then
-                    notify-send -t 700 "Temp can't exceed 5000K."
-                else
-                    killall gammastep
-                    gammastep -O "$current_temp" &
-                    echo "$current_temp" > /tmp/gammastep_state
-                    notify-send -t 700 "Temp $current_temp K"
-                fi
             else
-                gammastep -O "$default_temp" &
-                echo "$default_temp" > /tmp/gammastep_state
-                notify-send -t 700 "RedGlow Started"
+                current_temp=$MIN_TEMP
             fi
+
+            # Increase temperature
+            new_temp=$((current_temp + 200))
+            if [ $new_temp -gt $MAX_TEMP ]; then
+                new_temp=$MAX_TEMP
+            fi
+            gammastep -O "$new_temp" &
+            echo "$new_temp" > /tmp/gammastep_state
+            notify-send -t 700 "Temp $new_temp K"
           '';
           on-click = ''
             #!/bin/bash
@@ -237,22 +239,23 @@ in
             killall wlsunset
             killall wl-gammactl
 
+            # Read current state
+            if [ -f /tmp/gammastep_state ]; then
+                current_temp=$(cat /tmp/gammastep_state)
+            else
+                current_temp=$(cat /tmp/gammastep_state)
+            fi
+
             if pgrep gammastep >/dev/null; then
                 killall gammastep
                 notify-send -t 700 "RedGlow Stopped"
             else
-                if [ -f /tmp/gammastep_state ]; then
-                    default_temp=$(cat /tmp/gammastep_state)
-                else
-                    default_temp=3400
-                fi
-                gammastep -O "$default_temp" &
-                echo "$default_temp" > /tmp/gammastep_state
+                gammastep -O "$current_temp" &
                 notify-send -t 700 "RedGlow ON"
             fi
           '';
         };
-
+        
         "custom/wlsunset" = {
           format = "󰈋 wlsunset";
           on-click = ''
@@ -322,7 +325,7 @@ in
             wlsunset -T $VAR
           '';
           on-scroll-down = ''
-            ##!/bin/bash
+            #!/bin/bash
 
             # Kill other programs
             killall gammastep
@@ -372,7 +375,6 @@ in
           format = "{icon} wlgammactl";
           format-source = "{icon} wlgammactl";
           format-icons = ["󰃞"];
-          
           on-scroll-down = ''
             #!/bin/bash
 
@@ -383,23 +385,32 @@ in
             killall gammastep
             killall wlsunset
 
+            # Read current brightness from state file
+            if [ -f /tmp/wl_gammactl_state ]; then
+                current_brightness=$(cat /tmp/wl_gammactl_state)
+            else
+                current_brightness=$default_brightness
+            fi
+
             # Check if wl-gammactl is currently running
             if pgrep wl-gammactl >/dev/null; then
-                # If wl-gammactl is running, kill it and start with decreased brightness
-                current_brightness=$(cat /tmp/wl_gammactl_state)
-                current_brightness=$(awk "BEGIN {print $current_brightness - 0.05}")
-                if (( $(echo "$current_brightness < 0.5" | bc -l) )); then
+                # Decrease the brightness
+                new_brightness=$(awk "BEGIN {print $current_brightness - 0.05}")
+                
+                # Ensure the new brightness is not below 0.5
+                if (( $(echo "$new_brightness < 0.5" | bc -l) )); then
+                    new_brightness=0.5
                     notify-send -t 700 "Brightness can't go below 0.5."
                 else
-                    current_gamma=$(awk "BEGIN {print 2 - ($current_brightness - 0.5) * 2}")
+                    current_gamma=$(awk "BEGIN {print 2 - ($new_brightness - 0.5) * 2}")
                     killall wl-gammactl
-                    wl-gammactl -c 1.000 -b "$current_brightness" -g "$current_gamma" &
-                    echo "$current_brightness" > /tmp/wl_gammactl_state
-                    notify-send -t 700 "Brightness $current_brightness, Gamma $current_gamma"
+                    wl-gammactl -c 1.000 -b "$new_brightness" -g "$current_gamma" &
+                    echo "$new_brightness" > /tmp/wl_gammactl_state
+                    notify-send -t 700 "Brightness $new_brightness, Gamma $current_gamma"
                 fi
             else
-                wl-gammactl -c 1.000 -b "$default_brightness" -g 1.000 &
-                echo "$default_brightness" > /tmp/wl_gammactl_state
+                wl-gammactl -c 1.000 -b "$current_brightness" -g 1.000 &
+                echo "$current_brightness" > /tmp/wl_gammactl_state
                 notify-send -t 700 "Brightness Control Started"
             fi
           '';
@@ -414,23 +425,32 @@ in
             killall gammastep
             killall wlsunset
 
+            # Read current brightness from state file
+            if [ -f /tmp/wl_gammactl_state ]; then
+                current_brightness=$(cat /tmp/wl_gammactl_state)
+            else
+                current_brightness=$default_brightness
+            fi
+
             # Check if wl-gammactl is currently running
             if pgrep wl-gammactl >/dev/null; then
-                # If wl-gammactl is running, kill it and start with increased brightness
-                current_brightness=$(cat /tmp/wl_gammactl_state)
-                current_brightness=$(awk "BEGIN {print $current_brightness + 0.05}")
-                if (( $(echo "$current_brightness > 1.0" | bc -l) )); then
+                # Increase the brightness
+                new_brightness=$(awk "BEGIN {print $current_brightness + 0.05}")
+                
+                # Ensure the new brightness does not exceed 1.0
+                if (( $(echo "$new_brightness > 1.0" | bc -l) )); then
+                    new_brightness=1.0
                     notify-send -t 700 "Brightness can't exceed 1.0."
                 else
-                    current_gamma=$(awk "BEGIN {print 2 - ($current_brightness - 0.5) * 2}")
+                    current_gamma=$(awk "BEGIN {print 2 - ($new_brightness - 0.5) * 2}")
                     killall wl-gammactl
-                    wl-gammactl -c 1.000 -b "$current_brightness" -g "$current_gamma" &
-                    echo "$current_brightness" > /tmp/wl_gammactl_state
-                    notify-send -t 700 "Brightness $current_brightness, Gamma $current_gamma"
+                    wl-gammactl -c 1.000 -b "$new_brightness" -g "$current_gamma" &
+                    echo "$new_brightness" > /tmp/wl_gammactl_state
+                    notify-send -t 700 "Brightness $new_brightness, Gamma $current_gamma"
                 fi
             else
-                wl-gammactl -c 1.000 -b "$default_brightness" -g 1.000 &
-                echo "$default_brightness" > /tmp/wl_gammactl_state
+                wl-gammactl -c 1.000 -b "$current_brightness" -g 1.000 &
+                echo "$current_brightness" > /tmp/wl_gammactl_state
                 notify-send -t 700 "Brightness Control Started"
             fi
           '';
@@ -447,13 +467,14 @@ in
                 notify-send -t 700 "Brightness Control Stopped"
             else
                 if [ -f /tmp/wl_gammactl_state ]; then
-                    default_brightness=$(cat /tmp/wl_gammactl_state)
+                    saved_brightness=$(cat /tmp/wl_gammactl_state)
+                    saved_gamma=$(awk "BEGIN {print 2 - ($saved_brightness - 0.5) * 2}")
                 else
-                    default_brightness=1.0
+                    saved_brightness=1.0
+                    saved_gamma=1.0
                 fi
-                wl-gammactl -c 1.000 -b "$default_brightness" -g 1.000 &
-                echo "$default_brightness" > /tmp/wl_gammactl_state
-                notify-send -t 700 "Brightness Control ON"
+                wl-gammactl -c 1.000 -b "$saved_brightness" -g "$saved_gamma" &
+                notify-send -t 700 "Brightness Control ON (Brightness: $saved_brightness, Gamma: $saved_gamma)"
             fi
           '';
         };

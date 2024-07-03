@@ -20,17 +20,13 @@ in
           sponsorblock
           ublock-origin
           bitwarden
-          darkreader
-          tabliss
           tampermonkey
           temporary-containers
           return-youtube-dislikes
           remove-youtube-s-suggestions
           refined-github
           re-enable-right-click
-          private-relay
           privacy-badger
-          onetab
           unpaywall
           languagetool
           ff2mpv
@@ -92,9 +88,9 @@ in
           "dom.forms.autocomplete.formautofill" = false;
           "dom.security.https_only_mode" = true;
           "distribution.searchplugins.defaultLocale" = "en-US";
-          "extensions.activeThemeID" = "firefox-alpenglow@mozilla.org";
-          "extensions.autoDisableScopes" = false;
-          "extensions.update.enabled" = false;
+          "extensions.activeThemeID" = "default-theme@mozilla.org"; # Use system theme
+          "extensions.autoDisableScopes" = 0;
+          "extensions.update.enabled" = true; # is that bad?
           "extensions.webcompat.enable_picture_in_picture_overrides" = true;
           "extensions.webcompat.enable_shims" = true;
           "extensions.webcompat.perform_injections" = true;
@@ -115,6 +111,26 @@ in
           "security.webauth.webauthn_enable_usbtoken" = true;
           "signon.rememberSignons" = false;
           "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+          "browser.display.use_system_colors" = true;
+          "browser.display.suppress_canvas_background_image_on_forced_colors" = true;
+          "browser.newtabpage.activity-stream.newNewtabExperience.colors" = "#0090ED,#FF4F5F,#2AC3A2,#FF7139,#A172FF,#FFA437,#FF2A8A";
+          "editor.use_custom_colors" = false;
+          "layout.css.forced-colors.enabled" = true;
+          "layout.css.inverted-colors.enabled" = false;
+          "pdfjs.forcePageColors" = false;
+          "pdfjs.highlightEditorColors" = "yellow=#FFFF98,green=#53FFBC,blue=#80EBFF,pink=#FFCBE6,red=#FF4F5F";
+          "pdfjs.pageColorsBackground" = "Canvas";
+          "pdfjs.pageColorsForeground" = "CanvasText";
+          "reader.colors_menu.enabled" = false;
+          "reader.custom_colors.background" = "";
+          "reader.custom_colors.foreground" = "";
+          "reader.custom_colors.selection-highlight" = "";
+          "reader.custom_colors.unvisited-links" = "";
+          "reader.custom_colors.visited-links" = "";
+          "ui.use_standins_for_native_colors" = false;
+          "webgl.colorspaces.prototype" = false;
+          "widget.gtk.libadwaita-colors.enabled" = true;
+          "widget.gtk.theme-scrollbar-colors.enabled" = true;
         };
       };
     };
@@ -148,13 +164,6 @@ in
         Enabled = true;
         Locked = true;
       };
-      ExtensionSettings = {
-        "*" = {
-          installation_mode = "blocked";
-          blocked_install_message = "FUCKING FORGET IT!";
-        };
-      };
-      ExtensionUpdate = false;
       "3rdparty".Extensions = {
         "uBlock0@raymondhill.net".adminSettings = {
           userSettings = rec {
