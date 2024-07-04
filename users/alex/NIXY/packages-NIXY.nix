@@ -899,7 +899,15 @@ in
       }
 
       function fullscreen_off() {
-          ${borders} apply-to=$window_id width=2 style=round background_color=0x11${colors.base00} blur_radius=15.0 active_color=0xff${colors.base07} inactive_color=0xff${colors.base05} #order=above 
+        # Read the gaps state file
+          gaps_state=$(cat /tmp/gaps_state)
+          if [ "$gaps_state" = "off" ]; then
+              ${borders} apply-to=$window_id width=5.0 style=square background_color=0x11${colors.base00} blur_radius=15.0 active_color=0xff${colors.base07} inactive_color=0xff${colors.base05} #order=above 
+          else
+              ${borders} apply-to=$window_id width=2.0 style=round  background_color=0x11${colors.base00} blur_radius=15.0 active_color=0xff${colors.base07} inactive_color=0xff${colors.base05} #order=above 
+          fi
+
+          # ${borders} apply-to=$window_id width=2 style=round background_color=0x11${colors.base00} blur_radius=15.0 active_color=0xff${colors.base07} inactive_color=0xff${colors.base05} #order=above 
           window_position=$(grep -A 4 "id: $window_id position:" "$fullscreen_state_file" | tr -d '\n' | sed 's/$/ }/')
           echo "Window position block extracted: $window_position"  # Debugging statement
 

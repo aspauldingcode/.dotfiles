@@ -195,9 +195,10 @@ in
           # ${modifier} - return :                ${alacritty}
           ${modifier} - return :                ${alacritty} msg create-window || open -na ${alacritty}
           ${modifier} - d :                     ${dmenu-mac}
-          ${mod1} + ${mod5} - space :           open -na "Brave Browser"
-          ${mod1} + ${smod} + ${mod5} - space :   open -na "Brave Browser" --args --incognito
-          ${mod1} + ${mod4} + ${mod5} - space : open -na "Brave Browser" --args --tor
+          # ${mod1} + ${mod5} - space :             open -na "Brave Browser"
+          # ${mod1} + ${smod} + ${mod5} - space :   open -na "Brave Browser" --args --incognito
+          ${mod1} + ${mod5} - space :             open -na "Firefox"
+          ${mod1} + ${smod} + ${mod5} - space :   open -na "Firefox" --args -private-window
           ${mod4} + ${mod5} - 0x33 :            sudo reboot # using cmd ctrl backspace
           ${mod4} + ${mod5} + ${smod} - 0x33 :    sudo shutdown -h now # using cmd ctrl backspace
           ${mod4} + ${mod5} - delete :          sudo reboot

@@ -447,7 +447,11 @@
         # treesitter conf
         treesitter = {
           enable = true;
-          folding = false; # enable by keybind?
+          folding = true; 
+          # zc to close a fold
+          # zo to open a fold
+          # zM to close all folds
+          # zR to open all folds
           indent = true;
           incrementalSelection = {
             enable = true;
@@ -459,6 +463,7 @@
             };
           };
         };
+
         treesitter-context = {
           enable = true;
           settings = {
@@ -466,6 +471,108 @@
           };
         };
 
+        nvim-ufo = {
+          enable = true;
+          enableGetFoldVirtText = true;
+          closeFoldKinds = {
+            imports = true;
+            comment = true;
+          };
+          foldVirtTextHandler = ''
+            function(virtText, lnum, endLnum, width, truncate)
+              local newVirtText = {}
+              local suffix = ('  %d '):format(endLnum - lnum)
+              local sufWidth = vim.fn.strdisplaywidth(suffix)
+              local targetWidth = width - sufWidth
+              local curWidth = 0
+              for _, chunk in ipairs(virtText) do
+                local chunkText = chunk[1]
+                local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+                if targetWidth > curWidth + chunkWidth then
+                  table.insert(newVirtText, chunk)
+                else
+                  chunkText = truncate(chunkText, targetWidth - curWidth)
+                  local hlGroup = chunk[2]
+                  table.insert(newVirtText, {chunkText, hlGroup})
+                  chunkWidth = vim.fn.strdisplaywidth(chunkText)
+                  -- str width returned from truncate() may less than 2nd argument, need padding
+                  if curWidth + chunkWidth < targetWidth then
+                    suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
+                  end
+                  break
+                end
+                curWidth = curWidth + chunkWidth
+              end
+              table.insert(newVirtText, {suffix, 'MoreMsg'})
+              return newVirtText
+            end
+          '';
+          openFoldHlTimeout = 300;
+          providerSelector = "function(bufnr, filetype, buftype) return {'treesitter', 'indent'} end";
+        };
+        
+        statuscol = {
+          enable = true;
+          settings = {
+            segments = [
+              {
+                text = [
+                  "%s"
+                ];
+                click = "v:lua.ScSa";
+              }
+              {
+                text = [
+                  {
+                    __raw = "function(args) return require('statuscol.builtin').lnumfunc(args) end";
+                  }
+                ];
+                click = "v:lua.ScLa";
+              }
+              {
+                text = [
+                  " "
+                  {
+                    __raw = "require('statuscol.builtin').foldfunc";
+                  }
+                  " "
+                ];
+                condition = [
+                  {
+                    __raw = "require('statuscol.builtin').not_empty";
+                  }
+                  true
+                  {
+                    __raw = "require('statuscol.builtin').not_empty";
+                  }
+                ];
+                click = "v:lua.ScFa";
+              }
+            ];
+            clickmod = "c";
+            clickhandlers = {
+              Lnum = "require('statuscol.builtin').lnum_click";
+              FoldClose = "require('statuscol.builtin').foldclose_click";
+              FoldOpen = "require('statuscol.builtin').foldopen_click";
+              FoldOther = "require('statuscol.builtin').foldother_click";
+              DapBreakpointRejected = "require('statuscol.builtin').toggle_breakpoint";
+              DapBreakpoint = "require('statuscol.builtin').toggle_breakpoint";
+              DapBreakpointCondition = "require('statuscol.builtin').toggle_breakpoint";
+              DiagnosticSignError = "require('statuscol.builtin').diagnostic_click";
+              DiagnosticSignHint = "require('statuscol.builtin').diagnostic_click";
+              DiagnosticSignInfo = "require('statuscol.builtin').diagnostic_click";
+              DiagnosticSignWarn = "require('statuscol.builtin').diagnostic_click";
+              GitSignsTopdelete = "require('statuscol.builtin').gitsigns_click";
+              GitSignsUntracked = "require('statuscol.builtin').gitsigns_click";
+              GitSignsAdd = "require('statuscol.builtin').gitsigns_click";
+              GitSignsChange = "require('statuscol.builtin').gitsigns_click";
+              GitSignsChangedelete = "require('statuscol.builtin').gitsigns_click";
+              GitSignsDelete = "require('statuscol.builtin').gitsigns_click";
+              gitsigns_extmark_signs_ = "require('statuscol.builtin').gitsigns_click";
+            };
+          };
+        };
+        
         # Filetree
         nvim-tree = {
           enable = true;
@@ -510,7 +617,7 @@
         auto-save.enable = false;
 
         # git and revisioning
-        gitgutter.enable = true;
+        # gitgutter.enable = true;
 
         # statusbar
         lualine = {
@@ -701,6 +808,7 @@
           plugin = nvim-scrollview;
           config = toLuaFile ./plugin/scrollview.lua;
         }
+
         # LSP
         #{
         #  plugin = nvim-lspconfig;
@@ -731,11 +839,6 @@
         #  plugin = pkgs.vimPlugins.cmp-nvim-tags;
         #  config = toLuaFile ./plugin/cmp-tags.lua;
         #}
-        #
-        # {
-        #   plugin = statuscol-nvim;
-        #   config = toLuaFile ./plugin/statuscol.lua;
-        # }
 
         # # Visual Fixes
         # {

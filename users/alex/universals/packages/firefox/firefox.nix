@@ -67,7 +67,7 @@ in
           "browser.download.viewableInternally.typeWasRegistered.svg" = true;
           "browser.download.viewableInternally.typeWasRegistered.webp" = true;
           "browser.download.viewableInternally.typeWasRegistered.xml" = true;
-          "browser.link.open_newwindow" = true;
+          "browser.link.open_newwindow" = 3; # Open links in new tabs
           "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
           "browser.search.isUS" = true;
           "browser.search.region" = "US";

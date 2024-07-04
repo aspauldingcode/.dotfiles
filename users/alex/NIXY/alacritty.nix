@@ -191,6 +191,536 @@ in
           mods = "Control";
           action = "DecreaseFontSize";
         }
+
+      #   # Command + Shift bindings
+# -- 5 is the sum of bits for the ctrl and shift modifiers (1 is shift, 2 is alt, 4 is ctrl);
+      # chars: "\x1b[74;5u" 
+      #   {
+      #     key = "A";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[65;5u";
+      #   }
+        {
+          key = "B";
+          mods = "Command|Shift";
+          chars = "\x1b[66;5u";
+        }
+      #   {
+      #     key = "C";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[67;5u";
+      #   }
+      #   {
+      #     key = "D";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[68;5u";
+      #   }
+      #   {
+      #     key = "E";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[69;5u";
+      #   }
+      #   {
+      #     key = "F";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[70;5u";
+      #   }
+      #   {
+      #     key = "G";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[71;5u";
+      #   }
+      #   {
+      #     key = "H";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[72;5u";
+      #   }
+      #   {
+      #     key = "I";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[73;5u";
+      #   }
+      #   {
+      #     key = "J";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[74;5u";
+      #   }
+      #   {
+      #     key = "K";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[75;5u";
+      #   }
+      #   {
+      #     key = "L";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[76;5u";
+      #   }
+      #   {
+      #     key = "M";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[77;5u";
+      #   }
+      #   {
+      #     key = "N";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[78;5u";
+      #   }
+      #   {
+      #     key = "O";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[79;5u";
+      #   }
+      #   {
+      #     key = "P";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[80;5u";
+      #   }
+      #   {
+      #     key = "Q";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[81;5u";
+      #   }
+      #   {
+      #     key = "R";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[82;5u";
+      #   }
+      #   {
+      #     key = "S";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[83;5u";
+      #   }
+      #   {
+      #     key = "T";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[84;5u";
+      #   }
+      #   {
+      #     key = "U";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[85;5u";
+      #   }
+      #   {
+      #     key = "V";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[86;5u";
+      #   }
+      #   {
+      #     key = "W";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[87;5u";
+      #   }
+      #   {
+      #     key = "X";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[88;5u";
+      #   }
+      #   {
+      #     key = "Y";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[89;5u";
+      #   }
+      #   {
+      #     key = "Z";
+      #     mods = "Command|Shift";
+      #     chars = "\x1b[90;5u";
+      #   }
+
+      #   # Command bindings
+      #   {
+      #     key = "A";
+      #     mods = "Command";
+      #     chars = "\x1b[65;5u";
+      #   }
+        {
+          key = "B";
+          mods = "Command";
+          chars = "\x1b[66;4u";
+        }
+      #   {
+      #     key = "C";
+      #     mods = "Command";
+      #     chars = "\x1b[67;5u";
+      #   }
+      #   {
+      #     key = "D";
+      #     mods = "Command";
+      #     chars = "\x1b[68;5u";
+      #   }
+      #   {
+      #     key = "E";
+      #     mods = "Command";
+      #     chars = "\x1b[69;5u";
+      #   }
+      #   {
+      #     key = "F";
+      #     mods = "Command";
+      #     chars = "\x1b[70;5u";
+      #   }
+      #   {
+      #     key = "G";
+      #     mods = "Command";
+      #     chars = "\x1b[71;5u";
+      #   }
+      #   {
+      #     key = "H";
+      #     mods = "Command";
+      #     chars = "\x1b[72;5u";
+      #   }
+      #   {
+      #     key = "I";
+      #     mods = "Command";
+      #     chars = "\x1b[73;5u";
+      #   }
+      #   {
+      #     key = "J";
+      #     mods = "Command";
+      #     chars = "\x1b[74;5u";
+      #   }
+      #   {
+      #     key = "K";
+      #     mods = "Command";
+      #     chars = "\x1b[75;5u";
+      #   }
+      #   {
+      #     key = "L";
+      #     mods = "Command";
+      #     chars = "\x1b[76;5u";
+      #   }
+      #   {
+      #     key = "M";
+      #     mods = "Command";
+      #     chars = "\x1b[77;5u";
+      #   }
+      #   {
+      #     key = "N";
+      #     mods = "Command";
+      #     chars = "\x1b[78;5u";
+      #   }
+      #   {
+      #     key = "O";
+      #     mods = "Command";
+      #     chars = "\x1b[79;5u";
+      #   }
+      #   {
+      #     key = "P";
+      #     mods = "Command";
+      #     chars = "\x1b[80;5u";
+      #   }
+      #   {
+      #     key = "Q";
+      #     mods = "Command";
+      #     chars = "\x1b[81;5u";
+      #   }
+      #   {
+      #     key = "R";
+      #     mods = "Command";
+      #     chars = "\x1b[82;5u";
+      #   }
+      #   {
+      #     key = "S";
+      #     mods = "Command";
+      #     chars = "\x1b[83;5u";
+      #   }
+      #   {
+      #     key = "T";
+      #     mods = "Command";
+      #     chars = "\x1b[84;5u";
+      #   }
+      #   {
+      #     key = "U";
+      #     mods = "Command";
+      #     chars = "\x1b[85;5u";
+      #   }
+      #   {
+      #     key = "V";
+      #     mods = "Command";
+      #     chars = "\x1b[86;5u";
+      #   }
+      #   {
+      #     key = "W";
+      #     mods = "Command";
+      #     chars = "\x1b[87;5u";
+      #   }
+      #   {
+      #     key = "X";
+      #     mods = "Command";
+      #     chars = "\x1b[88;5u";
+      #   }
+      #   {
+      #     key = "Y";
+      #     mods = "Command";
+      #     chars = "\x1b[89;5u";
+      #   }
+      #   {
+      #     key = "Z";
+      #     mods = "Command";
+      #     chars = "\x1b[90;5u";
+      #   }
+
+      #   # Control + Shift bindings
+      #   {
+      #     key = "A";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[65;5u";
+      #   }
+        {
+          key = "B";
+          mods = "Control|Shift";
+          chars = "\x1b[66;5u";
+        }
+      #   {
+      #     key = "C";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[67;5u";
+      #   }
+      #   {
+      #     key = "D";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[68;5u";
+      #   }
+      #   {
+      #     key = "E";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[69;5u";
+      #   }
+      #   {
+      #     key = "F";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[70;5u";
+      #   }
+      #   {
+      #     key = "G";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[71;5u";
+      #   }
+      #   {
+      #     key = "H";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[72;5u";
+      #   }
+      #   {
+      #     key = "I";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[73;5u";
+      #   }
+      #   {
+      #     key = "J";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[74;5u";
+      #   }
+      #   {
+      #     key = "K";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[75;5u";
+      #   }
+      #   {
+      #     key = "L";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[76;5u";
+      #   }
+      #   {
+      #     key = "M";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[77;5u";
+      #   }
+      #   {
+      #     key = "N";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[78;5u";
+      #   }
+      #   {
+      #     key = "O";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[79;5u";
+      #   }
+      #   {
+      #     key = "P";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[80;5u";
+      #   }
+      #   {
+      #     key = "Q";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[81;5u";
+      #   }
+      #   {
+      #     key = "R";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[82;5u";
+      #   }
+      #   {
+      #     key = "S";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[83;5u";
+      #   }
+      #   {
+      #     key = "T";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[84;5u";
+      #   }
+      #   {
+      #     key = "U";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[85;5u";
+      #   }
+      #   {
+      #     key = "V";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[86;5u";
+      #   }
+      #   {
+      #     key = "W";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[87;5u";
+      #   }
+      #   {
+      #     key = "X";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[88;5u";
+      #   }
+      #   {
+      #     key = "Y";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[89;5u";
+      #   }
+      #   {
+      #     key = "Z";
+      #     mods = "Control|Shift";
+      #     chars = "\x1b[90;5u";
+      #   }
+
+      #   # Control bindings
+      #   {
+      #     key = "A";
+      #     mods = "Control";
+      #     chars = "\x1b[65;5u";
+      #   }
+        {
+          key = "B";
+          mods = "Control";
+          chars = "\x1b[66;5u";
+        }
+      #   {
+      #     key = "C";
+      #     mods = "Control";
+      #     chars = "\x1b[67;5u";
+      #   }
+      #   {
+      #     key = "D";
+      #     mods = "Control";
+      #     chars = "\x1b[68;5u";
+      #   }
+      #   {
+      #     key = "E";
+      #     mods = "Control";
+      #     chars = "\x1b[69;5u";
+      #   }
+      #   {
+      #     key = "F";
+      #     mods = "Control";
+      #     chars = "\x1b[70;5u";
+      #   }
+      #   {
+      #     key = "G";
+      #     mods = "Control";
+      #     chars = "\x1b[71;5u";
+      #   }
+      #   {
+      #     key = "H";
+      #     mods = "Control";
+      #     chars = "\x1b[72;5u";
+      #   }
+      #   {
+      #     key = "I";
+      #     mods = "Control";
+      #     chars = "\x1b[73;5u";
+      #   }
+      #   {
+      #     key = "J";
+      #     mods = "Control";
+      #     chars = "\x1b[74;5u";
+      #   }
+      #   {
+      #     key = "K";
+      #     mods = "Control";
+      #     chars = "\x1b[75;5u";
+      #   }
+      #   {
+      #     key = "L";
+      #     mods = "Control";
+      #     chars = "\x1b[76;5u";
+      #   }
+      #   {
+      #     key = "M";
+      #     mods = "Control";
+      #     chars = "\x1b[77;5u";
+      #   }
+      #   {
+      #     key = "N";
+      #     mods = "Control";
+      #     chars = "\x1b[78;5u";
+      #   }
+      #   {
+      #     key = "O";
+      #     mods = "Control";
+      #     chars = "\x1b[79;5u";
+      #   }
+      #   {
+      #     key = "P";
+      #     mods = "Control";
+      #     chars = "\x1b[80;5u";
+      #   }
+      #   {
+      #     key = "Q";
+      #     mods = "Control";
+      #     chars = "\x1b[81;5u";
+      #   }
+      #   {
+      #     key = "R";
+      #     mods = "Control";
+      #     chars = "\x1b[82;5u";
+      #   }
+      #   {
+      #     key = "S";
+      #     mods = "Control";
+      #     chars = "\x1b[83;5u";
+      #   }
+      #   {
+      #     key = "T";
+      #     mods = "Control";
+      #     chars = "\x1b[84;5u";
+      #   }
+      #   {
+      #     key = "U";
+      #     mods = "Control";
+      #     chars = "\x1b[85;5u";
+      #   }
+      #   {
+      #     key = "V";
+      #     mods = "Control";
+      #     chars = "\x1b[86;5u";
+      #   }
+      #   {
+      #     key = "W";
+      #     mods = "Control";
+      #     chars = "\x1b[87;5u";
+      #   }
+      #   {
+      #     key = "X";
+      #     mods = "Control";
+      #     chars = "\x1b[88;5u";
+      #   }
+      #   {
+      #     key = "Y";
+      #     mods = "Control";
+      #     chars = "\x1b[89;5u";
+      #   }
+      #   {
+      #     key = "Z";
+      #     mods = "Control";
+      #     chars = "\x1b[90;5u";
+      #   }
       ];
     };
   };
