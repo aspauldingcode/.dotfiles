@@ -51,6 +51,7 @@
     casks = [
       "xquartz" # what an ugly app
       "alacritty"
+      "chatgpt"
       "hammerspoon"
       "phoenix"
       "prismlauncher"
@@ -59,6 +60,7 @@
       #"hiddenbar" #FIXME: disable for now, add back to build a working toggle.
       # "macforge" # out of date rn... need to use macforge beta
       "obs"
+      "obs-websocket"
       "flameshot"
       "element"
       "brave-browser"

@@ -26,6 +26,41 @@
                 };
                 rules = [
                   {
+                    description = "Swap Alt+Tab and Control+Tab";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "tab";
+                          modifiers = {
+                            mandatory = ["left_option"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "tab";
+                            modifiers = ["left_control"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "tab";
+                          modifiers = {
+                            mandatory = ["left_control"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "tab";
+                            modifiers = ["left_option"];
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
                     description = "Replace Command+Tab with Control+Tab";
                     manipulators = [
                       {

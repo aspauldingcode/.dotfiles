@@ -63,6 +63,7 @@ in
     # wireshark
     # nmapsi4
     #ruby
+    obs-cmd # remotely start/stop recording using cli and obs-websocket plugin
     obsidian
     sl
     fzf
@@ -306,7 +307,7 @@ in
             if [ "$gaps_status" = "on" ]; then
                 ${yabai} -m config external_bar all:50:0
             else
-                ${yabai} -m config external_bar all:41:0
+                ${yabai} -m config external_bar all:40:0
             fi
           else
             if [ "$gaps_status" = "on" ]; then
@@ -410,7 +411,7 @@ in
         if [ "$sketchybar_state" == "off" ]; then
           ${yabai} -m config external_bar all:0:0
         else
-          ${yabai} -m config external_bar all:41:0
+          ${yabai} -m config external_bar all:40:0
         fi
         ${borders} style=square order=below width=5.0
         ${sketchybar} --bar corner_radius=0
@@ -583,7 +584,7 @@ in
                 if [ "$gaps_status" = "on" ]; then
                     ${yabai} -m config external_bar all:50:0
                 else
-                    ${yabai} -m config external_bar all:41:0
+                    ${yabai} -m config external_bar all:40:0
                 fi
             else
                 if [ "$gaps_status" = "on" ]; then
