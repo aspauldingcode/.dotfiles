@@ -306,7 +306,7 @@ in
             if [ "$gaps_status" = "on" ]; then
                 ${yabai} -m config external_bar all:50:0
             else
-                ${yabai} -m config external_bar all:42:0
+                ${yabai} -m config external_bar all:41:0
             fi
           else
             if [ "$gaps_status" = "on" ]; then
@@ -402,15 +402,15 @@ in
       }
 
       off() {
-        ${yabai} -m config top_padding     0
-        ${yabai} -m config bottom_padding  0
-        ${yabai} -m config left_padding    0
-        ${yabai} -m config right_padding   0
+        ${yabai} -m config top_padding     2
+        ${yabai} -m config bottom_padding  2
+        ${yabai} -m config left_padding    2
+        ${yabai} -m config right_padding   2
         ${yabai} -m config window_gap      5
         if [ "$sketchybar_state" == "off" ]; then
           ${yabai} -m config external_bar all:0:0
         else
-          ${yabai} -m config external_bar all:42:0
+          ${yabai} -m config external_bar all:41:0
         fi
         ${borders} style=square order=below width=5.0
         ${sketchybar} --bar corner_radius=0
@@ -583,7 +583,7 @@ in
                 if [ "$gaps_status" = "on" ]; then
                     ${yabai} -m config external_bar all:50:0
                 else
-                    ${yabai} -m config external_bar all:42:0
+                    ${yabai} -m config external_bar all:41:0
                 fi
             else
                 if [ "$gaps_status" = "on" ]; then
