@@ -1251,181 +1251,234 @@ in
 
     # xvnc-iphone
     (pkgs.writeShellScriptBin "xvnc-iphone" ''     
-      #!/bin/bash
+      #!/bin/sh
 
-      # Function to prompt for iPhone IP and save to config file
-      prompt_and_save_ip() {
-          read -p "Enter your iPhone's IP address: " IPHONE_IP
-          mkdir -p ~/.config/xvnc-iphone
-          echo "IPHONE_IP=$IPHONE_IP" > ~/.config/xvnc-iphone/config
-      }
+        echo -e "\n\033[1;31m\t⚠️  WARNING! ⚠️\033[0m"
+        echo -e "\033[1;33m\tThis script is currently INSECURE over public networks.\033[0m"
+        echo -e "\033[1;33m\tUse at your own risk!\033[0m\n"
 
-      # Function to prompt for iPhone password and save to config file
-      prompt_and_save_password() {
-          read -s -p "Enter your iPhone's password: " IPHONE_PASSWD
-          echo
-          echo "IPHONE_PASSWD=$IPHONE_PASSWD" >> ~/.config/xvnc-iphone/config
-      }
+        # Function to prompt for iPhone IP and save to config file
+        prompt_and_save_ip() {
+            read -p "Enter your iPhone's IP address: " IPHONE_IP
+            mkdir -p ~/.config/xvnc-iphone
+            echo "IPHONE_IP=$IPHONE_IP" > ~/.config/xvnc-iphone/config
+        }
 
-      # Function to validate IP address
-      validate_ip() {
-          if [[ $1 =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-              return 0
-          else
-              return 1
-          fi
-      }
+        # Function to prompt for iPhone password and save to config file
+        prompt_and_save_password() {
+            read -s -p "Enter your iPhone's password: " IPHONE_PASSWD
+            echo
+            echo "IPHONE_PASSWD=$IPHONE_PASSWD" >> ~/.config/xvnc-iphone/config
+        }
 
-      # Function to clean up config file
-      cleanup_config() {
-          # Remove duplicate entries and keep only the first occurrence of each variable
-          awk '!seen[$1]++' "$CONFIG_FILE" > "''${CONFIG_FILE}.tmp" && mv "''${CONFIG_FILE}.tmp" "$CONFIG_FILE"
-      }
+        # Function to validate IP address
+        validate_ip() {
+            if [[ $1 =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                return 0
+            else
+                return 1
+            fi
+        }
 
-      # Check if config file exists and read IP and password
-      CONFIG_FILE=~/.config/xvnc-iphone/config
-      if [ -f "$CONFIG_FILE" ]; then
-          cleanup_config
-          source "$CONFIG_FILE"
-          if ! validate_ip "$IPHONE_IP"; then
-              echo "Invalid IP in config file. Please enter a new one."
-              prompt_and_save_ip
-          fi
-          if [ -z "$IPHONE_PASSWD" ]; then
-              echo "iPhone password not found in config file. Please enter it."
-              prompt_and_save_password
-          fi
-          if [ -z "$VNC_PORT" ]; then
-              echo "VNC_PORT=5901" >> "$CONFIG_FILE"
-          fi
-      else
-          prompt_and_save_ip
-          prompt_and_save_password
-          echo "VNC_PORT=5901" >> "$CONFIG_FILE"
-      fi
+        # Function to clean up config file
+        cleanup_config() {
+            # Remove duplicate entries and keep only the first occurrence of each variable
+            awk '!seen[$1]++' "$CONFIG_FILE" > "''${CONFIG_FILE}.tmp" && mv "''${CONFIG_FILE}.tmp" "$CONFIG_FILE"
+        }
 
-      # iPhone SSH details
-      IPHONE_USER="mobile"
-      VNC_PORT=''${VNC_PORT:-5901}  # Use the value from config or default to 5901
-      START_X_SERVER_SCRIPT_CONTENT='#!/bin/bash
+        # Function to find TigerVNC Viewer app
+        find_tigervnc_app() {
+            local tigervnc_app=$(find /Applications -maxdepth 1 -name "TigerVNC Viewer*.app" | head -n 1)
+            if [ -z "$tigervnc_app" ]; then
+                echo "TigerVNC Viewer app not found in /Applications"
+                exit 1
+            fi
+            echo "$tigervnc_app"
+        }
 
-      # Full paths to commands
-      XORG="/usr/bin/Xorg"
-      XTERM="/usr/bin/xterm"
+        # Function to launch VNC viewer
+        launch_vnc_viewer() {
+            local host="$1"
+            local port="$2"
 
-      # Kill any existing Xvnc, X, or window manager processes
-      killall Xvnc
-      killall Xorg
-      killall fluxbox
+            # Save the VNC password
+            echo "$IPHONE_PASSWD" | vncpasswd -f > ~/.vnc/passwd
+            chmod 600 ~/.vnc/passwd
 
-      # Check if VNC password is set
-      if [ ! -f ~/.vnc/passwd ]; then
-          echo "Please set your VNC password."
-          vncpasswd
-      fi
+            # Kill any existing VNC viewer processes
+            if [[ "$OSTYPE" == "darwin"* ]]; then
+                pkill -f "TigerVNC Viewer"
+            else
+                pkill -f "vncviewer"
+            fi
 
-      # Remove any existing X lock files
-      rm -f /tmp/.X1-lock
+            if [[ "$OSTYPE" == "darwin"* ]]; then
+                # macOS
+                local tigervnc_app=$(find_tigervnc_app)
+                open -a "$tigervnc_app" --args -passwd ~/.vnc/passwd "$host:$port" >/dev/null 2>&1 &
+            else
+                # Other operating systems
+                if command -v vncviewer >/dev/null 2>&1; then
+                    vncviewer -passwd ~/.vnc/passwd "$host:$port" >/dev/null 2>&1 &
+                else
+                    echo "VNC viewer not found. Please install a VNC viewer application."
+                    exit 1
+                fi
+            fi
+        }
 
-      # Start VNC server with specified port
-      Xvnc -PasswordFile ~/.vnc/passwd :1 -rfbport '$VNC_PORT' &
+        # Check if config file exists and read IP and password
+        CONFIG_FILE=~/.config/xvnc-iphone/config
+        if [ -f "$CONFIG_FILE" ]; then
+            cleanup_config
+            source "$CONFIG_FILE"
+            if ! validate_ip "$IPHONE_IP"; then
+                echo "Invalid IP in config file. Please enter a new one."
+                prompt_and_save_ip
+            fi
+            if [ -z "$IPHONE_PASSWD" ]; then
+                echo "iPhone password not found in config file. Please enter it."
+                prompt_and_save_password
+            fi
+            if [ -z "$VNC_PORT" ]; then
+                echo "VNC_PORT=5901" >> "$CONFIG_FILE"
+            fi
+        else
+            prompt_and_save_ip
+            prompt_and_save_password
+            echo "VNC_PORT=5901" >> "$CONFIG_FILE"
+        fi
 
-      # Wait for Xvnc to start
-      sleep 5
+        # iPhone SSH details
+        IPHONE_USER="mobile"
+        VNC_PORT=''${VNC_PORT:-5901}  # Use the value from config or default to 5901
+        START_X_SERVER_SCRIPT_CONTENT='#!/bin/bash
 
-      # Set up VNC and Fluxbox configurations
-      mkdir -p ~/.vnc
-      touch ~/.vnc/xstartup
-      echo "#!/bin/sh" > ~/.vnc/xstartup
-      echo "$XORG -ac -listen tcp -dpi 96 -noreset -config /etc/X11/xorg.conf" >> ~/.vnc/xstartup
-      chmod +x ~/.vnc/xstartup
+        # Full paths to commands
+        XORG="/usr/bin/Xorg"
+        XTERM="/usr/bin/xterm"
 
-      mkdir -p ~/.fluxbox
-      touch ~/.fluxbox/startup
-      echo "#!/bin/sh" > ~/.fluxbox/startup
-      echo "x-terminal-emulator &" >> ~/.fluxbox/startup
-      echo "exec /usr/bin/fluxbox" >> ~/.fluxbox/startup
-      chmod +x ~/.fluxbox/startup
+        # Kill any existing Xvnc, X, or window manager processes
+        killall Xvnc >/dev/null 2>&1
+        killall Xorg >/dev/null 2>&1
+        killall fluxbox >/dev/null 2>&1
 
-      # Set DISPLAY variable in zshrc and bashrc
-      echo "export DISPLAY=:1" >> ~/.zshrc
-      echo "export DISPLAY=:1" >> ~/.bashrc
+        # Check if VNC password is set
+        if [ ! -f ~/.vnc/passwd ]; then
+            echo "Please set your VNC password."
+            vncpasswd >/dev/null 2>&1
+        fi
 
-      # Set DISPLAY variable for VNC
-      export DISPLAY=:1
+        # Remove any existing X lock files
+        rm -f /tmp/.X1-lock /tmp/.X11-unix/X1 >/dev/null 2>&1
 
-      # Start Fluxbox for X11
-      fluxbox &
+        # Start VNC server with specified port
+        Xvnc -PasswordFile ~/.vnc/passwd :1 -rfbport '$VNC_PORT' >/dev/null 2>&1 &
 
-      # Launch an example application (xterm) on display :1
-      $XTERM -display :1 &
+        # Wait for Xvnc to start
+        sleep 5
 
-      # Optional: Add more applications to launch as needed
+        # Set up VNC and Fluxbox configurations
+        mkdir -p ~/.vnc
+        touch ~/.vnc/xstartup
+        echo "#!/bin/sh" > ~/.vnc/xstartup
+        echo "export DISPLAY=:1" >> ~/.vnc/xstartup
+        echo "fluxbox &" >> ~/.vnc/xstartup
+        echo "$XTERM &" >> ~/.vnc/xstartup
+        chmod +x ~/.vnc/xstartup
 
-      # Optionally, wait for X server to finish
-      wait
+        mkdir -p ~/.fluxbox
+        touch ~/.fluxbox/startup
+        echo "#!/bin/sh" > ~/.fluxbox/startup
+        echo "x-terminal-emulator &" >> ~/.fluxbox/startup
+        echo "exec /usr/bin/fluxbox" >> ~/.fluxbox/startup
+        chmod +x ~/.fluxbox/startup
 
-      # Provide connection information to the user
-      echo "You can use a VNC client to connect to your device locally at 127.0.0.1::'$VNC_PORT' or remotely using the Screen Sharing app on macOS Sonoma or other VNC clients."
-      '
+        # Set DISPLAY variable in zshrc and bashrc
+        echo "export DISPLAY=:1" >> ~/.zshrc
+        echo "export DISPLAY=:1" >> ~/.bashrc
 
-      # Copy the script to the iPhone's home directory, overwriting if it exists, and run it in the background
-      # Configure SSH to use key-based authentication for the iPhone
-      cat << EOF >> ~/.ssh/config
-      Host iphone
-          HostName ''${IPHONE_IP}
-          User ''${IPHONE_USER}
-          IdentityFile ~/.ssh/id_rsa_iphone
-      EOF
+        # Set DISPLAY variable for VNC
+        export DISPLAY=:1
 
-      # Generate SSH key if it doesn't exist
-      if [ ! -f ~/.ssh/id_rsa_iphone ]; then
-          ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa_iphone -N ""
-          ssh-copy-id -i ~/.ssh/id_rsa_iphone.pub iphone
-      fi
+        # Start Fluxbox for X11
+        fluxbox >/dev/null 2>&1 &
 
-      # Use the configured SSH host to copy the script
-      ssh -tt iphone "cat > /var/mobile/start_x_server.sh << 'EOF'
-      $START_X_SERVER_SCRIPT_CONTENT
-      EOF
-      chmod +x /var/mobile/start_x_server.sh && /var/mobile/start_x_server.sh" &
+        # Launch an example application (xterm) on display :1
+        $XTERM -display :1 >/dev/null 2>&1 &
 
-      # VNC server address
-      VNC_SERVER="$IPHONE_IP"
+        # Optional: Add more applications to launch as needed
 
-      # Wait for 5 seconds before attempting to connect
-      sleep 5
+        # Provide connection information to the user
+        echo "You can use a VNC client to connect to your device locally at 127.0.0.1::'$VNC_PORT' or remotely using TigerVNC."
+        '
 
-      # Connect to the VNC server using the built-in Screen Sharing tool
-      open "vnc://''${IPHONE_USER}:''${IPHONE_PASSWD}@''${VNC_SERVER}:''${VNC_PORT}" > /dev/null 2>&1 &
+        # Configure SSH to use key-based authentication for the iPhone
+        cat << EOF >> ~/.ssh/config
+        Host iphone
+            HostName ''${IPHONE_IP}
+            User ''${IPHONE_USER}
+            IdentityFile ~/.ssh/id_rsa_iphone
+        EOF
 
-      # Try to connect to VNC server, with one retry if the first attempt fails
-      for attempt in 1 2; do
-          if nc -z $VNC_SERVER $VNC_PORT; then
-              echo "Successfully connected to VNC server."
-              echo "To connect to your iPhone's VNC server, use the following details:"
-              echo "iPhone IP: $IPHONE_IP"
-              echo "VNC Port: $VNC_PORT"
-              exit 0
-          else
-              echo "Attempt $attempt: Retrying to connect to VNC server..."
-              sleep 5
-              open "vnc://''${IPHONE_USER}:''${IPHONE_PASSWD}@''${VNC_SERVER}:''${VNC_PORT}" > /dev/null 2>&1 &
-          fi
-      done
+        # Generate SSH key if it doesn't exist
+        if [ ! -f ~/.ssh/id_rsa_iphone ]; then
+            ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa_iphone -N ""
+            ssh-copy-id -i ~/.ssh/id_rsa_iphone.pub iphone
+        fi
 
-      echo "Failed to connect to VNC server after two attempts."
-      echo "To connect to your iPhone's VNC server, use the following details:"
-      echo "iPhone IP: $IPHONE_IP"
-      echo "VNC Port: $VNC_PORT"
+        # Create a temporary file for the script content
+        TEMP_SCRIPT=$(mktemp)
+        echo "$START_X_SERVER_SCRIPT_CONTENT" > "$TEMP_SCRIPT"
 
-      read -p "Would you like to enter a different iPhone IP address? (y/n): " RETRY
-      if [[ $RETRY =~ ^[Yy]$ ]]; then
-          prompt_and_save_ip
-          prompt_and_save_password
-          exec "$0"  # Restart the script with the new IP and password
-      fi
-      exit 1
+        # Use the configured SSH host to copy the script, make it executable, and run it
+        echo "Copying start_x_server.sh to iPhone, making it executable, and running it..."
+        ssh -i ~/.ssh/id_rsa_iphone iphone "cat > /var/mobile/start_x_server.sh && chmod +x /var/mobile/start_x_server.sh && /var/mobile/start_x_server.sh &" < "$TEMP_SCRIPT"
+
+        # Remove the temporary file
+        rm "$TEMP_SCRIPT"
+
+        # Wait for the X server to start
+        sleep 5
+
+        # VNC server address
+        VNC_SERVER="$IPHONE_IP"
+
+        # Launch VNC viewer
+        launch_vnc_viewer "$VNC_SERVER" "$VNC_PORT"
+
+        # Try to connect to VNC server, with one retry if the first attempt fails
+        for attempt in 1 2; do
+            if nc -z $VNC_SERVER $VNC_PORT >/dev/null 2>&1; then
+                echo "Successfully connected to VNC server."
+                echo "To connect to your iPhone's VNC server, use the following details:"
+                echo "iPhone IP: $IPHONE_IP"
+                echo "VNC Port: $VNC_PORT"
+                exit 0
+            else
+                if [ $attempt -eq 1 ]; then
+                    echo "Attempt $attempt: Failed to connect to VNC server. Retrying once..."
+                    sleep 5
+                    launch_vnc_viewer "$VNC_SERVER" "$VNC_PORT"
+                else
+                    echo "Failed to connect to VNC server after retry."
+                    break
+                fi
+            fi
+        done
+
+        echo "Failed to connect to VNC server after two attempts."
+        echo "To connect to your iPhone's VNC server, use the following details:"
+        echo "iPhone IP: $IPHONE_IP"
+        echo "VNC Port: $VNC_PORT"
+
+        read -p "Would you like to enter a different iPhone IP address? (y/n): " RETRY
+        if [[ $RETRY =~ ^[Yy]$ ]]; then
+            prompt_and_save_ip
+            prompt_and_save_password
+            exec "$0"  # Restart the script with the new IP and password
+        fi
+        exit 1
     '')
   ];
 }

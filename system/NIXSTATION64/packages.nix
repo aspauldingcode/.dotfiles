@@ -15,6 +15,8 @@
   programs.thunar.plugins = with pkgs.xfce; [
     thunar-archive-plugin
     thunar-volman
+    thunar-dropbox-plugin
+    thunar-media-tags-plugin
   ];
   services.gvfs.enable = true; # Mount, trash, and other functionalities
   services.tumbler.enable = true; # Thumbnail support for images
@@ -22,6 +24,7 @@
   environment.systemPackages = with pkgs; [
     neovim
     zellij
+    clang
     libsForQt5.qt5.qtbase
     libsForQt5.qt5.qtsvg
     libsForQt5.qt5.qtquickcontrols2
@@ -29,6 +32,8 @@
     libsForQt5.qt5.qtgraphicaleffects
     libsForQt5.dolphin
     libsForQt5.qt5ct
+    gnome.sushi
+    gnome.nautilus
     # libsForQt5.breeze-qt5
     # libsForQt5.breeze-gtk
     # libsForQt5.breeze-icons
@@ -100,7 +105,7 @@
 
     (pkgs.callPackage ./hybridbar.nix { })
     (pkgs.callPackage ./cursor.nix { }) # FIXME: broken atm.
-    
+
     #rebuild #sudo nixos-rebuild switch --show-trace --option eval-cache false --flake .#NIXSTATION64
     (pkgs.writeShellScriptBin "rebuild" ''
       # NIXSTATION64(x86_64-linux)
