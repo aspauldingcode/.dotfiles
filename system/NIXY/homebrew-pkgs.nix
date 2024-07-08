@@ -44,6 +44,7 @@
       #"okular" # FAILS
       #"dolphin" # FAILS
       #"ki18n" # FAILS
+      "ddcctl"
     ];
     #masApps = [ # FAILS
     #497799835 # Xcode 
@@ -66,7 +67,6 @@
       "brave-browser"
       "firefox"
       "alt-tab"
-      "standard-notes"
       "orbstack"
       "libreoffice"
       "karabiner-elements" # remap keyboard
@@ -81,6 +81,7 @@
       #"google-assistant"
       "gimp"
       "docker"
+      "kdeconnect"
     ];
     whalebrews = [
       #"wget" #FAILS

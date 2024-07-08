@@ -20,6 +20,7 @@ in
           enhancer-for-youtube # non-free
           sponsorblock
           ublock-origin
+          istilldontcareaboutcookies
           bitwarden
           tampermonkey
           temporary-containers
@@ -32,7 +33,6 @@ in
           languagetool
           ff2mpv
           link-cleaner
-          i-dont-care-about-cookies
           (pkgs.nur.repos.rycee.firefox-addons.buildFirefoxXpiAddon {
             pname = "bonjourr";
             version = "19.2.4";
