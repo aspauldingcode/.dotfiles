@@ -193,78 +193,110 @@
                     ];
                   }
                   {
-                    description = "Replace Alt+Shift+Q with Alt+Q in Alacritty";
+                    description = "Replace Alt+Shift+Q with Command+W in Alacritty";
                     manipulators = [
                       {
                         type = "basic";
                         from = {
-                          "key_code" = "q";
-                          modifiers = {
-                            mandatory = [ "left_option" "left_shift" ];
-                          };
+                          key_code = "q";
+                          modifiers.mandatory = [ "left_option" "left_shift" ];
                         };
                         to = [
                           {
-                            "key_code" = "w";
+                            key_code = "w";
                             modifiers = [ "left_command" ];
                           }
                         ];
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            "bundle_identifiers" = [ "^org\\.alacritty$" ];
+                            bundle_identifiers = [ "^org\\.alacritty$" ];
                           }
                         ];
                       }
                     ];
                   }
                   {
-                    description = "Replace Command+C with Control+C in Alacritty";
+                    description = "Swap Command+C with Control+C in Alacritty";
                     manipulators = [
                       {
                         type = "basic";
                         from = {
-                          "key_code" = "c";
-                          modifiers = {
-                            mandatory = [ "left_command" ];
-                          };
+                          key_code = "c";
+                          modifiers.mandatory = [ "left_command" ];
                         };
                         to = [
                           {
-                            "key_code" = "c";
+                            key_code = "c";
                             modifiers = [ "left_control" ];
                           }
                         ];
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            "bundle_identifiers" = [ "^org\\.alacritty$" ];
+                            bundle_identifiers = [ "^org\\.alacritty$" ];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "c";
+                          modifiers.mandatory = [ "left_control" ];
+                        };
+                        to = [
+                          {
+                            key_code = "c";
+                            modifiers = [ "left_command" ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = [ "^org\\.alacritty$" ];
                           }
                         ];
                       }
                     ];
                   }
                   {
-                    description = "Replace Command+Shift+C with Control+Shift+C in Alacritty";
+                    description = "Swap Command+Shift+C with Control+Shift+C in Alacritty";
                     manipulators = [
                       {
                         type = "basic";
                         from = {
-                          "key_code" = "c";
-                          modifiers = {
-                            mandatory = [ "left_command" "left_shift" ];
-                          };
+                          key_code = "c";
+                          modifiers.mandatory = [ "left_command" "left_shift" ];
                         };
                         to = [
                           {
-                            "key_code" = "c";
+                            key_code = "c";
                             modifiers = [ "left_control" "left_shift" ];
                           }
                         ];
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            "bundle_identifiers" = [ "^org\\.alacritty$" ];
+                            bundle_identifiers = [ "^org\\.alacritty$" ];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "c";
+                          modifiers.mandatory = [ "left_control" "left_shift" ];
+                        };
+                        to = [
+                          {
+                            key_code = "c";
+                            modifiers = [ "left_command" "left_shift" ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = [ "^org\\.alacritty$" ];
                           }
                         ];
                       }
@@ -561,7 +593,7 @@
                     ];
                   }
                   {
-                    description = "Swap Command and Control in Screen Sharing";
+                    description = "Swap Command and Control in Screen Sharing and X11";
                     manipulators = [
                       {
                         type = "basic";
@@ -576,7 +608,10 @@
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            "bundle_identifiers" = [ "^com\\.apple\\.ScreenSharing$" ];
+                            "bundle_identifiers" = [ 
+                              "^com\\.apple\\.ScreenSharing$"
+                              "^org\\.xquartz\\.X11$"
+                            ];
                           }
                         ];
                       }
@@ -593,7 +628,10 @@
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            "bundle_identifiers" = [ "^com\\.apple\\.ScreenSharing$" ];
+                            "bundle_identifiers" = [ 
+                              "^com\\.apple\\.ScreenSharing$" 
+                              "^org\\.xquartz\\.X11$"
+                            ];
                           }
                         ];
                       }

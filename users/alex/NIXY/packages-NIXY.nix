@@ -692,50 +692,61 @@ in
 
     #toggle-float
     (pkgs.writeShellScriptBin "toggle-float" ''
-      # Check if the script is provided with an argument
-      if [ $# -eq 0 ]; then
-        # Toggle between on/off states if no argument is provided
-        floating_state_file="/tmp/floating_state"
-        if [ -f "$floating_state_file" ] && grep -q "on" "$floating_state_file"; then
-          set_arg="off"
-        else
-          set_arg="on"
-        fi
-      else
-        set_arg="$1"
-      fi
+      # Function to check if the current window is floating
+      is_floating() {
+          ${yabai} -m query --windows --window | ${jq} -r '."is-floating"' | grep -q "true"
+      }
 
       fullscreen_state_file="/tmp/fullscreen_state"
       window_id=$(${yabai} -m query --windows --window | ${jq} -r '."id"')
 
       # Function to check if the current window is in fullscreen mode
-      function is_fullscreen() {
+      is_fullscreen() {
           grep -q "id: $window_id fullscreen: on" "$fullscreen_state_file"
       }
 
-      # Function to check if the current window is floating
-      function is_floating() {
-          ${yabai} -m query --windows --window | ${jq} -r '."is-floating"' | grep -q "1"
-      }
+      # Check if the script is provided with an argument
+      if [ $# -eq 0 ]; then
+          # Toggle between on/off states if no argument is provided
+          if is_floating; then
+              set_arg="off"
+          else
+              set_arg="on"
+          fi
+      else
+          set_arg="$1"
+      fi
 
       # Check the value of the argument
       if [ "$set_arg" = "on" ]; then
-        if is_fullscreen; then
-          echo "Cannot toggle float on: window is in fullscreen mode."
-        else
-          ${yabai} -m window --toggle float; ${yabai} -m window --grid 60:60:5:5:50:50
-          echo "on" > "$floating_state_file"
-        fi
+          if is_fullscreen; then
+              echo "Cannot toggle float on: window is in fullscreen mode."
+          elif is_floating; then
+              echo "Window is already floating."
+          else
+              ${yabai} -m window --toggle float
+              ${yabai} -m window --grid 60:60:5:5:50:50
+              ${borders} apply-to=$window_id width=2.0 style=round
+              echo "Window is now floating."
+          fi
       elif [ "$set_arg" = "off" ]; then
-        if is_fullscreen; then
-          echo "Cannot toggle float off: window is in fullscreen mode."
-        else
-          ${yabai} -m window --toggle float; ${yabai} -m window --grid 60:60:5:5:50:50
-          echo "off" > "$floating_state_file"
-        fi
+          if is_fullscreen; then
+              echo "Cannot toggle float off: window is in fullscreen mode."
+          elif ! is_floating; then
+              echo "Window is already not floating."
+          else
+              ${yabai} -m window --toggle float
+              gaps_state=$(cat /tmp/gaps_state)
+              if [ "$gaps_state" = "on" ]; then
+                  ${borders} apply-to=$window_id width=2.0 style=round
+              else
+                  ${borders} apply-to=$window_id width=5.0 style=square
+              fi
+              echo "Window is no longer floating."
+          fi
       else
-        echo "Usage: $0 <on|off>"
-        exit 1
+          echo "Usage: $0 [on|off]"
+          exit 1
       fi
     '')
 
