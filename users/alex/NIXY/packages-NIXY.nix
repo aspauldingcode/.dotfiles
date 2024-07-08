@@ -60,6 +60,7 @@ in
     darwin.cctools-port # is it needed tho?
     tshark
     termshark
+    tigervnc
     # wireshark
     # nmapsi4
     #ruby
@@ -1251,7 +1252,7 @@ in
 
     # xvnc-iphone
     (pkgs.writeShellScriptBin "xvnc-iphone" ''     
-      #!/bin/sh
+        #!/bin/sh
 
         echo -e "\n\033[1;31m\t⚠️  WARNING! ⚠️\033[0m"
         echo -e "\033[1;33m\tThis script is currently INSECURE over public networks.\033[0m"
@@ -1301,29 +1302,24 @@ in
             local host="$1"
             local port="$2"
 
-            # Save the VNC password
-            echo "$IPHONE_PASSWD" | vncpasswd -f > ~/.vnc/passwd
-            chmod 600 ~/.vnc/passwd
-
-            # Kill any existing VNC viewer processes
-            if [[ "$OSTYPE" == "darwin"* ]]; then
-                pkill -f "TigerVNC Viewer"
-            else
-                pkill -f "vncviewer"
+            if [[ "$OSTYPE" != "darwin"* ]]; then
+                mkdir -p ~/.vnc
+                if command -v vncpasswd >/dev/null 2>&1; then
+                    echo "$IPHONE_PASSWD" | vncpasswd -f > ~/.vnc/passwd
+                    chmod 600 ~/.vnc/passwd
+                else
+                    echo "Warning: vncpasswd not found. VNC connection may fail."
+                fi
             fi
 
+            pkill -f "vncviewer"
+
             if [[ "$OSTYPE" == "darwin"* ]]; then
-                # macOS
-                local tigervnc_app=$(find_tigervnc_app)
-                open -a "$tigervnc_app" --args -passwd ~/.vnc/passwd "$host:$port" >/dev/null 2>&1 &
+                vncviewer "$host:$port" >/dev/null 2>&1 &
+            elif [ -f ~/.vnc/passwd ]; then
+                vncviewer -passwd ~/.vnc/passwd "$host:$port" >/dev/null 2>&1 &
             else
-                # Other operating systems
-                if command -v vncviewer >/dev/null 2>&1; then
-                    vncviewer -passwd ~/.vnc/passwd "$host:$port" >/dev/null 2>&1 &
-                else
-                    echo "VNC viewer not found. Please install a VNC viewer application."
-                    exit 1
-                fi
+                vncviewer "$host:$port" >/dev/null 2>&1 &
             fi
         }
 
@@ -1366,7 +1362,14 @@ in
         # Check if VNC password is set
         if [ ! -f ~/.vnc/passwd ]; then
             echo "Please set your VNC password."
-            vncpasswd >/dev/null 2>&1
+            if [[ "$OSTYPE" == "darwin"* ]]; then
+                # macOS specific method
+                echo
+                sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvnclegacy -vnclegacy yes -setvncpw -vncpw "$IPHONE_PASSWD"
+            else
+                # For non-macOS systems, use vncpasswd
+                vncpasswd >/dev/null 2>&1
+            fi
         fi
 
         # Remove any existing X lock files
@@ -1414,7 +1417,7 @@ in
         '
 
         # Configure SSH to use key-based authentication for the iPhone
-        cat << EOF >> ~/.ssh/config
+        cat << EOF > ~/.ssh/config
         Host iphone
             HostName ''${IPHONE_IP}
             User ''${IPHONE_USER}
@@ -1447,30 +1450,19 @@ in
         # Launch VNC viewer
         launch_vnc_viewer "$VNC_SERVER" "$VNC_PORT"
 
-        # Try to connect to VNC server, with one retry if the first attempt fails
-        for attempt in 1 2; do
-            if nc -z $VNC_SERVER $VNC_PORT >/dev/null 2>&1; then
-                echo "Successfully connected to VNC server."
-                echo "To connect to your iPhone's VNC server, use the following details:"
-                echo "iPhone IP: $IPHONE_IP"
-                echo "VNC Port: $VNC_PORT"
-                exit 0
-            else
-                if [ $attempt -eq 1 ]; then
-                    echo "Attempt $attempt: Failed to connect to VNC server. Retrying once..."
-                    sleep 5
-                    launch_vnc_viewer "$VNC_SERVER" "$VNC_PORT"
-                else
-                    echo "Failed to connect to VNC server after retry."
-                    break
-                fi
-            fi
-        done
-
-        echo "Failed to connect to VNC server after two attempts."
-        echo "To connect to your iPhone's VNC server, use the following details:"
-        echo "iPhone IP: $IPHONE_IP"
-        echo "VNC Port: $VNC_PORT"
+        # Try to connect to VNC server
+        if nc -z $VNC_SERVER $VNC_PORT >/dev/null 2>&1; then
+            echo "Successfully connected to VNC server."
+            echo "To connect to your iPhone's VNC server, use the following details:"
+            echo "iPhone IP: $IPHONE_IP"
+            echo "VNC Port: $VNC_PORT"
+            exit 0
+        else
+            echo "Failed to connect to VNC server."
+            echo "To connect to your iPhone's VNC server, use the following details:"
+            echo "iPhone IP: $IPHONE_IP"
+            echo "VNC Port: $VNC_PORT"
+        fi
 
         read -p "Would you like to enter a different iPhone IP address? (y/n): " RETRY
         if [[ $RETRY =~ ^[Yy]$ ]]; then

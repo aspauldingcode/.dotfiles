@@ -51,7 +51,6 @@
     #];
     casks = [
       "xquartz" # what an ugly app
-      "tigervnc-viewer"
       "alacritty"
       "chatgpt"
       "hammerspoon"
