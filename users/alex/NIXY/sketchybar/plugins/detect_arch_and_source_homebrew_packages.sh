@@ -6,7 +6,6 @@ if [ "$arch" = "arm64" ]; then
 elif [ "$arch" = "x86_64" ]; then
     homebrewPath="/usr/local/bin"
 else
-    echo "Unsupported architecture: $arch"
     exit 1
 fi
 

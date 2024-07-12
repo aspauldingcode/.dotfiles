@@ -4,7 +4,7 @@ PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
-source "$PLUGIN_DIR/detect_arch.sh"
+source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 
 #POPUP_OFF="sketchybar --set apple.logo popup.drawing=off"
 #POPUP_CLICK_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
@@ -37,12 +37,9 @@ sketchybar --add item apple.uname popup.apple \
 # Handle mouse events
 case "$SENDER" in
   "mouse.entered")
-    sleep 2  # Wait for 2 seconds before showing the popup
-      sketchybar --set $NAME popup.drawing=on
+    sketchybar --set $NAME popup.drawing=on
     ;;
   "mouse.exited" | "mouse.exited.global")
-    sketchybar --set $NAME popup.drawing=off
-    sleep 2  # Wait for 2 seconds before disabling a second time
     sketchybar --set $NAME popup.drawing=off
     ;;
   "mouse.clicked")

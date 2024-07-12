@@ -5,7 +5,7 @@ PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 source "$HOME/.config/sketchybar/colors.sh"
 # source "$HOME/.config/sketchybar/start_programs_correctly.sh"
 source "$HOME/.config/sketchybar/icons.sh"
-source "$PLUGIN_DIR/detect_arch.sh"
+source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 
 # SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
 POPUP_TOGGLE_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
@@ -51,6 +51,7 @@ space_config=(
     ignore_association=on
     updates=on \
     script="$PLUGIN_DIR/add_spaces_sketchybar.sh"
+    update_freq=0
     # click_script="$yabai -m space --focus $sid"
 )
 
@@ -194,7 +195,7 @@ sketchybar --add item apple left \
 
 sketchybar --add space space left \
   --set space "${space_config[@]}" \
-  --subscribe space space_change space_windows_change front_app_switched display_change
+  # --subscribe space space_change space_windows_change front_app_switched display_change
 
 sketchybar --add item separator_left left \
   --set separator_left \

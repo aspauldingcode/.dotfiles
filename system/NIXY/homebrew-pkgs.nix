@@ -58,6 +58,7 @@
       "prismlauncher"
       "dmenu-mac"
       "kitty"
+      "krita"
       #"hiddenbar" #FIXME: disable for now, add back to build a working toggle.
       # "macforge" # out of date rn... need to use macforge beta
       "obs"
@@ -79,7 +80,6 @@
       "asset-catalog-tinkerer"
       "themeengine"
       #"google-assistant"
-      "gimp"
       "docker"
       "kdeconnect"
     ];

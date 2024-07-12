@@ -4,7 +4,7 @@ PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
-source "$PLUGIN_DIR/detect_arch.sh"
+source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 
 # File to store the calendar output and the date it was generated
 CACHE_FILE="$HOME/.config/sketchybar/calendar_cache"

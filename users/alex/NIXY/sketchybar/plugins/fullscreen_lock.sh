@@ -6,7 +6,7 @@ PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
-source "$PLUGIN_DIR/detect_arch.sh"
+source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 
 # Path to the fullscreen state file
 fullscreen_state_file="/tmp/fullscreen_state"

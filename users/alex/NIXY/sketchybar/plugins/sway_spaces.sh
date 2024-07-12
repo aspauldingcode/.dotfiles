@@ -4,7 +4,7 @@ PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
-source "$PLUGIN_DIR/detect_arch.sh"
+source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 
 # Function to create a new space label and assign it to an empty space
 assign_new_label() {
@@ -139,20 +139,24 @@ generate_unique_labels() {
     # Get indexes of spaces with missing labels
     missing_indexes=$(missing_label_spaces)
     
+    # Debug: Print missing indexes
+    echo "Debug: Missing indexes: $missing_indexes"
+
     # Check if there are any missing indexes
     if [ -z "$missing_indexes" ]; then
         echo "No missing space labels found."
         return
     fi
     
-    # Sort the missing indexes numerically
-    sorted_indexes=$(echo "$missing_indexes" | tr ' ' '\n' | sort -n)
-    
-    # Initialize an array to keep track of assigned labels
+    # Initialize an associative array to keep track of assigned labels
     declare -A assigned_labels
     
     # Get all existing space labels
-    all_labels=$($yabai -m query --spaces | $jq -r '.[] | select(.label != null) | .label')
+    all_labels=$($yabai -m query --spaces | jq -r '.[] | select(.label != null and .label != "") | .label')
+
+    # Debug: Print all existing labels
+    echo "Debug: Existing labels:"
+    echo "$all_labels"
 
     # Loop through existing labels and mark them as assigned
     for label in $all_labels; do
@@ -161,20 +165,37 @@ generate_unique_labels() {
     done
 
     # Iterate over missing indexes and assign unique labels
-    for index in $sorted_indexes; do
+    for index in $missing_indexes; do
+        # Debug: Print current index being processed
+        echo "Debug: Processing index: $index"
+
+        # Check if the space already has a label
+        current_label=$($yabai -m query --spaces --space "$index" | jq -r '.label')
+        if [ "$current_label" != "null" ] && [ "$current_label" != "" ]; then
+            echo "Space $index already has label '$current_label'. Skipping."
+            continue
+        fi
+
         # Find the next available label
         label=""
         for ((i=1; ; i++)); do
             if [ -z "${assigned_labels[$i]}" ]; then
-                label="_$i"
-                assigned_labels["$i"]=1
-                break
+                # Double-check if this label already exists
+                if ! echo "$all_labels" | grep -q "_$i"; then
+                    label="_$i"
+                    assigned_labels["$i"]=1
+                    break
+                fi
             fi
         done
 
         # Assign the label to the missing space
-        $yabai -m space "$index" --label "$label"
-        echo "Assigned label '$label' to space $index"
+        if [ -n "$label" ]; then
+            $yabai -m space "$index" --label "$label"
+            echo "Assigned label '$label' to space $index"
+        else
+            echo "Error: Could not find an available label for space $index"
+        fi
     done
     echo "Unique labels generated for missing space labels."
 }

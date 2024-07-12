@@ -218,28 +218,28 @@ in
           # ${mod1} + ${mod4} - right :     ${yabai} -m space --focus next
 
           # Move focused window to workspace N and follow focus
-          ${modifier} + ${smod} - 1 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _1
-          ${modifier} + ${smod} - 2 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _2
-          ${modifier} + ${smod} - 3 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _3
-          ${modifier} + ${smod} - 4 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _4
-          ${modifier} + ${smod} - 5 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _5
-          ${modifier} + ${smod} - 6 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _6
-          ${modifier} + ${smod} - 7 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _7
-          ${modifier} + ${smod} - 8 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _8
-          ${modifier} + ${smod} - 9 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _9
-          ${modifier} + ${smod} - 0 : ${yabai} -m space --create && ${yabai} -m window --space last && ${yabai} -m space --focus last && ${yabai} -m space --label _10
+          ${modifier} + ${smod} - 1 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_1")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _1); ${yabai} -m window --space _1 && ${yabai} -m space --focus _1
+          ${modifier} + ${smod} - 2 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_2")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _2); ${yabai} -m window --space _2 && ${yabai} -m space --focus _2
+          ${modifier} + ${smod} - 3 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_3")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _3); ${yabai} -m window --space _3 && ${yabai} -m space --focus _3
+          ${modifier} + ${smod} - 4 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_4")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _4); ${yabai} -m window --space _4 && ${yabai} -m space --focus _4
+          ${modifier} + ${smod} - 5 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_5")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _5); ${yabai} -m window --space _5 && ${yabai} -m space --focus _5
+          ${modifier} + ${smod} - 6 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_6")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _6); ${yabai} -m window --space _6 && ${yabai} -m space --focus _6
+          ${modifier} + ${smod} - 7 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_7")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _7); ${yabai} -m window --space _7 && ${yabai} -m space --focus _7
+          ${modifier} + ${smod} - 8 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_8")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _8); ${yabai} -m window --space _8 && ${yabai} -m space --focus _8
+          ${modifier} + ${smod} - 9 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_9")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _9); ${yabai} -m window --space _9 && ${yabai} -m space --focus _9
+          ${modifier} + ${smod} - 0 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_10")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _10); ${yabai} -m window --space _10 && ${yabai} -m space --focus _10
           
           # move focus to workspace n
-          ${modifier} - 1 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_1")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _1); ${yabai} -m space --focus _1
-          ${modifier} - 2 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_2")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _2); ${yabai} -m space --focus _2
-          ${modifier} - 3 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_3")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _3); ${yabai} -m space --focus _3
-          ${modifier} - 4 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_4")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _4); ${yabai} -m space --focus _4
-          ${modifier} - 5 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_5")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _5); ${yabai} -m space --focus _5
-          ${modifier} - 6 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_6")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _6); ${yabai} -m space --focus _6
-          ${modifier} - 7 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_7")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _7); ${yabai} -m space --focus _7
-          ${modifier} - 8 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_8")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _8); ${yabai} -m space --focus _8
-          ${modifier} - 9 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_9")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _9); ${yabai} -m space --focus _9
-          ${modifier} - 0 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_10")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _10); ${yabai} -m space --focus _10
+          ${modifier} - 1 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_1")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _1); ${yabai} -m space --focus _1
+          ${modifier} - 2 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_2")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _2); ${yabai} -m space --focus _2
+          ${modifier} - 3 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_3")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _3); ${yabai} -m space --focus _3
+          ${modifier} - 4 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_4")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _4); ${yabai} -m space --focus _4
+          ${modifier} - 5 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_5")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _5); ${yabai} -m space --focus _5
+          ${modifier} - 6 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_6")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _6); ${yabai} -m space --focus _6
+          ${modifier} - 7 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_7")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _7); ${yabai} -m space --focus _7
+          ${modifier} - 8 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_8")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _8); ${yabai} -m space --focus _8
+          ${modifier} - 9 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_9")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _9); ${yabai} -m space --focus _9
+          ${modifier} - 0 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_10")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _10); ${yabai} -m space --focus _10
 
           ${modifier} + ${smod} - y : ${yabai} -m space --mirror y-axis
           ${modifier} + ${smod} - x : ${yabai} -m space --mirror x-axis
@@ -362,24 +362,24 @@ in
     executable = true;
     target = ".config/borders/bordersrc";
     text =
-      # bash
-      #FIXME: remember: active_color='gradient(top_left=0xFF0000FF,bottom_right=0xFF00FF00)'
-      ''
-        #!/bin/bash
+    # bash
+    #FIXME: remember: active_color='gradient(top_left=0xFF0000FF,bottom_right=0xFF00FF00)'
+    ''
+      #!/bin/bash
 
-        options=(
-          style=round
-          order=below
-          width=2.0
-          background_color=0x11${colors.base00}
-          blur_radius=25.0
-          hidpi=on
-          active_color=0xff${colors.base07}
-          inactive_color=0xff${colors.base05}
-          blacklist="google chrome,vmware fusion,xQuartz,dmenu-mac,X11.bin,MacForge"
-        )
+      options=(
+        style=round
+        order=below
+        width=2.0
+        background_color=0x11${colors.base00}
+        blur_radius=25.0
+        hidpi=on
+        active_color=0xff${colors.base07}
+        inactive_color=0xff${colors.base05}
+        blacklist="google chrome,vmware fusion,xQuartz,dmenu-mac,X11.bin,MacForge"
+      )
 
-        borders "''${options[@]}"
-      '';
+      borders "''${options[@]}"
+    '';
   };
 }
