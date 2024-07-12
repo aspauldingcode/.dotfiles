@@ -15,52 +15,58 @@ reorder_space_items() {
 }
 
 function update_sketchybar_spaces() {
-    # Get the full label from the function and extract only the numeric part
-    full_label=$(source $PLUGIN_DIR/sway_spaces.sh; check_current_active_space_label)
-    active_space_label=$(echo "$full_label" | /usr/bin/sed 's/[^0-9]*//g')  # Remove all non-numeric characters
+    # Get all displays
+    local displays=$($yabai -m query --displays | $jq -r '.[].index')
 
-    relevant_spaces=($($PLUGIN_DIR/print_spaces_sketchybar.sh | tr ' ' '\n' | /usr/bin/sed 's/^_//'))
-    relevant_spaces=($(echo "${relevant_spaces[@]}" | tr ' ' '\n' | sort -n))  # Sort spaces numerically
+    for display in $displays; do
+        # Get the full label from the function and extract only the numeric part for the current display
+        full_label=$(source $PLUGIN_DIR/sway_spaces.sh; check_current_active_space_label $display)
+        active_space_label=$(echo "$full_label" | /usr/bin/sed 's/[^0-9]*//g')  # Remove all non-numeric characters
 
-    sketchybar_spaces=($(sketchybar --query bar | $jq -r '.items[] | select(startswith("space."))'))
+        relevant_spaces=($($PLUGIN_DIR/print_spaces_sketchybar.sh $display | tr ' ' '\n' | /usr/bin/sed 's/^_//'))
+        relevant_spaces=($(echo "${relevant_spaces[@]}" | tr ' ' '\n' | sort -n))  # Sort spaces numerically
 
-    # Create an associative array for space colors
-    declare -A space_colors
+        sketchybar_spaces=($(sketchybar --query bar | $jq -r '.items[] | select(startswith("space."))'))
 
-    # Set default color for all spaces and special color for active space
-    for space in "${relevant_spaces[@]}"; do
-        space_colors[$space]="$WHITE"
-    done
-    space_colors[$active_space_label]="$ORANGE"
+        # Create an associative array for space colors
+        declare -A space_colors
 
-    # Prepare the command string
-    command_string=""
+        # Set default color for all spaces and special color for active space
+        for space in "${relevant_spaces[@]}"; do
+            space_colors[$space]="$WHITE"
+        done
+        space_colors[$active_space_label]="$ORANGE"
 
-    # Build the command string for all spaces
-    for space in "${relevant_spaces[@]}"; do
-        label=${space#_}  # Remove leading underscore if present
-        color=${space_colors[$label]}
+        for space in "${relevant_spaces[@]}"; do
+            label=$(echo "$space" | /usr/bin/sed 's/^_//')  # Ensure no leading underscore
+            color="$WHITE"  # Default color
+            [[ "$label" == "$active_space_label" ]] && color="$ORANGE"  # Set color to ORANGE if it's the active space
 
-        command_string+="--set space.$label label=$label padding_right=5 padding_left=5 label.color=$color "
-        command_string+="click_script=\"$yabai -m space --focus _$label\" "
-        command_string+="padding_left=5 padding_right=5 drawing=on "
-        command_string+="--clone space.$label space after "
+            # Set the properties of the cloned space item
+            sketchybar --set space.${display}.${label} \
+                            label="$label" \
+                            label.color="$color" \
+                            click_script="$yabai -m space --focus _$label" \
+                            padding_left=5 \
+                            padding_right=5 \
+                            drawing=on
+                            
+            # Clone the existing space item and rename the cloned item
+            sketchybar --clone space.${display}.${label} space after
 
-        # Remove the space from sketchybar_spaces array
-        sketchybar_spaces=("${sketchybar_spaces[@]/space.$label/}")
-    done
+            # Remove the original space item from the list of spaces
+            sketchybar_spaces=("${sketchybar_spaces[@]/space.${display}.${label}/}")
+        done
 
-    # Execute the command
-    sketchybar $command_string
-    
-    # Call the function to reorder space items
-    reorder_space_items
+        # Call the function to reorder space items
+        reorder_space_items
 
-    # Remove any remaining stale space items
-    for space_id in "${sketchybar_spaces[@]}"; do
-        if [[ -n "$space_id" ]]; then
-            sketchybar --remove "$space_id"
-        fi
+        # Remove any remaining stale space items for this display
+        for space_id in "${sketchybar_spaces[@]}"; do
+            if [[ -n "$space_id" && "$space_id" == space.${display}.* ]]; then
+                sketchybar --remove "$space_id"
+            fi
+        done
     done
 
     source $PLUGIN_DIR/sway_spaces.sh
@@ -79,8 +85,6 @@ function update_sketchybar_spaces() {
 
     echo -e "\nPrint Space Labels:"
     read_all_spaces
-
-    echo $active_space_label
 
     echo -e "\nReordering space items"
 }
