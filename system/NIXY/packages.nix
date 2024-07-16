@@ -33,6 +33,7 @@
     wget
     zellij
     # neofetch
+    gnumake
     pfetch
     htop
     git
@@ -46,6 +47,7 @@
     rbenv
     # javaPackages.openjfx19
     #inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk20
+    jdk21
     #python311
     oh-my-zsh # zsh shell framework
     oh-my-fish # fish shell framework

@@ -1,14 +1,17 @@
-{ nix-colors, pkgs, lib, ... }:
+{
+  nix-colors,
+  pkgs,
+  lib,
+  ...
+}:
 
 # Configure GTK, QT themes, color schemes..
-let 
-  scheme = "gruvbox-dark-soft"; #tomorrow-night, #gruvbox-dark-soft, #catppuccin-macchiato, #katy are favorites
-  # Choose from: https://nix-community.github.io/nixvim/colorschemes/base16/index.html#colorschemesbase16colorscheme
+let
+  scheme = "gruvbox-dark-soft"; # tomorrow-night, #gruvbox-dark-soft, #catppuccin-macchiato, #katy are favorites
 in
+# Choose from: https://nix-community.github.io/nixvim/colorschemes/base16/index.html#colorschemesbase16colorscheme
 {
-  imports = [
-    nix-colors.homeManagerModules.default
-  ];
+  imports = [ nix-colors.homeManagerModules.default ];
 
   # nix-colors
   colorscheme = nix-colors.colorSchemes.${scheme};
@@ -21,8 +24,8 @@ in
         configuration = {
           # We have to force the values below to override the ones defined above
           colorScheme = lib.mkForce nix-colors.colorSchemes.katy;
+        };
       };
     };
-  };
   };
 }

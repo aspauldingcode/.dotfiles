@@ -48,6 +48,7 @@ in
     # autotiling
     #ncdu
     calcurse
+    losslesscut-bin
     chatgpt-cli
     cowsay
     cmus
@@ -60,6 +61,7 @@ in
     darwin.cctools-port # is it needed tho?
     tshark
     termshark
+    ffmpeg
     tigervnc
     # wireshark
     # nmapsi4
@@ -86,7 +88,7 @@ in
     # python39
     (pkgs.python311.withPackages (ps: [
       ps.tkinter
-      #ps.pygame
+      ps.pygame
       ps.cx-freeze
       ps.textwrap3
       ps.pandas

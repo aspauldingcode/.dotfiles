@@ -376,7 +376,7 @@ in
         hidpi=on
         active_color=0xff${colors.base07}
         inactive_color=0xff${colors.base05}
-        blacklist="google chrome,vmware fusion,xQuartz,dmenu-mac,X11.bin,MacForge"
+        blacklist="google chrome,vmware fusion,xQuartz,dmenu-mac,X11.bin,MacForge,python3.11"
       )
 
       borders "''${options[@]}"

@@ -11,7 +11,7 @@
     startup.chime = false; # MUTE STARTUP CHIME!
     defaults = {
       finder = {
-        CreateDesktop = true; # REQUIRED true to fix https://github.com/koekeishiya/yabai/issues/863 and https://github.com/koekeishiya/yabai/issues/2313#issuecomment-2225438696
+        CreateDesktop = false; # REQUIRED true to fix https://github.com/koekeishiya/yabai/issues/863 and https://github.com/koekeishiya/yabai/issues/2313#issuecomment-2225438696
         AppleShowAllFiles = true;
         AppleShowAllExtensions = true;
         FXDefaultSearchScope = "SCcf";

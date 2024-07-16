@@ -3,11 +3,15 @@
 let
   commonSetup = ''
     # Environment and path settings
-    export PATH="/Users/alex/.cargo/bin:/Applications/flameshot.app/Contents/MacOS:/opt/X11/bin:/usr/X11R6/bin:/opt/local/bin:/opt/local/sbin:/opt/homebrew/bin:/opt/homebrew/sbin:/Users/alex/.orbstack/bin:/Users/alex/.gem/ruby/3.3.0/bin:/Users/alex/.nix-profile/bin:/etc/profiles/per-user/alex/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH"
+    export PATH="/Users/alex/.cargo/bin:/Applications/flameshot.app/Contents/MacOS:/opt/X11/bin:/usr/X11R6/bin:/opt/local/bin:/opt/local/sbin:/opt/homebrew/bin:/opt/homebrew/sbin:/Users/alex/.orbstack/bin:/Users/alex/.gem/ruby/3.3.0/bin:/Users/alex/.nix-profile/bin:/etc/profiles/per-user/alex/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin:/opt/homebrew/opt/libiconv/bin:$PATH"
     export EDITOR=nvim
     export VISUAL="$EDITOR"
     export DISPLAY=:0
+    export LDFLAGS="-L/opt/homebrew/opt/libiconv/lib"
+    export CPPFLAGS="-I/opt/homebrew/opt/libiconv/include"
+    export LIBRARY_PATH="$LIBRARY_PATH:/opt/homebrew/opt/libiconv/lib"
     touch ~/.hushlogin
+    alias pkg-config='pkgconf'
   '';
   inherit (config.colorScheme) colors;
 in
@@ -36,10 +40,13 @@ in
     fish = {
       enable = true;
       shellInit = commonSetup + ''
-        set -g fish_user_paths "/opt/X11/bin" "/usr/X11R6/bin" "/opt/local/bin" "/opt/local/sbin" "/opt/homebrew/bin" "/opt/homebrew/sbin" "/Users/alex/.orbstack/bin" (ruby -e 'puts Gem.user_dir')/bin $fish_user_paths
+        set -g fish_user_paths "/opt/X11/bin" "/usr/X11R6/bin" "/opt/local/bin" "/opt/local/sbin" "/opt/homebrew/bin" "/opt/homebrew/sbin" "/Users/alex/.orbstack/bin" (ruby -e 'puts Gem.user_dir')/bin "/opt/homebrew/opt/libiconv/bin" $fish_user_paths
         set -Ux EDITOR nvim
         set -Ux VISUAL $EDITOR
         set -Ux DISPLAY :0
+        set -Ux LDFLAGS "-L/opt/homebrew/opt/libiconv/lib"
+        set -Ux CPPFLAGS "-I/opt/homebrew/opt/libiconv/include"
+        set -Ux LIBRARY_PATH "$LIBRARY_PATH:/opt/homebrew/opt/libiconv/lib"
       '';
       interactiveShellInit = ''set fish_greeting ""'';
     };
@@ -47,14 +54,18 @@ in
     nushell = {
       enable = true;  # Enable nushell
       environmentVariables = {
-        PATH = "/Users/alex/.cargo/bin:/Applications/flameshot.app/Contents/MacOS:/opt/X11/bin:/usr/X11R6/bin:/opt/local/bin:/opt/local/sbin:/opt/homebrew/bin:/opt/homebrew/sbin:/Users/alex/.orbstack/bin:/Users/alex/.gem/ruby/3.3.0/bin:/Users/alex/.nix-profile/bin:/etc/profiles/per-user/alex/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin:$PATH";
+        PATH = "/Users/alex/.cargo/bin:/Applications/flameshot.app/Contents/MacOS:/opt/X11/bin:/usr/X11R6/bin:/opt/local/bin:/opt/local/sbin:/opt/homebrew/bin:/opt/homebrew/sbin:/Users/alex/.orbstack/bin:/Users/alex/.gem/ruby/3.3.0/bin:/Users/alex/.nix-profile/bin:/etc/profiles/per-user/alex/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin:/opt/homebrew/opt/libiconv/bin:$PATH";
         EDITOR = "nvim";
         VISUAL = "nvim";
         DISPLAY = ":0";
+        LDFLAGS = "-L/opt/homebrew/opt/libiconv/lib";
+        CPPFLAGS = "-I/opt/homebrew/opt/libiconv/include";
+        LIBRARY_PATH = "$LIBRARY_PATH:/opt/homebrew/opt/libiconv/lib";
       };
       shellAliases = {
         ll = "ls -l";
         la = "ls -a";
+        pkg-config = "pkgconf";
       };
     };
 

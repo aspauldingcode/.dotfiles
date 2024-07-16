@@ -38,6 +38,7 @@
       # "rbenv"
       # "ruby-build"
       "gtk-mac-integration" # build gtk mac apps?
+      "libiconv"
       "whalebrew"
       # "meson"
       # "libev" #god dammit not working to compile i3 with gaps support

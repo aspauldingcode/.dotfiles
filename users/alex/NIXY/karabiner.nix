@@ -26,35 +26,89 @@
                 };
                 rules = [
                   {
-                    description = "Swap Alt+Tab and Control+Tab";
+                    description = "Swap Control+C, Command+C, Control+Shift+C, and Command+Shift+C in Tiger VNC Viewer";
                     manipulators = [
                       {
                         type = "basic";
                         from = {
-                          key_code = "tab";
-                          modifiers = {
-                            mandatory = ["left_option"];
-                          };
-                        };
-                        to = [
-                          {
-                            key_code = "tab";
-                            modifiers = ["left_control"];
-                          }
-                        ];
-                      }
-                      {
-                        type = "basic";
-                        from = {
-                          key_code = "tab";
+                          key_code = "c";
                           modifiers = {
                             mandatory = ["left_control"];
                           };
                         };
                         to = [
                           {
-                            key_code = "tab";
-                            modifiers = ["left_option"];
+                            key_code = "c";
+                            modifiers = ["left_command"];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "c";
+                          modifiers = {
+                            mandatory = ["left_command"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "c";
+                            modifiers = ["left_control"];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "c";
+                          modifiers = {
+                            mandatory = ["left_control" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "c";
+                            modifiers = ["left_command" "left_shift"];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "c";
+                          modifiers = {
+                            mandatory = ["left_command" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "c";
+                            modifiers = ["left_control" "left_shift"];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = ["com.tigervnc.tigervnc"];
                           }
                         ];
                       }

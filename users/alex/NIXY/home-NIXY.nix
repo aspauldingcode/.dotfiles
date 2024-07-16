@@ -21,6 +21,7 @@
     ./yazi/yazi.nix
     ./betterdiscord.nix
     ./git.nix
+    ./maco.nix
     # ./fish.nix
     # ./zsh.nix
     ./shells.nix
