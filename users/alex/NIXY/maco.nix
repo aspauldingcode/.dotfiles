@@ -10,14 +10,14 @@
       anchor=top-right
 
       font=monospace 10
-      background-color=#${config.colorScheme.colors.base09}E6
+      background-color=#${config.colorScheme.colors.base00}E6
       text-color=#${config.colorScheme.colors.base05}
       width=300
       height=100
       margin=10
       padding=5
       border-size=2
-      border-color=#${config.colorScheme.colors.base0C}
+      border-color=#${config.colorScheme.colors.base07}
       border-radius=0
       progress-color=over #${config.colorScheme.colors.base0D}
       icons=true

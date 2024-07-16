@@ -26,7 +26,7 @@
                 };
                 rules = [
                   {
-                    description = "Swap Control+C, Command+C, Control+Shift+C, and Command+Shift+C in Tiger VNC Viewer";
+                    description = "Swap Control+C/X, Command+C/X, Control+Shift+C/X, and Command+Shift+C/X in Tiger VNC Viewer";
                     manipulators = [
                       {
                         type = "basic";
@@ -102,6 +102,90 @@
                         to = [
                           {
                             key_code = "c";
+                            modifiers = ["left_control" "left_shift"];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "x";
+                          modifiers = {
+                            mandatory = ["left_control"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "x";
+                            modifiers = ["left_command"];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "x";
+                          modifiers = {
+                            mandatory = ["left_command"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "x";
+                            modifiers = ["left_control"];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "x";
+                          modifiers = {
+                            mandatory = ["left_control" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "x";
+                            modifiers = ["left_command" "left_shift"];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "x";
+                          modifiers = {
+                            mandatory = ["left_command" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "x";
                             modifiers = ["left_control" "left_shift"];
                           }
                         ];
@@ -271,7 +355,7 @@
                     ];
                   }
                   {
-                    description = "Swap Command+C with Control+C in Alacritty";
+                    description = "Swap Command+C/X and Control+C/X in Alacritty";
                     manipulators = [
                       {
                         type = "basic";
@@ -311,11 +395,44 @@
                           }
                         ];
                       }
-                    ];
-                  }
-                  {
-                    description = "Swap Command+Shift+C with Control+Shift+C in Alacritty";
-                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "x";
+                          modifiers.mandatory = [ "left_command" ];
+                        };
+                        to = [
+                          {
+                            key_code = "x";
+                            modifiers = [ "left_control" ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = [ "^org\\.alacritty$" ];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "x";
+                          modifiers.mandatory = [ "left_control" ];
+                        };
+                        to = [
+                          {
+                            key_code = "x";
+                            modifiers = [ "left_command" ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = [ "^org\\.alacritty$" ];
+                          }
+                        ];
+                      }
                       {
                         type = "basic";
                         from = {
@@ -344,6 +461,44 @@
                         to = [
                           {
                             key_code = "c";
+                            modifiers = [ "left_command" "left_shift" ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = [ "^org\\.alacritty$" ];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "x";
+                          modifiers.mandatory = [ "left_command" "left_shift" ];
+                        };
+                        to = [
+                          {
+                            key_code = "x";
+                            modifiers = [ "left_control" "left_shift" ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = [ "^org\\.alacritty$" ];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "x";
+                          modifiers.mandatory = [ "left_control" "left_shift" ];
+                        };
+                        to = [
+                          {
+                            key_code = "x";
                             modifiers = [ "left_command" "left_shift" ];
                           }
                         ];

@@ -48,7 +48,7 @@ initialize_popup_items() {
         width=0
         y_offset=$(( 56 - 16 * i ))
         label="|"
-        label.color=$GREY                       # Set this to your popup border color. Must be 2px at least!
+        label.color=$PURPLE                       # Set this to your popup border color. Must be 2px at least!
         label.padding_left=-182                 # To overwrite the '|' character on the left of the line. Fixes graphical text issues. 
         label.drawing=on
       )
