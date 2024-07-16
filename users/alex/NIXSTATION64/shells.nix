@@ -33,6 +33,9 @@ in
         + ''
           setopt APPEND_HISTORY
         '';
+      shellAliases = {
+        beeper = "beeper --disable-gpu";
+      };
     };
 
     bash = {
@@ -42,6 +45,9 @@ in
         + ''
           shopt -s histappend
         '';
+      shellAliases = {
+        beeper = "beeper --disable-gpu";
+      };
     };
 
     fish = {
@@ -55,6 +61,9 @@ in
           set -Ux DISPLAY :0
         '';
       interactiveShellInit = ''set fish_greeting ""'';
+      shellAliases = {
+        beeper = "beeper --disable-gpu";
+      };
     };
 
     nushell = {
@@ -68,6 +77,7 @@ in
       shellAliases = {
         ll = "ls -l";
         la = "ls -a";
+        beeper = "beeper --disable-gpu";
       };
     };
 

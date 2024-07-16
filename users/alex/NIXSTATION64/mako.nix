@@ -14,4 +14,4 @@
     ignoreTimeout = false;
     backgroundColor = "#${config.colorScheme.colors.base00}E6";
   };
-}z
+}

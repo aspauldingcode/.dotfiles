@@ -25,6 +25,7 @@
 
       # System utilities
       avahi
+      libnotify
       busybox
       docker
       fd
@@ -69,7 +70,7 @@
       spotify-unwrapped
       sway-contrib.grimshot
       yt-dlp # youtube-dl fork
-      tartube-yt-dlp # GUI to use yt-dlp 
+      tartube-yt-dlp # GUI to use yt-dlp
 
       # Desktop environment and window management
       albert
@@ -296,8 +297,17 @@
         fi
       '')
 
+      # notif-test
+      (pkgs.writeShellScriptBin "notif-test" ''
+        for i in {1..10}; do
+        notify-send -i ~/.dotfiles/users/alex/face.png \
+             "Notification $i" \
+             "This is the detailed content for notification number $i. It includes an icon, a title, and this message body.";
+        done
+      '')
+
       # xvnc-iphone
-      (pkgs.writeShellScriptBin "xvnc-iphone" ''     
+      (pkgs.writeShellScriptBin "xvnc-iphone" ''
         #!/bin/sh
 
         echo -e "\n\033[1;31m\t⚠️  WARNING! ⚠️\033[0m"
@@ -505,7 +515,7 @@
             exit 0
         else
             echo "Failed to connect to VNC server."
-            echo "To connect to your iPhone's VNC server, use the following details:"
+            echo "To connect to your iPhone's VNC serfor i in {1..10}; do notify-send -i path/to/icon.png "Notification $i" "This is the content of notification $i."; donever, use the following details:"
             echo "iPhone IP: $IPHONE_IP"
             echo "VNC Port: $VNC_PORT"
         fi
