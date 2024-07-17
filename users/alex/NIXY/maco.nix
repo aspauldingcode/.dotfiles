@@ -16,7 +16,7 @@
       height=100
       margin=10
       padding=5
-      border-size=2
+      border-size=8
       border-color=#${config.colorScheme.colors.base07}
       border-radius=0
       progress-color=over #${config.colorScheme.colors.base0D}

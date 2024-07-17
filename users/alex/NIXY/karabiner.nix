@@ -199,6 +199,101 @@
                     ];
                   }
                   {
+                    description = "Swap Control+Shift+3/4/5 with Command+Shift+3/4/5";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "3";
+                          modifiers = {
+                            mandatory = ["left_control" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "3";
+                            modifiers = ["left_command" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "3";
+                          modifiers = {
+                            mandatory = ["left_command" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "3";
+                            modifiers = ["left_control" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "4";
+                          modifiers = {
+                            mandatory = ["left_control" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "4";
+                            modifiers = ["left_command" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "4";
+                          modifiers = {
+                            mandatory = ["left_command" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "4";
+                            modifiers = ["left_control" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "5";
+                          modifiers = {
+                            mandatory = ["left_control" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "5";
+                            modifiers = ["left_command" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "5";
+                          modifiers = {
+                            mandatory = ["left_command" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "5";
+                            modifiers = ["left_control" "left_shift"];
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
                     description = "Replace Command+Tab with Control+Tab";
                     manipulators = [
                       {

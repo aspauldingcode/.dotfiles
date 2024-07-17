@@ -68,6 +68,7 @@ in
     #ruby
     obs-cmd # remotely start/stop recording using cli and obs-websocket plugin
     obsidian
+    libnotify
     sl
     fzf
     lavat
