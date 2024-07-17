@@ -189,15 +189,35 @@
         echo "Unknown-Architecture"
         fi
       '')
-
+        
+      # toggle-waybar
       (pkgs.writeShellScriptBin "toggle-waybar" ''
-        # Try to send SIGUSR1 signal to waybar
-        killall -SIGUSR1 waybar
+        #!/bin/bash
 
-        # Check if waybar was killed
-        if [ $? -ne 0 ]; then
-            # If no process was killed, run waybar and detach its output
+        STATE_FILE="/tmp/waybar_state"
+
+        toggle_waybar() {
+            if [ -f "$STATE_FILE" ] && [ "$(cat "$STATE_FILE")" = "visible" ]; then
+                killall waybar
+                echo "hidden" > "$STATE_FILE"
+                swaymsg "layer_effects 'waybar' 'blur disable'"
+            else
+                waybar >/dev/null 2>&1 &
+                echo "visible" > "$STATE_FILE"
+                swaymsg "layer_effects 'waybar' 'blur enable'"
+            fi
+        }
+
+        if [ "$1" = "on" ]; then
             waybar >/dev/null 2>&1 &
+            echo "visible" > "$STATE_FILE"
+            swaymsg "layer_effects 'waybar' 'blur enable'"
+        elif [ "$1" = "off" ]; then
+            killall waybar
+            echo "hidden" > "$STATE_FILE"
+            swaymsg "layer_effects 'waybar' 'blur disable'"
+        else
+            toggle_waybar
         fi
       '')
 
