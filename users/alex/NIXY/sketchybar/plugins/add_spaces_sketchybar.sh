@@ -33,14 +33,14 @@ function update_sketchybar_spaces() {
 
         # Set default color for all spaces and special color for active space
         for space in "${relevant_spaces[@]}"; do
-            space_colors[$space]="$WHITE"
+            space_colors[$space]="$base05"
         done
-        space_colors[$active_space_label]="$ORANGE"
+        space_colors[$active_space_label]="$base0A"
 
         for space in "${relevant_spaces[@]}"; do
             label=$(echo "$space" | /usr/bin/sed 's/^_//')  # Ensure no leading underscore
-            color="$WHITE"  # Default color
-            [[ "$label" == "$active_space_label" ]] && color="$ORANGE"  # Set color to ORANGE if it's the active space
+            color="$base05"  # Default color
+            [[ "$label" == "$active_space_label" ]] && color="$base0A"  # Set color to base0A if it's the active space
 
             # Set the properties of the cloned space item
             sketchybar --set space.${display}.${label} \

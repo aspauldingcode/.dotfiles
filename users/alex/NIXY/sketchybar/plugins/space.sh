@@ -28,6 +28,6 @@ for ((display=1; display<=$TOTAL_DISPLAYS; display++)); do
     ACTIVE_SPACE_CLEANED="${ACTIVE_SPACE_LABEL#_}"
     
     # Highlight the active space on SketchyBar using the cleaned label
-    sketchybar --set space.$ACTIVE_SPACE_CLEANED icon.highlight=on icon.highlight_color=$ORANGE
+    sketchybar --set space.$ACTIVE_SPACE_CLEANED icon.highlight=on icon.highlight_color=$base0A
 done
-sketchybar --set space.$ACTIVE_SPACE_CLEANED icon.highlight=true icon.highlight_color=$ORANGE
+sketchybar --set space.$ACTIVE_SPACE_CLEANED icon.highlight=true icon.highlight_color=$base0A

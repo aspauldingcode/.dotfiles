@@ -3,17 +3,23 @@
 let
   inherit (config.colorScheme) colors;
   nixy_colors = pkgs.writeShellScript "nixy-colors" ''
-    export PURPLE="0xff${colors.base07}" # Border color.
-    export GREY="0xff${colors.base05}"  # idk what this is for
+    export base00="0xE6${colors.base00}"
+    export base01="0xff${colors.base01}"
+    export base02="0xE6${colors.base02}"
+    export base03="0xE6${colors.base03}"
+    export base04="0xff${colors.base04}"
+    export base05="0xff${colors.base05}"
+    export base06="0xff${colors.base06}"
+    export base07="0xff${colors.base07}"
+    export base08="0xff${colors.base08}"
+    export base09="0xff${colors.base09}"
+    export base0A="0xff${colors.base0A}"
+    export base0B="0xff${colors.base0B}"
+    export base0C="0xff${colors.base0C}"
+    export base0D="0xE6${colors.base0D}"
+    export base0E="0xff${colors.base0E}"
+    export base0F="0xff${colors.base0F}"
     export TRANSPARENT=0x00000000
-    export WHITE="0xff${colors.base05}"
-    export BLUE="0xE6${colors.base0D}"  # Changes background of drop-down windows 
-    export MAGENTA="0xff${colors.base0E}" # Changed border color? NO
-    export ORANGE=0xff${colors.base0A}
-    export TEMPUS="0xE6${colors.base02}" # backgrounds of RAM, spotify, apple logo, time and date
-    export STATUS="0xE6${colors.base00}" #BACKGROUND of bar. make same as alacritty.
-    export SPACEBG=0xFF808080 #Didn't change much?
-    export MIDNIGHT="0xE6${colors.base03}" # Only worked on the mail icon?
   '';
   start_programs_correctly = pkgs.writeShellScript "start_programs_correctly" ''
     start_programs_correctly() {

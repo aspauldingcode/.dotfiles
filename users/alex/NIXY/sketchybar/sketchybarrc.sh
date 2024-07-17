@@ -20,8 +20,8 @@ bar=(
   height=40
   corner_radius=10
   position=top
-  color=$STATUS
-  border_color=$GREY # why didn't that work?
+  color=$base00
+  border_color=$base05 # why didn't that work?
   border_width=2
   y_offset=13
   sticky=off
@@ -33,14 +33,14 @@ defaults=(
   updates=when_shown
   icon.drawing=on
   # icon.font="Hack Nerd Font Mono:Regular:20.0"
-  icon.color=$WHITE
+  icon.color=$base05
   label.font="JetBrains Mono:Regular:13.0"
   label.drawing=on
-  label.color=$WHITE
-  popup.background.color=$STATUS
+  label.color=$base05
+  popup.background.color=$base00
   popup.background.corner_radius=10
   popup.background.border_width=2
-  popup.background.border_color=$PURPLE
+  popup.background.border_color=$base07
   popup.blur_radius=15
   popup.y_offset=0
 )
@@ -56,7 +56,7 @@ space_config=(
 )
 
 datetime=(
-  background.color=$TEMPUS         # Set this color to your background color for popups!
+  background.color=$base02         # Set this color to your background color for popups!
   icon.padding_left=15
   label.padding_left=5
   label.padding_right=15
@@ -107,7 +107,7 @@ backlight=(
 )
 
 mail=(
-  # background.color=$TEMPUS
+  # background.color=$base02
   background.height=25
   corner_radius=8
   icon.padding_left=5 
@@ -138,7 +138,7 @@ cava=(
 #   icon=$SPOTIFY
 #   icon.padding_right=18
 #   icon.padding_left=18
-#   background.color=$TEMPUS
+#   background.color=$base02
 #   background.height=19
 #   background.corner_radius=10
 #   #background.padding_left=3
@@ -155,11 +155,11 @@ ram=(
   label.padding_left=10
   update_freq=4
   background.corner_radius=10
-  background.color=$TEMPUS
+  background.color=$base02
   background.height=19
   background.padding_left=-6
   background.padding_right=3
-  background.border_color=$PURPLE
+  background.border_color=$base07
 )
 
 cpu=(
@@ -177,7 +177,7 @@ apple=(
   label=$APPLE
   label.padding_right=15
   label.padding_left=15
-  background.color=$TEMPUS
+  background.color=$base02
   background.height=19
   background.corner_radius=10
   background.padding_left=3
@@ -269,10 +269,10 @@ sketchybar --add item mail right \
   --set mail "${mail[@]}"
 
 brackets=(
-  background.color=$STATUS
+  background.color=$base00
   background.height=25
   background.corner_radius=20
-  background.border_color=$PURPLE
+  background.border_color=$base07
   background.border_width=2
 )
 
@@ -283,75 +283,75 @@ $yabai -m config menubar_opacity 1.0 # to make alias items visible!
 
 # Add alias items with click actions
 sketchybar --add alias "Control Center,BentoBox" $position
-sketchybar --set "Control Center,BentoBox" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+sketchybar --set "Control Center,BentoBox" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="$PLUGIN_DIR/open_menubar_items.sh controlcenter"
 
-sketchybar --add alias "Control Center,Bluetooth" $position
-sketchybar --set "Control Center,Bluetooth" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
-    click_script="$PLUGIN_DIR/open_menubar_items.sh bluetooth"
+sketchybar --add alias "Control Center,base0Dtooth" $position
+sketchybar --set "Control Center,base0Dtooth" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+    click_script="$PLUGIN_DIR/open_menubar_items.sh base0Dtooth"
 
 sketchybar --add alias "Control Center,UserSwitcher" $position
-sketchybar --set "Control Center,UserSwitcher" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+sketchybar --set "Control Center,UserSwitcher" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="$PLUGIN_DIR/open_menubar_items.sh userswitcher"
 
 sketchybar --add alias "UnnaturalScrollWheels,Item-0" $position
-sketchybar --set "UnnaturalScrollWheels,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+sketchybar --set "UnnaturalScrollWheels,Item-0" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="$PLUGIN_DIR/open_menubar_items.sh unnaturalscrollwheels"
 
 sketchybar --add alias "macOS InstantView,Item-0" $position
-sketchybar --set "macOS InstantView,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+sketchybar --set "macOS InstantView,Item-0" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="$PLUGIN_DIR/open_menubar_items.sh macosinstantview"
 
 sketchybar --add alias "AltTab,Item-0" $position
-sketchybar --set "AltTab,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+sketchybar --set "AltTab,Item-0" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="$PLUGIN_DIR/open_menubar_items.sh alttab"
 
 sketchybar --add alias "Karabiner-Menu,Item-0" $position
-sketchybar --set "Karabiner-Menu,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+sketchybar --set "Karabiner-Menu,Item-0" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="$PLUGIN_DIR/open_menubar_items.sh karabiner-menu"
 
 sketchybar --add alias "Background Music,Item-0" $position
-sketchybar --set "Background Music,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+sketchybar --set "Background Music,Item-0" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="$PLUGIN_DIR/open_menubar_items.sh backgroundmusic"
 
 sketchybar --add alias "Flameshot,Item-0" $position
-sketchybar --set "Flameshot,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+sketchybar --set "Flameshot,Item-0" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="$PLUGIN_DIR/open_menubar_items.sh flameshot"
 
 # sketchybar --add alias "Control Center,Clock" $position
-# sketchybar --set "Control Center,Clock" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+# sketchybar --set "Control Center,Clock" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_clock.scpt"
 
 # sketchybar --add alias "Spotlight,Item-0" $position
-# sketchybar --set "Spotlight,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+# sketchybar --set "Spotlight,Item-0" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_spotlight.scpt"
 
 # sketchybar --add alias "Control Center,WiFi" $position
-# sketchybar --set "Control Center,WiFi" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+# sketchybar --set "Control Center,WiFi" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_wifi.scpt"
 
 # sketchybar --add alias "Control Center,Battery" $position
-# sketchybar --set "Control Center,Battery" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+# sketchybar --set "Control Center,Battery" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_battery.scpt"
 
 # sketchybar --add alias "Hidden Bar,hiddenbar_expandcollapse" $position
-# sketchybar --set "Hidden Bar,hiddenbar_expandcollapse" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+# sketchybar --set "Hidden Bar,hiddenbar_expandcollapse" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_hiddenbar_expandcollapse.scpt"
 
 # sketchybar --add alias "Control Center,AudioVideoModule" $position
-# sketchybar --set "Control Center,AudioVideoModule" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+# sketchybar --set "Control Center,AudioVideoModule" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_audiovideomodule.scpt"
 
 # sketchybar --add alias "TextInputMenuAgent,Item-0" $position
-# sketchybar --set "TextInputMenuAgent,Item-0" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+# sketchybar --set "TextInputMenuAgent,Item-0" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_textinputmenuagent.scpt"
 
 # sketchybar --add alias "Hidden Bar,hiddenbar_separate" $position
-# sketchybar --set "Hidden Bar,hiddenbar_separate" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+# sketchybar --set "Hidden Bar,hiddenbar_separate" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_hiddenbar_separate.scpt"
 
 # sketchybar --add alias "Hidden Bar,hiddenbar_terminate" $position
-# sketchybar --set "Hidden Bar,hiddenbar_terminate" alias.color=$WHITE alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+# sketchybar --set "Hidden Bar,hiddenbar_terminate" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_hiddenbar_terminate.scpt"
 
 sketchybar --add item rbracket_padding_left right --set rbracket_padding_left icon.padding_right=4 icon.padding_left=4 icon="" # because it is leftmost of the bracket.
@@ -364,7 +364,7 @@ sketchybar --add bracket cbracket volume backlight datetime cava spotify center 
 sketchybar --add bracket rbracket "Control Center,BentoBox" "TextInputMenuAgent,Item-0" \
   "Control Center,UserSwitcher" "UnnaturalScrollWheels,Item-0" "macOS InstantView,Item-0" \
   "AltTab,Item-0" "Karabiner-Menu,Item-0" "Background Music,Item-0" "Flameshot,Item-0" \
-  rbracket_padding_left wifi "Control Center,Bluetooth" battery separator_right mail ram cpu right \
+  rbracket_padding_left wifi "Control Center,base0Dtooth" battery separator_right mail ram cpu right \
   --set rbracket "${brackets[@]}" 
 
 #initialize states
