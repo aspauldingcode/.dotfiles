@@ -4,7 +4,7 @@
   services.mako = {
     enable = true;
     maxVisible = -1;
-    output = "DP-2";
+    output = "DP-6";
     layer = "overlay";
     anchor = "top-right";
     borderSize = 2;

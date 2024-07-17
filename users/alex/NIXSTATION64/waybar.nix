@@ -117,7 +117,7 @@ in
         ];
 
         "tray" = {
-          # "icon-size" = 21;
+          "icon-size" = 14;
           "spacing" = 8;
         };
 
@@ -495,6 +495,7 @@ in
               "󰕾"
             ];
           };
+          interval = 10;
           scroll-step = 6;
           on-click = pavucontrol;
         };
@@ -560,6 +561,7 @@ in
           format = "  {}%";
           max-length = 10;
         };
+
         network = {
           interval = 3;
           format-wifi = "󰖩 ";
@@ -571,7 +573,8 @@ in
               {ipaddr}/{cidr}
             󱚺  {bandwidthUpBits}
             󱚶  {bandwidthDownBits}'';
-          on-click = ""; # FIXME: Add on-click setup for preview like macos
+          on-click = "nm-connection-editor"; # Open nm-applet menu when clicked
+          # on-click-right = "";
         };
         
         "custom/backlight" = {
@@ -769,9 +772,9 @@ in
           /* color: #${colors.base05}; */
         }
         window#waybar {
-          background-color: #${colors.base00};
+          background-color: alpha(#${colors.base00}, 0.9);
           border: 2px solid #${colors.base05};
-          border-radius: 30px;
+          border-radius: 10px;
         }
 
         window#waybar.hidden {
@@ -823,11 +826,6 @@ in
           font-size: 10pt;
           padding: 1px;
           color: #${colors.base05};
-        }
-
-        window#waybar {
-          opacity: 0.85;
-          border-radius: 10px;
         }
 
         #custom-menu {
@@ -1015,6 +1013,7 @@ in
           padding-left: 8px;
           padding-right: 8px;
         }
+
         #network {
           padding-right: 4px;
         }
@@ -1036,7 +1035,7 @@ in
         }
 
         tooltip {
-          background-color: #${colors.base00};
+          background-color: alpha(#${colors.base00}, 0.9);
           border: 2px solid #${colors.base05};
           border-radius: 10px;
           margin-top: 20px;
@@ -1047,12 +1046,8 @@ in
           text-shadow: none; 
           font-family: 'JetBrains Mono', Regular;
           font-size: 9pt;
-          padding: 4px;
+          padding: 6px 5px;
         }
-        /**/
-        /* tooltip label { */
-        /*   color: @theme_fg_color; */
-        /* } */
       '';
   };
 }

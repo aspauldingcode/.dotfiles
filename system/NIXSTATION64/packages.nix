@@ -24,6 +24,8 @@
   environment.systemPackages = with pkgs; [
     neovim
     zellij
+    kdePackages.kdeconnect-kde
+    universal-android-debloater
     clang
     libsForQt5.qt5.qtbase
     libsForQt5.qt5.qtsvg

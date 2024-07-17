@@ -268,7 +268,8 @@
           # You can get the names of your inputs by running: swaymsg -t get_inputs
           # Read `man 5 sway-input` for more information about this section.
           # Launch the network manager widget!
-          exec nm-applet
+          # exec nm-applet
+          exec --no-startup-id 'nm-applet --indicator'
 
           # SET workspace to specific output
           workspace 1 output DP-5
@@ -313,6 +314,18 @@
           #shadows_on_csd disable
           shadow_blur_radius 30
           shadow_color #000000ff
+
+          # Enable background blur for Waybar
+          layer_effects "waybar" blur enable; corner_radius 10
+
+          # Enable background blur for waybar tooltips
+          # FIXME
+          
+          # Enable background blur for Mako notifications
+          layer_effects "notifications" blur enable; corner_radius 10
+
+          # Enable background blur for GTK-based layer shell applications
+          layer_effects "gtk-layer-shell" blur enable; corner_radius 10
 
           # inactive window fade amount. 0.0 = no dimming, 1.0 = fully dimmed
           #default_dim_inactive .3
