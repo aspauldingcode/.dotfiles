@@ -77,20 +77,20 @@
     ssh.addKeysToAgent = true;
   };
 
-  launchd.agents.notificationcenter = {
-    enable = true;
-    config = {
-      ProgramArguments = [
-        "/bin/launchctl"
-        "unload"
-        "-w"
-        "/System/Library/LaunchAgents/com.apple.notificationcenterui.plist"
-      ];
-      RunAtLoad = true;
-      StandardOutPath = "/dev/null";
-      StandardErrorPath = "/dev/null";
-    };
-  };
+  # launchd.agents.notificationcenter = {
+  #   enable = true;
+  #   config = {
+  #     ProgramArguments = [
+  #       "/bin/launchctl"
+  #       "unload"
+  #       "-w"
+  #       "/System/Library/LaunchAgents/com.apple.notificationcenterui.plist"
+  #     ];
+  #     RunAtLoad = true;
+  #     StandardOutPath = "/dev/null";
+  #     StandardErrorPath = "/dev/null";
+  #   };
+  # };
 
   home.file."Library/Application Support/Mousecape/capes" = {
     target = "Library/Application Support/Mousecape/capes/";

@@ -1255,11 +1255,19 @@ in
 
     # notif-test
     (pkgs.writeShellScriptBin "notif-test" ''
-      for i in {1..10}; do
-      notify-send -i ~/.dotfiles/users/alex/face.png \
-           "Notification $i" \
-           "This is the detailed content for notification number $i. It includes an icon, a title, and this message body.";
-      done
+      if [[ "$OSTYPE" == "darwin"* ]]; then
+        for i in {1..10}; do
+          osascript -e "display notification \"This is the detailed content for notification number $i. It includes an icon, a title, and this message body.\" with title \"Notification $i\" subtitle \"Subtitle $i\" sound name \"default\""
+          sleep 1
+        done
+      else
+        for i in {1..10}; do
+          notify-send -i ~/.dotfiles/users/alex/face.png \
+               "Notification $i" \
+               "This is the detailed content for notification number $i. It includes an icon, a title, and this message body."
+          sleep 1
+        done
+      fi
     '')
 
     # xvnc-iphone
