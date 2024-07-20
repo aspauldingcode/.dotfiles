@@ -56,7 +56,7 @@ in
             version = "1.6.7";
             addonId = "myallychou@gmail.com";
             url = "https://addons.mozilla.org/en-US/firefox/addon/youtube-recommended-videos/";
-            sha256 = "sha256-OxxcF2e/TXDY9aXkADmnzxtrPk+80+1RQ1DKz29VwhQ=";
+            sha256 = "sha256-MWVpCxKYWR95UGqf6PqDmguKBmZp0FL92Z1wjxx221I=";
             meta = {
               homepage = "https://unhook.app/";
               description = "Hide YouTube distractions including related videos, comments, suggestions, and trending content.";
@@ -71,7 +71,7 @@ in
             version = "2.5.0";
             addonId = "{17c4514d-71fa-4633-8c07-1fe0b354c885}";
             url = "https://addons.mozilla.org/en-US/firefox/addon/hide-youtube-thumbnails/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=search.Check";
-            sha256 = "sha256-fBNIOfI/DktTBUUxamtqAMTfwYFBF7xPLIyoJyUa/OE=";
+            sha256 = "sha256-LMjjuoQ3ZZMkPMTeTNKMN+54LmF8Q03ptL256t9/KMI=";
             meta = {
               homepage = "https://github.com/domdomegg/hideytthumbnails-extension";
               description = "A simple browser extension which removes thumbnails from YouTube, for less clickbaity browsing.";

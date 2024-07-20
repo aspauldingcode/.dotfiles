@@ -212,33 +212,43 @@
             fi
         }
 
-        toggle_on() {
-            ensure_waybar_running
-            echo "on" > "$WAYBAR_STATE_FILE"
-            echo "Waybar is now enabled."
-            
-            # Handle gaps
-            if [ "$(cat "$GAPS_STATE_FILE")" = "off" ]; then
-                echo "Gaps are off, toggling to gapless bar."
-                sleep 1
-                pkill -SIGUSR1 '^waybar$'
+        toggle_waybar() {
+            current_state=$(cat "$WAYBAR_STATE_FILE")
+            if [ "$current_state" = "on" ]; then
+                if pgrep -x waybar > /dev/null; then
+                    echo "Stopping Waybar..."
+                    killall waybar
+                fi
+                echo "off" > "$WAYBAR_STATE_FILE"
+                echo "Waybar is now disabled."
+            else
+                ensure_waybar_running
+                echo "on" > "$WAYBAR_STATE_FILE"
+                echo "Waybar is now enabled."
+                
+                # Handle gaps
+                if [ "$(cat "$GAPS_STATE_FILE")" = "off" ]; then
+                    echo "Gaps are off, toggling to gapless bar."
+                    sleep 1
+                    pkill -SIGUSR1 '^waybar$'
+                fi
             fi
         }
 
-        toggle_off() {
+        if [ "$1" = "on" ]; then
+            if [ "$(cat "$WAYBAR_STATE_FILE")" = "off" ]; then
+                toggle_waybar
+            else
+                echo "Waybar is already enabled."
+            fi
+        elif [ "$1" = "off" ]; then
             if [ "$(cat "$WAYBAR_STATE_FILE")" = "on" ]; then
-                echo "Stopping Waybar..."
-                killall waybar
-                echo "off" > "$WAYBAR_STATE_FILE"
+                toggle_waybar
             else
                 echo "Waybar is already disabled."
             fi
-        }
-
-        if [ "$1" = "on" ] || [ -z "$1" ]; then
-            toggle_on
-        elif [ "$1" = "off" ]; then
-            toggle_off
+        elif [ -z "$1" ]; then
+            toggle_waybar
         else
             echo "Usage: toggle-waybar [on|off]"
             exit 1
