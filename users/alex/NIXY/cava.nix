@@ -95,9 +95,8 @@
         method = portaudio
         source = "Background Music"
 
-
         [output]
-
+        method = noncurses
         # Output method. Can be 'ncurses', 'noncurses', 'raw', 'noritake', 'sdl'
         # or 'sdl_glsl'.
         # 'noncurses' uses a custom framebuffer technique and prints only changes
@@ -126,7 +125,7 @@
         # 'mono' outputs left to right lowest to highest frequencies.
         # 'mono_option' set mono to either take input from 'left', 'right' or 'average'.
         # set 'reverse' to 1 to display frequencies the other way around.
-        ; channels = stereo
+        channels = stereo
         ; mono_option = average
         ; reverse = 0
 

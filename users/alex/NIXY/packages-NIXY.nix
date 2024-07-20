@@ -56,6 +56,7 @@ in
     bat
     newsboat
     audacity
+    # ncurses
     nmap
     neofetch
     darwin.cctools-port # is it needed tho?
@@ -226,7 +227,7 @@ in
       xrdb -merge ~/.Xresources
       ${sketchybar} --reload # allows start_programs_correctly" package to run.
       rm /tmp/fullscreen_state /tmp/dock_state /tmp/gaps_state /tmp/sketchybar_state /tmp/menubar_state /tmp/darkmode_state  #remove statefiles
-      echo -ne '\n' | sudo pkill "Background Music" && "/Applications/Background Music.app/Contents/MacOS/Background Music" > /dev/null 2>&1 &
+      # echo -ne '\n' | sudo pkill "Background Music" && "/Applications/Background Music.app/Contents/MacOS/Background Music" > /dev/null 2>&1 &
       dismiss-notifications
       # NOT WORKING CORRECTLY: (Should only kill apps that are not injected with paintcan..)
       # if [ ! -f "/tmp/programs_started_state" ]; then

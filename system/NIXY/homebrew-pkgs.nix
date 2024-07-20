@@ -74,7 +74,7 @@
       "karabiner-elements" # remap keyboard
       "unnaturalscrollwheels"
       "Beeper"
-      # "background-music"
+      "background-music" # audio routing driver. Fixes cava, but not working.
       "sublime-text"
       "betterdiscord-installer"
       "discord"
