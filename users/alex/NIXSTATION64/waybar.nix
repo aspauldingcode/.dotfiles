@@ -100,15 +100,19 @@ let
 
     cava = {
       # cava_config = "$XDG_CONFIG_HOME/cava/config";
-      framerate = 60;
+      framerate = 30;
       autosens = 1;
-      sensitivity = 100;
-      bars = 14;
+      # sensitivity = 100; # It's recommended to be omitted when autosens = 1
+      bars = 10; # number of bars
       lower_cutoff_freq = 50;
       higher_cutoff_freq = 10000;
-      method = "pulse";
+      sleep_timer = 0; # seconds when cava goes to sleep mode. 0 for disable.
+      hide_on_silence = false;
+      method = "pipewire";
       source = "auto";
-      stereo = true;
+      sample_rate = 44100;
+      sample_bits = 16;
+      stereo = false;
       reverse = false;
       bar_delimiter = 0;
       monstercat = false;
@@ -499,18 +503,6 @@ let
     "sway/workspaces" = {
       disable-scroll = true;
       all-outputs = true;
-      # format = "{name}: {icon}";
-      # format-icons = {
-      #   "1" = "";
-      #   "2" = "";
-      #   "3" = "";
-      #   "4" = "";
-      #   "5" = "";
-      #   high-priority-named = [ "1" "2" ];
-      #   urgent = "";
-      #   focused = "";
-      #   default = "";
-      # };      
     };
 
     cpu = {
@@ -720,10 +712,10 @@ let
     name = "gaps";
     mode = "dock";
     layer = "top";
-    height = 33;
-    margin-top = 13;
-    margin-left = 13;
-    margin-right = 13;
+    # height = 33;
+    margin-top = 10;
+    margin-left = 10;
+    margin-right = 10;
     position = "top";
   };
 
@@ -732,7 +724,7 @@ let
     start_hidden = true;
     mode = "dock";
     layer = "top";
-    height = 33;
+    # height = 33;
     margin-top = 0;
     margin-left = 0;
     margin-right = 0;
@@ -752,18 +744,12 @@ in
         inherit (config.colorscheme) colors;
       in
       ''
-        * {
-          /* font-family: 'JetBrains Mono', Regular; */
-          /* font-size: 10pt; */
-          /* padding: 1px; */
-          /* color: #${colors.base05}; */
-        }
         window#waybar {
           background-color: alpha(#${colors.base00}, 0.9);
           border: 2px solid #${colors.base05};
         }
         window#waybar.gaps {
-          border-radius: 13;
+          border-radius: 10;
         }
         window#waybar.gapless {
           border-radius: 0;
@@ -771,72 +757,6 @@ in
 
         window#waybar.hidden {
           opacity: 0.2;
-        }
-
-        .modules-left {
-          background-color: #${colors.base00};
-          border: 2px solid #${colors.base05};
-          border-radius: 30px;
-          margin-left: 21px;
-          /* margin-top: -2px; */
-          /* margin-bottom: -2px; */
-          /* padding-top: 0px; */
-          /* padding-bottom: 0px; */
-          font-family: 'JetBrains Mono', Regular;
-          font-size: 9pt;
-          padding: 1px;
-          color: #${colors.base05};
-        }
-
-        .modules-center {
-          background-color: #${colors.base00};
-          border: 2px solid #${colors.base05};
-          border-radius: 30px;
-          /* margin-top: -2px; */
-          /* margin-bottom: -2px; */
-          /* padding-top: 0px; */
-          /* padding-bottom: 0px; */
-          font-family: 'JetBrains Mono', Regular;
-          font-size: 10pt;
-          padding: 1px;
-          color: #${colors.base05};
-        }
-
-        .modules-right {
-          background-color: #${colors.base00};
-          border: 2px solid #${colors.base05};
-          border-radius: 30px;
-          margin-right: 21px;
-          /* margin-top: -2px; */
-          /* margin-bottom: -2px; */
-          /* padding-top: 0px; */
-          /* padding-bottom: 0px; */
-          font-family: 'JetBrains Mono', Regular;
-          font-size: 10pt;
-          padding: 1px;
-          color: #${colors.base05};
-        }
-
-        #custom-menu {
-          background-color: #${colors.base02};
-          /* border: 0px solid #${colors.base05}; */
-          border-radius: 30px;
-          padding-left: 14px;
-          padding-right: 18px;
-        }
-
-        #custom-currentplayer { /* SPOTIFY ICON */
-          background-color: #${colors.base02};
-          border: 0px solid #${colors.base05};
-          border-radius: 30px;
-          padding-left: 18px;
-          padding-right: 14px;
-          font-size: 9pt;
-        }
-
-        #custom-player {
-          padding-left: 8px;
-          padding-right: 8px;
         }
 
         #workspaces {
@@ -854,7 +774,7 @@ in
           background: transparent;
           color: #${colors.base04};
           padding: 0px;
-          margin: 0px -16px;
+          margin: -2px -16px;
           border: none;
         }
 
@@ -871,6 +791,62 @@ in
           font-family: 'JetBrains Mono', Bold;
         }
 
+        .modules-left {
+          background-color: #${colors.base00};
+          border: 2px solid #${colors.base05};
+          border-radius: 30px;
+          margin-left: 21px;
+          margin-top: 7px;
+          margin-bottom: 7px;
+          font-family: 'JetBrains Mono', Regular;
+          font-size: 9pt;
+          color: #${colors.base05};
+        }
+
+        .modules-center {
+          background-color: #${colors.base00};
+          border: 2px solid #${colors.base05};
+          border-radius: 30px;
+          margin-top: 7px;
+          margin-bottom: 7px;
+          font-family: 'JetBrains Mono', Regular;
+          font-size: 10pt;
+          color: #${colors.base05};
+        }
+
+        .modules-right {
+          background-color: #${colors.base00};
+          border: 2px solid #${colors.base05};
+          border-radius: 30px;
+          margin-top: 7px;
+          margin-bottom: 7px;
+          margin-right: 21px;
+          font-family: 'JetBrains Mono', Regular;
+          font-size: 10pt;
+          color: #${colors.base05};
+        }
+
+        #custom-menu {
+          background-color: #${colors.base02};
+          border-radius: 30px;
+          padding-left: 14px;
+          padding-right: 14px;
+        }
+
+        #custom-currentplayer { /* SPOTIFY ICON */
+          background-color: #${colors.base02};
+          border: 0px solid #${colors.base05};
+          border-radius: 30px;
+          padding-left: 18px;
+          padding-right: 14px;
+          font-size: 9pt;
+        }
+
+        #custom-player {
+          padding-left: 8px;
+          padding-right: 8px;
+        }
+
         #custom-seperator-left,
         #custom-seperator-right {
           padding-left: 8px;
@@ -883,8 +859,8 @@ in
 
         #custom-datetime    
         #memory {
-          margin-top: 0px;
-          margin-bottom: 0px;
+          /* margin-top: 0px; */
+          /* margin-bottom: 0px; */
         }
 
         #custom-datetime {
@@ -1014,30 +990,6 @@ in
           font-family: 'JetBrains Mono', Regular;
           font-size: 9pt;
           padding: 6px 5px;
-        }
-
-        #custom-menu,
-        #sway-workspaces,
-        #custom-seperator-left,
-        #sway-window,
-        #pulseaudio,
-        #custom-backlight,
-        #custom-wlgammactl,
-        #custom-gammastep,
-        #custom-wlsunset,
-        #custom-datetime,
-        #custom-currentplayer,
-        #custom-unread-mail,
-        #tray,
-        #network,
-        #battery,
-        #custom-seperator-right,
-        #cpu,
-        #memory {
-          margin-top: -2px;
-          margin-bottom: -2px;
-          padding-top: 0px;
-          padding-bottom: 0px;
         }
       '';
   };
