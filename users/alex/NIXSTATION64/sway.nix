@@ -6,7 +6,9 @@
 }:
 
 {
-  imports = [ ./waybar.nix ];
+  imports = [ 
+    ./waybar.nix
+  ];
 
   wayland.windowManager.sway = {
     enable = true;
@@ -14,7 +16,7 @@
     checkConfig = lib.mkForce false;
     config = rec {
       bars = [
-        { command = "${pkgs.waybar}/bin/waybar"; } # FIXME: WHY ARE THERE TWO WAYBARS at launch?
+        { command = "if pgrep -x waybar; then pkill waybar; ${pkgs.waybar}/bin/waybar; fi"; }
       ];
       modifier = "Mod4";
       left = "h";
@@ -240,7 +242,7 @@
 
         "${modifier}+g" = "exec toggle-gaps";
 
-        "${modifier}+Shift+R" = "reload";
+        "${modifier}+Shift+R" = "exec fix-wm";
       };
     };
 
@@ -316,7 +318,10 @@
           shadow_color #000000ff
 
           # Enable background blur for Waybar
-          layer_effects "waybar" blur enable; corner_radius 10
+          # layer_effects "waybar" blur enable; corner_radius 13
+          
+          # Enable background blur for Waybar-Square
+          layer_effects "waybar" blur enable; corner_radius 0
 
           # Enable background blur for waybar tooltips
           # FIXME

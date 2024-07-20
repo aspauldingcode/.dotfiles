@@ -157,10 +157,13 @@
       })
       #fix-wm
       (pkgs.writeShellScriptBin "fix-wm" ''
-        pkill waybar && sway reload
-        sleep 4       #FIX waybar cava init issue:
-        nohup ffplay ~/.dotfiles/users/alex/NIXSTATION64/waybar/silence.wav -t 5 -nodisp -autoexit > /dev/null 2>&1 &
-        [ -f /tmp/sway_gaps_state ] && rm /tmp/sway_gaps_state # remove the initial states for gaps if it exists.
+        sway reload
+        # Remove the initial states for gaps if the file exists
+        [ -f /tmp/gaps_state ] && rm /tmp/gaps_state
+        # Remove the waybar state file if it exists
+        [ -f /tmp/waybar_state ] && rm /tmp/waybar_state
+        toggle-waybar off && toggle-waybar on
+        toggle-gaps off && toggle-gaps on
       '')
       #search
       (pkgs.writeShellScriptBin "search" ''
@@ -196,30 +199,49 @@
       (pkgs.writeShellScriptBin "toggle-waybar" ''
         #!/bin/bash
 
-        STATE_FILE="/tmp/waybar_state"
+        WAYBAR_STATE_FILE="/tmp/waybar_state"
+        GAPS_STATE_FILE="/tmp/gaps_state"
+        [ ! -f "$WAYBAR_STATE_FILE" ] && echo "on" > "$WAYBAR_STATE_FILE"
+        [ ! -f "$GAPS_STATE_FILE" ] && echo "on" > "$GAPS_STATE_FILE"
 
-        toggle_waybar() {
-            if [ -f "$STATE_FILE" ] && [ "$(cat "$STATE_FILE")" = "visible" ]; then
-                killall waybar
-                echo "hidden" > "$STATE_FILE"
-                swaymsg "layer_effects 'waybar' 'blur disable'"
-            else
-                waybar >/dev/null 2>&1 &
-                echo "visible" > "$STATE_FILE"
-                swaymsg "layer_effects 'waybar' 'blur enable'"
+        ensure_waybar_running() {
+            if ! pgrep -x waybar > /dev/null; then
+                echo "Waybar is not running. Starting it..."
+                waybar > /dev/null 2>&1 &
+                sleep 1
             fi
         }
 
-        if [ "$1" = "on" ]; then
-            waybar >/dev/null 2>&1 &
-            echo "visible" > "$STATE_FILE"
-            swaymsg "layer_effects 'waybar' 'blur enable'"
+        toggle_on() {
+            ensure_waybar_running
+            echo "on" > "$WAYBAR_STATE_FILE"
+            echo "Waybar is now enabled."
+            
+            # Handle gaps
+            if [ "$(cat "$GAPS_STATE_FILE")" = "off" ]; then
+                echo "Gaps are off, toggling to gapless bar."
+                sleep 1
+                pkill -SIGUSR1 '^waybar$'
+            fi
+        }
+
+        toggle_off() {
+            if [ "$(cat "$WAYBAR_STATE_FILE")" = "on" ]; then
+                echo "Stopping Waybar..."
+                killall waybar
+                echo "off" > "$WAYBAR_STATE_FILE"
+            else
+                echo "Waybar is already disabled."
+            fi
+        }
+
+        if [ "$1" = "on" ] || [ -z "$1" ]; then
+            toggle_on
         elif [ "$1" = "off" ]; then
-            killall waybar
-            echo "hidden" > "$STATE_FILE"
-            swaymsg "layer_effects 'waybar' 'blur disable'"
+            toggle_off
         else
-            toggle_waybar
+            echo "Usage: toggle-waybar [on|off]"
+            exit 1
         fi
       '')
 
@@ -228,32 +250,39 @@
         #!/bin/sh
 
         # Define a file to keep track of the state
-        state_file="/tmp/sway_gaps_state"
+        gaps_state_file="/tmp/gaps_state"
 
-        # Function to check current state
+        # Function to check current state and ensure file exists
         check_state() {
-            if [ -f "$state_file" ]; then
-                state=$(cat "$state_file")
-                echo "Gaps are currently $state"
-            else
-                echo "State file not found. Gaps are assumed to be off."
+            if [ ! -f "$gaps_state_file" ]; then
+                echo "State file not found. Creating it and setting gaps to on."
+                echo "on" > "$gaps_state_file"
+                turn_gaps_on
             fi
+            state=$(cat "$gaps_state_file")
+            echo "Gaps are currently $state"
         }
 
-        # Check if the state file exists and read the current state
-        if [ -f "$state_file" ]; then
-            state=$(cat "$state_file")
-        else
-            state="off"
-            echo "$state" > "$state_file"
+        # Ensure the state file exists and has valid content
+        if [ ! -f "$gaps_state_file" ] || [ ! -s "$gaps_state_file" ]; then
+            echo "on" > "$gaps_state_file"
         fi
+
+        # Read the current state
+        state=$(cat "$gaps_state_file")
 
         # Function to turn gaps on
         turn_gaps_on() {
             swaymsg -q gaps inner all set 13 > /dev/null 2>&1
             swaymsg -q gaps outer all set -2 > /dev/null 2>&1
             swaymsg -q corner radius all set 8 > /dev/null 2>&1
-            echo "on" > "$state_file"
+            
+            # Check if waybar is running, if so, send SIGUSR1 to it.
+            if pgrep -x "waybar" > /dev/null; then
+                pkill -SIGUSR1 '^waybar$'
+            fi
+            echo "on" > "$gaps_state_file"
+            echo "Gaps turned on"
         }
 
         # Function to turn gaps off
@@ -261,24 +290,22 @@
             swaymsg -q gaps inner all set 0 > /dev/null 2>&1
             swaymsg -q gaps outer all set 0 > /dev/null 2>&1
             swaymsg -q corner radius all set 0 > /dev/null 2>&1
-            echo "off" > "$state_file"
+
+            # Check if waybar is running, if so, send SIGUSR1 to it.
+            if pgrep -x "waybar" > /dev/null; then
+                pkill -SIGUSR1 '^waybar$'
+            fi
+            echo "off" > "$gaps_state_file"
+            echo "Gaps turned off"
         }
 
         # Process command-line arguments
         case "$1" in
             on)
-                if [ "$state" = "on" ]; then
-                    echo "Gaps are already on."
-                else
-                    turn_gaps_on
-                fi
+                turn_gaps_on
                 ;;
             off)
-                if [ "$state" = "off" ]; then
-                    echo "Gaps are already off."
-                else
-                    turn_gaps_off
-                fi
+                turn_gaps_off
                 ;;
             status)
                 check_state

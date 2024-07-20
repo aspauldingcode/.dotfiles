@@ -345,6 +345,7 @@
     sway = {
       enable = true;
       package = pkgs.swayfx;
+      # xwayland.enable = false;
       # extraPackages = with pkgs; [ swaylock swayidle foot dmenu wmenu ];
     };
   };
