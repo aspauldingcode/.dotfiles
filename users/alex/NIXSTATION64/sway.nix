@@ -251,15 +251,6 @@
         inherit (config.colorscheme) colors;
       in
       ''
-
-        # # try to swayipc waybar:
-        # bar {
-        #     swaybar_command waybar
-        #     position top
-        #     mode hide
-        #     modifier Mod4
-        # }
-
         set $mod Mod4
           # Idle configuration        
           exec swayidle -w \
@@ -318,7 +309,7 @@
           shadow_color #000000ff
 
           # Enable background blur for Waybar
-          # layer_effects "waybar" blur enable; corner_radius 13
+          # layer_effects "waybar" blur enable; corner_radius 10
           
           # Enable background blur for Waybar-Square
           layer_effects "waybar" blur enable; corner_radius 0

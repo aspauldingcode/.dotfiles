@@ -11,7 +11,7 @@ let
   tail = "${pkgs.coreutils}/bin/tail";
   wc = "${pkgs.coreutils}/bin/wc";
   xargs = "${pkgs.findutils}/bin/xargs";
-  wlsunset = "${pkgs.wlsunset}/bin/wlsunset";
+  # wlsunset = "${pkgs.wlsunset}/bin/wlsunset";
 
   jq = "${pkgs.jq}/bin/jq";
   systemctl = "${pkgs.systemd}/bin/systemctl";
@@ -56,7 +56,7 @@ let
       "custom/backlight"
       "custom/wlgammactl"
       "custom/gammastep"
-      "custom/wlsunset"
+      "custom/brightness-gammastep"
       "custom/datetime"
       #"custom/gpg-agent"
       # "custom/spotify"
@@ -100,15 +100,19 @@ let
 
     cava = {
       # cava_config = "$XDG_CONFIG_HOME/cava/config";
-      framerate = 60;
+      framerate = 30;
       autosens = 1;
-      sensitivity = 100;
-      bars = 14;
+      # sensitivity = 100; # It's recommended to be omitted when autosens = 1
+      bars = 10; # number of bars
       lower_cutoff_freq = 50;
       higher_cutoff_freq = 10000;
-      method = "pulse";
+      sleep_timer = 0; # seconds when cava goes to sleep mode. 0 for disable.
+      hide_on_silence = false;
+      method = "pipewire";
       source = "auto";
-      stereo = true;
+      sample_rate = 44100;
+      sample_bits = 16;
+      stereo = false;
       reverse = false;
       bar_delimiter = 0;
       monstercat = false;
@@ -218,118 +222,112 @@ let
       '';
     };
     
-    "custom/wlsunset" = {
-      format = "󰈋 wlsunset";
-      on-click = ''
+    "custom/brightness-gammastep" = {
+      format = "󰈋 brightness-gammastep";
+      format-source = "{icon} brightness-gammastep";
+      format-icons = [""];
+      on-scroll-down = ''
         #!/bin/bash
 
+        # Define min and max temperatures and brightness
+        MIN_TEMP=3500
+        MAX_TEMP=6500
+        MIN_BRIGHTNESS=0.1
+        MAX_BRIGHTNESS=1.0
+
         # Kill other programs
-        killall gammastep
+        killall wlsunset
         killall wl-gammactl
 
-        # Source the sunvar.sh script to get the variable
-        source /tmp/wlsunset_state
+        # Always kill gammastep to ensure a clean state
+        killall gammastep
 
-        if pgrep -x "wlsunset" > /dev/null
-        then
-            killall wlsunset > /dev/null 2>&1
+        # Read current temperature and brightness from state file, or set to defaults if file doesn't exist
+        if [ -f /tmp/gammastep_state ]; then
+            read current_temp current_brightness <<< $(cat /tmp/gammastep_state)
         else
-            if ! wlsunset -T $VAR > /dev/null 2>&1; then
-                VAR=4100
-                echo "VAR=$VAR" > /tmp/wlsunset_state
-                wlsunset -T $VAR > /dev/null 2>&1 &
-            fi
+            current_temp=$MAX_TEMP
+            current_brightness=$MAX_BRIGHTNESS
         fi
+
+        # Decrease temperature
+        new_temp=$((current_temp - 200))
+        if [ $new_temp -lt $MIN_TEMP ]; then
+            new_temp=$MIN_TEMP
+        fi
+
+        # Decrease brightness
+        new_brightness=$(awk "BEGIN {print $current_brightness - 0.05}")
+        if (( $(echo "$new_brightness < $MIN_BRIGHTNESS" | bc -l) )); then
+            new_brightness=$MIN_BRIGHTNESS
+        fi
+
+        gammastep -O "$new_temp" -b "$new_brightness:$new_brightness" &
+        echo "$new_temp $new_brightness" > /tmp/gammastep_state
+        notify-send -t 700 "Temp $new_temp K, Brightness $new_brightness"
       '';
       on-scroll-up = ''
         #!/bin/bash
 
+        # Define min and max temperatures and brightness
+        MIN_TEMP=3500
+        MAX_TEMP=6500
+        MIN_BRIGHTNESS=0.1
+        MAX_BRIGHTNESS=1.0
+
         # Kill other programs
-        killall gammastep
+        killall wlsunset
         killall wl-gammactl
 
-        # Source the sunvar.sh script to get the variable
-        source /tmp/wlsunset_state
+        # Always kill gammastep to ensure a clean state
+        killall gammastep
 
-        # Set min and max values
-        MIN=4100
-        MAX=6500
-
-        # Check if the variable is set. If not, set it to min
-        if [ -z "$VAR" ]
-        then
-            VAR=$MIN
+        # Read current temperature and brightness from state file, or set to defaults if file doesn't exist
+        if [ -f /tmp/gammastep_state ]; then
+            read current_temp current_brightness <<< $(cat /tmp/gammastep_state)
+        else
+            current_temp=$MIN_TEMP
+            current_brightness=$MIN_BRIGHTNESS
         fi
 
-        # Increase the variable by 200
-        VAR=$((VAR + 200))
-
-        # Ensure the variable does not exceed max
-        if ((VAR > MAX))
-        then
-            VAR=$MAX
+        # Increase temperature
+        new_temp=$((current_temp + 200))
+        if [ $new_temp -gt $MAX_TEMP ]; then
+            new_temp=$MAX_TEMP
         fi
 
-        # Update the variable in /tmp/wlsunset_state
-        echo "VAR=$VAR" > /tmp/wlsunset_state
-
-        # Print the new value of VAR
-        echo "New value of VAR: $VAR"
-
-        # Check if wlsunset is running
-        if pgrep -x "wlsunset" > /dev/null
-        then
-            # If wlsunset is running, kill it
-            killall -9 "wlsunset"
+        # Increase brightness
+        new_brightness=$(awk "BEGIN {print $current_brightness + 0.05}")
+        if (( $(echo "$new_brightness > $MAX_BRIGHTNESS" | bc -l) )); then
+            new_brightness=$MAX_BRIGHTNESS
         fi
 
-        # Run wlsunset with the new value
-        wlsunset -T $VAR
+        gammastep -O "$new_temp" -b "$new_brightness:$new_brightness" &
+        echo "$new_temp $new_brightness" > /tmp/gammastep_state
+        notify-send -t 700 "Temp $new_temp K, Brightness $new_brightness"
       '';
-      on-scroll-down = ''
+      on-click = ''
         #!/bin/bash
 
         # Kill other programs
-        killall gammastep
+        killall wlsunset
         killall wl-gammactl
 
-        # Source the sunvar.sh script to get the variable
-        source /tmp/wlsunset_state
-
-        # Set min and max values
-        MIN=4100
-        MAX=6500
-
-        # Check if the variable is set. If not, set it to max
-        if [ -z "$VAR" ]
-        then
-            VAR=$MAX
+        # Read current state
+        if [ -f /tmp/gammastep_state ]; then
+            read current_temp current_brightness <<< $(cat /tmp/gammastep_state)
+        else
+            current_temp=6500
+            current_brightness=1.0
         fi
 
-        # Decrease the variable by 200
-        VAR=$((VAR - 200))
-
-        # Ensure the variable does not go below min
-        if ((VAR < MIN))
-        then
-            VAR=$MIN
+        if pgrep gammastep >/dev/null; then
+            killall gammastep
+            notify-send -t 700 "RedGlow Stopped"
+        else
+            gammastep -O "$current_temp" -b "$current_brightness:$current_brightness" &
+            notify-send -t 700 "RedGlow ON (Temp: $current_temp K, Brightness: $current_brightness)"
         fi
-
-        # Update the variable in /tmp/wlsunset_state
-        echo "VAR=$VAR" > /tmp/wlsunset_state
-
-        # Print the new value of VAR
-        echo "New value of VAR: $VAR"
-
-        # Check if wlsunset is running
-        if pgrep -x "wlsunset" > /dev/null
-        then
-            # If wlsunset is running, kill it
-            killall -9 "wlsunset"
-        fi
-
-        # Run wlsunset with the new value
-        wlsunset -T $VAR
       '';
     };
 
@@ -499,18 +497,6 @@ let
     "sway/workspaces" = {
       disable-scroll = true;
       all-outputs = true;
-      # format = "{name}: {icon}";
-      # format-icons = {
-      #   "1" = "";
-      #   "2" = "";
-      #   "3" = "";
-      #   "4" = "";
-      #   "5" = "";
-      #   high-priority-named = [ "1" "2" ];
-      #   urgent = "";
-      #   focused = "";
-      #   default = "";
-      # };      
     };
 
     cpu = {
@@ -720,10 +706,10 @@ let
     name = "gaps";
     mode = "dock";
     layer = "top";
-    height = 33;
-    margin-top = 13;
-    margin-left = 13;
-    margin-right = 13;
+    # height = 33;
+    margin-top = 10;
+    margin-left = 10;
+    margin-right = 10;
     position = "top";
   };
 
@@ -732,7 +718,7 @@ let
     start_hidden = true;
     mode = "dock";
     layer = "top";
-    height = 33;
+    # height = 33;
     margin-top = 0;
     margin-left = 0;
     margin-right = 0;
@@ -752,18 +738,12 @@ in
         inherit (config.colorscheme) colors;
       in
       ''
-        * {
-          /* font-family: 'JetBrains Mono', Regular; */
-          /* font-size: 10pt; */
-          /* padding: 1px; */
-          /* color: #${colors.base05}; */
-        }
         window#waybar {
           background-color: alpha(#${colors.base00}, 0.9);
           border: 2px solid #${colors.base05};
         }
         window#waybar.gaps {
-          border-radius: 13;
+          border-radius: 10;
         }
         window#waybar.gapless {
           border-radius: 0;
@@ -771,72 +751,6 @@ in
 
         window#waybar.hidden {
           opacity: 0.2;
-        }
-
-        .modules-left {
-          background-color: #${colors.base00};
-          border: 2px solid #${colors.base05};
-          border-radius: 30px;
-          margin-left: 21px;
-          /* margin-top: -2px; */
-          /* margin-bottom: -2px; */
-          /* padding-top: 0px; */
-          /* padding-bottom: 0px; */
-          font-family: 'JetBrains Mono', Regular;
-          font-size: 9pt;
-          padding: 1px;
-          color: #${colors.base05};
-        }
-
-        .modules-center {
-          background-color: #${colors.base00};
-          border: 2px solid #${colors.base05};
-          border-radius: 30px;
-          /* margin-top: -2px; */
-          /* margin-bottom: -2px; */
-          /* padding-top: 0px; */
-          /* padding-bottom: 0px; */
-          font-family: 'JetBrains Mono', Regular;
-          font-size: 10pt;
-          padding: 1px;
-          color: #${colors.base05};
-        }
-
-        .modules-right {
-          background-color: #${colors.base00};
-          border: 2px solid #${colors.base05};
-          border-radius: 30px;
-          margin-right: 21px;
-          /* margin-top: -2px; */
-          /* margin-bottom: -2px; */
-          /* padding-top: 0px; */
-          /* padding-bottom: 0px; */
-          font-family: 'JetBrains Mono', Regular;
-          font-size: 10pt;
-          padding: 1px;
-          color: #${colors.base05};
-        }
-
-        #custom-menu {
-          background-color: #${colors.base02};
-          /* border: 0px solid #${colors.base05}; */
-          border-radius: 30px;
-          padding-left: 14px;
-          padding-right: 18px;
-        }
-
-        #custom-currentplayer { /* SPOTIFY ICON */
-          background-color: #${colors.base02};
-          border: 0px solid #${colors.base05};
-          border-radius: 30px;
-          padding-left: 18px;
-          padding-right: 14px;
-          font-size: 9pt;
-        }
-
-        #custom-player {
-          padding-left: 8px;
-          padding-right: 8px;
         }
 
         #workspaces {
@@ -854,7 +768,7 @@ in
           background: transparent;
           color: #${colors.base04};
           padding: 0px;
-          margin: 0px -16px;
+          margin: -2px -16px;
           border: none;
         }
 
@@ -871,6 +785,62 @@ in
           font-family: 'JetBrains Mono', Bold;
         }
 
+        .modules-left {
+          background-color: #${colors.base00};
+          border: 2px solid #${colors.base05};
+          border-radius: 30px;
+          margin-left: 21px;
+          margin-top: 7px;
+          margin-bottom: 7px;
+          font-family: 'JetBrains Mono', Regular;
+          font-size: 9pt;
+          color: #${colors.base05};
+        }
+
+        .modules-center {
+          background-color: #${colors.base00};
+          border: 2px solid #${colors.base05};
+          border-radius: 30px;
+          margin-top: 7px;
+          margin-bottom: 7px;
+          font-family: 'JetBrains Mono', Regular;
+          font-size: 10pt;
+          color: #${colors.base05};
+        }
+
+        .modules-right {
+          background-color: #${colors.base00};
+          border: 2px solid #${colors.base05};
+          border-radius: 30px;
+          margin-top: 7px;
+          margin-bottom: 7px;
+          margin-right: 21px;
+          font-family: 'JetBrains Mono', Regular;
+          font-size: 10pt;
+          color: #${colors.base05};
+        }
+
+        #custom-menu {
+          background-color: #${colors.base02};
+          border-radius: 30px;
+          padding-left: 14px;
+          padding-right: 14px;
+        }
+
+        #custom-currentplayer { /* SPOTIFY ICON */
+          background-color: #${colors.base02};
+          border: 0px solid #${colors.base05};
+          border-radius: 30px;
+          padding-left: 18px;
+          padding-right: 14px;
+          font-size: 9pt;
+        }
+
+        #custom-player {
+          padding-left: 8px;
+          padding-right: 8px;
+        }
+
         #custom-seperator-left,
         #custom-seperator-right {
           padding-left: 8px;
@@ -883,8 +853,8 @@ in
 
         #custom-datetime    
         #memory {
-          margin-top: 0px;
-          margin-bottom: 0px;
+          /* margin-top: 0px; */
+          /* margin-bottom: 0px; */
         }
 
         #custom-datetime {
@@ -947,7 +917,7 @@ in
           font-size: 9pt;
         }
 
-        #custom-wlsunset {
+        #custom-brightness-gammastep {
           background-color: #${colors.base00};
           border: 0px solid #${colors.base05};
           border-radius: 30px;
@@ -1002,7 +972,7 @@ in
         }
 
         tooltip {
-          background-color: alpha(#${colors.base00}, 0.9);
+          background-color: alpha(#${colors.base00}, 0.95);
           border: 2px solid #${colors.base05};
           border-radius: 10px;
           margin-top: 20px;
@@ -1010,35 +980,26 @@ in
 
         tooltip * {
           color: #${colors.base05};
-          text-shadow: none; 
           font-family: 'JetBrains Mono', Regular;
           font-size: 9pt;
           padding: 6px 5px;
-        }
-
-        #custom-menu,
-        #sway-workspaces,
-        #custom-seperator-left,
-        #sway-window,
-        #pulseaudio,
-        #custom-backlight,
-        #custom-wlgammactl,
-        #custom-gammastep,
-        #custom-wlsunset,
-        #custom-datetime,
-        #custom-currentplayer,
-        #custom-unread-mail,
-        #tray,
-        #network,
-        #battery,
-        #custom-seperator-right,
-        #cpu,
-        #memory {
-          margin-top: -2px;
-          margin-bottom: -2px;
-          padding-top: 0px;
-          padding-bottom: 0px;
+          text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.95);
         }
       '';
+  };
+  
+  services.gammastep = {
+    enable = true;
+    provider = "manual";
+    latitude = 47.658779;
+    longitude = -117.426048;
+    temperature = {
+      day = 5500;
+      night = 3500;
+    };
+    brightness = {
+      day = 1.0;
+      night = 0.7;
+    };
   };
 }

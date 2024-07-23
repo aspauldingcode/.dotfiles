@@ -14,8 +14,8 @@
     ./yazi/yazi.nix
     ./mimeapps.nix
     ./mako.nix
-    ./discocss.nix
-    ./betterdiscord.nix
+    # ./discocss.nix
+    # ./betterdiscord.nix
     ./shells.nix
     # ./zellij.nix
     ./cursor.nix

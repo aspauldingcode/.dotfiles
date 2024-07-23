@@ -34,12 +34,12 @@
       gcal
       gimp
       home-manager
+      unstable.pmbootstrap
       jq
       lsof
       ncdu
       nmap
       pciutils
-      pmbootstrap
       ripgrep
       socat
       sshfs
@@ -52,7 +52,7 @@
 
       # Networking and communication
       android-tools
-      checkra1n
+      unstable.checkra1n
       idevicerestore
       libimobiledevice
       libusb1
@@ -60,6 +60,7 @@
       obsidian
       rofi-wayland-unwrapped
       zoom-us
+      vesktop
 
       # Multimedia and graphics
       blender-hip
@@ -67,6 +68,8 @@
       cava
       ffmpeg-full
       flameshot
+      kdePackages.kdenlive
+      obs-studio
       obs-studio-plugins.obs-vkcapture
       obs-studio-plugins.wlrobs
       spotify-unwrapped
@@ -100,8 +103,6 @@
       wlroots
       wlogout
       wl-gammactl
-      gammastep
-      wlsunset
       wofi
       wshowkeys
       wtype
