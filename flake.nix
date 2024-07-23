@@ -277,6 +277,44 @@
 
                     echo "programs started already (since boot with launchAgent or user cli)." > "/tmp/programs_started_state"
                   '';
+
+                brightness = prev.writeShellScriptBin "brightness" ''
+                  #!/bin/sh
+
+                  # Function to press the brightness up key
+                  brightness_up() {
+                    osascript -e 'tell application "System Events" to key code 144'
+                  }
+
+                  # Function to press the brightness down key
+                  brightness_down() {
+                    osascript -e 'tell application "System Events" to key code 145'
+                  }
+
+                  # Adjust brightness based on the provided number of times
+                  brightness() {
+                    local times=$1
+
+                    if [[ $times -gt 0 ]]; then
+                      for ((i = 0; i < times; i++)); do
+                        brightness_up
+                      done
+                    elif [[ $times -lt 0 ]]; then
+                      for ((i = 0; i < -times; i++)); do
+                        brightness_down
+                      done
+                    fi
+                  }
+
+                  # Only run the brightness function if the script is executed directly
+                  if [[ "''${BASH_SOURCE[0]}" == "''${0}" ]]; then
+                    if [[ $# -ne 1 ]]; then
+                      echo "Usage: $0 <number>"
+                      exit 1
+                    fi
+                    brightness "$1"
+                  fi
+                '';
               })
             ];
           };

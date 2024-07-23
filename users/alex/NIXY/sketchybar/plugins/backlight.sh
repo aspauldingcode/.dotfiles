@@ -5,6 +5,30 @@ PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
+# Function to press the brightness up key
+brightness_up() {
+  osascript -e 'tell application "System Events" to key code 144'
+}
+
+# Function to press the brightness down key
+brightness_down() {
+  osascript -e 'tell application "System Events" to key code 145'
+}
+
+# Adjust brightness based on the provided number of times
+brightness() {
+  local times=$1
+
+  if [[ $times -gt 0 ]]; then
+    for ((i = 0; i < times; i++)); do
+      brightness_up
+    done
+  elif [[ $times -lt 0 ]]; then
+    for ((i = 0; i < -times; i++)); do
+      brightness_down
+    done
+  fi
+}
 
 brightness_change() {
   case $INFO in
@@ -39,22 +63,8 @@ case "$SENDER" in
   brightness_change
   ;;
 "mouse.scrolled")
-  # Extract the delta value from INFO (assuming it's in JSON format)
-  SCROLL_DELTA=$(echo "$INFO" | tr -d '{}' | awk -F':' '/delta/ {print $2}' | tr -d ' ')
-
-  # Get the current brightness level
-  CURRENT_BRIGHTNESS=$(brightness -l | grep brightness | awk '{print $4 * 100}')
-
-  # Calculate the new brightness level
-  NEW_BRIGHTNESS=$((CURRENT_BRIGHTNESS + SCROLL_DELTA * 2))
-
-  # Ensure the brightness doesn't go below 0 or above 100
-  NEW_BRIGHTNESS=$(awk -v v="$NEW_BRIGHTNESS" 'BEGIN {print (v < 0) ? 0 : (v > 100) ? 100 : v}')
-
-  # Adjust brightness using brightness command
-  brightness -l | grep display | awk '{print $2}' | while read -r display; do
-    brightness -d $display -v $(awk -v v="$NEW_BRIGHTNESS" 'BEGIN {print v / 100}')
-  done
+  # Adjust brightness using the brightness function
+  brightness $SCROLL_DELTA
   ;;
 "mouse.entered")
   sketchybar --set backlight popup.drawing=on
@@ -69,4 +79,3 @@ case "$SENDER" in
   # Update brightness info periodically
   ;;
 esac
-
