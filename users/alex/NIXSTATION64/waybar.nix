@@ -978,7 +978,7 @@ in
         }
 
         tooltip {
-          background-color: alpha(#${colors.base00}, 0.9);
+          background-color: alpha(#${colors.base00}, 0.95);
           border: 2px solid #${colors.base05};
           border-radius: 10px;
           margin-top: 20px;
@@ -986,10 +986,10 @@ in
 
         tooltip * {
           color: #${colors.base05};
-          text-shadow: none; 
           font-family: 'JetBrains Mono', Regular;
           font-size: 9pt;
           padding: 6px 5px;
+          text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.95);
         }
       '';
   };

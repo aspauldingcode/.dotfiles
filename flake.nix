@@ -93,7 +93,14 @@
               allowUnfree = true;
               permittedInsecurePackages = [ "electron-19.1.9" ];
             };
-            overlays = [ inputs.nur.overlay ];
+            overlays = [
+              inputs.nur.overlay
+              (final: _prev: {
+                unstable = import unstable_nixpkgs {
+                  inherit (final) system config;
+                };
+              })
+            ];
           };
           specialArgs = commonSpecialArgs; # // { extraPkgs = [ mobile-nixos ]; };
           modules = [
@@ -124,7 +131,14 @@
               allowUnfree = true;
               permittedInsecurePackages = [ "electron-19.1.9" ];
             };
-            overlays = [ inputs.nur.overlay ];
+            overlays = [
+              inputs.nur.overlay
+              (final: _prev: {
+                unstable = import unstable_nixpkgs {
+                  inherit (final) system config;
+                };
+              })
+            ];
           };
           specialArgs = commonSpecialArgs; # // { extraPkgs = [ mobile-nixos ]; };
           modules = [
@@ -153,6 +167,11 @@
             config.allowUnfree = true;
             overlays = [
               inputs.nur.overlay
+              (final: _prev: {
+                unstable = import unstable_nixpkgs {
+                  inherit (final) system config;
+                };
+              })
               #install i3/sway autotiling on macos for i3 xquartz!
               (final: prev: {
                 autotiling =
