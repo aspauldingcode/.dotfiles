@@ -26,7 +26,8 @@
       "libtool"
       "automake"
       "autoconf-archive"
-      "pkgconf"
+      "nightlight"
+      # "pkgconf"
       "portaudio"
       "iniparser"
       "gcal"
@@ -100,6 +101,7 @@
       "kde-mac/kde"
       "koekeishiya/formulae"
       "FelixKratz/formulae"
+      "smudge/smudge"
     ];
   };
 }

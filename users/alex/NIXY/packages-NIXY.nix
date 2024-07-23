@@ -56,6 +56,7 @@ in
     bat
     newsboat
     audacity
+    pkgconf
     # ncurses
     nmap
     neofetch

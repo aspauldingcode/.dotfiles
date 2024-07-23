@@ -60,6 +60,7 @@ in
   xdg.configFile."sketchybar/plugins/backlight.sh".source = ./plugins/backlight.sh;
   xdg.configFile."sketchybar/plugins/wifi.sh".source = ./plugins/wifi.sh;
   xdg.configFile."sketchybar/plugins/open_menubar_items.sh".source = ./plugins/open_menubar_items.sh;
+  xdg.configFile."sketchybar/plugins/nightlight.sh".source = ./plugins/nightlight.sh;
 
   # Specify executable for each file
   xdg.configFile."sketchybar/sketchybarrc".executable = true;
@@ -89,4 +90,5 @@ in
   xdg.configFile."sketchybar/plugins/backlight.sh".executable = true;
   xdg.configFile."sketchybar/plugins/wifi.sh".executable = true;
   xdg.configFile."sketchybar/plugins/open_menubar_items.sh".executable = true;
+  xdg.configFile."sketchybar/plugins/nightlight.sh".executable = true;
 }
