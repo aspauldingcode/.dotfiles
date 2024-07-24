@@ -258,6 +258,8 @@
           timeout 8000 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
           before-sleep 'swaylock -f -c 000000'
 
+          exec --no-startup-id gammastep # enable gammastep server
+
           # You can get the names of your inputs by running: swaymsg -t get_inputs
           # Read `man 5 sway-input` for more information about this section.
           # Launch the network manager widget!

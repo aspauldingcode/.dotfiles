@@ -103,6 +103,9 @@
       wlroots
       wlogout
       wl-gammactl
+      wlr-randr
+      gammastep
+      wl-gammarelay-rs
       wofi
       wshowkeys
       wtype

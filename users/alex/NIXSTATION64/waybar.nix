@@ -20,6 +20,7 @@ let
   playerctld = "${pkgs.playerctl}/bin/playerctld";
   pavucontrol = "${pkgs.pavucontrol}/bin/pavucontrol";
   darling = "${pkgs.darling}/bin/darling";
+  wl-gammarelay-rs = "${pkgs.wl-gammarelay-rs}/bin/wl-gammarelay-rs";
 
   jsonOutput =
     name:
@@ -54,9 +55,9 @@ let
     modules-center = [
       "pulseaudio"
       "custom/backlight"
-      "custom/wlgammactl"
-      "custom/gammastep"
-      "custom/brightness-gammastep"
+      "custom/brightness"
+      "custom/nightlight"
+      # "custom/gamma"
       "custom/datetime"
       #"custom/gpg-agent"
       # "custom/spotify"
@@ -134,309 +135,38 @@ let
       };
     };
 
-    "custom/gammastep" = {
-      format = "{icon} gammastep";
-      format-source = "{icon} gammastep";
-      format-icons = [""];
-      on-scroll-down = ''
-        #!/bin/bash
-
-        # Define min and max temperatures
-        MIN_TEMP=3500
-        MAX_TEMP=6500
-
-        # Kill other programs
-        killall wlsunset
-        killall wl-gammactl
-
-        # Always kill gammastep to ensure a clean state
-        killall gammastep
-
-        # Read current temperature from state file, or set to max if file doesn't exist
-        if [ -f /tmp/gammastep_state ]; then
-            current_temp=$(cat /tmp/gammastep_state)
-        else
-            current_temp=$MAX_TEMP
-        fi
-
-        # Decrease temperature
-        new_temp=$((current_temp - 200))
-        if [ $new_temp -lt $MIN_TEMP ]; then
-            new_temp=$MIN_TEMP
-        fi
-        gammastep -O "$new_temp" &
-        echo "$new_temp" > /tmp/gammastep_state
-        notify-send -t 700 "Temp $new_temp K"
-      '';
-      on-scroll-up = ''
-        #!/bin/bash
-
-        # Define min and max temperatures
-        MIN_TEMP=3500
-        MAX_TEMP=6500
-
-        # Kill other programs
-        killall wlsunset
-        killall wl-gammactl
-
-        # Always kill gammastep to ensure a clean state
-        killall gammastep
-
-        # Read current temperature from state file, or set to min if file doesn't exist
-        if [ -f /tmp/gammastep_state ]; then
-            current_temp=$(cat /tmp/gammastep_state)
-        else
-            current_temp=$MIN_TEMP
-        fi
-
-        # Increase temperature
-        new_temp=$((current_temp + 200))
-        if [ $new_temp -gt $MAX_TEMP ]; then
-            new_temp=$MAX_TEMP
-        fi
-        gammastep -O "$new_temp" &
-        echo "$new_temp" > /tmp/gammastep_state
-        notify-send -t 700 "Temp $new_temp K"
-      '';
-      on-click = ''
-        #!/bin/bash
-
-        # Kill other programs
-        killall wlsunset
-        killall wl-gammactl
-
-        # Read current state
-        if [ -f /tmp/gammastep_state ]; then
-            current_temp=$(cat /tmp/gammastep_state)
-        else
-            current_temp=$(cat /tmp/gammastep_state)
-        fi
-
-        if pgrep gammastep >/dev/null; then
-            killall gammastep
-            notify-send -t 700 "RedGlow Stopped"
-        else
-            gammastep -O "$current_temp" &
-            notify-send -t 700 "RedGlow ON"
-        fi
-      '';
+    "custom/nightlight" = {
+        format = " {}";
+        exec = "${wl-gammarelay-rs} watch {t}";
+        on-scroll-up = "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n +100";
+        on-scroll-down = "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n -100";
+        on-click = ''
+          if [ ! -f /tmp/nightlight_state ]; then
+            echo "6500" > /tmp/nightlight_state
+            busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q 6500
+          else
+            current_temp=$(cat /tmp/nightlight_state)
+            if [ "$current_temp" = "6500" ]; then
+              echo "5000" > /tmp/nightlight_state
+              busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q 5000
+            else
+              echo "6500" > /tmp/nightlight_state
+              busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q 6500
+            fi
+          fi
+        '';
     };
-    
-    "custom/brightness-gammastep" = {
-      format = "󰈋 brightness-gammastep";
-      format-source = "{icon} brightness-gammastep";
-      format-icons = [""];
-      on-scroll-down = ''
-        #!/bin/bash
-
-        # Define min and max temperatures and brightness
-        MIN_TEMP=3500
-        MAX_TEMP=6500
-        MIN_BRIGHTNESS=0.1
-        MAX_BRIGHTNESS=1.0
-
-        # Kill other programs
-        killall wlsunset
-        killall wl-gammactl
-
-        # Always kill gammastep to ensure a clean state
-        killall gammastep
-
-        # Read current temperature and brightness from state file, or set to defaults if file doesn't exist
-        if [ -f /tmp/gammastep_state ]; then
-            read current_temp current_brightness <<< $(cat /tmp/gammastep_state)
-        else
-            current_temp=$MAX_TEMP
-            current_brightness=$MAX_BRIGHTNESS
-        fi
-
-        # Decrease temperature
-        new_temp=$((current_temp - 200))
-        if [ $new_temp -lt $MIN_TEMP ]; then
-            new_temp=$MIN_TEMP
-        fi
-
-        # Decrease brightness
-        new_brightness=$(awk "BEGIN {print $current_brightness - 0.05}")
-        if (( $(echo "$new_brightness < $MIN_BRIGHTNESS" | bc -l) )); then
-            new_brightness=$MIN_BRIGHTNESS
-        fi
-
-        gammastep -O "$new_temp" -b "$new_brightness:$new_brightness" &
-        echo "$new_temp $new_brightness" > /tmp/gammastep_state
-        notify-send -t 700 "Temp $new_temp K, Brightness $new_brightness"
-      '';
-      on-scroll-up = ''
-        #!/bin/bash
-
-        # Define min and max temperatures and brightness
-        MIN_TEMP=3500
-        MAX_TEMP=6500
-        MIN_BRIGHTNESS=0.1
-        MAX_BRIGHTNESS=1.0
-
-        # Kill other programs
-        killall wlsunset
-        killall wl-gammactl
-
-        # Always kill gammastep to ensure a clean state
-        killall gammastep
-
-        # Read current temperature and brightness from state file, or set to defaults if file doesn't exist
-        if [ -f /tmp/gammastep_state ]; then
-            read current_temp current_brightness <<< $(cat /tmp/gammastep_state)
-        else
-            current_temp=$MIN_TEMP
-            current_brightness=$MIN_BRIGHTNESS
-        fi
-
-        # Increase temperature
-        new_temp=$((current_temp + 200))
-        if [ $new_temp -gt $MAX_TEMP ]; then
-            new_temp=$MAX_TEMP
-        fi
-
-        # Increase brightness
-        new_brightness=$(awk "BEGIN {print $current_brightness + 0.05}")
-        if (( $(echo "$new_brightness > $MAX_BRIGHTNESS" | bc -l) )); then
-            new_brightness=$MAX_BRIGHTNESS
-        fi
-
-        gammastep -O "$new_temp" -b "$new_brightness:$new_brightness" &
-        echo "$new_temp $new_brightness" > /tmp/gammastep_state
-        notify-send -t 700 "Temp $new_temp K, Brightness $new_brightness"
-      '';
-      on-click = ''
-        #!/bin/bash
-
-        # Kill other programs
-        killall wlsunset
-        killall wl-gammactl
-
-        # Read current state
-        if [ -f /tmp/gammastep_state ]; then
-            read current_temp current_brightness <<< $(cat /tmp/gammastep_state)
-        else
-            current_temp=6500
-            current_brightness=1.0
-        fi
-
-        if pgrep gammastep >/dev/null; then
-            killall gammastep
-            notify-send -t 700 "RedGlow Stopped"
-        else
-            gammastep -O "$current_temp" -b "$current_brightness:$current_brightness" &
-            notify-send -t 700 "RedGlow ON (Temp: $current_temp K, Brightness: $current_brightness)"
-        fi
-      '';
+    "custom/brightness" = {
+        format = " {}%";
+        exec = "${wl-gammarelay-rs} watch {bp}";
+        on-scroll-up = "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d +0.02";
+        on-scroll-down = "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d -0.02";
     };
-
-    "custom/wlgammactl" = {
-      format = "{icon} wlgammactl";
-      format-source = "{icon} wlgammactl";
-      format-icons = ["󰃞"];
-      on-scroll-down = ''
-        #!/bin/bash
-
-        # Default brightness
-        default_brightness=1.0
-
-        # Kill other programs
-        killall gammastep
-        killall wlsunset
-
-        # Read current brightness from state file
-        if [ -f /tmp/wl_gammactl_state ]; then
-            current_brightness=$(cat /tmp/wl_gammactl_state)
-        else
-            current_brightness=$default_brightness
-        fi
-
-        # Check if wl-gammactl is currently running
-        if pgrep wl-gammactl >/dev/null; then
-            # Decrease the brightness
-            new_brightness=$(awk "BEGIN {print $current_brightness - 0.05}")
-            
-            # Ensure the new brightness is not below 0.5
-            if (( $(echo "$new_brightness < 0.5" | bc -l) )); then
-                new_brightness=0.5
-                notify-send -t 700 "Brightness can't go below 0.5."
-            else
-                current_gamma=$(awk "BEGIN {print 2 - ($new_brightness - 0.5) * 2}")
-                killall wl-gammactl
-                wl-gammactl -c 1.000 -b "$new_brightness" -g "$current_gamma" &
-                echo "$new_brightness" > /tmp/wl_gammactl_state
-                notify-send -t 700 "Brightness $new_brightness, Gamma $current_gamma"
-            fi
-        else
-            wl-gammactl -c 1.000 -b "$current_brightness" -g 1.000 &
-            echo "$current_brightness" > /tmp/wl_gammactl_state
-            notify-send -t 700 "Brightness Control Started"
-        fi
-      '';
-      
-      on-scroll-up = ''
-        #!/bin/bash
-
-        # Default brightness
-        default_brightness=1.0
-
-        # Kill other programs
-        killall gammastep
-        killall wlsunset
-
-        # Read current brightness from state file
-        if [ -f /tmp/wl_gammactl_state ]; then
-            current_brightness=$(cat /tmp/wl_gammactl_state)
-        else
-            current_brightness=$default_brightness
-        fi
-
-        # Check if wl-gammactl is currently running
-        if pgrep wl-gammactl >/dev/null; then
-            # Increase the brightness
-            new_brightness=$(awk "BEGIN {print $current_brightness + 0.05}")
-            
-            # Ensure the new brightness does not exceed 1.0
-            if (( $(echo "$new_brightness > 1.0" | bc -l) )); then
-                new_brightness=1.0
-                notify-send -t 700 "Brightness can't exceed 1.0."
-            else
-                current_gamma=$(awk "BEGIN {print 2 - ($new_brightness - 0.5) * 2}")
-                killall wl-gammactl
-                wl-gammactl -c 1.000 -b "$new_brightness" -g "$current_gamma" &
-                echo "$new_brightness" > /tmp/wl_gammactl_state
-                notify-send -t 700 "Brightness $new_brightness, Gamma $current_gamma"
-            fi
-        else
-            wl-gammactl -c 1.000 -b "$current_brightness" -g 1.000 &
-            echo "$current_brightness" > /tmp/wl_gammactl_state
-            notify-send -t 700 "Brightness Control Started"
-        fi
-      '';
-      
-      on-click = ''
-        #!/bin/bash
-
-        # Kill other programs
-        killall gammastep
-        killall wlsunset
-
-        if pgrep wl-gammactl >/dev/null; then
-            killall wl-gammactl
-            notify-send -t 700 "Brightness Control Stopped"
-        else
-            if [ -f /tmp/wl_gammactl_state ]; then
-                saved_brightness=$(cat /tmp/wl_gammactl_state)
-                saved_gamma=$(awk "BEGIN {print 2 - ($saved_brightness - 0.5) * 2}")
-            else
-                saved_brightness=1.0
-                saved_gamma=1.0
-            fi
-            wl-gammactl -c 1.000 -b "$saved_brightness" -g "$saved_gamma" &
-            notify-send -t 700 "Brightness Control ON (Brightness: $saved_brightness, Gamma: $saved_gamma)"
-        fi
-      '';
+    "custom/gamma" = {
+        format = "γ {}%";
+        exec = "${wl-gammarelay-rs} watch {g}";
+        on-scroll-up = "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateGamma d +0.02";
+        on-scroll-down = "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateGamma d -0.02";
     };
 
     pulseaudio = {
@@ -873,51 +603,11 @@ in
           border-radius: 30px;
         }
 
-        #pulseaudio {
-          background-color: #${colors.base00};
-          border: 0px solid #${colors.base05};
-          border-radius: 30px;
-          color: #${colors.base05};
-          padding-left: 8px;
-          padding-right: 8px;
-          margin: 0px;
-          font-size: 9pt;
-        }
-
-        #custom-backlight {
-          background-color: #${colors.base00};
-          border: 0px solid #${colors.base05};
-          border-radius: 30px;
-          color: #${colors.base05};
-          padding-left: 8px;
-          padding-right: 8px;
-          margin: 0px;
-          font-size: 9pt;
-        }
-        
-        #custom-wlgammactl {
-          background-color: #${colors.base00};
-          border: 0px solid #${colors.base05};
-          border-radius: 30px;
-          color: #${colors.base05};
-          padding-left: 8px;
-          padding-right: 8px;
-          margin: 0px;
-          font-size: 9pt;
-        }
-
-        #custom-gammastep {
-          background-color: #${colors.base00};
-          border: 0px solid #${colors.base05};
-          border-radius: 30px;
-          color: #${colors.base05};
-          padding-left: 8px;
-          padding-right: 8px;
-          margin: 0px;
-          font-size: 9pt;
-        }
-
-        #custom-brightness-gammastep {
+        #pulseaudio,
+        #custom-backlight,
+        #custom-nightlight,
+        #custom-brightness,
+        #custom-gamma {
           background-color: #${colors.base00};
           border: 0px solid #${colors.base05};
           border-radius: 30px;
@@ -986,20 +676,5 @@ in
           text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.95);
         }
       '';
-  };
-  
-  services.gammastep = {
-    enable = true;
-    provider = "manual";
-    latitude = 47.658779;
-    longitude = -117.426048;
-    temperature = {
-      day = 5500;
-      night = 3500;
-    };
-    brightness = {
-      day = 1.0;
-      night = 0.7;
-    };
   };
 }
