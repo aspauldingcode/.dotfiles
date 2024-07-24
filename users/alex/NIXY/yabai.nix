@@ -167,6 +167,25 @@ in
         # Borders!
         ${borders}
 
+        mkdir -p ~/.config/yabai/cache/
+        touch ~/.config/yabai/cache/lockfile
+        YABAI_CACHE = ~/.config/yabai/cache/
+
+        function _update_cache {
+          local lockfile current
+          lockfile="$YABAI_CACHE/lockfile"
+          current="$(who -b)"
+          if [[ ! -e "$lockfile" ]]; then
+            print -r -- "$current" >"$lockfile"
+          elif [[ "$current" != "$(cat "$lockfile")" ]]; then
+            rm -rf "$YABAI_CACHE"
+            mkdir -p "$YABAI_CACHE"
+            print -r -- "$current" >"$lockfile"
+          fi
+        }
+
+        _update_cache
+
         echo "yabai configuration loaded.."
       '';
   };

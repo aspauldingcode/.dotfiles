@@ -27,6 +27,9 @@ let
     }
     start_programs_correctly
   '';
+  brightness = pkgs.writeShellScript "brightness" ''
+    export brightness="${pkgs.brightness}/bin/brightness"
+  '';
 in
 {
   # ALL MUST BE MARKED AS EXECUTABLE!
@@ -34,6 +37,7 @@ in
   xdg.configFile."sketchybar/icons.sh".source = ./icons.sh;
   xdg.configFile."sketchybar/colors.sh".source = nixy_colors;
   xdg.configFile."sketchybar/start_programs_correctly.sh".source = start_programs_correctly;
+  xdg.configFile."sketchybar/brightness.sh".source = brightness;
   xdg.configFile."sketchybar/plugins/detect_arch_and_source_homebrew_packages.sh".source = ./plugins/detect_arch_and_source_homebrew_packages.sh;
   xdg.configFile."sketchybar/plugins/sway_spaces.sh".source = ./plugins/sway_spaces.sh;
   xdg.configFile."sketchybar/plugins/add_spaces_sketchybar.sh".source = ./plugins/add_spaces_sketchybar.sh;
@@ -56,12 +60,14 @@ in
   xdg.configFile."sketchybar/plugins/backlight.sh".source = ./plugins/backlight.sh;
   xdg.configFile."sketchybar/plugins/wifi.sh".source = ./plugins/wifi.sh;
   xdg.configFile."sketchybar/plugins/open_menubar_items.sh".source = ./plugins/open_menubar_items.sh;
+  xdg.configFile."sketchybar/plugins/nightlight.sh".source = ./plugins/nightlight.sh;
 
   # Specify executable for each file
   xdg.configFile."sketchybar/sketchybarrc".executable = true;
   xdg.configFile."sketchybar/icons.sh".executable = true;
   xdg.configFile."sketchybar/colors.sh".executable = true;
   xdg.configFile."sketchybar/start_programs_correctly.sh".executable = true;
+  xdg.configFile."sketchybar/brightness.sh".executable = true;
   xdg.configFile."sketchybar/plugins/detect_arch_and_source_homebrew_packages.sh".executable = true;
   xdg.configFile."sketchybar/plugins/sway_spaces.sh".executable = true;
   xdg.configFile."sketchybar/plugins/add_spaces_sketchybar.sh".executable = true;
@@ -84,4 +90,5 @@ in
   xdg.configFile."sketchybar/plugins/backlight.sh".executable = true;
   xdg.configFile."sketchybar/plugins/wifi.sh".executable = true;
   xdg.configFile."sketchybar/plugins/open_menubar_items.sh".executable = true;
+  xdg.configFile."sketchybar/plugins/nightlight.sh".executable = true;
 }

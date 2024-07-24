@@ -303,6 +303,115 @@
           UserPreferences = 1;
           # version = 12;
         };
+        
+        ".GlobalPreferences" = {
+            AKLastEmailListRequestDateKey = "2024-07-21 17:27:47 +0000";
+            AKLastIDMSEnvironment = 0;
+            AKLastLocale = "en_US";
+            AppleAccentColor = 4;
+            AppleAntiAliasingThreshold = 4;
+            AppleAquaColorVariant = 1;
+            AppleEnableMouseSwipeNavigateWithScrolls = 0;
+            AppleEnableSwipeNavigateWithScrolls = 0;
+            AppleFontSmoothing = 0;
+            AppleHighlightColor = "0.698039 0.843137 1.000000 Blue";
+            AppleInterfaceStyle = "Dark";
+            AppleLanguages = [ "en-US" ];
+            AppleLanguagesDidMigrate = "13.6.5";
+            AppleLanguagesSchemaVersion = 4000;
+            AppleLocale = "en_US";
+            AppleMenuBarVisibleInFullscreen = 0;
+            AppleMiniaturizeOnDoubleClick = 0;
+            AppleShowAllFiles = 1;
+            "KB_DoubleQuoteOption" = "\\U201cabc\\U201d";
+            "KB_SingleQuoteOption" = "\\U2018abc\\U2019";
+            "KB_SpellingLanguage" = {
+                KB_SpellingLanguageIsAutomatic = 1;
+            };
+            NSAutomaticCapitalizationEnabled = 0;
+            NSAutomaticDashSubstitutionEnabled = 0;
+            NSAutomaticPeriodSubstitutionEnabled = 0;
+            NSAutomaticQuoteSubstitutionEnabled = 0;
+            NSAutomaticSpellingCorrectionEnabled = 0;
+            NSAutomaticWindowAnimationsEnabled = 0;
+            NSLinguisticDataAssetsRequestLastInterval = 86400;
+            NSLinguisticDataAssetsRequestTime = "2024-07-21 19:26:20 +0000";
+            NSLinguisticDataAssetsRequested = [ "en" "de" ];
+            NSLinguisticDataAssetsRequestedByChecker = [ "en" "de" ];
+            NSNavPanelFileLastListModeForOpenModeKey = 2;
+            NSNavPanelFileListModeForOpenMode2 = 2;
+            NSPreferredWebServices = {
+                NSWebServicesProviderWebSearch = {
+                    NSDefaultDisplayName = "Google";
+                    NSProviderIdentifier = "com.google.www";
+                };
+            };
+            NSScrollAnimationEnabled = 0;
+            NSSpellCheckerContainerTransitionComplete = 1;
+            NSSpellCheckerDictionaryContainerTransitionComplete = 1;
+            NSSpellCheckerInputAnalyticsTime = "2024-07-21 19:25:55 +0000";
+            NSUseAnimatedFocusRing = 0;
+            NSUserDictionaryReplacementItems = [
+                {
+                    on = 1;
+                    replace = "wasnt";
+                    "with" = "wasn\\U2019t";
+                }
+                {
+                    on = 1;
+                    replace = "dont";
+                    "with" = "don\\U2019t";
+                }
+                {
+                    on = 1;
+                    replace = "omw";
+                    "with" = "On my way!";
+                }
+                {
+                    on = 1;
+                    replace = "sunb";
+                    "with" = "45D1D1FC8D";
+                }
+                {
+                    on = 1;
+                    replace = "oldstr";
+                    "with" = "oldstrumpet321@gmail.com";
+                }
+                {
+                    on = 1;
+                    replace = "Mwa";
+                    "with" = "mwa";
+                }
+                {
+                    on = 1;
+                    replace = "gaga";
+                    "with" = "haha";
+                }
+                {
+                    on = 1;
+                    replace = "aspau";
+                    "with" = "aspauldingcode@gmail.com";
+                }
+            ];
+            NSUserQuotesArray = [ "\\U201c" "\\U201d" "\\U2018" "\\U2019" ];
+            NSWindowResizeTime = "0.001";
+            NSWindowSupportsAutomaticInlineTitle = 0;
+            NavPanelFileListModeForOpenMode = 2;
+            TISRomanSwitchState = 1;
+            _HIHideMenuBar = 1;
+            "com.apple.finder.SyncExtensions" = {
+                collaborationMap = {};
+                dirMap = {};
+            };
+            "com.apple.mouse.scaling" = 8;
+            "com.apple.scrollwheel.scaling" = "-1"; # disable macOS trackpad inertia scrolling
+            "com.apple.sound.beep.feedback" = 1;
+            "com.apple.sound.beep.flash" = 0;
+            "com.apple.sound.beep.volume" = 0;
+            "com.apple.springing.delay" = "0.5";
+            "com.apple.springing.enabled" = 1;
+            "com.apple.trackpad.forceClick" = 1;
+        };
 
       ControlCenterPreferences = {
         "com.apple.controlcenter" = {
@@ -336,6 +445,7 @@
           "NSStatusItem Visible WiFi" = 1;
         };
       };
+
       CustomUserPreferences = {
         # per user
         NSGlobalDomain = {

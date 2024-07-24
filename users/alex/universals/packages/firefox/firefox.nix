@@ -32,11 +32,12 @@ in
           languagetool
           ff2mpv
           link-cleaner
+          hover-zoom-plus
           (pkgs.nur.repos.rycee.firefox-addons.buildFirefoxXpiAddon {
             pname = "bonjourr";
             version = "19.2.4";
             addonId = "{4f391a9e-8717-4ba6-a5b1-488a34931fcb}";
-            url = "https://addons.mozilla.org/firefox/downloads/file/4266784/bonjourr_startpage-19.2.4.xpi";
+            url = "https://addons.mozilla.org/firefox/downloads/file/4266784/bonjourr_startpage-19.2.4.xpi"; # must be .xpi link
             sha256 = "sha256-UHf07ICiNMkZNCF/7xJ7YFfqy1SeeoXm/3b4+PZ1mWc=";
             meta = {
               homepage = "https://bonjourr.fr/";
@@ -55,8 +56,8 @@ in
             pname = "unhook";
             version = "1.6.7";
             addonId = "myallychou@gmail.com";
-            url = "https://addons.mozilla.org/en-US/firefox/addon/youtube-recommended-videos/";
-            sha256 = "sha256-MWVpCxKYWR95UGqf6PqDmguKBmZp0FL92Z1wjxx221I=";
+            url = "https://addons.mozilla.org/firefox/downloads/file/4210197/youtube_recommended_videos-1.6.7.xpi"; # must be .xpi link
+            sha256 = "sha256-wqMjrRL3LYh6UbAZx0j6y9yHsvcSOBOfy+oOKxCgTQQ=";
             meta = {
               homepage = "https://unhook.app/";
               description = "Hide YouTube distractions including related videos, comments, suggestions, and trending content.";
@@ -70,8 +71,8 @@ in
             pname = "hide-youtube-thumbnails";
             version = "2.5.0";
             addonId = "{17c4514d-71fa-4633-8c07-1fe0b354c885}";
-            url = "https://addons.mozilla.org/en-US/firefox/addon/hide-youtube-thumbnails/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=search.Check";
-            sha256 = "sha256-LMjjuoQ3ZZMkPMTeTNKMN+54LmF8Q03ptL256t9/KMI=";
+            url = "https://addons.mozilla.org/firefox/downloads/file/4176136/hide_youtube_thumbnails-2.5.0.xpi"; # must be .xpi link
+            sha256 = "sha256-daaVXCy1Q4TOWRQm40qW7mbModMuLuAkSwn7466uhbY=";
             meta = {
               homepage = "https://github.com/domdomegg/hideytthumbnails-extension";
               description = "A simple browser extension which removes thumbnails from YouTube, for less clickbaity browsing.";

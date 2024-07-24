@@ -106,6 +106,13 @@ backlight=(
   label.padding_right=5
 )
 
+nightlight=(
+  script="$PLUGIN_DIR/nightlight.sh"
+  updates=on
+  icon.padding_left=5
+  label.padding_right=5
+)
+
 mail=(
   # background.color=$base02
   background.height=25
@@ -231,6 +238,10 @@ sketchybar --add item volume center \
 sketchybar --add item backlight center \
   --set backlight "${backlight[@]}" \
   --subscribe backlight brightness_change mouse.scrolled mouse.clicked mouse.entered mouse.exited mouse.exited.global
+
+sketchybar --add item nightlight center \
+  --set nightlight "${nightlight[@]}" \
+  --subscribe nightlight mouse.scrolled mouse.clicked mouse.entered mouse.exited mouse.exited.global
 
 sketchybar --add item datetime center \
   --set datetime "${datetime[@]}" \
@@ -359,7 +370,7 @@ sketchybar --add item rbracket_padding_left right --set rbracket_padding_left ic
 # https://felixkratz.github.io/SketchyBar/config/components#item-bracket----group-items-in-eg-colored-sections
 sketchybar --add bracket lbracket apple space '/space\..*/' separator_left front_app left \
   --set lbracket "${brackets[@]}"
-sketchybar --add bracket cbracket volume backlight datetime cava spotify center \
+sketchybar --add bracket cbracket volume backlight nightlight datetime cava spotify center \
   --set cbracket "${brackets[@]}" 
 sketchybar --add bracket rbracket "Control Center,BentoBox" "TextInputMenuAgent,Item-0" \
   "Control Center,UserSwitcher" "UnnaturalScrollWheels,Item-0" "macOS InstantView,Item-0" \

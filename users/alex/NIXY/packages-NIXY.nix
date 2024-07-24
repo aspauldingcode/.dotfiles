@@ -56,6 +56,7 @@ in
     bat
     newsboat
     audacity
+    pkgconf
     # ncurses
     nmap
     neofetch
@@ -95,6 +96,7 @@ in
       ps.textwrap3
       ps.pandas
       ps.termcolor
+      #ps.pyautogui # broken
       # ps.pep517
       ps.biplist
       # ps.build
@@ -752,6 +754,36 @@ in
       else
           echo "Usage: $0 [on|off]"
           exit 1
+      fi
+    '')
+
+    #toggle-float2
+    (pkgs.writeShellScriptBin "toggle-float2" ''
+      #!/bin/bash
+
+      # Used to toggle a window between floating and tiling
+
+      read -r id floating <<< $(echo $(${yabai} -m query --windows --window | ${jq} '.id, .floating'))
+      tmpfile=/tmp/${yabai}-float-toggle/$id
+
+      # If the window is floating, toggle it to be tiling and record its position and size
+      if [ $floating -eq 1 ]
+      then
+        [ -e $tmpfile ] && rm $tmpfile
+        echo $(${yabai} -m query --windows --window | ${jq} .frame) >> $tmpfile
+        ${yabai} -m window --toggle float
+
+      # If the window is tiling, toggle it to be floating, 
+      # and restore its previous position and size
+      else
+        ${yabai} -m window --toggle float
+        if [ -e $tmpfile ]
+        then
+          read -r x y w h <<< $(echo $(cat $tmpfile | ${jq} '.x, .y, .w, .h'))
+          ${yabai} -m window --move abs:$x:$y
+          ${yabai} -m window --resize abs:$w:$h
+          rm $tmpfile
+        fi
       fi
     '')
 
@@ -1492,6 +1524,44 @@ in
           exec "$0"  # Restart the script with the new IP and password
       fi
       exit 1
+    '')
+
+    #brightness
+    (pkgs.writeShellScriptBin "brightness" ''
+      #!/bin/sh
+
+      # Function to press the brightness up key
+      brightness_up() {
+        osascript -e 'tell application "System Events" to key code 144'
+      }
+
+      # Function to press the brightness down key
+      brightness_down() {
+        osascript -e 'tell application "System Events" to key code 145'
+      }
+
+      # Adjust brightness based on the provided number of times
+      adjust_brightness() {
+        local times=$1
+
+        if [[ $times -gt 0 ]]; then
+          for ((i = 0; i < times; i++)); do
+            brightness_up
+          done
+        elif [[ $times -lt 0 ]]; then
+          for ((i = 0; i < -times; i++)); do
+            brightness_down
+          done
+        fi
+      }
+
+      # Check the argument passed to the script
+      if [[ $# -ne 1 ]]; then
+        echo "Usage: $0 <number>"
+        exit 1
+      fi
+
+      adjust_brightness "$1"
     '')
   ];
 }
