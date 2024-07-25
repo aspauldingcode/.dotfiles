@@ -135,32 +135,121 @@ let
       };
     };
 
-    "custom/nightlight" = {
-        format = " {}";
-        exec = "${wl-gammarelay-rs} watch {t}";
-        on-scroll-up = "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n +100";
-        on-scroll-down = "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n -100";
-        on-click = ''
-          if [ ! -f /tmp/nightlight_state ]; then
-            echo "6500" > /tmp/nightlight_state
-            busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q 6500
-          else
-            current_temp=$(cat /tmp/nightlight_state)
-            if [ "$current_temp" = "6500" ]; then
-              echo "5000" > /tmp/nightlight_state
-              busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q 5000
-            else
-              echo "6500" > /tmp/nightlight_state
-              busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q 6500
-            fi
-          fi
-        '';
-    };
     "custom/brightness" = {
         format = " {}%";
         exec = "${wl-gammarelay-rs} watch {bp}";
         on-scroll-up = "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d +0.02";
         on-scroll-down = "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d -0.02";
+    };
+    "custom/nightlight" = {
+        format = " {}";
+        exec = "${wl-gammarelay-rs} watch {t}";
+        on-scroll-up = ''
+          statefile="/tmp/temperature_state"
+          max_temp=6500
+          min_temp=2100
+          increment=400
+          sleep 0.5
+
+          current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
+          new_temp=$((current_temp + increment))
+          if [ "$new_temp" -gt $max_temp ]; then
+              new_temp=$max_temp
+          fi
+          if [ "$current_temp" -lt $max_temp ]; then
+              step=20
+              if [ $((new_temp - current_temp)) -lt $step ]; then
+                  step=$((new_temp - current_temp))
+              fi
+              for i in $(seq 1 $((increment / step))); do
+                  busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n +$step
+                  current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
+                  if [ "$current_temp" -ge $new_temp ]; then
+                      break
+                  fi
+              done
+          fi
+
+          current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
+
+          if [ "$current_temp" -lt $min_temp ]; then
+              current_temp=$min_temp
+              busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q $min_temp
+          elif [ "$current_temp" -gt $max_temp ]; then
+              current_temp=$max_temp
+              busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q $max_temp
+          fi
+
+          echo "$current_temp" > $statefile
+        '';
+        on-scroll-down = ''
+          statefile="/tmp/temperature_state"
+          max_temp=6500
+          min_temp=2100
+          decrement=400
+          sleep 0.5
+          
+          current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
+          new_temp=$((current_temp - decrement))
+          if [ "$new_temp" -lt $min_temp ]; then
+              new_temp=$min_temp
+          fi
+          if [ "$current_temp" -gt $min_temp ]; then
+              step=20
+              if [ $((current_temp - new_temp)) -lt $step ]; then
+                  step=$((current_temp - new_temp))
+              fi
+              for i in $(seq 1 $((decrement / step))); do
+                  busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n -$step
+                  current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
+                  if [ "$current_temp" -le $new_temp ]; then
+                      break
+                  fi
+              done
+          fi
+
+          current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
+
+          if [ "$current_temp" -lt $min_temp ]; then
+              current_temp=$min_temp
+              busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q $min_temp
+          elif [ "$current_temp" -gt $max_temp ]; then
+              current_temp=$max_temp
+              busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q $max_temp
+          fi
+          
+          echo "$current_temp" > $statefile
+        '';
+        on-click = ''
+          statefile="/tmp/temperature_state"
+          statefile_temp=$(tr -d '\0' < $statefile | head -n 1)
+          current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
+
+          turn_on() {
+              # Turn on, by decreasing the temperature to the one recorded in statefile
+              while [ "$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)" -gt "$statefile_temp" ]; do
+                  busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n -50 > /dev/null 2>&1
+              done
+              echo "$statefile_temp" > $statefile
+          }
+
+          turn_off() {
+              # Turn off by setting to default temp 6500 (maximum)
+              while [ "$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)" -lt 6500 ]; do
+                  busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n +50 > /dev/null 2>&1
+              done
+          }
+
+          if [ "$(wc -l < $statefile)" -gt 1 ]; then
+              echo "$statefile_temp" > $statefile
+          fi
+
+          if [ "$current_temp" -lt 6500 ]; then
+              turn_off
+          else
+              turn_on
+          fi
+        '';
     };
     "custom/gamma" = {
         format = "γ {}%";

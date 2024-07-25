@@ -162,6 +162,7 @@ in
           "webgl.colorspaces.prototype" = false;
           "widget.gtk.libadwaita-colors.enabled" = true;
           "widget.gtk.theme-scrollbar-colors.enabled" = true;
+          "browser.sessionstore.resume_from_crash" = false;
         };
       };
     };
