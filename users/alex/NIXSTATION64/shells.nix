@@ -90,7 +90,7 @@ in
     oh-my-posh = {
       enable = true; # Enable oh-my-posh module
       package = pkgs.oh-my-posh; # Specify the oh-my-posh package from Nix packages
-      # useTheme = "gruvbox";
+      useTheme = "gruvbox";
 
       # Enable integration with various shells
       enableBashIntegration = true;
