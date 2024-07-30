@@ -558,7 +558,7 @@ in
       in
       ''
         window#waybar {
-          background-color: alpha(#${colors.base00}, 0.9);
+          background-color: alpha(#${colors.base00}, 1.0);
           border: 2px solid #${colors.base05};
         }
         window#waybar.gaps {
@@ -606,7 +606,7 @@ in
 
         .modules-left {
           background-color: #${colors.base00};
-          border: 2px solid #${colors.base05};
+          border: 1px solid #${colors.base05};
           border-radius: 30px;
           margin-left: 21px;
           margin-top: 7px;
@@ -618,7 +618,7 @@ in
 
         .modules-center {
           background-color: #${colors.base00};
-          border: 2px solid #${colors.base05};
+          border: 1px solid #${colors.base05};
           border-radius: 30px;
           margin-top: 7px;
           margin-bottom: 7px;
@@ -629,7 +629,7 @@ in
 
         .modules-right {
           background-color: #${colors.base00};
-          border: 2px solid #${colors.base05};
+          border: 1px solid #${colors.base05};
           border-radius: 30px;
           margin-top: 7px;
           margin-bottom: 7px;
@@ -751,7 +751,7 @@ in
         }
 
         tooltip {
-          background-color: alpha(#${colors.base00}, 0.95);
+          background-color: alpha(#${colors.base00}, 1.0);
           border: 2px solid #${colors.base05};
           border-radius: 10px;
           margin-top: 20px;
@@ -762,7 +762,6 @@ in
           font-family: 'JetBrains Mono', Regular;
           font-size: 9pt;
           padding: 6px 5px;
-          text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.95);
         }
       '';
   };

@@ -100,7 +100,74 @@ in
 
       # Additional settings can be configured here
       settings = {
-        # Configuration settings for oh-my-posh can be added here
+        # palette = {
+        #   "git-foreground" = "#193549";
+        #   "git" = "#FFFB38";
+        #   "git-modified" = "#FF9248";
+        #   "git-diverged" = "#FF4500";
+        #   "git-ahead" = "#B388FF";
+        #   "git-behind" = "#B388FF";
+        #   "red" = "#FF0000";
+        #   "green" = "#00FF00";
+        #   "blue" = "#0000FF";
+        #   "white" = "#FFFFFF";
+        #   "black" = "#111111";
+        # };
+        # segments = [
+        #   {
+        #     type = "git";
+        #     style = "powerline";
+        #     powerline_symbol = "\uE0B0";
+        #     foreground = "p:git-foreground";
+        #     background = "p:git";
+        #     background_templates = [
+        #       "{{ if or (.Working.Changed) (.Staging.Changed) }}p:git-modified{{ end }}"
+        #       "{{ if and (gt .Ahead 0) (gt .Behind 0) }}p:git-diverged{{ end }}"
+        #       "{{ if gt .Ahead 0 }}p:git-ahead{{ end }}"
+        #       "{{ if gt .Behind 0 }}p:git-behind{{ end }}"
+        #     ];
+        #   }
+        #   {
+        #     type = "aws";
+        #     style = "powerline";
+        #     powerline_symbol = "\uE0B0";
+        #     foreground = "#ffffff";
+        #     background = "#111111";
+        #     foreground_templates = [
+        #       "{{if contains \"default\" .Profile}}#FFA400{{end}}"
+        #       "{{if contains \"jan\" .Profile}}#f1184c{{end}}"
+        #     ];
+        #   }
+        # ];
+        # color_overrides = {
+        #   battery = {
+        #     type = "battery";
+        #     style = "powerline";
+        #     invert_powerline = true;
+        #     powerline_symbol = "\uE0B2";
+        #     foreground = "p:white";
+        #     background = "p:black";
+        #     properties = {
+        #       discharging_icon = "<#ffa500>-</> ";
+        #       charging_icon = "+ ";
+        #       charged_icon = "* ";
+        #     };
+        #   };
+        # };
+        # cycle = [
+        #   {
+        #     background = "p:blue";
+        #     foreground = "p:white";
+        #   }
+        #   {
+        #     background = "p:green";
+        #     foreground = "p:black";
+        #   }
+        #   {
+        #     background = "p:orange";
+        #     foreground = "p:white";
+        #   }
+        # ];
       };
     };
   };

@@ -16,7 +16,7 @@ in
       window = {
         padding.x = 0;
         # padding.y = 10; # pretty lavat
-        opacity = 0.9;
+        opacity = 1.0;
         class.instance = "Alacritty";
         class.general = "Alacritty";
         decorations = "None";

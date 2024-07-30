@@ -299,10 +299,10 @@
           for_window [shell="xwayland"] border pixel 2
 
           # Window background blur
-          blur on #FIXME: TURN ON! Floating window loses its borders...
-          #blur_xray on
-          blur_passes 2
-          blur_radius 2
+          # blur on #FIXME: TURN ON! Floating window loses its borders...
+          # blur_xray on
+          # blur_passes 2
+          # blur_radius 2
 
           for_window [tiling] shadows off
           for_window [floating] shadows on
@@ -314,16 +314,16 @@
           # layer_effects "waybar" blur enable; corner_radius 10
           
           # Enable background blur for Waybar-Square
-          layer_effects "waybar" blur enable; corner_radius 0
+          # layer_effects "waybar" blur enable; corner_radius 0
 
           # Enable background blur for waybar tooltips
           # FIXME
           
           # Enable background blur for Mako notifications
-          layer_effects "notifications" blur enable; corner_radius 10
+          # layer_effects "notifications" blur enable; corner_radius 10
 
           # Enable background blur for GTK-based layer shell applications
-          layer_effects "gtk-layer-shell" blur enable; corner_radius 10
+          # layer_effects "gtk-layer-shell" blur enable; corner_radius 10
 
           # inactive window fade amount. 0.0 = no dimming, 1.0 = fully dimmed
           #default_dim_inactive .3

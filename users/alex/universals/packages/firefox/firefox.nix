@@ -81,6 +81,20 @@ in
               platforms = lib.platforms.all;
             };
           })
+          (pkgs.nur.repos.rycee.firefox-addons.buildFirefoxXpiAddon {
+            pname = "YouTube Windowed FullScreen";
+            version = "4.2";
+            addonId = "{59c55aed-bdb3-4f2f-b81d-27011a689be6}";
+            url = "https://addons.mozilla.org/firefox/downloads/file/4321745/youtube_window_fullscreen-4.2.xpi"; # must be .xpi link
+            sha256 = "sha256-GUGlkylH6FDBtbHNkYQG//YDuS72+s1PqRvwFIB42hU=";
+            meta = {
+              homepage = "https://github.com/domdomegg/hideytthumbnails-extension";
+              description = "Watch videos on YouTube fullscreen within your browsers screen.";
+              license = lib.licenses.mpl20;
+              mozPermissions = [ "storage" ];
+              platforms = lib.platforms.all;
+            };
+          })
         ];
 
         # ~/.mozilla/firefox/PROFILE_NAME/prefs.js | user.js
