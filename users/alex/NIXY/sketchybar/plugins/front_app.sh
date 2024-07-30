@@ -58,19 +58,13 @@ case "$SENDER" in
     #echo "Mouse left hover of $NAME icon" >> /tmp/sketchybar_debug.log
     ;;
   "mouse.clicked")
-    # Get the front window information
-    WINDOW_INFO=$(yabai -m query --windows --window)
-    APP_NAME=$(echo "$WINDOW_INFO" | jq -r '.app')
-
-    # Function to send Command + W to close the window
-    send_command_w() {
-      $osascript -e 'tell application "System Events" to keystroke "w" using {command down}'
-    }
-
+    # Use the CURRENT_APP_NAME_AND_WINDOW info
+    APP_NAME=$(echo "$CURRENT_APP_NAME_AND_WINDOW" | cut -d' ' -f1)
+    
     # Check if the front application is Alacritty
     if [ "$APP_NAME" = "Alacritty" ]; then
       # Send Command + W to close the window
-      send_command_w
+      $osascript -e 'tell application "System Events" to keystroke "w" using {command down}'
     fi
     ;;
   "routine")

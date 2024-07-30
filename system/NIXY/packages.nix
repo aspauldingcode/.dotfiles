@@ -69,6 +69,7 @@
     ripgrep
     (pkgs.callPackage ./instantview.nix { })
     (pkgs.callPackage ./macforge.nix { })
+    (pkgs.callPackage ./cdock.nix { })
     (pkgs.callPackage ./cursorcerer.nix { })
     (pkgs.callPackage ./mousecape.nix { })
   ];
