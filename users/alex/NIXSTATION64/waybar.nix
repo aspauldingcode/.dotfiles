@@ -62,7 +62,7 @@ let
       #"custom/gpg-agent"
       # "custom/spotify"
       # "cava" # CRASHES at the moment. Waybar v0.10.3
-      "custom/currentplayer"
+      # "custom/currentplayer"
       # "custom/player"
     ];
 
@@ -142,12 +142,25 @@ let
         on-scroll-down = "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d -0.02";
     };
     "custom/nightlight" = {
-        format = " {}";
-        exec = "${wl-gammarelay-rs} watch {t}";
+        return-type = "json";
+        interval = 1;
+        exec = jsonOutput "nightlight" {
+          pre = ''
+            current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}')
+            if [ "$current_temp" -eq 6500 ]; then
+              status="off"
+            else
+              status="on"
+            fi
+          current_temp_percent=$(( (current_temp - 3500) * 100 / (6500 - 3500) ))
+          '';
+          text = " $current_temp_percent%";
+          tooltip = "Nightlight Temperature $current_temp ($status)";
+        };
         on-scroll-up = ''
           statefile="/tmp/temperature_state"
           max_temp=6500
-          min_temp=2100
+          min_temp=3500
           increment=400
           sleep 0.5
 
@@ -185,7 +198,7 @@ let
         on-scroll-down = ''
           statefile="/tmp/temperature_state"
           max_temp=6500
-          min_temp=2100
+          min_temp=3500
           decrement=400
           sleep 0.5
           
@@ -251,6 +264,7 @@ let
           fi
         '';
     };
+
     "custom/gamma" = {
         format = "γ {}%";
         exec = "${wl-gammarelay-rs} watch {g}";
@@ -606,7 +620,7 @@ in
 
         .modules-left {
           background-color: #${colors.base00};
-          border: 1px solid #${colors.base05};
+          border: 1px solid #${colors.base07};
           border-radius: 30px;
           margin-left: 21px;
           margin-top: 7px;
@@ -618,7 +632,7 @@ in
 
         .modules-center {
           background-color: #${colors.base00};
-          border: 1px solid #${colors.base05};
+          border: 1px solid #${colors.base07};
           border-radius: 30px;
           margin-top: 7px;
           margin-bottom: 7px;
@@ -629,7 +643,7 @@ in
 
         .modules-right {
           background-color: #${colors.base00};
-          border: 1px solid #${colors.base05};
+          border: 1px solid #${colors.base07};
           border-radius: 30px;
           margin-top: 7px;
           margin-bottom: 7px;

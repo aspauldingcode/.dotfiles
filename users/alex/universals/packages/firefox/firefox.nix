@@ -2,11 +2,13 @@
   fetchurl,
   pkgs,
   lib,
+  config,
   ...
 }:
 
 let
   inherit (lib) mkForce;
+  inherit (config.colorscheme) colors;
 in
 {
   programs.browserpass.enable = true;
@@ -16,33 +18,43 @@ in
     profiles = {
       alex = {
         userChrome = ''
-          /* make theming work */
+          /* Use Nix-Colors theme */
           #navigator-toolbox {
-            --toolbar-bgcolor: transparent;
+            --toolbar-bgcolor: #${colors.base00};
           }
-
-          /* Use GTK theme */
+          
           :root {
-            --toolbar-bgcolor: var(--gtk-headerbar-background);
-            --toolbar-color: var(--gtk-headerbar-text);
-            --toolbar-border-color: var(--gtk-headerbar-border-color, transparent);
+            --toolbar-bgcolor: #${colors.base00};
+            --toolbar-color: #${colors.base05};
+            --toolbar-border-color: #${colors.base03};
+            
+            /* Adds a gradient outline to selected tab. This is going to need modifications if you use tabs that don't follow Proton styling. */
+
+            .tab-background[selected]{
+              outline: none !important;
+              border: 2px solid transparent !important;
+              box-shadow: none !important;
+              background-clip: padding-box;
+            }
+            .tab-background[selected] > .tab-context-line{ margin: -5px 0 0 !important; }
+            .tabbrowser-tab[selected] > .tab-stack::before{
+              content: "";
+              display: flex;
+              min-height: inherit;
+              border-radius: var(--tab-border-radius);
+              grid-area: 1/1;
+              margin-block: var(--tab-block-margin);
+              /* Edit gradient colors here */
+              /* background: repeat linear-gradient(45deg,#${colors.base03},#${colors.base08},#${colors.base0C},#${colors.base0E},#${colors.base0B},#${colors.base09})!important; */
+              background-color: #${colors.base07} !important;
+            }
           }
 
-          #navigator-toolbox {
-            background-color: var(--toolbar-bgcolor) !important;
-            color: var(--toolbar-color) !important;
-            border-color: var(--toolbar-border-color) !important;
-          }
-
+          #navigator-toolbox,
           #nav-bar,
           #PersonalToolbar,
           #toolbar-menubar,
-          #titlebar {
-            background-color: var(--toolbar-bgcolor) !important;
-            color: var(--toolbar-color) !important;
-            border-color: var(--toolbar-border-color) !important;
-          }
-
+          #titlebar,
           #sidebar-box,
           #sidebar-header,
           #sidebar {
@@ -50,6 +62,7 @@ in
             color: var(--toolbar-color) !important;
             border-color: var(--toolbar-border-color) !important;
           }
+
         '';
         userContent = ''
           # Here too
@@ -145,19 +158,24 @@ in
           "browser.contentblocking.category" = "standard";
           "browser.ctrlTab.recentlyUsedOrder" = false;
           "browser.disableResetPrompt" = true;
+          "browser.display.suppress_canvas_background_image_on_forced_colors" = true;
+          "browser.display.use_system_colors" = true;
           "browser.download.panel.shown" = true;
           "browser.download.useDownloadDir" = false;
           "browser.download.viewableInternally.typeWasRegistered.svg" = true;
           "browser.download.viewableInternally.typeWasRegistered.webp" = true;
           "browser.download.viewableInternally.typeWasRegistered.xml" = true;
           "browser.link.open_newwindow" = 3; # Open links in new tabs
+          "browser.newtabpage.activity-stream.newNewtabExperience.colors" = "#0090ED,#FF4F5F,#2AC3A2,#FF7139,#A172FF,#FFA437,#FF2A8A";
           "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
           "browser.search.isUS" = true;
           "browser.search.region" = "US";
           "browser.search.widget.inNavBar" = true;
+          "browser.sessionstore.resume_from_crash" = false;
           "browser.shell.checkDefaultBrowser" = false;
           "browser.shell.defaultBrowserCheckCount" = 1;
           # "browser.startup.homepage" = "https://searx.aicampground.com";
+          "browser.tabs.inTitlebar" = 0; # Set to no
           "browser.tabs.loadInBackground" = true;
           "browser.tabs.warnOnClose" = false;
           "browser.uiCustomization.state" = ''{"placements":{"widget-overflow-fixed-list":[],"nav-bar":["back-button","forward-button","stop-reload-button","home-button","urlbar-container","downloads-button","library-button","ublock0_raymondhill_net-browser-action","_testpilot-containers-browser-action"],"toolbar-menubar":["menubar-items"],"TabsToolbar":["tabbrowser-tabs","new-tab-button","alltabs-button"],"PersonalToolbar":["import-button","personal-bookmarks"]},"seen":["save-to-pocket-button","developer-button","ublock0_raymondhill_net-browser-action","_testpilot-containers-browser-action"],"dirtyAreaCache":["nav-bar","PersonalToolbar","toolbar-menubar","TabsToolbar","widget-overflow-fixed-list"],"currentVersion":18,"newElementCount":4}'';
@@ -172,6 +190,7 @@ in
           "dom.forms.autocomplete.formautofill" = false;
           "dom.security.https_only_mode" = true;
           "distribution.searchplugins.defaultLocale" = "en-US";
+          "editor.use_custom_colors" = false;
           "extensions.activeThemeID" = "default-theme@mozilla.org"; # Use system theme
           "extensions.autoDisableScopes" = 0;
           "extensions.update.enabled" = true; # is that bad?
@@ -182,40 +201,31 @@ in
           "general.autoScroll" = true;
           "general.useragent.locale" = "en-US";
           "identity.fxaccounts.enabled" = false;
-          "network.proxy.socks_remote_dns" = true;
-          "print.print_footerleft" = "";
-          "print.print_footerright" = "";
-          "print.print_headerleft" = "";
-          "print.print_headerright" = "";
-          "privacy.donottrackheader.enabled" = true;
-          "privacy.trackingprotection.enabled" = true;
-          "security.webauth.u2f" = true;
-          "security.webauth.webauthn" = true;
-          "security.webauth.webauthn_enable_softtoken" = true;
-          "security.webauth.webauthn_enable_usbtoken" = true;
-          "signon.rememberSignons" = false;
-          "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-          "browser.display.use_system_colors" = true;
-          "browser.display.suppress_canvas_background_image_on_forced_colors" = true;
-          "browser.newtabpage.activity-stream.newNewtabExperience.colors" = "#0090ED,#FF4F5F,#2AC3A2,#FF7139,#A172FF,#FFA437,#FF2A8A";
-          "editor.use_custom_colors" = false;
           "layout.css.forced-colors.enabled" = true;
           "layout.css.inverted-colors.enabled" = false;
+          "network.proxy.socks_remote_dns" = true;
           "pdfjs.forcePageColors" = false;
           "pdfjs.highlightEditorColors" = "yellow=#FFFF98,green=#53FFBC,blue=#80EBFF,pink=#FFCBE6,red=#FF4F5F";
           "pdfjs.pageColorsBackground" = "Canvas";
           "pdfjs.pageColorsForeground" = "CanvasText";
+          "privacy.donottrackheader.enabled" = true;
+          "privacy.trackingprotection.enabled" = true;
           "reader.colors_menu.enabled" = false;
           "reader.custom_colors.background" = "";
           "reader.custom_colors.foreground" = "";
           "reader.custom_colors.selection-highlight" = "";
           "reader.custom_colors.unvisited-links" = "";
           "reader.custom_colors.visited-links" = "";
+          "security.webauth.u2f" = true;
+          "security.webauth.webauthn" = true;
+          "security.webauth.webauthn_enable_softtoken" = true;
+          "security.webauth.webauthn_enable_usbtoken" = true;
+          "signon.rememberSignons" = false;
+          "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
           "ui.use_standins_for_native_colors" = false;
           "webgl.colorspaces.prototype" = false;
           "widget.gtk.libadwaita-colors.enabled" = true;
           "widget.gtk.theme-scrollbar-colors.enabled" = true;
-          "browser.sessionstore.resume_from_crash" = false;
         };
       };
     };

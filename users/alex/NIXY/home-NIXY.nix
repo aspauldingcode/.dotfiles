@@ -14,6 +14,7 @@
     ./packages-NIXY.nix
     ./../extraConfig/nvim/nixvim.nix # FIXME: BROKEN atm
     ./../universals/packages/firefox/firefox.nix
+    ./../universals/modules/cursor.nix # vscode with ai
     ./theme.nix
     ./xcode/xcode.nix # FIXME: use nix-color theme
     ./alacritty.nix
@@ -35,7 +36,6 @@
     ./sketchybar/sketchybar.nix
     ./yabai.nix # contains skhd and borders config.
     ./phoenix/phoenix.nix # new window-manager for macOS!
-    ./cursor.nix # vscode with ai
   ];
 
   home = {

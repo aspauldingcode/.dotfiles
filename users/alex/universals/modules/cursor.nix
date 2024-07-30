@@ -126,12 +126,12 @@ let
 in
 {
   home.file.cursorSettings = {
-    target = "Library/Application Support/Cursor/User/settings.json";
+    target = if pkgs.stdenv.isDarwin then "Library/Application Support/Cursor/User/settings.json" else ".config/Cursor/User/settings.json";
     text = commonSettings;
   };
 
   home.file.vscodeSettings = {
-    target = "Library/Application Support/Code/User/settings.json";
+    target = if pkgs.stdenv.isDarwin then "Library/Application Support/Code/User/settings.json" else ".config/Code/User/settings.json";
     text = commonSettings;
   };
 }

@@ -8,6 +8,8 @@
     ./sway.nix
     ./../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
     ./../universals/packages/firefox/firefox.nix
+    ./../universals/modules/cursor.nix
+
     ./theme.nix # theme of system.
     ./git.nix
     ./alacritty.nix
@@ -18,7 +20,6 @@
     # ./betterdiscord.nix
     ./shells.nix
     # ./zellij.nix
-    ./cursor.nix
     ./btop.nix # btop theme!
   ];
 
