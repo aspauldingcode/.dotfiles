@@ -55,8 +55,8 @@ in
         yabai -m config window_opacity_duration     0.1
         #yabai -m config window_animation_duration	  0.35 #commented out
         #yabai -m config window_animation_easing     ease_in_out_circ
-        yabai -m config window_opacity_duration     0.35
-        yabai -m config normal_window_opacity	      0.95
+        # yabai -m config window_opacity_duration     0.35
+        # yabai -m config normal_window_opacity	      0.95
         yabai -m config active_window_opacity	      1.0
         yabai -m config insert_feedback_color       0xff${colors.base07}
 
@@ -89,25 +89,21 @@ in
         yabai -m rule --add app="^System Settings$"     manage=off
         yabai -m rule --add app="^System Information$"  manage=off
         yabai -m rule --add app="^System Preferences$"  manage=off
-        yabai -m rule --add title="Preferences$"        manage=off
-        yabai -m rule --add title="Settings$"           manage=off
-        yabai -m rule --add app='System Settings'       manage=off
-        yabai -m rule --add app='System Information'    manage=off
-        yabai -m rule --add app='zoom.us'               manage=off
-        yabai -m rule --add app='Finder'                manage=off
-        yabai -m rule --add title="XQuartz"             manage=off
-        yabai -m rule --add app='XQuartz'               manage=off
+        yabai -m rule --add title=".*Preferences$"      manage=off
+        yabai -m rule --add title=".*Settings$"         manage=off
+        yabai -m rule --add app='^zoom\.us$'            manage=off
+        yabai -m rule --add app='^Finder$'              manage=off
+        yabai -m rule --add title="^XQuartz$"           manage=off
         yabai -m rule --add app='^XQuartz$'             manage=off
-        yabai -m rule --add app='^X11.bin$'             manage=off
-        yabai -m rule --add app='X11.bin'               manage=off
-        yabai -m rule --add app='X11'                   manage=off
-        yabai -m rule --add app='Archive Utility'       manage=off
-        yabai -m rule --add app='Display Calibrator'    manage=off
-        yabai -m rule --add app='Installer'             manage=off
-        yabai -m rule --add app='Karabiner-EventViewer' manage=off
-        yabai -m rule --add app='Karabiner-Elements'    manage=off
-        yabai -m rule --add app='macOS InstantView'     manage=off # IMPORTANT
-        yabai -m rule --add app='Dock'                  manage=off # MAKE SURE
+        yabai -m rule --add app='^X11\.bin$'            manage=off
+        yabai -m rule --add app='^X11$'                 manage=off
+        yabai -m rule --add app='^Archive Utility$'     manage=off
+        yabai -m rule --add app='^Display Calibrator$'  manage=off
+        yabai -m rule --add app='^Installer$'           manage=off
+        yabai -m rule --add app='^Karabiner-EventViewer$' manage=off
+        yabai -m rule --add app='^Karabiner-Elements$'  manage=off
+        yabai -m rule --add app='^macOS InstantView$'   manage=off # IMPORTANT
+        yabai -m rule --add app='^Dock$'                manage=off # MAKE SURE
 
 
         # yabai -m rule --add app='Alacritty'             layer=above
@@ -365,7 +361,7 @@ in
           ${modifier} - c : dismiss-notifications
 
           # reload
-          ${modifier} + ${smod} - r : fix-wm; borders background_color=0x11${colors.base00} blur_radius=15.0
+          ${modifier} + ${smod} - r : fix-wm; borders background_color=0xff${colors.base00}
 
           # Blacklist applications
           .blacklist [
@@ -388,10 +384,9 @@ in
 
       options=(
         style=round
-        order=below
+        order=above
         width=2.0
-        background_color=0x11${colors.base00}
-        blur_radius=25.0
+        background_color=0xff${colors.base00}
         hidpi=on
         active_color=0xff${colors.base07}
         inactive_color=0xff${colors.base05}

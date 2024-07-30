@@ -37,7 +37,7 @@ in
     ];
   };
 
-  #colorScheme = nix-colors.colorSchemes.${theme};
+  # colorScheme = nix-colors.colorSchemes.gruvbox-dark-soft;
 
   #home.pointerCursor = {
   #    name = "Bibata-Modern-Ice";
@@ -51,14 +51,12 @@ in
     #  package = pkgs.bibata-cursors;
     #};
     # theme = {
-      # name = "${config.colorScheme.slug}";
       # name = "gruvbox gtk theme";
       # package = pkgs.gruvbox-gtk-theme;
-      #  package = gtkThemeFromScheme {scheme = config.colorScheme;};
-      #name = "WhiteSur-GTK-Theme";
-      #package = pkgs.whitesur-gtk-theme;
-      #name = "adw-gtk3";
-      #package = pkgs.adw-gtk3;
+      # name = "${config.colorScheme.slug}";
+      # package = gtkThemeFromScheme {scheme = config.colorScheme;};
+      # name = "WhiteSur-GTK-Theme";
+      # package = pkgs.whitesur-gtk-theme;
     # };
     #iconTheme = {
     #name = "WhiteSur-GTK-Icons";
@@ -74,13 +72,8 @@ in
     platformTheme = "gtk";
     # name of gtk theme
     style = {
-      name = "${config.colorScheme.slug}";
-      package = gtkThemeFromScheme { scheme = config.colorScheme; };
-      #name = "whitesur-kde-unstable";
-      #package = pkgs.whitesur-kde;
-      #name = "breeze-dark"; # WORKS
-      #name = "whitesur-icon-theme";
-      #package = pkgs.whitesur-gtk-theme;
+      # name = "${config.colorScheme.slug}";
+      # package = gtkThemeFromScheme { scheme = config.colorScheme; };
     };
   };
 }

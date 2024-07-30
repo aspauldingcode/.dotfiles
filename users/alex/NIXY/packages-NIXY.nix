@@ -327,7 +327,7 @@ in
                 ${yabai} -m config external_bar all:0:0
             fi
           fi
-          ${borders} background_color=0x11${colors.base00} blur_radius=15.0
+          ${borders} background_color=0xff${colors.base00}
         }
 
         if [ "$1" == "on" ]; then
@@ -407,7 +407,7 @@ in
         else
           ${yabai} -m config external_bar all:50:0 # enables the bar window gap
         fi
-        ${borders} style=round width=2.0 #order=above
+        ${borders} style=round width=2.0 order=above
         ${sketchybar} --bar corner_radius=10
         ${sketchybar} --bar margin=13
         ${sketchybar} --bar y_offset=13
@@ -605,7 +605,7 @@ in
                 fi
             fi
 
-            ${borders} background_color=0x11${colors.base00} blur_radius=15.0
+            ${borders} background_color=0xff${colors.base00}
           }
           if [ $# -eq 0 ]; then
               # No arguments provided, toggle based on current state
@@ -733,7 +733,7 @@ in
           else
               ${yabai} -m window --toggle float
               ${yabai} -m window --grid 60:60:5:5:50:50
-              ${borders} apply-to=$window_id width=2.0 style=round
+              ${borders} apply-to=$window_id width=2.0 style=round order=above
               echo "Window is now floating."
           fi
       elif [ "$set_arg" = "off" ]; then
@@ -745,9 +745,9 @@ in
               ${yabai} -m window --toggle float
               gaps_state=$(cat /tmp/gaps_state)
               if [ "$gaps_state" = "on" ]; then
-                  ${borders} apply-to=$window_id width=2.0 style=round
+                  ${borders} apply-to=$window_id width=2.0 style=round order=above
               else
-                  ${borders} apply-to=$window_id width=5.0 style=square
+                  ${borders} apply-to=$window_id width=5.0 style=square order=below
               fi
               echo "Window is no longer floating."
           fi
@@ -767,7 +767,7 @@ in
       tmpfile=/tmp/${yabai}-float-toggle/$id
 
       # If the window is floating, toggle it to be tiling and record its position and size
-      if [ $floating -eq 1 ]
+      if [ "$floating" = "1" ]
       then
         [ -e $tmpfile ] && rm $tmpfile
         echo $(${yabai} -m query --windows --window | ${jq} .frame) >> $tmpfile
@@ -939,7 +939,7 @@ in
           local x=$(echo "$current_display_frame" | ${jq} -r '.x')
           local y=$(echo "$current_display_frame" | ${jq} -r '.y')
 
-          ${borders} apply-to=$window_id width=0.0 style=square order=below background_color=0xff${colors.base00} blur_radius=0.0 active_color=0xff${colors.base00} inactive_color=0xff${colors.base00}
+          ${borders} apply-to=$window_id width=0.0 style=square order=below background_color=0xff${colors.base00} active_color=0xff${colors.base00} inactive_color=0xff${colors.base00}
           if [ "$is_floating" = "true" ]; then
             ${yabai} -m window --move abs:$x:$y
             ${yabai} -m window --grid 0:0:0:0:0:0
@@ -955,12 +955,12 @@ in
         # Read the gaps state file
           gaps_state=$(cat /tmp/gaps_state)
           if [ "$gaps_state" = "off" ]; then
-              ${borders} apply-to=$window_id width=5.0 style=square background_color=0x11${colors.base00} blur_radius=15.0 active_color=0xff${colors.base07} inactive_color=0xff${colors.base05} #order=above 
+              ${borders} apply-to=$window_id width=5.0 style=square background_color=0x11${colors.base00} active_color=0xff${colors.base07} inactive_color=0xff${colors.base05} order=above 
           else
-              ${borders} apply-to=$window_id width=2.0 style=round  background_color=0x11${colors.base00} blur_radius=15.0 active_color=0xff${colors.base07} inactive_color=0xff${colors.base05} #order=above 
+              ${borders} apply-to=$window_id width=2.0 style=round  background_color=0x11${colors.base00} active_color=0xff${colors.base07} inactive_color=0xff${colors.base05} order=above 
           fi
 
-          # ${borders} apply-to=$window_id width=2 style=round background_color=0x11${colors.base00} blur_radius=15.0 active_color=0xff${colors.base07} inactive_color=0xff${colors.base05} #order=above 
+          # ${borders} apply-to=$window_id width=2 style=round background_color=0x11${colors.base00} active_color=0xff${colors.base07} inactive_color=0xff${colors.base05} order=above 
           window_position=$(grep -A 4 "id: $window_id position:" "$fullscreen_state_file" | tr -d '\n' | sed 's/$/ }/')
           echo "Window position block extracted: $window_position"  # Debugging statement
 

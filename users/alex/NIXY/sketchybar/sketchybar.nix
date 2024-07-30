@@ -3,7 +3,7 @@
 let
   inherit (config.colorScheme) colors;
   nixy_colors = pkgs.writeShellScript "nixy-colors" ''
-    export base00="0xE6${colors.base00}"
+    export base00="0xff${colors.base00}"
     export base01="0xff${colors.base01}"
     export base02="0xE6${colors.base02}"
     export base03="0xE6${colors.base03}"
@@ -21,12 +21,6 @@ let
     export base0F="0xff${colors.base0F}"
     export TRANSPARENT=0x00000000
   '';
-  start_programs_correctly = pkgs.writeShellScript "start_programs_correctly" ''
-    start_programs_correctly() {
-      ${pkgs.start_programs_correctly}/bin/start_programs_correctly
-    }
-    start_programs_correctly
-  '';
   brightness = pkgs.writeShellScript "brightness" ''
     export brightness="${pkgs.brightness}/bin/brightness"
   '';
@@ -36,7 +30,6 @@ in
   xdg.configFile."sketchybar/sketchybarrc".source = ./sketchybarrc.sh;
   xdg.configFile."sketchybar/icons.sh".source = ./icons.sh;
   xdg.configFile."sketchybar/colors.sh".source = nixy_colors;
-  xdg.configFile."sketchybar/start_programs_correctly.sh".source = start_programs_correctly;
   xdg.configFile."sketchybar/brightness.sh".source = brightness;
   xdg.configFile."sketchybar/plugins/detect_arch_and_source_homebrew_packages.sh".source = ./plugins/detect_arch_and_source_homebrew_packages.sh;
   xdg.configFile."sketchybar/plugins/sway_spaces.sh".source = ./plugins/sway_spaces.sh;
@@ -66,7 +59,6 @@ in
   xdg.configFile."sketchybar/sketchybarrc".executable = true;
   xdg.configFile."sketchybar/icons.sh".executable = true;
   xdg.configFile."sketchybar/colors.sh".executable = true;
-  xdg.configFile."sketchybar/start_programs_correctly.sh".executable = true;
   xdg.configFile."sketchybar/brightness.sh".executable = true;
   xdg.configFile."sketchybar/plugins/detect_arch_and_source_homebrew_packages.sh".executable = true;
   xdg.configFile."sketchybar/plugins/sway_spaces.sh".executable = true;

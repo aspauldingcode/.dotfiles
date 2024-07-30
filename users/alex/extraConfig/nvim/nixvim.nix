@@ -70,24 +70,24 @@
         };
         clangd-extensions.enable = true;
         lsp-format.enable = true;
-        none-ls = {
-          enable = true;
-          enableLspFormat = true;
-          sources = {
-            formatting = {
-              nixfmt = {
-                enable = true;
-                package = pkgs.nixfmt-rfc-style;
-              };
-              #trace: warning: alex profile: [DEV] Nixvim (plugins.none-ls): Some tools are declared locally but are not in the upstream list of supported plugins.
-              #-> [opentofu_fmt, typstyle, xmllint]
-              # typstyle.enable = false;
-              # opentofu_fmt.enable = false;
-              # xmllint.enable = false;
-            };
-          };
-          notifyFormat = "[null-ls] %s";
-        };
+        # none-ls = {
+        #   enable = true;
+        #   enableLspFormat = true;
+        #   sources = {
+        #     formatting = {
+        #       nixfmt = {
+        #         enable = true;
+        #         package = pkgs.nixfmt-rfc-style;
+        #       };
+        #       #trace: warning: alex profile: [DEV] Nixvim (plugins.none-ls): Some tools are declared locally but are not in the upstream list of supported plugins.
+        #       #-> [opentofu_fmt, typstyle, xmllint]
+        #       # typstyle.enable = false;
+        #       # opentofu_fmt.enable = false;
+        #       # xmllint.enable = false;
+        #     };
+        #   };
+        #   notifyFormat = "[null-ls] %s";
+        # };
         efmls-configs = {
           enable = true;
           setup = {

@@ -15,6 +15,45 @@ in
     package = if pkgs.stdenv.isDarwin then null else pkgs.firefox;
     profiles = {
       alex = {
+        userChrome = ''
+          /* make theming work */
+          #navigator-toolbox {
+            --toolbar-bgcolor: transparent;
+          }
+
+          /* Use GTK theme */
+          :root {
+            --toolbar-bgcolor: var(--gtk-headerbar-background);
+            --toolbar-color: var(--gtk-headerbar-text);
+            --toolbar-border-color: var(--gtk-headerbar-border-color, transparent);
+          }
+
+          #navigator-toolbox {
+            background-color: var(--toolbar-bgcolor) !important;
+            color: var(--toolbar-color) !important;
+            border-color: var(--toolbar-border-color) !important;
+          }
+
+          #nav-bar,
+          #PersonalToolbar,
+          #toolbar-menubar,
+          #titlebar {
+            background-color: var(--toolbar-bgcolor) !important;
+            color: var(--toolbar-color) !important;
+            border-color: var(--toolbar-border-color) !important;
+          }
+
+          #sidebar-box,
+          #sidebar-header,
+          #sidebar {
+            background-color: var(--toolbar-bgcolor) !important;
+            color: var(--toolbar-color) !important;
+            border-color: var(--toolbar-border-color) !important;
+          }
+        '';
+        userContent = ''
+          # Here too
+        '';
         bookmarks = { };
         extensions = with pkgs.nur.repos.rycee.firefox-addons; [
           enhancer-for-youtube # non-free

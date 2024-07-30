@@ -426,7 +426,7 @@
                     ];
                   }
                   {
-                    description = "Replace Alt+Shift+Q with Command+W in Alacritty";
+                    description = "Replace Alt+Shift+Q with Command+W in Alacritty and com.apple.SystemProfiler";
                     manipulators = [
                       {
                         type = "basic";
@@ -443,7 +443,7 @@
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            bundle_identifiers = [ "^org\\.alacritty$" ];
+                            bundle_identifiers = [ "^org\\.alacritty$" "^com\\.apple\\.SystemProfiler$" ];
                           }
                         ];
                       }

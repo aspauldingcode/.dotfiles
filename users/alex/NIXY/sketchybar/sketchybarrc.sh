@@ -3,7 +3,6 @@
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
 source "$HOME/.config/sketchybar/colors.sh"
-# source "$HOME/.config/sketchybar/start_programs_correctly.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 
@@ -26,7 +25,7 @@ bar=(
   y_offset=13
   sticky=off
   margin=13 # Margin around the bar
-  blur_radius=15 # add background blur
+  # blur_radius=15 # add background blur
 )
 
 defaults=(
@@ -41,7 +40,7 @@ defaults=(
   popup.background.corner_radius=10
   popup.background.border_width=2
   popup.background.border_color=$base07
-  popup.blur_radius=15
+  # popup.blur_radius=15
   popup.y_offset=0
 )
 
@@ -284,7 +283,7 @@ brackets=(
   background.height=25
   background.corner_radius=20
   background.border_color=$base07
-  background.border_width=2
+  background.border_width=1
 )
 
 # Define the position for alias items
@@ -385,11 +384,6 @@ dismiss-notifications # not working?
 if [ -f "$HOME/.config/sketchybar/calendar_init_flag" ]; then
     rm "$HOME/.config/sketchybar/calendar_init_flag" # remove calendar flag at sketchybar launch if it exists
 fi
-# NOT WORKING CORRECTLY: (Should only kill apps that are not injected with paintcan..)
-# if [ ! -f "/tmp/programs_started_state" ]; then
-#     $start_programs_correctly # sourced from start_programs_correctly.sh
-#     echo "programs started already since sketchybar first initialized." > "/tmp/programs_started_state"
-# fi
 sketchybar --update
 
 # Fetch the menu items from sketchybar query

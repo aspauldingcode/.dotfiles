@@ -16,7 +16,7 @@ in
         dynamic_padding = true;
         padding.x = 0;
         #padding.y = 10; # pretty lavat
-        opacity = 0.9; # use 0.9
+        opacity = 1.0; # use 0.9
         blur = false; # use jankyborders with blur instead
         class.instance = "Alacritty";
         class.general = "Alacritty";
