@@ -287,7 +287,7 @@
 
         # Function to turn gaps on
         turn_gaps_on() {
-            swaymsg -q gaps inner all set 13 > /dev/null 2>&1
+            swaymsg -q gaps inner all set 10 > /dev/null 2>&1
             swaymsg -q gaps outer all set -2 > /dev/null 2>&1
             swaymsg -q corner radius all set 8 > /dev/null 2>&1
             

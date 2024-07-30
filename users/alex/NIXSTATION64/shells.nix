@@ -35,6 +35,7 @@ in
         '';
       shellAliases = {
         beeper = "beeper --disable-gpu";
+        sl = "sl -e";
       };
     };
 
@@ -47,6 +48,7 @@ in
         '';
       shellAliases = {
         beeper = "beeper --disable-gpu";
+        sl = "sl -e";
       };
     };
 
@@ -63,6 +65,7 @@ in
       interactiveShellInit = ''set fish_greeting ""'';
       shellAliases = {
         beeper = "beeper --disable-gpu";
+        sl = "sl -e";
       };
     };
 
@@ -78,6 +81,7 @@ in
         ll = "ls -l";
         la = "ls -a";
         beeper = "beeper --disable-gpu";
+        sl = "sl -e";
       };
     };
 

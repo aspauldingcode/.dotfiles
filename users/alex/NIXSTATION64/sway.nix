@@ -281,7 +281,7 @@
           exec autotiling
 
           # STYLIZE!
-          gaps inner 13
+          gaps inner 10
           gaps top -2
           corner_radius 8
 
