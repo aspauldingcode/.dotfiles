@@ -166,6 +166,7 @@ ram=(
   background.padding_left=-6
   background.padding_right=3
   background.border_color=$base07
+  popup.align=right
 )
 
 cpu=(
@@ -175,6 +176,7 @@ cpu=(
   label.padding_left=10
   label.padding_right=15
   update_freq=4
+  popup.align=right
 )
 
 apple=(

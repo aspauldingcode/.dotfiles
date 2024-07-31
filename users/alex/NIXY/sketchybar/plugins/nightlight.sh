@@ -23,8 +23,6 @@
 #   schedule <from> <to>     Start a custom schedule (12 or 24-hour time format)
 #   schedule stop            Stop the current schedule
 
-
-
 #!/bin/sh
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
@@ -36,8 +34,8 @@ source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 # Adjust nightlight temperature based on the provided number of times
 adjust_temp() {
   local delta=$1
-  local current_temp=$(nightlight temp | grep -o '[0-9]\+')
-  local new_temp=$((current_temp + delta))
+  local current_temp_percentage=$(nightlight temp | grep -o '[0-9]\+')
+  local new_temp=$((current_temp_percentage + delta))
 
   if [[ $new_temp -gt 100 ]]; then
     new_temp=100
@@ -48,33 +46,55 @@ adjust_temp() {
   nightlight temp $new_temp
 }
 
+# Convert percentage to temperature value. 0% = 6500K, 100% = 3500K
+current_temp() {
+  local percentage=$1
+  local temp=$((6500 - (percentage * 30)))
+  echo $temp
+}
+
 update_icon() {
-  local current_temp=$(nightlight temp | grep -o '[0-9]\+')
-  case $current_temp in
+  current_temp_percentage=$(nightlight temp | grep -o '[0-9]\+')
+  temp_value=$(current_temp $current_temp_percentage)
+  status=$(nightlight status)
+  status_label="off"
+
+  if [[ $status == *"on"* ]]; then
+    status_label="on"
+  elif [[ $status == *"off"* ]]; then
+    status_label="off"
+  fi
+
+  case $current_temp_percentage in
   [8-9][0-9] | 100)
-    ICON=$BACKLIGHT_7
+    ICON=$BACKLIGHT_5
     ;;
   [6-7][0-9])
-    ICON=$BACKLIGHT_6
+    ICON=$BACKLIGHT_4
     ;;
   [4-5][0-9])
     ICON=$BACKLIGHT_6
     ;;
   [0-3][0-9])
-    ICON=$BACKLIGHT_4
+    ICON=$BACKLIGHT_6
     ;;
   *)
-    ICON=$BACKLIGHT_5
+    ICON=$BACKLIGHT_7
     ;;
   esac
 
-  sketchybar --set nightlight label="$ICON $current_temp%" # add the icon and the percentage
+  # add the icon, percentage, temperature value, and status
+  sketchybar --set nightlight label="$ICON $current_temp_percentage%"
+  sketchybar --set nightlight.popup label="Nightlight Temperature: ${temp_value}K ($status_label)"
 }
 
 sketchybar --add item nightlight.popup popup.nightlight \
-  --set nightlight.popup label="Nightlight Temperature" \
+  --set nightlight.popup label="Nightlight Temperature: $current_temp ($status_label)" \
   label.padding_left=10 \
-  label.padding_right=10 \
+  label.padding_right=10
+
+# Ensure the icon is updated with the current temperature percentage when the plugin is first added
+update_icon
 
 # Handle mouse events
 case "$SENDER" in

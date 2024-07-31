@@ -50,7 +50,7 @@ in
         yabai -m config mouse_follows_focus         on
 
         # window appearance
-        yabai -m config window_shadow               float # floating windows only
+        yabai -m config window_shadow               off # float # floating windows only
         yabai -m config window_opacity              on
         yabai -m config window_opacity_duration     0.1
         #yabai -m config window_animation_duration	  0.35 #commented out
