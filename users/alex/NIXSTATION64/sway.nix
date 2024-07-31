@@ -304,11 +304,11 @@
           # blur_passes 2
           # blur_radius 2
 
-          for_window [tiling] shadows off
-          for_window [floating] shadows on
-          #shadows_on_csd disable
-          shadow_blur_radius 30
-          shadow_color #000000ff
+          # for_window [tiling] shadows off
+          # for_window [floating] shadows on
+          # shadows_on_csd disable
+          # shadow_blur_radius 30
+          # shadow_color #000000ff
 
           # Enable background blur for Waybar
           # layer_effects "waybar" blur enable; corner_radius 10

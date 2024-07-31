@@ -146,56 +146,19 @@ let
         interval = 1;
         exec = jsonOutput "nightlight" {
           pre = ''
-            current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}')
-            if [ "$current_temp" -eq 6500 ]; then
-              status="off"
-            else
-              status="on"
-            fi
-          current_temp_percent=$(( (current_temp - 3500) * 100 / (6500 - 3500) ))
+          current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}')
+          if [ "$current_temp" -eq 6500 ]; then
+            status="off"
+          else
+            status="on"
+          fi
+          current_temp_percent=$(( 100 - ( (current_temp - 3500) * 100 / (6500 - 3500) ) ))
+          current_temp="''${current_temp}K"
           '';
           text = " $current_temp_percent%";
-          tooltip = "Nightlight Temperature $current_temp ($status)";
+          tooltip = "Nightlight Temperature: $current_temp ($status)";
         };
         on-scroll-up = ''
-          statefile="/tmp/temperature_state"
-          max_temp=6500
-          min_temp=3500
-          increment=400
-          sleep 0.5
-
-          current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
-          new_temp=$((current_temp + increment))
-          if [ "$new_temp" -gt $max_temp ]; then
-              new_temp=$max_temp
-          fi
-          if [ "$current_temp" -lt $max_temp ]; then
-              step=20
-              if [ $((new_temp - current_temp)) -lt $step ]; then
-                  step=$((new_temp - current_temp))
-              fi
-              for i in $(seq 1 $((increment / step))); do
-                  busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n +$step
-                  current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
-                  if [ "$current_temp" -ge $new_temp ]; then
-                      break
-                  fi
-              done
-          fi
-
-          current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
-
-          if [ "$current_temp" -lt $min_temp ]; then
-              current_temp=$min_temp
-              busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q $min_temp
-          elif [ "$current_temp" -gt $max_temp ]; then
-              current_temp=$max_temp
-              busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q $max_temp
-          fi
-
-          echo "$current_temp" > $statefile
-        '';
-        on-scroll-down = ''
           statefile="/tmp/temperature_state"
           max_temp=6500
           min_temp=3500
@@ -231,6 +194,44 @@ let
               busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q $max_temp
           fi
           
+          echo "$current_temp" > $statefile
+        '';
+        on-scroll-down = ''
+          statefile="/tmp/temperature_state"
+          max_temp=6500
+          min_temp=3500
+          increment=400
+          sleep 0.5
+
+          current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
+          new_temp=$((current_temp + increment))
+          if [ "$new_temp" -gt $max_temp ]; then
+              new_temp=$max_temp
+          fi
+          if [ "$current_temp" -lt $max_temp ]; then
+              step=20
+              if [ $((new_temp - current_temp)) -lt $step ]; then
+                  step=$((new_temp - current_temp))
+              fi
+              for i in $(seq 1 $((increment / step))); do
+                  busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n +$step
+                  current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
+                  if [ "$current_temp" -ge $new_temp ]; then
+                      break
+                  fi
+              done
+          fi
+
+          current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
+
+          if [ "$current_temp" -lt $min_temp ]; then
+              current_temp=$min_temp
+              busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q $min_temp
+          elif [ "$current_temp" -gt $max_temp ]; then
+              current_temp=$max_temp
+              busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q $max_temp
+          fi
+
           echo "$current_temp" > $statefile
         '';
         on-click = ''
