@@ -74,8 +74,8 @@
       obs-studio-plugins.wlrobs
       spotify-unwrapped
       sway-contrib.grimshot
-      yt-dlp # youtube-dl fork
-      tartube-yt-dlp # GUI to use yt-dlp
+      #yt-dlp # youtube-dl fork
+      #tartube-yt-dlp # GUI to use yt-dlp
 
       # Desktop environment and window management
       albert

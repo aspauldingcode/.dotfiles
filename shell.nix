@@ -1,53 +1,21 @@
 { pkgs ? import <nixpkgs> {} }:
 
 pkgs.mkShell {
-  buildInputs = with pkgs; [
-    # Basic system tools
-    git
-    curl
-    wget
-    
-    # Text editors
-    vim
-    neovim
-    
-    # Shell
-    zsh
-    oh-my-zsh
-    
-    # Development tools
-    gcc
-    gnumake
-    
-    # Nix-specific tools
-    # nixos-rebuild
-    
-    # Encryption tools (for secret management)
-    gnupg
-    
-    # Additional useful tools
-    jq  # For JSON processing
-    yq  # For YAML processing
-    
-    # Flakes-related
-    nix
+  buildInputs = [
+    pkgs.neovim
   ];
 
-
-  SSH CLONE:
-  git@github.com:aspauldingcode/.dotfiles.git
-  HTTPS CLONE:
-  https://github.com/aspauldingcode/.dotfiles.git
-
-  usual nixos configuration for the flake to be cloned to:
-  $HOME/.dotfiles/
-  
-
   shellHook = ''
-    echo "temp dotfiles environment!"
-    echo "To clone the repo: git clone https://github.com/your-username/your-dotfiles-repo.git"
-    echo "To rebuild NixOS: nixos-rebuild switch --use-remote-sudo --flake /path/to/your/flake#yourDesiredNixosConfiguration"
-    echo "If flakes are not enabled: nixos-rebuild switch --use-remote-sudo --flake /path/to/your/flake#yourDesiredNixosConfiguration --extra-experimental-features 'flakes nix-command'"
-    echo "For secret management, consider using GPG to encrypt sensitive files."
+    export EDITOR=nvim
+
+    echo "Note: Due to permission issues, you need to manually run the following commands outside of the Nix shell."
+    echo "1. Switch the NixOS channel to unstable:"
+    echo "   sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixos"
+    echo "   sudo nix-channel --update"
+    echo "2. Upgrade the system:"
+    echo "   sudo nixos-rebuild switch --upgrade"
+    echo ""
+    echo "After performing the steps, re-enter the Nix shell to continue."
   '';
 }
+

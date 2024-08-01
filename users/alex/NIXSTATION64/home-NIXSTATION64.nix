@@ -6,7 +6,7 @@
     nix-colors.homeManagerModules.default
     ./packages-NIXSTATION64.nix
     ./sway.nix
-    ./../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
+    #./../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
     ./../universals/packages/firefox/firefox.nix
     ./../universals/modules/cursor.nix
 
