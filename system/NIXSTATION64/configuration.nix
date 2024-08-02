@@ -206,18 +206,36 @@
     cp /home/alex/.dotfiles/users/susu/face.png /var/lib/AccountsService/icons/susu
   '';
 
+  #programs.regreet.enable = true;
+# To use ReGreet, services.greetd has to be enabled and services.greetd.settings.default_session should contain the appropriate configuration to launch config.programs.regreet.package. For examples, see the ReGreet Readme. 
+# https://github.com/rharish101/ReGreet#set-as-default-session
+
   # services
   services = {
+    greetd = {
+	enable = true; # use Greetd along with ReGreet gtk themer.
+	settings = {
+  	    default_session = {
+    	    	command = "${pkgs.greetd.greetd}/bin/agreety --cmd sway";
+		# user = "greeter"
+  	    };
+	};
+	# Whether to restart greetd when it terminates (e.g. on failure). This is usually desirable so a user can always log in, but should be disabled when using ‘settings.initial_session’ (autologin), because every greetd restart will trigger the autologin again.
+	# restart = !(config.services.greetd.settings ? initial_session)
+	
+	# The virtual console (tty) that greetd should use. This option also disables getty on that tty.
+	vt = 1; # signed integer
+    };
     displayManager = {
       sddm = {
-        enable = true;
+        enable = false;
         wayland = {
           enable = true; # Correctly placed under displayManager
         };
         theme = "${import ./sddm-themes.nix { inherit pkgs; }}"; # Correctly placed under displayManager
       };
     };
-    desktopManager.plasma6.enable = true;
+    desktopManager.plasma6.enable = false;
     xserver = {
       videoDrivers = [ "amdgpu" ];
       desktopManager = {

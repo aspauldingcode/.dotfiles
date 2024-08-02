@@ -310,11 +310,11 @@
           # shadow_blur_radius 30
           # shadow_color #000000ff
 
-          # Enable background blur for Waybar
-          # layer_effects "waybar" blur enable; corner_radius 10
-          
           # Enable background blur for Waybar-Square
-          # layer_effects "waybar" blur enable; corner_radius 0
+          # layer_effects "waybar" blur enable; corner_radius 0; blur_ignore_transparent enable
+
+          # Enable background blur for Waybar-Round
+          # layer_effects "waybar" blur enable; corner_radius 10; blur_ignore_transparent enable
 
           # Enable background blur for waybar tooltips
           # FIXME
