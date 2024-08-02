@@ -3,10 +3,8 @@
   pkgs,
   lib,
   ...
-}:
-
-{
-  imports = [ 
+}: {
+  imports = [
     ./waybar.nix
   ];
 
@@ -16,40 +14,40 @@
     checkConfig = lib.mkForce false;
     config = rec {
       bars = [
-        { command = "if pgrep -x waybar; then pkill waybar; ${pkgs.waybar}/bin/waybar; fi"; }
+        {command = "if pgrep -x waybar; then pkill waybar; ${pkgs.waybar}/bin/waybar; fi";}
       ];
       modifier = "Mod4";
       left = "h";
       down = "j";
       up = "k";
       right = "l";
-      output = {
-        DP-5 = {
-          res = "1920x1080";
-          pos = "0,0";
-          transform = "270";
-          #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
-        };
-        DP-6 = {
-          res = "1920x1080";
-          pos = "1080,450";
-          #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
-        };
-        DP-4 = {
-          res = "1920x1080";
-          pos = "3000,450";
-          #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
-        };
-        "*" = {
-          # change background for all outputs
-          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/light_noise.png fill"; # ghibliwp.jpg, sweden.png
-        };
-      };
+      #output = {
+      #  DP-5 = {
+      #    res = "1920x1080";
+      #    pos = "0,0";
+      #    transform = "270";
+      #    #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
+      #  };
+      #  DP-6 = {
+      #    res = "1920x1080";
+      #    pos = "1080,450";
+      #    #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
+      #  };
+      #  DP-4 = {
+      #    res = "1920x1080";
+      #    pos = "3000,450";
+      #    #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
+      #  };
+      #  "*" = {
+      #    # change background for all outputs
+      #    bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/light_noise.png fill"; # ghibliwp.jpg, sweden.png
+      #  };
+      #};
       # Use alacritty as default terminal
       terminal = "alacritty";
       startup = [
         # Launch alacritty on start
-        { command = "alacritty"; }
+        {command = "alacritty";}
       ];
       menu = "bemenu-run";
       window.titlebar = false;
@@ -157,7 +155,7 @@
         "${modifier}+Up" = "focus up";
         "${modifier}+Right" = "focus right";
 
-        #FIXME: Try NOT to swap a floating window? 
+        #FIXME: Try NOT to swap a floating window?
         # Move windows (swap if tiled, move 20px if floating
         # "${modifier}+Shift+${left}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus left, swap container with mark "_swap", focus left, unmark "_swap"; [floating con_id="__focused__"] move left 20px'';
         # "${modifier}+Shift+${down}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus down, swap container with mark "_swap", focus down, unmark "_swap"; [floating con_id="__focused__"] move down 20px'';
@@ -246,114 +244,115 @@
       };
     };
 
-    extraConfig =
-      let
-        inherit (config.colorscheme) colors;
-      in
-      ''
-        set $mod Mod4
-          # Idle configuration        
-          exec swayidle -w \
-          timeout 7320 'swaylock -f -c 000000' \
-          timeout 8000 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-          before-sleep 'swaylock -f -c 000000'
+    extraConfig = let
+      inherit (config.colorscheme) colors;
+    in ''
+      set $mod Mod4
+        # Idle configuration
+        exec swayidle -w \
+        timeout 7320 'swaylock -f -c 000000' \
+        timeout 8000 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+        before-sleep 'swaylock -f -c 000000'
 
-          exec --no-startup-id gammastep # enable gammastep server
+        exec --no-startup-id gammastep # enable gammastep server
 
-          # You can get the names of your inputs by running: swaymsg -t get_inputs
-          # Read `man 5 sway-input` for more information about this section.
-          # Launch the network manager widget!
-          # exec nm-applet
-          exec --no-startup-id 'nm-applet --indicator'
+        # You can get the names of your inputs by running: swaymsg -t get_inputs
+        # Read `man 5 sway-input` for more information about this section.
+        # Launch the network manager widget!
+        # exec nm-applet
+        exec --no-startup-id 'nm-applet --indicator'
 
-          # SET workspace to specific output
-          workspace 1 output DP-5
-          workspace 2 output DP-6
-          workspace 3 output DP-4
+        # SET workspace to specific output
+        workspace 1 output DP-5
+        workspace 2 output DP-6
+        workspace 3 output DP-4
 
-          # Launch the bluetooth applet
-          exec blueman-applet
+        # Launch the bluetooth applet
+        exec blueman-applet
 
-          # Delayed launch of the bluetooth applet
-          exec "sleep 5 && blueman-applet"
+        # Delayed launch of the bluetooth applet
+        exec "sleep 5 && blueman-applet"
 
-          # autotile!
-          exec autotiling
+        # autotile!
+        exec autotiling
 
-          # STYLIZE!
-          gaps inner 10
-          gaps top -2
-          corner_radius 8
+	# way-displays: Auto Manage Your Wayland Displays
+	exec way-displays > /tmp/way-displays.''${XDG_VTNR}.''${USER}.log 2>&1
 
-          #FIX waybar tooltips!
-          for_window [app_id="waybar" floating] {
-            move position cursor
-            move down 120px # adjust if some menus still don't fit
-          }
+        # STYLIZE!
+        gaps inner 10
+        gaps top -2
+        corner_radius 8
 
-          # Enable csd borders # options are: none | normal | csd | pixel [<n>]
-          bindsym $mod+Shift+B exec swaymsg border toggle
-          
-          #for all windows, brute-force use of "pixel"
-          for_window [shell="xdg_shell"] border pixel 2
-          for_window [shell="xwayland"] border pixel 2
+        #FIX waybar tooltips!
+        for_window [app_id="waybar" floating] {
+          move position cursor
+          move down 120px # adjust if some menus still don't fit
+        }
 
-          # Window background blur
-          # blur on #FIXME: TURN ON! Floating window loses its borders...
-          # blur_xray on
-          # blur_passes 2
-          # blur_radius 2
+        # Enable csd borders # options are: none | normal | csd | pixel [<n>]
+        bindsym $mod+Shift+B exec swaymsg border toggle
 
-          # for_window [tiling] shadows off
-          # for_window [floating] shadows on
-          # shadows_on_csd disable
-          # shadow_blur_radius 30
-          # shadow_color #000000ff
+        #for all windows, brute-force use of "pixel"
+        for_window [shell="xdg_shell"] border pixel 2
+        for_window [shell="xwayland"] border pixel 2
 
-          # Enable background blur for Waybar-Square
-          # layer_effects "waybar" blur enable; corner_radius 0; blur_ignore_transparent enable
+        # Window background blur
+        # blur on #FIXME: TURN ON! Floating window loses its borders...
+        # blur_xray on
+        # blur_passes 2
+        # blur_radius 2
 
-          # Enable background blur for Waybar-Round
-          # layer_effects "waybar" blur enable; corner_radius 10; blur_ignore_transparent enable
+        # for_window [tiling] shadows off
+        # for_window [floating] shadows on
+        # shadows_on_csd disable
+        # shadow_blur_radius 30
+        # shadow_color #000000ff
 
-          # Enable background blur for waybar tooltips
-          # FIXME
-          
-          # Enable background blur for Mako notifications
-          # layer_effects "notifications" blur enable; corner_radius 10
+        # Enable background blur for Waybar-Square
+        # layer_effects "waybar" blur enable; corner_radius 0; blur_ignore_transparent enable
 
-          # Enable background blur for GTK-based layer shell applications
-          # layer_effects "gtk-layer-shell" blur enable; corner_radius 10
+        # Enable background blur for Waybar-Round
+        # layer_effects "waybar" blur enable; corner_radius 10; blur_ignore_transparent enable
 
-          # inactive window fade amount. 0.0 = no dimming, 1.0 = fully dimmed
-          #default_dim_inactive .3
-          #dim_inactive_colors.unfocused "#000000"
-          #dim_inactive_colors.urgent "#900000"
+        # Enable background blur for waybar tooltips
+        # FIXME
 
-          # HIDE CURSOR AUTOMATICALLY
-          seat * hide_cursor 8000
+        # Enable background blur for Mako notifications
+        # layer_effects "notifications" blur enable; corner_radius 10
 
-          # HIDE TITLEBAR!
-          # SET BORDER TO 2 PIXELS!
-          default_border pixel 2
-          default_floating_border pixel 2
-          client.unfocused ${colors.base05} ${colors.base05} ${colors.base05} ${colors.base05}
-          client.focused_inactive ${colors.base05} ${colors.base05} ${colors.base05} ${colors.base05}
-          client.focused ${colors.base07} ${colors.base07} ${colors.base07} ${colors.base07}
+        # Enable background blur for GTK-based layer shell applications
+        # layer_effects "gtk-layer-shell" blur enable; corner_radius 10
 
-          exec {
-            gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
-            gsettings set org.gnome.desktop.interface icon-theme 'elementary'
-            gsettings set org.gnome.desktop.interface cursor-theme 'elementary'
-            gsettings set org.gnome.desktop.interface font-name 'Roboto Slab 10'
-          }
+        # inactive window fade amount. 0.0 = no dimming, 1.0 = fully dimmed
+        #default_dim_inactive .3
+        #dim_inactive_colors.unfocused "#000000"
+        #dim_inactive_colors.urgent "#900000"
 
-          # Fix zoom
-          for_window [app_id="zoom"] floating enable
-          for_window [app_id="zoom" title="Choose ONE of the audio conference options"] floating enable
-          for_window [app_id="zoom" title="zoom"] floating enable
-          for_window [app_id="zoom" title="Zoom Meeting"] floating disable
-          for_window [app_id="zoom" title="Zoom - Free Account"] floating disable
-      '';
+        # HIDE CURSOR AUTOMATICALLY
+        seat * hide_cursor 8000
+
+        # HIDE TITLEBAR!
+        # SET BORDER TO 2 PIXELS!
+        default_border pixel 2
+        default_floating_border pixel 2
+        client.unfocused ${colors.base05} ${colors.base05} ${colors.base05} ${colors.base05}
+        client.focused_inactive ${colors.base05} ${colors.base05} ${colors.base05} ${colors.base05}
+        client.focused ${colors.base07} ${colors.base07} ${colors.base07} ${colors.base07}
+
+        exec {
+          gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+          gsettings set org.gnome.desktop.interface icon-theme 'elementary'
+          gsettings set org.gnome.desktop.interface cursor-theme 'elementary'
+          gsettings set org.gnome.desktop.interface font-name 'Roboto Slab 10'
+        }
+
+        # Fix zoom
+        for_window [app_id="zoom"] floating enable
+        for_window [app_id="zoom" title="Choose ONE of the audio conference options"] floating enable
+        for_window [app_id="zoom" title="zoom"] floating enable
+        for_window [app_id="zoom" title="Zoom Meeting"] floating disable
+        for_window [app_id="zoom" title="Zoom - Free Account"] floating disable
+    '';
   };
 }
