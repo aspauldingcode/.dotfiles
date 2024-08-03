@@ -29,6 +29,48 @@
     };
   };
 
+  # Whether to enable loading amdgpu kernelModule in stage 1. 
+  # Can fix lower resolution in boot screen during initramfs phase!
+  hardware.amdgpu.initrd.enable = true;
+
+  # If you encounter problems having multiple monitors connected to your GPU, adding `video` parameters for each connector to the kernel command line sometimes helps. 
+  boot.kernelParams = [
+    "amdgpu.si_support=0"
+    "boot.shell_on_fail"
+    "ipv6.disable=1"
+    "loglevel=3"
+    "nvidia-drm.modeset=1"
+    "quiet"
+    "rd.systemd.show_status=false"
+    "rd.systemd.show_status=false"
+    "rd.udev.log_level=3"
+    "splash"
+    "udev.log_priority=3"
+    "video=DP-4:1920x1080@60"
+    "video=DP-5:1920x1080@60"
+    "video=DP-6:1920x1080@60"
+    # "video=DP-1:1920x1080@60"
+    # "video=DP-2:1920x1080@60"
+    # "video=DP-3:1920x1080@60"
+
+  ];
+
+  boot.plymouth = {
+    enable = true;
+    theme = "rings";
+    themePackages = with pkgs; [
+      # By default we would install all themes
+      (adi1090x-plymouth-themes.override {
+        selected_themes = [ "rings" ];
+      })
+    ];
+  };
+
+  # Hide the OS choice for bootloaders.
+  # It's still possible to open the bootloader list by pressing any key
+  # It will just not appear on screen unless a key is pressed
+  boot.loader.timeout = 0;
+
   # This is using a rec (recursive) expression to set and access XDG_BIN_HOME within the expression
   # For more on rec expressions see https://nix.dev/tutorials/first-steps/nix-language#recursive-attribute-set-rec
   # environment.sessionVariables = rec {
@@ -122,7 +164,6 @@
   };
   # time settings
   time.timeZone = "America/Denver";
-
   # Enable Bluetooth
   hardware.bluetooth = {
     enable = true;
@@ -143,26 +184,49 @@
       Experimental = true; # Showing battery charge of bluetooth devices (which might lead to bugs)
     };
   };
-  # use pipewire instead.
-  # # Enabling extra codecs
-  # hardware.pulseaudio = {
-  #   enable = true;
-  #   package = pkgs.pulseaudioFull;
-  # };
-  # # System-Wide PulseAudio
-  # hardware.pulseaudio.configFile = pkgs.writeText "default.pa" ''
-  #   load-module module-bluetooth-policy
-  #   load-module module-bluetooth-discover
-  #   ## module fails to load with 
-  #   ##   module-bluez5-device.c: Failed to get device path from module arguments
-  #   ##   module.c: Failed to load module "module-bluez5-device" (argument: ""): initialization failed.
-  #   # load-module module-bluez5-device
-  #   # load-module module-bluez5-discover
-  # '';
-  # # set pulseaudio to automatically switch audio to the connected bluetooth device when it connects
-  # hardware.pulseaudio.extraConfig = "
-  #   load-module module-switch-on-connect
-  # ";
+  # Disable PulseAudio
+  hardware.pulseaudio.enable = false;
+  
+  # Enable PipeWire
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    #jack.enable = true;
+
+    # Low-latency setup
+    extraConfig.pipewire."92-low-latency" = {
+      context.properties = {
+        default.clock.rate = 48000;
+        default.clock.quantum = 32;
+        default.clock.min-quantum = 32;
+        default.clock.max-quantum = 32;
+      };
+    };
+
+    # PulseAudio backend low-latency setup
+    extraConfig.pipewire-pulse."92-low-latency" = {
+      context.modules = [
+        {
+          name = "libpipewire-module-protocol-pulse";
+          args = {
+            pulse.min.req = "32/48000";
+            pulse.default.req = "32/48000";
+            pulse.max.req = "32/48000";
+            pulse.min.quantum = "32/48000";
+            pulse.max.quantum = "32/48000";
+          };
+        }
+      ];
+      stream.properties = {
+        node.latency = "32/48000";
+        resample.quality = 1;
+      };
+    };
+  };
+  security.rtkit.enable = true;
 
   #add opengl (to fix Qemu)
   hardware.opengl.enable = true;
@@ -174,15 +238,6 @@
     amdvlk
   ];
   hardware.opengl.extraPackages32 = with pkgs; [ driversi686Linux.amdvlk ];
-
-  # Dual Monitors
-
-  # If you encounter problems having multiple monitors connected to your GPU, adding `video` parameters for each connector to the kernel command line sometimes helps. 
-  boot.kernelParams = [
-    "video=DP-4:1920x1080@60"
-    "video=DP-6:1920x1080@60"
-    "video=DP-5:1920x10800@60"
-  ];
 
   # Select internationalisation properties.
   i18n = {
@@ -200,32 +255,45 @@
     };
   };
 
-  # grab user profile pictures
+  # grab user profile pictures and set greetd ReGreet Configurations.
   system.activationScripts.script.text = ''
     cp /home/alex/.dotfiles/users/alex/face.png /var/lib/AccountsService/icons/alex
     cp /home/alex/.dotfiles/users/susu/face.png /var/lib/AccountsService/icons/susu
+    
+    # adds greetd configuration for ReGreet 
+    cd ${../../system/NIXSTATION64/greetd}
+    find . -type d -exec mkdir -p /etc/greetd/{} \;
+    find . -type f -exec ln -sf ${../../system/NIXSTATION64/greetd}/{} /etc/greetd/{} \;
+
+    # adds way-displays configuration
+    cd ${../../system/NIXSTATION64/way-displays}
+    find . -type d -exec mkdir -p /etc/way-displays/{} \;
+    find . -type f -exec ln -sf ${../../system/NIXSTATION64/way-displays}/{} /etc/way-displays/{} \;
   '';
 
   #programs.regreet.enable = true;
-# To use ReGreet, services.greetd has to be enabled and services.greetd.settings.default_session should contain the appropriate configuration to launch config.programs.regreet.package. For examples, see the ReGreet Readme. 
-# https://github.com/rharish101/ReGreet#set-as-default-session
+  # To use ReGreet, services.greetd has to be enabled and services.greetd.settings.default_session should contain the appropriate configuration to launch config.programs.regreet.package. For examples, see the ReGreet Readme. 
+  # https://github.com/rharish101/ReGreet#set-as-default-session
 
   # services
   services = {
     greetd = {
-	enable = true; # use Greetd along with ReGreet gtk themer.
-	settings = {
-  	    default_session = {
-    	    	command = "${pkgs.greetd.greetd}/bin/agreety --cmd sway";
-		# user = "greeter"
-  	    };
-	};
-	# Whether to restart greetd when it terminates (e.g. on failure). This is usually desirable so a user can always log in, but should be disabled when using ‘settings.initial_session’ (autologin), because every greetd restart will trigger the autologin again.
-	# restart = !(config.services.greetd.settings ? initial_session)
-	
-	# The virtual console (tty) that greetd should use. This option also disables getty on that tty.
-	vt = 1; # signed integer
+      enable = true; # use Greetd along with ReGreet gtk themer.
+      settings = {
+        default_session = {
+          # command = "${pkgs.greetd.greetd}/bin/agreety --cmd sway";
+          # command = "${pkgs.greetd.greetd}/bin/agreety --cmd sway";
+          command = "${pkgs.sway}/bin/sway --config /etc/greetd/sway-config";
+          user = "greeter";
+        };
+      };
+      # Whether to restart greetd when it terminates (e.g. on failure). This is usually desirable so a user can always log in, but should be disabled when using ‘settings.initial_session’ (autologin), because every greetd restart will trigger the autologin again.
+      # restart = !(config.services.greetd.settings ? initial_session)
+
+      # The virtual console (tty) that greetd should use. This option also disables getty on that tty.
+      vt = 1; # signed integer
     };
+
     displayManager = {
       sddm = {
         enable = false;
@@ -261,13 +329,6 @@
       port = 3389; # default 3389
       openFirewall = true;
       defaultWindowManager = "xfce4-session";
-    };
-
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      pulse.enable = true;
-      jack.enable = true;
     };
 
     #getty.autologinUser = "alex"; # Enable automatic login for the user.

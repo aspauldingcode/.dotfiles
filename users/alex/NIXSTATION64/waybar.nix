@@ -138,8 +138,9 @@ let
     "custom/brightness" = {
         format = " {}%";
         exec = "${wl-gammarelay-rs} watch {bp}";
-        on-scroll-up = "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d +0.02";
-        on-scroll-down = "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d -0.02";
+        on-scroll-up = "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d +0.02 && busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{print $2}' > /tmp/brightness_state";
+        on-scroll-down = "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d -0.02 && busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{print $2}' > /tmp/brightness_state";
+        on-click = "toggle-brightness";
     };
     "custom/nightlight" = {
         return-type = "json";
@@ -234,36 +235,7 @@ let
 
           echo "$current_temp" > $statefile
         '';
-        on-click = ''
-          statefile="/tmp/temperature_state"
-          statefile_temp=$(tr -d '\0' < $statefile | head -n 1)
-          current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
-
-          turn_on() {
-              # Turn on, by decreasing the temperature to the one recorded in statefile
-              while [ "$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)" -gt "$statefile_temp" ]; do
-                  busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n -50 > /dev/null 2>&1
-              done
-              echo "$statefile_temp" > $statefile
-          }
-
-          turn_off() {
-              # Turn off by setting to default temp 6500 (maximum)
-              while [ "$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)" -lt 6500 ]; do
-                  busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n +50 > /dev/null 2>&1
-              done
-          }
-
-          if [ "$(wc -l < $statefile)" -gt 1 ]; then
-              echo "$statefile_temp" > $statefile
-          fi
-
-          if [ "$current_temp" -lt 6500 ]; then
-              turn_off
-          else
-              turn_on
-          fi
-        '';
+        on-click = "toggle-nightlight";
     };
 
     "custom/gamma" = {

@@ -27,16 +27,16 @@
     username = "alex";
     homeDirectory = "/home/alex";
     stateVersion = "23.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-    shellAliases = {
-      python = "python3.11";
-      vim = "nvim";
-      vi = "nvim";
-      reboot = "sudo systemctl reboot";
-      rb = "sudo systemctl reboot";
-      shutdown = "sudo shutdown now";
-      sd = "sudo shutdown now";
-      l = "ls";
-    };
+    # shellAliases = {
+    #   python = "python3.11";
+    #   vim = "nvim";
+    #   vi = "nvim";
+    #   reboot = "sudo systemctl reboot";
+    #   rb = "sudo systemctl reboot";
+    #   shutdown = "sudo shutdown now";
+    #   sd = "sudo shutdown now";
+    #   l = "ls";
+    # };
   };
 
   services.ssh-agent.enable = true;

@@ -168,6 +168,12 @@
         [ -f /tmp/waybar_state ] && rm /tmp/waybar_state
         toggle-waybar off && toggle-waybar on
         toggle-gaps off && toggle-gaps on
+        # systemctl --user restart pipewire.service
+        # systemctl --user restart pipewire-pulse.service
+        # way-displays --reload
+        way-displays -g > /dev/null 2>&1
+        toggle-nightlight on
+        toggle-brightness on
       '')
       #search
       (pkgs.writeShellScriptBin "search" ''
@@ -198,7 +204,113 @@
         echo "Unknown-Architecture"
         fi
       '')
-        
+
+      # toggle-nightlight
+      (pkgs.writeShellScriptBin "toggle-nightlight" ''
+        #!/bin/sh
+
+        statefile="/tmp/temperature_state"
+        statefile_temp=$(tr -d '\0' < $statefile | head -n 1)
+        current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
+
+        turn_on() {
+            # Turn on, by decreasing the temperature to the one recorded in statefile
+            while [ "$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)" -gt "$statefile_temp" ]; do
+                busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n -50 > /dev/null 2>&1
+            done
+            echo "$statefile_temp" > $statefile
+            echo "Nightlight is now on."
+        }
+
+        turn_off() {
+            # Turn off by setting to default temp 6500 (maximum)
+            while [ "$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)" -lt 6500 ]; do
+                busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n +50 > /dev/null 2>&1
+            done
+            echo "Nightlight is now off."
+        }
+
+        if [ "$(wc -l < $statefile)" -gt 1 ]; then
+            echo "$statefile_temp" > $statefile
+        fi
+
+        if [ "$1" = "on" ]; then
+            if [ "$current_temp" -lt 6500 ]; then
+                echo "Nightlight is already on."
+            else
+                turn_on
+            fi
+        elif [ "$1" = "off" ]; then
+            if [ "$current_temp" -eq 6500 ]; then
+                echo "Nightlight is already off."
+            else
+                turn_off
+            fi
+        else
+            if [ "$current_temp" -lt 6500 ]; then
+                turn_off
+            else
+                turn_on
+            fi
+        fi
+      '')
+
+      # toggle-brightness
+      (pkgs.writeShellScriptBin "toggle-brightness" ''
+        #!/bin/sh
+
+        statefile="/tmp/brightness_state"
+        statefile_brightness=$(tr -d '\0' < $statefile | head -n 1)
+        current_brightness=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{print $2}' | tr -d '\0' 2>/dev/null)
+
+        turn_on() {
+            # Turn on, by decreasing the brightness to the one recorded in statefile
+            while [ $(echo "$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{print $2}' | tr -d '\0' 2>/dev/null) > $statefile_brightness" | bc -l) -eq 1 ]; do
+                busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d -0.02 > /dev/null 2>&1
+            done
+            echo "$statefile_brightness" > $statefile
+            echo "Brightness is now on."
+        }
+
+        turn_off() {
+            # Turn off by setting to maximum brightness (1.0)
+            while [ $(echo "$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{print $2}' | tr -d '\0' 2>/dev/null) < 1.0" | bc -l) -eq 1 ]; do
+                busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d +0.02 > /dev/null 2>&1
+            done
+            echo "Brightness is now off."
+        }
+
+        if [ "$(wc -l < $statefile)" -gt 1 ]; then
+            echo "$statefile_brightness" > $statefile
+        fi
+
+        case "$1" in
+            on)
+                if [ $(echo "$current_brightness < 1.0" | bc -l) -eq 1 ]; then
+                    echo "Brightness is already on."
+                else
+                    turn_on
+                fi
+                ;;
+            off)
+                if [ $(echo "$current_brightness >= 1.0" | bc -l) -eq 1 ]; then
+                    echo "Brightness is already off."
+                else
+                    echo "$current_brightness" > $statefile
+                    turn_off
+                fi
+                ;;
+            *)
+                if [ $(echo "$current_brightness >= 1.0" | bc -l) -eq 1 ]; then
+                    turn_on
+                else
+                    echo "$current_brightness" > $statefile
+                    turn_off
+                fi
+                ;;
+        esac
+      '')
+      
       # toggle-waybar
       (pkgs.writeShellScriptBin "toggle-waybar" ''
         #!/bin/bash

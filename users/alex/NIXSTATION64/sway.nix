@@ -21,28 +21,40 @@
       down = "j";
       up = "k";
       right = "l";
-      #output = {
-      #  DP-5 = {
-      #    res = "1920x1080";
-      #    pos = "0,0";
-      #    transform = "270";
-      #    #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
-      #  };
-      #  DP-6 = {
-      #    res = "1920x1080";
-      #    pos = "1080,450";
-      #    #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
-      #  };
-      #  DP-4 = {
-      #    res = "1920x1080";
-      #    pos = "3000,450";
-      #    #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
-      #  };
-      #  "*" = {
-      #    # change background for all outputs
-      #    bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/light_noise.png fill"; # ghibliwp.jpg, sweden.png
-      #  };
-      #};
+       # Assign workspaces to outputs
+       workspaceOutputAssign = [
+         {
+           workspace = "1";
+           output = "Ancor Communications Inc VE248 G1LMQS085722";
+         }
+         {
+           workspace = "2";
+           output = "Ancor Communications Inc ASUS VE278 JCLMTF141603";
+         }
+         {
+           workspace = "3";
+           output = "Ancor Communications Inc ASUS VE278 J7LMTF164099";
+         }
+       ];
+      output = {
+        "Ancor Communications Inc VE248 G1LMQS085722" = {
+          res = "1920x1080";
+          pos = "0,0";
+          transform = "270";
+        };
+        "Ancor Communications Inc ASUS VE278 JCLMTF141603" = {
+          res = "1920x1080";
+          pos = "1080,450";
+        };
+        "Ancor Communications Inc ASUS VE278 J7LMTF164099" = {
+          res = "1920x1080";
+          pos = "3000,450";
+        };
+        "*" = {
+          # change background for all outputs
+          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/sweden.png fill";
+        };
+      };
       # Use alacritty as default terminal
       terminal = "alacritty";
       startup = [
@@ -70,8 +82,8 @@
         # "${modifier}+Space" = "" # toggle nwg-dock
 
         # "${modifier}+m" = "exec docker start -ai 8b83fcdf83af"; # MacOS VM
-        "Control+Alt+Delete" = "exec sudo reboot";
-        "Control+Shift+Alt+Delete" = "exec sudo shutdown now";
+        "Control+Alt+Delete" = "exec sudo systemctl reboot";
+        "Control+Shift+Alt+Delete" = "exec sudo systemctl poweroff";
         # implement window switcher based on wofi
         #"${modifier}+Tab" = "exec ${wofiWindowJump}";
         # power menu
@@ -262,11 +274,6 @@
         # exec nm-applet
         exec --no-startup-id 'nm-applet --indicator'
 
-        # SET workspace to specific output
-        workspace 1 output DP-5
-        workspace 2 output DP-6
-        workspace 3 output DP-4
-
         # Launch the bluetooth applet
         exec blueman-applet
 
@@ -276,8 +283,8 @@
         # autotile!
         exec autotiling
 
-	# way-displays: Auto Manage Your Wayland Displays
-	exec way-displays > /tmp/way-displays.''${XDG_VTNR}.''${USER}.log 2>&1
+        # way-displays: Auto Manage Your Wayland Displays
+        exec way-displays > /tmp/way-displays.''${XDG_VTNR}.''${USER}.log 2>&1
 
         # STYLIZE!
         gaps inner 10

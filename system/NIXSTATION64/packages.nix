@@ -23,6 +23,11 @@
 
   environment.systemPackages = with pkgs; [
     way-displays
+    libdrm
+    ddcutil
+    edid-decode
+    read-edid
+    greetd.regreet
     neovim
     zellij
     kdePackages.kdeconnect-kde

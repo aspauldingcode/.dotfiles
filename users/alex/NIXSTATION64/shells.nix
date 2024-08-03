@@ -36,6 +36,10 @@ in
       shellAliases = {
         beeper = "beeper --disable-gpu";
         sl = "sl -e";
+        reboot = "systemctl reboot";
+        rb = "systemctl reboot";
+        shutdown = "systemctl poweroff";
+        sd = "systemctl poweroff";
       };
     };
 
@@ -49,6 +53,10 @@ in
       shellAliases = {
         beeper = "beeper --disable-gpu";
         sl = "sl -e";
+        reboot = "systemctl reboot";
+        rb = "systemctl reboot";
+        shutdown = "systemctl poweroff";
+        sd = "systemctl poweroff";
       };
     };
 
@@ -66,6 +74,10 @@ in
       shellAliases = {
         beeper = "beeper --disable-gpu";
         sl = "sl -e";
+        reboot = "systemctl reboot";
+        rb = "systemctl reboot";
+        shutdown = "systemctl poweroff";
+        sd = "systemctl poweroff";
       };
     };
 
@@ -82,6 +94,10 @@ in
         la = "ls -a";
         beeper = "beeper --disable-gpu";
         sl = "sl -e";
+        reboot = "systemctl reboot";
+        rb = "systemctl reboot";
+        shutdown = "systemctl poweroff";
+        sd = "systemctl poweroff";
       };
     };
 
