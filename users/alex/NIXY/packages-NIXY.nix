@@ -87,6 +87,7 @@ in
     thefuck
     zsh-completions
     zoom-us
+    vencord # discord
     unar
     # python39
     (pkgs.python311.withPackages (ps: [

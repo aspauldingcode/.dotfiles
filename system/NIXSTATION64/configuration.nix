@@ -46,13 +46,9 @@
     "rd.udev.log_level=3"
     "splash"
     "udev.log_priority=3"
-    "video=DP-4:1920x1080@60"
     "video=DP-5:1920x1080@60"
-    "video=DP-6:1920x1080@60"
-    # "video=DP-1:1920x1080@60"
-    # "video=DP-2:1920x1080@60"
-    # "video=DP-3:1920x1080@60"
-
+    "video=DP-4:disconnect"
+    "video=DP-6:disconnect"
   ];
 
   boot.plymouth = {
@@ -188,6 +184,7 @@
   hardware.pulseaudio.enable = false;
   
   # Enable PipeWire
+  security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -195,39 +192,48 @@
     pulse.enable = true;
     # If you want to use JACK applications, uncomment this
     #jack.enable = true;
+  };
 
-    # Low-latency setup
-    extraConfig.pipewire."92-low-latency" = {
-      context.properties = {
-        default.clock.rate = 48000;
-        default.clock.quantum = 32;
-        default.clock.min-quantum = 32;
-        default.clock.max-quantum = 32;
-      };
-    };
-
-    # PulseAudio backend low-latency setup
-    extraConfig.pipewire-pulse."92-low-latency" = {
-      context.modules = [
-        {
-          name = "libpipewire-module-protocol-pulse";
-          args = {
-            pulse.min.req = "32/48000";
-            pulse.default.req = "32/48000";
-            pulse.max.req = "32/48000";
-            pulse.min.quantum = "32/48000";
-            pulse.max.quantum = "32/48000";
-          };
-        }
-      ];
-      stream.properties = {
-        node.latency = "32/48000";
-        resample.quality = 1;
-      };
+  # Low-latency setup
+  services.pipewire.extraConfig.pipewire."92-low-latency" = {
+    context.properties = {
+      default.clock.rate = 48000;
+      default.clock.quantum = 32;
+      default.clock.min-quantum = 32;
+      default.clock.max-quantum = 32;
     };
   };
-  security.rtkit.enable = true;
 
+  # PulseAudio backend low-latency setup
+  services.pipewire.extraConfig.pipewire-pulse."92-low-latency" = {
+    context.modules = [
+      {
+        name = "libpipewire-module-protocol-pulse";
+        args = {
+          pulse.min.req = "32/48000";
+          pulse.default.req = "32/48000";
+          pulse.max.req = "32/48000";
+          pulse.min.quantum = "32/48000";
+          pulse.max.quantum = "32/48000";
+        };
+      }
+    ];
+    stream.properties = {
+      node.latency = "32/48000";
+      resample.quality = 1;
+    };
+  };
+
+  # Bluetooth Configuration
+  services.pipewire.wireplumber.extraConfig.bluetoothEnhancements = {
+    "monitor.bluez.properties" = {
+      "bluez5.enable-sbc-xq" = true;
+      "bluez5.enable-msbc" = true;
+      "bluez5.enable-hw-volume" = true;
+      "bluez5.roles" = [ "hsp_hs" "hsp_ag" "hfp_hf" "hfp_ag" ];
+    };
+  };
+  
   #add opengl (to fix Qemu)
   hardware.opengl.enable = true;
   hardware.opengl.driSupport = true; # This is already enabled by default
@@ -260,18 +266,53 @@
     cp /home/alex/.dotfiles/users/alex/face.png /var/lib/AccountsService/icons/alex
     cp /home/alex/.dotfiles/users/susu/face.png /var/lib/AccountsService/icons/susu
     
-    # adds greetd configuration for ReGreet 
-    cd ${../../system/NIXSTATION64/greetd}
-    find . -type d -exec mkdir -p /etc/greetd/{} \;
-    find . -type f -exec ln -sf ${../../system/NIXSTATION64/greetd}/{} /etc/greetd/{} \;
-
     # adds way-displays configuration
     cd ${../../system/NIXSTATION64/way-displays}
     find . -type d -exec mkdir -p /etc/way-displays/{} \;
     find . -type f -exec ln -sf ${../../system/NIXSTATION64/way-displays}/{} /etc/way-displays/{} \;
   '';
 
-  #programs.regreet.enable = true;
+  programs.regreet = {
+    enable = true;
+    package = pkgs.regreet;
+    settings = {
+      default_session = {
+        command = "${pkgs.sway}/bin/sway --config ${../../system/NIXSTATION64/greetd/sway-config}";
+        user = "greeter";
+      };
+      background = {
+        path = "${../../users/alex/extraConfig/wallpapers/sweden.png}";
+        fit = "Fill";
+      };
+      # The entries defined in this section will be passed to the session as environment variables when it is started
+      env = {
+        ENV_VARIABLE = "value";
+      };
+      GTK = {
+        application_prefer_dark_theme = true;
+        cursor_theme_name = "Bibata-Modern-Classic";
+        font_name = "JetBrains Mono";
+        icon_theme_name = "Adwaita";
+        theme_name = "Adwaita";
+      };
+      commands = {
+        reboot = [ "systemctl" "reboot" ];
+        poweroff = [ "systemctl" "poweroff" ];
+      };
+      appearance = {
+        greeting_msg = "Welcome back!";
+      };
+    };
+  };
+
+  # Ensure required packages are installed
+  environment.systemPackages = with pkgs; [
+    jetbrains-mono
+    gnome.adwaita-icon-theme
+    bibata-cursors
+  ];
+
+
   # To use ReGreet, services.greetd has to be enabled and services.greetd.settings.default_session should contain the appropriate configuration to launch config.programs.regreet.package. For examples, see the ReGreet Readme. 
   # https://github.com/rharish101/ReGreet#set-as-default-session
 
@@ -305,6 +346,7 @@
     };
     desktopManager.plasma6.enable = false;
     xserver = {
+      enable = true;
       videoDrivers = [ "amdgpu" ];
       desktopManager = {
         plasma5 = {

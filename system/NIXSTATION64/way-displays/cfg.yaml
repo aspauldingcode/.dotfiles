@@ -64,10 +64,10 @@ MODE:
 ### CLI EXAMPLE:
 ### $ way-displays -s TRANSFORM '!.*G1LMQS085722.*$' 90 
 TRANSFORM:
-  - NAME_DESC: 'Ancor Communications Inc VE248 G1LMQS085722'
+  - NAME_DESC: 'Ancor Communications Inc VE248 G1LMQS085722' # left, 90 degrees
     TRANSFORM: 90
-  - NAME_DESC: 'Ancor Communications Inc ASUS VE278 JCLMTF141603'
-  - NAME_DESC: 'Ancor Communications Inc ASUS VE278 J7LMTF164099'
+  - NAME_DESC: 'Ancor Communications Inc ASUS VE278 JCLMTF141603' # middle
+  - NAME_DESC: 'Ancor Communications Inc ASUS VE278 J7LMTF164099' # right
   
   # - NAME_DESC: 'monitor description'
   #   TRANSFORM: 270

@@ -129,6 +129,8 @@
         #"${modifier}+Ctrl+Alt+Print" = "exec wayrecorder --notify --clipboard --input active";
         #"${modifier}+Ctrl+Shift+Alt+Print" = "exec wayrecorder --notify --clipboard --input window";
 
+        "${modifier}+Control+Shift+r" = "exec swaymsg output '*' disable && swaymsg output '*' enable";
+
         # "XF86AudioPrev" = "exec ${pkgs.playerctl}/bin/playerctl -s previous";
         # "XF86AudioNext" = "exec ${pkgs.playerctl}/bin/playerctl -s next";
         # "XF86AudioPlay" = "exec ${pkgs.playerctl}/bin/playerctl -s play-pause";
@@ -360,6 +362,9 @@
         for_window [app_id="zoom" title="zoom"] floating enable
         for_window [app_id="zoom" title="Zoom Meeting"] floating disable
         for_window [app_id="zoom" title="Zoom - Free Account"] floating disable
+
+        # run fix-wm once.
+        # exec fix-wm
     '';
   };
 }
