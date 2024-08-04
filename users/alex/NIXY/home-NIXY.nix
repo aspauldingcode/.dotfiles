@@ -13,7 +13,7 @@
     nix-colors.homeManagerModules.default
     ./packages-NIXY.nix
     # ./../extraConfig/nvim/nixvim.nix # FIXME: BROKEN atm
-    ./../universals/packages/firefox/firefox.nix
+    ./../universals/modules/firefox.nix
     ./../universals/modules/cursor.nix # vscode with ai
     ./../universals/modules/discord.nix
     ./theme.nix
@@ -21,7 +21,6 @@
     ./alacritty.nix
     ./kitty.nix
     ./yazi/yazi.nix
-    ./betterdiscord.nix
     ./git.nix
     ./maco.nix
     ./instantview.nix

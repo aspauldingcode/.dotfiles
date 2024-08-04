@@ -60,7 +60,6 @@
       obsidian
       rofi-wayland-unwrapped
       zoom-us
-      vesktop
 
       # Multimedia and graphics
       blender-hip

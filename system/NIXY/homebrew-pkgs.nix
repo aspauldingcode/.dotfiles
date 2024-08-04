@@ -80,7 +80,6 @@
       "sublime-text"
       "asset-catalog-tinkerer"
       "themeengine"
-      #"google-assistant"
       "docker"
       "kdeconnect"
     ];

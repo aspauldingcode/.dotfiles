@@ -87,7 +87,6 @@ in
     thefuck
     zsh-completions
     zoom-us
-    vencord # discord
     unar
     # python39
     (pkgs.python311.withPackages (ps: [
@@ -188,7 +187,7 @@ in
       fi 
     '')
 
-    # set-nvram-flags
+    # set-nvram-flags FIXME: UPDATE FLAGS so Karabiner still works.
     (pkgs.writeShellScriptBin "set-nvram-flags" ''
     if [[ "$1" == "on" ]]; then
       echo "User entered 'on' argument."

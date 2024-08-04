@@ -7,7 +7,7 @@
     ./packages-NIXSTATION64.nix
     ./sway.nix
     #./../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
-    ./../universals/packages/firefox/firefox.nix
+    ./../universals/modules/firefox.nix
     ./../universals/modules/cursor.nix
     ./../universals/modules/discord.nix
     ./theme.nix # theme of system.

@@ -5,7 +5,6 @@
   ...
 }:
 
-
 let
   vesktopSettings = {
     minimizeToTray = "on";
@@ -22,7 +21,7 @@ let
       themeLinks = [
         # "https://kraxen72.github.io/rosebox/discord/dist/main.css"
       ];
-      enabledThemes = [ 
+      enabledThemes = [
         "gruvbox.theme.css"
       ];
       enableReactDevtools = false;
@@ -2806,41 +2805,96 @@ let
           background-color: #282828;
       }
   '';
+  themeFileLocation = if pkgs.stdenv.isDarwin then 
+    "Library/Application Support/vesktop/themes/gruvbox.theme.css" 
+  else 
+    ".config/vesktop/themes/gruvbox.theme.css";
+  vesktopSettingsLocation = if pkgs.stdenv.isDarwin then 
+    "Library/Application Support/vesktop/settings.json" 
+  else 
+    ".config/vesktop/settings.json";
+  vesktopDetailedSettingsLocation = if pkgs.stdenv.isDarwin then 
+    "Library/Application Support/vesktop/settings/settings.json" 
+  else 
+    ".config/vesktop/settings/settings.json";
 in
 {
+  # if is darwin, create a derivation for vesktop package..
+    home.packages = with pkgs; [
+      (if pkgs.stdenv.isDarwin then
+        pkgs.stdenv.mkDerivation rec {
+          name = "vesktop";
+          src = fetchurl {
+            url = "https://vencord.dev/download/vesktop/universal/dmg";
+            sha256 = "sha256-ceOUNHSOaEqCbzkM64RtUu0Yhrq4tThcXZTDd+OsEXI="; # Replace with actual sha256
+          };
+          dontUnpack = true;
+          dontConfigure = true;
+          dontBuild = true;
+
+          # The filename is Vesktop-1.5.3-universal.dmg when downloaded.
+          # We keep the package name pname = vesktop
+          # and the version is 1.5.3
+          version = "1.5.3";
+
+          # We need to rename the version based on the name of the package when downloaded.
+          # So we need to extract the version from the filename.
+          # The filename is Vesktop-1.5.3-universal.dmg when downloaded.
+          # So we need to extract the version from the filename.
+          # version = builtins.parseDrvName (builtins.baseNameOf src).version;
+
+          installPhase = 
+          let hdiutil = "/usr/bin/hdiutil"; in ''
+            dir=$(mktemp -d)
+            ${hdiutil} attach "$src" -mountpoint "$dir"
+            detach() {
+              while ! ${hdiutil} detach -force "$dir"; do
+                echo "failed to detach image at $dir"
+                sleep 1
+              done
+            }
+            trap detach EXIT
+
+            mkdir -p $out/Applications
+            cp -r "$dir"/Vesktop.app $out/Applications/
+          '';
+        }
+      else
+        vesktop { })
+    ];
+
   # To prevent discord from checking for new versions.
-  home.file.".config/discord/settings.json" = {
-    text = builtins.toJSON {
-      SKIP_HOST_UPDATE = true;
-      chromiumSwitches = {}; # wtf is this?
-      IS_MAXIMIZED = false; # not respected?
-      IS_MINIMIZED = false;
-      # not respected?
-      WINDOW_BOUNDS = { 
-        x = 727;
-        y = 65;
-        width = 1920;
-        height = 1080;
+  home.file = {
+    ".config/discord/settings.json" = {
+      text = builtins.toJSON {
+        SKIP_HOST_UPDATE = true;
+        chromiumSwitches = {}; # wtf is this?
+        IS_MAXIMIZED = false; # not respected?
+        IS_MINIMIZED = false;
+        # not respected?
+        WINDOW_BOUNDS = { 
+          x = 727;
+          y = 65;
+          width = 1920;
+          height = 1080;
+        };
+        THEME = "Dark"; # not respected?
+        DANGEROUS_ENABLE_DEVTOOLS_ONLY_IF_YOU_KNOW_WHAT_YOU_ARE_DOING = true;
+        BACKGROUND_COLOR = "#000000"; # not respected?
+        OPEN_ON_STARTUP = true; # not respected?
       };
-      THEME = "Dark"; # not respected?
-      DANGEROUS_ENABLE_DEVTOOLS_ONLY_IF_YOU_KNOW_WHAT_YOU_ARE_DOING = true;
-      BACKGROUND_COLOR = "#000000"; # not respected?
-      OPEN_ON_STARTUP = true; # not respected?
     };
-  };
-
-  home.file.".config/vesktop/settings.json" = lib.mkForce {
-    force = true;
-    text = builtins.toJSON vesktopSettings;
-  };
-
-  home.file.".config/vesktop/settings/settings.json" = lib.mkForce {
-    force = true;
-    text = builtins.toJSON vesktopDetailedSettings;
-  };
-
-  home.file.".config/vesktop/themes/gruvbox.theme.css" = lib.mkForce {
-    force = true;
-    text = gruvboxTheme;
+    ${vesktopSettingsLocation} = lib.mkForce {
+      force = true;
+      text = builtins.toJSON vesktopSettings;
+    };
+    ${vesktopDetailedSettingsLocation} = lib.mkForce {
+      force = true;
+      text = builtins.toJSON vesktopDetailedSettings;
+    };
+    ${themeFileLocation} = lib.mkForce {
+      force = true;
+      text = gruvboxTheme;
+    };
   };
 } # bottom of page!
