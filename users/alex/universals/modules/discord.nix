@@ -2822,7 +2822,7 @@ in
   # if is darwin, create a derivation for vesktop package..
     home.packages = with pkgs; [
       (if pkgs.stdenv.isDarwin then
-        pkgs.stdenv.mkDerivation rec {
+        pkgs.stdenv.mkDerivation {
           name = "vesktop";
           src = fetchurl {
             url = "https://vencord.dev/download/vesktop/universal/dmg";
@@ -2860,7 +2860,7 @@ in
           '';
         }
       else
-        vesktop { })
+        pkgs.vesktop)
     ];
 
   # To prevent discord from checking for new versions.
