@@ -242,8 +242,8 @@ in {
           "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
           "ui.use_standins_for_native_colors" = false;
           "webgl.colorspaces.prototype" = false;
-          "widget.gtk.libadwaita-colors.enabled" = true;
-          "widget.gtk.theme-scrollbar-colors.enabled" = true;
+          # "widget.gtk.libadwaita-colors.enabled" = true;
+          # "widget.gtk.theme-scrollbar-colors.enabled" = true;
           # "widget.gtk.theme-scrollbar-colors.scrollbar-color" = "#${colors.base00}";
           # "widget.gtk.theme-scrollbar-colors.scrollbar-color-hover" = "#${colors.base02}";
           # "widget.gtk.theme-scrollbar-colors.scrollbar-color-active" = "#${colors.base0D}";
