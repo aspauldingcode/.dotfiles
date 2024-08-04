@@ -165,26 +165,6 @@
     #   '';
     # };
 
-    "com.example.instantview.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0.dtd"?>
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>com.example.instantview</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>/Applications/InstantView.app/Contents/MacOS/InstantView</string>
-            </array>
-            <key>RunAtLoad</key>
-            <true/>
-          </dict>
-        </plist>
-      '';
-    };
-
     "com.lwouis.alt-tab-macos.plist" = {
       enable = true;
       text = ''
@@ -289,46 +269,6 @@
         </plist>
       '';
     };
-
-    # "com.example.googleassistant.plist" = {
-    #   enable = true;
-    #   text = ''
-    #     <?xml version="1.0" encoding="UTF-8"?>
-    #     <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0.dtd"?>
-    #     <plist version="1.0">
-    #       <dict>
-    #         <key>Label</key>
-    #         <string>com.example.`</string>
-    #         <key>ProgramArguments</key>
-    #         <array>
-    #           <string>/Applications/Google Assistant.app/Contents/MacOS/Google Assistant</string>
-    #         </array>
-    #         <key>RunAtLoad</key>
-    #         <true/>
-    #       </dict>
-    #     </plist>
-    #   '';
-    # };
-
-    # "com.example.backgroundmusic.plist" = {
-    #   enable = true;
-    #   text = ''
-    #     <?xml version="1.0" encoding="UTF-8"?>
-    #     <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0.dtd"?>
-    #     <plist version="1.0">
-    #       <dict>
-    #         <key>Label</key>
-    #         <string>com.example.backgroundmusic</string>
-    #         <key>ProgramArguments</key>
-    #         <array>
-    #           <string>/Applications/Background Music.app/Contents/MacOS/Background Music</string>
-    #         </array>
-    #         <key>RunAtLoad</key>
-    #         <true/>
-    #       </dict>
-    #     </plist>
-    #   '';
-    # };
 
     # "com.example.diskutil.plist" = {
     #   enable = true;
@@ -452,6 +392,81 @@
             <string>/Library/PrivilegedHelperTools/dev.orbstack.OrbStack.privhelper</string>
           </array>
         </dict>
+        </plist>
+      '';
+    };
+
+    "com.bearisdriving.BGM.App.plist" = {
+      enable = true;
+      text = ''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0.dtd"?>
+        <plist version="1.0">
+          <dict>
+            <key>Label</key>
+            <string>com.bearisdriving.BGM.App</string>
+            <key>ProgramArguments</key>
+            <array>
+              <string>/Applications/Background Music.app/Contents/MacOS/Background Music</string>
+            </array>
+            <key>RunAtLoad</key>
+            <true/>
+          </dict>
+        </plist>
+      '';
+    };
+
+    "com.smiUsbDisplay.macOSInstantView.plist" = {
+      enable = true;
+      text = ''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0.dtd"?>
+        <plist version="1.0">
+          <dict>
+            <key>Label</key>
+            <string>com.smiUsbDisplay.macOSInstantView</string>
+            <key>ProgramArguments</key>
+            <array>
+              <string>/Applications/macOS InstantView.app/Contents/MacOS/macOS InstantView</string>
+            </array>
+            <key>RunAtLoad</key>
+            <true/>
+          </dict>
+        </plist>
+      '';
+    };
+
+    "com.smiUsbDisplay.macOSInstantView.loginscreen.plist" = {
+      enable = true;
+      text = ''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+          <dict>
+            <key>Label</key>
+            <string>com.smiUsbDisplay.macOSInstantView.loginscreen</string>
+            <key>LimitLoadToSessionType</key>
+            <string>LoginWindow</string>
+            <key>Program</key>
+            <string>/Applications/macOS InstantView.app/Contents/MacOS/macOS InstantView</string>
+            <key>ProgramArguments</key>
+            <array>
+              <string>/Applications/macOS InstantView.app/Contents/MacOS/macOS InstantView</string>
+              <string>LoginWindow</string>
+            </array>
+            <key>ProcessType</key>
+            <string>Interactive</string>
+            <key>ThrottleInterval</key>
+            <integer>5</integer>
+            <key>Disabled</key>
+            <false/>
+            <key>Umask</key>
+            <integer>0</integer>
+            <key>RunAtLoad</key>
+            <true/>
+            <key>KeepAlive</key>
+            <true/>
+          </dict>
         </plist>
       '';
     };

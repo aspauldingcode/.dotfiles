@@ -90,6 +90,25 @@
     experimental-features = nix-command flakes
     '';
   };
+
+  # system.activationScripts.script.text = ''
+    # cp /home/alex/.dotfiles/users/alex/face.png /var/lib/AccountsService/icons/alex
+  # '';
+
+  #system.activationScripts.extraActivation.text = ''
+  #  ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk20}/zulu-20.jdk" "/Library/Java/JavaVirtualMachines/"
+  #'';
+
+  system.activationScripts.extraActivation.text = ''
+    # Fixes cursorcerer symlink!
+    ln -sf "${pkgs.callPackage ./cursorcerer.nix { }}/Cursorcerer.prefPane" "/Library/PreferencePanes/"
+    
+    # adds MacForge Plugins (could use gnu stow moving forward)..
+    cd ${../../users/alex/extraConfig/macforge-plugins} # cd into the directory where the plugins are. idk why we need to do this.
+    find . -type d ! -name '.*' -exec mkdir -p /Library/Application\ Support/MacEnhance/Plugins/{} \; # create directories. These must not be symlinks.
+    find . -type f ! -name '.*' -exec ln -sf ${../../users/alex/extraConfig/macforge-plugins}/{} /Library/Application\ Support/MacEnhance/Plugins/{} \; # create symlinks for files
+  '';
+  
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog
   system.stateVersion = 4;

@@ -69,21 +69,8 @@
     ripgrep
     (pkgs.callPackage ./instantview.nix { })
     (pkgs.callPackage ./macforge.nix { })
-    (pkgs.callPackage ./cdock.nix { })
+    # (pkgs.callPackage ./cdock.nix { })
     (pkgs.callPackage ./cursorcerer.nix { })
     (pkgs.callPackage ./mousecape.nix { })
   ];
-
-  #system.activationScripts.extraActivation.text = ''
-  #  ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk20}/zulu-20.jdk" "/Library/Java/JavaVirtualMachines/"
-  #'';
-
-  system.activationScripts.extraActivation.text = ''
-    # Fixes cursorcerer symlink!
-    ln -sf "${pkgs.callPackage ./cursorcerer.nix { }}/Cursorcerer.prefPane" "/Library/PreferencePanes/"
-    # adds MacForge Plugins 
-    cd ${../../users/alex/extraConfig/macforge-plugins}
-    find . -type d -exec mkdir -p /Library/Application\ Support/MacEnhance/Plugins/{} \;
-    find . -type f -exec ln -sf ${../../users/alex/extraConfig/macforge-plugins}/{} /Library/Application\ Support/MacEnhance/Plugins/{} \;
-  '';
 }

@@ -96,6 +96,7 @@ in
       ps.textwrap3
       ps.pandas
       ps.termcolor
+      ps.plyvel
       #ps.pyautogui # broken
       # ps.pep517
       ps.biplist
@@ -186,29 +187,31 @@ in
       fi 
     '')
 
-    # #singleusermode on ##FIXME: Totally broken atm.
-    # (pkgs.writeShellScriptBin "sumode" ''
-    # if [[ "$1" == "on" ]]; then
-    #   echo "User entered 'on' argument."
-    #   echo "Turning on Single User Mode..."
-    #   sudo nvram boot-args="-arm64e_preview_abi amfi_get_out_of_my_way=0x80 -v -s"
-    # elif [[ "$1" == "off" ]]; then
-    #   echo "User entered 'off' argument."
-    #   echo "Turning off Single User Mode..."
-    #   sudo nvram boot-args="-arm64e_preview_abi amfi_get_out_of_my_way=0x80 -v"
-    # fi
-    # if [[ "$1" == "on" || "$1" == "off" ]]; then
-    #   echo "Completed. Your boot args are listed below:"
-    #   nvram -p | grep boot-args
-    #   echo "Done. Rebooting..."
-    #   sleep 2
-    #   sudo reboot
-    # else
-    #   echo "No argument provided. Please add arguments 'on' or 'off' for this command."
-    #   echo "Your current boot args are listed below:"
-    #   nvram -p | grep boot-args
-    # fi
-    # '')
+    # set-nvram-flags
+    (pkgs.writeShellScriptBin "set-nvram-flags" ''
+    if [[ "$1" == "on" ]]; then
+      echo "User entered 'on' argument."
+      echo "Turning on Single User Mode..."
+      sudo nvram boot-args="-arm64e_preview_abi amfi_get_out_of_my_way=0x80 -v"
+      #Disable AutoBoot
+      sudo nvram AutoBoot=%00
+    elif [[ "$1" == "off" ]]; then
+      echo "User entered 'off' argument."
+      echo "Turning off Single User Mode..."
+      sudo nvram boot-args="-arm64e_preview_abi amfi_get_out_of_my_way=0x80 -v"
+      #Enable AutoBoot
+      sudo nvram AutoBoot=%01
+    fi
+    if [[ "$1" == "on" || "$1" == "off" ]]; then
+      echo "Completed. Your boot args are listed below:"
+      nvram -p | grep boot-args
+      echo "Done."
+    else
+      echo "No argument provided. Please add arguments 'on' or 'off' for this command."
+      echo "Your current boot args are listed below:"
+      nvram -p | grep boot-args
+    fi
+    '')
 
     #json2nix converter
     (pkgs.writeScriptBin "json2nix" ''
@@ -666,15 +669,24 @@ in
           current_opacity=$(osascript -e 'tell application "System Events" to tell dock preferences to get autohide menu bar')
           menubar_state_file="/tmp/menubar_state"
           if [[ "$current_opacity" == "true" ]]; then
-              osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to false'
-              ${yabai} -m config menubar_opacity 1.0
-              echo "Menu bar turned ON"
-              echo "on" > "$menubar_state_file"
+              if [[ "$1" == "on" ]]; then
+                  echo "Menu bar is already ON"
+              else
+                  osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to false'
+                  sleep 0.1
+                  ${yabai} -m config menubar_opacity 1.0
+                  echo "Menu bar turned ON"
+                  echo "on" > "$menubar_state_file"
+              fi
           else
-              ${yabai} -m config menubar_opacity 0.0
-              osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to true'
-              echo "Menu bar turned OFF"
-              echo "off" > "$menubar_state_file"
+              if [[ "$1" == "off" ]]; then
+                  echo "Menu bar is already OFF"
+              else
+                  ${yabai} -m config menubar_opacity 0.0
+                  osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to true'
+                  echo "Menu bar turned OFF"
+                  echo "off" > "$menubar_state_file"
+              fi
           fi
       }
 
@@ -682,15 +694,7 @@ in
       if [[ "$#" -eq 0 ]]; then
           toggle_menubar
       elif [[ "$#" -eq 1 && ($1 == "on" || $1 == "off") ]]; then
-          if [[ "$1" == "on" ]]; then
-              osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to false'
-              echo "Menu bar turned ON"
-              echo "on" > "/tmp/menubar_state"
-          else
-              osascript -e 'delay 0.5' -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to true'
-              echo "Menu bar turned OFF"
-              echo "off" > "/tmp/menubar_state"
-          fi
+          toggle_menubar "$1"
       else
           echo "Usage: $0 <on | off>"
           exit 1
@@ -699,6 +703,10 @@ in
 
     #toggle-float
     (pkgs.writeShellScriptBin "toggle-float" ''
+
+      # update the sketchybar front_app
+      ${sketchybar} --trigger window_focus
+
       # Function to check if the current window is floating
       is_floating() {
           ${yabai} -m query --windows --window | ${jq} -r '."is-floating"' | grep -q "true"

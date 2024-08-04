@@ -40,6 +40,10 @@ in
         yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces &> /dev/null"
         yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces &> /dev/null"
         yabai -m signal --add event=window_title_changed action="sketchybar --trigger title_change &> /dev/null"
+        # focus window after active space changes
+        yabai -m signal --add event=space_changed action="yabai -m window --focus \$(yabai -m query --windows --space | ${jq} .[0].id)"
+        # focus window after active display changes
+        yabai -m signal --add event=display_changed action="yabai -m window --focus \$(yabai -m query --windows --space | ${jq} .[0].id)"
 
         # move/resize windows with mouse
         yabai -m config mouse_modifier              alt # alt is fixed as of Yabai v7.0.0!

@@ -61,8 +61,9 @@
       };
       spaces.spans-displays = false; # Required false for yabai!
       dock = {
-        autohide = false;
-        autohide-delay = 0.0;
+        autohide = true;
+        autohide-delay = 1000.0;
+        autohide-time-modifier = 0.0; # speed of hide/show
         expose-animation-duration = 0.1;
         orientation = "bottom";
         show-recents = false;
@@ -104,14 +105,6 @@
           NSDocumentRevisionsWindowTransformAnimation = false;
           NSToolbarFullScreenAnimationDuration = 0;
           NSBrowserColumnAnimationSpeedMultiplier = 0;
-        };
-        "com.apple.dock" = {
-          autohide-time-modifier = 0;
-          autohide-delay = 0;
-          expose-animation-duration = 0;
-          springboard-show-duration = 0;
-          springboard-hide-duration = 0;
-          springboard-page-duration = 0;
         };
         "com.apple.finder".DisableAllAnimations = true;
         "com.apple.Mail" = {
@@ -254,6 +247,13 @@
           isShowPreferences = 0;
           numberOfSecondForAutoHide = 10;
           useFullStatusBarOnExpandEnabled = 0;
+        };
+        "com.bearisdriving.BGM.App" = {
+            SelectedMusicPlayerID = "EC2A907F-8515-4687-9570-1BF63176E6D8";
+            StatusBarIcon = 0;
+        };
+        "com.apple.audio.AudioMIDISetup" = {
+          "audioDevice.selected" = "BGMDevice"; # select BGM for Cava to work.
         };
         "com.apple.desktopservices" = {
           DSDontWriteNetworkStores = true;

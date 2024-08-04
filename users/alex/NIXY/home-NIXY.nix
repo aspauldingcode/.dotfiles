@@ -12,7 +12,7 @@
   imports = [
     nix-colors.homeManagerModules.default
     ./packages-NIXY.nix
-    ./../extraConfig/nvim/nixvim.nix # FIXME: BROKEN atm
+    # ./../extraConfig/nvim/nixvim.nix # FIXME: BROKEN atm
     ./../universals/packages/firefox/firefox.nix
     ./../universals/modules/cursor.nix # vscode with ai
     ./theme.nix
@@ -23,6 +23,8 @@
     ./betterdiscord.nix
     ./git.nix
     ./maco.nix
+    ./discord.nix
+    ./instantview.nix
     # ./fish.nix
     # ./zsh.nix
     ./shells.nix
