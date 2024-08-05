@@ -35,16 +35,17 @@ environment.sessionVariables.NIXOS_OZONE_WL = "1";
     #whitesur-icon-theme
     # whitesur-cursors
     wireplumber
-    ranger
-    wl-clipboard
     neofetch
+    #ranger
+    wl-clipboard
+    #neofetch
     ueberzugpp # replacement for depricated inline terminal image previewer
     yazi
     grim
     #krita
     #libreoffice-fresh
-    xdg-desktop-portal-wlr
-    gtkdialog
+    #xdg-desktop-portal-wlr
+    #gtkdialog
     pcmanfm
     wofi-emoji
     htop

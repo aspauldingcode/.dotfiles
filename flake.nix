@@ -72,11 +72,8 @@
           nixvim
           flake-parts
           nix-colors
-<<<<<<< HEAD
 	  apple-silicon
-=======
           nur
->>>>>>> 05518d727d22c425ae7accd2306eb6cc5f632603
           self
           ;
       };

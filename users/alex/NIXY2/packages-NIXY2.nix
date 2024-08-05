@@ -35,8 +35,8 @@
       wl-clipboard
       wtype
       #element-desktop
-      brave
-      firefox-esr
+      #brave
+      #firefox
       #transmission-gtk
       cowsay
       autotiling
@@ -59,32 +59,32 @@
       #zip
       thefuck
       sway-contrib.grimshot
-      (python311.withPackages (
-        ps: with ps; [
-          toml
-          python-lsp-server
-          pyls-isort
-          flake8
-          evdev
-          pynput
+      #(python311.withPackages (
+      #  ps: with ps; [
+      #    toml
+      #    python-lsp-server
+      #    pyls-isort
+       #   flake8
+        #  evdev
+         # pynput
           # pygame
-          matplotlib
-          libei
-          keyboard
-          sympy
-          numpy
-          i3ipc
-        ]
-      ))
-      (prismlauncher.override {
-        jdks = [
-          jdk8
-          jdk17
+        #  matplotlib
+        #  libei
+        #  keyboard
+        #  sympy
+        #  numpy
+        #  i3ipc
+  #      ]
+ #     ))
+    #  (prismlauncher.override {
+   #     jdks = [
+  #        jdk8
+ #         jdk17
           #jdk19
-	  jdk21
+#	  jdk21
           # Minecraft requires jdk21 SOON!
-        ];
-      })
+     #   ];
+      #})
       #fix-wm
       (pkgs.writeShellScriptBin "fix-wm" ''
         pkill waybar && sway reload
