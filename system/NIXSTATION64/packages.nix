@@ -15,13 +15,24 @@
   programs.thunar.plugins = with pkgs.xfce; [
     thunar-archive-plugin
     thunar-volman
+    thunar-dropbox-plugin
+    thunar-media-tags-plugin
   ];
   services.gvfs.enable = true; # Mount, trash, and other functionalities
   services.tumbler.enable = true; # Thumbnail support for images
 
   environment.systemPackages = with pkgs; [
+    way-displays
+    libdrm
+    ddcutil
+    edid-decode
+    read-edid
+    greetd.regreet
     neovim
     zellij
+    kdePackages.kdeconnect-kde
+    universal-android-debloater
+    clang
     libsForQt5.qt5.qtbase
     libsForQt5.qt5.qtsvg
     libsForQt5.qt5.qtquickcontrols2
@@ -29,6 +40,8 @@
     libsForQt5.qt5.qtgraphicaleffects
     libsForQt5.dolphin
     libsForQt5.qt5ct
+    gnome.sushi
+    gnome.nautilus
     # libsForQt5.breeze-qt5
     # libsForQt5.breeze-gtk
     # libsForQt5.breeze-icons
@@ -47,7 +60,7 @@
     sqlite
     gnutls
     libusb1
-
+    networkmanagerapplet
     edl
     payload-dumper-go
     ranger
@@ -59,6 +72,7 @@
     krita
     libreoffice-fresh
     xdg-desktop-portal-wlr
+    geoclue2
     gtkdialog
     pcmanfm
     wofi-emoji
@@ -79,11 +93,11 @@
     element
     appimage-run
     tree-sitter
-    jdk20
     python311
-    nodejs
+    # nodejs
     ncurses6
     flex
+    light
     bison
     gnumake
     gcc
@@ -91,13 +105,14 @@
     dtc
     gnome-themes-extra
     cargo
-    nodePackages_latest.npm
+    # nodePackages_latest.npm
     perl
     hexedit
     virt-manager
     uxplay
 
     (pkgs.callPackage ./hybridbar.nix { })
+    (pkgs.callPackage ./cursor.nix { }) # FIXME: broken atm.
 
     #rebuild #sudo nixos-rebuild switch --show-trace --option eval-cache false --flake .#NIXSTATION64
     (pkgs.writeShellScriptBin "rebuild" ''

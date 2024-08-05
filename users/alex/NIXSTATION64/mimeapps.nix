@@ -1,10 +1,10 @@
-{ ... }:
+{ lib, ... }:
 
 # Configure application filetype defaults.
 {
   xdg.mimeApps = {
     enable = true;
-    associations = {
+    associations = lib.mkForce {
       added = {
         # applications
         "application/pdf" = [

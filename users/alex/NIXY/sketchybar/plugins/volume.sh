@@ -1,16 +1,21 @@
 #!/bin/sh
+
 #FIXME: Add bluetooth headphone indicator with Battery:https://github.com/FelixKratz/SketchyBar/discussions/12#discussioncomment-1549450
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+
+source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
+source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 
 volume_change() {
   case $INFO in
-  [6-9][0-9] | 100)
+  [7-9][0-9] | 100)
     ICON=$VOLUME
     ;;
-  [3-5][0-9])
+  [4-6][0-9])
     ICON=$VOLUME_66
     ;;
-  [1-2][0-9])
+  [1-3][0-9])
     ICON=$VOLUME_33
     ;;
   [1-9])
@@ -37,19 +42,7 @@ case "$SENDER" in
   ;;
 "mouse.scrolled")
   # Extract the delta value from INFO (assuming it's in JSON format)
-  SCROLL_DELTA=$(echo "$INFO" | tr -d '{}' | awk -F':' '/delta/ {print $2}' | tr -d ' ')
-
-  # Get the current volume level
-  CURRENT_VOLUME=$(osascript -e "output volume of (get volume settings)")
-
-  # Calculate the new volume level
-  NEW_VOLUME=$((CURRENT_VOLUME + SCROLL_DELTA * 2))
-
-  # Ensure the volume doesn't go below 0 or above 100
-  NEW_VOLUME=$(awk -v v="$NEW_VOLUME" 'BEGIN {print (v < 0) ? 0 : (v > 100) ? 100 : v}')
-
-  # Adjust volume using osascript
-  osascript -e "set volume output volume $NEW_VOLUME"
+  osascript -e "set volume output volume (output volume of (get volume settings) + $SCROLL_DELTA)"
   ;;
   "mouse.entered")
     #sleep 1

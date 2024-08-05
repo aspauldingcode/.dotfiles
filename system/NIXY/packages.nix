@@ -2,6 +2,7 @@
   pkgs,
   inputs,
   config,
+  lib,
   ...
 }:
 
@@ -32,6 +33,7 @@
     wget
     zellij
     # neofetch
+    gnumake
     pfetch
     htop
     git
@@ -41,8 +43,11 @@
     #darwin.iproute2mac #MUST BE BREW PACKAGE?
     ncurses6
     hexedit
+    ruby_3_3
+    rbenv
     # javaPackages.openjfx19
     #inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk20
+    jdk21
     #python311
     oh-my-zsh # zsh shell framework
     oh-my-fish # fish shell framework
@@ -63,10 +68,9 @@
     fd # find tool
     ripgrep
     (pkgs.callPackage ./instantview.nix { })
-    # (pkgs.callPackage ./macforge.nix { })
+    (pkgs.callPackage ./macforge.nix { })
+    # (pkgs.callPackage ./cdock.nix { })
+    (pkgs.callPackage ./cursorcerer.nix { })
+    (pkgs.callPackage ./mousecape.nix { })
   ];
-
-  system.activationScripts.extraActivation.text = ''
-    ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk20}/zulu-20.jdk" "/Library/Java/JavaVirtualMachines/"
-  '';
 }

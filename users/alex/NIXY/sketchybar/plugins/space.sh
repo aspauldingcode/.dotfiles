@@ -1,7 +1,10 @@
 #!/bin/sh
 
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+
 source "$HOME/.config/sketchybar/colors.sh"
-source "$HOME/.config/sketchybar/plugins/sway_spaces.sh"
+source "$HOME/.config/sketchybar/icons.sh"
+source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 # source "$HOME/.config/sketchybar/plugins/add_spaces_sketchybar.sh"
 
 # # Call the function to execute the updates
@@ -25,6 +28,6 @@ for ((display=1; display<=$TOTAL_DISPLAYS; display++)); do
     ACTIVE_SPACE_CLEANED="${ACTIVE_SPACE_LABEL#_}"
     
     # Highlight the active space on SketchyBar using the cleaned label
-    sketchybar --set space.$ACTIVE_SPACE_CLEANED icon.highlight=on icon.highlight_color=$ORANGE
+    sketchybar --set space.$ACTIVE_SPACE_CLEANED icon.highlight=on icon.highlight_color=$base0A
 done
-sketchybar --set space.$ACTIVE_SPACE_CLEANED icon.highlight=true icon.highlight_color=$ORANGE
+sketchybar --set space.$ACTIVE_SPACE_CLEANED icon.highlight=true icon.highlight_color=$base0A

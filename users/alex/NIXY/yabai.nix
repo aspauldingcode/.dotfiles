@@ -1,6 +1,15 @@
 { config, pkgs, ... }:
 
 let
+  systemType = pkgs.stdenv.hostPlatform.system;
+  homebrewPath = if systemType == "aarch64-darwin" then "/opt/homebrew/bin" else if systemType == "x86_64-darwin" then "/usr/local/bin" else throw "Homebrew Unsupported architecture: ${systemType}";
+  yabai = "${homebrewPath}/yabai";
+  sketchybar = "${homebrewPath}/sketchybar";
+  borders = "${homebrewPath}/borders";
+  i3-msg = "${homebrewPath}/i3-msg";
+  alacritty = "${homebrewPath}/alacritty";
+  dmenu-mac = "${homebrewPath}/dmenu-mac";
+  jq = "${pkgs.jq}/bin/jq";
   inherit (config.colorScheme) colors;
 in
 {
@@ -8,9 +17,6 @@ in
     executable = true;
     target = ".config/yabai/yabairc";
     text =
-      let
-          borders = "${config.home.homeDirectory}/Downloads/JankyBorders-main/bin/borders"; #FIXME: master contains apply-to=<window-id> so use this for now.
-      in
       # bash
       ''
         #!/usr/bin/env sh
@@ -34,6 +40,10 @@ in
         yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces &> /dev/null"
         yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces &> /dev/null"
         yabai -m signal --add event=window_title_changed action="sketchybar --trigger title_change &> /dev/null"
+        # focus window after active space changes
+        yabai -m signal --add event=space_changed action="yabai -m window --focus \$(yabai -m query --windows --space | ${jq} .[0].id)"
+        # focus window after active display changes
+        yabai -m signal --add event=display_changed action="yabai -m window --focus \$(yabai -m query --windows --space | ${jq} .[0].id)"
 
         # move/resize windows with mouse
         yabai -m config mouse_modifier              alt # alt is fixed as of Yabai v7.0.0!
@@ -44,13 +54,13 @@ in
         yabai -m config mouse_follows_focus         on
 
         # window appearance
-        yabai -m config window_shadow               float # floating windows only
+        yabai -m config window_shadow               off # float # floating windows only
         yabai -m config window_opacity              on
         yabai -m config window_opacity_duration     0.1
         #yabai -m config window_animation_duration	  0.35 #commented out
         #yabai -m config window_animation_easing     ease_in_out_circ
-        yabai -m config window_opacity_duration     0.35
-        yabai -m config normal_window_opacity	      0.95
+        # yabai -m config window_opacity_duration     0.35
+        # yabai -m config normal_window_opacity	      0.95
         yabai -m config active_window_opacity	      1.0
         yabai -m config insert_feedback_color       0xff${colors.base07}
 
@@ -83,25 +93,21 @@ in
         yabai -m rule --add app="^System Settings$"     manage=off
         yabai -m rule --add app="^System Information$"  manage=off
         yabai -m rule --add app="^System Preferences$"  manage=off
-        yabai -m rule --add title="Preferences$"        manage=off
-        yabai -m rule --add title="Settings$"           manage=off
-        yabai -m rule --add app='System Settings'       manage=off
-        yabai -m rule --add app='System Information'    manage=off
-        yabai -m rule --add app='zoom.us'               manage=off
-        yabai -m rule --add app='Finder'                manage=off
-        yabai -m rule --add title="XQuartz"             manage=off
-        yabai -m rule --add app='XQuartz'               manage=off
+        yabai -m rule --add title=".*Preferences$"      manage=off
+        yabai -m rule --add title=".*Settings$"         manage=off
+        yabai -m rule --add app='^zoom\.us$'            manage=off
+        yabai -m rule --add app='^Finder$'              manage=off
+        yabai -m rule --add title="^XQuartz$"           manage=off
         yabai -m rule --add app='^XQuartz$'             manage=off
-        yabai -m rule --add app='^X11.bin$'             manage=off
-        yabai -m rule --add app='X11.bin'               manage=off
-        yabai -m rule --add app='X11'                   manage=off
-        yabai -m rule --add app='Archive Utility'       manage=off
-        yabai -m rule --add app='Display Calibrator'    manage=off
-        yabai -m rule --add app='Installer'             manage=off
-        yabai -m rule --add app='Karabiner-EventViewer' manage=off
-        yabai -m rule --add app='Karabiner-Elements'    manage=off
-        yabai -m rule --add app='macOS InstantView'     manage=off # IMPORTANT
-        yabai -m rule --add app='Dock'                  manage=off # MAKE SURE
+        yabai -m rule --add app='^X11\.bin$'            manage=off
+        yabai -m rule --add app='^X11$'                 manage=off
+        yabai -m rule --add app='^Archive Utility$'     manage=off
+        yabai -m rule --add app='^Display Calibrator$'  manage=off
+        yabai -m rule --add app='^Installer$'           manage=off
+        yabai -m rule --add app='^Karabiner-EventViewer$' manage=off
+        yabai -m rule --add app='^Karabiner-Elements$'  manage=off
+        yabai -m rule --add app='^macOS InstantView$'   manage=off # IMPORTANT
+        yabai -m rule --add app='^Dock$'                manage=off # MAKE SURE
 
 
         # yabai -m rule --add app='Alacritty'             layer=above
@@ -161,6 +167,25 @@ in
         # Borders!
         ${borders}
 
+        mkdir -p ~/.config/yabai/cache/
+        touch ~/.config/yabai/cache/lockfile
+        YABAI_CACHE = ~/.config/yabai/cache/
+
+        function _update_cache {
+          local lockfile current
+          lockfile="$YABAI_CACHE/lockfile"
+          current="$(who -b)"
+          if [[ ! -e "$lockfile" ]]; then
+            print -r -- "$current" >"$lockfile"
+          elif [[ "$current" != "$(cat "$lockfile")" ]]; then
+            rm -rf "$YABAI_CACHE"
+            mkdir -p "$YABAI_CACHE"
+            print -r -- "$current" >"$lockfile"
+          fi
+        }
+
+        _update_cache
+
         echo "yabai configuration loaded.."
       '';
   };
@@ -178,10 +203,7 @@ in
           mod4 = "cmd";
           mod5 = "ctrl";
           modifier = mod1;
-          yabai = "/opt/homebrew/bin/yabai"; # Apparently required to work at all
-          i3-msg = "/opt/local/bin/i3-msg";
-          alacritty = "/opt/homebrew/bin/alacritty";
-          dmenu-mac = "/opt/homebrew/bin/dmenu-mac";
+          smod = "shift";
         in # bash
         ''
           # FIXME: use kitty terminal for yazi filemanager only.
@@ -192,83 +214,84 @@ in
           # ${modifier} - return :                ${alacritty}
           ${modifier} - return :                ${alacritty} msg create-window || open -na ${alacritty}
           ${modifier} - d :                     ${dmenu-mac}
-          ${mod1} + ${mod5} - space :           open -na "Brave Browser"
-          ${mod1} + shift + ${mod5} - space :   open -na "Brave Browser" --args --incognito
-          ${mod1} + ${mod4} + ${mod5} - space : open -na "Brave Browser" --args --tor
+          # ${mod1} + ${mod5} - space :             open -na "Brave Browser"
+          # ${mod1} + ${smod} + ${mod5} - space :   open -na "Brave Browser" --args --incognito
+          ${mod1} + ${mod5} - space :             open -na "Firefox"
+          ${mod1} + ${smod} + ${mod5} - space :   open -na "Firefox" --args -private-window
           ${mod4} + ${mod5} - 0x33 :            sudo reboot # using cmd ctrl backspace
-          ${mod4} + ${mod5} + shift - 0x33 :    sudo shutdown -h now # using cmd ctrl backspace
+          ${mod4} + ${mod5} + ${smod} - 0x33 :    sudo shutdown -h now # using cmd ctrl backspace
           ${mod4} + ${mod5} - delete :          sudo reboot
-          ${mod4} + ${mod5} + shift - delete :  sudo shutdown -h now
-          ${modifier} + shift - q :             ${yabai} -m window --close
+          ${mod4} + ${mod5} + ${smod} - delete :  sudo shutdown -h now
+          ${modifier} + ${smod} - q :             ${yabai} -m window --close
           ${modifier} - f :                     ${yabai} -m window --toggle zoom-fullscreen 
-          ${modifier} + shift - f :             toggle-instant-fullscreen
+          ${modifier} + ${smod} - f :             toggle-instant-fullscreen
 
-          # Move focus to next/prev workspace
-          ${mod1} + ${mod4} - ${left} :   ${yabai} -m space --focus prev
-          ${mod1} + ${mod4} - ${down} :   ${yabai} -m space --focus prev
-          ${mod1} + ${mod4} - ${up} :     ${yabai} -m space --focus next
-          ${mod1} + ${mod4} - ${right} :  ${yabai} -m space --focus next
-          ${mod1} + ${mod4} - left :      ${yabai} -m space --focus prev
-          ${mod1} + ${mod4} - down :      ${yabai} -m space --focus prev
-          ${mod1} + ${mod4} - up :        ${yabai} -m space --focus next
-          ${mod1} + ${mod4} - right :     ${yabai} -m space --focus next
+          # Move focus to next/prev workspace (conflicts with browsers)
+          # ${mod1} + ${mod4} - ${left} :   ${yabai} -m space --focus prev
+          # ${mod1} + ${mod4} - ${down} :   ${yabai} -m space --focus prev
+          # ${mod1} + ${mod4} - ${up} :     ${yabai} -m space --focus next
+          # ${mod1} + ${mod4} - ${right} :  ${yabai} -m space --focus next
+          # ${mod1} + ${mod4} - left :      ${yabai} -m space --focus prev
+          # ${mod1} + ${mod4} - down :      ${yabai} -m space --focus prev
+          # ${mod1} + ${mod4} - up :        ${yabai} -m space --focus next
+          # ${mod1} + ${mod4} - right :     ${yabai} -m space --focus next
 
-          # move focused window to workspace n & follow focus
-          ${modifier} + shift - 1 : move-to-space _1
-          ${modifier} + shift - 2 : move-to-space _2
-          ${modifier} + shift - 3 : move-to-space _3
-          ${modifier} + shift - 4 : move-to-space _4
-          ${modifier} + shift - 5 : move-to-space _5
-          ${modifier} + shift - 6 : move-to-space _6
-          ${modifier} + shift - 7 : move-to-space _7
-          ${modifier} + shift - 8 : move-to-space _8
-          ${modifier} + shift - 9 : move-to-space _9
-          ${modifier} + shift - 0 : move-to-space _10
-           
-          # move focused space to workspace n
-          ${modifier} - 1 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_1")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _1); ${yabai} -m space --focus _1
-          ${modifier} - 2 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_2")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _2); ${yabai} -m space --focus _2
-          ${modifier} - 3 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_3")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _3); ${yabai} -m space --focus _3
-          ${modifier} - 4 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_4")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _4); ${yabai} -m space --focus _4
-          ${modifier} - 5 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_5")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _5); ${yabai} -m space --focus _5
-          ${modifier} - 6 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_6")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _6); ${yabai} -m space --focus _6
-          ${modifier} - 7 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_7")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _7); ${yabai} -m space --focus _7
-          ${modifier} - 8 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_8")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _8); ${yabai} -m space --focus _8
-          ${modifier} - 9 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_9")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _9); ${yabai} -m space --focus _9
-          ${modifier} - 0 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_10")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space --focus last && ${yabai} -m space --label _10); ${yabai} -m space --focus _10
+          # Move focused window to workspace N and follow focus
+          ${modifier} + ${smod} - 1 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_1")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _1); ${yabai} -m window --space _1 && ${yabai} -m space --focus _1
+          ${modifier} + ${smod} - 2 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_2")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _2); ${yabai} -m window --space _2 && ${yabai} -m space --focus _2
+          ${modifier} + ${smod} - 3 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_3")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _3); ${yabai} -m window --space _3 && ${yabai} -m space --focus _3
+          ${modifier} + ${smod} - 4 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_4")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _4); ${yabai} -m window --space _4 && ${yabai} -m space --focus _4
+          ${modifier} + ${smod} - 5 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_5")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _5); ${yabai} -m window --space _5 && ${yabai} -m space --focus _5
+          ${modifier} + ${smod} - 6 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_6")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _6); ${yabai} -m window --space _6 && ${yabai} -m space --focus _6
+          ${modifier} + ${smod} - 7 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_7")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _7); ${yabai} -m window --space _7 && ${yabai} -m space --focus _7
+          ${modifier} + ${smod} - 8 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_8")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _8); ${yabai} -m window --space _8 && ${yabai} -m space --focus _8
+          ${modifier} + ${smod} - 9 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_9")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _9); ${yabai} -m window --space _9 && ${yabai} -m space --focus _9
+          ${modifier} + ${smod} - 0 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_10")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _10); ${yabai} -m window --space _10 && ${yabai} -m space --focus _10
+          
+          # move focus to workspace n
+          ${modifier} - 1 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_1")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _1); ${yabai} -m space --focus _1
+          ${modifier} - 2 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_2")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _2); ${yabai} -m space --focus _2
+          ${modifier} - 3 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_3")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _3); ${yabai} -m space --focus _3
+          ${modifier} - 4 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_4")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _4); ${yabai} -m space --focus _4
+          ${modifier} - 5 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_5")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _5); ${yabai} -m space --focus _5
+          ${modifier} - 6 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_6")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _6); ${yabai} -m space --focus _6
+          ${modifier} - 7 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_7")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _7); ${yabai} -m space --focus _7
+          ${modifier} - 8 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_8")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _8); ${yabai} -m space --focus _8
+          ${modifier} - 9 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_9")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _9); ${yabai} -m space --focus _9
+          ${modifier} - 0 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_10")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _10); ${yabai} -m space --focus _10
 
-          ${modifier} + shift - y : ${yabai} -m space --mirror y-axis
-          ${modifier} + shift - x : ${yabai} -m space --mirror x-axis
+          ${modifier} + ${smod} - y : ${yabai} -m space --mirror y-axis
+          ${modifier} + ${smod} - x : ${yabai} -m space --mirror x-axis
 
-          # send window to next/prev space and follow focus
-          ${mod4} + shift - ${left} :   ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-          ${mod4} + shift - ${down} :   ${yabai} -m window --space next; ${yabai} -m space --focus next
-          ${mod4} + shift - ${up} :     ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-          ${mod4} + shift - ${right} :  ${yabai} -m window --space next; ${yabai} -m space --focus next
-          ${mod4} + shift - left :      ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-          ${mod4} + shift - down :      ${yabai} -m window --space next; ${yabai} -m space --focus next
-          ${mod4} + shift - up :        ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-          ${mod4} + shift - right :     ${yabai} -m window --space next; ${yabai} -m space --focus next
+          # send window to next/prev space and follow focus (use alt instead of cmd with arrows to maintian built-in insertion points https://github.com/aspauldingcode/.dotfiles/issues/11#issuecomment-2185355283)
+          ${mod4} + ${smod} - ${left} :   ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+          ${mod4} + ${smod} - ${down} :   ${yabai} -m window --space next; ${yabai} -m space --focus next
+          ${mod4} + ${smod} - ${up} :     ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+          ${mod4} + ${smod} - ${right} :  ${yabai} -m window --space next; ${yabai} -m space --focus next
+          ${modifier} + ${smod} - left :      ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+          ${modifier} + ${smod} - down :      ${yabai} -m window --space next; ${yabai} -m space --focus next
+          ${modifier} + ${smod} - up :        ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+          ${modifier} + ${smod} - right :     ${yabai} -m window --space next; ${yabai} -m space --focus next
 
-          # focus window in stacked, else in bsp
+          # focus window in stacked, else in bsp (use cmd instead of alt with arrows to maintian built-in insertion points https://github.com/aspauldingcode/.dotfiles/issues/11#issuecomment-2185355283)
           ${modifier} - ${left} :   if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus west; fi
           ${modifier} - ${down} :   if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus south; fi
           ${modifier} - ${up} :     if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus north; fi
           ${modifier} - ${right} :  if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus east; fi
-          ${modifier} - left :      if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus west; fi
-          ${modifier} - down :      if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus south; fi
-          ${modifier} - up :        if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus north; fi
-          ${modifier} - right :     if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus east; fi
+          ${mod4} - left :      if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus west; fi
+          ${mod4} - down :      if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus south; fi
+          ${mod4} - up :        if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus north; fi
+          ${mod4} - right :     if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.prev; else ${yabai} -m window --focus east; fi
            
-          # swap managed window (or move if floating) 
-          ${modifier} + shift - ${left} :   ${yabai} -m window --swap west ||  ${yabai} -m window --move rel:-30:0
-          ${modifier} + shift - ${down} :   ${yabai} -m window --swap south || ${yabai} -m window --move rel:0:30
-          ${modifier} + shift - ${up} :     ${yabai} -m window --swap north || ${yabai} -m window --move rel:0:-30
-          ${modifier} + shift - ${right} :  ${yabai} -m window --swap east ||  ${yabai} -m window --move rel:30:0
-          ${modifier} + shift - left :      ${yabai} -m window --swap west ||  ${yabai} -m window --move rel:-30:0
-          ${modifier} + shift - down :      ${yabai} -m window --swap south || ${yabai} -m window --move rel:0:30
-          ${modifier} + shift - up :        ${yabai} -m window --swap north || ${yabai} -m window --move rel:0:-30
-          ${modifier} + shift - right :     ${yabai} -m window --swap east ||  ${yabai} -m window --move rel:30:0
+          # swap managed window (or move if floating) (use cmd instead of alt with arrows to maintain built-in insertion points https://github.com/aspauldingcode/.dotfiles/issues/11#issuecomment-2185355283)
+          ${modifier} + ${smod} - ${left} :   ${yabai} -m window --swap west ||  ${yabai} -m window --move rel:-30:0
+          ${modifier} + ${smod} - ${down} :   ${yabai} -m window --swap south || ${yabai} -m window --move rel:0:30
+          ${modifier} + ${smod} - ${up} :     ${yabai} -m window --swap north || ${yabai} -m window --move rel:0:-30
+          ${modifier} + ${smod} - ${right} :  ${yabai} -m window --swap east ||  ${yabai} -m window --move rel:30:0
+          ${mod4} + ${smod} - left :      ${yabai} -m window --swap west ||  ${yabai} -m window --move rel:-30:0
+          ${mod4} + ${smod} - down :      ${yabai} -m window --swap south || ${yabai} -m window --move rel:0:30
+          ${mod4} + ${smod} - up :        ${yabai} -m window --swap north || ${yabai} -m window --move rel:0:-30
+          ${mod4} + ${smod} - right :     ${yabai} -m window --swap east ||  ${yabai} -m window --move rel:30:0
 
           # increase window size
           ${modifier} + ctrl - ${left} :  ${yabai} -m window --resize left:-30:0
@@ -281,14 +304,14 @@ in
           ${modifier} + ctrl - right :    ${yabai} -m window --resize right:30:0
 
           # decrease window size
-          ${modifier} + shift + ctrl - ${left} :  ${yabai} -m window --resize left:30:0
-          ${modifier} + shift + ctrl - ${down} :  ${yabai} -m window --resize bottom:0:-30
-          ${modifier} + shift + ctrl - ${up} :    ${yabai} -m window --resize top:0:30
-          ${modifier} + shift + ctrl - ${right} : ${yabai} -m window --resize right:-30:0
-          ${modifier} + shift + ctrl - left :     ${yabai} -m window --resize left:30:0
-          ${modifier} + shift + ctrl - down :     ${yabai} -m window --resize bottom:0:-30
-          ${modifier} + shift + ctrl - up :       ${yabai} -m window --resize top:0:30
-          ${modifier} + shift + ctrl - right :    ${yabai} -m window --resize right:-30:0
+          ${modifier} + ${smod} + ctrl - ${left} :  ${yabai} -m window --resize left:30:0
+          ${modifier} + ${smod} + ctrl - ${down} :  ${yabai} -m window --resize bottom:0:-30
+          ${modifier} + ${smod} + ctrl - ${up} :    ${yabai} -m window --resize top:0:30
+          ${modifier} + ${smod} + ctrl - ${right} : ${yabai} -m window --resize right:-30:0
+          ${modifier} + ${smod} + ctrl - left :     ${yabai} -m window --resize left:30:0
+          ${modifier} + ${smod} + ctrl - down :     ${yabai} -m window --resize bottom:0:-30
+          ${modifier} + ${smod} + ctrl - up :       ${yabai} -m window --resize top:0:30
+          ${modifier} + ${smod} + ctrl - right :    ${yabai} -m window --resize right:-30:0
 
           # set insertion point in focused container
           ${modifier} - b : ${yabai} -m window --insert east
@@ -303,8 +326,8 @@ in
           ${modifier} - e : ${yabai} -m space --layout bsp
 
           # float / unfloat window and center on screen
-          #${modifier} + shift - space : ${yabai} -m window --toggle float; ${yabai} -m window --grid 60:60:5:5:50:50
-          ${modifier} + shift - space : toggle-float
+          #${modifier} + ${smod} - space : ${yabai} -m window --toggle float; ${yabai} -m window --grid 60:60:5:5:50:50
+          ${modifier} + ${smod} - space : toggle-float
 
           # # toggle sticky(+float), topmost, picture-in-picture
           # ${modifier} - p : ${yabai} -m window --toggle sticky; \
@@ -312,28 +335,37 @@ in
           #           ${yabai} -m window --toggle pip
 
           # equalize windows
-          # alt + shift - u : ${yabai} -m space --balance
+          # ${modifier} + ${smod} - u : ${yabai} -m space --balance
 
           # toggle sketchybar
           ${modifier} - m : toggle-sketchybar
 
           # toggle native macOS menubar, or dock
-          #${modifier} + shift - m : current=$(osascript -e 'tell application "System Events" to tell dock preferences to get autohide menu bar'); new_state=$(if [[ "$1" == "on" ]]; then echo false; elif [[ "$1" == "off" ]]; then echo true; else [[ "$current" == "true" ]] && echo false || echo true; fi); osascript -e "tell application \"System Events\" to tell dock preferences to set autohide menu bar to $new_state" && ${yabai} -m config menubar_opacity $(if [[ "$new_state" == "true" ]]; then echo 0.0; else echo 1.0; fi) && echo "Menu bar turned $(if [[ "$new_state" == "true" ]]; then echo OFF; else echo ON; fi)"
-          ${modifier} + shift - m : toggle-menubar
+          #${modifier} + ${smod} - m : current=$(osascript -e 'tell application "System Events" to tell dock preferences to get autohide menu bar'); new_state=$(if [[ "$1" == "on" ]]; then echo false; elif [[ "$1" == "off" ]]; then echo true; else [[ "$current" == "true" ]] && echo false || echo true; fi); osascript -e "tell application \"System Events\" to tell dock preferences to set autohide menu bar to $new_state" && ${yabai} -m config menubar_opacity $(if [[ "$new_state" == "true" ]]; then echo 0.0; else echo 1.0; fi) && echo "Menu bar turned $(if [[ "$new_state" == "true" ]]; then echo OFF; else echo ON; fi)"
+          ${modifier} + ${smod} - m : toggle-menubar
 
           ${modifier} - space : toggle-dock
 
           # toggle gaps
           ${modifier} - g : toggle-gaps
 
-          # toggle-darkmode
-          ${modifier} - p : toggle-darkmode
+          # toggle-darkmode FIXME: NOT WORKING!
+          ${modifier} - p : toggle-darkmode && toggle-theme && ${sketchybar} --reload 
 
+          # send to scratchpad. (alt + shift + -)
+          ${modifier} + ${smod} - 0x1B : highest_label=$(${yabai} -m query --windows | ${jq} '[.[] | select(.scratchpad != 0 and .scratchpad_label != null) | .scratchpad_label | select(test("^_\\d+$"))] | map(sub("^_"; "")) | map(tonumber) | max + 1') && new_label="_$highest_label" && ${yabai} -m window --scratchpad $new_label && ${yabai} -m window --toggle $new_label
+          
+          # recover latest from scratchpad. (alt + shift + =)
+          ${modifier} + ${smod} - 0x18 : \
+            highest_label=$(${yabai} -m query --windows | ${jq} '[.[] | select(.scratchpad_label != null) | .scratchpad_label] | sort | last') && \
+            ${yabai} -m window --toggle $highest_label && \
+            ${yabai} -m window --scratchpad ""
+          
           # clear notifications 
           ${modifier} - c : dismiss-notifications
 
           # reload
-          ${modifier} + shift - r : fix-wm
+          ${modifier} + ${smod} - r : fix-wm; borders background_color=0xff${colors.base00}
 
           # Blacklist applications
           .blacklist [
@@ -349,24 +381,23 @@ in
     executable = true;
     target = ".config/borders/bordersrc";
     text =
-      # bash
-      #FIXME: remember: active_color='gradient(top_left=0xFF0000FF,bottom_right=0xFF00FF00)'
-      ''
-        #!/bin/bash
+    # bash
+    #FIXME: remember: active_color='gradient(top_left=0xFF0000FF,bottom_right=0xFF00FF00)'
+    ''
+      #!/bin/bash
 
-        options=(
-          style=round
-          order=above
-          width=2.0
-          background_color=0x11${colors.base00}
-          blur_radius=15.0
-          hidpi=on
-          active_color=0xff${colors.base07}
-          inactive_color=0xff${colors.base05}
-          blacklist="google chrome, vmware fusion, xQuartz, dmenu-mac, X11.bin"
-        )
+      options=(
+        style=round
+        order=above
+        width=2.0
+        background_color=0xff${colors.base00}
+        hidpi=on
+        active_color=0xff${colors.base07}
+        inactive_color=0xff${colors.base05}
+        blacklist="google chrome,vmware fusion,xQuartz,dmenu-mac,X11.bin,MacForge,python3.11"
+      )
 
-        borders "''${options[@]}"
-      '';
+      borders "''${options[@]}"
+    '';
   };
 }

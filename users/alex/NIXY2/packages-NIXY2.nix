@@ -6,7 +6,7 @@
   nixpkgs = {
     config = {
       allowUnfree = true;
-      permittedInsecurePackages = [ "electron-19.1.9" ];
+      permittedInsecurePackages = [ "electron-19.1.9" "openjdk-19-ga" ];
       allowUnfreePredicate = (_: true);
       allowUnsupportedSystem = false;
       allowBroken = false;
@@ -25,6 +25,7 @@
       lavat
       pfetch
       android-tools
+      neovim
       #zoom-us
       corefonts
       #sl
@@ -79,7 +80,7 @@
         jdks = [
           jdk8
           jdk17
-          jdk19
+          #jdk19
 	  jdk21
           # Minecraft requires jdk21 SOON!
         ];

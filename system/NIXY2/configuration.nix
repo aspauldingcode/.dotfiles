@@ -13,9 +13,9 @@
     # Include the necessary packages and configurations for Apple Silicon Support
     apple-silicon.nixosModules.apple-silicon-support
     # ("${mobile-nixos}/lib/configuration.nix" { device = "oneplus-fajita"; })
-    ./packages.nix
+    #./packages.nix
     #./virtual-machines.nix
-    ./theme.nix
+    #./theme.nix
     #./wg-quick.nix
   ];
   
@@ -23,9 +23,9 @@
   nixpkgs.overlays = [ apple-silicon.overlays.apple-silicon-overlay ];
 
   # Fix peripheralFirmwareExtraction...
-  hardware.asahi.extractPeripheralFirmware = false;
-  #hardware.asahi.peripheralFirmwareDirectory = ./firmware;
-
+  hardware.asahi.extractPeripheralFirmware = true;
+  hardware.asahi.peripheralFirmwareDirectory = ./firmware;
+  
   # enable GPU support
   hardware.asahi.useExperimentalGPUDriver = true;
 
@@ -385,7 +385,7 @@
   nix = {
     # This will add each flake input as a registry
     # To make nix3 commands consistent with your flake
-    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
+    #registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
     # This will additionally add your inputs to the system's legacy channels
     # Making legacy nix commands consistent as well, awesome!
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
@@ -402,10 +402,10 @@
 
   virtualisation = {
     # enable virtualization support
-    docker.enable = true;
-    libvirtd.enable = true;
+    docker.enable = false;
+    libvirtd.enable = false;
     #waydroid.enable = true;
-    lxd.enable = true;
+    lxd.enable = false;
   };
 
   system = {

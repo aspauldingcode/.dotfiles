@@ -1,7 +1,10 @@
 #!/bin/bash
 
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
+source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 
 PERCENTAGE=$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)
 CHARGING=$(pmset -g batt | grep 'AC Power')

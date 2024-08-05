@@ -1,7 +1,10 @@
 #!/bin/sh
 
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
+source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 
 #POPUP_OFF="sketchybar --set apple.logo popup.drawing=off"
 #POPUP_CLICK_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
@@ -29,26 +32,19 @@ sketchybar --add item apple.uname popup.apple \
     label.padding_left=10 \
     label.padding_right=10
 
-    #icon=$APPLE "${properties[@]}" 
-    #
-  # Handle mouse events
+    #icon=$APPLE "${properties[@]}" ]
+
+# Handle mouse events
 case "$SENDER" in
   "mouse.entered")
-    #sleep 1
     sketchybar --set $NAME popup.drawing=on
-    #echo "Mouse Hovered in $NAME icon" >> /tmp/sketchybar_debug.log
     ;;
   "mouse.exited" | "mouse.exited.global")
     sketchybar --set $NAME popup.drawing=off
-    #echo "Mouse left hover of $NAME icon" >> /tmp/sketchybar_debug.log
     ;;
   "mouse.clicked")
-    #sketchybar --set $NAME popup.drawing=toggle
-    #echo "Mouse clicked on $NAME icon" >> /tmp/sketchybar_debug.log
-    # toggle_battery_popup
+    sketchybar --set $NAME popup.drawing=toggle
     ;;
   "routine")
-    # Update battery info periodically
-    #update_battery
     ;;
 esac

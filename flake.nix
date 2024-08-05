@@ -2,18 +2,22 @@
   description = "Universal Flake by Alex - macOS and NixOS";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    home-manager.url = "github:nix-community/home-manager/master";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05"; # Set to the desired stable version
+    unstable_nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    home-manager = {
+      url = "github:nix-community/home-manager/release-24.05";
+      inputs.nixpkgs.follows = "nixpkgs"; # Ensure home-manager follows the stable nixpkgs version
+    };
     nix-colors.url = "github:misterio77/nix-colors";
 
     nix-darwin = {
       url = "github:lnl7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs"; # Follows the stable nixpkgs version
     };
 
     nixvim = {
       url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "unstable_nixpkgs"; # Follows the unstable nixpkgs version
     };
 
     mobile-nixos = {
@@ -22,8 +26,12 @@
     };
 
     apple-silicon = {
-	url = "github:tpwrules/nixos-apple-silicon";
-	inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:tpwrules/nixos-apple-silicon";
+      inputs.nixpkgs.follows = "nixpkgs"; # Follows the stable nixpkgs version
+    };
+
+    nur = {
+      url = "github:nix-community/nur";
     };
   };
 
@@ -31,6 +39,7 @@
     {
       self,
       nixpkgs,
+      unstable_nixpkgs,
       nix-darwin,
       home-manager,
       nixvim,
@@ -38,6 +47,7 @@
       nix-colors,
       mobile-nixos,
       apple-silicon,
+      nur,
     }:
     let
       inherit (self) inputs;
@@ -50,7 +60,8 @@
           home-manager
           flake-parts
           nix-colors
-	  apple-silicon
+          apple-silicon
+          nur
           self
           ;
       };
@@ -61,7 +72,11 @@
           nixvim
           flake-parts
           nix-colors
+<<<<<<< HEAD
 	  apple-silicon
+=======
+          nur
+>>>>>>> 05518d727d22c425ae7accd2306eb6cc5f632603
           self
           ;
       };
@@ -82,6 +97,14 @@
               allowUnfree = true;
               permittedInsecurePackages = [ "electron-19.1.9" ];
             };
+            overlays = [
+              inputs.nur.overlay
+              (final: _prev: {
+                unstable = import unstable_nixpkgs {
+                  inherit (final) system config;
+                };
+              })
+            ];
           };
           specialArgs = commonSpecialArgs; # // { extraPkgs = [ mobile-nixos ]; };
           modules = [
@@ -105,13 +128,21 @@
           specialArgs = commonSpecialArgs;
           modules = [ ./system/NIXEDUP/configuration.nix ];
         };
-	NIXY2 = nixpkgs.lib.nixosSystem {
+        NIXY2 = nixpkgs.lib.nixosSystem {
           pkgs = import nixpkgs {
             system = "aarch64-linux";
             config = {
               allowUnfree = true;
               permittedInsecurePackages = [ "electron-19.1.9" ];
             };
+            overlays = [
+              inputs.nur.overlay
+              (final: _prev: {
+                unstable = import unstable_nixpkgs {
+                  inherit (final) system config;
+                };
+              })
+            ];
           };
           specialArgs = commonSpecialArgs; # // { extraPkgs = [ mobile-nixos ]; };
           modules = [
@@ -139,17 +170,81 @@
             system = "aarch64-darwin";
             config.allowUnfree = true;
             overlays = [
-              #install i3/sway autotiling on macos for i3 xquartz!
+              inputs.nur.overlay
+              (final: _prev: {
+                unstable = import unstable_nixpkgs {
+                  inherit (final) system config;
+                };
+              })
               (final: prev: {
-                autotiling =
-                  if prev.system == "aarch64-darwin" then
-                    prev.pkgs.autotiling.overrideAttrs (
-                      oldAttrs: {
-                        unsupportedSystems = false; # Changed to false for unsupported
-                      }
-                    )
-                  else
-                    prev.pkgs.autotiling;
+                start_programs_correctly =
+                  let
+                    systemType = prev.pkgs.stdenv.hostPlatform.system;
+                    homebrewPath =
+                      if systemType == "aarch64-darwin" then
+                        "/opt/homebrew/bin"
+                      else if systemType == "x86_64-darwin" then
+                        "/usr/local/bin"
+                      else
+                        throw "Homebrew Unsupported architecture: ${systemType}";
+                    jq = "${prev.pkgs.jq}/bin/jq";
+                    yabai = "${homebrewPath}/yabai";
+                    sketchybar = "${homebrewPath}/sketchybar";
+                    borders = "${homebrewPath}/borders";
+                    skhd = "${homebrewPath}/skhd";
+                  in
+                  prev.writeShellScriptBin "start_programs_correctly" ''
+                    #!/bin/bash
+
+                    # Step 1: Query all available windows
+                    windows=$(${yabai} -m query --windows)
+
+                    # Step 2: Kill all open windows.
+                    for window in $(echo "$windows" | ${jq} -r '.[].id'); do
+                      ${yabai} -m window "$window" --close
+                    done
+
+                    # Step 3: Run MacForge in Hidden Mode
+                    open -a MacForge --hide
+                  '';
+
+                brightness = prev.writeShellScriptBin "brightness" ''
+                  #!/bin/sh
+
+                  # Function to press the brightness up key
+                  brightness_up() {
+                    osascript -e 'tell application "System Events" to key code 144'
+                  }
+
+                  # Function to press the brightness down key
+                  brightness_down() {
+                    osascript -e 'tell application "System Events" to key code 145'
+                  }
+
+                  # Adjust brightness based on the provided number of times
+                  brightness() {
+                    local times=$1
+
+                    if [[ $times -gt 0 ]]; then
+                      for ((i = 0; i < times; i++)); do
+                        brightness_up
+                      done
+                    elif [[ $times -lt 0 ]]; then
+                      for ((i = 0; i < -times; i++)); do
+                        brightness_down
+                      done
+                    fi
+                  }
+
+                  # Only run the brightness function if the script is executed directly
+                  if [[ "''${BASH_SOURCE[0]}" == "''${0}" ]]; then
+                    if [[ $# -ne 1 ]]; then
+                      echo "Usage: $0 <number>"
+                      exit 1
+                    fi
+                    brightness "$1"
+                  fi
+                '';
               })
             ];
           };

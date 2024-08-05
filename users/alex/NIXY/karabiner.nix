@@ -26,6 +26,274 @@
                 };
                 rules = [
                   {
+                    description = "Swap Control+C/X, Command+C/X, Control+Shift+C/X, and Command+Shift+C/X in Tiger VNC Viewer";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "c";
+                          modifiers = {
+                            mandatory = ["left_control"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "c";
+                            modifiers = ["left_command"];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "c";
+                          modifiers = {
+                            mandatory = ["left_command"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "c";
+                            modifiers = ["left_control"];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "c";
+                          modifiers = {
+                            mandatory = ["left_control" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "c";
+                            modifiers = ["left_command" "left_shift"];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "c";
+                          modifiers = {
+                            mandatory = ["left_command" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "c";
+                            modifiers = ["left_control" "left_shift"];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "x";
+                          modifiers = {
+                            mandatory = ["left_control"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "x";
+                            modifiers = ["left_command"];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "x";
+                          modifiers = {
+                            mandatory = ["left_command"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "x";
+                            modifiers = ["left_control"];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "x";
+                          modifiers = {
+                            mandatory = ["left_control" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "x";
+                            modifiers = ["left_command" "left_shift"];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "x";
+                          modifiers = {
+                            mandatory = ["left_command" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "x";
+                            modifiers = ["left_control" "left_shift"];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
+                    description = "Swap Control+Shift+3/4/5 with Command+Shift+3/4/5";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "3";
+                          modifiers = {
+                            mandatory = ["left_control" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "3";
+                            modifiers = ["left_command" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "3";
+                          modifiers = {
+                            mandatory = ["left_command" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "3";
+                            modifiers = ["left_control" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "4";
+                          modifiers = {
+                            mandatory = ["left_control" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "4";
+                            modifiers = ["left_command" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "4";
+                          modifiers = {
+                            mandatory = ["left_command" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "4";
+                            modifiers = ["left_control" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "5";
+                          modifiers = {
+                            mandatory = ["left_control" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "5";
+                            modifiers = ["left_command" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "5";
+                          modifiers = {
+                            mandatory = ["left_command" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "5";
+                            modifiers = ["left_control" "left_shift"];
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
                     description = "Replace Command+Tab with Control+Tab";
                     manipulators = [
                       {
@@ -92,7 +360,7 @@
                     ];
                   }
                   {
-                    description = "Replace Command+H with Command+Y in Brave browser";
+                    description = "Replace Command+H with Command+Y in Chromium-based browsers and Firefox";
                     manipulators = [
                       {
                         type = "basic";
@@ -112,140 +380,567 @@
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            "bundle_identifiers" = [ "^com.brave.Browser$" ];
+                            "bundle_identifiers" = [
+                              "^com.brave.Browser$"
+                              "^org.mozilla.firefox$"
+                              "^com.google.Chrome$"
+                              "^org.chromium.Chromium$"
+                              "^com.microsoft.Edge$"
+                              "^com.operasoftware.Opera$"
+                            ];
                           }
                         ];
                       }
                     ];
                   }
                   {
-                    description = "Replace Alt+Shift+Q with Alt+Q in Alacritty";
+                    description = "Replace Command+J with Command+Option+L in Chromium-based browsers";
                     manipulators = [
                       {
                         type = "basic";
                         from = {
-                          "key_code" = "q";
+                          "key_code" = "j";
                           modifiers = {
-                            mandatory = [ "left_option" "left_shift" ];
+                            mandatory = [ "left_command" ];
                           };
                         };
                         to = [
                           {
-                            "key_code" = "w";
+                            "key_code" = "l";
+                            modifiers = [ "left_command" "left_option" ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            "bundle_identifiers" = [
+                              "^com.brave.Browser$"
+                              "^com.google.Chrome$"
+                              "^org.chromium.Chromium$"
+                              "^com.microsoft.Edge$"
+                              "^com.operasoftware.Opera$"
+                            ];
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
+                    description = "Replace Alt+Shift+Q with Command+W in Alacritty and com.apple.SystemProfiler";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "q";
+                          modifiers.mandatory = [ "left_option" "left_shift" ];
+                        };
+                        to = [
+                          {
+                            key_code = "w";
                             modifiers = [ "left_command" ];
                           }
                         ];
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            "bundle_identifiers" = [ "^org\\.alacritty$" ];
+                            bundle_identifiers = [ "^org\\.alacritty$" "^com\\.apple\\.SystemProfiler$" ];
                           }
                         ];
                       }
                     ];
                   }
-                  # {
-                  #   description = "Swap Alt and Control for Alacritty";
-                  #   manipulators = [
-                  #     {
-                  #       type = "basic";
-                  #       from = {
-                  #         "key_code" = "left_alt";
-                  #         modifiers = {
-                  #           mandatory = [ "left_control" ];
-                  #         };
-                  #       };
-                  #       to = [
-                  #         {
-                  #           "key_code" = "left_alt";
-                  #           modifiers = [ "left_command" ];
-                  #         }
-                  #       ];
-                  #       conditions = [
-                  #         {
-                  #           type = "frontmost_application_if";
-                  #           "bundle_identifiers" = [ "^org\\.alacritty$" ];
-                  #         }
-                  #       ];
-                  #     }
-                  #     {
-                  #       type = "basic";
-                  #       from = {
-                  #         "key_code" = "left_alt";
-                  #         modifiers = {
-                  #           mandatory = [ "left_command" ];
-                  #         };
-                  #       };
-                  #       to = [
-                  #         {
-                  #           "key_code" = "left_alt";
-                  #           modifiers = [ "left_control" ];
-                  #         }
-                  #       ];
-                  #       conditions = [
-                  #         {
-                  #           type = "frontmost_application_if";
-                  #           "bundle_identifiers" = [ "^org\\.alacritty$" ];
-                  #         }
-                  #       ];
-                  #     }
-                  #   ];
-                  # }
-                  # {
-                  #   description = "Swap Control + Shift with Command + Shift in Alacritty";
-                  #   manipulators = [
-                  #     {
-                  #       type = "basic";
-                  #       from = {
-                  #         "key_code" = "left_shift";
-                  #         modifiers = {
-                  #           mandatory = [ "left_control" ];
-                  #         };
-                  #       };
-                  #       to = [
-                  #         {
-                  #           "key_code" = "left_shift";
-                  #           modifiers = [ "left_command" ];
-                  #         }
-                  #       ];
-                  #       conditions = [
-                  #         {
-                  #           type = "frontmost_application_if";
-                  #           "bundle_identifiers" = [ "^org\\.alacritty$" ];
-                  #         }
-                  #       ];
-                  #     }
-                  #   ];
-                  # }
-                  # {
-                  #   description = "Replace Command+Shift+C with Control+C in Alacritty";
-                  #   manipulators = [
-                  #     {
-                  #       type = "basic";
-                  #       from = {
-                  #         "key_code" = "c";
-                  #         modifiers = {
-                  #           mandatory = [
-                  #             "left_command"
-                  #             "left_shift"
-                  #           ];
-                  #         };
-                  #       };
-                  #       to = [
-                  #         {
-                  #           "key_code" = "c";
-                  #           modifiers = [ "left_control" ];
-                  #         }
-                  #       ];
-                  #       conditions = [
-                  #         {
-                  #           type = "frontmost_application_if";
-                  #           "bundle_identifiers" = [ "^org\\.alacritty$" ];
-                  #         }
-                  #       ];
-                  #     }
-                  #   ];
-                  # }
+                  {
+                    description = "Swap Command+C/X and Control+C/X in Alacritty";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "c";
+                          modifiers.mandatory = [ "left_command" ];
+                        };
+                        to = [
+                          {
+                            key_code = "c";
+                            modifiers = [ "left_control" ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = [ "^org\\.alacritty$" ];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "c";
+                          modifiers.mandatory = [ "left_control" ];
+                        };
+                        to = [
+                          {
+                            key_code = "c";
+                            modifiers = [ "left_command" ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = [ "^org\\.alacritty$" ];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "x";
+                          modifiers.mandatory = [ "left_command" ];
+                        };
+                        to = [
+                          {
+                            key_code = "x";
+                            modifiers = [ "left_control" ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = [ "^org\\.alacritty$" ];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "x";
+                          modifiers.mandatory = [ "left_control" ];
+                        };
+                        to = [
+                          {
+                            key_code = "x";
+                            modifiers = [ "left_command" ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = [ "^org\\.alacritty$" ];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "c";
+                          modifiers.mandatory = [ "left_command" "left_shift" ];
+                        };
+                        to = [
+                          {
+                            key_code = "c";
+                            modifiers = [ "left_control" "left_shift" ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = [ "^org\\.alacritty$" ];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "c";
+                          modifiers.mandatory = [ "left_control" "left_shift" ];
+                        };
+                        to = [
+                          {
+                            key_code = "c";
+                            modifiers = [ "left_command" "left_shift" ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = [ "^org\\.alacritty$" ];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "x";
+                          modifiers.mandatory = [ "left_command" "left_shift" ];
+                        };
+                        to = [
+                          {
+                            key_code = "x";
+                            modifiers = [ "left_control" "left_shift" ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = [ "^org\\.alacritty$" ];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "x";
+                          modifiers.mandatory = [ "left_control" "left_shift" ];
+                        };
+                        to = [
+                          {
+                            key_code = "x";
+                            modifiers = [ "left_command" "left_shift" ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = [ "^org\\.alacritty$" ];
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
+                    description = "Replace Command + Arrow Keys/Backspace with Option + Arrow Keys/Backspace globally";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "left_arrow";
+                          modifiers = { 
+                            mandatory = ["left_command"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "left_arrow";
+                            modifiers = ["left_option"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "right_arrow";
+                          modifiers = { 
+                            mandatory = ["left_command"]; 
+                          }; 
+                        };
+                        to = [
+                          {
+                            key_code = "right_arrow";
+                            modifiers = ["left_option"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "up_arrow";
+                          modifiers = { 
+                            mandatory = ["left_command"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "up_arrow";
+                            modifiers = ["left_option"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "down_arrow";
+                          modifiers = { 
+                            mandatory = ["left_command"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "down_arrow";
+                            modifiers = ["left_option"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "delete_or_backspace";
+                          modifiers = { 
+                            mandatory = ["left_command"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "delete_or_backspace";
+                            modifiers = ["left_option"];
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
+                    description = "Replace Command + Shift + Arrow Keys/Backspace with Option + Shift + Arrow Keys/Backspace globally";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "left_arrow";
+                          modifiers = { 
+                            mandatory = ["left_command" "left_shift"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "left_arrow";
+                            modifiers = ["left_option" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "right_arrow";
+                          modifiers = { 
+                            mandatory = ["left_command" "left_shift"]; 
+                          }; 
+                        };
+                        to = [
+                          {
+                            key_code = "right_arrow";
+                            modifiers = ["left_option" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "up_arrow";
+                          modifiers = { 
+                            mandatory = ["left_command" "left_shift"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "up_arrow";
+                            modifiers = ["left_option" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "down_arrow";
+                          modifiers = { 
+                            mandatory = ["left_command" "left_shift"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "down_arrow";
+                            modifiers = ["left_option" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "delete_or_backspace";
+                          modifiers = { 
+                            mandatory = ["left_command" "left_shift"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "delete_or_backspace";
+                            modifiers = ["left_option" "left_shift"];
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
+                    description = "Replace Option + Arrow Keys with Command + Arrow Keys globally";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "left_arrow";
+                          modifiers = { 
+                            mandatory = ["left_option"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "left_arrow";
+                            modifiers = ["left_command"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "right_arrow";
+                          modifiers = { 
+                            mandatory = ["left_option"]; 
+                          }; 
+                        };
+                        to = [
+                          {
+                            key_code = "right_arrow";
+                            modifiers = ["left_command"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "up_arrow";
+                          modifiers = { 
+                            mandatory = ["left_option"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "up_arrow";
+                            modifiers = ["left_command"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "down_arrow";
+                          modifiers = { 
+                            mandatory = ["left_option"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "down_arrow";
+                            modifiers = ["left_command"];
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
+                    description = "Replace Option + Shift + Arrow Keys with Command + Shift + Arrow Keys globally";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "left_arrow";
+                          modifiers = { 
+                            mandatory = ["left_option" "left_shift"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "left_arrow";
+                            modifiers = ["left_command" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "right_arrow";
+                          modifiers = { 
+                            mandatory = ["left_option" "left_shift"]; 
+                          }; 
+                        };
+                        to = [
+                          {
+                            key_code = "right_arrow";
+                            modifiers = ["left_command" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "up_arrow";
+                          modifiers = { 
+                            mandatory = ["left_option" "left_shift"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "up_arrow";
+                            modifiers = ["left_command" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "down_arrow";
+                          modifiers = { 
+                            mandatory = ["left_option" "left_shift"]; 
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "down_arrow";
+                            modifiers = ["left_command" "left_shift"];
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
+                    description = "Swap Command and Control in Screen Sharing and X11";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "left_command";
+                        };
+                        to = [
+                          {
+                            key_code = "left_control";
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            "bundle_identifiers" = [ 
+                              "^com\\.apple\\.ScreenSharing$"
+                              "^org\\.xquartz\\.X11$"
+                            ];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "left_control";
+                        };
+                        to = [
+                          {
+                            key_code = "left_command";
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            "bundle_identifiers" = [ 
+                              "^com\\.apple\\.ScreenSharing$" 
+                              "^org\\.xquartz\\.X11$"
+                            ];
+                          }
+                        ];
+                      }
+                    ];
+                  }
                 ];
               };
               devices = [
@@ -439,3 +1134,4 @@
         };
   };
 }
+

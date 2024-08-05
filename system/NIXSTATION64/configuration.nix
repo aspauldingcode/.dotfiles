@@ -16,6 +16,7 @@
     #./wg-quick.nix
   ];
 
+
   # Bootloader.
   boot = {
     # choose your kernel
@@ -28,8 +29,43 @@
     };
   };
 
-  home-manager.backupFileExtension = "bk";
+  # Whether to enable loading amdgpu kernelModule in stage 1. 
+  # Can fix lower resolution in boot screen during initramfs phase!
+  hardware.amdgpu.initrd.enable = true;
 
+  # If you encounter problems having multiple monitors connected to your GPU, adding `video` parameters for each connector to the kernel command line sometimes helps. 
+  boot.kernelParams = [
+    "amdgpu.si_support=0"
+    "boot.shell_on_fail"
+    "ipv6.disable=1"
+    "loglevel=3"
+    "nvidia-drm.modeset=1"
+    "quiet"
+    "rd.systemd.show_status=false"
+    "rd.systemd.show_status=false"
+    "rd.udev.log_level=3"
+    "splash"
+    "udev.log_priority=3"
+    "video=DP-5:1920x1080@60"
+    "video=DP-4:disconnect"
+    "video=DP-6:disconnect"
+  ];
+
+  boot.plymouth = {
+    enable = true;
+    theme = "rings";
+    themePackages = with pkgs; [
+      # By default we would install all themes
+      (adi1090x-plymouth-themes.override {
+        selected_themes = [ "rings" ];
+      })
+    ];
+  };
+
+  # Hide the OS choice for bootloaders.
+  # It's still possible to open the bootloader list by pressing any key
+  # It will just not appear on screen unless a key is pressed
+  boot.loader.timeout = 0;
 
   # This is using a rec (recursive) expression to set and access XDG_BIN_HOME within the expression
   # For more on rec expressions see https://nix.dev/tutorials/first-steps/nix-language#recursive-attribute-set-rec
@@ -45,6 +81,9 @@
   #     "${XDG_BIN_HOME}"
   #   ];
   # };
+
+  # https://nixos.wiki/wiki/AMD_GPU#HIP
+  systemd.tmpfiles.rules = [ "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}" ];
 
   environment = {
     # systemPackages = with pkgs; [ #FIXME: INCLUDE IN SDDM THEMES INSTEAD!
@@ -73,6 +112,7 @@
     variables = rec {
       QT_QPA_PLATFORMTHEME = "qt5ct";
       #QT_STYLE_OVERRIDE     = "qt5ct";
+      ROC_ENABLE_PRE_VEGA = "1";
     };
   };
   # Enable networking
@@ -120,13 +160,90 @@
   };
   # time settings
   time.timeZone = "America/Denver";
-
   # Enable Bluetooth
-  hardware.bluetooth.enable = true;
-  services.blueman.enable = true; # FIXME
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+  services.blueman.enable = true; # pairing for bluetooth items in systray.
+  # Using Bluetooth headset buttons to control media player
+  systemd.user.services.mpris-proxy = {
+    description = "Mpris proxy";
+    after = [ "network.target" "sound.target" ];
+    wantedBy = [ "default.target" ];
+    serviceConfig.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
+  };
+  # Enabling A2DP Sink
+  hardware.bluetooth.settings = {
+    General = {
+      Enable = "Source,Sink,Media,Socket";
+      Experimental = true; # Showing battery charge of bluetooth devices (which might lead to bugs)
+    };
+  };
+  # Disable PulseAudio
+  hardware.pulseaudio.enable = false;
+  
+  # Enable PipeWire
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    #jack.enable = true;
+  };
 
+  # Low-latency setup
+  services.pipewire.extraConfig.pipewire."92-low-latency" = {
+    context.properties = {
+      default.clock.rate = 48000;
+      default.clock.quantum = 32;
+      default.clock.min-quantum = 32;
+      default.clock.max-quantum = 32;
+    };
+  };
+
+  # PulseAudio backend low-latency setup
+  services.pipewire.extraConfig.pipewire-pulse."92-low-latency" = {
+    context.modules = [
+      {
+        name = "libpipewire-module-protocol-pulse";
+        args = {
+          pulse.min.req = "32/48000";
+          pulse.default.req = "32/48000";
+          pulse.max.req = "32/48000";
+          pulse.min.quantum = "32/48000";
+          pulse.max.quantum = "32/48000";
+        };
+      }
+    ];
+    stream.properties = {
+      node.latency = "32/48000";
+      resample.quality = 1;
+    };
+  };
+
+  # Bluetooth Configuration
+  services.pipewire.wireplumber.extraConfig.bluetoothEnhancements = {
+    "monitor.bluez.properties" = {
+      "bluez5.enable-sbc-xq" = true;
+      "bluez5.enable-msbc" = true;
+      "bluez5.enable-hw-volume" = true;
+      "bluez5.roles" = [ "hsp_hs" "hsp_ag" "hfp_hf" "hfp_ag" ];
+    };
+  };
+  
   #add opengl (to fix Qemu)
   hardware.opengl.enable = true;
+  hardware.opengl.driSupport = true; # This is already enabled by default
+  hardware.opengl.driSupport32Bit = true; # For 32 bit applications
+  # For 32 bit applications 
+  hardware.opengl.extraPackages = with pkgs; [
+    rocmPackages.clr.icd
+    amdvlk
+  ];
+  hardware.opengl.extraPackages32 = with pkgs; [ driversi686Linux.amdvlk ];
 
   # Select internationalisation properties.
   i18n = {
@@ -144,42 +261,116 @@
     };
   };
 
-  # grab user profile pictures
+  # grab user profile pictures and set greetd ReGreet Configurations.
   system.activationScripts.script.text = ''
     cp /home/alex/.dotfiles/users/alex/face.png /var/lib/AccountsService/icons/alex
     cp /home/alex/.dotfiles/users/susu/face.png /var/lib/AccountsService/icons/susu
+    
+    # adds way-displays configuration
+    cd ${../../system/NIXSTATION64/way-displays}
+    find . -type d -exec mkdir -p /etc/way-displays/{} \;
+    find . -type f -exec ln -sf ${../../system/NIXSTATION64/way-displays}/{} /etc/way-displays/{} \;
   '';
+
+  programs.regreet = {
+    enable = true;
+    package = pkgs.regreet;
+    settings = {
+      default_session = {
+        command = "${pkgs.sway}/bin/sway --config ${../../system/NIXSTATION64/greetd/sway-config}";
+        user = "greeter";
+      };
+      background = {
+        path = "${../../users/alex/extraConfig/wallpapers/sweden.png}";
+        fit = "Fill";
+      };
+      # The entries defined in this section will be passed to the session as environment variables when it is started
+      env = {
+        ENV_VARIABLE = "value";
+      };
+      GTK = {
+        application_prefer_dark_theme = true;
+        cursor_theme_name = "Bibata-Modern-Classic";
+        font_name = "JetBrains Mono";
+        icon_theme_name = "Adwaita";
+        theme_name = "Adwaita";
+      };
+      commands = {
+        reboot = [ "systemctl" "reboot" ];
+        poweroff = [ "systemctl" "poweroff" ];
+      };
+      appearance = {
+        greeting_msg = "Welcome back!";
+      };
+    };
+  };
+
+  # Ensure required packages are installed
+  environment.systemPackages = with pkgs; [
+    jetbrains-mono
+    gnome.adwaita-icon-theme
+    bibata-cursors
+  ];
+
+
+  # To use ReGreet, services.greetd has to be enabled and services.greetd.settings.default_session should contain the appropriate configuration to launch config.programs.regreet.package. For examples, see the ReGreet Readme. 
+  # https://github.com/rharish101/ReGreet#set-as-default-session
 
   # services
   services = {
-    # PRETTY LOGIN SCREEN! (FIXME needs to be configured with osx sddm theme)
-    xserver = {
-      enable = true;
-      displayManager = {
-        sddm = {
-          enable = true;
-          wayland.enable = true;
-          theme = "${import ./sddm-themes.nix { inherit pkgs; }}";
-          #theme = "WhiteSur"; # I Don't like this one as much...
+    greetd = {
+      enable = true; # use Greetd along with ReGreet gtk themer.
+      settings = {
+        default_session = {
+          # command = "${pkgs.greetd.greetd}/bin/agreety --cmd sway";
+          # command = "${pkgs.greetd.greetd}/bin/agreety --cmd sway";
+          command = "${pkgs.sway}/bin/sway --config /etc/greetd/sway-config";
+          user = "greeter";
         };
       };
-      desktopManager = {
-        plasma5 = {
-          enable = true;
-          runUsingSystemd = false;
+      # Whether to restart greetd when it terminates (e.g. on failure). This is usually desirable so a user can always log in, but should be disabled when using ‘settings.initial_session’ (autologin), because every greetd restart will trigger the autologin again.
+      # restart = !(config.services.greetd.settings ? initial_session)
+
+      # The virtual console (tty) that greetd should use. This option also disables getty on that tty.
+      vt = 1; # signed integer
+    };
+
+    displayManager = {
+      sddm = {
+        enable = false;
+        wayland = {
+          enable = true; # Correctly placed under displayManager
         };
-        mate = {
-          enable = false;
-          # runUsingSystemd = false;
-        };
+        theme = "${import ./sddm-themes.nix { inherit pkgs; }}"; # Correctly placed under displayManager
       };
     };
-    pipewire = {
-      # fix for pipewire audio:
+    desktopManager.plasma6.enable = false;
+    xserver = {
       enable = true;
-      alsa.enable = true;
-      pulse.enable = true;
-      jack.enable = true;
+      videoDrivers = [ "amdgpu" ];
+      desktopManager = {
+        plasma5 = {
+          enable = false;
+          mobile.enable = false; # for login remote
+          runUsingSystemd = false;
+          useQtScaling = false; # enable HIDPI scaling in qt
+        };
+        xfce = {
+          enable = true;
+          enableScreensaver = false;
+        };
+        #phosh = {
+        #  enable = true;
+        #  user = "alex";
+        #  group = "users";
+        #};
+      };
+    };
+    xrdp = {
+      enable = true;
+      port = 3389; # default 3389
+      openFirewall = true;
+      defaultWindowManager = "xfce4-session";
     };
 
     #getty.autologinUser = "alex"; # Enable automatic login for the user.
@@ -275,10 +466,12 @@
     sway = {
       enable = true;
       package = pkgs.swayfx;
+      # xwayland.enable = false;
+      # extraPackages = with pkgs; [ swaylock swayidle foot dmenu wmenu ];
     };
   };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # Define a user account. Don't forget to set a password with 'passwd'.
   users.users = {
     alex = {
       isNormalUser = true;
@@ -290,6 +483,7 @@
         "kvm"
         "libvirtd"
         "adbusers"
+	"input"
       ];
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINKfaO41wp3p/dkpuqIP6tj78SCrn2RSQUG2OSiHAv7j aspauldingcode@gmail.com"

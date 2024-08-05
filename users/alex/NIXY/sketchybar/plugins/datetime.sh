@@ -1,8 +1,10 @@
 #!/bin/bash
 
-# Source the colors and icons
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
+source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 
 # File to store the calendar output and the date it was generated
 CACHE_FILE="$HOME/.config/sketchybar/calendar_cache"
@@ -46,7 +48,7 @@ initialize_popup_items() {
         width=0
         y_offset=$(( 56 - 16 * i ))
         label="|"
-        label.color=$GREY                       # Set this to your popup border color. Must be 2px at least!
+        label.color=$base07                       # Set this to your popup border color. Must be 2px at least!
         label.padding_left=-182                 # To overwrite the '|' character on the left of the line. Fixes graphical text issues. 
         label.drawing=on
       )

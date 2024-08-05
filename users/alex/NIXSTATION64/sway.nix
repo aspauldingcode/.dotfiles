@@ -1,59 +1,78 @@
-{ config, pkgs, ... }:
-
 {
-  imports = [ ./waybar/waybar.nix ];
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
+  imports = [
+    ./waybar.nix
+  ];
 
   wayland.windowManager.sway = {
     enable = true;
     package = null;
-    checkConfig = false;
+    checkConfig = lib.mkForce false;
     config = rec {
       bars = [
-        { command = "${pkgs.waybar}/bin/waybar"; } # FIXME: WHY ARE THERE TWO WAYBARS at launch?
+        {command = "if pgrep -x waybar; then pkill waybar; ${pkgs.waybar}/bin/waybar; fi";}
       ];
       modifier = "Mod4";
       left = "h";
       down = "j";
       up = "k";
       right = "l";
+       # Assign workspaces to outputs
+       workspaceOutputAssign = [
+         {
+           workspace = "1";
+           output = "Ancor Communications Inc VE248 G1LMQS085722";
+         }
+         {
+           workspace = "2";
+           output = "Ancor Communications Inc ASUS VE278 JCLMTF141603";
+         }
+         {
+           workspace = "3";
+           output = "Ancor Communications Inc ASUS VE278 J7LMTF164099";
+         }
+       ];
       output = {
-        DP-4 = {
+        "Ancor Communications Inc VE248 G1LMQS085722" = {
           res = "1920x1080";
           pos = "0,0";
           transform = "270";
-          #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
         };
-        DP-3 = {
+        "Ancor Communications Inc ASUS VE278 JCLMTF141603" = {
           res = "1920x1080";
           pos = "1080,450";
-          #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
         };
-        DP-2 = {
+        "Ancor Communications Inc ASUS VE278 J7LMTF164099" = {
           res = "1920x1080";
           pos = "3000,450";
-          #bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/ghibliwp.jpg fill";
         };
         "*" = {
           # change background for all outputs
-          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/light_noise.png fill"; # ghibliwp.jpg, sweden.png
+          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/sweden.png fill";
         };
       };
       # Use alacritty as default terminal
       terminal = "alacritty";
       startup = [
         # Launch alacritty on start
-        { command = "alacritty"; } # FIXME: DOES ALACRITTY ACTUALLY LAUNCH?!?!?
+        {command = "alacritty";}
       ];
       menu = "bemenu-run";
-
+      window.titlebar = false;
+      floating.titlebar = false;
       workspaceLayout = "default";
       keybindings = {
         "${modifier}+f" = "exec maximize"; # custom script for zoom-fullscreen NOTWORKING?
         "${modifier}+Shift+f" = "fullscreen toggle";
         "${modifier}+Return" = "exec ${terminal}";
-        "${modifier}+Alt+Space" = "exec brave";
-        "${modifier}+Shift+Alt+Space" = "exec brave --incognito";
-        "${modifier}+Control+Alt+Space" = "exec brave --tor";
+        # "${modifier}+Alt+Space" = "exec brave";
+        # "${modifier}+Shift+Alt+Space" = "exec brave --incognito";
+        "${modifier}+Alt+Space" = "exec firefox";
+        "${modifier}+Shift+Alt+Space" = "exec firefox -private-window";
         "${modifier}+Shift+q" = "kill";
         "${modifier}+q" = "exec wtype -M ctrl -P w -m ctrl -p w";
         "${modifier}+a" = "exec show-all-windows";
@@ -63,8 +82,8 @@
         # "${modifier}+Space" = "" # toggle nwg-dock
 
         # "${modifier}+m" = "exec docker start -ai 8b83fcdf83af"; # MacOS VM
-        "Control+Alt+Delete" = "exec sudo reboot";
-        "Control+Shift+Alt+Delete" = "exec sudo shutdown now";
+        "Control+Alt+Delete" = "exec sudo systemctl reboot";
+        "Control+Shift+Alt+Delete" = "exec sudo systemctl poweroff";
         # implement window switcher based on wofi
         #"${modifier}+Tab" = "exec ${wofiWindowJump}";
         # power menu
@@ -110,6 +129,8 @@
         #"${modifier}+Ctrl+Alt+Print" = "exec wayrecorder --notify --clipboard --input active";
         #"${modifier}+Ctrl+Shift+Alt+Print" = "exec wayrecorder --notify --clipboard --input window";
 
+        "${modifier}+Control+Shift+r" = "exec swaymsg output '*' disable && swaymsg output '*' enable";
+
         # "XF86AudioPrev" = "exec ${pkgs.playerctl}/bin/playerctl -s previous";
         # "XF86AudioNext" = "exec ${pkgs.playerctl}/bin/playerctl -s next";
         # "XF86AudioPlay" = "exec ${pkgs.playerctl}/bin/playerctl -s play-pause";
@@ -135,24 +156,8 @@
         "${modifier}+s" = "layout tabbed"; # macos is stacked layout
         "${modifier}+e" = "layout default";
 
-        "${modifier}+b" = "split horizontal";
-        "${modifier}+v" = "split vertical";
-
-        # Move floating windows
-        # "${modifier}+Alt+Ctrl+${left}" = "move left 20px";
-        # "${modifier}+Alt+Ctrl+${down}" = "move down 20px";
-        # "${modifier}+Alt+Ctrl+${up}" = "move up 20px";
-        # "${modifier}+Alt+Ctrl+${right}" = "move right 20px";
-        # "${modifier}+Alt+Ctrl+Left" = "move left 20px";
-        # "${modifier}+Alt+Ctrl+Down" = "move down 20px";
-        # "${modifier}+Alt+Ctrl+Up" = "move up 20px";
-        # "${modifier}+Alt+Ctrl+Right" = "move right 20px";
-        #
-        #"${modifier}+o" = "inhibit_idle open; border normal; mark --add inhibiting_idle";
-        #"${modifier}+Shift+o" = "inhibit_idle none; border pixel; unmark inhibiting_idle";
-
-        #"${modifier}+j" = "exec ${pkgs.mako}/bin/makoctl invoke"; # Invoke default action on top notification.
-        #"${modifier}+Shift+t" = "exec ${pkgs.flashfocus}/bin/flash_window";
+        "${modifier}+b" = "split horizontal"; # when toggled will preview the right screen like it will with mouse modifier
+        "${modifier}+v" = "split vertical"; # when toggled will preview the lower screen like it will with mouse modifier
 
         # Change focused window
         "${modifier}+${left}" = "focus left";
@@ -164,7 +169,7 @@
         "${modifier}+Up" = "focus up";
         "${modifier}+Right" = "focus right";
 
-        #FIXME: Try NOT to swap a floating window? 
+        #FIXME: Try NOT to swap a floating window?
         # Move windows (swap if tiled, move 20px if floating
         # "${modifier}+Shift+${left}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus left, swap container with mark "_swap", focus left, unmark "_swap"; [floating con_id="__focused__"] move left 20px'';
         # "${modifier}+Shift+${down}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus down, swap container with mark "_swap", focus down, unmark "_swap"; [floating con_id="__focused__"] move down 20px'';
@@ -247,101 +252,119 @@
         "${modifier}+Alt+Shift+Up" = "resize shrink up 20px";
         "${modifier}+Alt+Shift+Right" = "resize shrink right 20px";
 
-        "${modifier}+Shift+R" = "reload";
+        "${modifier}+g" = "exec toggle-gaps";
+
+        "${modifier}+Shift+R" = "exec fix-wm";
       };
     };
 
-    extraConfig =
-      let
-        inherit (config.colorscheme) colors;
-      in
-      ''
-        set $mod Mod4
-          # Idle configuration        
-          exec swayidle -w \
-          timeout 7320 'swaylock -f -c 000000' \
-          timeout 8000 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-          before-sleep 'swaylock -f -c 000000'
+    extraConfig = let
+      inherit (config.colorscheme) colors;
+    in ''
+      set $mod Mod4
+        # Idle configuration
+        exec swayidle -w \
+        timeout 7320 'swaylock -f -c 000000' \
+        timeout 8000 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+        before-sleep 'swaylock -f -c 000000'
 
-          # You can get the names of your inputs by running: swaymsg -t get_inputs
-          # Read `man 5 sway-input` for more information about this section.
-          # Launch the network manager widget!
-          exec nm-applet
+        exec --no-startup-id gammastep # enable gammastep server
 
-          # SET workspace to specific output
-          workspace 1 output DP-4
-          workspace 2 output DP-3
-          workspace 3 output DP-2
+        # You can get the names of your inputs by running: swaymsg -t get_inputs
+        # Read `man 5 sway-input` for more information about this section.
+        # Launch the network manager widget!
+        # exec nm-applet
+        exec --no-startup-id 'nm-applet --indicator'
 
-          # Launch the bluetooth applet
-          exec blueman-applet
+        # Launch the bluetooth applet
+        exec blueman-applet
 
-          # Delayed launch of the bluetooth applet
-          exec "sleep 5 && blueman-applet"
+        # Delayed launch of the bluetooth applet
+        exec "sleep 5 && blueman-applet"
 
-          # autotile!
-          exec autotiling
+        # autotile!
+        exec autotiling
 
-          #exec "mako --config ~/.makoe"
+        # way-displays: Auto Manage Your Wayland Displays
+        exec way-displays > /tmp/way-displays.''${XDG_VTNR}.''${USER}.log 2>&1
 
-          # STYLIZE!
-          gaps inner 13
-          gaps top -2
-          corner_radius 8
+        # STYLIZE!
+        gaps inner 10
+        gaps top -2
+        corner_radius 8
 
-          #FIX waybar tooltips!
-          for_window [app_id="waybar" floating] {
-            move position cursor
-            move down 120px # adjust if some menus still don't fit
-          }
+        #FIX waybar tooltips!
+        for_window [app_id="waybar" floating] {
+          move position cursor
+          move down 120px # adjust if some menus still don't fit
+        }
 
-          # Enable csd borders # options are: none | normal | csd | pixel [<n>]
-          bindsym $mod+Shift+B exec swaymsg border toggle
-          
-          #for all windows, brute-force use of "pixel"
-          for_window [shell="xdg_shell"] border pixel 2
-          for_window [shell="xwayland"] border pixel 2
+        # Enable csd borders # options are: none | normal | csd | pixel [<n>]
+        bindsym $mod+Shift+B exec swaymsg border toggle
 
-          # Window background blur
-          blur on #FIXME: TURN ON! Floating window loses its borders...
-          #blur_xray on
-          blur_passes 2
-          blur_radius 10
+        #for all windows, brute-force use of "pixel"
+        for_window [shell="xdg_shell"] border pixel 2
+        for_window [shell="xwayland"] border pixel 2
 
-          for_window [tiling] shadows off
-          for_window [floating] shadows on
-          #shadows_on_csd disable
-          shadow_blur_radius 30
-          shadow_color #000000ff
+        # Window background blur
+        # blur on #FIXME: TURN ON! Floating window loses its borders...
+        # blur_xray on
+        # blur_passes 2
+        # blur_radius 2
 
-          # inactive window fade amount. 0.0 = no dimming, 1.0 = fully dimmed
-          #default_dim_inactive .3
-          #dim_inactive_colors.unfocused "#000000"
-          #dim_inactive_colors.urgent "#900000"
+        # for_window [tiling] shadows off
+        # for_window [floating] shadows on
+        # shadows_on_csd disable
+        # shadow_blur_radius 30
+        # shadow_color #000000ff
 
-          # HIDE CURSOR AUTOMATICALLY
-          seat * hide_cursor 8000
+        # Enable background blur for Waybar-Square
+        # layer_effects "waybar" blur enable; corner_radius 0; blur_ignore_transparent enable
 
-          # HIDE TITLEBAR!
-          # SET BORDER TO 2 PIXELS!
-          default_border pixel 2
-          default_floating_border pixel 2
-          client.unfocused "#808080" "#808080" "#808080" "#808080" "#808080"
-          client.focused ${colors.base0C} ${colors.base0C} ${colors.base0C} ${colors.base0C}
+        # Enable background blur for Waybar-Round
+        # layer_effects "waybar" blur enable; corner_radius 10; blur_ignore_transparent enable
 
-          exec {
-            gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
-            gsettings set org.gnome.desktop.interface icon-theme 'elementary'
-            gsettings set org.gnome.desktop.interface cursor-theme 'elementary'
-            gsettings set org.gnome.desktop.interface font-name 'Roboto Slab 10'
-          }
+        # Enable background blur for waybar tooltips
+        # FIXME
 
-          # Fix zoom
-          for_window [app_id="zoom"] floating enable
-          for_window [app_id="zoom" title="Choose ONE of the audio conference options"] floating enable
-          for_window [app_id="zoom" title="zoom"] floating enable
-          for_window [app_id="zoom" title="Zoom Meeting"] floating disable
-          for_window [app_id="zoom" title="Zoom - Free Account"] floating disable
-      '';
+        # Enable background blur for Mako notifications
+        # layer_effects "notifications" blur enable; corner_radius 10
+
+        # Enable background blur for GTK-based layer shell applications
+        # layer_effects "gtk-layer-shell" blur enable; corner_radius 10
+
+        # inactive window fade amount. 0.0 = no dimming, 1.0 = fully dimmed
+        #default_dim_inactive .3
+        #dim_inactive_colors.unfocused "#000000"
+        #dim_inactive_colors.urgent "#900000"
+
+        # HIDE CURSOR AUTOMATICALLY
+        seat * hide_cursor 8000
+
+        # HIDE TITLEBAR!
+        # SET BORDER TO 2 PIXELS!
+        default_border pixel 2
+        default_floating_border pixel 2
+        client.unfocused ${colors.base05} ${colors.base05} ${colors.base05} ${colors.base05}
+        client.focused_inactive ${colors.base05} ${colors.base05} ${colors.base05} ${colors.base05}
+        client.focused ${colors.base07} ${colors.base07} ${colors.base07} ${colors.base07}
+
+        exec {
+          gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+          gsettings set org.gnome.desktop.interface icon-theme 'elementary'
+          gsettings set org.gnome.desktop.interface cursor-theme 'elementary'
+          gsettings set org.gnome.desktop.interface font-name 'Roboto Slab 10'
+        }
+
+        # Fix zoom
+        for_window [app_id="zoom"] floating enable
+        for_window [app_id="zoom" title="Choose ONE of the audio conference options"] floating enable
+        for_window [app_id="zoom" title="zoom"] floating enable
+        for_window [app_id="zoom" title="Zoom Meeting"] floating disable
+        for_window [app_id="zoom" title="Zoom - Free Account"] floating disable
+
+        # run fix-wm once.
+        # exec fix-wm
+    '';
   };
 }

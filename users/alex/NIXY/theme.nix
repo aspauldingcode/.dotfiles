@@ -16,7 +16,28 @@ let
 in
 {
 
-  #colorScheme = nix-colors.colorSchemes.${theme};
+  home = {
+    packages = with pkgs; [
+      # note the hiPrio which makes this script more important than others and is usually used in nix to resolve name conflicts 
+      (pkgs.hiPrio (
+        pkgs.writeShellApplication {
+          name = "toggle-theme";
+          runtimeInputs = with pkgs; [
+            home-manager
+            coreutils
+            ripgrep
+          ];
+          # the interesting part about the script below is that we go back two generations
+          # since every time we invoke an activation script home-manager creates a new generation 
+          text = ''
+            "$(home-manager generations | head -2 | tail -1 | rg -o '/[^ ]*')"/activate
+          '';
+        }
+      ))
+    ];
+  };
+
+  # colorScheme = nix-colors.colorSchemes.gruvbox-dark-soft;
 
   #home.pointerCursor = {
   #    name = "Bibata-Modern-Ice";
@@ -29,14 +50,14 @@ in
     #  name = "Bibata-Modern-Ice";
     #  package = pkgs.bibata-cursors;
     #};
-    #theme = {
-    #  name = "${config.colorScheme.slug}";
-    #  package = gtkThemeFromScheme {scheme = config.colorScheme;};
-    #name = "WhiteSur-GTK-Theme";
-    #package = pkgs.whitesur-gtk-theme;
-    #name = "adw-gtk3";
-    #package = pkgs.adw-gtk3;
-    #};
+    # theme = {
+      # name = "gruvbox gtk theme";
+      # package = pkgs.gruvbox-gtk-theme;
+      # name = "${config.colorScheme.slug}";
+      # package = gtkThemeFromScheme {scheme = config.colorScheme;};
+      # name = "WhiteSur-GTK-Theme";
+      # package = pkgs.whitesur-gtk-theme;
+    # };
     #iconTheme = {
     #name = "WhiteSur-GTK-Icons";
     #package = pkgs.whitesur-icon-theme;
@@ -51,13 +72,8 @@ in
     platformTheme = "gtk";
     # name of gtk theme
     style = {
-      name = "${config.colorScheme.slug}";
-      package = gtkThemeFromScheme { scheme = config.colorScheme; };
-      #name = "whitesur-kde-unstable";
-      #package = pkgs.whitesur-kde;
-      #name = "breeze-dark"; # WORKS
-      #name = "whitesur-icon-theme";
-      #package = pkgs.whitesur-gtk-theme;
+      # name = "${config.colorScheme.slug}";
+      # package = gtkThemeFromScheme { scheme = config.colorScheme; };
     };
   };
 }

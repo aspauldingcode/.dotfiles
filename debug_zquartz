@@ -1,0 +1,5 @@
+rm -rf ~/.Xauthority
+rm -rf ~/.xinitrc
+rm -rf ~/.xserverrc
+rm -rf ~/.Xresources
+rm -rf ~/Library/Preferences/org.macosforge.xquartz.X11.plist

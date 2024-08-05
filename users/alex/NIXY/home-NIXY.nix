@@ -1,9 +1,7 @@
 {
-  home-manager,
   lib,
-  config,
-  pkgs,
   nix-colors,
+  config,
   ...
 }:
 
@@ -14,26 +12,31 @@
   imports = [
     nix-colors.homeManagerModules.default
     ./packages-NIXY.nix
-    #./../extraConfig/nvim/nixvim.nix #FIXME: BROKEN atm
+    # ./../extraConfig/nvim/nixvim.nix # FIXME: BROKEN atm
+    ./../universals/modules/firefox.nix
+    ./../universals/modules/cursor.nix # vscode with ai
+    ./../universals/modules/discord.nix
     ./theme.nix
     ./xcode/xcode.nix # FIXME: use nix-color theme
     ./alacritty.nix
     ./kitty.nix
     ./yazi/yazi.nix
-    ./betterdiscord.nix
     ./git.nix
-    ./fish.nix
-    ./zsh.nix
+    ./maco.nix
+    ./instantview.nix
+    # ./fish.nix
+    # ./zsh.nix
+    ./shells.nix
     ./karabiner.nix
     ./cava.nix
     #./zellij.nix
     ./btop.nix
     ./xinit.nix
     ./i3.nix
+    ./qutebrowser.nix
     ./sketchybar/sketchybar.nix
     ./yabai.nix # contains skhd and borders config.
     ./phoenix/phoenix.nix # new window-manager for macOS!
-    ./cursor.nix # vscode with ai
   ];
 
   home = {
@@ -52,13 +55,7 @@
     };
   };
 
-  # Enable nix flakes and nix command?
-  #nix = {
-  # package = pkgs.nix;
-  # settings.experimental-features = [ "nix-command" "flakes" ];
-  #};
-
-  # disable Volumw/Brightness HUD on macOS at login!
+  # disable Volume/Brightness HUD on macOS at login!
   launchd.agents.xdg_cache_home = {
     enable = true;
     config = {
@@ -81,13 +78,23 @@
     ssh.addKeysToAgent = true;
   };
 
-  launchd.agents.notificationcenter = {
-    enable = true;
-    config = {
-      ProgramArguments = [ "/bin/launchctl" "unload" "-w" "/System/Library/LaunchAgents/com.apple.notificationcenterui.plist" ];
-      RunAtLoad = true;
-      StandardOutPath = "/dev/null";
-      StandardErrorPath = "/dev/null";
-    };
+  # launchd.agents.notificationcenter = {
+  #   enable = true;
+  #   config = {
+  #     ProgramArguments = [
+  #       "/bin/launchctl"
+  #       "unload"
+  #       "-w"
+  #       "/System/Library/LaunchAgents/com.apple.notificationcenterui.plist"
+  #     ];
+  #     RunAtLoad = true;
+  #     StandardOutPath = "/dev/null";
+  #     StandardErrorPath = "/dev/null";
+  #   };
+  # };
+
+  home.file."Library/Application Support/Mousecape/capes" = {
+    target = "Library/Application Support/Mousecape/capes/";
+    source = ../extraConfig/cursors-macOS;
   };
 }

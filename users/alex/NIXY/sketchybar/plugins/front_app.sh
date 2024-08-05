@@ -1,8 +1,14 @@
 #!/bin/sh
 
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+
+source "$HOME/.config/sketchybar/colors.sh"
+source "$HOME/.config/sketchybar/icons.sh"
+source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
+
 #FIXME: USE https://github.com/FelixKratz/SketchyBar/discussions/12#discussioncomment-1633997
 update_sketchybar() {
-    CURRENT_APP_NAME_AND_WINDOW=$(osascript -e 'global frontApp, frontAppName, windowTitle
+    CURRENT_APP_NAME_AND_WINDOW=$($osascript -e 'global frontApp, frontAppName, windowTitle
 
     set windowTitle to ""
     tell application "System Events"
@@ -52,9 +58,14 @@ case "$SENDER" in
     #echo "Mouse left hover of $NAME icon" >> /tmp/sketchybar_debug.log
     ;;
   "mouse.clicked")
-    #sketchybar --set datetime popup.drawing=toggle
-    #echo "Mouse clicked on $NAME icon" >> /tmp/sketchybar_debug.log
-    # toggle_battery_popup
+    # Use the CURRENT_APP_NAME_AND_WINDOW info
+    APP_NAME=$(echo "$CURRENT_APP_NAME_AND_WINDOW" | cut -d' ' -f1)
+    
+    # Check if the front application is Alacritty
+    if [ "$APP_NAME" = "Alacritty" ]; then
+      # Send Command + W to close the window
+      $osascript -e 'tell application "System Events" to keystroke "w" using {command down}'
+    fi
     ;;
   "routine")
     # Update battery info periodically

@@ -1,7 +1,10 @@
 #!/bin/bash
 
-yabai="/opt/homebrew/bin/yabai"
-jq="/run/current-system/sw/bin/jq"
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+
+source "$HOME/.config/sketchybar/colors.sh"
+source "$HOME/.config/sketchybar/icons.sh"
+source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 
 # Query for spaces with windows
 spaces_with_windows=($($yabai -m query --spaces | $jq -r '.[] | select(.windows | length > 0) | .label'))

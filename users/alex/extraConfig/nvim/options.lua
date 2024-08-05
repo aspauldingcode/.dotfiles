@@ -25,16 +25,74 @@ o.wrap = false
 -- o.textwidth = 80
 -- o.formatoptions = "t"
 
+-- KEYBINDS
+-- How to add ctrl-shift mappings in neovim
+local function map(mode, lhs, rhs, opts)
+    local options = {noremap = true}
+    if opts then options = vim.tbl_extend('force', options, opts) end
+    vim.api.nvim_set_keymap(mode, lhs, rhs, options)
+  end
+  
+  -- Control + Shift
+  -- map('n', '<C-S-a>', '<cmd>:cna<cr>')
+  map('n', '<C-S-b>', '<Esc>:NvimTreeToggle<CR>')
+  -- map('n', '<C-S-c>', '<cmd>:cnc<cr>')
+  -- map('n', '<C-S-d>', '<cmd>:cnd<cr>')
+  -- map('n', '<C-S-e>', '<cmd>:cne<cr>')
+  -- map('n', '<C-S-f>', '<cmd>:cnf<cr>')
+  -- map('n', '<C-S-g>', '<cmd>:cng<cr>')
+  -- map('n', '<C-S-h>', '<cmd>:cnh<cr>')
+  -- map('n', '<C-S-i>', '<cmd>:cni<cr>')
+  -- map('n', '<C-S-j>', '<cmd>:cnj<cr>')
+  -- map('n', '<C-S-k>', '<cmd>:cnk<cr>')
+  -- map('n', '<C-S-l>', '<cmd>:cnl<cr>')
+  -- map('n', '<C-S-m>', '<cmd>:cnm<cr>')
+  -- map('n', '<C-S-n>', '<cmd>:cnn<cr>')
+  -- map('n', '<C-S-o>', '<cmd>:cno<cr>')
+  -- map('n', '<C-S-p>', '<cmd>:cnp<cr>')
+  -- map('n', '<C-S-q>', '<cmd>:cnq<cr>')
+  -- map('n', '<C-S-r>', '<cmd>:cnr<cr>')
+  -- map('n', '<C-S-s>', '<cmd>:cns<cr>')
+  -- map('n', '<C-S-t>', '<cmd>:cnt<cr>')
+  -- map('n', '<C-S-u>', '<cmd>:cnu<cr>')
+  -- map('n', '<C-S-v>', '<cmd>:cnv<cr>')
+  -- map('n', '<C-S-w>', '<cmd>:cnw<cr>')
+  -- map('n', '<C-S-x>', '<cmd>:cnx<cr>')
+  -- map('n', '<C-S-y>', '<cmd>:cny<cr>')
+  -- map('n', '<C-S-z>', '<cmd>:cnz<cr>')
+  
+  -- Control
+  -- map('n', '<C-a>', '<cmd>:cna<cr>')
+  map('n', '<C-b>', '<Esc>:NvimTreeToggle<CR>')
+  -- map('n', '<C-c>', '<cmd>:cnc<cr>')
+  -- map('n', '<C-d>', '<cmd>:cnd<cr>')
+  -- map('n', '<C-e>', '<cmd>:cne<cr>')
+  -- map('n', '<C-f>', '<cmd>:cnf<cr>')
+  -- map('n', '<C-g>', '<cmd>:cng<cr>')
+  -- map('n', '<C-h>', '<cmd>:cnh<cr>')
+  -- map('n', '<C-i>', '<cmd>:cni<cr>')
+  -- map('n', '<C-j>', '<cmd>:cnj<cr>')
+  -- map('n', '<C-k>', '<cmd>:cnk<cr>')
+  -- map('n', '<C-l>', '<cmd>:cnl<cr>')
+  -- map('n', '<C-m>', '<cmd>:cnm<cr>')
+  -- map('n', '<C-n>', '<cmd>:cnn<cr>')
+  -- map('n', '<C-o>', '<cmd>:cno<cr>')
+  -- map('n', '<C-p>', '<cmd>:cnp<cr>')
+  -- map('n', '<C-q>', '<cmd>:cnq<cr>')
+  -- map('n', '<C-r>', '<cmd>:cnr<cr>')
+  -- map('n', '<C-s>', '<cmd>:cns<cr>')
+  -- map('n', '<C-t>', '<cmd>:cnt<cr>')
+  -- map('n', '<C-u>', '<cmd>:cnu<cr>')
+  -- map('n', '<C-v>', '<cmd>:cnv<cr>')
+  -- map('n', '<C-w>', '<cmd>:cnw<cr>')
+  -- map('n', '<C-x>', '<cmd>:cnx<cr>')
+  -- map('n', '<C-y>', '<cmd>:cny<cr>')
+  -- map('n', '<C-z>', '<cmd>:cnz<cr>')
 
 -- LSP
 -- Map <Leader>f to run LSP format
 vim.api.nvim_set_keymap('n', '<Leader>f', '<cmd>lua vim.lsp.buf.format()<CR>',
     { noremap = true, silent = true })
-
--- Define the function to toggle lsp_lines
-local function toggle_lsp_lines()
-    require("lsp_lines").toggle()
-end
 
 -- Set the keymap
 vim.api.nvim_set_keymap('', '<Leader>l', ':lua require("lsp_lines").toggle()<CR>',
@@ -65,10 +123,6 @@ o.updatetime = 300
 o.cursorline = true
 vim.cmd('filetype plugin indent on')
 
--- Get rid of annoying viminfo file
--- o.viminfo = ""
--- o.viminfofile = "NONE"
-
 -- Keybinds
 local function map(mode, combo, mapping, opts)
     local options = { noremap = true }
@@ -77,18 +131,37 @@ local function map(mode, combo, mapping, opts)
     end
     vim.api.nvim_set_keymap(mode, combo, mapping, options)
 end
-map('n', '<C-Tab>', ':NvimTreeToggle <CR>', { noremap = true })
-map('n', '<C-d>', ':Telescope find_files <CR>', { noremap = true })
-map('n', '<C-f>', ':Telescope live_grep <CR>', { noremap = true })
-map('i', '<C-l>', '<Esc>:left <CR>', { noremap = true }) -- align text left
-map('i', '<C-e>', '<Esc>:center <CR>', { noremap = true }) -- center text
-map('i', '<C-r>', '<Esc>:right <CR>', { noremap = true }) -- align text right
-map('n', '<C-l>', ':left <CR>', { noremap = true })      -- align text left
-map('n', '<C-e>', ':center <CR>', { noremap = true })    -- center text
-map('n', '<C-r>', ':right <CR>', { noremap = true })     -- align text right
-map('n', '<C-S-Z>', ':redo <CR>', { noremap = true })
-map('n', '<C-y>', ':redo <CR>', { noremap = true })
-map('n', '<C-z>', ':undo <CR>', { noremap = true })
+local is_mac = vim.loop.os_uname().sysname == "Darwin"
+
+local function map(mode, combo, mapping, opts)
+    local options = { noremap = true }
+    if opts then
+        options = vim.tbl_extend('force', options, opts)
+    end
+    vim.api.nvim_set_keymap(mode, combo, mapping, options)
+end
+
+local function map_with_cmd_key(mode, combo, mapping, opts)
+    if is_mac then
+        combo = combo:gsub("<C-", "<D-")
+    end
+    map(mode, combo, mapping, opts)
+end
+
+-- Option 1: Use vim.keymap.set instead of the custom function
+-- vim.keymap.set('n', '<C-b>', '<Esc>:NvimTreeToggle<CR>', { noremap = true, silent = true })
+-- vim.keymap.set('n', '<D-b>', '<Esc>:NvimTreeToggle<CR>', { noremap = true, silent = true })
+map_with_cmd_key('n', '<C-d>', ':Telescope find_files <CR>', { noremap = true })
+map_with_cmd_key('n', '<C-f>', ':Telescope live_grep <CR>', { noremap = true })
+map_with_cmd_key('i', '<C-l>', '<Esc>:left <CR>', { noremap = true })   -- align text left
+map_with_cmd_key('i', '<C-e>', '<Esc>:center <CR>', { noremap = true }) -- center text
+map_with_cmd_key('i', '<C-r>', '<Esc>:right <CR>', { noremap = true })  -- align text right
+map_with_cmd_key('n', '<C-l>', ':left <CR>', { noremap = true })        -- align text left
+map_with_cmd_key('n', '<C-e>', ':center <CR>', { noremap = true })      -- center text
+map_with_cmd_key('n', '<C-r>', ':right <CR>', { noremap = true })       -- align text right
+map_with_cmd_key('n', '<C-S-Z>', ':redo <CR>', { noremap = true })
+map_with_cmd_key('n', '<C-y>', ':redo <CR>', { noremap = true })
+map_with_cmd_key('n', '<C-z>', ':undo <CR>', { noremap = true })
 
 -- Enable line wrapping at whitespace
 vim.api.nvim_win_set_option(0, 'wrap', true)
@@ -193,14 +266,62 @@ o.incsearch = true
 o.hidden = true
 o.shortmess = "atI"
 
--- FIXME: Broken after adding nvim-scrollview and gitsigns integration!
--- Highlight column 80, 120, and beyond as ColorColumn
-vim.opt.colorcolumn = "80," .. table.concat(vim.tbl_map(tostring, vim.fn.range(120, 999)), ",")
+vim.opt.foldtext = "v:lua.get_foldtext()"
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldmethod = "expr"
+vim.opt.foldenable = false -- Disable folding at startup.
 
---Toggle lsp-lines
--- vim.api.nvim_set_keymap(
---   "n", -- This keymap is for normal mode
---   "<Leader>l",
---   "<cmd>lua require('lsp_lines').toggle()<CR>",
---   { noremap = true, silent = true, desc = "Toggle lsp_lines" }
--- )
+o.signcolumn = 'yes'
+
+vim.o.foldcolumn = '1' -- '0' is not bad
+vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldlevelstart = 99
+
+-- Using ufo provider need remap zR and zM. If Neovim is 0.6.1, remap yourself
+vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
+vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
+
+vim.cmd("highlight FoldColumn guifg=" .. vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID('Comment')), 'fg'))
+
+vim.o.statuscolumn = '%=%l%s%C%{foldlevel(v:lnum) > foldlevel(v:lnum - 1) ? (foldclosed(v:lnum) == -1 ? "▼" : "⏵") : " " }'
+
+-- Replace the default fold markers with custom arrows
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    local ufo = require('ufo')
+    local orig_render = ufo.renderFoldedLines
+
+    ufo.renderFoldedLines = function(virtText, lnum, endLnum, width, truncate, ctx)
+      local newVirtText = {}
+      local suffix = ('  %d '):format(endLnum - lnum)
+      local sufWidth = vim.fn.strdisplaywidth(suffix)
+      local targetWidth = width - sufWidth
+      local curWidth = 0
+
+      for _, chunk in ipairs(virtText) do
+        local chunkText = chunk[1]
+        local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+        if targetWidth > curWidth + chunkWidth then
+          table.insert(newVirtText, chunk)
+        else
+          chunkText = truncate(chunkText, targetWidth - curWidth)
+          local hlGroup = chunk[2]
+          table.insert(newVirtText, {chunkText, hlGroup})
+          chunkWidth = vim.fn.strdisplaywidth(chunkText)
+          if curWidth + chunkWidth < targetWidth then
+            suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
+          end
+          break
+        end
+        curWidth = curWidth + chunkWidth
+      end
+
+      local foldSymbol = '⏵ '
+      table.insert(newVirtText, {foldSymbol .. suffix, 'UfoFoldedEllipsis'})
+      return newVirtText
+    end
+
+    -- Ensure the statuscolumn is updated
+    vim.o.statuscolumn = vim.o.statuscolumn
+  end,
+})

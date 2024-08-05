@@ -4,11 +4,11 @@
   services.mako = {
     enable = true;
     maxVisible = -1;
-    output = "DP-2";
+    output = "DP-6";
     layer = "overlay";
     anchor = "top-right";
     borderSize = 2;
-    borderColor = "#${config.colorScheme.colors.base0C}";
+    borderColor = "#${config.colorScheme.colors.base07}";
     borderRadius = 8;
     defaultTimeout = 5000;
     ignoreTimeout = false;

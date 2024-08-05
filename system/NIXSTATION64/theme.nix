@@ -2,7 +2,7 @@
 
 # Configure GTK, QT themes, color schemes..
 let
-  scheme = "katy"; # gruvbox-dark-soft
+  scheme = "gruvbox-dark-soft"; # gruvbox-dark-soft
 in
 # Choose from: https://nix-community.github.io/nixvim/colorschemes/base16/index.html#colorschemesbase16colorscheme
 {

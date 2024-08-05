@@ -4,7 +4,7 @@
   #import other home-manager modules which are NIXSTATION64-specific
   imports = [
     nix-colors.homeManagerModules.default
-    #./packages-NIXY2.nix
+    ./packages-NIXY2.nix
     #./sway.nix
     #./../extraConfig/nvim/nixvim.nix # Universal nixvim.nix, 16 GB!!!!!
     ./theme.nix # theme of system.
