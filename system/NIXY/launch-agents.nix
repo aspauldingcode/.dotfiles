@@ -595,104 +595,104 @@
       '';
     };
 
-    "org.freedesktop.dbus-system.plist" = {
-      enable = true;
-      text = ''
-        <?xml version='1.0' encoding='UTF-8'?>
-        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version='1.0'>
-        <dict>
-          <key>Label</key>
-          <string>org.freedesktop.dbus-system</string>
-          <key>ProgramArguments</key>
-          <array>
-            <string>/opt/local/bin/dbus-daemon</string>
-            <string>--system</string>
-            <string>--nofork</string>
-          </array>
-          <key>KeepAlive</key>
-          <true/>
-          <key>Disabled</key>
-          <true/>
-        </dict>
-        </plist>
-      '';
-    };
+    # "org.freedesktop.dbus-system.plist" = {
+    #   enable = true;
+    #   text = ''
+    #     <?xml version='1.0' encoding='UTF-8'?>
+    #     <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+    #     <plist version='1.0'>
+    #     <dict>
+    #       <key>Label</key>
+    #       <string>org.freedesktop.dbus-system</string>
+    #       <key>ProgramArguments</key>
+    #       <array>
+    #         <string>/opt/local/bin/dbus-daemon</string>
+    #         <string>--system</string>
+    #         <string>--nofork</string>
+    #       </array>
+    #       <key>KeepAlive</key>
+    #       <true/>
+    #       <key>Disabled</key>
+    #       <true/>
+    #     </dict>
+    #     </plist>
+    #   '';
+    # };
 
-    "org.pqrs.Karabiner-DriverKit-VirtualHIDDeviceClient.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-        <dict>
-          <key>Label</key>
-          <string>org.pqrs.Karabiner-DriverKit-VirtualHIDDeviceClient</string>
-          <key>AssociatedBundleIdentifiers</key>
-          <string>org.pqrs.Karabiner-DriverKit-VirtualHIDDeviceClient</string>
-          <key>Disabled</key>
-          <false/>
-          <key>KeepAlive</key>
-          <true/>
-          <key>ProcessType</key>
-          <string>Interactive</string>
-          <key>ProgramArguments</key>
-          <array>
-            <string>/Library/Application Support/org.pqrs/Karabiner-DriverKit-VirtualHIDDevice/Applications/Karabiner-DriverKit-VirtualHIDDeviceClient.app/Contents/MacOS/Karabiner-DriverKit-VirtualHIDDeviceClient</string>
-          </array>
-        </dict>
-        </plist>
-      '';
-    };
+    # "org.pqrs.Karabiner-DriverKit-VirtualHIDDeviceClient.plist" = {
+    #   enable = true;
+    #   text = ''
+    #     <?xml version="1.0" encoding="UTF-8"?>
+    #     <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+    #     <plist version="1.0">
+    #     <dict>
+    #       <key>Label</key>
+    #       <string>org.pqrs.Karabiner-DriverKit-VirtualHIDDeviceClient</string>
+    #       <key>AssociatedBundleIdentifiers</key>
+    #       <string>org.pqrs.Karabiner-DriverKit-VirtualHIDDeviceClient</string>
+    #       <key>Disabled</key>
+    #       <false/>
+    #       <key>KeepAlive</key>
+    #       <true/>
+    #       <key>ProcessType</key>
+    #       <string>Interactive</string>
+    #       <key>ProgramArguments</key>
+    #       <array>
+    #         <string>/Library/Application Support/org.pqrs/Karabiner-DriverKit-VirtualHIDDevice/Applications/Karabiner-DriverKit-VirtualHIDDeviceClient.app/Contents/MacOS/Karabiner-DriverKit-VirtualHIDDeviceClient</string>
+    #       </array>
+    #     </dict>
+    #     </plist>
+    #   '';
+    # };
 
-    "org.pqrs.karabiner.karabiner_grabber.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-        <dict>
-          <key>Label</key>
-          <string>org.pqrs.karabiner.karabiner_grabber</string>
-          <key>AssociatedBundleIdentifiers</key>
-          <string>org.pqrs.Karabiner-Elements.Settings</string>
-          <key>Disabled</key>
-          <false/>
-          <key>KeepAlive</key>
-          <true/>
-          <key>ProcessType</key>
-          <string>Interactive</string>
-          <key>ProgramArguments</key>
-          <array>
-            <string>/Library/Application Support/org.pqrs/Karabiner-Elements/bin/karabiner_grabber</string>
-          </array>
-        </dict>
-        </plist>
-      '';
-    };
+    # "org.pqrs.karabiner.karabiner_grabber.plist" = {
+    #   enable = true;
+    #   text = ''
+    #     <?xml version="1.0" encoding="UTF-8"?>
+    #     <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+    #     <plist version="1.0">
+    #     <dict>
+    #       <key>Label</key>
+    #       <string>org.pqrs.karabiner.karabiner_grabber</string>
+    #       <key>AssociatedBundleIdentifiers</key>
+    #       <string>org.pqrs.Karabiner-Elements.Settings</string>
+    #       <key>Disabled</key>
+    #       <false/>
+    #       <key>KeepAlive</key>
+    #       <true/>
+    #       <key>ProcessType</key>
+    #       <string>Interactive</string>
+    #       <key>ProgramArguments</key>
+    #       <array>
+    #         <string>/Library/Application Support/org.pqrs/Karabiner-Elements/bin/karabiner_grabber</string>
+    #       </array>
+    #     </dict>
+    #     </plist>
+    #   '';
+    # };
 
-    "org.pqrs.karabiner.karabiner_observer.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-        <dict>
-          <key>Label</key>
-          <string>org.pqrs.karabiner.karabiner_observer</string>
-          <key>AssociatedBundleIdentifiers</key>
-          <string>org.pqrs.Karabiner-Elements.Settings</string>
-          <key>Disabled</key>
-          <false/>
-          <key>KeepAlive</key>
-          <true/>
-          <key>ProgramArguments</key>
-          <array>
-            <string>/Library/Application Support/org.pqrs/Karabiner-Elements/bin/karabiner_observer</string>
-          </array>
-        </dict>
-        </plist>
-      '';
-    };
+    # "org.pqrs.karabiner.karabiner_observer.plist" = {
+    #   enable = true;
+    #   text = ''
+    #     <?xml version="1.0" encoding="UTF-8"?>
+    #     <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+    #     <plist version="1.0">
+    #     <dict>
+    #       <key>Label</key>
+    #       <string>org.pqrs.karabiner.karabiner_observer</string>
+    #       <key>AssociatedBundleIdentifiers</key>
+    #       <string>org.pqrs.Karabiner-Elements.Settings</string>
+    #       <key>Disabled</key>
+    #       <false/>
+    #       <key>KeepAlive</key>
+    #       <true/>
+    #       <key>ProgramArguments</key>
+    #       <array>
+    #         <string>/Library/Application Support/org.pqrs/Karabiner-Elements/bin/karabiner_observer</string>
+    #       </array>
+    #     </dict>
+    #     </plist>
+    #   '';
+    # };
   };
 }

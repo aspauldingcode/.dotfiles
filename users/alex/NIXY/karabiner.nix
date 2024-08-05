@@ -672,14 +672,14 @@
                       {
                         type = "basic";
                         from = {
-                          key_code = "backspace";
+                          key_code = "delete_or_backspace";
                           modifiers = { 
                             mandatory = ["left_command"]; 
                           };
                         };
                         to = [
                           {
-                            key_code = "backspace";
+                            key_code = "delete_or_backspace";
                             modifiers = ["left_option"];
                           }
                         ];
@@ -752,14 +752,14 @@
                       {
                         type = "basic";
                         from = {
-                          key_code = "backspace";
+                          key_code = "delete_or_backspace";
                           modifiers = { 
                             mandatory = ["left_command" "left_shift"]; 
                           };
                         };
                         to = [
                           {
-                            key_code = "backspace";
+                            key_code = "delete_or_backspace";
                             modifiers = ["left_option" "left_shift"];
                           }
                         ];

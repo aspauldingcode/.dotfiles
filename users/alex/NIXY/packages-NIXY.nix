@@ -193,14 +193,14 @@ in
       echo "User entered 'on' argument."
       echo "Turning on Single User Mode..."
       sudo nvram boot-args="-arm64e_preview_abi amfi_get_out_of_my_way=0x80 -v"
-      #Disable AutoBoot
-      sudo nvram AutoBoot=%00
+      # Disable AutoBoot
+      # sudo nvram auto-boot=false
     elif [[ "$1" == "off" ]]; then
       echo "User entered 'off' argument."
       echo "Turning off Single User Mode..."
       sudo nvram boot-args="-arm64e_preview_abi amfi_get_out_of_my_way=0x80 -v"
-      #Enable AutoBoot
-      sudo nvram AutoBoot=%01
+      # Disable AutoBoot
+      # sudo nvram auto-boot=false
     fi
     if [[ "$1" == "on" || "$1" == "off" ]]; then
       echo "Completed. Your boot args are listed below:"
