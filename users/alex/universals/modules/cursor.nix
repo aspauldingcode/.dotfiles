@@ -93,6 +93,7 @@ let
     "workbench.preferredHighContrastLightColorTheme" = "Default High Contrast Light";
     "workbench.preferredLightColorTheme" = "Visual Studio Light";
     "git.autofetch" = true;
+    "explorer.confirmDragAndDrop" = false;
     workbench.colorCustomizations = {
       "titleBar.activeBackground" = "#${config.colorScheme.colors.base01}";
       "titleBar.inactiveBackground" = "#${config.colorScheme.colors.base02}";

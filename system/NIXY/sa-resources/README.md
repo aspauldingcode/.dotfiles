@@ -6,11 +6,10 @@ It is backed up to my `.dotfiles` repo, where I attempt to make an edited theme 
 
 - [ ] change colors based on nix-colors
 - [ ] see if I can remove shadows
-- [ ] remove window borders
-- [ ] remove window buttons
-- [ ] remove window button spacing reserved for open/min/close to shift window title elements left-aligned
+- [x] remove window borders
+- [x] remove window buttons (using StopStopLightLight.bundle)
 - [ ] round vs square corner toggle option?
-- [ ] edit .car themes with nixos instead of themeengine or with asset catelog tinkerer.
+- [ ] edit .car themes with nix instead of themeengine or with asset catelog tinkerer.
 
 This will allow me to fully customize MacOS to be fully mine. 
 
@@ -49,8 +48,6 @@ devfs on /dev (devfs, local, nobrowse)
 /dev/disk4s1 on /System/Volumes/Data (apfs, local, journaled, nobrowse)
 ```
 To get the actual name of the system volume disk, remove the final “sX” from the device. In the preceding example, the name of the system volume disk is `/dev/disk4s5`.
-
-
 
 NOTE: So, for myself, to rephrase this nonsense, I run `mount` in terminal, and find the disk "/dev/diskxsxsx on / (xxxxx)" which is /dev/disk3s3s1 for me, and the system volume disk is actually just `/dev/disk3s3` on my system.
 

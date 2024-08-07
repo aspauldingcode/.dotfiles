@@ -1,42 +1,29 @@
 { nix-colors, ... }:
 
 {
-  #import other home-manager modules which are NIXSTATION64-specific
   imports = [
     nix-colors.homeManagerModules.default
-    ./packages-NIXSTATION64.nix
-    ./sway.nix
     #./../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
-    ./../universals/modules/firefox.nix
     ./../universals/modules/cursor.nix
     ./../universals/modules/discord.nix
-    ./theme.nix # theme of system.
-    ./git.nix
-    ./alacritty.nix
-    ./yazi/yazi.nix
-    ./mimeapps.nix
-    ./mako.nix
-    # ./discocss.nix
-    # ./betterdiscord.nix
-    ./shells.nix
-    # ./zellij.nix
-    ./btop.nix # btop theme!
+    ./../universals/modules/firefox.nix
+    ./../universals/modules/shells.nix
+    ./../universals/modules/btop.nix
+    ./../universals/modules/git.nix
+    ./modules/alacritty.nix
+    ./modules/mako.nix
+    ./modules/mimeapps.nix
+    ./modules/packages.nix
+    ./modules/sway.nix
+    ./modules/theme.nix # theme of system.
+    ./modules/yazi.nix
+    ./scripts-NIXSTATION64.nix
   ];
 
   home = {
     username = "alex";
     homeDirectory = "/home/alex";
-    stateVersion = "23.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-    # shellAliases = {
-    #   python = "python3.11";
-    #   vim = "nvim";
-    #   vi = "nvim";
-    #   reboot = "sudo systemctl reboot";
-    #   rb = "sudo systemctl reboot";
-    #   shutdown = "sudo shutdown now";
-    #   sd = "sudo shutdown now";
-    #   l = "ls";
-    # };
+    stateVersion = "24.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   };
 
   services.ssh-agent.enable = true;

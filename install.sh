@@ -8,15 +8,13 @@ if [ $# -gt 0 ]
 fi
 export EDITOR=nvim
 
-ARGS="--show-trace --option eval-cache false"
+ARGS="--show-trace --option eval-cache false --experimental-features 'nix-command flakes'"
 
 nix-shell -p git --command "git clone https://github.com/aspauldingcode/.dotfiles.git $SCRIPT_DIR"
 
 # Generate hardware config for new system
-mkdir -p $SCRIPT_DIR/system/$hostname/
-sudo nixos-generate-config --show-hardware-config > $SCRIPT_DIR/system/$hostname/hardware-configuration.nix
-
-# Copy current system config if the one in doesn't exist
+mkdir -p $SCRIPT_DIR/system/$(hostname)/
+sudo nixos-generate-config --show-hardware-config > $SCRIPT_DIR/system/$(hostname)/hardware-configuration-$(hostname).nix
 
 # rebuild.
-sudo nixos-rebuild switch $ARGS --flake .#$hostname
+sudo nixos-rebuild switch $ARGS --flake .#$(hostname)

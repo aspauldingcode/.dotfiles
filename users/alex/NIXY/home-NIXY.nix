@@ -11,32 +11,30 @@
 {
   imports = [
     nix-colors.homeManagerModules.default
-    ./packages-NIXY.nix
+    ./scripts-NIXY.nix
     # ./../extraConfig/nvim/nixvim.nix # FIXME: BROKEN atm
     ./../universals/modules/firefox.nix
     ./../universals/modules/cursor.nix # vscode with ai
     ./../universals/modules/discord.nix
-    ./theme.nix
-    ./xcode/xcode.nix # FIXME: use nix-color theme
-    ./alacritty.nix
-    ./kitty.nix
-    ./yazi/yazi.nix
-    ./git.nix
-    ./maco.nix
-    ./instantview.nix
-    # ./fish.nix
-    # ./zsh.nix
-    ./shells.nix
-    ./karabiner.nix
-    ./cava.nix
-    #./zellij.nix
-    ./btop.nix
-    ./xinit.nix
-    ./i3.nix
-    ./qutebrowser.nix
-    ./sketchybar/sketchybar.nix
-    ./yabai.nix # contains skhd and borders config.
-    ./phoenix/phoenix.nix # new window-manager for macOS!
+    ./../universals/modules/shells.nix
+    ./../universals/modules/btop.nix
+    ./../universals/modules/git.nix
+    ./modules/theme.nix
+    ./modules/xcode/xcode.nix # FIXME: use nix-color theme
+    ./modules/alacritty.nix
+    ./modules/kitty.nix
+    ./modules/yazi.nix
+    ./modules/maco.nix
+    ./modules/packages-NIXY.nix
+    ./modules/instantview.nix
+    ./modules/karabiner.nix
+    ./modules/cava.nix
+    ./modules/xinit.nix
+    ./modules/i3.nix
+    ./modules/qutebrowser.nix
+    ./modules/sketchybar/sketchybar.nix
+    ./modules/yabai.nix # contains skhd and borders config.
+    ./modules/phoenix/phoenix.nix # new window-manager for macOS!
   ];
 
   home = {
@@ -53,22 +51,9 @@
       sd = "sudo shutdown -h now";
       l = "ls";
     };
-  };
-
-  # disable Volume/Brightness HUD on macOS at login!
-  launchd.agents.xdg_cache_home = {
-    enable = true;
-    config = {
-      Program = "/bin/launchctl";
-      ProgramArguments = [
-        "/bin/launchctl"
-        "unload"
-        "-F"
-        "/System/Library/LaunchAgents/com.apple.OSDUIHelper.plist"
-      ];
-      RunAtLoad = true;
-      StandardErrorPath = "/dev/null";
-      StandardOutPath = "/dev/null";
+    file."Library/Application Support/Mousecape/capes" = {
+      target = "Library/Application Support/Mousecape/capes/";
+      source = ../extraConfig/cursors-macOS;
     };
   };
 
@@ -78,23 +63,36 @@
     ssh.addKeysToAgent = true;
   };
 
-  # launchd.agents.notificationcenter = {
-  #   enable = true;
-  #   config = {
-  #     ProgramArguments = [
-  #       "/bin/launchctl"
-  #       "unload"
-  #       "-w"
-  #       "/System/Library/LaunchAgents/com.apple.notificationcenterui.plist"
-  #     ];
-  #     RunAtLoad = true;
-  #     StandardOutPath = "/dev/null";
-  #     StandardErrorPath = "/dev/null";
-  #   };
-  # };
-
-  home.file."Library/Application Support/Mousecape/capes" = {
-    target = "Library/Application Support/Mousecape/capes/";
-    source = ../extraConfig/cursors-macOS;
+  # disable Volume/Brightness HUD on macOS at login!
+  launchd.agents = { 
+    xdg_cache_home = {
+      enable = true;
+      config = {
+        Program = "/bin/launchctl";
+        ProgramArguments = [
+          "/bin/launchctl"
+          "unload"
+          "-F"
+          "/System/Library/LaunchAgents/com.apple.OSDUIHelper.plist"
+        ];
+        RunAtLoad = true;
+        StandardErrorPath = "/dev/null";
+        StandardOutPath = "/dev/null";
+      };
+    };
+    notificationcenter = {
+      enable = true;
+      config = {
+        ProgramArguments = [
+          "/bin/launchctl"
+          "unload"
+          "-w"
+          "/System/Library/LaunchAgents/com.apple.notificationcenterui.plist"
+        ];
+        RunAtLoad = true;
+        StandardOutPath = "/dev/null";
+        StandardErrorPath = "/dev/null";
+      };
+    };
   };
 }

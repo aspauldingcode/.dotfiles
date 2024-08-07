@@ -33,6 +33,10 @@
     nur = {
       url = "github:nix-community/nur";
     };
+
+    nix-std = {
+      url = "github:chessai/nix-std";
+    };
   };
 
   outputs =
@@ -48,9 +52,11 @@
       mobile-nixos,
       apple-silicon,
       nur,
+      nix-std,
     }:
     let
       inherit (self) inputs;
+      std = nix-std.lib;
       # Define common specialArgs for nixosConfigurations and homeConfigurations
       commonSpecialArgs = {
         inherit
@@ -63,6 +69,7 @@
           apple-silicon
           nur
           self
+          std
           ;
       };
       commonExtraSpecialArgs = {
@@ -75,6 +82,7 @@
 	  apple-silicon
           nur
           self
+          std
           ;
       };
       systems = [
@@ -105,7 +113,7 @@
           };
           specialArgs = commonSpecialArgs; # // { extraPkgs = [ mobile-nixos ]; };
           modules = [
-            ./system/NIXSTATION64/configuration.nix
+            ./system/NIXSTATION64/configuration-NIXSTATION64.nix
             home-manager.nixosModules.home-manager
             {
               home-manager = {
@@ -123,7 +131,7 @@
         NIXEDUP = nixpkgs.lib.nixosSystem {
           pkgs = nixpkgs.legacyPackages.aarch64-linux;
           specialArgs = commonSpecialArgs;
-          modules = [ ./system/NIXEDUP/configuration.nix ];
+          modules = [ ./system/NIXEDUP/configuration-NIXEDUP.nix ];
         };
         NIXY2 = nixpkgs.lib.nixosSystem {
           pkgs = import nixpkgs {
@@ -143,7 +151,7 @@
           };
           specialArgs = commonSpecialArgs; # // { extraPkgs = [ mobile-nixos ]; };
           modules = [
-            ./system/NIXY2/configuration.nix
+            ./system/NIXY2/configuration-NIXY2.nix
             home-manager.nixosModules.home-manager
             {
               home-manager = {
@@ -247,7 +255,7 @@
           };
           specialArgs = commonSpecialArgs;
           modules = [
-            ./system/NIXY/darwin-configuration.nix
+            ./system/NIXY/darwin-configuration-NIXY.nix
             home-manager.darwinModules.home-manager
             {
               home-manager = {
