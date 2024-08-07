@@ -204,13 +204,13 @@
             resample.quality = 1;
           };
         };
-        wireplumber.bluetoothEnhancements = {
+      };
+      wireplumber.extraConfig.bluetoothEnhancements = {
           "monitor.bluez.properties" = {
             "bluez5.enable-sbc-xq" = true;
             "bluez5.enable-msbc" = true;
             "bluez5.enable-hw-volume" = true;
             "bluez5.roles" = [ "hsp_hs" "hsp_ag" "hfp_hf" "hfp_ag" ];
-          };
         };
       };
     };
@@ -224,20 +224,14 @@
     };
     desktopManager = {
       plasma6.enable = false;
-      xfce = {
-        enable = true;
-        enableScreensaver = false;
-      };
-      plasma5 = {
-        enable = false;
-        mobile.enable = false; # for login remote
-        runUsingSystemd = false;
-        useQtScaling = false; # enable HIDPI scaling in qt
-      };
     };
     xserver = {
       enable = true;
       videoDrivers = [ "amdgpu" ];
+      desktopManager.xfce = {
+        enable = true;
+        enableScreensaver = false;
+      };
     };
     xrdp = {
       enable = true;
@@ -341,7 +335,7 @@
           # "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINKfaO41wp3p/dkpuqIP6tj78SCrn2RSQUG2OSiHAv7j aspauldingcode@gmail.com"
           # TODO: Add your SSH public key(s) here, if you plan on using SSH to connect
         ];
-        keyFiles = [ ./../extraConfig/id_ed25519.pub ];
+        # keyFiles = [ ./../extraConfig/id_ed25519.pub ];
       };
       shell = pkgs.zsh;
     };

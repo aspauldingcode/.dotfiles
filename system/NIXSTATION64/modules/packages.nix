@@ -117,7 +117,6 @@
     virt-manager
     uxplay
 
-    (pkgs.callPackage ./hybridbar.nix { })
     (pkgs.callPackage ./cursor.nix { }) # FIXME: broken atm.
   ];
 }
