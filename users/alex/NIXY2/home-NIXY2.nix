@@ -4,20 +4,20 @@
   imports = [
     nix-colors.homeManagerModules.default
     #./../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
-    #./../universals/modules/cursor.nix
-    #./../universals/modules/discord.nix
-    #./../universals/modules/firefox.nix
-    #./../universals/modules/shells.nix
-    #./../universals/modules/btop.nix
-    #./../universals/modules/git.nix
-    #./../universals/modules/yazi.nix
-    #./modules/alacritty.nix
-    #./modules/mako.nix
-    #./modules/mimeapps.nix
-    #./modules/packages.nix
-    #./modules/sway.nix
-    #./modules/theme.nix # theme of system.
-    #./scripts-NIXY2.nix
+    ./../universals/modules/cursor.nix
+    ./../universals/modules/discord.nix
+    ./../universals/modules/firefox.nix
+    ./../universals/modules/shells.nix
+    ./../universals/modules/btop.nix
+    ./../universals/modules/git.nix
+    ./../universals/modules/yazi.nix
+    ./modules/alacritty.nix
+    ./modules/mako.nix
+    ./modules/mimeapps.nix
+    ./modules/packages.nix
+    ./modules/sway.nix
+    ./modules/theme.nix # theme of system.
+    ./scripts-NIXY2.nix
   ];
 
   home = {

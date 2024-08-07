@@ -13,15 +13,6 @@
 
   home = {
     packages = with pkgs; [
-      # Development tools
-      arduino-language-server
-      cmake-language-server
-      jdt-language-server
-      kotlin-language-server
-      lua-language-server
-      vscode
-      quickemu
-      
       # System utilities
       avahi
       libnotify
@@ -30,7 +21,6 @@
       fd
       gcal
       gimp
-      home-manager
       unstable.pmbootstrap
       jq
       lsof
@@ -56,10 +46,10 @@
       libusbmuxd
       obsidian
       rofi-wayland-unwrapped
-      zoom-us
+      #zoom-us # NOT WORKING on aarch64-linux!
 
       # Multimedia and graphics
-      blender-hip
+      blender
       brave
       cava
       ffmpeg-full
@@ -67,11 +57,11 @@
       kdePackages.kdenlive
       obs-studio
       obs-studio-plugins.obs-vkcapture
-      obs-studio-plugins.wlrobs
-      spotify-unwrapped
+      #obs-studio-plugins.wlrobs # NOT WORKING on aarch64-linux!
+      #spotify-unwrapped # NOT AVAILABLE on aarch64-linux!
       sway-contrib.grimshot
-      #yt-dlp # youtube-dl fork
-      #tartube-yt-dlp # GUI to use yt-dlp
+      yt-dlp # youtube-dl fork # MARKED INSECURE!
+      # tartube-yt-dlp # GUI to use yt-dlp. MARKED INSECURE!
 
       # Desktop environment and window management
       albert
@@ -107,11 +97,11 @@
       wtype
 
       # Gaming and emulation
-      android-studio
+      # android-studio # DOESN'T WORK ON aarch64-linux!
       element
       element-desktop
-      wineasio
-      wineWow64Packages.waylandFull
+      #wineasio # NOT WORKING on asahi!
+      # wineWow64Packages.waylandFull # NOT WORKING on aarch64-linux!
       winetricks
 
       # Fonts and theming
@@ -120,7 +110,7 @@
       sassc
 
       # Miscellaneous
-      beeper
+      #beeper # DOESN'T WORK ON aarch64-linux!
       lolcat
       pfetch
       ruby_3_3
