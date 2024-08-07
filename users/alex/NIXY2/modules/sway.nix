@@ -262,6 +262,9 @@
       inherit (config.colorscheme) colors;
     in ''
       set $mod Mod4
+
+	exec "restart-input-remapper"
+
         # Idle configuration
         exec swayidle -w \
         timeout 7320 'swaylock -f -c 000000' \

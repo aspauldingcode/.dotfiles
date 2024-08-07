@@ -18,6 +18,7 @@ ORDER:
   - 'Ancor Communications Inc VE248 G1LMQS085722' # left with portrait rotation
   - 'Ancor Communications Inc ASUS VE278 JCLMTF141603' # middle
   - 'Ancor Communications Inc ASUS VE278 J7LMTF164099' # right
+  - 'eDP-1' # Built in m1 macbook screen
   #- 'DP-2'
   #- 'monitor description'
   #- 'HDMI-1'
@@ -25,7 +26,7 @@ ORDER:
   # Regexes are encouraged, allowing for one to easily create generic rules e.g. '!^DP-', which will often be sufficient to put external monitors at the top of a column.
 
 # Enable scaling, overrides AUTO_SCALE and SCALE
-SCALING: TRUE
+# SCALING: TRUE
 
 # The default is to scale each display by DPI.
 # This may be disabled and scale 1 will be used, unless a SCALE has been specified.
@@ -37,8 +38,8 @@ AUTO_SCALE_MIN: 1.0
 
 # Auto scale may be overridden for each display.
 SCALE:
-  #- NAME_DESC: 'monitor description'
-  #  SCALE: 1.75
+  - NAME_DESC: 'eDP-1'
+    SCALE: 2.0
 
 # Override the preferred mode.
 # WARNING: this may result in an unusable display. See https://github.com/alex-courtis/way-displays#known-issues-with-workarounds
