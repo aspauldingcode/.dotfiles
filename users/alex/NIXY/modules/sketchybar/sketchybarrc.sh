@@ -391,4 +391,5 @@ sketchybar --update
 # Fetch the menu items from sketchybar query
 sleep 4
 /opt/homebrew/bin/sketchybar --query default_menu_items | $jq -r '.[]' | while IFS= read -r item; do /opt/homebrew/bin/sketchybar --set "$item" alias.update_freq=0; done && sleep 4
-$yabai -m config menubar_opacity 0.0
+# $yabai -m config menubar_opacity 0.0
+$toggle_sketchybar off

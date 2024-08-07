@@ -31,7 +31,7 @@
       fish.enable = true;
       neovim = {
         enable = true;
-        extraConfig = lib.fileContents ../../extraConfig/nvim/init.lua;
+        #extraConfig = lib.fileContents ../../extraConfig/nvim/init.lua;
       };
     };
 
@@ -39,4 +39,3 @@
     systemd.user.startServices = "sd-switch"; # TODO: UPDATE IF USING DIFFERENT BOOTLOADER!
   };
 }
-

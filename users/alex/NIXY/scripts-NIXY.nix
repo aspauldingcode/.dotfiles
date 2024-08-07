@@ -43,16 +43,25 @@ in
 
     # set-nvram-flags FIXME: UPDATE FLAGS so Karabiner still works.
     (pkgs.writeShellScriptBin "set-nvram-flags" ''
+    # TLDR; DO NOT DISABLE AMFI.
+
+    # So that this doesn't become an AltStore comment in a Karabiner-Elements thread, 
+    # you can clear the NVRAM to reset AMFI if you do have it enabled. See the contents 
+    # of your NVRAM boot arguments with sudo nvram -p | grep boot-args. 
+    # On Apple silicon devices, clear it with sudo nvram -c, before rebooting to check 
+    # if Karabiner-Elements has come back to life.
+
+
     if [[ "$1" == "on" ]]; then
       echo "User entered 'on' argument."
-      echo "Turning on Single User Mode..."
-      sudo nvram boot-args="-arm64e_preview_abi amfi_get_out_of_my_way=0x80 -v"
+      echo "Enabling custom boot args..."
+      sudo nvram boot-args="-arm64e_preview_abi -v" # amfi_get_out_of_my_way=0x80 -v"
       # Disable AutoBoot
       # sudo nvram auto-boot=false
     elif [[ "$1" == "off" ]]; then
       echo "User entered 'off' argument."
-      echo "Turning off Single User Mode..."
-      sudo nvram boot-args="-arm64e_preview_abi amfi_get_out_of_my_way=0x80 -v"
+      echo "Disabling custom boot args..."
+      sudo nvram -c
       # Disable AutoBoot
       # sudo nvram auto-boot=false
     fi
@@ -87,7 +96,7 @@ in
       ${sketchybar} --reload # allows start_programs_correctly" package to run.
       rm /tmp/fullscreen_state /tmp/dock_state /tmp/gaps_state /tmp/sketchybar_state /tmp/menubar_state /tmp/darkmode_state  #remove statefiles
       # echo -ne '\n' | sudo pkill "Background Music" && "/Applications/Background Music.app/Contents/MacOS/Background Music" > /dev/null 2>&1 &
-      dismiss-notifications
+      # dismiss-notifications
       # NOT WORKING CORRECTLY: (Should only kill apps that are not injected with paintcan..)
       # if [ ! -f "/tmp/programs_started_state" ]; then
       #   ${pkgs.start_programs_correctly}/bin/start_programs_correctly #run only once.
@@ -122,27 +131,6 @@ in
       done > "$output_file"
 
       echo "Output saved to: $output_file"
-
-    '')
-
-    #assign-inputs
-    (pkgs.writeShellScriptBin "assign-inputs" ''
-      # Specify the input file path
-      input_file=~/.dotfiles/users/alex/NIXY/sketchybar/cal-output.txt
-
-      # Read input from the file
-      while IFS= read -r line; do
-          # Extract variable name and content
-          var_name=$(echo "$line" | cut -d ':' -f 1)
-          var_content="$(echo "$line" | cut -d ':' -f 2- | sed 's/^[[:space:]]*//')"
-
-          # Assign content to variable
-          declare "$var_name=$var_content"
-
-          # Print variable name and content
-          echo "Variable: $var_name"
-          echo "Content: $var_content"
-      done < "$input_file"
 
     '')
 
