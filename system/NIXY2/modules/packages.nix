@@ -9,7 +9,7 @@
 
 {
   programs = {
-    darling.enable = true; # install darling with setuid wrapper
+    darling.enable = false; # install darling with setuid wrapper. ONLY AVAILABLE ON x86 FOR NOW!
     thunar = {
       enable = true;
       plugins = with pkgs.xfce; [
@@ -117,6 +117,6 @@
     virt-manager
     uxplay
 
-    (pkgs.callPackage ./cursor.nix { }) # FIXME: broken atm.
+    #(pkgs.callPackage ./cursor.nix { }) # FIXME: broken atm.
   ];
 }

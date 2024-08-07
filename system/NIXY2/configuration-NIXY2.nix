@@ -14,12 +14,11 @@
     ./scripts-NIXY2.nix
     apple-silicon.nixosModules.apple-silicon-support
     ./modules/packages.nix
-    ./modules/virtual-machines.nix
+    #./modules/virtual-machines.nix
     ./modules/theme.nix
   ];
 
   boot = {
-    kernelPackages = pkgs.linuxPackages-rt_latest;
     loader = {
       timeout = 0;
       systemd-boot.enable = true; # switch to dinit for mac/linux/bsd?
@@ -66,17 +65,12 @@
     opengl = {
       enable = true;
       driSupport = true; # This is already enabled by default
-      driSupport32Bit = true; # For 32 bit applications
       extraPackages = with pkgs; [
-        rocmPackages.clr.icd
       ];
       extraPackages32 = with pkgs; [];
     };
     pulseaudio.enable = false;
   };
-
-  # https://nixos.wiki/wiki/AMD_GPU#HIP
-  systemd.tmpfiles.rules = [ "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}" ];
 
   sound.enable = true;
 
@@ -113,13 +107,13 @@
       };
     };
     light.enable = true;
-    actkbd = {
-      enable = true;
-      bindings = [
-        { keys = [ 225 ]; events = [ "key" ]; command = "/run/current-system/sw/bin/light -A 10";  }
-        { keys = [ 224 ]; events = [ "key" ]; command = "/run/current-system/sw/bin/light -U 10";  }      
-      ];
-    };
+    #actkbd = {
+    #  enable = true;
+    #  bindings = [
+    #    { keys = [ 225 ]; events = [ "key" ]; command = "/run/current-system/sw/bin/light -A 10";  }
+#        { keys = [ 224 ]; events = [ "key" ]; command = "/run/current-system/sw/bin/light -U 10";  }      
+ #     ];
+    #};
     fish.enable = false;
     zsh.enable = true;
     ssh.enableAskPassword = false;
@@ -185,14 +179,14 @@
             resample.quality = 1;
           };
         };
-        wireplumber.bluetoothEnhancements = {
+	};
+        wireplumber.extraConfig.bluetoothEnhancements = {
           "monitor.bluez.properties" = {
             "bluez5.enable-sbc-xq" = true;
             "bluez5.enable-msbc" = true;
             "bluez5.enable-hw-volume" = true;
             "bluez5.roles" = [ "hsp_hs" "hsp_ag" "hfp_hf" "hfp_ag" ];
           };
-        };
       };
     };
 
@@ -356,7 +350,7 @@
   virtualisation = {
     docker.enable = true;
     libvirtd.enable = true;
-    waydroid.enable = true;
+    waydroid.enable = false; #FIXME asahi linux?
     lxd.enable = true;
   };
 

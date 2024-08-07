@@ -21,7 +21,6 @@
       lua-language-server
       vscode
       quickemu
-      quickgui
       
       # System utilities
       avahi
