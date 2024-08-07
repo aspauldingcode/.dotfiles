@@ -76,7 +76,7 @@
 
   programs = {
     regreet = {
-      enable = true;
+      enable = false; # BROKEN in asahi?
       package = pkgs.regreet;
       settings = {
         default_session = {
@@ -138,7 +138,7 @@
       settings = {
         default_session = {
           # command = "${pkgs.greetd.greetd}/bin/agreety --cmd sway";
-          command = "${pkgs.sway}/bin/sway --config /etc/greetd/sway-config";
+          command = "${pkgs.sway}/bin/sway --config ${../../system/NIXY2/modules/greetd/sway-config}";
           user = "greeter";
         };
       };
