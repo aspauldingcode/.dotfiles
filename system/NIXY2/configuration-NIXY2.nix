@@ -74,6 +74,21 @@
 
   sound.enable = true;
 
+  networking = { 
+    wireless.iwd = { 
+      enable = true;
+      settings = {
+        IPv6 = {
+          Enabled = false;
+        };
+        Settings = {
+          AutoConnect = true;
+        };
+      };
+    };
+    networkmanager.wifi.backend = "iwd"; # for asahi wifi!
+  };
+
   programs = {
     regreet = {
       enable = false; # BROKEN in asahi?
@@ -107,13 +122,6 @@
       };
     };
     light.enable = true;
-    #actkbd = {
-    #  enable = true;
-    #  bindings = [
-    #    { keys = [ 225 ]; events = [ "key" ]; command = "/run/current-system/sw/bin/light -A 10";  }
-#        { keys = [ 224 ]; events = [ "key" ]; command = "/run/current-system/sw/bin/light -U 10";  }      
- #     ];
-    #};
     fish.enable = false;
     zsh.enable = true;
     ssh.enableAskPassword = false;
@@ -133,6 +141,7 @@
   ];
 
   services = {
+    #services.gnome3.gnome-keyring.enable = true; # for asahi wifi!
     greetd = {
       enable = true; # use Greetd along with ReGreet gtk themer.
       settings = {
@@ -144,6 +153,11 @@
       };
       vt = 1; # signed integer
     };
+
+    input-remapper = {
+      enable = true;
+    };
+
 
     pipewire = {
       enable = true;

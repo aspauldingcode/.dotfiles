@@ -53,6 +53,11 @@ in
       initExtra = fullSetup + ''
         setopt APPEND_HISTORY
       '';
+      shellAliases = {
+        ll = "ls -l";
+        la = "ls -a";
+	input-remapper = "input-remapper-gtk -d";
+      };
     };
 
     bash = {
@@ -60,6 +65,11 @@ in
       initExtra = fullSetup + ''
         shopt -s histappend
       '';
+      shellAliases = {
+        ll = "ls -l";
+        la = "ls -a";
+	input-remapper = "input-remapper-gtk -d";
+      };
     };
 
     fish = {
@@ -75,6 +85,11 @@ in
         set -Ux LIBRARY_PATH "$LIBRARY_PATH:/opt/homebrew/opt/libiconv/lib"
       '';
       interactiveShellInit = ''set fish_greeting ""'';
+      shellAliases = {
+        ll = "ls -l";
+        la = "ls -a";
+	input-remapper = "input-remapper-gtk -d";
+      };
     };
 
     nushell = {
@@ -116,6 +131,7 @@ in
       shellAliases = {
         ll = "ls -l";
         la = "ls -a";
+	input-remapper = "input-remapper-gtk -d";
       } // lib.optionalAttrs pkgs.stdenv.isDarwin {
         pkg-config = "pkgconf";
       };

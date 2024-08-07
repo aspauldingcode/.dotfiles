@@ -16,6 +16,7 @@
     ./modules/mimeapps.nix
     ./modules/packages.nix
     ./modules/sway.nix
+    ./modules/input-remapper.nix
     ./modules/theme.nix # theme of system.
     ./scripts-NIXY2.nix
   ];
