@@ -19,11 +19,11 @@
     ./../universals/modules/shells.nix
     ./../universals/modules/btop.nix
     ./../universals/modules/git.nix
+    ./../universals/modules/yazi.nix
     ./modules/theme.nix
     ./modules/xcode/xcode.nix # FIXME: use nix-color theme
     ./modules/alacritty.nix
     ./modules/kitty.nix
-    ./modules/yazi.nix
     ./modules/maco.nix
     ./modules/packages-NIXY.nix
     ./modules/instantview.nix

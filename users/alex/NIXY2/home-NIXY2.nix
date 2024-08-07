@@ -10,13 +10,13 @@
     ./../universals/modules/shells.nix
     ./../universals/modules/btop.nix
     ./../universals/modules/git.nix
+    ./../universals/modules/yazi.nix
     ./modules/alacritty.nix
     ./modules/mako.nix
     ./modules/mimeapps.nix
     ./modules/packages.nix
     ./modules/sway.nix
     ./modules/theme.nix # theme of system.
-    ./modules/yazi.nix
     ./scripts-NIXY2.nix
   ];
 

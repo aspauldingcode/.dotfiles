@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 
 # yazi configuration!
+# FIXME: why is yazi broken on nixos? 
 {
   programs.yazi = {
     enable = true;

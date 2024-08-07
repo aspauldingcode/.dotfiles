@@ -1,5 +1,9 @@
 { config, pkgs, lib, ... }:
 
+
+# sudo: /run/current-system/sw/bin/sudo must be owned by uid 0 and have the setuid bit set
+# on nixos means use /run/wrappers/bin/sudo, not /run/current-system/sw/bin/sudo
+
 let
   commonSetup = ''
     # Common environment and path settings
@@ -8,6 +12,7 @@ let
     export PATH="/run/current-system/sw/bin:$PATH"
     export PATH="/nix/var/nix/profiles/default/bin:$PATH"
     export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+    export PATH="/run/wrappers/bin:$PATH"
     export EDITOR=nvim
     export VISUAL="$EDITOR"
     export DISPLAY=:0
@@ -88,6 +93,7 @@ in
           "/bin"
           "/usr/sbin"
           "/sbin"
+          "/run/wrappers/bin"
         ] ++ lib.optionals pkgs.stdenv.isDarwin [
           "/Applications/flameshot.app/Contents/MacOS"
           "/opt/X11/bin"
