@@ -619,6 +619,29 @@
         fi
         exit 1
       '')
+
+      
+# restart-input-remapper
+(pkgs.writeShellScriptBin "restart-input-remapper" ''
+  sudo pkill input-remapper || log "No running input-remapper processes found."
+
+  pkexec input-remapper-control --command start-reader-service -d
+
+  # Wait briefly to ensure the service has time to start
+  sleep 2
+
+  # Check if the service is running
+  if ! pgrep -f "input-remapper-reader-service" > /dev/null; then
+    log "Error: input-remapper service did not start correctly."
+    exit 1
+  fi
+
+  # Apply the preset for the specified device
+  retry input-remapper-control -d --command start --device "Apple Internal Keyboard / Trackpad" --preset swap_internal_mod_keys
+
+  log "Input-remapper service restarted successfully."
+'')
+
     ];
   };
 }
