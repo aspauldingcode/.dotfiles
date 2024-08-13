@@ -19,6 +19,7 @@
   ];
 
   boot = {
+    kernel.sysctl."net.ipv4.ip_forward" = true;
     loader = {
       timeout = 0;
       systemd-boot.enable = true; # switch to dinit for mac/linux/bsd?
@@ -39,9 +40,7 @@
       theme = "rings";
       themePackages = with pkgs; [
         # By default we would install all themes
-        (adi1090x-plymouth-themes.override {
-          selected_themes = [ "rings" ];
-        })
+        (adi1090x-plymouth-themes.override { selected_themes = [ "rings" ]; })
       ];
     };
   };
@@ -65,17 +64,16 @@
     opengl = {
       enable = true;
       driSupport = true; # This is already enabled by default
-      extraPackages = with pkgs; [
-      ];
-      extraPackages32 = with pkgs; [];
+      extraPackages = with pkgs; [ ];
+      extraPackages32 = with pkgs; [ ];
     };
     pulseaudio.enable = false;
   };
 
   sound.enable = true;
 
-  networking = { 
-    wireless.iwd = { 
+  networking = {
+    wireless.iwd = {
       enable = true;
       settings = {
         IPv6 = {
@@ -86,7 +84,27 @@
         };
       };
     };
-    networkmanager.wifi.backend = "iwd"; # for asahi wifi!
+    interfaces."usb" = {
+	useDHCP = false;
+	ipv4.addresses = [ {
+	    address = "192.168.7.1";
+	    prefixLength = 24;
+	} ];
+    };
+    networkmanager = {
+      enable = true;
+      wifi.backend = "iwd"; # for asahi wifi!
+      dns = "dnsmasq";
+    };
+    firewall = {
+	enable = true;
+	extraCommands = ''
+    # Replace "eth0" with your primary network interface
+    iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+    iptables -A FORWARD -i eth0 -o usb0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+    iptables -A FORWARD -i usb0 -o eth0 -j ACCEPT
+  '';
+    };
   };
 
   programs = {
@@ -113,8 +131,14 @@
           theme_name = "Adwaita";
         };
         commands = {
-          reboot = [ "systemctl" "reboot" ];
-          poweroff = [ "systemctl" "poweroff" ];
+          reboot = [
+            "systemctl"
+            "reboot"
+          ];
+          poweroff = [
+            "systemctl"
+            "poweroff"
+          ];
         };
         appearance = {
           greeting_msg = "Welcome back!";
@@ -141,6 +165,13 @@
   ];
 
   services = {
+    dnsmasq = { 
+      enable = true;
+      extraConfig = ''
+      interface=usb0
+      dhcp-range=192.168.7.2,192.168.7.10,12h
+    '';
+    };
     #services.gnome3.gnome-keyring.enable = true; # for asahi wifi!
     greetd = {
       enable = true; # use Greetd along with ReGreet gtk themer.
@@ -157,7 +188,6 @@
     input-remapper = {
       enable = true;
     };
-
 
     pipewire = {
       enable = true;
@@ -193,14 +223,19 @@
             resample.quality = 1;
           };
         };
-	};
-        wireplumber.extraConfig.bluetoothEnhancements = {
-          "monitor.bluez.properties" = {
-            "bluez5.enable-sbc-xq" = true;
-            "bluez5.enable-msbc" = true;
-            "bluez5.enable-hw-volume" = true;
-            "bluez5.roles" = [ "hsp_hs" "hsp_ag" "hfp_hf" "hfp_ag" ];
-          };
+      };
+      wireplumber.extraConfig.bluetoothEnhancements = {
+        "monitor.bluez.properties" = {
+          "bluez5.enable-sbc-xq" = true;
+          "bluez5.enable-msbc" = true;
+          "bluez5.enable-hw-volume" = true;
+          "bluez5.roles" = [
+            "hsp_hs"
+            "hsp_ag"
+            "hfp_hf"
+            "hfp_ag"
+          ];
+        };
       };
     };
 
@@ -364,7 +399,7 @@
   virtualisation = {
     docker.enable = true;
     libvirtd.enable = true;
-    waydroid.enable = false; #FIXME asahi linux?
+    waydroid.enable = false; # FIXME asahi linux?
     lxd.enable = true;
   };
 
@@ -377,7 +412,7 @@
     activationScripts.script.text = ''
       cp /home/alex/.dotfiles/users/alex/face.png /var/lib/AccountsService/icons/alex
       cp /home/alex/.dotfiles/users/susu/face.png /var/lib/AccountsService/icons/susu
-      
+
       # adds way-displays configuration
       cd ${../../system/NIXY2/modules/way-displays}
       find . -type d -exec mkdir -p /etc/way-displays/{} \;

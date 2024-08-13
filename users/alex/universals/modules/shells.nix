@@ -155,8 +155,8 @@ in
             alignment = "left";
             segments = [
               {
-                background = "#${colors.base0B}";
-                foreground = "#${colors.base00}";
+                background = "#${colors.base01}";
+                foreground = "#${colors.base05}";
                 style = "powerline";
                 template = "{{ if .WSL }}WSL at{{ end }} {{.Icon}} ";
                 type = "os";
@@ -173,7 +173,7 @@ in
                 type = "path";
               }
               {
-                background = "#${colors.base08}";
+                background = "#${colors.base0B}";
                 background_templates = [
                   "{{ if or (.Working.Changed) (.Staging.Changed) }}#${colors.base09}{{ end }}"
                   "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#${colors.base0A}{{ end }}"
@@ -277,7 +277,7 @@ in
               }
               {
                 background = "#${colors.base03}";
-                foreground = "#${colors.base00}";
+                foreground = "#${colors.base05}";
                 powerline_symbol = "";
                 style = "powerline";
                 template = " {{ .Name }} ";

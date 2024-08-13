@@ -74,7 +74,6 @@
         [ -f /tmp/gaps_state ] && rm /tmp/gaps_state
         # Remove the waybar state file if it exists
         [ -f /tmp/waybar_state ] && rm /tmp/waybar_state
-        toggle-waybar off && toggle-waybar on
         toggle-gaps off && toggle-gaps on
         # systemctl --user restart pipewire.service
         # systemctl --user restart pipewire-pulse.service
@@ -625,7 +624,7 @@
 (pkgs.writeShellScriptBin "restart-input-remapper" ''
   sudo pkill input-remapper || log "No running input-remapper processes found."
 
-  pkexec input-remapper-control --command start-reader-service -d
+  pkexec input-remapper-control --command start-reader-service
 
   # Wait briefly to ensure the service has time to start
   sleep 2
@@ -637,7 +636,7 @@
   fi
 
   # Apply the preset for the specified device
-  retry input-remapper-control -d --command start --device "Apple Internal Keyboard / Trackpad" --preset swap_internal_mod_keys
+  retry input-remapper-control --command start --device "Apple Internal Keyboard / Trackpad" --preset swap_internal_mod_keys
 
   log "Input-remapper service restarted successfully."
 '')

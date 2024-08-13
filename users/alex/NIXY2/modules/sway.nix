@@ -14,7 +14,7 @@
     checkConfig = lib.mkForce false;
     config = rec {
       bars = [
-        {command = "if pgrep -x waybar; then pkill waybar; ${pkgs.waybar}/bin/waybar; fi";}
+        {command = "sudo pkill waybar; ${pkgs.waybar}/bin/waybar;";}
       ];
       modifier = "Mod4";
       left = "h";

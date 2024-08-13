@@ -117,6 +117,6 @@
     virt-manager
     uxplay
 
-    #(pkgs.callPackage ./cursor.nix { }) # FIXME: broken atm.
+    #(pkgs.callPackage ./cursor.nix { }) # FIXME: broken atm. NOT AVAILABLE aarch64-linux!
   ];
 }
