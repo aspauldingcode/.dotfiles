@@ -206,6 +206,65 @@
           enable_test_extensions = false;
           scroll_in_device_direction = false;
         };
+        "com.spotify.client" = {
+          AutoStartSettingIsHidden = 2; # startup mode: hidden = 1, on = 0, disabled = 2
+          NSFullScreenMenuItemEverywhere = 0;
+          NSIsFullScreen = 0;
+          "NSWindow Frame com.spotify.client.mainwindow" = "371 -178 800 600 0 0 1440 900 ";
+          "run_mode" = "clean_quit";
+        };
+        "com.macenhance.MacForge" = {
+          MF_AMFIShowWarning = 1;
+          MSAppCenter310AnalyticsUserDefaultsMigratedKey = 1;
+          MSAppCenter310AppCenterUserDefaultsMigratedKey = 1;
+          MSAppCenter310CrashesUserDefaultsMigratedKey = 1;
+          SUAutomaticallyUpdate = 1;
+          SUEnableAutomaticChecks = 0;
+          SUSendProfileInfo = 0;
+          SUSkippedVersion = 5977;
+          SUUpdateRelaunchingMarker = 0;
+          moveToApplicationsFolderAlertSuppress = 1;
+          updateCount = "";
+        };
+        "com.macenhance.MacForgeHelper" = {
+          "NSStatusItem Preferred Position Item-0" = 359;
+          SIMBLApplicationIdentifierBlacklist = [
+            "org.w0lf.mySIMBL"
+            "org.w0lf.cDock-GUI"
+            "org.w0lf.cDockHelper"
+            "com.macenhance.MacForge"
+            "com.macenhance.MacForgeHelper"
+            "com.macenhance.purchaseValidationApp"
+          ];
+        };
+        "com.theron.UnnaturalScrollWheels" = {
+          AlternateDetectionMethod = 0;
+          DisableMouseAccel = 0;
+          DisableScrollAccel = 1;
+          FirstLaunch = 0;
+          InvertHorizonalScroll = 0;
+          InvertHorizontalScroll = 0;
+          InvertVerticalScroll = 1;
+          LaunchAtLogin = 1;
+          "NSStatusItem Preferred Position Item-0" = 255;
+          OriginalAccel = 524288;
+          ScrollLines = 3;
+          ShowMenuBarIcon = 1;
+        };
+        "dev.kdrag0n.MacVirt" = {
+          SUHasLaunchedBefore = 1;
+          SUSendProfileInfo = 1;
+          admin_dismissCount = 0;
+          docker_migrationDismissed = 1;
+          drm_lastState = ''{"entitlementTier":0,"entitlementType":0}'';
+          global_showMenubarExtra = 1;
+          onboardingCompleted = 1;
+          selectedTab = "machines";
+          tips_containerDomainsShow = 0;
+          tips_containerFilesShow = 0;
+          tips_imageMountsShow = 0;
+          tips_menubarBgShown2 = 1;
+        };
         "org.xquartz.X11" = {
           "app_to_run" = "/opt/X11/bin/xterm";
           "apps_menu" = [

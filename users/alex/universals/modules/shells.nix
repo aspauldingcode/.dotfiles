@@ -57,6 +57,7 @@ in
 
     bash = {
       enable = true;
+      enableCompletion = true;
       initExtra = fullSetup + ''
         shopt -s histappend
       '';
@@ -124,150 +125,156 @@ in
     oh-my-posh = {
       enable = true;
       package = pkgs.oh-my-posh;
-      useTheme = "gruvbox";
+      # useTheme = "gruvbox"; # Ignored when using settings
       enableBashIntegration = true;
       enableFishIntegration = true;
       enableZshIntegration = true;
       enableNushellIntegration = true;
 
       # Additional settings can be configured here
-      # settings = {
-      #   # Configuration settings for oh-my-posh can be added here
-      #   # Add correct colors for theme.
-      #   "$schema" = "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json";
-      #   version = 2;
-      #   final_space = true;
-      #   console_title_template = "{{ .Folder }}";
-      #   blocks = [
-      #     {
-      #       type = "prompt";
-      #       alignment = "left";
-      #       segments = [
-      #         {
-      #           type = "os";
-      #           style = "powerline";
-      #           foreground = "${colors.base05}";
-      #           background = "${colors.base01}";
-      #           template = "{{ if .WSL }}WSL at{{ end }} {{.Icon}} ";
-      #         }
-      #         {
-      #           type = "path";
-      #           style = "powerline";
-      #           powerline_symbol = "\ue0b0";
-      #           foreground = "${colors.base00}";
-      #           background = "${colors.base0A}";
-      #           template = " {{ .Path }} ";
-      #           properties = {
-      #             style = "full";
-      #           };
-      #         }
-      #         {
-      #           type = "git";
-      #           style = "powerline";
-      #           powerline_symbol = "\ue0b0";
-      #           foreground = "${colors.base00}";
-      #           background = "${colors.base0B}";
-      #           background_templates = [
-      #             "{{ if or (.Working.Changed) (.Staging.Changed) }}${colors.base09}{{ end }}"
-      #             "{{ if and (gt .Ahead 0) (gt .Behind 0) }}${colors.base08}{{ end }}"
-      #             "{{ if gt .Ahead 0 }}${colors.base0D}{{ end }}"
-      #             "{{ if gt .Behind 0 }}${colors.base0D}{{ end }}"
-      #           ];
-      #           leading_diamond = "\ue0b6";
-      #           trailing_diamond = "\ue0b4";
-      #           template = " {{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} \ueb4b {{ .StashCount }}{{ end }} ";
-      #           properties = {
-      #             branch_icon = "\ue0a0 ";
-      #             branch_identical_icon = "\u25cf";
-      #             branch_max_length = 25;
-      #             fetch_stash_count = true;
-      #             fetch_status = true;
-      #           };
-      #         }
-      #         {
-      #           type = "go";
-      #           style = "powerline";
-      #           powerline_symbol = "\ue0b0";
-      #           foreground = "${colors.base07}";
-      #           background = "${colors.base0C}";
-      #           template = " \ue626 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ";
-      #           properties = {
-      #             fetch_version = true;
-      #           };
-      #         }
-      #         {
-      #           type = "julia";
-      #           style = "powerline";
-      #           powerline_symbol = "\ue0b0";
-      #           foreground = "${colors.base07}";
-      #           background = "${colors.base0D}";
-      #           template = " \ue624 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ";
-      #           properties = {
-      #             fetch_version = true;
-      #           };
-      #         }
-      #         {
-      #           type = "python";
-      #           style = "powerline";
-      #           powerline_symbol = "\ue0b0";
-      #           foreground = "${colors.base07}";
-      #           background = "${colors.base0E}";
-      #           template = " \ue235 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ";
-      #           properties = {
-      #             display_mode = "files";
-      #             fetch_virtual_env = false;
-      #           };
-      #         }
-      #         {
-      #           type = "ruby";
-      #           style = "powerline";
-      #           powerline_symbol = "\ue0b0";
-      #           foreground = "${colors.base07}";
-      #           background = "${colors.base09}";
-      #           template = " \ue791 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ";
-      #           properties = {
-      #             display_mode = "files";
-      #             fetch_version = true;
-      #           };
-      #         }
-      #         {
-      #           type = "azfunc";
-      #           style = "powerline";
-      #           powerline_symbol = "\ue0b0";
-      #           foreground = "${colors.base07}";
-      #           background = "${colors.base0A}";
-      #           template = " \uf0e7{{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ";
-      #           properties = {
-      #             display_mode = "files";
-      #             fetch_version = false;
-      #           };
-      #         }
-      #         {
-      #           type = "aws";
-      #           style = "powerline";
-      #           powerline_symbol = "\ue0b0";
-      #           foreground = "${colors.base07}";
-      #           background_templates = [
-      #             "{{if contains \"default\" .Profile}}${colors.base09}{{end}}"
-      #             "{{if contains \"jan\" .Profile}}${colors.base08}{{end}}"
-      #           ];
-      #           template = " \ue7ad {{ .Profile }}{{ if .Region }}@{{ .Region }}{{ end }} ";
-      #           properties = {
-      #             display_default = false;
-      #           };
-      #         }
-      #         {
-      #           type = "root";
-      #           style = "powerline";
-      #           powerline_symbol = "\ue0b0";
-      #           foreground = "${colors.base07}";
-      #           background = "${colors.base0B}";
-      #           template = " \uf0ad ";
-      #         }
-      #       ];
-      #     }
-      #   ];
-      # };
+      settings = {
+        "$schema" = "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json";
+        blocks = [
+          {
+            alignment = "left";
+            segments = [
+              {
+                background = "#${colors.base0B}";
+                foreground = "#${colors.base00}";
+                style = "powerline";
+                template = "{{ if .WSL }}WSL at{{ end }} {{.Icon}} ";
+                type = "os";
+              }
+              {
+                background = "#${colors.base0D}";
+                foreground = "#${colors.base00}";
+                powerline_symbol = "";
+                properties = {
+                  style = "full";
+                };
+                style = "powerline";
+                template = " {{ .Path }} ";
+                type = "path";
+              }
+              {
+                background = "#${colors.base08}";
+                background_templates = [
+                  "{{ if or (.Working.Changed) (.Staging.Changed) }}#${colors.base09}{{ end }}"
+                  "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#${colors.base0A}{{ end }}"
+                  "{{ if gt .Ahead 0 }}#${colors.base0C}{{ end }}"
+                  "{{ if gt .Behind 0 }}#${colors.base0E}{{ end }}"
+                ];
+                foreground = "#${colors.base00}";
+                leading_diamond = "◀";
+                powerline_symbol = "";
+                properties = {
+                  branch_max_length = 25;
+                  fetch_stash_count = true;
+                  fetch_status = true;
+                  branch_icon = "⎇ ";
+                  branch_identical_icon = "≡";
+                };
+                style = "powerline";
+                template = " {{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} ✎ {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} ✓ {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} ⚑ {{ .StashCount }}{{ end }} ";
+                trailing_diamond = "";
+                type = "git";
+              }
+              {
+                background = "#${colors.base0A}";
+                foreground = "#${colors.base00}";
+                powerline_symbol = "";
+                properties = {
+                  fetch_version = true;
+                };
+                style = "powerline";
+                template = " ⬢ {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ";
+                type = "go";
+              }
+              {
+                background = "#${colors.base0C}";
+                foreground = "#${colors.base00}";
+                powerline_symbol = "";
+                properties = {
+                  fetch_version = true;
+                };
+                style = "powerline";
+                template = " ⋈ {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ";
+                type = "julia";
+              }
+              {
+                background = "#${colors.base09}";
+                foreground = "#${colors.base00}";
+                powerline_symbol = "";
+                properties = {
+                  display_mode = "files";
+                  fetch_virtual_env = false;
+                };
+                style = "powerline";
+                template = " 🐍 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ";
+                type = "python";
+              }
+              {
+                background = "#${colors.base0E}";
+                foreground = "#${colors.base00}";
+                powerline_symbol = "";
+                properties = {
+                  display_mode = "files";
+                  fetch_version = true;
+                };
+                style = "powerline";
+                template = " 💎 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ";
+                type = "ruby";
+              }
+              {
+                background = "#${colors.base0D}";
+                foreground = "#${colors.base00}";
+                powerline_symbol = "";
+                properties = {
+                  display_mode = "files";
+                  fetch_version = false;
+                };
+                style = "powerline";
+                template = " ⚡{{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ";
+                type = "azfunc";
+              }
+              {
+                background_templates = [
+                  "{{if contains \"default\" .Profile}}#${colors.base09}{{end}}"
+                  "{{if contains \"jan\" .Profile}}#${colors.base0A}{{end}}"
+                ];
+                foreground = "#${colors.base00}";
+                powerline_symbol = "";
+                properties = {
+                  display_default = false;
+                };
+                style = "powerline";
+                template = " ☁️ {{ .Profile }}{{ if .Region }}@{{ .Region }}{{ end }} ";
+                type = "aws";
+              }
+              {
+                background = "#${colors.base0C}";
+                foreground = "#${colors.base00}";
+                powerline_symbol = "";
+                style = "powerline";
+                template = " 🔧 ";
+                type = "root";
+              }
+              {
+                background = "#${colors.base03}";
+                foreground = "#${colors.base00}";
+                powerline_symbol = "";
+                style = "powerline";
+                template = " {{ .Name }} ";
+                type = "shell";
+              }
+            ];
+            type = "prompt";
+          }
+        ];
+        console_title_template = "{{ .Folder }}";
+        final_space = true;
+        version = 2;
+      };
     };
   };
 }
