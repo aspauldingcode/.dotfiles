@@ -30,7 +30,8 @@ include /etc/sway/config.d/*
 
 # # output 'Ancor Communications Inc VE248 G1LMQS085722' disable
 # # output 'Ancor Communications Inc ASUS VE278 J7LMTF164099' disable
-# # output 'DP-4' disable
-# # output 'DP-6' disable
+output DP-4 disable
+output DP-6 disable
+output HDMI-A-1 disable
 
 # exec "regreet --config /etc/greetd/regreet.toml; swaymsg exit"

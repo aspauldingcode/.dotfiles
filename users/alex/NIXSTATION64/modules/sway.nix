@@ -288,6 +288,9 @@
         # way-displays: Auto Manage Your Wayland Displays
         exec way-displays > /tmp/way-displays.''${XDG_VTNR}.''${USER}.log 2>&1
 
+        ## FLOAT WINDOWS FROM THE TREE!!
+        for_window [app_id="firefox" title="Picture-in-Picture"] floating enable, sticky enable
+
         # STYLIZE!
         gaps inner 10
         gaps top -2

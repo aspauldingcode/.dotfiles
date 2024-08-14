@@ -79,6 +79,19 @@
     hostName = "NIXSTATION64";
     domain = "local";
     networkmanager.enable = true;
+
+    networkmanager.dns = lib.mkForce "default"; # Use NetworkManager's default DNS settings
+    firewall = {
+      allowedTCPPorts = [ 5354 1714 1764 ];
+      allowedUDPPorts = [ 5353 1714 1764 ];
+    };    
+  };
+
+  systemd.services.avahi-daemon = {
+      serviceConfig = {
+        Restart = "always";
+        RestartSec = "5";
+    };
   };
 
   time = {
@@ -148,6 +161,10 @@
     sway = {
       enable = true;
       package = pkgs.swayfx;
+    };
+    kdeconnect = {
+      enable = true;
+      package = pkgs.plasma5Packages.kdeconnect-kde;
     };
   };
 
@@ -251,7 +268,7 @@
       };
     };
     resolved = {
-      enable = false;
+      enable = true;
       fallbackDns = [
         "8.8.8.8"
         "2001:4860:4860::8844"
@@ -264,7 +281,7 @@
       nssmdns4 = true; # Printing
       openFirewall = true;
       ipv4 = true;
-      ipv6 = true;
+      ipv6 = false;
       reflector = true;
       publish = {
         enable = true;

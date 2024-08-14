@@ -6,8 +6,8 @@ let
     editor.semanticTokenColorCustomizations = {
       enabled = true;
       rules = {
-        "*.declaration" = { foreground = "#${config.colorScheme.colors.base0A}"; fontStyle = "bold"; };
-        "*.readonly" = { foreground = "#${config.colorScheme.colors.base08}"; fontStyle = "italic"; };
+        "*.declaration" = { foreground = "#${config.colorScheme.palette.base0A}"; fontStyle = "bold"; };
+        "*.readonly" = { foreground = "#${config.colorScheme.palette.base08}"; fontStyle = "italic"; };
       };
     };
     editor.tokenColorCustomizations = {
@@ -15,73 +15,73 @@ let
         {
           scope = [ "comment" "punctuation.definition.comment" "string.comment" ];
           settings = {
-            foreground = "#${config.colorScheme.colors.base03}"; # Adjusted for comments
+            foreground = "#${config.colorScheme.palette.base03}"; # Adjusted for comments
           };
         }
         {
           scope = "constant.numeric";
           settings = {
-            foreground = "#${config.colorScheme.colors.base09}"; # Correct for integers, constants
+            foreground = "#${config.colorScheme.palette.base09}"; # Correct for integers, constants
           };
         }
         {
           scope = "entity.name.function";
           settings = {
-            foreground = "#${config.colorScheme.colors.base0D}"; # Correct for functions, methods
+            foreground = "#${config.colorScheme.palette.base0D}"; # Correct for functions, methods
           };
         }
         {
           scope = "keyword";
           settings = {
-            foreground = "#${config.colorScheme.colors.base0E}"; # Correct for keywords
+            foreground = "#${config.colorScheme.palette.base0E}"; # Correct for keywords
           };
         }
         {
           scope = "string.quoted.double";
           settings = {
-            foreground = "#${config.colorScheme.colors.base0B}"; # Correct for strings
+            foreground = "#${config.colorScheme.palette.base0B}"; # Correct for strings
           };
         }
         {
           scope = "variable";
           settings = {
-            foreground = "#${config.colorScheme.colors.base08}"; # Adjusted for variables
+            foreground = "#${config.colorScheme.palette.base08}"; # Adjusted for variables
           };
         }
         {
           scope = "variable.parameter";
           settings = {
-            foreground = "#${config.colorScheme.colors.base0A}"; # Correct for classes, markup bold
+            foreground = "#${config.colorScheme.palette.base0A}"; # Correct for classes, markup bold
           };
         }
         {
           scope = "entity.name.type.class";
           settings = {
-            foreground = "#${config.colorScheme.colors.base0C}"; # Added for classes
+            foreground = "#${config.colorScheme.palette.base0C}"; # Added for classes
           };
         }
         {
           scope = "markup.inserted";
           settings = {
-            foreground = "#${config.colorScheme.colors.base0F}"; # Added for inserted elements in version control
+            foreground = "#${config.colorScheme.palette.base0F}"; # Added for inserted elements in version control
           };
         }
         {
           scope = "entity.name.tag";
           settings = {
-            foreground = "#${config.colorScheme.colors.base0F}"; # Added for HTML/XML tags
+            foreground = "#${config.colorScheme.palette.base0F}"; # Added for HTML/XML tags
           };
         }
         {
           scope = "storage";
           settings = {
-            foreground = "#${config.colorScheme.colors.base0E}"; # Added for storage types and modifiers in languages
+            foreground = "#${config.colorScheme.palette.base0E}"; # Added for storage types and modifiers in languages
           };
         }
         {
           scope = "support.function";
           settings = {
-            foreground = "#${config.colorScheme.colors.base0D}"; # Added for support functions
+            foreground = "#${config.colorScheme.palette.base0D}"; # Added for support functions
           };
         }
       ];
@@ -95,33 +95,33 @@ let
     "git.autofetch" = true;
     "explorer.confirmDragAndDrop" = false;
     workbench.colorCustomizations = {
-      "titleBar.activeBackground" = "#${config.colorScheme.colors.base01}";
-      "titleBar.inactiveBackground" = "#${config.colorScheme.colors.base02}";
-      "activityBar.background" = "#${config.colorScheme.colors.base02}";
-      "activityBar.foreground" = "#${config.colorScheme.colors.base0E}";
-      "sideBar.background" = "#${config.colorScheme.colors.base01}";
-      "sideBar.foreground" = "#${config.colorScheme.colors.base05}";
-      "statusBar.background" = "#${config.colorScheme.colors.base00}";
-      "statusBar.foreground" = "#${config.colorScheme.colors.base01}";
-      "statusBar.noFolderBackground" = "#${config.colorScheme.colors.base01}";
-      "statusBar.noFolderForeground" = "#${config.colorScheme.colors.base02}";
-      "editor.background" = "#${config.colorScheme.colors.base00}";
-      "editor.foreground" = "#${config.colorScheme.colors.base07}";
-      "tab.activeBackground" = "#${config.colorScheme.colors.base01}";
-      "tab.inactiveBackground" = "#${config.colorScheme.colors.base02}";
-      "tab.activeForeground" = "#${config.colorScheme.colors.base07}";
-      "tab.inactiveForeground" = "#${config.colorScheme.colors.base05}";
-      "panel.background" = "#${config.colorScheme.colors.base01}";
-      "panel.border" = "#${config.colorScheme.colors.base03}";
-      "panelTitle.activeForeground" = "#${config.colorScheme.colors.base07}";
-      "panelTitle.inactiveForeground" = "#${config.colorScheme.colors.base05}";
-      "panelTitle.activeBorder" = "#${config.colorScheme.colors.base0D}";
-      "badge.background" = "#${config.colorScheme.colors.base0E}";
-      "badge.foreground" = "#${config.colorScheme.colors.base00}";
-      "terminal.background" = "#${config.colorScheme.colors.base00}";
-      "terminal.foreground" = "#${config.colorScheme.colors.base07}";
-      "terminalCursor.background" = "#${config.colorScheme.colors.base01}";
-      "terminalCursor.foreground" = "#${config.colorScheme.colors.base07}";
+      "titleBar.activeBackground" = "#${config.colorScheme.palette.base01}";
+      "titleBar.inactiveBackground" = "#${config.colorScheme.palette.base02}";
+      "activityBar.background" = "#${config.colorScheme.palette.base02}";
+      "activityBar.foreground" = "#${config.colorScheme.palette.base0E}";
+      "sideBar.background" = "#${config.colorScheme.palette.base01}";
+      "sideBar.foreground" = "#${config.colorScheme.palette.base05}";
+      "statusBar.background" = "#${config.colorScheme.palette.base00}";
+      "statusBar.foreground" = "#${config.colorScheme.palette.base01}";
+      "statusBar.noFolderBackground" = "#${config.colorScheme.palette.base01}";
+      "statusBar.noFolderForeground" = "#${config.colorScheme.palette.base02}";
+      "editor.background" = "#${config.colorScheme.palette.base00}";
+      "editor.foreground" = "#${config.colorScheme.palette.base07}";
+      "tab.activeBackground" = "#${config.colorScheme.palette.base01}";
+      "tab.inactiveBackground" = "#${config.colorScheme.palette.base02}";
+      "tab.activeForeground" = "#${config.colorScheme.palette.base07}";
+      "tab.inactiveForeground" = "#${config.colorScheme.palette.base05}";
+      "panel.background" = "#${config.colorScheme.palette.base01}";
+      "panel.border" = "#${config.colorScheme.palette.base03}";
+      "panelTitle.activeForeground" = "#${config.colorScheme.palette.base07}";
+      "panelTitle.inactiveForeground" = "#${config.colorScheme.palette.base05}";
+      "panelTitle.activeBorder" = "#${config.colorScheme.palette.base0D}";
+      "badge.background" = "#${config.colorScheme.palette.base0E}";
+      "badge.foreground" = "#${config.colorScheme.palette.base00}";
+      "terminal.background" = "#${config.colorScheme.palette.base00}";
+      "terminal.foreground" = "#${config.colorScheme.palette.base07}";
+      "terminalCursor.background" = "#${config.colorScheme.palette.base01}";
+      "terminalCursor.foreground" = "#${config.colorScheme.palette.base07}";
     };
   };
 in
