@@ -73,7 +73,7 @@ in {
           ublock-origin
           istilldontcareaboutcookies
           bitwarden
-          tampermonkey
+          violentmonkey
           temporary-containers
           return-youtube-dislikes
           refined-github
