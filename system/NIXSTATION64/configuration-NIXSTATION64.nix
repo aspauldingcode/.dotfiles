@@ -126,11 +126,11 @@
       package = pkgs.regreet;
       settings = {
         default_session = {
-          command = "${pkgs.sway}/bin/sway --config ${../../system/NIXSTATION64/modules/greetd/sway-config}";
+          command = "${pkgs.sway}/bin/sway --config ${./modules/greetd/sway-config}";
           user = "greeter";
         };
         background = {
-          path = "${../../users/alex/extraConfig/wallpapers/sweden.png}";
+          path = "${../../users/alex/extraConfig/wallpapers/gruvbox-nix.png}";
           fit = "Fill";
         };
         env = {

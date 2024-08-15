@@ -52,7 +52,7 @@
         };
         "*" = {
           # change background for all outputs
-          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/sweden.png fill";
+          bg = "~/.dotfiles/users/alex/extraConfig/wallpapers/gruvbox-nix.png fill";
         };
       };
       # Use alacritty as default terminal

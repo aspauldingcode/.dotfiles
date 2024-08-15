@@ -109,15 +109,15 @@
 
   programs = {
     regreet = {
-      enable = false; # BROKEN in asahi?
+      enable = true;
       package = pkgs.regreet;
       settings = {
         default_session = {
-          command = "${pkgs.sway}/bin/sway --config ${../../system/NIXY2/modules/greetd/sway-config}";
+          command = "${pkgs.sway}/bin/sway --config ${./modules/greetd/sway-config}";
           user = "greeter";
         };
         background = {
-          path = "${../../users/alex/extraConfig/wallpapers/sweden.png}";
+          path = "${../../users/alex/extraConfig/wallpapers/gruvbox-nix.png}";
           fit = "Fill";
         };
         env = {
@@ -131,14 +131,8 @@
           theme_name = "Adwaita";
         };
         commands = {
-          reboot = [
-            "systemctl"
-            "reboot"
-          ];
-          poweroff = [
-            "systemctl"
-            "poweroff"
-          ];
+          reboot = [ "systemctl" "reboot" ];
+          poweroff = [ "systemctl" "poweroff" ];
         };
         appearance = {
           greeting_msg = "Welcome back!";

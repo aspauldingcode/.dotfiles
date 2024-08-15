@@ -25,6 +25,7 @@
       
       # System utilities
       avahi
+      debootstrap
       libnotify
       busybox
       docker
@@ -130,6 +131,7 @@
       waypipe
       wayvnc
       lavat
+      tt
 
       (python311.withPackages (
         ps: with ps; [

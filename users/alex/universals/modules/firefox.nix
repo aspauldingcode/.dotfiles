@@ -215,7 +215,7 @@ in {
           "full-screen-api.warning.timeout" = 0;
           "general.autoScroll" = true;
           "general.useragent.locale" = "en-US";
-          "identity.fxaccounts.enabled" = false;
+          "identity.fxaccounts.enabled" = true;
           "layout.css.forced-colors.enabled" = true;
           "layout.css.inverted-colors.enabled" = false;
           "layout.css.osx-font-smoothing.enabled" = true;
@@ -238,7 +238,7 @@ in {
           "security.webauth.webauthn" = true;
           "security.webauth.webauthn_enable_softtoken" = true;
           "security.webauth.webauthn_enable_usbtoken" = true;
-          "signon.rememberSignons" = false;
+          "signon.rememberSignons" = true;
           "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
           "ui.use_standins_for_native_colors" = false;
           "webgl.colorspaces.prototype" = false;
@@ -447,7 +447,7 @@ in {
       AppAutoUpdate = false;
       BackgroundAppUpdate = false;
       DisableBuiltinPDFViewer = true;
-      DisableFirefoxAccounts = true;
+      DisableFirefoxAccounts = false;
       DisableFirefoxScreenshots = true;
       DisableFirefoxStudies = true;
       DisableForgetButton = true;
