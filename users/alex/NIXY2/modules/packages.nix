@@ -18,8 +18,11 @@
       libnotify
       busybox
       docker
+      vscode
       fd
       gcal
+      brightnessctl
+      # box64 # not working with 16k pagesize m1 asahi
       gimp
       unstable.pmbootstrap
       jq
@@ -45,6 +48,7 @@
       libusb1
       libusbmuxd
       obsidian
+      cmake
       rofi-wayland-unwrapped
       #zoom-us # NOT WORKING on aarch64-linux!
 

@@ -51,6 +51,7 @@
       peripheralFirmwareDirectory = ./firmware-NIXY2;
       useExperimentalGPUDriver = true;
     };
+    
     bluetooth = {
       enable = true;
       powerOnBoot = true;
@@ -159,13 +160,13 @@
   ];
 
   services = {
-    dnsmasq = { 
-      enable = true;
-      extraConfig = ''
-      interface=usb0
-      dhcp-range=192.168.7.2,192.168.7.10,12h
-    '';
-    };
+    # dnsmasq = { 
+    #   enable = true;
+    #   settings = {
+    #     interface = "usb0";
+    #     dhcp-range = "192.168.7.2,192.168.7.10,12h";
+    #   };
+    # };
     #services.gnome3.gnome-keyring.enable = true; # for asahi wifi!
     greetd = {
       enable = true; # use Greetd along with ReGreet gtk themer.

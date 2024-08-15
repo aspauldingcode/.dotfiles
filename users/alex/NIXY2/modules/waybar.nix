@@ -55,8 +55,8 @@ let
     modules-center = [
       "pulseaudio"
       "custom/backlight"
-      "custom/brightness"
-      "custom/nightlight"
+      # "custom/brightness"
+      # "custom/nightlight"
       # "custom/gamma"
       "custom/datetime"
       #"custom/gpg-agent"
@@ -332,12 +332,11 @@ let
     };
     
     "custom/backlight" = {
-      exec-if = "light status 2>/dev/null";
-      tooltip = false;
-      format = " {}%";
-      interval = 1;
-      on-scroll-up = "light -A 5";
-      on-scroll-down = "light -U 5";
+      format = " {}%";
+      exec = "light -G | awk '{ print int($1) }'";
+      interval = 10;
+      on-scroll-up = "brightnessctl set +10%";
+      on-scroll-down = "brightnessctl set 10%-";
     };
 
     # "custom/spotify" = {

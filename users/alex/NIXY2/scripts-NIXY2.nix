@@ -162,61 +162,61 @@
         fi
       '')
 
-      # toggle-brightness
-      (pkgs.writeShellScriptBin "toggle-brightness" ''
-        #!/bin/sh
+      # toggle-brightness FIXME: BROKEN AT THE MOMENT!
+      #(pkgs.writeShellScriptBin "toggle-brightness" ''
+      #  #!/bin/sh
+      #
+      #  statefile="/tmp/brightness_state"
+      #  statefile_brightness=$(tr -d '\0' < $statefile | head -n 1)
+      #  current_brightness=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{print $2}' | tr -d '\0' 2>/dev/null)
+      #
+      #  turn_on() {
+      #      # Turn on, by decreasing the brightness to the one recorded in statefile
+      #      while [ $(echo "$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{print $2}' | tr -d '\0' 2>/dev/null) > $statefile_brightness" | bc -l) -eq 1 ]; do
+#                busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d -0.02 > /dev/null 2>&1
+#            done
+#            echo "$statefile_brightness" > $statefile
+#            echo "Brightness is now on."
+#        }
 
-        statefile="/tmp/brightness_state"
-        statefile_brightness=$(tr -d '\0' < $statefile | head -n 1)
-        current_brightness=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{print $2}' | tr -d '\0' 2>/dev/null)
+#        turn_off() {
+#            # Turn off by setting to maximum brightness (1.0)
+#            while [ $(echo "$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{print $2}' | tr -d '\0' 2>/dev/null) < 1.0" | bc -l) -eq 1 ]; do
+#                busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d +0.02 > /dev/null 2>&1
+#            done
+#            echo "Brightness is now off."
+#        }
 
-        turn_on() {
-            # Turn on, by decreasing the brightness to the one recorded in statefile
-            while [ $(echo "$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{print $2}' | tr -d '\0' 2>/dev/null) > $statefile_brightness" | bc -l) -eq 1 ]; do
-                busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d -0.02 > /dev/null 2>&1
-            done
-            echo "$statefile_brightness" > $statefile
-            echo "Brightness is now on."
-        }
+#        if [ "$(wc -l < $statefile)" -gt 1 ]; then
+#            echo "$statefile_brightness" > $statefile
+#        fi
 
-        turn_off() {
-            # Turn off by setting to maximum brightness (1.0)
-            while [ $(echo "$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{print $2}' | tr -d '\0' 2>/dev/null) < 1.0" | bc -l) -eq 1 ]; do
-                busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d +0.02 > /dev/null 2>&1
-            done
-            echo "Brightness is now off."
-        }
+#        case "$1" in
+#            on)
+#                if [ $(echo "$current_brightness < 1.0" | bc -l) -eq 1 ]; then
+#                    echo "Brightness is already on."
+#                else
+#                    turn_on
+#                fi
+#                ;;
+#            off)
+#                if [ $(echo "$current_brightness >= 1.0" | bc -l) -eq 1 ]; then
+#                    echo "Brightness is already off."
+#                else
+#                    echo "$current_brightness" > $statefile
+#                    turn_off
+#                fi
+#                ;;
+#            *)
+#                if [ $(echo "$current_brightness >= 1.0" | bc -l) -eq 1 ]; then
+#                    turn_on
+#                else
+#                    echo "$current_brightness" > $statefile
+#                    turn_off
+#                fi
+#                ;;
+#        esac
 
-        if [ "$(wc -l < $statefile)" -gt 1 ]; then
-            echo "$statefile_brightness" > $statefile
-        fi
-
-        case "$1" in
-            on)
-                if [ $(echo "$current_brightness < 1.0" | bc -l) -eq 1 ]; then
-                    echo "Brightness is already on."
-                else
-                    turn_on
-                fi
-                ;;
-            off)
-                if [ $(echo "$current_brightness >= 1.0" | bc -l) -eq 1 ]; then
-                    echo "Brightness is already off."
-                else
-                    echo "$current_brightness" > $statefile
-                    turn_off
-                fi
-                ;;
-            *)
-                if [ $(echo "$current_brightness >= 1.0" | bc -l) -eq 1 ]; then
-                    turn_on
-                else
-                    echo "$current_brightness" > $statefile
-                    turn_off
-                fi
-                ;;
-        esac
-      '')
       
       # toggle-waybar
       (pkgs.writeShellScriptBin "toggle-waybar" ''
