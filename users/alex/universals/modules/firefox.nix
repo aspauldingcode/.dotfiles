@@ -22,6 +22,22 @@ in {
             --toolbar-bgcolor: #${colors.base00};
           }
 
+          /* Hide titlebar buttons and adjust spacing on macOS */
+          @media (-moz-platform: macos) {
+            .titlebar-buttonbox-container,
+            #window-controls { 
+              display: none !important; 
+            }
+            
+            /* Shift tabs to the left by 38px */
+            #TabsToolbar {
+              padding-left: 0 !important;
+              display: flex !important;
+              margin-left: -38px !important;
+              width: calc(100% + 38px) !important;
+            }
+          }
+
           :root {
             --toolbar-bgcolor: #${colors.base00};
             --toolbar-color: #${colors.base05};
