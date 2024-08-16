@@ -13,6 +13,7 @@
     ./../universals/modules/yazi.nix
     ./modules/alacritty.nix
     ./modules/mako.nix
+    ./modules/bemenu.nix
     ./modules/mimeapps.nix
     ./modules/packages.nix
     ./modules/sway.nix

@@ -99,6 +99,8 @@
       wofi
       wshowkeys
       wtype
+      wob 
+      pamixer
 
       # Gaming and emulation
       # android-studio # DOESN'T WORK ON aarch64-linux!

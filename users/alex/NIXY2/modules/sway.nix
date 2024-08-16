@@ -80,14 +80,27 @@
         # "${modifier}+Space" = "" # toggle nwg-dock
 
         # Brightness keys
-        "XF86MonBrightnessUp" = "exec brightnessctl set +10%";
-        "XF86MonBrightnessDown" = "exec brightnessctl set 10%-";
+        "XF86MonBrightnessUp" = "exec ${pkgs.brightnessctl}/bin/brightnessctl set +10%";
+        "XF86MonBrightnessDown" = "exec ${pkgs.brightnessctl}/bin/brightnessctl set 10%-";
+
+        # # Volume keys
+        # "XF86AudioRaiseVolume" = "";
+        # "XF86AudioLowerVolume" = "";
+        # "XF86AudioMute" = "";
+
+        # # Media Controls
+        # "XF86AudioPrev" = "";
+        # "XF86AudioPlay" = "";
+        # "XF86AudioNext" = "";
+
+        # # Microphone
+        # "XF86AudioPrev" = "";
 
         # "${modifier}+m" = "exec docker start -ai 8b83fcdf83af"; # MacOS VM
         "Control+Alt+Delete" = "exec sudo systemctl reboot";
         "Control+Shift+Alt+Delete" = "exec sudo systemctl poweroff";
         # implement window switcher based on wofi
-        #"${modifier}+Tab" = "exec ${wofiWindowJump}";
+        #"${modifier}+Tab" = "exec ${pkgs.wofi}/bin/wofi";
         # power menu
         #"${modifier}+Insert" = "exec ${wofiPower}";
         # clipboard history
@@ -95,17 +108,17 @@
         # Output pressed keycode using xev:
         # nix-shell -p xorg.xev --run "xev | grep -A2 --line-buffered '^KeyRelease' | sed -n '/keycode /s/^.*keycode \([0-9]*\).* (.*, \(.*\)).*$/\1 \2/p'"
         # fn+F1    c:121   XF86AudioMute
-        #"XF86AudioMute" = ''exec ${pamixer} --toggle-mute && ( ${pamixer} --get-mute && ${mywob} 0 ) || ${mywob} $(${pamixer} --get-volume)'';
+        #"XF86AudioMute" = ''exec ${pkgs.pamixer}/bin/pamixer --toggle-mute && ( ${pkgs.pamixer}/bin/pamixer --get-mute && ${pkgs.wob}/bin/wob 0 ) || ${pkgs.wob}/bin/wob $(${pkgs.pamixer}/bin/pamixer --get-volume)'';
         # fn+F2    c:122   XF86AudioLowerVolume
-        #"XF86AudioLowerVolume" = ''exec ${pamixer} --allow-boost --unmute --decrease 2 && ${mywob} $(${pamixer} --get-volume)'';
+        #"XF86AudioLowerVolume" = ''exec ${pkgs.pamixer}/bin/pamixer --allow-boost --unmute --decrease 2 && ${pkgs.wob}/bin/wob $(${pkgs.pamixer}/bin/pamixer --get-volume)'';
         # fn+F3    c:123   XF86AudioRaiseVolume
-        #"XF86AudioRaiseVolume" = ''exec ${pamixer} --allow-boost --unmute --increase 2 && ${mywob} $(${pamixer} --get-volume)'';
+        #"XF86AudioRaiseVolume" = ''exec ${pkgs.pamixer}/bin/pamixer --allow-boost --unmute --increase 2 && ${pkgs.wob}/bin/wob $(${pkgs.pamixer}/bin/pamixer --get-volume)'';
         # fn+F4    c:198   XF86AudioMicMute
-        #"XF86AudioMicMute" = ''exec ${pamixer} --default-source --toggle-mute && ( ${pamixer} --default-source --get-mute && ${mywob} 0 ) || ${mywob} $(${pamixer} --default-source --get-volume)'';
+        #"XF86AudioMicMute" = ''exec ${pkgs.pamixer}/bin/pamixer --default-source --toggle-mute && ( ${pkgs.pamixer}/bin/pamixer --default-source --get-mute && ${pkgs.wob}/bin/wob 0 ) || ${pkgs.wob}/bin/wob $(${pkgs.pamixer}/bin/pamixer --default-source --get-volume)'';
         # fn+F5    c:232   XF86MonBrightnessDown
-        # "--locked XF86MonBrightnessDown" = ''exec ${mywob} $(${brightnessctl} set 5%- | ${sed} -En 's/.*\(([0-9]+)%\).*/#\1/p')'';
+        # "--locked XF86MonBrightnessDown" = ''exec ${pkgs.wob}/bin/wob $(${brightnessctl} set 5%- | ${sed} -En 's/.*\(([0-9]+)%\).*/#\1/p')'';
         ## fn+F6    c:233   XF86MonBrightnessUp
-        # "--locked XF86MonBrightnessUp" = ''exec ${mywob} $(${brightnessctl} set +5% | ${sed} -En 's/.*\(([0-9]+)%\).*/\1/p')'';
+        # "--locked XF86MonBrightnessUp" = ''exec ${pkgs.wob}/bin/wob $(${brightnessctl} set +5% | ${sed} -En 's/.*\(([0-9]+)%\).*/\1/p')'';
         # fn+F7    c:235   XF86Display
         ## fn+F8    c:246   XF86WLAN
         ## fn+F9    c:179   XF86Tools
