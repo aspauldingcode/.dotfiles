@@ -33,11 +33,11 @@ in
       cf = "#${colors.base05}";        # Cursor foreground color (darker)
       nb = "#${colors.base00}";        # Normal background color
       nf = "#${colors.base05}";        # Normal foreground color (lighter)
-      hb = "#${colors.base09}";        # Highlighted background color
+      hb = "#${colors.base0C}";        # Highlighted background color
       hf = "#${colors.base05}";        # Highlighted foreground color (darker)
       fbb = "#${colors.base00}";       # Feedback background color
       fbf = "#${colors.base05}";       # Feedback foreground color (lighter)
-      sb = "#${colors.base09}";        # Selected background color
+      sb = "#${colors.base0C}";        # Selected background color
       sf = "#${colors.base05}";        # Selected foreground color (darker)
       ab = "#${colors.base00}";        # alternate foreground color (darker)
       af = "#${colors.base05}";        # alternate foreground color (darker)

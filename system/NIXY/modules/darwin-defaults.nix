@@ -190,13 +190,15 @@
         NSGlobalDomain = {
           AppleHighlightColor = let
             # Example hex color code
-            hexColor = "fabd2f";  # Replace with your hex color (without #)
+            hexColor = "8ec07c";  # Replace with your hex color (without #)
+            # hexColor = "${colors.base0C}";
 
             # Manually set RGB values
             rgbValues = [
-              250
-              189
-              47
+              #rgb(142, 192, 124)
+              142
+              192
+              124
             ];
             
             # Normalize RGB values to 0-1 range
