@@ -56,7 +56,6 @@ in
       shellAliases = {
         ll = "ls -l";
         la = "ls -a";
-	input-remapper = "input-remapper-gtk -d";
       };
     };
 
@@ -69,7 +68,6 @@ in
       shellAliases = {
         ll = "ls -l";
         la = "ls -a";
-	input-remapper = "input-remapper-gtk -d";
       };
     };
 
@@ -89,7 +87,6 @@ in
       shellAliases = {
         ll = "ls -l";
         la = "ls -a";
-	input-remapper = "input-remapper-gtk -d";
       };
     };
 
@@ -132,7 +129,6 @@ in
       shellAliases = {
         ll = "ls -l";
         la = "ls -a";
-	input-remapper = "input-remapper-gtk -d";
       } // lib.optionalAttrs pkgs.stdenv.isDarwin {
         pkg-config = "pkgconf";
       };

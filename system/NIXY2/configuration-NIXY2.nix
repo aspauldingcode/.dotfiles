@@ -16,6 +16,7 @@
     ./modules/packages.nix
     #./modules/virtual-machines.nix
     ./modules/theme.nix
+    ./modules/kanata.nix
   ];
 
   boot = {
