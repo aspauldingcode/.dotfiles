@@ -78,6 +78,7 @@ in
     #vscode
     # bonsai #Only available on mac?
     rustc
+    tt
     cargo
     utm
     mas

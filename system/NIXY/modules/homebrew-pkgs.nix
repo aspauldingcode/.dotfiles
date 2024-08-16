@@ -18,7 +18,7 @@
       "yabai"
       "skhd"
       "sketchybar"
-      "borders"
+      # "borders" SUUUPER JANKY!
       "yazi"
       "cava"
       "fftw"

@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, lib, ... }:
 
 # SYSTEM DEFAULTS!!!! MACOS defaults config.
 {
@@ -187,6 +187,25 @@
         };
       };
       CustomUserPreferences = {
+        NSGlobalDomain = {
+          AppleHighlightColor = let
+            # Example hex color code
+            hexColor = "fabd2f";  # Replace with your hex color (without #)
+
+            # Manually set RGB values
+            rgbValues = [
+              250
+              189
+              47
+            ];
+            
+            # Normalize RGB values to 0-1 range
+            r = builtins.elemAt rgbValues 0 / 255.0;
+            g = builtins.elemAt rgbValues 1 / 255.0;
+            b = builtins.elemAt rgbValues 2 / 255.0;
+          in "${toString r} ${toString g} ${toString b} Other";
+        };
+
         NSGlobalDomain.TISRomanSwitchState = 1;
         "....X11" = {
           enable_fake_buttons = 1;
