@@ -81,6 +81,10 @@
         "${modifier}+m" = "exec toggle-waybar";
         # "${modifier}+Space" = "" # toggle nwg-dock
 
+        # Brightness keys
+        "XF86MonBrightnessUp" = "exec brightnessctl set +10%";
+        "XF86MonBrightnessDown" = "exec brightnessctl set 10%-";
+
         # "${modifier}+m" = "exec docker start -ai 8b83fcdf83af"; # MacOS VM
         "Control+Alt+Delete" = "exec sudo systemctl reboot";
         "Control+Shift+Alt+Delete" = "exec sudo systemctl poweroff";
@@ -303,6 +307,17 @@
         for_window [app_id="waybar" floating] {
           move position cursor
           move down 120px # adjust if some menus still don't fit
+        }
+
+        # Fix scrolling on apple trackpad!
+        input "1452:641:Apple_Internal_Keyboard_/_Trackpad" {
+          left_handed disabled
+          tap disabled
+          natural_scroll enabled
+          dwt disabled # allow touchpad while typing
+          accel_profile "flat" # disable mouse acceleration (enabled by default; to set it manually, use "adaptive" instead of "flat")
+          pointer_accel 0.8 # set mouse sensitivity (between -1 and 1)
+          scroll_factor 0.2 # adjust scroll speed; set to your preferred value
         }
 
         # Enable csd borders # options are: none | normal | csd | pixel [<n>]
