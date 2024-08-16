@@ -17,6 +17,7 @@ let
     export VISUAL="$EDITOR"
     export DISPLAY=:0
     touch ~/.hushlogin
+    eval $(thefuck --alias)
   '';
 
   darwinSetup = ''
@@ -44,6 +45,7 @@ in
   home.packages = with pkgs; [
     oh-my-fish
     fishPlugins.plugin-git
+    thefuck
   ];
 
   programs = {
@@ -56,7 +58,7 @@ in
       shellAliases = {
         ll = "ls -l";
         la = "ls -a";
-	input-remapper = "input-remapper-gtk -d";
+        input-remapper = "input-remapper-gtk -d";
       };
     };
 
@@ -69,7 +71,7 @@ in
       shellAliases = {
         ll = "ls -l";
         la = "ls -a";
-	input-remapper = "input-remapper-gtk -d";
+        input-remapper = "input-remapper-gtk -d";
       };
     };
 
@@ -89,7 +91,7 @@ in
       shellAliases = {
         ll = "ls -l";
         la = "ls -a";
-	input-remapper = "input-remapper-gtk -d";
+        input-remapper = "input-remapper-gtk -d";
       };
     };
 

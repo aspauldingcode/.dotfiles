@@ -96,6 +96,7 @@
     zoxide
     dnsmasq
     udftools
+    fzf
     element
     appimage-run
     tree-sitter

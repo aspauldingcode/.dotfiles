@@ -13,9 +13,7 @@
     package = null;
     checkConfig = lib.mkForce false;
     config = rec {
-      bars = [
-        {command = "sudo pkill waybar; ${pkgs.waybar}/bin/waybar;";}
-      ];
+      bars = [];
       modifier = "Mod4";
       left = "h";
       down = "j";

@@ -74,7 +74,6 @@
         [ -f /tmp/gaps_state ] && rm /tmp/gaps_state
         # Remove the waybar state file if it exists
         [ -f /tmp/waybar_state ] && rm /tmp/waybar_state
-        toggle-waybar off && toggle-waybar on
         toggle-gaps off && toggle-gaps on
         # systemctl --user restart pipewire.service
         # systemctl --user restart pipewire-pulse.service
