@@ -16,6 +16,7 @@
     ./modules/mimeapps.nix
     ./modules/packages.nix
     ./modules/sway.nix
+    ./modules/swayr.nix
     ./modules/theme.nix # theme of system.
     ./scripts-NIXSTATION64.nix
   ];

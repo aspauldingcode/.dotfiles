@@ -169,6 +169,13 @@
         "${modifier}+Up" = "focus up";
         "${modifier}+Right" = "focus right";
 
+        # Use swayr to manage window focus and movement
+        "${modifier}+Tab" = "exec ${pkgs.swayr}/bin/swayr switch-window";
+        "${modifier}+Shift+Tab" = "exec ${pkgs.swayr}/bin/swayr switch-to-urgent-or-lru-window";
+        "${modifier}+Ctrl+Tab" = "exec ${pkgs.swayr}/bin/swayr switch-workspace-or-window";
+        "${modifier}+Shift+m" = "exec ${pkgs.swayr}/bin/swayr move-focused-to-workspace";
+        "${modifier}+Shift+s" = "exec ${pkgs.swayr}/bin/swayr swap-focused-with";
+
         #FIXME: Try NOT to swap a floating window?
         # Move windows (swap if tiled, move 20px if floating
         # "${modifier}+Shift+${left}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus left, swap container with mark "_swap", focus left, unmark "_swap"; [floating con_id="__focused__"] move left 20px'';
@@ -340,6 +347,10 @@
         #default_dim_inactive .3
         #dim_inactive_colors.unfocused "#000000"
         #dim_inactive_colors.urgent "#900000"
+
+        # FIXME:Prevent floating windows from being swapped with tiled ones, regardless of display
+        for_window [floating] sticky enable
+        for_window [floating] focus_on_window_activation focus
 
         # HIDE CURSOR AUTOMATICALLY
         seat * hide_cursor 8000
