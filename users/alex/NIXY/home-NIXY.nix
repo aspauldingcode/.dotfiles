@@ -45,10 +45,6 @@
       python = "python3.11";
       #vim = "nvim";
       #vi = "nvim";
-      reboot = "sudo reboot now";
-      rb = "sudo reboot now";
-      shutdown = "sudo shutdown -h now";
-      sd = "sudo shutdown -h now";
       l = "ls";
     };
     file."Library/Application Support/Mousecape/capes" = {

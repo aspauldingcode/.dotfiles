@@ -1,9 +1,5 @@
 { config, pkgs, lib, ... }:
 
-
-# sudo: /run/current-system/sw/bin/sudo must be owned by uid 0 and have the setuid bit set
-# on nixos means use /run/wrappers/bin/sudo, not /run/current-system/sw/bin/sudo
-
 let
   commonSetup = ''
     # Common environment and path settings
@@ -39,6 +35,18 @@ let
 
   fullSetup = if pkgs.stdenv.isDarwin then commonSetup + darwinSetup else commonSetup;
 
+  shellAliases = lib.mkIf pkgs.stdenv.isDarwin {
+    reboot = "sudo reboot now";
+    rb = "sudo reboot now";
+    shutdown = "sudo shutdown -h now";
+    sd = "sudo shutdown -h now";
+  } // lib.mkIf (!pkgs.stdenv.isDarwin) {
+    reboot = "sudo systemctl reboot";
+    rb = "sudo systemctl reboot";
+    shutdown = "sudo systemctl poweroff";
+    sd = "sudo systemctl poweroff";
+  };
+
   inherit (config.colorScheme) colors;
 in
 {
@@ -55,7 +63,7 @@ in
       initExtra = fullSetup + ''
         setopt APPEND_HISTORY
       '';
-      shellAliases = {
+      shellAliases = shellAliases // {
         ll = "ls -l";
         la = "ls -a";
       };
@@ -67,7 +75,7 @@ in
       initExtra = fullSetup + ''
         shopt -s histappend
       '';
-      shellAliases = {
+      shellAliases = shellAliases // {
         ll = "ls -l";
         la = "ls -a";
       };
@@ -86,7 +94,7 @@ in
         set -Ux LIBRARY_PATH "$LIBRARY_PATH:/opt/homebrew/opt/libiconv/lib"
       '';
       interactiveShellInit = ''set fish_greeting ""'';
-      shellAliases = {
+      shellAliases = shellAliases // {
         ll = "ls -l";
         la = "ls -a";
       };
@@ -128,11 +136,9 @@ in
         CPPFLAGS = "-I/opt/homebrew/opt/libiconv/include";
         LIBRARY_PATH = "$LIBRARY_PATH:/opt/homebrew/opt/libiconv/lib";
       };
-      shellAliases = {
+      shellAliases = shellAliases // {
         ll = "ls -l";
         la = "ls -a";
-      } // lib.optionalAttrs pkgs.stdenv.isDarwin {
-        pkg-config = "pkgconf";
       };
     };
 
