@@ -52,7 +52,7 @@
     #497799835 # Xcode 
     #];
     casks = [
-      "xquartz" # what an ugly app
+      # "xquartz" # what an ugly app
       "alacritty"
       "chatgpt"
       "hammerspoon"
@@ -62,7 +62,7 @@
       "kitty"
       "krita"
       "spotify"
-      #"hiddenbar" #FIXME: disable for now, add back to build a working toggle.
+      "hiddenbar" #FIXME: disable for now, add back to build a working toggle.
       # "macforge" # out of date rn... need to use macforge beta
       "obs"
       "obs-websocket"

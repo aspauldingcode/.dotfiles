@@ -1,6 +1,5 @@
 { config, lib, ... }:
 
-# SYSTEM DEFAULTS!!!! MACOS defaults config.
 {
   system = {
     activationScripts.postUserActivation.text = ''
@@ -10,7 +9,7 @@
     startup.chime = false; # MUTE STARTUP CHIME!
     defaults = {
       finder = {
-        CreateDesktop = false; # REQUIRED true to fix https://github.com/koekeishiya/yabai/issues/863 and https://github.com/koekeishiya/yabai/issues/2313#issuecomment-2225438696
+        CreateDesktop = true; # REQUIRED true to fix https://github.com/koekeishiya/yabai/issues/863 and https://github.com/koekeishiya/yabai/issues/2313#issuecomment-2225438696
         AppleShowAllFiles = true;
         AppleShowAllExtensions = true;
         FXDefaultSearchScope = "SCcf";
@@ -130,10 +129,10 @@
           ForceSuppressed = 1;
           SecondClickThreshold = 1;
           TrackpadCornerSecondaryClick = 0;
-          TrackpadFiveFingerPinchGesture = 2;
-          TrackpadFourFingerHorizSwipeGesture = 2;
-          TrackpadFourFingerPinchGesture = 2;
-          TrackpadFourFingerVertSwipeGesture = 2;
+          TrackpadFiveFingerPinchGesture = 0;
+          TrackpadFourFingerHorizSwipeGesture = 0;
+          TrackpadFourFingerPinchGesture = 0;
+          TrackpadFourFingerVertSwipeGesture = 0;
           TrackpadHandResting = 1;
           TrackpadHorizScroll = 1;
           TrackpadMomentumScroll = 1;
@@ -142,11 +141,11 @@
           TrackpadRotate = 1;
           TrackpadScroll = 1;
           TrackpadThreeFingerDrag = 0;
-          TrackpadThreeFingerHorizSwipeGesture = 2;
+          TrackpadThreeFingerHorizSwipeGesture = 0;
           TrackpadThreeFingerTapGesture = 0;
           TrackpadThreeFingerVertSwipeGesture = 2;
           TrackpadTwoFingerDoubleTapGesture = 1;
-          TrackpadTwoFingerFromRightEdgeSwipeGesture = 3;
+          TrackpadTwoFingerFromRightEdgeSwipeGesture = 0;
           USBMouseStopsTrackpad = 0;
           UserPreferences = 1;
         };
@@ -206,6 +205,13 @@
             g = builtins.elemAt rgbValues 1 / 255.0;
             b = builtins.elemAt rgbValues 2 / 255.0;
           in "${toString r} ${toString g} ${toString b} Other";
+        };
+      
+        "/Library/Preferences/com.apple.wallpaper" = {
+          SonomaFirstRunMigrationPerformed = 1;
+          StoreIndexMigrationVersion = 1;
+          # SystemWallpaperURL = "file:///System/Library/Desktop%20Pictures/.wallpapers/Sonoma%20Horizon/Sonoma%20Horizon.mov";
+          SystemWallpaperURL = "file://${../../users/alex/extraConfig/wallpapers/gruvbox-nix.png}";
         };
 
         NSGlobalDomain.TISRomanSwitchState = 1;
@@ -320,7 +326,9 @@
           "NSStatusItem Preferred Position hiddenbar_terminate" = 146;
           alwaysHiddenSectionEnabled = 1;
           areSeparatorsHidden = 0;
-          globalKey = { length = 142; bytes = "0x7b22636170734c6f636b223a66616c7364223a747275657d"; };
+          globalKey = { 
+            length = 144;
+          };
           isAutoHide = 0;
           isAutoStart = 0;
           isShowPreferences = 0;

@@ -46,13 +46,13 @@ defaults=(
 
 sketchybar --default "${defaults[@]}"
 
-space_config=(
-    ignore_association=on
-    updates=on \
-    script="$PLUGIN_DIR/add_spaces_sketchybar.sh"
-    update_freq=0
-    # click_script="$yabai -m space --focus $sid"
-)
+# space_config=(
+#     ignore_association=on
+#     updates=on \
+#     script="$PLUGIN_DIR/add_spaces_sketchybar.sh"
+#     update_freq=0
+#     # click_script="$yabai -m space --focus $sid"
+# )
 
 datetime=(
   background.color=$base02         # Set this color to your background color for popups!
@@ -201,9 +201,36 @@ sketchybar --add item apple left \
   --set apple "${apple[@]}" \
   --subscribe apple mouse.clicked mouse.entered mouse.exited mouse.exited.global
 
-sketchybar --add space space left \
-  --set space "${space_config[@]}" \
-  # --subscribe space space_change space_windows_change front_app_switched display_change
+# sketchybar --add space space left \
+#   --set space "${space_config[@]}" \
+#  # --subscribe space space_change space_windows_change front_app_switched display_change
+
+##### Adding Mission Control Space Indicators #####
+# Let's add some mission control spaces:
+# https://felixkratz.github.io/SketchyBar/config/components#space----associate-mission-control-spaces-with-an-item
+# to indicate active and available mission control spaces.
+
+for i in {1..10}
+do
+  sid="$i"
+  space=(
+    space="$sid"
+    icon="$i"
+    icon.padding_left=4
+    icon.padding_right=5
+    # icon.margin_left=10
+    # icon.margin_right=10
+    background.color=$base02
+    background.corner_radius=5
+    background.height=13
+    # background.width=10
+    label.drawing=off
+    icon.font="JetBrains Mono:Regular:10.0"
+    script="$PLUGIN_DIR/space.sh"
+    click_script="yabai -m space --focus $sid"
+  )
+  sketchybar --add space space."$sid" left --set space."$sid" "${space[@]}" ignore_association=on
+done
 
 sketchybar --add item separator_left left \
   --set separator_left \
@@ -288,81 +315,84 @@ brackets=(
   background.border_width=1
 )
 
-# Define the position for alias items
-position="right"  # You can change this to "center", "left", or any custom position
-
-$yabai -m config menubar_opacity 1.0 # to make alias items visible!
+# Define the alias_position for alias items
+alias_position="right"  # You can change this to "center", "left", or any custom alias_position
 
 # Add alias items with click actions
-sketchybar --add alias "Control Center,BentoBox" $position
+sketchybar --add alias "Control Center,BentoBox" $alias_position
 sketchybar --set "Control Center,BentoBox" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="$PLUGIN_DIR/open_menubar_items.sh controlcenter"
 
-sketchybar --add alias "Control Center,base0Dtooth" $position
+sketchybar --add alias "Control Center,base0Dtooth" $alias_position
 sketchybar --set "Control Center,base0Dtooth" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="$PLUGIN_DIR/open_menubar_items.sh base0Dtooth"
 
-sketchybar --add alias "Control Center,UserSwitcher" $position
+sketchybar --add alias "Control Center,UserSwitcher" $alias_position
 sketchybar --set "Control Center,UserSwitcher" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="$PLUGIN_DIR/open_menubar_items.sh userswitcher"
 
-sketchybar --add alias "UnnaturalScrollWheels,Item-0" $position
+sketchybar --add alias "UnnaturalScrollWheels,Item-0" $alias_position
 sketchybar --set "UnnaturalScrollWheels,Item-0" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="$PLUGIN_DIR/open_menubar_items.sh unnaturalscrollwheels"
 
-sketchybar --add alias "macOS InstantView,Item-0" $position
+sketchybar --add alias "macOS InstantView,Item-0" $alias_position
 sketchybar --set "macOS InstantView,Item-0" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="$PLUGIN_DIR/open_menubar_items.sh macosinstantview"
 
-sketchybar --add alias "AltTab,Item-0" $position
+sketchybar --add alias "AltTab,Item-0" $alias_position
 sketchybar --set "AltTab,Item-0" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="$PLUGIN_DIR/open_menubar_items.sh alttab"
 
-sketchybar --add alias "Karabiner-Menu,Item-0" $position
+sketchybar --add alias "Karabiner-Menu,Item-0" $alias_position
 sketchybar --set "Karabiner-Menu,Item-0" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="$PLUGIN_DIR/open_menubar_items.sh karabiner-menu"
 
-sketchybar --add alias "Background Music,Item-0" $position
+sketchybar --add alias "Background Music,Item-0" $alias_position
 sketchybar --set "Background Music,Item-0" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="$PLUGIN_DIR/open_menubar_items.sh backgroundmusic"
 
-sketchybar --add alias "Flameshot,Item-0" $position
+sketchybar --add alias "Flameshot,Item-0" $alias_position
 sketchybar --set "Flameshot,Item-0" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
     click_script="$PLUGIN_DIR/open_menubar_items.sh flameshot"
 
-# sketchybar --add alias "Control Center,Clock" $position
+sketchybar --add alias "KDE Connect,Item-0" $alias_position
+sketchybar --set "KDE Connect,Item-0" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
+    click_script="$PLUGIN_DIR/open_menubar_items.sh kde-connect"
+
+
+# sketchybar --add alias "Control Center,Clock" $alias_position
 # sketchybar --set "Control Center,Clock" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_clock.scpt"
 
-# sketchybar --add alias "Spotlight,Item-0" $position
+# sketchybar --add alias "Spotlight,Item-0" $alias_position
 # sketchybar --set "Spotlight,Item-0" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_spotlight.scpt"
 
-# sketchybar --add alias "Control Center,WiFi" $position
+# sketchybar --add alias "Control Center,WiFi" $alias_position
 # sketchybar --set "Control Center,WiFi" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_wifi.scpt"
 
-# sketchybar --add alias "Control Center,Battery" $position
+# sketchybar --add alias "Control Center,Battery" $alias_position
 # sketchybar --set "Control Center,Battery" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_battery.scpt"
 
-# sketchybar --add alias "Hidden Bar,hiddenbar_expandcollapse" $position
+# sketchybar --add alias "Hidden Bar,hiddenbar_expandcollapse" $alias_position
 # sketchybar --set "Hidden Bar,hiddenbar_expandcollapse" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_hiddenbar_expandcollapse.scpt"
 
-# sketchybar --add alias "Control Center,AudioVideoModule" $position
+# sketchybar --add alias "Control Center,AudioVideoModule" $alias_position
 # sketchybar --set "Control Center,AudioVideoModule" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_audiovideomodule.scpt"
 
-# sketchybar --add alias "TextInputMenuAgent,Item-0" $position
+# sketchybar --add alias "TextInputMenuAgent,Item-0" $alias_position
 # sketchybar --set "TextInputMenuAgent,Item-0" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_textinputmenuagent.scpt"
 
-# sketchybar --add alias "Hidden Bar,hiddenbar_separate" $position
+# sketchybar --add alias "Hidden Bar,hiddenbar_separate" $alias_position
 # sketchybar --set "Hidden Bar,hiddenbar_separate" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_hiddenbar_separate.scpt"
 
-# sketchybar --add alias "Hidden Bar,hiddenbar_terminate" $position
+# sketchybar --add alias "Hidden Bar,hiddenbar_terminate" $alias_position
 # sketchybar --set "Hidden Bar,hiddenbar_terminate" alias.color=$base05 alias.scale=0.8 padding_left=-3 padding_right=-3-5 alias.update_freq=1 \
 #     click_script="osascript /path/to/click_hiddenbar_terminate.scpt"
 
@@ -388,8 +418,8 @@ if [ -f "$HOME/.config/sketchybar/calendar_init_flag" ]; then
 fi
 sketchybar --update
 
-# Fetch the menu items from sketchybar query
-sleep 4
-/opt/homebrew/bin/sketchybar --query default_menu_items | $jq -r '.[]' | while IFS= read -r item; do /opt/homebrew/bin/sketchybar --set "$item" alias.update_freq=0; done && sleep 4
-# $yabai -m config menubar_opacity 0.0
-$toggle_sketchybar off
+# # Fetch the menu items from sketchybar query
+# sleep 4
+# /opt/homebrew/bin/sketchybar --query default_menu_items | $jq -r '.[]' | while IFS= read -r item; do /opt/homebrew/bin/sketchybar --set "$item" alias.update_freq=0; done && sleep 4
+# # $yabai -m config menubar_opacity 0.0
+# $toggle_sketchybar off

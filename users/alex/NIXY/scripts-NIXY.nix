@@ -506,41 +506,49 @@ in
 
     #toggle-menubar
     (pkgs.writeShellScriptBin "toggle-menubar" ''
-      # Function to toggle the macOS menu bar
-      toggle_menubar() {
-          current_opacity=$(osascript -e 'tell application "System Events" to tell dock preferences to get autohide menu bar')
-          menubar_state_file="/tmp/menubar_state"
-          if [[ "$current_opacity" == "true" ]]; then
-              if [[ "$1" == "on" ]]; then
-                  echo "Menu bar is already ON"
-              else
-                  osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to false'
-                  sleep 0.1
-                  ${yabai} -m config menubar_opacity 1.0
-                  echo "Menu bar turned ON"
-                  echo "on" > "$menubar_state_file"
-              fi
+      menubar_state_file="/tmp/menubar_state"
+
+      # Function to toggle the macOS menu bar on
+      toggle_on() {
+          if [ "$(cat "$menubar_state_file")" = "on" ]; then
+              echo "Menu bar is already ON"
           else
-              if [[ "$1" == "off" ]]; then
-                  echo "Menu bar is already OFF"
+              osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to false'
+              sleep 0.1
+              echo "Menu bar turned ON"
+              echo "on" > "$menubar_state_file"
+          fi
+      }
+
+      # Function to toggle the macOS menu bar off
+      toggle_off() {
+          if [ "$(cat "$menubar_state_file")" = "off" ]; then
+              echo "Menu bar is already OFF"
+          else
+              osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to true'
+              echo "Menu bar turned OFF"
+              echo "off" > "$menubar_state_file"
+          fi
+      }
+
+      # Main function to toggle the menu bar based on the argument
+      toggle_menubar() {
+          if [ "$1" = "on" ]; then
+              toggle_on
+          elif [ "$1" = "off" ]; then
+              toggle_off
+          else
+              # Toggle between on/off states if no argument is provided
+              if [ "$(cat "$menubar_state_file")" = "on" ]; then
+                  toggle_off
               else
-                  ${yabai} -m config menubar_opacity 0.0
-                  osascript -e 'tell application "System Events" to tell dock preferences to set autohide menu bar to true'
-                  echo "Menu bar turned OFF"
-                  echo "off" > "$menubar_state_file"
+                  toggle_on
               fi
           fi
       }
 
-      # Main
-      if [[ "$#" -eq 0 ]]; then
-          toggle_menubar
-      elif [[ "$#" -eq 1 && ($1 == "on" || $1 == "off") ]]; then
-          toggle_menubar "$1"
-      else
-          echo "Usage: $0 <on | off>"
-          exit 1
-      fi
+      # Example usage
+      toggle_menubar "$1"
     '')
 
     #toggle-float

@@ -3,6 +3,11 @@
 app_name=$1
 
 case $app_name in
+    "kde-connect")
+        osascript -e 'tell application "System Events" to tell process "KDE Connect"
+            click menu bar item 1 of menu bar 2
+        end tell'
+        ;;
     "flameshot")
         osascript -e 'tell application "System Events" to tell process "Flameshot"
             click menu bar item 1 of menu bar 2
