@@ -92,6 +92,7 @@ let
     "workbench.preferredHighContrastColorTheme" = "Default High Contrast";
     "workbench.preferredHighContrastLightColorTheme" = "Default High Contrast Light";
     "workbench.preferredLightColorTheme" = "Visual Studio Light";
+    "editor.formatOnSave" = true;
     "git.autofetch" = true;
     "explorer.confirmDragAndDrop" = false;
     workbench.colorCustomizations = {
