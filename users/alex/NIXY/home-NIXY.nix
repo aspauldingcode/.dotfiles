@@ -31,6 +31,7 @@
     ./modules/cava.nix
     ./modules/xinit.nix
     ./modules/i3.nix
+    ./modules/afloaty.nix
     ./modules/qutebrowser.nix
     ./modules/sketchybar/sketchybar.nix
     ./modules/yabai.nix # contains skhd and borders config.

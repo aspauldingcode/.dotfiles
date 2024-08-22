@@ -207,11 +207,11 @@
           in "${toString r} ${toString g} ${toString b} Other";
         };
       
-        "/Library/Preferences/com.apple.wallpaper" = {
+        "~/Library/Preferences/com.apple.wallpaper" = {
           SonomaFirstRunMigrationPerformed = 1;
           StoreIndexMigrationVersion = 1;
           # SystemWallpaperURL = "file:///System/Library/Desktop%20Pictures/.wallpapers/Sonoma%20Horizon/Sonoma%20Horizon.mov";
-          SystemWallpaperURL = "file://${../../users/alex/extraConfig/wallpapers/gruvbox-nix.png}";
+          SystemWallpaperURL = "file://${../../../users/alex/extraConfig/wallpapers/gruvbox-nix.png}";
         };
 
         NSGlobalDomain.TISRomanSwitchState = 1;
