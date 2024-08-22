@@ -95,6 +95,14 @@ let
     "editor.formatOnSave" = true;
     "git.autofetch" = true;
     "explorer.confirmDragAndDrop" = false;
+    "editor.defaultFormatter" = "esbenp.prettier-vscode";
+    "[javascript]" = {
+      "editor.defaultFormatter" = "esbenp.prettier-vscode"; # could set to something else
+    };
+    "[nix]" = {
+      "editor.defaultFormatter" = "jnoortheen.nix-ide";
+      # "editor.defaultFormatter" = "B4dM4n.nixpkgs-fmt";
+    };
     workbench.colorCustomizations = {
       "titleBar.activeBackground" = "#${config.colorScheme.palette.base01}";
       "titleBar.inactiveBackground" = "#${config.colorScheme.palette.base02}";
