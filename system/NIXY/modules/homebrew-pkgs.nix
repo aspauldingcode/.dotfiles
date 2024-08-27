@@ -68,6 +68,7 @@
       "obs-websocket"
       "flameshot"
       "element"
+      "cursor"
       "brave-browser"
       "firefox"
       "alt-tab"
@@ -91,12 +92,9 @@
       #"user/repo"  # Additional Homebrew tap
       # default
       "homebrew/bundle"
-      # "homebrew/cask"
-      "homebrew/cask-fonts"
-      # "homebrew/core"
       "homebrew/services"
       # Custom
-      "kde-mac/kde"
+      "kde-mac/kde" # FIXME: Fails at first instal.. you must visit https://github.com/KDE/homebrew-kde to install correctly.
       "koekeishiya/formulae"
       "FelixKratz/formulae"
       "smudge/smudge"
