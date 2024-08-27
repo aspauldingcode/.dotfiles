@@ -10,6 +10,9 @@ sudo scutil --set HostName NIXY
 sudo scutil --set ComputerName NIXY
 sudo scutil --set LocalHostName NIXY
 
+# install homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
 # install nix with flakes enabled automatically
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
