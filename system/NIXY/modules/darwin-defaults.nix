@@ -85,11 +85,11 @@
         TrackpadRightClick = true;
         TrackpadThreeFingerDrag = false;
       };
-      #universalaccess = {
-      #  mouseDriverCursorSize = 1.2;
-      #  reduceMotion = true;
-      #  reduceTransparency = true;
-      #};
+      universalaccess = {
+        mouseDriverCursorSize = 1.2;
+        reduceMotion = true;
+        reduceTransparency = true;
+      };
       ".GlobalPreferences"."com.apple.mouse.scaling" = 8.0;
       ActivityMonitor.IconType = null;
       CustomSystemPreferences = {

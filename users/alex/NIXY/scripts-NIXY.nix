@@ -102,6 +102,7 @@ in
       #   ${pkgs.start_programs_correctly}/bin/start_programs_correctly #run only once.
       #   echo "programs started already with fix-wm." > "/tmp/programs_started_state"
       # fi
+      sh ~/.config/borders/bordersrc # source borders config
     '')
 
     #analyze-output
