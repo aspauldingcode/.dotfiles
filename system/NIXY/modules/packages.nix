@@ -12,8 +12,10 @@
   environment.systemPackages = with pkgs; [
     ## macosINSTANTView?
     wget
-    zellij
-    # neofetch
+    #zellij
+    jetbrains.idea-community
+    teams
+    fastfetch
     gnumake
     pfetch
     htop
@@ -27,8 +29,8 @@
     ruby_3_3
     rbenv
     # javaPackages.openjfx19
-    #inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk20
-    jdk21
+    #inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk22
+    jdk22
     #python311
     oh-my-zsh # zsh shell framework
     oh-my-fish # fish shell framework

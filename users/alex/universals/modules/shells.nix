@@ -62,6 +62,8 @@ in
       enableCompletion = true;
       initExtra = fullSetup + ''
         setopt APPEND_HISTORY
+        # Enable case-insensitive tab completion
+        zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
       '';
       shellAliases = shellAliases // {
         ll = "ls -l";
@@ -74,6 +76,8 @@ in
       enableCompletion = true;
       initExtra = fullSetup + ''
         shopt -s histappend
+        # Enable case-insensitive tab completion
+        bind "set completion-ignore-case on"
       '';
       shellAliases = shellAliases // {
         ll = "ls -l";
@@ -92,8 +96,16 @@ in
         set -Ux LDFLAGS "-L/opt/homebrew/opt/libiconv/lib"
         set -Ux CPPFLAGS "-I/opt/homebrew/opt/libiconv/include"
         set -Ux LIBRARY_PATH "$LIBRARY_PATH:/opt/homebrew/opt/libiconv/lib"
+        # Enable case-insensitive tab completion
+        set -g fish_complete_path (string match -v '*/__fish_build_paths.fish' $fish_complete_path)
+        set -g fish_complete_path $fish_complete_path ~/.config/fish/completions
+        set -U fish_features qmark-noglob
       '';
-      interactiveShellInit = ''set fish_greeting ""'';
+      interactiveShellInit = ''
+        set fish_greeting ""
+        # Enable case-insensitive tab completion
+        set -g fish_completion_ignore_case 1
+      '';
       shellAliases = shellAliases // {
         ll = "ls -l";
         la = "ls -a";
@@ -140,6 +152,14 @@ in
         ll = "ls -l";
         la = "ls -a";
       };
+      extraConfig = ''
+        # Enable case-insensitive tab completion
+        $env.config = {
+          completions: {
+            case_sensitive: false
+          }
+        }
+      '';
     };
 
     oh-my-posh = {
@@ -168,7 +188,7 @@ in
               {
                 background = "#${colors.base0D}";
                 foreground = "#${colors.base00}";
-                powerline_symbol = "";
+                powerline_symbol = "";
                 properties = {
                   style = "full";
                 };
@@ -186,7 +206,7 @@ in
                 ];
                 foreground = "#${colors.base00}";
                 leading_diamond = "◀";
-                powerline_symbol = "";
+                powerline_symbol = "";
                 properties = {
                   branch_max_length = 25;
                   fetch_stash_count = true;
@@ -202,7 +222,7 @@ in
               {
                 background = "#${colors.base0A}";
                 foreground = "#${colors.base00}";
-                powerline_symbol = "";
+                powerline_symbol = "";
                 properties = {
                   fetch_version = true;
                 };
@@ -213,7 +233,7 @@ in
               {
                 background = "#${colors.base0C}";
                 foreground = "#${colors.base00}";
-                powerline_symbol = "";
+                powerline_symbol = "";
                 properties = {
                   fetch_version = true;
                 };
@@ -224,7 +244,7 @@ in
               {
                 background = "#${colors.base09}";
                 foreground = "#${colors.base00}";
-                powerline_symbol = "";
+                powerline_symbol = "";
                 properties = {
                   display_mode = "files";
                   fetch_virtual_env = false;
@@ -236,7 +256,7 @@ in
               {
                 background = "#${colors.base0E}";
                 foreground = "#${colors.base00}";
-                powerline_symbol = "";
+                powerline_symbol = "";
                 properties = {
                   display_mode = "files";
                   fetch_version = true;
@@ -248,7 +268,7 @@ in
               {
                 background = "#${colors.base0D}";
                 foreground = "#${colors.base00}";
-                powerline_symbol = "";
+                powerline_symbol = "";
                 properties = {
                   display_mode = "files";
                   fetch_version = false;
@@ -263,7 +283,7 @@ in
                   "{{if contains \"jan\" .Profile}}#${colors.base0A}{{end}}"
                 ];
                 foreground = "#${colors.base00}";
-                powerline_symbol = "";
+                powerline_symbol = "";
                 properties = {
                   display_default = false;
                 };
@@ -274,7 +294,7 @@ in
               {
                 background = "#${colors.base0C}";
                 foreground = "#${colors.base00}";
-                powerline_symbol = "";
+                powerline_symbol = "";
                 style = "powerline";
                 template = " 🔧 ";
                 type = "root";
@@ -282,7 +302,7 @@ in
               {
                 background = "#${colors.base03}";
                 foreground = "#${colors.base05}";
-                powerline_symbol = "";
+                powerline_symbol = "";
                 style = "powerline";
                 template = " {{ .Name }} ";
                 type = "shell";

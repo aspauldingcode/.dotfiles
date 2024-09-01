@@ -111,7 +111,7 @@ let
       "sideBar.background" = "#${config.colorScheme.palette.base01}";
       "sideBar.foreground" = "#${config.colorScheme.palette.base05}";
       "statusBar.background" = "#${config.colorScheme.palette.base00}";
-      "statusBar.foreground" = "#${config.colorScheme.palette.base01}";
+      "statusBar.foreground" = "#${config.colorScheme.palette.base05}";
       "statusBar.noFolderBackground" = "#${config.colorScheme.palette.base01}";
       "statusBar.noFolderForeground" = "#${config.colorScheme.palette.base02}";
       "editor.background" = "#${config.colorScheme.palette.base00}";

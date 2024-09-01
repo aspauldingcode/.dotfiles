@@ -381,7 +381,7 @@
         "home-manager": "home-manager_2",
         "nix-darwin": "nix-darwin_2",
         "nixpkgs": [
-          "unstable_nixpkgs"
+          "nixpkgs"
         ],
         "nuschtosSearch": "nuschtosSearch",
         "treefmt-nix": "treefmt-nix"

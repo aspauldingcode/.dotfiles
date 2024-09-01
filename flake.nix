@@ -17,7 +17,8 @@
 
     nixvim = {
       url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "unstable_nixpkgs"; # Follows the unstable nixpkgs version
+      #inputs.nixpkgs.follows = "unstable_nixpkgs"; # Follows the unstable nixpkgs version
+      inputs.nixpkgs.follows = "nixpkgs"; # follow stable channel.
     };
 
     mobile-nixos = {
@@ -79,7 +80,7 @@
           nixvim
           flake-parts
           nix-colors
-	  apple-silicon
+	        apple-silicon
           nur
           self
           std

@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 ### System Configuration.nix for Darwin
 {
   imports = [
@@ -115,6 +115,9 @@
   system.activationScripts = {
     stateVersion = 4;
     extraActivation.text = ''
+      # symlink (zulu) jdk22 to /Library/Java/JavaVirtualMachines/ # NEEDED for macOS!!
+      ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk22}/zulu-22.jdk" "/Library/Java/JavaVirtualMachines/"
+      
       # Fixes cursorcerer symlink!
       ln -sf "${pkgs.callPackage ./modules/cursorcerer.nix { }}/Cursorcerer.prefPane" "/Library/PreferencePanes/"
       

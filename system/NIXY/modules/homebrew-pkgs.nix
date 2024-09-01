@@ -30,7 +30,7 @@
       # "pkgconf"
       "portaudio"
       "iniparser"
-      "gcal"
+      #"gcal" # GONER!
       "spicetify-cli"
       "zenity"
       "cliclick"
@@ -58,7 +58,7 @@
       "hammerspoon"
       "phoenix"
       "prismlauncher"
-      "dmenu-mac"
+      #"dmenu-mac" # USE UNMENU FORK!
       "kitty"
       "krita"
       "spotify"
@@ -72,6 +72,7 @@
       "brave-browser"
       "firefox"
       "alt-tab"
+      "azure-data-studio"
       "orbstack"
       "libreoffice"
       "karabiner-elements" # remap keyboard
@@ -82,7 +83,7 @@
       "asset-catalog-tinkerer"
       "themeengine"
       "docker"
-      "kdeconnect"
+      #"kdeconnect"
     ];
     whalebrews = [
       #"wget" #FAILS
@@ -99,5 +100,17 @@
       "FelixKratz/formulae"
       "smudge/smudge"
     ];
+
+    masApps = {
+      "Xcode" = 497799835; 
+      # then need to run:
+      # sudo xcodebuild -license accept
+      # to accept the license.
+    };
   };
+  # fix xcode license and run first launch.
+  system.activationScripts.postUserActivation.text = ''
+    sudo xcodebuild -license accept
+    xcodebuild -runFirstLaunch
+  '';
 }

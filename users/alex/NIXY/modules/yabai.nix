@@ -8,7 +8,8 @@ let
   borders = "${homebrewPath}/borders";
   i3-msg = "${homebrewPath}/i3-msg";
   alacritty = "${homebrewPath}/alacritty";
-  dmenu-mac = "${homebrewPath}/dmenu-mac";
+  # dmenu-mac = "${homebrewPath}/dmenu-mac";
+  dmenu-mac = "/Applications/unmenu.app/Contents/MacOS/unmenu";
   jq = "${pkgs.jq}/bin/jq";
   inherit (config.colorScheme) colors;
 in

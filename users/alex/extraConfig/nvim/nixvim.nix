@@ -89,7 +89,7 @@
         #   notifyFormat = "[null-ls] %s";
         # };
         efmls-configs = {
-          enable = true;
+          enable = false;
           setup = {
             all = {
               #formatter = [
@@ -598,10 +598,10 @@
 
         # code-completion
         # cmp-nvim-lua.enable = true;
-        cmp-nvim-lsp.enable = true;
-        cmp-nvim-lsp-signature-help.enable = true;
+        # cmp-nvim-lsp.enable = true;
+        # cmp-nvim-lsp-signature-help.enable = true;
         cmp-zsh.enable = true;
-        intellitab.enable = true;
+        # intellitab.enable = true;
 
         # AI code-completion tools
         # codeium-nvim.enable = false;
@@ -725,10 +725,10 @@
         obsidian = {
           enable = false; # Cross that bridge when we get there...
           settings = {
-            completion = {
-              min_chars = 2;
-              nvim_cmp = true;
-            };
+            #completion = {
+            #  min_chars = 2;
+              #nvim_cmp = true;
+            #};
             new_notes_location = "current_dir";
             workspaces = [
               {

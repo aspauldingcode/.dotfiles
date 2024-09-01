@@ -96,7 +96,7 @@ let
         '';
         tooltip = "$CAL";
       };
-      on-click = "xdg-open https://calendar.google.com/calendar/";
+      on-click = "xdg-open https://calendar.google.com/calendar/u/oldstrumpet321@gmail.com/r/month";
     };
 
     cava = {

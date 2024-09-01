@@ -94,6 +94,6 @@ case "$SENDER" in
     sketchybar --set $NAME popup.drawing=off
     ;;
   "mouse.clicked")
-    open https://calendar.google.com/calendar/
+    open https://calendar.google.com/calendar/u/oldstrumpet321@gmail.com/r/month
     ;;
 esac
