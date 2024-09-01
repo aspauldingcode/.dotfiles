@@ -91,7 +91,7 @@ let
       exec = jsonOutput "menu" {
         text = "$DATETIME"; # date "+%a, %b %d  %I:%M %p
         pre = ''
-          CAL="$(gcal | awk '{printf "%-21s\n", $0}' | sed -e 's|<|\[|g' -e 's|>|\]|g' -e '/^$/d' | sed -e '1d;$!s/\]$/&/;$!s/$/ /' -e '$!N;s/\n$//')"
+          CAL="$(gcal | awk '{printf "%-21s\n", $0}' | sed -e 's|<|\[|g' -e 's|>|\]|g' -e '/^$/d' | sed -e '1d;$!s/\]/$/&/;$!s/$/ /' -e '$!N;s/\n$//')"
           DATETIME=$(date "+%a, %b %d  %I:%M %p") 
         '';
         tooltip = "$CAL";
