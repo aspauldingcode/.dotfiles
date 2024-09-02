@@ -217,7 +217,7 @@ in
           # ${modifier} - return : 		            open -a kitty -n
           # ${modifier} - return :                ${alacritty}
           ${modifier} - return :                ${alacritty} msg create-window || open -na ${alacritty}
-          ${modifier} - d :                     ${dmenu-mac}
+          # ${modifier} - d :                       ${dmenu-mac} use karabiner to remap cmd-d to alt-d. configure unmenu to use cmd-d as hotkey.
           # ${mod1} + ${mod5} - space :             open -na "Brave Browser"
           # ${mod1} + ${smod} + ${mod5} - space :   open -na "Brave Browser" --args --incognito
           ${mod1} + ${mod5} - space :             open -na "Firefox"

@@ -100,7 +100,7 @@ let
       "editor.defaultFormatter" = "esbenp.prettier-vscode"; # could set to something else
     };
     "[nix]" = {
-      "editor.defaultFormatter" = "jnoortheen.nix-ide";
+      #"editor.defaultFormatter" = "jnoortheen.nix-ide";
       # "editor.defaultFormatter" = "B4dM4n.nixpkgs-fmt";
     };
     workbench.colorCustomizations = {
@@ -142,6 +142,11 @@ in
 
   home.file.vscodeSettings = {
     target = if pkgs.stdenv.isDarwin then "Library/Application Support/Code/User/settings.json" else ".config/Code/User/settings.json";
+    text = commonSettings;
+  };
+
+  home.file.azureDataStudioSettings = {
+    target = if pkgs.stdenv.isDarwin then "Library/Application Support/azuredatastudio/User/settings.json" else ".config/azuredatastudio/User/settings.json";
     text = commonSettings;
   };
 }

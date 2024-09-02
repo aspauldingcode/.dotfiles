@@ -200,6 +200,41 @@
                     ];
                   }
                   {
+                    description = "Swap alt+d with command+shift+d";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "d";
+                          modifiers = {
+                            mandatory = ["left_alt"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "d";
+                            modifiers = ["left_command" "left_shift"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "d";
+                          modifiers = {
+                            mandatory = ["left_command" "left_shift"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "d";
+                            modifiers = ["left_alt"];
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
                     description = "Swap Control+Shift+3/4/5 with Command+Shift+3/4/5";
                     manipulators = [
                       {

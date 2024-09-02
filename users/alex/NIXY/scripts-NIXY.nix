@@ -451,7 +451,7 @@ in
                 fi
             fi
 
-            ${borders} background_color=0xff${colors.base00}
+            #${borders} background_color=0xff${colors.base00}
           }
           if [ $# -eq 0 ]; then
               # No arguments provided, toggle based on current state
@@ -468,7 +468,7 @@ in
               fi
 
           elif [ "$1" = "on" ]; then
-              if [ "$dock_status" = "true" ]; then
+              if [ "$dock_status" = "false" ]; then
                   osascript -e 'tell application "System Events" to set autohide of dock preferences to false'
                   echo "Dock toggled on"
                   echo "on" > "$dock_state_file"  # Save state to file
@@ -477,7 +477,7 @@ in
                   echo "Dock is already toggled on"
               fi
           elif [ "$1" = "off" ]; then
-              if [ "$dock_status" = "false" ]; then
+              if [ "$dock_status" = "true" ]; then
                   osascript -e 'tell application "System Events" to set autohide of dock preferences to true'
                   echo "Dock toggled off"
                   echo "off" > "$dock_state_file"  # Save state to file
