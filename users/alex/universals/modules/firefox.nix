@@ -78,6 +78,10 @@ in {
             border-color: var(--toolbar-border-color) !important;
           }
 
+          /* disable tab bars */
+          #TabsToolbar {
+            display: none !important;
+          }
         '';
         userContent = ''
           # Here too
@@ -89,8 +93,7 @@ in {
           ublock-origin
           istilldontcareaboutcookies
           bitwarden
-          violentmonkey
-          temporary-containers
+          tampermonkey
           return-youtube-dislikes
           refined-github
           re-enable-right-click
@@ -135,6 +138,29 @@ in {
           })
 
           (pkgs.nur.repos.rycee.firefox-addons.buildFirefoxXpiAddon {
+            pname = "sidebery";
+            version = "5.2.0";
+            addonId = "{3c078156-979c-498b-8990-85f7987dd929}";
+            url = "https://addons.mozilla.org/firefox/downloads/file/4230615/sidebery-5.2.0.xpi";
+            sha256 = "sha256-mfW67Xe3jOEH2FihIz1esf62O1Pzkqt1n23n5P1QUpk=";
+            meta = {
+              homepage = "https://github.com/mbnuqw/sidebery";
+              description = "Sidebery - Vertical tabs with tree-like bookmarks";
+              license = lib.licenses.mpl20;
+              mozPermissions = [
+                "tabs"
+                "storage"
+                "menus"
+                "bookmarks"
+                "sessions"
+                "contextualIdentities"
+                "cookies"
+              ];
+              platforms = lib.platforms.all;
+            };
+          })
+
+          (pkgs.nur.repos.rycee.firefox-addons.buildFirefoxXpiAddon {
             pname = "hide-youtube-thumbnails";
             version = "2.5.0";
             addonId = "{17c4514d-71fa-4633-8c07-1fe0b354c885}";
@@ -171,6 +197,7 @@ in {
           "app.update.channel" = "default";
           "browser.aboutConfig.showWarning" = false;
           "browser.bookmarks.showMobileBookmarks" = true;
+          "browser.toolbars.bookmarks.visibility" = "never";
           "browser.contentblocking.category" = "standard";
           "browser.ctrlTab.recentlyUsedOrder" = false;
           "browser.disableResetPrompt" = true;
@@ -190,7 +217,7 @@ in {
           "browser.sessionstore.resume_from_crash" = false;
           "browser.shell.checkDefaultBrowser" = false;
           "browser.shell.defaultBrowserCheckCount" = 1;
-          # "browser.startup.homepage" = "https://searx.aicampground.com";
+          "browser.startup.homepage" = "moz-extension://0dd99676-bbe1-4617-8bd4-8dd185fa3238/index.html";
           "browser.tabs.inTitlebar" =
             if pkgs.stdenv.isDarwin
             then 1
@@ -198,9 +225,10 @@ in {
           "browser.tabs.loadInBackground" = true;
           "browser.tabs.warnOnClose" = false;
           "browser.tabs.warnOnCloseOtherTabs" = false;
+          "browser.tabs.tabmanager.enabled" = false;
           "browser.warnOnQuit" = false;
           "browser.warnOnQuitShortcut" = false;
-          "browser.uiCustomization.state" = ''{"placements":{"widget-overflow-fixed-list":[],"nav-bar":["back-button","forward-button","stop-reload-button","home-button","urlbar-container","downloads-button","library-button","ublock0_raymondhill_net-browser-action","_testpilot-containers-browser-action"],"toolbar-menubar":["menubar-items"],"TabsToolbar":["tabbrowser-tabs","new-tab-button","alltabs-button"],"PersonalToolbar":["import-button","personal-bookmarks"]},"seen":["save-to-pocket-button","developer-button","ublock0_raymondhill_net-browser-action","_testpilot-containers-browser-action"],"dirtyAreaCache":["nav-bar","PersonalToolbar","toolbar-menubar","TabsToolbar","widget-overflow-fixed-list"],"currentVersion":18,"newElementCount":4}'';
+          "browser.uiCustomization.state" = ''{"placements":{"nav-bar":["_3c078156-979c-498b-8990-85f7987dd929_-browser-action","back-button","forward-button","stop-reload-button","urlbar-container","ublock0_raymondhill_net-browser-action","_testpilot-containers-browser-action"],"TabsToolbar":["tabbrowser-tabs","new-tab-button"],"PersonalToolbar":["import-button","personal-bookmarks"]},"seen":["ublock0_raymondhill_net-browser-action","_testpilot-containers-browser-action"],"dirtyAreaCache":["nav-bar","PersonalToolbar","TabsToolbar"],"currentVersion":18}'';
           "browser.urlbar.placeholderName" = "DuckDuckGo";
           "browser.urlbar.quickactions.enabled" = false;
           "browser.urlbar.quickactions.showPrefs" = false;
@@ -327,134 +355,6 @@ in {
           "browser.menu_disabled_text_color" = "#${colors.base02}";
           "browser.menu_disabled_background_color" = "#${colors.base01}";
           "browser.menu_disabled_border_color" = "#${colors.base03}";
-          # "browser.theme.toolbar-theme" = 0;
-          # "browser.theme.content-theme" = 0;
-          # "browser.theme.dark-private-windows" = true;
-          # "browser.theme.dark-toolbar" = true;
-          # "browser.theme.dark-content" = true;
-          # "browser.theme.dark-sidebar" = true;
-          # "browser.theme.dark-inactive-tabs" = true;
-          # "browser.theme.dark-active-tab" = true;
-          # "browser.theme.dark-tab-line" = true;
-          # "browser.theme.dark-tab-background-text" = true;
-          # "browser.theme.dark-tab-background-separator" = true;
-          # "browser.theme.dark-tab-selected-text" = true;
-          # "browser.theme.dark-tab-loading-fill" = true;
-          # "browser.theme.dark-toolbar-field" = true;
-          # "browser.theme.dark-toolbar-field-focus" = true;
-          # "browser.theme.dark-toolbar-field-border-focus" = true;
-          # "browser.theme.dark-toolbar-field-text" = true;
-          # "browser.theme.dark-toolbar-field-text-focus" = true;
-          # "browser.theme.dark-toolbar-field-border" = true;
-          # "browser.theme.dark-toolbar-top-separator" = true;
-          # "browser.theme.dark-toolbar-bottom-separator" = true;
-          # "browser.theme.dark-toolbar-vertical-separator" = true;
-          # "browser.theme.dark-bookmark-text" = true;
-          # "browser.theme.dark-toolbar-color" = "#${colors.base00}";
-          # "browser.theme.dark-toolbar-text-color" = "#${colors.base05}";
-          # "browser.theme.dark-toolbar-field-color" = "#${colors.base01}";
-          # "browser.theme.dark-toolbar-field-text-color" = "#${colors.base05}";
-          # "browser.theme.dark-toolbar-field-focus-color" = "#${colors.base02}";
-          # "browser.theme.dark-toolbar-field-focus-text-color" = "#${colors.base06}";
-          # "browser.theme.dark-toolbar-field-border-color" = "#${colors.base03}";
-          # "browser.theme.dark-toolbar-field-focus-border-color" = "#${colors.base0D}";
-          # "browser.theme.dark-tab-background-color" = "#${colors.base01}";
-          # "browser.theme.dark-tab-line-color" = "#${colors.base0D}";
-          # "browser.theme.dark-tab-text-color" = "#${colors.base05}";
-          # "browser.theme.dark-tab-selected-color" = "#${colors.base02}";
-          # "browser.theme.dark-tab-loading-color" = "#${colors.base0D}";
-          # "browser.theme.dark-sidebar-background-color" = "#${colors.base00}";
-          # "browser.theme.dark-sidebar-text-color" = "#${colors.base05}";
-          # "browser.theme.dark-inactive-tab-background-color" = "#${colors.base01}";
-          # "browser.theme.dark-inactive-tab-text-color" = "#${colors.base04}";
-          # "browser.theme.dark-highlight-color" = "#${colors.base0A}";
-          # "browser.theme.dark-selected-tab-background-color" = "#${colors.base02}";
-          # "browser.theme.dark-selected-tab-text-color" = "#${colors.base06}";
-          # "browser.theme.dark-popup-background" = "#${colors.base01}";
-          # "browser.theme.dark-popup-text" = "#${colors.base05}";
-          # "browser.theme.dark-popup-border" = "#${colors.base03}";
-          # "browser.theme.dark-popup-highlight" = "#${colors.base0A}";
-          # "browser.theme.dark-popup-highlight-text" = "#${colors.base00}";
-          # "browser.theme.dark-ntp-background" = "#${colors.base00}";
-          # "browser.theme.dark-ntp-text" = "#${colors.base05}";
-          # "browser.theme.dark-sidebar-highlight" = "#${colors.base0A}";
-          # "browser.theme.dark-sidebar-highlight-text" = "#${colors.base00}";
-          # "browser.theme.dark-sidebar-border" = "#${colors.base03}";
-          # "browser.theme.dark-sidebar-separator" = "#${colors.base03}";
-          # "browser.theme.dark-sidebar-selected-background" = "#${colors.base02}";
-          # "browser.theme.dark-sidebar-selected-text" = "#${colors.base06}";
-          # "browser.theme.dark-sidebar-hover-background" = "#${colors.base01}";
-          # "browser.theme.dark-sidebar-hover-text" = "#${colors.base05}";
-          # "browser.theme.dark-toolbar-button-background" = "#${colors.base02}";
-          # "browser.theme.dark-toolbar-button-hover-background" = "#${colors.base03}";
-          # "browser.theme.dark-toolbar-button-active-background" = "#${colors.base04}";
-          # "browser.theme.dark-toolbar-button-text" = "#${colors.base05}";
-          # "browser.theme.dark-toolbar-button-hover-text" = "#${colors.base06}";
-          # "browser.theme.dark-toolbar-button-active-text" = "#${colors.base07}";
-          # "browser.theme.dark-toolbar-button-icon" = "#${colors.base05}";
-          # "browser.theme.dark-toolbar-button-hover-icon" = "#${colors.base06}";
-          # "browser.theme.dark-toolbar-button-active-icon" = "#${colors.base07}";
-          # "browser.theme.dark-toolbar-button-border" = "#${colors.base03}";
-          # "browser.theme.dark-toolbar-button-hover-border" = "#${colors.base04}";
-          # "browser.theme.dark-toolbar-button-active-border" = "#${colors.base05}";
-          # "browser.theme.dark-toolbar-field-focus-outline" = "#${colors.base0D}";
-          # "browser.theme.dark-toolbar-field-focus-outline-width" = "2px";
-          # "browser.theme.dark-toolbar-field-focus-outline-style" = "solid";
-          # "browser.theme.dark-toolbar-field-focus-outline-offset" = "0px";
-          # "browser.theme.dark-toolbar-field-border-radius" = "4px";
-          # "browser.theme.dark-toolbar-field-focus-border-radius" = "4px";
-          # "browser.theme.dark-toolbar-field-text-focus" = "#${colors.base07}";
-          # "browser.theme.dark-toolbar-field-background-focus" = "#${colors.base02}";
-          # "browser.theme.dark-toolbar-field-border-focus" = "#${colors.base0D}";
-          # "browser.theme.dark-toolbar-field-separator-focus" = "#${colors.base03}";
-          # "browser.theme.dark-toolbar-field-highlight-focus" = "#${colors.base0A}";
-          # "browser.theme.dark-toolbar-field-highlight-text-focus" = "#${colors.base00}";
-          # "browser.theme.dark-toolbar-field-shadow-focus" = "#${colors.base0B}";
-          # "browser.theme.dark-toolbar-field-shadow-text-focus" = "#${colors.base01}";
-          # "browser.theme.dark-toolbar-field-outline-focus" = "#${colors.base0C}";
-          # "browser.theme.dark-toolbar-field-outline-text-focus" = "#${colors.base02}";
-          # "browser.theme.dark-toolbar-field-glow-focus" = "#${colors.base0D}";
-          # "browser.theme.dark-toolbar-field-glow-text-focus" = "#${colors.base03}";
-          # "browser.theme.dark-toolbar-field-glow-background-focus" = "#${colors.base01}";
-          # "browser.theme.dark-toolbar-field-glow-border-focus" = "#${colors.base02}";
-          # "browser.theme.dark-toolbar-field-glow-shadow-focus" = "#${colors.base04}";
-          # "browser.theme.dark-toolbar-field-glow-highlight-focus" = "#${colors.base05}";
-          # "browser.theme.dark-toolbar-field-glow-outline-focus" = "#${colors.base06}";
-          # "browser.theme.dark-toolbar-field-glow-outline-text-focus" = "#${colors.base07}";
-          # "browser.theme.dark-toolbar-field-glow-separator-focus" = "#${colors.base08}";
-          # "browser.theme.dark-toolbar-field-glow-accent-focus" = "#${colors.base09}";
-          # "browser.theme.dark-toolbar-field-glow-accent-text-focus" = "#${colors.base0A}";
-          # "browser.theme.dark-toolbar-field-glow-accent-background-focus" = "#${colors.base0B}";
-          # "browser.theme.dark-toolbar-field-glow-accent-border-focus" = "#${colors.base0C}";
-          # "browser.theme.dark-toolbar-field-glow-accent-shadow-focus" = "#${colors.base0D}";
-          # "browser.theme.dark-toolbar-field-glow-accent-highlight-focus" = "#${colors.base0E}";
-          # "browser.theme.dark-toolbar-field-glow-accent-outline-focus" = "#${colors.base0F}";
-          # "browser.theme.dark-toolbar-field-glow-accent-outline-text-focus" = "#${colors.base00}";
-          # "browser.theme.dark-toolbar-field-glow-accent-separator-focus" = "#${colors.base01}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-focus" = "#${colors.base02}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-text-focus" = "#${colors.base03}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-background-focus" = "#${colors.base04}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-border-focus" = "#${colors.base05}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-shadow-focus" = "#${colors.base06}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-highlight-focus" = "#${colors.base07}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-outline-focus" = "#${colors.base08}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-outline-text-focus" = "#${colors.base09}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-separator-focus" = "#${colors.base0A}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-accent-focus" = "#${colors.base0B}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-accent-text-focus" = "#${colors.base0C}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-accent-background-focus" = "#${colors.base0D}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-accent-border-focus" = "#${colors.base0E}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-accent-shadow-focus" = "#${colors.base0F}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-accent-highlight-focus" = "#${colors.base00}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-accent-outline-focus" = "#${colors.base01}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-accent-outline-text-focus" = "#${colors.base02}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-accent-separator-focus" = "#${colors.base03}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-accent-outline-focus" = "#${colors.base01}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-accent-outline-text-focus" = "#${colors.base02}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-accent-separator-focus" = "#${colors.base03}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-accent-outline-focus" = "#${colors.base01}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-accent-outline-text-focus" = "#${colors.base02}";
-          # "browser.theme.dark-toolbar-field-glow-accent-glow-accent-separator-focus" = "#${colors.base03}";
         };
       };
     };

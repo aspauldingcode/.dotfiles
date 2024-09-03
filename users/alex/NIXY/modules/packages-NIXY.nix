@@ -79,6 +79,7 @@ in
     # bonsai #Only available on mac?
     rustc
     tt
+    obsidian
     cargo
     utm
     mas

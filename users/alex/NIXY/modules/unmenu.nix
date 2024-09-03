@@ -13,7 +13,17 @@
       find_apps = true
       find_executables = true
 
-      dirs = ["/System/Applications/", "/Applications/", "/System/Applications/Utilities/", "/System/Library/CoreServices/", "~/.unmenu-bin"]
+      dirs = [
+        "/System/Applications/",
+        "/Applications/",
+        "/System/Applications/Utilities/",
+        "/System/Library/CoreServices/",
+        "~/.unmenu-bin",
+        "~/.nix-profile/bin/",
+        "/nix/store/"
+        "/etc/profiles/per-user/alex/bin/", # not working?
+        "/run/current-system/sw/bin/", # also not working?
+      ]
 
       ignore_names = [
               "unmenu.app", # we don't want to launch ourselves, right?

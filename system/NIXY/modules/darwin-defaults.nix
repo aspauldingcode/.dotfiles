@@ -156,7 +156,7 @@
           AppleEnableMouseSwipeNavigateWithScrolls = 0;
           AppleEnableSwipeNavigateWithScrolls = 0;
           AppleFontSmoothing = 0;
-          AppleHighlightColor = "0.698039 0.843137 1.000000 Blue";
+          AppleHighlightColor = "0.51372 0.64705 0.59607 Other"; # converted from nix-colors base0D = #83a598
           AppleInterfaceStyle = "Dark";
           AppleLanguages = [ "en-US" ];
           AppleLocale = "en_US";

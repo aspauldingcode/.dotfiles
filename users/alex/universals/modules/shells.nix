@@ -35,17 +35,26 @@ let
 
   fullSetup = if pkgs.stdenv.isDarwin then commonSetup + darwinSetup else commonSetup;
 
-  shellAliases = lib.mkIf pkgs.stdenv.isDarwin {
+  commonAliases = {
+    ll = "ls -l";
+    la = "ls -a";
+  };
+
+  darwinAliases = {
     reboot = "sudo reboot now";
     rb = "sudo reboot now";
     shutdown = "sudo shutdown -h now";
     sd = "sudo shutdown -h now";
-  } // lib.mkIf (!pkgs.stdenv.isDarwin) {
+  };
+
+  linuxAliases = {
     reboot = "sudo systemctl reboot";
     rb = "sudo systemctl reboot";
     shutdown = "sudo systemctl poweroff";
     sd = "sudo systemctl poweroff";
   };
+
+  shellAliases = commonAliases // (if pkgs.stdenv.isDarwin then darwinAliases else linuxAliases);
 
   inherit (config.colorScheme) colors;
 in
@@ -65,10 +74,7 @@ in
         # Enable case-insensitive tab completion
         zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
       '';
-      shellAliases = shellAliases // {
-        ll = "ls -l";
-        la = "ls -a";
-      };
+      shellAliases = shellAliases;
     };
 
     bash = {
@@ -79,10 +85,7 @@ in
         # Enable case-insensitive tab completion
         bind "set completion-ignore-case on"
       '';
-      shellAliases = shellAliases // {
-        ll = "ls -l";
-        la = "ls -a";
-      };
+      shellAliases = shellAliases;
     };
 
     fish = {
@@ -106,10 +109,7 @@ in
         # Enable case-insensitive tab completion
         set -g fish_completion_ignore_case 1
       '';
-      shellAliases = shellAliases // {
-        ll = "ls -l";
-        la = "ls -a";
-      };
+      shellAliases = shellAliases;
     };
 
     nushell = {
@@ -148,10 +148,7 @@ in
         CPPFLAGS = "-I/opt/homebrew/opt/libiconv/include";
         LIBRARY_PATH = "$LIBRARY_PATH:/opt/homebrew/opt/libiconv/lib";
       };
-      shellAliases = shellAliases // {
-        ll = "ls -l";
-        la = "ls -a";
-      };
+      shellAliases = shellAliases;
       extraConfig = ''
         # Enable case-insensitive tab completion
         $env.config = {

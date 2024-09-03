@@ -1,6 +1,11 @@
 
+
+# install git and xcode tools
+xcode-select --install
+
+# now, git should be installed. if you type git, and xcode tools aren't installed, it will prompt to install them with a gui.
 # install git
-git 
+# git 
 # (then install xcode tools)
 
 # install rosetta2
@@ -8,7 +13,7 @@ sudo softwareupdate --install-rosetta
 # then press A and enter to continue.
 
 #SSH keys
-ssh-keygen -t ed25519 (then add .ssh/id_ed25519.pub key to github)
+ssh-keygen -t ed25519 #(then add .ssh/id_ed25519.pub key to github)
 
 # set hostname of macbook air
 sudo scutil --set HostName NIXY

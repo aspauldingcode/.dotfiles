@@ -31,6 +31,7 @@
     ./modules/karabiner.nix
     ./modules/cava.nix
     ./modules/xinit.nix
+    ./modules/colors.nix # generate a color palette from nix-colors (to view all colors in a file!)
     ./modules/i3.nix
     ./modules/afloaty.nix
     ./modules/qutebrowser.nix

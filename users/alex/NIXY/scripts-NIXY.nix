@@ -16,7 +16,7 @@ let
   skhd = "${homebrewPath}/skhd";
   inherit (config.colorScheme) colors;
 in
-{ 
+{
   home = {
     packages = with pkgs; [
     #mic (for sketchybar!)
@@ -425,80 +425,35 @@ in
 
       toggle_dock() {
           local dock_status=$(osascript -e 'tell application "System Events" to get autohide of dock preferences')
-          local gaps_status=$(cat "$gaps_state_file")
-          local sketchybar_status=$(cat "$sketchybar_state_file")
+          local current_state=$(cat "$dock_state_file" 2>/dev/null || echo "off")
+          local new_state="$current_state"
 
-          update_spaces_and_bar() {
-            # Check if sketchybar_state file exists
-            if [ -f "/tmp/sketchybar_state" ]; then
-                sketchybar_state=$(cat "/tmp/sketchybar_state")
-            else
-                sketchybar_state="on"
-            fi
-
-            # Determine external_bar configuration based on sketchybar and gaps status
-            if [ "$sketchybar_state" = "on" ]; then
-                if [ "$gaps_status" = "on" ]; then
-                    ${yabai} -m config external_bar all:50:0
-                else
-                    ${yabai} -m config external_bar all:40:0
-                fi
-            else
-                if [ "$gaps_status" = "on" ]; then
-                    ${yabai} -m config external_bar all:0:0
-                else
-                    ${yabai} -m config external_bar all:0:0
-                fi
-            fi
-
-            #${borders} background_color=0xff${colors.base00}
-          }
-          if [ $# -eq 0 ]; then
-              # No arguments provided, toggle based on current state
-              if [ "$dock_status" = "true" ]; then
-                  osascript -e 'tell application "System Events" to set autohide of dock preferences to false'
-                  echo "Dock toggled on"
-                  echo "on" > "$dock_state_file"  # Save state to file
-                  update_spaces_and_bar
+          if [ "$1" = "on" ]; then
+              if [ "$current_state" = "on" ]; then
+                  echo "Warning: Dock is already visible"
               else
-                  osascript -e 'tell application "System Events" to set autohide of dock preferences to true'
-                  echo "Dock toggled off"
-                  echo "off" > "$dock_state_file"  # Save state to file
-                  update_spaces_and_bar
-              fi
-
-          elif [ "$1" = "on" ]; then
-              if [ "$dock_status" = "false" ]; then
                   osascript -e 'tell application "System Events" to set autohide of dock preferences to false'
-                  echo "Dock toggled on"
-                  echo "on" > "$dock_state_file"  # Save state to file
-                  update_spaces_and_bar
-              else
-                  echo "Dock is already toggled on"
+                  new_state="on"
               fi
           elif [ "$1" = "off" ]; then
-              if [ "$dock_status" = "true" ]; then
-                  osascript -e 'tell application "System Events" to set autohide of dock preferences to true'
-                  echo "Dock toggled off"
-                  echo "off" > "$dock_state_file"  # Save state to file
-                  update_spaces_and_bar
+              if [ "$current_state" = "off" ]; then
+                  echo "Warning: Dock is already hidden"
               else
-                  echo "Dock is already toggled off"
+                  osascript -e 'tell application "System Events" to set autohide of dock preferences to true'
+                  new_state="off"
               fi
           else
-              # Invalid argument, toggle based on current state
-              if [ "$dock_status" = "true" ]; then
+              if [ "$current_state" = "off" ]; then
                   osascript -e 'tell application "System Events" to set autohide of dock preferences to false'
-                  echo "Dock toggled on"
-                  echo "on" > "$dock_state_file"  # Save state to file
-                  update_spaces_and_bar
+                  new_state="on"
               else
                   osascript -e 'tell application "System Events" to set autohide of dock preferences to true'
-                  echo "Dock toggled off"
-                  echo "off" > "$dock_state_file"  # Save state to file
-                  update_spaces_and_bar
+                  new_state="off"
               fi
           fi
+
+          echo "$new_state" > "$dock_state_file"
+          echo "Dock toggled $new_state"
       }
 
       # Example usage
