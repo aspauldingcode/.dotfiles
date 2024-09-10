@@ -200,7 +200,7 @@
                     ];
                   }
                   {
-                    description = "Swap alt+d with command+shift+d";
+                    description = "Swap alt+d with command+d";
                     manipulators = [
                       {
                         type = "basic";
@@ -213,7 +213,7 @@
                         to = [
                           {
                             key_code = "d";
-                            modifiers = ["left_command" "left_shift"];
+                            modifiers = ["left_command"];
                           }
                         ];
                       }
@@ -222,7 +222,7 @@
                         from = {
                           key_code = "d";
                           modifiers = {
-                            mandatory = ["left_command" "left_shift"];
+                            mandatory = ["left_command"];
                           };
                         };
                         to = [

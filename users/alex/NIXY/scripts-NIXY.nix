@@ -12,7 +12,8 @@ let
   jq = "${pkgs.jq}/bin/jq";
   yabai = "${homebrewPath}/yabai";
   sketchybar = "${homebrewPath}/sketchybar";
-  borders = "${homebrewPath}/borders";
+  # borders = "${homebrewPath}/borders";
+  borders = "~/JankyBorders/bin/borders";
   skhd = "${homebrewPath}/skhd";
   inherit (config.colorScheme) colors;
 in
@@ -102,7 +103,11 @@ in
       #   ${pkgs.start_programs_correctly}/bin/start_programs_correctly #run only once.
       #   echo "programs started already with fix-wm." > "/tmp/programs_started_state"
       # fi
-      sh ~/.config/borders/bordersrc # source borders config
+      killall borders
+      sh ~/.config/borders/bordersrc > /dev/null 2>&1 & # source borders config in background and suppress output
+      if ! pgrep -x "Finder" > /dev/null; then
+        open -a Finder # fixes yabai workspaces issue.
+      fi
     '')
 
     #analyze-output

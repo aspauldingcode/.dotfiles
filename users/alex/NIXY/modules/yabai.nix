@@ -5,7 +5,8 @@ let
   homebrewPath = if systemType == "aarch64-darwin" then "/opt/homebrew/bin" else if systemType == "x86_64-darwin" then "/usr/local/bin" else throw "Homebrew Unsupported architecture: ${systemType}";
   yabai = "${homebrewPath}/yabai";
   sketchybar = "${homebrewPath}/sketchybar";
-  borders = "${homebrewPath}/borders";
+  # borders = "${homebrewPath}/borders";
+  borders = "~/JankyBorders/bin/borders";
   i3-msg = "${homebrewPath}/i3-msg";
   alacritty = "${homebrewPath}/alacritty";
   # dmenu-mac = "${homebrewPath}/dmenu-mac";
@@ -107,6 +108,7 @@ in
         yabai -m rule --add app='^Installer$'           manage=off
         yabai -m rule --add app='^Karabiner-EventViewer$' manage=off
         yabai -m rule --add app='^Karabiner-Elements$'  manage=off
+        yabai -m rule --add app='MacForge'            manage=off
         yabai -m rule --add app='^macOS InstantView$'   manage=off # IMPORTANT
         yabai -m rule --add app='^Dock$'                manage=off # MAKE SURE
 
@@ -217,7 +219,7 @@ in
           # ${modifier} - return : 		            open -a kitty -n
           # ${modifier} - return :                ${alacritty}
           ${modifier} - return :                ${alacritty} msg create-window || open -na ${alacritty}
-          # ${modifier} - d :                       ${dmenu-mac} use karabiner to remap cmd-d to alt-d. configure unmenu to use cmd-d as hotkey.
+          # ${modifier} - d :                       ${dmenu-mac} use karabiner to remap alt-d to cmd-d. configure unmenu to use cmd-d as hotkey.
           # ${mod1} + ${mod5} - space :             open -na "Brave Browser"
           # ${mod1} + ${smod} + ${mod5} - space :   open -na "Brave Browser" --args --incognito
           ${mod1} + ${mod5} - space :             open -na "Firefox"
@@ -425,7 +427,7 @@ in
         blacklist="google chrome,vmware fusion,xQuartz,dmenu-mac,X11.bin,MacForge,python3.11"
       )
 
-      borders "''${options[@]}"
+      ${borders} "''${options[@]}"
     '';
   };
 }

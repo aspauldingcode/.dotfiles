@@ -17,8 +17,10 @@
 
     nixvim = {
       url = "github:nix-community/nixvim";
-      #inputs.nixpkgs.follows = "unstable_nixpkgs"; # Follows the unstable nixpkgs version
-      inputs.nixpkgs.follows = "nixpkgs"; # follow stable channel.
+      # inputs.nixpkgs.follows = "unstable_nixpkgs"; # Follows the unstable nixpkgs version
+      # inputs.nixpkgs.follows = "nixpkgs"; # follow stable channel.
+      # inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-23.11-darwin"; # try something else
+      # ok this is a straight up bug. https://github.com/nix-community/nixvim/issues/1784 & https://github.com/nix-community/nixvim/issues/1859
     };
 
     mobile-nixos = {

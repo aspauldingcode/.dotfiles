@@ -8,7 +8,7 @@
   home.file.".config/unmenu/config.toml" = {
     force = true;
     text = ''
-      hotkey.qwerty_hotkey = "cmd-shift-d"
+      hotkey.qwerty_hotkey = "cmd-d"
 
       find_apps = true
       find_executables = true

@@ -18,7 +18,7 @@
       "yabai"
       "skhd"
       "sketchybar"
-      # "borders" SUUUPER JANKY!
+      # "borders" #SUUUPER JANKY! Compile from master for now.
       "yazi"
       "cava"
       "fftw"
@@ -30,7 +30,7 @@
       # "pkgconf"
       "portaudio"
       "iniparser"
-      #"gcal" # GONER!
+      # "gcal" # GONER!
       "spicetify-cli"
       "zenity"
       "cliclick"

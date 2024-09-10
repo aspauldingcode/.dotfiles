@@ -26,6 +26,7 @@
     #darwin.iproute2mac #MUST BE BREW PACKAGE?
     ncurses6
     hexedit
+    texliveTeTeX
     ruby_3_3
     rbenv
     # javaPackages.openjfx19

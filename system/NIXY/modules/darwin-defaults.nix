@@ -346,6 +346,9 @@
           DSDontWriteNetworkStores = true;
           DSDontWriteUSBStores = true;
         };
+        "com.mac.RecordingIndicatorUtility" = {
+          AcknowledgedSystemOverrideAlert = 1;
+        };
       };
       LaunchServices.LSQuarantine = false;
       magicmouse.MouseButtonMode = "TwoButton";

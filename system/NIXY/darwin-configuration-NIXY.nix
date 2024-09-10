@@ -10,6 +10,7 @@
     ./modules/wg-quick.nix
     ./modules/packages.nix
     ./modules/theme.nix
+    ./modules/recording-indicator-utility.nix
   ];
   fonts = {
     packages = with pkgs; [
