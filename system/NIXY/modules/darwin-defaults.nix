@@ -5,6 +5,9 @@
     activationScripts.postUserActivation.text = ''
       # Following line should allow us to avoid a logout/login cycle
       /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+      
+      # Disable persistence opening apps at login
+      defaults write -g ApplePersistence -bool no
     '';
     startup.chime = false; # MUTE STARTUP CHIME!
     defaults = {

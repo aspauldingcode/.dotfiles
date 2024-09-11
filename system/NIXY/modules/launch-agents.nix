@@ -695,4 +695,33 @@
     #   '';
     # };
   };
+
+  launchd.user.agents.startMacForge = {
+    serviceConfig = {
+      Label = "com.user.startMacForge";
+      ProgramArguments = [ "${pkgs.bash}/bin/bash" "${pkgs.writeScript "start-macforge" ''
+        #!/bin/bash
+
+        # Function to check if MacForge is running
+        is_macforge_running() {
+            pgrep -x "MacForge" > /dev/null
+        }
+
+        # Start MacForge if it is not running
+        if ! is_macforge_running; then
+            open -a "MacForge"
+            sleep 5  # Wait for a few seconds to allow MacForge to start
+        fi
+
+        # Check again if MacForge is running
+        if is_macforge_running; then
+            killall Finder
+        fi
+      ''}" ];
+      RunAtLoad = true;
+      KeepAlive = false;
+      StandardOutPath = "/tmp/startMacForge.log";
+      StandardErrorPath = "/tmp/startMacForge.error.log";
+    };
+  };
 }

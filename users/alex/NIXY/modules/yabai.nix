@@ -9,6 +9,7 @@ let
   borders = "~/JankyBorders/bin/borders";
   i3-msg = "${homebrewPath}/i3-msg";
   alacritty = "${homebrewPath}/alacritty";
+  firefox = "${homebrewPath}/firefox";
   # dmenu-mac = "${homebrewPath}/dmenu-mac";
   dmenu-mac = "/Applications/unmenu.app/Contents/MacOS/unmenu";
   jq = "${pkgs.jq}/bin/jq";
@@ -222,8 +223,8 @@ in
           # ${modifier} - d :                       ${dmenu-mac} use karabiner to remap alt-d to cmd-d. configure unmenu to use cmd-d as hotkey.
           # ${mod1} + ${mod5} - space :             open -na "Brave Browser"
           # ${mod1} + ${smod} + ${mod5} - space :   open -na "Brave Browser" --args --incognito
-          ${mod1} + ${mod5} - space :             open -na "Firefox"
-          ${mod1} + ${smod} + ${mod5} - space :   open -na "Firefox" --args -private-window
+          ${mod1} + ${mod5} - space :             ${firefox}
+          ${mod1} + ${smod} + ${mod5} - space :   ${firefox} -private-window
           ${mod4} + ${mod5} - 0x33 :            sudo reboot # using cmd ctrl backspace
           ${mod4} + ${mod5} + ${smod} - 0x33 :    sudo shutdown -h now # using cmd ctrl backspace
           ${mod4} + ${mod5} - delete :          sudo reboot
