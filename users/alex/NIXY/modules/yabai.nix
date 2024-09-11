@@ -391,7 +391,7 @@ in
           ${modifier} - c : dismiss-notifications
 
           # reload
-          ${modifier} + ${smod} - r : fix-wm; borders background_color=0xff${colors.base00}
+          ${modifier} + ${smod} - r : fix-wm
 
           # Blacklist applications
           .blacklist [

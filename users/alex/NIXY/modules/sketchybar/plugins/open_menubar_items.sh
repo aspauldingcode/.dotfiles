@@ -46,46 +46,135 @@ case $app_name in
         end tell'
         ;;
     "bluetooth")
-        osascript -e 'tell application "System Events" to tell process "Control Center"
-            set bluetoothMenuItem to menu bar items of menu bar 1 whose description contains "Bluetooth"
-            if (count of bluetoothMenuItem) > 0 then
-                click item 1 of bluetoothMenuItem
-            else
-                display dialog "Bluetooth menu item not found." buttons {"OK"} default button "OK"
-            end if
-        end tell'
+        open x-apple.systempreferences:com.apple.preferences.Bluetooth
         ;;
     "userswitcher")
-        osascript -e 'tell application "System Events" to tell process "Control Center"
-            set userSwitcherItem to first menu bar item of menu bar 1 whose description contains "User"
-            if (count of userSwitcherItem) > 0 then
-                click userSwitcherItem
-            else
-                display dialog "User Switcher menu item not found." buttons {"OK"} default button "OK"
-            end if
-        end tell'
+        open x-apple.systempreferences:com.apple.preferences.users
         ;;
     "wifi")
+        open x-apple.systempreferences:com.apple.preference.network
+        ;;
+    "airdrop")
         osascript -e 'tell application "System Events" to tell process "Control Center"
-            set wifiMenuItem to first menu bar item of menu bar 1 whose description contains "Wi" and description contains "Fi"
-            if (count of wifiMenuItem) > 0 then
-                click item 1 of wifiMenuItem
-            else
-                display dialog "Wi-Fi menu item not found." buttons {"OK"} default button "OK"
-            end if
+            click (first menu bar item of menu bar 1 whose description contains "AirDrop")
         end tell'
         ;;
     "battery")
-        osascript -e 'tell application "System Events" to tell process "Control Center"
-            set batteryMenuItem to menu bar items of menu bar 1 whose description contains "Battery"
-            if (count of batteryMenuItem) > 0 then
-                click item 1 of batteryMenuItem
-            else
-                display dialog "Battery menu item not found." buttons {"OK"} default button "OK"
-            end if
-        end tell'
+        open x-apple.systempreferences:com.apple.preference.battery
         ;;
     *)
         echo "Application not found."
         ;;
 esac
+
+# Important apple preferences shit
+
+
+# Open Storage, in System Settings: General:
+
+# open x-apple.systempreferences:com.apple.settings.Storage
+
+
+# Open Software Update, in System Settings: General:
+
+# open x-apple.systempreferences:com.apple.Software-Update-Settings.extension
+
+
+# Open General, in System Settings:
+
+# open x-apple.systempreferences:com.apple.systempreferences.GeneralSettings
+
+
+# Open Privacy & Security, in System Settings:
+
+# open x-apple.systempreferences:com.apple.preference.security
+
+
+# Open Privacy & Security, in System Settings:
+
+# open x-apple.systempreferences:com.apple.settings.PrivacySecurity.extension
+
+
+# Open Startup Disk, in System Settings: General:
+
+# open x-apple.systempreferences:com.apple.preference.startupdisk
+
+
+# Open Startup Disk, in System Settings: General:
+
+# open x-apple.systempreferences:com.apple.Startup-Disk-Settings.extension
+
+
+# Open Displays, in System Settings:
+
+# open x-apple.systempreferences:com.apple.preference.displays
+
+
+# Open Wallpaper, in System Settings:
+
+# open x-apple.systempreferences:com.apple.Wallpaper-Settings.extension
+
+
+# Open Network, in System Settings:
+
+# open x-apple.systempreferences:com.apple.preference.network
+
+
+# Open Network, in System Settings:
+
+# open x-apple.systempreferences:com.apple.Network-Settings.extension
+
+
+# Open Profiles, in System Settings: Privacy & Security:
+
+# open x-apple.systempreferences:com.apple.Profiles-Settings.extension
+
+
+# Open Transfer or Reset, in System Settings: General:
+
+# open x-apple.systempreferences:com.apple.Transfer-Reset-Settings.extension
+
+
+# Open Date & Time, in System Settings: General:
+
+# open x-apple.systempreferences:com.apple.Date-Time-Settings.extension
+
+
+# Open About, in System Settings: General:
+
+# open x-apple.systempreferences:com.apple.SystemProfiler.AboutExtension
+
+
+# Open Language & Region, in System Settings: General:
+
+# open x-apple.systempreferences:com.apple.Localization-Settings.extension
+
+
+# Open Login Items, in System Settings: General:
+
+# open x-apple.systempreferences:com.apple.LoginItems-Settings.extension
+
+
+# Open Sharing, in System Settings: General:
+
+# open x-apple.systempreferences:com.apple.Sharing-Settings.extension
+
+
+# Open AirDrop & Handoff, in System Settings: General
+
+# open x-apple.systempreferences:com.apple.AirDrop-Handoff-Settings.extension
+
+
+# Open Time Machine, in System Settings: General
+
+# open x-apple.systempreferences:com.apple.Time-Machine-Settings.extension
+
+
+# Open Appearance, in System Settings:
+
+# open x-apple.systempreferences:com.apple.Appearance-Settings.extension
+
+
+# Open Apple ID, in System Settings:
+
+# open x-apple.systempreferences:com.apple.preferences.AppleIDPrefPane

@@ -39,6 +39,7 @@ in
   xdg.configFile."sketchybar/plugins/fullscreen_lock.sh".source = ./plugins/fullscreen_lock.sh;
   xdg.configFile."sketchybar/plugins/apple.sh".source = ./plugins/apple.sh;
   xdg.configFile."sketchybar/plugins/battery.sh".source = ./plugins/battery.sh;
+  xdg.configFile."sketchybar/plugins/bluetooth.sh".source = ./plugins/bluetooth.sh;
   xdg.configFile."sketchybar/plugins/cpu.sh".source = ./plugins/cpu.sh;
   xdg.configFile."sketchybar/plugins/datetime.sh".source = ./plugins/datetime.sh;
   xdg.configFile."sketchybar/plugins/mail.sh".source = ./plugins/mail.sh;
@@ -68,6 +69,7 @@ in
   xdg.configFile."sketchybar/plugins/fullscreen_lock.sh".executable = true;
   xdg.configFile."sketchybar/plugins/apple.sh".executable = true;
   xdg.configFile."sketchybar/plugins/battery.sh".executable = true;
+  xdg.configFile."sketchybar/plugins/bluetooth.sh".executable = true;
   xdg.configFile."sketchybar/plugins/cpu.sh".executable = true;
   xdg.configFile."sketchybar/plugins/datetime.sh".executable = true;
   xdg.configFile."sketchybar/plugins/mail.sh".executable = true;

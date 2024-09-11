@@ -89,24 +89,56 @@ in
 
     #fix-wm
     (pkgs.writeShellScriptBin "fix-wm" ''
-      ${yabai} --stop-service && ${yabai} --start-service #helps with adding initial service
-      ${skhd} --stop-service && ${skhd} --start-service #otherwise, I have to run manually first time.
-      # brew services restart felixkratz/formulae/sketchybar
-      launchctl stop org.pqrs.karabiner.karabiner_console_user_server && launchctl start org.pqrs.karabiner.karabiner_console_user_server
-      xrdb -merge ~/.Xresources
-      ${sketchybar} --reload # allows start_programs_correctly" package to run.
-      rm /tmp/fullscreen_state /tmp/dock_state /tmp/gaps_state /tmp/sketchybar_state /tmp/menubar_state /tmp/darkmode_state  #remove statefiles
-      # echo -ne '\n' | sudo pkill "Background Music" && "/Applications/Background Music.app/Contents/MacOS/Background Music" > /dev/null 2>&1 &
-      # dismiss-notifications
-      # NOT WORKING CORRECTLY: (Should only kill apps that are not injected with paintcan..)
-      # if [ ! -f "/tmp/programs_started_state" ]; then
-      #   ${pkgs.start_programs_correctly}/bin/start_programs_correctly #run only once.
-      #   echo "programs started already with fix-wm." > "/tmp/programs_started_state"
-      # fi
-      killall borders
-      sh ~/.config/borders/bordersrc > /dev/null 2>&1 & # source borders config in background and suppress output
+      # remove statefiles if they exist
+      [ -f /tmp/fullscreen_state ] && rm -f /tmp/fullscreen_state
+      [ -f /tmp/dock_state ] && rm -f /tmp/dock_state
+      [ -f /tmp/gaps_state ] && rm -f /tmp/gaps_state
+      [ -f /tmp/sketchybar_state ] && rm -f /tmp/sketchybar_state
+      [ -f /tmp/menubar_state ] && rm -f /tmp/menubar_state
+      [ -f /tmp/darkmode_state ] && rm -f /tmp/darkmode_state
+
+      #restart window management (yabai, skhd, sketchybar, borders, etc.)
+      if pgrep yabai > /dev/null; then killall yabai > /dev/null 2>&1; fi
+      if pgrep skhd > /dev/null; then killall skhd > /dev/null 2>&1; fi
+      if pgrep sketchybar > /dev/null; then killall sketchybar > /dev/null 2>&1; fi
+      if pgrep borders > /dev/null; then killall borders > /dev/null 2>&1; fi
+      if pgrep flameshot > /dev/null; then killall flameshot > /dev/null 2>&1; fi
+      if pgrep "Background Music" > /dev/null; then killall Background\ Music > /dev/null 2>&1; fi
+      if pgrep InstantView > /dev/null; then killall InstantView > /dev/null 2>&1; fi
+      if pgrep kdeconnectd > /dev/null; then killall kdeconnectd > /dev/null 2>&1; fi
+      if pgrep karabiner_grabber > /dev/null; then sudo pkill karabiner_grabber > /dev/null 2>&1; fi
+      if pgrep Karabiner-VirtualHIDDevice-Daemon > /dev/null; then sudo pkill Karabiner-VirtualHIDDevice-Daemon > /dev/null 2>&1; fi
+      if pgrep karabiner_observer > /dev/null; then sudo pkill karabiner_observer > /dev/null 2>&1; fi
+      if pgrep karabiner_console_user_server > /dev/null; then sudo pkill karabiner_console_user_server > /dev/null 2>&1; fi
+      if pgrep Karabiner-Menu > /dev/null; then pkill Karabiner-Menu > /dev/null 2>&1; fi
+      if pgrep Karabiner-Elements > /dev/null; then pkill Karabiner-Elements > /dev/null 2>&1; fi
+      launchctl stop org.pqrs.karabiner.karabiner_console_user_server > /dev/null 2>&1 && launchctl start org.pqrs.karabiner.karabiner_console_user_server > /dev/null 2>&1
+      launchctl stop org.pqrs.karabiner.karabiner_grabber > /dev/null 2>&1 && launchctl start org.pqrs.karabiner.karabiner_grabber > /dev/null 2>&1
+      launchctl stop org.pqrs.karabiner.karabiner_observer > /dev/null 2>&1 && launchctl start org.pqrs.karabiner.karabiner_observer > /dev/null 2>&1
+
+      if pgrep -x "XQuartz" > /dev/null; then
+        xrdb -merge ~/.Xresources
+      fi
+
+      if ! pgrep -x "borders" > /dev/null; then
+        sh ~/.config/borders/bordersrc > /dev/null 2>&1 & # source borders config in background and suppress output
+      fi
+
       if ! pgrep -x "Finder" > /dev/null; then
         open -a Finder # fixes yabai workspaces issue.
+      fi
+
+      if ! pgrep -x "flameshot" > /dev/null; then
+        flameshot > /dev/null 2>&1 &
+      fi
+      if ! pgrep -x "Background Music" > /dev/null; then
+        open -a "Background Music"
+      fi
+      if ! pgrep -x "InstantView" > /dev/null; then
+        open -a "InstantView"
+      fi
+      if ! pgrep -x "kdeconnectd" > /dev/null; then
+        kdeconnectd > /dev/null 2>&1 &
       fi
     '')
 
