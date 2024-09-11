@@ -709,13 +709,15 @@
 
         # Start MacForge if it is not running
         if ! is_macforge_running; then
-            open -a "MacForge"
+            open -a "MacForge" --hide
             sleep 5  # Wait for a few seconds to allow MacForge to start
         fi
 
         # Check again if MacForge is running
         if is_macforge_running; then
             killall Finder
+            # Ensure MacForge is hidden
+            osascript -e 'tell application "System Events" to set visible of process "MacForge" to false'
         fi
       ''}" ];
       RunAtLoad = true;
