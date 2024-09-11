@@ -715,9 +715,15 @@
 
         # Check again if MacForge is running
         if is_macforge_running; then
+
+            # Close the MacForge app window
+            osascript -e 'tell application "MacForge" to quit' > /dev/null 2>&1
+            
             killall Finder
-            # Ensure MacForge is hidden
-            osascript -e 'tell application "System Events" to set visible of process "MacForge" to false'
+            sleep 2  # Wait for a few seconds to allow Finder to close
+            if ! pgrep -x "Finder" > /dev/null; then
+                open -a "Finder"
+            fi
         fi
       ''}" ];
       RunAtLoad = true;

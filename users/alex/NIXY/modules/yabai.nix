@@ -216,20 +216,15 @@ in
           # FIXME: use kitty terminal for yazi filemanager only.
 
           # Launch shortcuts
-          # ${modifier} - return :                open -na ${alacritty} #FIXME: Alacritty is broken atm. Using homebrew. 
-          # ${modifier} - return : 		            open -a kitty -n
-          # ${modifier} - return :                ${alacritty}
           ${modifier} - return :                ${alacritty} msg create-window || open -na ${alacritty}
           # ${modifier} - d :                       ${dmenu-mac} use karabiner to remap alt-d to cmd-d. configure unmenu to use cmd-d as hotkey.
-          # ${mod1} + ${mod5} - space :             open -na "Brave Browser"
-          # ${mod1} + ${smod} + ${mod5} - space :   open -na "Brave Browser" --args --incognito
-          ${mod1} + ${mod5} - space :             ${firefox}
-          ${mod1} + ${smod} + ${mod5} - space :   ${firefox} -private-window
+          ${mod1} + ${mod5} - space :             open -na ${firefox}
+          ${mod1} + ${smod} + ${mod5} - space :   open -na ${firefox} --args -private-window
           ${mod4} + ${mod5} - 0x33 :            sudo reboot # using cmd ctrl backspace
           ${mod4} + ${mod5} + ${smod} - 0x33 :    sudo shutdown -h now # using cmd ctrl backspace
           ${mod4} + ${mod5} - delete :          sudo reboot
           ${mod4} + ${mod5} + ${smod} - delete :  sudo shutdown -h now
-          ${modifier} + ${smod} - q :             ${yabai} -m window --close
+          ${modifier} + ${smod} - q :           ${yabai} -m window --close
           ${modifier} - f :                     ${yabai} -m window --toggle zoom-fullscreen 
           ${modifier} + ${smod} - f :             toggle-instant-fullscreen
 
