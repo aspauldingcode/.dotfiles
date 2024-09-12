@@ -51,6 +51,15 @@
     bash.enable = true;
     fish.enable = true; #NOT Borne COMPAT? 
   };
+
+  # Recording Indicator Utility
+  recordingIndicatorUtility = {
+    enable = true;
+    # package = pkgs.recordingIndicatorUtility;
+    showIndicator = false;
+    showWarning = false;
+  };
+
   users.users.alex.shell = pkgs.zsh; 
   nix = {
     # https://nixos.wiki/wiki/Distributed_build

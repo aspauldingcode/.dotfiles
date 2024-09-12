@@ -78,6 +78,7 @@
       "karabiner-elements" # remap keyboard
       "unnaturalscrollwheels"
       "Beeper"
+      "desktoppr"
       "background-music" # audio routing driver. Fixes cava, but not working.
       "sublime-text"
       "asset-catalog-tinkerer"

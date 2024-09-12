@@ -237,8 +237,8 @@ sketchybar --add item front_app left \
     script="$PLUGIN_DIR/front_app.sh" \
     click_script="if [ \"$($yabai -m query --windows --window | $jq -r '.app')\" = \"Alacritty\" ]; then $osascript -e 'tell application \"System Events\" to keystroke \"w\" using {command down}'; else $yabai -m window --close; fi" \
     icon.drawing=on \
-    label.padding_left=15 \
-    label.padding_right=15 \
+    label.padding_left=8 \
+    label.padding_right=10 \
     updates=on \
   --subscribe front_app front_app_switched window_focus windows_on_spaces title_change mouse.clicked mouse.entered mouse.exited mouse.exited.global
 

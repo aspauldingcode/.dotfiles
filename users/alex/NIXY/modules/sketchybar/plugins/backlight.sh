@@ -49,13 +49,13 @@ brightness_change() {
     ;;
   esac
 
-  sketchybar --set backlight label="$ICON $INFO%" # add the icon and the percentage
+  sketchybar --set backlight label="$ICON $INFO%" highlight.color=$base07 # add the icon and the percentage
 }
 
 sketchybar --add item backlight.popup popup.backlight \
   --set backlight.popup label="Display Brightness" \
   label.padding_left=10 \
-  label.padding_right=10 \
+  label.padding_right=10
 
 # Handle mouse events
 case "$SENDER" in

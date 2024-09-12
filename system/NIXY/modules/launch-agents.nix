@@ -1,6 +1,40 @@
 { config, pkgs, ... }:
 
+let
+  desktop_cleaner = pkgs.writeScriptBin "desktop_cleaner" ''
+    #!/bin/bash
+
+    DESKTOP_PATH="$HOME/Desktop"
+    REDIRECT_PATH="$HOME/Desktop_Redirect"
+
+    # Create the redirect folder if it doesn't exist
+    mkdir -p "$REDIRECT_PATH"
+
+    # Function to check if desktop is empty
+    is_desktop_empty() {
+      [ -z "$(ls -A "$DESKTOP_PATH")" ]
+    }
+
+    # Function to move items and notify
+    move_and_notify() {
+      mv "$DESKTOP_PATH"/* "$REDIRECT_PATH"
+      osascript -e 'display notification "Desktop items have been moved to ~/Desktop_Redirect" with title "Desktop Cleaned"'
+    }
+
+    # Main loop
+    while true; do
+      if ! is_desktop_empty; then
+        move_and_notify
+      fi
+      sleep 5  # Check every 5 seconds
+    done
+  '';
+in
 {
+  environment.systemPackages = with pkgs; [
+    desktop_cleaner
+  ];
+
   environment.launchAgents = {
     "org.flameshot.plist" = {
       enable = true;
@@ -336,6 +370,32 @@
             <string>/dev/null</string>
             <key>StandardOutPath</key>
             <string>/dev/null</string>
+          </dict>
+        </plist>
+      '';
+    };
+
+    "com.user.desktop-cleaner.plist" = {
+      enable = true;
+      text = ''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+          <dict>
+            <key>Label</key>
+            <string>com.user.desktop-cleaner</string>
+            <key>ProgramArguments</key>
+            <array>
+              <string>${desktop_cleaner}/bin/desktop_cleaner</string>
+            </array>
+            <key>RunAtLoad</key>
+            <true/>
+            <key>KeepAlive</key>
+            <true/>
+            <key>StandardOutPath</key>
+            <string>/tmp/desktop_cleaner.log</string>
+            <key>StandardErrorPath</key>
+            <string>/tmp/desktop_cleaner.error.log</string>
           </dict>
         </plist>
       '';

@@ -14,6 +14,9 @@ let
   dmenu-mac = "/Applications/unmenu.app/Contents/MacOS/unmenu";
   jq = "${pkgs.jq}/bin/jq";
   inherit (config.colorScheme) colors;
+
+  desktoppr = "/usr/local/bin/desktoppr";
+  wallpaper = ./../../extraConfig/wallpapers/gruvbox-nix.png;
 in
 {
   home.file.yabai = {
@@ -23,6 +26,9 @@ in
       # bash
       ''
         #!/usr/bin/env sh
+
+        # set wallpaper first
+        ${desktoppr} ${wallpaper}
 
         # update_sudoers() {
         #   YABAI_PATH=$(which yabai)
@@ -213,8 +219,6 @@ in
           smod = "shift";
         in # bash
         ''
-          # FIXME: use kitty terminal for yazi filemanager only.
-
           # Launch shortcuts
           ${modifier} - return :                ${alacritty} msg create-window || open -na ${alacritty}
           # ${modifier} - d :                       ${dmenu-mac} use karabiner to remap alt-d to cmd-d. configure unmenu to use cmd-d as hotkey.
@@ -228,76 +232,42 @@ in
           ${modifier} - f :                     ${yabai} -m window --toggle zoom-fullscreen 
           ${modifier} + ${smod} - f :             toggle-instant-fullscreen
 
-          # Move focus to next/prev workspace (conflicts with browsers)
-          # ${mod1} + ${mod4} - ${left} :   ${yabai} -m space --focus prev
-          # ${mod1} + ${mod4} - ${down} :   ${yabai} -m space --focus prev
-          # ${mod1} + ${mod4} - ${up} :     ${yabai} -m space --focus next
-          # ${mod1} + ${mod4} - ${right} :  ${yabai} -m space --focus next
-          # ${mod1} + ${mod4} - left :      ${yabai} -m space --focus prev
-          # ${mod1} + ${mod4} - down :      ${yabai} -m space --focus prev
-          # ${mod1} + ${mod4} - up :        ${yabai} -m space --focus next
-          # ${mod1} + ${mod4} - right :     ${yabai} -m space --focus next
-
           # # Move focused window to workspace N and follow focus
-          ${modifier} + ${smod} - 1 : ${yabai} -m window --space 1; ${yabai} -m space --focus 1
-          ${modifier} + ${smod} - 2 : ${yabai} -m window --space 2; ${yabai} -m space --focus 2
-          ${modifier} + ${smod} - 3 : ${yabai} -m window --space 3; ${yabai} -m space --focus 3
-          ${modifier} + ${smod} - 4 : ${yabai} -m window --space 4; ${yabai} -m space --focus 4
-          ${modifier} + ${smod} - 5 : ${yabai} -m window --space 5; ${yabai} -m space --focus 5
-          ${modifier} + ${smod} - 6 : ${yabai} -m window --space 6; ${yabai} -m space --focus 6
-          ${modifier} + ${smod} - 7 : ${yabai} -m window --space 7; ${yabai} -m space --focus 7
-          ${modifier} + ${smod} - 8 : ${yabai} -m window --space 8; ${yabai} -m space --focus 8
-          ${modifier} + ${smod} - 9 : ${yabai} -m window --space 9; ${yabai} -m space --focus 9
-          ${modifier} + ${smod} - 0 : ${yabai} -m window --space 10; ${yabai} -m space --focus 10
+          ${modifier} + ${smod} - 1 : ${yabai} -m window --space 1; ${yabai} -m space --focus 1; ${desktoppr} ${wallpaper}
+          ${modifier} + ${smod} - 2 : ${yabai} -m window --space 2; ${yabai} -m space --focus 2; ${desktoppr} ${wallpaper}
+          ${modifier} + ${smod} - 3 : ${yabai} -m window --space 3; ${yabai} -m space --focus 3; ${desktoppr} ${wallpaper}
+          ${modifier} + ${smod} - 4 : ${yabai} -m window --space 4; ${yabai} -m space --focus 4; ${desktoppr} ${wallpaper}
+          ${modifier} + ${smod} - 5 : ${yabai} -m window --space 5; ${yabai} -m space --focus 5; ${desktoppr} ${wallpaper}
+          ${modifier} + ${smod} - 6 : ${yabai} -m window --space 6; ${yabai} -m space --focus 6; ${desktoppr} ${wallpaper}
+          ${modifier} + ${smod} - 7 : ${yabai} -m window --space 7; ${yabai} -m space --focus 7; ${desktoppr} ${wallpaper}
+          ${modifier} + ${smod} - 8 : ${yabai} -m window --space 8; ${yabai} -m space --focus 8; ${desktoppr} ${wallpaper}
+          ${modifier} + ${smod} - 9 : ${yabai} -m window --space 9; ${yabai} -m space --focus 9; ${desktoppr} ${wallpaper}
+          ${modifier} + ${smod} - 0 : ${yabai} -m window --space 10; ${yabai} -m space --focus 10; ${desktoppr} ${wallpaper}
           
           # move focus to workspace n
-          ${modifier} - 1 : ${yabai} -m space --focus 1
-          ${modifier} - 2 : ${yabai} -m space --focus 2
-          ${modifier} - 3 : ${yabai} -m space --focus 3
-          ${modifier} - 4 : ${yabai} -m space --focus 4
-          ${modifier} - 5 : ${yabai} -m space --focus 5
-          ${modifier} - 6 : ${yabai} -m space --focus 6
-          ${modifier} - 7 : ${yabai} -m space --focus 7
-          ${modifier} - 8 : ${yabai} -m space --focus 8
-          ${modifier} - 9 : ${yabai} -m space --focus 9
-          ${modifier} - 0 : ${yabai} -m space --focus 10
+          ${modifier} - 1 : ${yabai} -m space --focus 1; ${desktoppr} ${wallpaper}
+          ${modifier} - 2 : ${yabai} -m space --focus 2; ${desktoppr} ${wallpaper}
+          ${modifier} - 3 : ${yabai} -m space --focus 3; ${desktoppr} ${wallpaper}    
+          ${modifier} - 4 : ${yabai} -m space --focus 4; ${desktoppr} ${wallpaper}
+          ${modifier} - 5 : ${yabai} -m space --focus 5; ${desktoppr} ${wallpaper}
+          ${modifier} - 6 : ${yabai} -m space --focus 6; ${desktoppr} ${wallpaper}  
+          ${modifier} - 7 : ${yabai} -m space --focus 7; ${desktoppr} ${wallpaper}
+          ${modifier} - 8 : ${yabai} -m space --focus 8; ${desktoppr} ${wallpaper}
+          ${modifier} - 9 : ${yabai} -m space --focus 9; ${desktoppr} ${wallpaper}
+          ${modifier} - 0 : ${yabai} -m space --focus 10; ${desktoppr} ${wallpaper}
           
-          # Move focused window to workspace N and follow focus
-          # ${modifier} + ${smod} - 1 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_1")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _1); ${yabai} -m window --space _1 && ${yabai} -m space --focus _1
-          # ${modifier} + ${smod} - 2 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_2")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _2); ${yabai} -m window --space _2 && ${yabai} -m space --focus _2
-          # ${modifier} + ${smod} - 3 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_3")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _3); ${yabai} -m window --space _3 && ${yabai} -m space --focus _3
-          # ${modifier} + ${smod} - 4 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_4")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _4); ${yabai} -m window --space _4 && ${yabai} -m space --focus _4
-          # ${modifier} + ${smod} - 5 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_5")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _5); ${yabai} -m window --space _5 && ${yabai} -m space --focus _5
-          # ${modifier} + ${smod} - 6 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_6")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _6); ${yabai} -m window --space _6 && ${yabai} -m space --focus _6
-          # ${modifier} + ${smod} - 7 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_7")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _7); ${yabai} -m window --space _7 && ${yabai} -m space --focus _7
-          # ${modifier} + ${smod} - 8 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_8")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _8); ${yabai} -m window --space _8 && ${yabai} -m space --focus _8
-          # ${modifier} + ${smod} - 9 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_9")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _9); ${yabai} -m window --space _9 && ${yabai} -m space --focus _9
-          # ${modifier} + ${smod} - 0 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_10")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _10); ${yabai} -m window --space _10 && ${yabai} -m space --focus _10
-          
-          # # move focus to workspace n
-          # ${modifier} - 1 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_1")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _1); ${yabai} -m space --focus _1
-          # ${modifier} - 2 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_2")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _2); ${yabai} -m space --focus _2
-          # ${modifier} - 3 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_3")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _3); ${yabai} -m space --focus _3
-          # ${modifier} - 4 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_4")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _4); ${yabai} -m space --focus _4
-          # ${modifier} - 5 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_5")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _5); ${yabai} -m space --focus _5
-          # ${modifier} - 6 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_6")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _6); ${yabai} -m space --focus _6
-          # ${modifier} - 7 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_7")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _7); ${yabai} -m space --focus _7
-          # ${modifier} - 8 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_8")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _8); ${yabai} -m space --focus _8
-          # ${modifier} - 9 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_9")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _9); ${yabai} -m space --focus _9
-          # ${modifier} - 0 : ${yabai} -m query --spaces | jq -e '.[] | select(.label == "_10")' > /dev/null || (${yabai} -m space --create && ${yabai} -m space last --label _10); ${yabai} -m space --focus _10
-
           ${modifier} + ${smod} - y : ${yabai} -m space --mirror y-axis
           ${modifier} + ${smod} - x : ${yabai} -m space --mirror x-axis
 
           # send window to next/prev space and follow focus (use alt instead of cmd with arrows to maintian built-in insertion points https://github.com/aspauldingcode/.dotfiles/issues/11#issuecomment-2185355283)
-          ${mod4} + ${smod} - ${left} :   ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-          ${mod4} + ${smod} - ${down} :   ${yabai} -m window --space next; ${yabai} -m space --focus next
-          ${mod4} + ${smod} - ${up} :     ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-          ${mod4} + ${smod} - ${right} :  ${yabai} -m window --space next; ${yabai} -m space --focus next
-          ${modifier} + ${smod} - left :      ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-          ${modifier} + ${smod} - down :      ${yabai} -m window --space next; ${yabai} -m space --focus next
-          ${modifier} + ${smod} - up :        ${yabai} -m window --space prev; ${yabai} -m space --focus prev
-          ${modifier} + ${smod} - right :     ${yabai} -m window --space next; ${yabai} -m space --focus next
+          ${mod4} + ${smod} - ${left} :   ${yabai} -m window --space prev; ${yabai} -m space --focus prev; ${desktoppr} ${wallpaper}
+          ${mod4} + ${smod} - ${down} :   ${yabai} -m window --space next; ${yabai} -m space --focus next; ${desktoppr} ${wallpaper}
+          ${mod4} + ${smod} - ${up} :     ${yabai} -m window --space prev; ${yabai} -m space --focus prev; ${desktoppr} ${wallpaper}
+          ${mod4} + ${smod} - ${right} :  ${yabai} -m window --space next; ${yabai} -m space --focus next; ${desktoppr} ${wallpaper}
+          ${modifier} + ${smod} - left :      ${yabai} -m window --space prev; ${yabai} -m space --focus prev; ${desktoppr} ${wallpaper}
+          ${modifier} + ${smod} - down :      ${yabai} -m window --space next; ${yabai} -m space --focus next; ${desktoppr} ${wallpaper}
+          ${modifier} + ${smod} - up :        ${yabai} -m window --space prev; ${yabai} -m space --focus prev; ${desktoppr} ${wallpaper}
+          ${modifier} + ${smod} - right :     ${yabai} -m window --space next; ${yabai} -m space --focus next; ${desktoppr} ${wallpaper}
 
           # focus window in stacked, else in bsp (use cmd instead of alt with arrows to maintian built-in insertion points https://github.com/aspauldingcode/.dotfiles/issues/11#issuecomment-2185355283)
           ${modifier} - ${left} :   if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus west; fi
@@ -352,7 +322,6 @@ in
           ${modifier} - e : ${yabai} -m space --layout bsp
 
           # float / unfloat window and center on screen
-          #${modifier} + ${smod} - space : ${yabai} -m window --toggle float; ${yabai} -m window --grid 60:60:5:5:50:50
           ${modifier} + ${smod} - space : toggle-float
 
           # # toggle sticky(+float), topmost, picture-in-picture

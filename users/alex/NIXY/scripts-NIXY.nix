@@ -103,8 +103,8 @@ in
       if pgrep sketchybar > /dev/null; then killall sketchybar > /dev/null 2>&1; fi
       if pgrep borders > /dev/null; then killall borders > /dev/null 2>&1; fi
       if pgrep flameshot > /dev/null; then killall flameshot > /dev/null 2>&1; fi
-      if pgrep "Background Music" > /dev/null; then killall Background\ Music > /dev/null 2>&1; fi
-      if pgrep InstantView > /dev/null; then killall InstantView > /dev/null 2>&1; fi
+      if pgrep "Background Music" > /dev/null; then killall "Background Music" > /dev/null 2>&1; fi
+      if pgrep "macOS InstantView" > /dev/null; then killall "macOS InstantView" > /dev/null 2>&1; fi
       if pgrep kdeconnectd > /dev/null; then killall kdeconnectd > /dev/null 2>&1; fi
       if pgrep karabiner_grabber > /dev/null; then sudo pkill karabiner_grabber > /dev/null 2>&1; fi
       if pgrep Karabiner-VirtualHIDDevice-Daemon > /dev/null; then sudo pkill Karabiner-VirtualHIDDevice-Daemon > /dev/null 2>&1; fi
@@ -546,13 +546,17 @@ in
 
     #toggle-float
     (pkgs.writeShellScriptBin "toggle-float" ''
-
       # update the sketchybar front_app
       ${sketchybar} --trigger window_focus
 
       # Function to check if the current window is floating
       is_floating() {
           ${yabai} -m query --windows --window | ${jq} -r '."is-floating"' | grep -q "true"
+      }
+
+      # Function to check if the current window is topmost
+      is_topmost() {
+          ${yabai} -m query --windows --window | ${jq} -r '."is-topmost"' | grep -q "true"
       }
 
       fullscreen_state_file="/tmp/fullscreen_state"
@@ -585,7 +589,10 @@ in
               ${yabai} -m window --toggle float
               ${yabai} -m window --grid 60:60:5:5:50:50
               ${borders} apply-to=$window_id width=2.0 style=round order=above
-              echo "Window is now floating."
+              if ! is_topmost; then
+                  ${yabai} -m window --toggle topmost
+              fi
+              echo "Window is now floating and topmost."
           fi
       elif [ "$set_arg" = "off" ]; then
           if is_fullscreen; then
@@ -599,6 +606,9 @@ in
                   ${borders} apply-to=$window_id width=2.0 style=round order=above
               else
                   ${borders} apply-to=$window_id width=5.0 style=square order=below
+              fi
+              if is_topmost; then
+                  ${yabai} -m window --toggle topmost
               fi
               echo "Window is no longer floating."
           fi

@@ -1,5 +1,43 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
+let
+  writeShellScriptBin = pkgs.writeShellScriptBin;
+  update_dock_pins = writeShellScriptBin "update-dock-pins" ''
+    #!/bin/bash
+
+    # List of apps to keep
+    keep_apps=("Finder" "Launchpad" "Spotify" "Alacritty" "Firefox" "Cursor")
+
+    # Function to add an app to the Dock
+    add_app_to_dock() {
+        app_path=$(mdfind "kMDItemCFBundleIdentifier == '$1'" | head -n 1)
+        if [ -n "$app_path" ]; then
+            defaults write com.apple.dock persistent-apps -array-add "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>$app_path</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
+        fi
+    }
+
+    # Clear the current Dock
+    defaults write com.apple.dock persistent-apps -array
+
+    # Add specified apps to the Dock (excluding Finder)
+    add_app_to_dock "com.apple.launchpad.launcher"
+    add_app_to_dock "com.spotify.client"
+    add_app_to_dock "io.alacritty"
+    add_app_to_dock "org.mozilla.firefox"
+    add_app_to_dock "com.cursor.Cursor"
+
+    # Hide the Downloads stack and recent apps
+    defaults write com.apple.dock show-recents -bool false
+    defaults write com.apple.dock recent-apps -array
+    defaults write com.apple.dock persistent-others -array
+
+    # Restart the Dock to apply changes
+    killall Dock
+
+    echo "Dock has been updated. Only kept: ''${keep_apps[*]}"
+    echo "Downloads stack and recent apps have been hidden."
+  '';
+in
 {
   system = {
     activationScripts.postUserActivation.text = ''
@@ -8,6 +46,9 @@
       
       # Disable persistence opening apps at login
       defaults write -g ApplePersistence -bool no
+
+      # call the update_dock_pins script
+      ${update_dock_pins}/bin/update-dock-pins
     '';
     startup.chime = false; # MUTE STARTUP CHIME!
     defaults = {
@@ -349,9 +390,9 @@
           DSDontWriteNetworkStores = true;
           DSDontWriteUSBStores = true;
         };
-        "com.mac.RecordingIndicatorUtility" = {
-          AcknowledgedSystemOverrideAlert = 1;
-        };
+        # "com.mac.RecordingIndicatorUtility" = {
+          # AcknowledgedSystemOverrideAlert = 1;
+        # };
       };
       LaunchServices.LSQuarantine = false;
       magicmouse.MouseButtonMode = "TwoButton";
