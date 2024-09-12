@@ -57,9 +57,7 @@ case "$SENDER" in
     sketchybar --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
     ;;
   "routine")
-    # Update battery info periodically
-    #update_battery
-    ;;
+  ;;
 esac
 
 update_sketchybar_label

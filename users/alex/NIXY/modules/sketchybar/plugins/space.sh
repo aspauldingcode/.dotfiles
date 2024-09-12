@@ -45,11 +45,11 @@ case "$SENDER" in
     sketchybar --set $NAME icon.highlight=on icon.highlight_color=$base07
     ;;
   "mouse.exited" | "mouse.exited.global")
-    sketchybar --set $NAME icon.highlight=$SELECTED icon.highlight_color=$base0A
+    sketchybar --set $NAME icon.highlight_color=$base0A icon.highlight=$SELECTED 
     ;;
   "mouse.clicked")
-    sketchybar --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
-    sketchybar --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
+    # clicked effect
+    sketchybar --set $NAME icon.highlight_color=$base0A label.highlight_color=$base0A
     sketchybar --set $NAME icon.highlight=$SELECTED label.highlight=$SELECTED
     ;;
 esac

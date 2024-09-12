@@ -112,6 +112,7 @@ in
       if pgrep karabiner_console_user_server > /dev/null; then sudo pkill karabiner_console_user_server > /dev/null 2>&1; fi
       if pgrep Karabiner-Menu > /dev/null; then pkill Karabiner-Menu > /dev/null 2>&1; fi
       if pgrep Karabiner-Elements > /dev/null; then pkill Karabiner-Elements > /dev/null 2>&1; fi
+      if pgrep cava > /dev/null; then sudo pkill -9 -f cava > /dev/null 2>&1; fi
       launchctl stop org.pqrs.karabiner.karabiner_console_user_server > /dev/null 2>&1 && launchctl start org.pqrs.karabiner.karabiner_console_user_server > /dev/null 2>&1
       launchctl stop org.pqrs.karabiner.karabiner_grabber > /dev/null 2>&1 && launchctl start org.pqrs.karabiner.karabiner_grabber > /dev/null 2>&1
       launchctl stop org.pqrs.karabiner.karabiner_observer > /dev/null 2>&1 && launchctl start org.pqrs.karabiner.karabiner_observer > /dev/null 2>&1

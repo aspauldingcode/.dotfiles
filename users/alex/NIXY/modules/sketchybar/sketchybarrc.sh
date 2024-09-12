@@ -271,7 +271,7 @@ sketchybar --add item datetime center \
   --subscribe datetime system_woke mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global mouse.scrolled
 
 sketchybar --add item cava center \
-  --set cava "${cava[@]}"
+  --set cava "${cava[@]}" \
   --subscribe cava volume_change mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global 
 sketchybar --add event spotify_change $SPOTIFY_EVENT \
   --add item spotify center \
