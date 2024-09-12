@@ -27,27 +27,46 @@ let
 
   toggleRecordingIndicatorScript = pkgs.writeScript "toggle-recording-indicator" ''
     #!${pkgs.stdenv.shell}
-    osascript <<EOF
-    tell application "Recording Indicator Utility"
-        activate
-        delay 1 -- Wait for the app to fully load
-        tell application "System Events"
+    
+    toggle_recording_indicator() {
+      osascript <<EOF
+        tell application "Recording Indicator Utility"
+          activate
+          delay 1 -- Wait for the app to fully load
+          tell application "System Events"
             tell process "Recording Indicator Utility"
-                set toggleButton to first button of first group of first window
-                set toggleState to value of toggleButton
-                if ${if config.recordingIndicatorUtility.showIndicator then "toggleState is 0" else "toggleState is 1"} then
-                    -- Toggle is ${if config.recordingIndicatorUtility.showIndicator then "off" else "on"}, so we can click to turn it ${if config.recordingIndicatorUtility.showIndicator then "on" else "off"}
-                    click toggleButton
-                    log "Turned ${if config.recordingIndicatorUtility.showIndicator then "on" else "off"} Recording Indicator"
-                else
-                    -- Toggle is already ${if config.recordingIndicatorUtility.showIndicator then "on" else "off"}, no action needed
-                    log "Recording Indicator is already ${if config.recordingIndicatorUtility.showIndicator then "on" else "off"}"
-                end if
+              set toggleButton to first button of first group of first window
+              set toggleState to value of toggleButton
+              if ${if config.recordingIndicatorUtility.showIndicator then "toggleState is 0" else "toggleState is 1"} then
+                -- Toggle is ${if config.recordingIndicatorUtility.showIndicator then "on" else "off"}, so we can click to turn it ${if config.recordingIndicatorUtility.showIndicator then "off" else "on"}
+                click toggleButton
+                log "Turned ${if config.recordingIndicatorUtility.showIndicator then "on" else "off"} Recording Indicator"
+              else
+                -- Toggle is already ${if config.recordingIndicatorUtility.showIndicator then "on" else "off"}, no action needed
+                log "Recording Indicator is already ${if config.recordingIndicatorUtility.showIndicator then "on" else "off"}"
+              end if
             end tell
+          end tell
+          quit
         end tell
-        quit
-    end tell
-    EOF
+EOF
+      # save state to statefile
+      echo "${if config.recordingIndicatorUtility.showIndicator then "on" else "off"}" > "$statefile"
+    }
+   
+    statefile="/var/lib/recording_indicator_state.log"
+    desired_state="${if config.recordingIndicatorUtility.showIndicator then "on" else "off"}"
+
+    if [ ! -f "$statefile" ]; then
+      echo "$desired_state" > "$statefile"
+    fi
+
+    current_state=$(cat "$statefile")
+
+    if [ "$current_state" != "$desired_state" ]; then
+      toggle_recording_indicator
+      echo "$desired_state" > "$statefile"
+    fi
   '';
 in
 {
