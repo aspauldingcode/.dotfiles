@@ -1,8 +1,12 @@
 #!/bin/sh
 
+source "$HOME/.config/sketchybar/colors.sh"
+source "$HOME/.config/sketchybar/icons.sh"
+# source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
+
 CPU=$(top -l 1 | awk '/^CPU usage:/ {print $3}' | tr -d '%' | cut -d "." -f1)
 
-sketchybar --set $NAME label="$CPU%"
+sketchybar --set $NAME label="$CPU%" icon=$CPU_ICON
 
 sketchybar --add item $NAME.popup popup.$NAME \
   --set $NAME.popup label="$(uname -s -r -m)" \
@@ -12,18 +16,22 @@ sketchybar --add item $NAME.popup popup.$NAME \
 # Handle mouse events
 case "$SENDER" in
   "mouse.entered")
-    #sleep 1
     sketchybar --set $NAME popup.drawing=on
-    #echo "Mouse Hovered in $NAME icon" >> /tmp/sketchybar_debug.log
+    
+    # highlight effect
+    sketchybar --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
     ;;
   "mouse.exited" | "mouse.exited.global")
     sketchybar --set $NAME popup.drawing=off
-    #echo "Mouse left hover of $NAME icon" >> /tmp/sketchybar_debug.log
+    
+    # unhighlight effect
+    sketchybar --set $NAME icon.highlight=off label.highlight=off
     ;;
   "mouse.clicked")
-    #sketchybar --set $NAME popup.drawing=toggle
-    #echo "Mouse clicked on $NAME icon" >> /tmp/sketchybar_debug.log
-    # toggle_battery_popup
+    # button clicked effect
+    sketchybar --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
+    sketchybar --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
+    sketchybar --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
     ;;
   "routine")
     # Update battery info periodically

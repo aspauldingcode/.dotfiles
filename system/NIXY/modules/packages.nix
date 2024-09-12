@@ -29,6 +29,9 @@
     texliveTeTeX
     ruby_3_3
     rbenv
+    postman
+    newman
+
     # javaPackages.openjfx19
     #inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk22
     jdk22

@@ -68,12 +68,23 @@ case "$SENDER" in
   ;;
 "mouse.entered")
   sketchybar --set backlight popup.drawing=on
+
+  # highlight effect
+  sketchybar --set backlight icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
   ;;
 "mouse.exited" | "mouse.exited.global")
-  sketchybar --set backlight popup.drawing=off
+  sketchybar --set backlight popup.drawing=off icon.highlight=off
+  
+  # unhighlight effect
+  sketchybar --set backlight icon.highlight=off label.highlight=off
   ;;
 "mouse.clicked")
   open /System/Library/PreferencePanes/Displays.prefPane
+  
+  # button clicked effect
+  sketchybar --set backlight icon.highlight_color=$base04 label.highlight_color=$base04
+  sketchybar --set backlight icon.highlight_color=$base07 label.highlight_color=$base07
+  sketchybar --set backlight icon.highlight=off label.highlight=off popup.drawing=off
   ;;
 "routine")
   # Update brightness info periodically

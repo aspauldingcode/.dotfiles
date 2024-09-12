@@ -70,12 +70,21 @@ fi
 case "$SENDER" in
   "mouse.entered")
     sketchybar --set $NAME popup.drawing=on
+    
+    # highlight effect
+    sketchybar --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
     ;;
   "mouse.exited" | "mouse.exited.global")
     sketchybar --set $NAME popup.drawing=off
+
+    # unhighlight effect
+    sketchybar --set $NAME icon.highlight=off label.highlight=off
     ;;
   "mouse.clicked")
-    # Handle mouse click event if needed
+    # button clicked effect
+    sketchybar --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
+    sketchybar --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
+    sketchybar --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
     ;;
   "routine")
     # Update battery info periodically

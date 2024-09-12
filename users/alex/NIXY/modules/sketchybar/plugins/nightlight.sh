@@ -107,13 +107,24 @@ case "$SENDER" in
   update_icon
   ;;
 "mouse.entered")
-  sketchybar --set nightlight popup.drawing=on
+  sketchybar --set $NAME popup.drawing=on
+  
+  # highlight effect
+  sketchybar --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
   ;;
 "mouse.exited" | "mouse.exited.global")
-  sketchybar --set nightlight popup.drawing=off
+  sketchybar --set $NAME popup.drawing=off
+  
+  # unhighlight effect
+  sketchybar --set $NAME icon.highlight=off label.highlight=off
   ;;
 "mouse.clicked")
   nightlight toggle
+  
+  # clicked effect
+  sketchybar --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
+  sketchybar --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
+  sketchybar --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
   ;;
 "routine")
   # Update nightlight info periodically

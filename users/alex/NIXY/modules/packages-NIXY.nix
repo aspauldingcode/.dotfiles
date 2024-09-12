@@ -65,6 +65,7 @@ in
     termshark
     ffmpeg
     tigervnc
+    gcal
     # wireshark
     # nmapsi4
     #ruby

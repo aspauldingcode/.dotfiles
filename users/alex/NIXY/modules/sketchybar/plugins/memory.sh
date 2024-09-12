@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
@@ -6,35 +6,36 @@ source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 
-BLUETOOTH_STATUS=$(system_profiler SPBluetoothDataType | grep -i "Bluetooth Power" | awk '{print $3}')
+MEMORY=$(vm_stat | awk '/Pages free:/ {free=$3} /Pages active:/ {active=$3} /Pages inactive:/ {inactive=$3} /Pages speculative:/ {speculative=$3} END {total=free + active + inactive + speculative; used=active + inactive; print int(100*used/total)}')
 
-if [ "$BLUETOOTH_STATUS" = "On" ]; then
-  ICON="$BLUETOOTH_ON"
-else
-  ICON="$BLUETOOTH_OFF"
-fi
+sketchybar --set $NAME label="$MEMORY%" icon=$MEMORY_ICON
 
-# Set the bluetooth icon
-sketchybar --set $NAME icon="$ICON"
+sketchybar --add item $NAME.popup popup.$NAME \
+  --set $NAME.popup label="$(uname -s -r -m)" \
+    label.padding_left=10 \
+    label.padding_right=10 \
 
-# Handle mouse events for hover status
+# Handle mouse events
 case "$SENDER" in
   "mouse.entered")
+    #sleep 1
     sketchybar --set $NAME popup.drawing=on
-
     # highlight effect
     sketchybar --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
     ;;
   "mouse.exited" | "mouse.exited.global")
     sketchybar --set $NAME popup.drawing=off
-
     # unhighlight effect
-    sketchybar --set $NAME icon.highlight=off label.highlight=off
+    sketchybar --set $NAME icon.highlight=off
     ;;
   "mouse.clicked")
-    # button clicked effect
+    # clicked effect
     sketchybar --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
     sketchybar --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
     sketchybar --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
+    ;;
+  "routine")
+    # Update battery info periodically
+    #update_battery
     ;;
 esac

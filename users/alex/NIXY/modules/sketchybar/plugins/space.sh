@@ -1,10 +1,12 @@
 #!/bin/sh
 
+source "$HOME/.config/sketchybar/colors.sh"
+
 # The $SELECTED variable is available for space components and indicates if
 # the space invoking this script (with name: $NAME) is currently selected:
 # https://felixkratz.github.io/SketchyBar/config/components#space----associate-mission-control-spaces-with-an-item
 
-sketchybar --set "$NAME" background.drawing="$SELECTED" color=$base0A
+sketchybar --set "$NAME" background.drawing="$SELECTED" color=$base0A icon.highlight="$SELECTED" icon.highlight_color=$base0A
 
 # PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
@@ -37,3 +39,17 @@ sketchybar --set "$NAME" background.drawing="$SELECTED" color=$base0A
 #     sketchybar --set space.$ACTIVE_SPACE_CLEANED icon.highlight=on icon.highlight_color=$base0A
 # done
 # sketchybar --set space.$ACTIVE_SPACE_CLEANED icon.highlight=true icon.highlight_color=$base0A
+
+case "$SENDER" in
+  "mouse.entered")
+    sketchybar --set $NAME icon.highlight=on icon.highlight_color=$base07
+    ;;
+  "mouse.exited" | "mouse.exited.global")
+    sketchybar --set $NAME icon.highlight=$SELECTED icon.highlight_color=$base0A
+    ;;
+  "mouse.clicked")
+    sketchybar --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
+    sketchybar --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
+    sketchybar --set $NAME icon.highlight=$SELECTED label.highlight=$SELECTED
+    ;;
+esac

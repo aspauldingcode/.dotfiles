@@ -80,7 +80,7 @@ if [ ! -f /tmp/sketchybar_speed ]; then
       1) LABEL="Loading.." ;;
       2) LABEL="Loading..." ;;
       esac
-      sketchybar --set wifi.speed label="$LABEL"
+      sketchybar --set wifi.speed icon="$LABEL"
       sleep 1
       COUNTER=$(((COUNTER + 1) % 3))
     done
@@ -88,42 +88,46 @@ if [ ! -f /tmp/sketchybar_speed ]; then
 fi
 
 if [ "$WIFI_POWER" == "Off" ]; then
-  sketchybar --set $NAME label=$WIFI_OFF
+  sketchybar --set $NAME icon=$WIFI_OFF
   exit 0
 fi
 
 SSID_LOWER=$(echo "$SSID" | tr '[:upper:]' '[:lower:]')
 if [[ "$SSID_LOWER" == *iphone* ]]; then
-  sketchybar --set $NAME label=$HOTSPOT
+  sketchybar --set $NAME icon=$HOTSPOT
   exit 0
 fi
 
 if [ $CURR_TX = 0 ]; then
-  sketchybar --set $NAME label=$WIFI_NO_INTERNET
+  sketchybar --set $NAME icon=$WIFI_NO_INTERNET
   exit 0
 fi
 
-sketchybar --set $NAME label=$WIFI
+sketchybar --set $NAME icon=$WIFI
 
 # Handle mouse events
 case "$SENDER" in
   "mouse.entered")
-    #sleep 1
     sketchybar --set $NAME popup.drawing=on
-    #echo "Mouse Hovered in $NAME icon" >> /tmp/sketchybar_debug.log
+    
+    # highlight effect
+    sketchybar --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
     ;;
   "mouse.exited" | "mouse.exited.global")
     sketchybar --set $NAME popup.drawing=off
-    #echo "Mouse left hover of $NAME icon" >> /tmp/sketchybar_debug.log
+    
+    # unhighlight effect
+    sketchybar --set $NAME icon.highlight=off label.highlight=off
     ;;
   "mouse.clicked")
-    #sketchybar --set $NAME popup.drawing=toggle
-    #echo "Mouse clicked on $NAME icon" >> /tmp/sketchybar_debug.log
-    # toggle_battery_popup
+    # button clicked effect
+    sketchybar --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
+    sketchybar --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
+    sketchybar --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
     ;;
   "routine")
     # Update battery info periodically
-    update_battery
+    # update_battery
     ;;
 esac
 

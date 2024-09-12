@@ -14,7 +14,7 @@ INIT_FLAG_FILE="$HOME/.config/sketchybar/calendar_init_flag"
 
 # Function to generate the calendar
 generate_calendar() {
-  CALENDAR=$(gcal | awk '{printf "%-21s\n", $0}' | sed -e 's|<|\[|g' -e 's|>|\]|g' | sed -e '/^$/d' | sed -e 's/\]$/&/' -e '/\]$/!s/$/ /')
+  CALENDAR=$($gcal | awk '{printf "%-21s\n", $0}' | sed -e 's|<|\[|g' -e 's|>|\]|g' | sed -e '/^$/d' | sed -e 's/\]$/&/' -e '/\]$/!s/$/ /')
   echo "$(date +%Y-%m-%d)" > "$CACHE_FILE"
   echo "$CALENDAR" >> "$CACHE_FILE"
 }
@@ -88,12 +88,24 @@ set_date_and_time # call it first
 # Handle mouse events
 case "$SENDER" in
   "mouse.entered")
+    # popup effect
     sketchybar --set $NAME popup.drawing=on
+
+    # highlight effect
+    sketchybar --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
     ;;
   "mouse.exited" | "mouse.exited.global")
     sketchybar --set $NAME popup.drawing=off
+    
+    # unhighlight effect
+    sketchybar --set $NAME icon.highlight=off label.highlight=off
     ;;
   "mouse.clicked")
     open https://calendar.google.com/calendar/u/oldstrumpet321@gmail.com/r/month
+    
+    # button clicked effect
+    sketchybar --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
+    sketchybar --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
+    sketchybar --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
     ;;
 esac

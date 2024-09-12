@@ -42,11 +42,9 @@ in
   xdg.configFile."sketchybar/plugins/bluetooth.sh".source = ./plugins/bluetooth.sh;
   xdg.configFile."sketchybar/plugins/cpu.sh".source = ./plugins/cpu.sh;
   xdg.configFile."sketchybar/plugins/datetime.sh".source = ./plugins/datetime.sh;
-  xdg.configFile."sketchybar/plugins/mail.sh".source = ./plugins/mail.sh;
-  xdg.configFile."sketchybar/plugins/ram.sh".source = ./plugins/ram.sh;
+  xdg.configFile."sketchybar/plugins/memory.sh".source = ./plugins/memory.sh;
   xdg.configFile."sketchybar/plugins/space.sh".source = ./plugins/space.sh;
   xdg.configFile."sketchybar/plugins/front_app.sh".source = ./plugins/front_app.sh;
-  xdg.configFile."sketchybar/plugins/speed.sh".source = ./plugins/speed.sh;
   xdg.configFile."sketchybar/plugins/spotify.sh".source = ./plugins/spotify.sh;
   xdg.configFile."sketchybar/plugins/cava.sh".source = ./plugins/cava.sh;
   xdg.configFile."sketchybar/plugins/cava.conf".source = ./plugins/cava.conf;
@@ -72,11 +70,9 @@ in
   xdg.configFile."sketchybar/plugins/bluetooth.sh".executable = true;
   xdg.configFile."sketchybar/plugins/cpu.sh".executable = true;
   xdg.configFile."sketchybar/plugins/datetime.sh".executable = true;
-  xdg.configFile."sketchybar/plugins/mail.sh".executable = true;
-  xdg.configFile."sketchybar/plugins/ram.sh".executable = true;
+  xdg.configFile."sketchybar/plugins/memory.sh".executable = true;   
   xdg.configFile."sketchybar/plugins/space.sh".executable = true;
   xdg.configFile."sketchybar/plugins/front_app.sh".executable = true;
-  xdg.configFile."sketchybar/plugins/speed.sh".executable = true;
   xdg.configFile."sketchybar/plugins/spotify.sh".executable = true;
   xdg.configFile."sketchybar/plugins/cava.sh".executable = true;
   xdg.configFile."sketchybar/plugins/cava.conf".executable = true;

@@ -30,13 +30,16 @@ update_sketchybar_label() {
 # Handle mouse events
 case "$SENDER" in
   "mouse.entered")
-    #sleep 1
     sketchybar --set $NAME popup.drawing=on
-    #echo "Mouse Hovered in $NAME icon" >> /tmp/sketchybar_debug.log
+
+    # highlight effect
+    sketchybar --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
     ;;
   "mouse.exited" | "mouse.exited.global")
     sketchybar --set $NAME popup.drawing=off
-    #echo "Mouse left hover of $NAME icon" >> /tmp/sketchybar_debug.log
+
+    # unhighlight effect
+    sketchybar --set $NAME icon.highlight=off label.highlight=off
     ;;
   "mouse.clicked")
     # Use the CURRENT_APP_NAME_AND_WINDOW info
@@ -47,6 +50,11 @@ case "$SENDER" in
       # Send Command + W to close the window
       $osascript -e 'tell application "System Events" to keystroke "w" using {command down}'
     fi
+
+    # button clicked effect
+    sketchybar --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
+    sketchybar --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
+    sketchybar --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
     ;;
   "routine")
     # Update battery info periodically

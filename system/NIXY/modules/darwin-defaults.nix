@@ -231,6 +231,9 @@ in
       };
       CustomUserPreferences = {
         NSGlobalDomain = {
+          NSColorSimulateHardwareAccent = true; # hardware accent colors M1 iMacs
+          # 3 is yellow, 4 is green, 5 is blue, 6 is red, 7 is purple, 8 is orange
+          NSColorSimulatedHardwareEnclosureNumber = 4; # hardware color choice 
           AppleHighlightColor = let
             # Example hex color code
             hexColor = "8ec07c";  # Replace with your hex color (without #)
