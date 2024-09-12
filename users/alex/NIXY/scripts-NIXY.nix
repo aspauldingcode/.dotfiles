@@ -135,8 +135,8 @@ in
       if ! pgrep -x "Background Music" > /dev/null; then
         open -a "Background Music"
       fi
-      if ! pgrep -x "InstantView" > /dev/null; then
-        open -a "InstantView"
+      if ! pgrep -x "macOS InstantView" > /dev/null; then
+        open -a "macOS InstantView"
       fi
       if ! pgrep -x "kdeconnectd" > /dev/null; then
         kdeconnectd > /dev/null 2>&1 &
