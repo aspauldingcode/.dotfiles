@@ -175,7 +175,7 @@ cpu=(
 
 apple=(
   script="$PLUGIN_DIR/apple.sh"
-  #click_script="$POPUP_TOGGLE_SCRIPT"
+  click_script="$PLUGIN_DIR/open_menubar_items.sh apple"
   label=$APPLE
   label.padding_right=15
   label.padding_left=15

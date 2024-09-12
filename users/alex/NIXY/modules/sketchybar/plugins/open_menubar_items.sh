@@ -3,6 +3,13 @@
 app_name=$1
 
 case $app_name in
+    "apple")
+        osascript -e 'tell application "System Events"
+            tell process "Finder"
+                click menu bar item 1 of menu bar 1
+            end tell
+        end tell'
+        ;;
     "kde-connect")
         osascript -e 'tell application "System Events" to tell process "KDE Connect"
             click menu bar item 1 of menu bar 2
