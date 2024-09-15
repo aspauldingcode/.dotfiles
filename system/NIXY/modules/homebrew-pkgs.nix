@@ -96,7 +96,7 @@
       "homebrew/bundle"
       "homebrew/services"
       # Custom
-      "kde-mac/kde" # FIXME: Fails at first instal.. you must visit https://github.com/KDE/homebrew-kde to install correctly.
+      #"kde-mac/kde" # FIXME: Fails at first install.. you must visit https://github.com/KDE/homebrew-kde to install correctly.
       "koekeishiya/formulae"
       "FelixKratz/formulae"
       "smudge/smudge"
