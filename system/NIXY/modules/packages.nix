@@ -23,6 +23,8 @@
     tree
     ifstat-legacy
     ranger
+    # kdePackages.okular
+
     #darwin.iproute2mac #MUST BE BREW PACKAGE?
     ncurses6
     hexedit

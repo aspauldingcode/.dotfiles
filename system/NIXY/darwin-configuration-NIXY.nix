@@ -11,7 +11,10 @@
     ./modules/packages.nix
     ./modules/theme.nix
     ./modules/recording-indicator-utility.nix
+    ./modules/okular/okular.nix
   ];
+  # programs.okular.enable = true;
+
   fonts = {
     packages = with pkgs; [
       dejavu_fonts
