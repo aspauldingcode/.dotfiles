@@ -11,7 +11,7 @@
     ./modules/packages.nix
     ./modules/theme.nix
     ./modules/recording-indicator-utility.nix
-    ./modules/okular/okular.nix
+    ./modules/okular.nix
   ];
   # programs.okular.enable = true;
 

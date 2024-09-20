@@ -22,6 +22,18 @@ in {
             --toolbar-bgcolor: #${colors.base00};
           }
 
+          /* Customize toolbar icons color */
+          .toolbarbutton-icon {
+            fill: #${colors.base05} !important;
+            fill-opacity: 1 !important;
+          }
+
+          /* Adjust icon color on hover and active states */
+          .toolbarbutton-1:not([disabled]):hover .toolbarbutton-icon,
+          .toolbarbutton-1:not([disabled])[open] .toolbarbutton-icon {
+            fill: #${colors.base0D} !important;
+          }
+
           /* Hide titlebar buttons and adjust spacing on macOS */
           @media (-moz-platform: macos) {
             .titlebar-buttonbox-container,
@@ -81,6 +93,241 @@ in {
           /* disable tab bars */
           #TabsToolbar {
             display: none !important;
+          }
+
+          /* Hide the "Extension (B...t Startpage)" element */
+          #identity-box {
+            display: none !important;
+          }
+          /* Change the background color of the search bar when active */
+          #urlbar-background {
+            background-color: #${colors.base01} !important;
+          }
+          
+          /* Change the text color of the search bar when active */
+          #urlbar-input {
+            color: #${colors.base05} !important;
+          }
+          
+          /* Add a subtle border to the search bar when active */
+          #urlbar[focused="true"] > #urlbar-background {
+            border: 1px solid #${colors.base0D} !important;
+            box-shadow: 0 0 3px #${colors.base0D} !important;
+          }
+
+          /* Add this new rule for the menu panel */
+          #appMenu-popup {
+            --arrowpanel-background: #${colors.base00} !important;
+            --arrowpanel-color: #${colors.base05} !important;
+          }
+
+          /* Change the background color of the customize toolbar page */
+          #customization-container {
+            background-color: #${colors.base00} !important;
+          }
+
+          /* Style for the customize toolbar button */
+          #customization-done-button {
+            background-color: #${colors.base02} !important;
+            color: #${colors.base05} !important;
+            border-color: #${colors.base03} !important;
+          }
+
+          #customization-done-button:hover {
+            background-color: #${colors.base03} !important;
+            border-color: #${colors.base0D} !important;
+          }
+
+          #customization-done-button:active {
+            background-color: #${colors.base04} !important;
+          }
+
+          /* Hide toolbar context menu */
+          #toolbar-context-menu {
+            display: none !important;
+          }
+
+          /* Style the urlbar results popup */
+          /* .urlbarView {
+            background-color: #${colors.base00} !important;
+            color: #${colors.base05} !important;
+          } */
+
+          /* Style individual result items */
+          .urlbarView-row {
+            color: #${colors.base05} !important;
+          }
+
+          /* Style the selected result */
+          .urlbarView-row[selected] {
+            background-color: #${colors.base02} !important;
+            color: #${colors.base06} !important;
+          }
+
+          /* Style the search engine icon */
+          .urlbarView-type-icon {
+            fill: #${colors.base05} !important;
+          }
+
+          /* Style the "Search with" text */
+          .urlbarView-action {
+            color: #${colors.base04} !important;
+          }
+
+          /* Style the extensions popup background */
+          #unified-extensions-view,
+          .panel-arrowcontent {
+            background-color: #${colors.base00} !important;
+          }
+
+          /* Style the individual extension items */
+          .unified-extensions-item {
+            background-color: #${colors.base00} !important;
+            color: #${colors.base05} !important;
+          }
+
+          .unified-extensions-item:hover {
+            background-color: #${colors.base01} !important;
+          }
+
+          /* Style the "Manage extensions" button at the bottom */
+          #unified-extensions-manage-extensions {
+            background-color: #${colors.base01} !important;
+            color: #${colors.base05} !important;
+          }
+
+          #unified-extensions-manage-extensions:hover {
+            background-color: #${colors.base02} !important;
+          }
+
+          /* Add this new rule for addon icons */
+          .webextension-browser-action {
+            filter: grayscale(100%) brightness(1.2) contrast(1.2) opacity(0.7) drop-shadow(0 0 0 #${colors.base05}) !important;
+          }
+
+          /* Style the sidebar title and context menu */
+          #sidebar-header,
+          #sidebar-switcher-target,
+          #viewButton {
+            background-color: #${colors.base00} !important;
+            color: #${colors.base05} !important;
+          }
+
+          #sidebar-switcher-target:hover,
+          #viewButton:hover {
+            background-color: #${colors.base01} !important;
+          }
+
+          /* Style the sidebar context menu */
+          #sidebarMenu-popup {
+            --arrowpanel-background: #${colors.base00} !important;
+            --arrowpanel-color: #${colors.base05} !important;
+            --arrowpanel-border-color: #${colors.base03} !important;
+          }
+
+          #sidebarMenu-popup menuitem:hover {
+            background-color: #${colors.base01} !important;
+          }
+
+          /* Style the sidebar itself */
+          #sidebar-box,
+          #sidebar {
+            background-color: #${colors.base00} !important;
+            color: #${colors.base05} !important;
+          }
+
+          /* Style for permission prompts */
+          .popup-notification-panel {
+            background-color: #${colors.base01} !important;
+            color: #${colors.base05} !important;
+            border: none !important;
+            border-radius: 8px !important;
+          }
+
+          .popup-notification-body,
+          .popup-notification-footer,
+          .popup-notification-content,
+          .popup-notification-header {
+            background-color: transparent !important;
+            color: #${colors.base05} !important;
+          }
+
+          /* Ensure buttons are visible */
+          .popup-notification-primary-button,
+          .popup-notification-secondary-button {
+            display: inline-block !important;
+          }
+          
+          /* Ensure only the notification background is set correctly */
+          .popup-notification-panel *:not(.popup-notification-button):not(.popup-notification-primary-button):not(.popup-notification-secondary-button):not(.popup-notification-button *):not(.popup-notification-primary-button *):not(.popup-notification-secondary-button *):not(.text-link):not(.checkbox-check):not(.checkbox-label) {
+            background-color: #${colors.base00} !important;
+          }
+
+          /* Style for both buttons */
+          .popup-notification-button {
+            background-color: #${colors.base02} !important;
+            color: #${colors.base05} !important;
+            border: none !important;
+            border-radius: 4px !important;
+            margin: 4px !important;
+            padding: 6px 12px !important;
+          }
+
+          /* Style for the "Allow" (primary) button */
+          .popup-notification-primary-button {
+            background-color: #${colors.base0D} !important;
+            color: #${colors.base00} !important;
+          }
+
+          .popup-notification-primary-button:hover {
+            background-color: #${colors.base0C} !important;
+          }
+
+          /* Style for the "Block" (secondary) button */
+          .popup-notification-secondary-button:hover {
+            background-color: #${colors.base03} !important;
+          }
+
+          .checkbox-check {
+            background-color: transparent !important;
+            border: 1px solid #${colors.base04} !important;
+          }
+
+          .checkbox-label {
+            color: #${colors.base04} !important;
+          }
+
+          /* Style for the "Learn more" link */
+          .text-link {
+            color: #${colors.base0D} !important;
+          }
+
+          .text-link:hover {
+            color: #${colors.base0C} !important;
+            text-decoration: none !important;
+          }
+
+          /* Additional styles to ensure full coverage */
+          .panel-arrowcontent,
+          .panel-arrowbox,
+          .panel-arrow {
+            background-color: #${colors.base00} !important;
+          }
+
+          /* Style for warning messages */
+          .message-bar,
+          .message-bar-content,
+          .message-bar-button {
+            background-color: #${colors.base00} !important;
+            color: #${colors.base05} !important;
+          }
+
+          /* Ensure any overlays or additional panels are styled */
+          .panel-viewstack,
+          .panel-mainview,
+          .panel-subview {
+            background-color: #${colors.base00} !important;
+            color: #${colors.base05} !important;
           }
         '';
         userContent = ''
@@ -411,7 +658,6 @@ in {
 						"CZE-0"
 						"adguard-generic"
 						"adguard-annoyance"
-						"adguard-social"
 						"adguard-spyware-url"
 						"easylist"
 						"easyprivacy"
