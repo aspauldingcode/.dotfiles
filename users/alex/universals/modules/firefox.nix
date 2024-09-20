@@ -50,6 +50,111 @@ in {
             }
           }
 
+          /* Permanently hide bookmarks, site info button, three dots menu, and tracking protection shield in urlbar */
+          #star-button-box,
+          #identity-box,
+          #pageActionButton {
+            display: none !important;
+          }
+
+          /* Hide tracking protection icon when window width is less than 1000px */
+          @media (max-width: 800px) {
+            #tracking-protection-icon-container {
+              display: none !important;
+            }
+          }
+
+          /* Hide all addons/extensions buttons from toolbar after 600px */
+          @media (max-width: 600px) {
+            #nav-bar .unified-extensions-item {
+              display: none !important;
+            }
+            /* Adjust padding to prevent empty space */
+            #nav-bar-customization-target {
+              padding-right: 0 !important;
+            }
+          }
+
+          /* Hide the Sidebery icon when window width is 200px or less */
+          @media (max-width: 200px) {
+            #sidebar-button,
+            #_3c078156-979c-498b-8990-85f7987dd929_-browser-action {
+              display: none !important;
+            }
+          }
+
+          /* Remove min-width and min-height constraints */
+          #main-window {
+            min-width: 0 !important;
+            min-height: 0 !important;
+          }
+
+          /* Allow content to resize to any dimensions */
+          #browser {
+            min-width: 0 !important;
+            min-height: 0 !important;
+          }
+
+          /* Ensure toolbars can shrink */
+          #nav-bar,
+          #PersonalToolbar,
+          #TabsToolbar {
+            min-width: 0 !important;
+            min-height: 0 !important;
+          }
+
+          /* Allow searchbar to shrink to 0 */
+          #urlbar-container {
+            min-width: 0 !important;
+            flex-shrink: 1 !important;
+            flex-basis: 0 !important;
+          }
+
+          /* Hide pinned addons when window width is 700px or less */
+          @media (max-width: 700px) {
+            #unified-extensions-panel .unified-extensions-item[pinned] {
+              display: none !important;
+            }
+          }
+
+          /* Hide addons panel when window width is 300px or less */
+          @media (max-width: 300px) {
+            #unified-extensions-button {
+              display: none !important;
+            }
+          }
+
+          /* Hide forward/backward arrows when space is limited */
+          @media (max-width: 400px) {
+            #forward-button {
+              display: none !important;
+            }
+          }
+          @media (max-width: 150px) {
+            #back-button {
+              display: none !important;
+            }
+          }
+            
+          /* Hide hamburger menu and refresh button when extremely limited */
+          @media (max-width: 200px) {
+            #PanelUI-button,
+            #reload-button {
+              display: none !important;
+            }
+          }
+
+          /* Allow addons toolbar to be hidden */
+          #nav-bar-customization-target {
+            min-height: 0 !important;
+          }
+
+          /* Allow window to shrink to 0 */
+          :root {
+            min-width: 0 !important;
+            min-height: 0 !important;
+          }
+
           :root {
             --toolbar-bgcolor: #${colors.base00};
             --toolbar-color: #${colors.base05};
