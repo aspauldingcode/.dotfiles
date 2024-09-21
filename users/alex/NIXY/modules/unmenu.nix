@@ -1,14 +1,10 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, std, ... }:
+
 {
   home.file.".config/unmenu/config.toml" = {
     force = true;
-    text = lib.generators.toTOML {
-      hotkey.qwerty_hotkey = "cmd-d";
+    text = std.serde.toTOML {
+      hotkey.qwerty_hotkey = "ctrl-cmd-space";
 
       find_apps = true;
       find_executables = true;
@@ -18,15 +14,11 @@
         "/Applications/"
         "/System/Applications/Utilities/"
         "/System/Library/CoreServices/"
-        "~/.unmenu-bin"
-        "~/.nix-profile/bin/"
-        "/nix/store/"
-        "/etc/profiles/per-user/alex/bin/" # not working?
-        "/run/current-system/sw/bin/" # also not working?
+        "/Applications/Nix Apps/"
       ];
 
       ignore_names = [
-        "unmenu.app" # we don't want to launch ourselves, right?
+        "unmenu.app"  # we don't want to launch ourselves, right?
         ".Karabiner-VirtualHIDDevice-Manager.app"
         "Install Command Line Developer Tools.app"
         "Install in Progress.app"

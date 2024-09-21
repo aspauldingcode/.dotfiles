@@ -25,7 +25,7 @@
     ./modules/alacritty.nix
     ./modules/kitty.nix
     ./modules/maco.nix
-    #./modules/unmenu.nix
+    ./modules/unmenu.nix
     ./modules/packages-NIXY.nix
     ./modules/instantview.nix
     ./modules/karabiner.nix
