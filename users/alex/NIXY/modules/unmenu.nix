@@ -4,7 +4,7 @@
   home.file.".config/unmenu/config.toml" = {
     force = true;
     text = std.serde.toTOML {
-      hotkey.qwerty_hotkey = "ctrl-cmd-space";
+      hotkey.qwerty_hotkey = "alt-d";
 
       find_apps = true;
       find_executables = true;

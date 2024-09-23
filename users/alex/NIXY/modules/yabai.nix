@@ -10,8 +10,8 @@ let
   i3-msg = "${homebrewPath}/i3-msg";
   alacritty = "${homebrewPath}/alacritty";
   firefox = "${homebrewPath}/firefox";
-  # dmenu-mac = "${homebrewPath}/dmenu-mac";
-  dmenu-mac = "/Applications/unmenu.app/Contents/MacOS/unmenu";
+  # app_menu = "${homebrewPath}/dmenu-mac";
+  app_menu = "/Applications/unmenu.app/Contents/MacOS/unmenu";
   jq = "${pkgs.jq}/bin/jq";
   inherit (config.colorScheme) colors;
 
@@ -221,7 +221,6 @@ in
         ''
           # Launch shortcuts
           ${modifier} - return :                ${alacritty} msg create-window || open -na ${alacritty}
-          # ${modifier} - d :                       ${dmenu-mac} use karabiner to remap alt-d to cmd-d. configure unmenu to use cmd-d as hotkey.
           ${mod1} + ${mod5} - space :             open -na ${firefox}
           ${mod1} + ${smod} + ${mod5} - space :   open -na ${firefox} --args -private-window
           ${mod4} + ${mod5} - 0x33 :            sudo reboot # using cmd ctrl backspace
@@ -389,7 +388,7 @@ in
         hidpi=on
         active_color=0xff${colors.base07}
         inactive_color=0xff${colors.base05}
-        blacklist="google chrome,vmware fusion,xQuartz,dmenu-mac,X11.bin,MacForge,python3.11"
+        blacklist="google chrome,vmware fusion,xQuartz,dmenu-mac,unmenu,X11.bin,MacForge,python3.11"
       )
 
       ${borders} "''${options[@]}"

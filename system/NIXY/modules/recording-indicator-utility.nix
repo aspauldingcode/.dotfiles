@@ -37,13 +37,13 @@ let
             tell process "Recording Indicator Utility"
               set toggleButton to first button of first group of first window
               set toggleState to value of toggleButton
-              if ${if config.recordingIndicatorUtility.showIndicator then "toggleState is 0" else "toggleState is 1"} then
-                -- Toggle is ${if config.recordingIndicatorUtility.showIndicator then "on" else "off"}, so we can click to turn it ${if config.recordingIndicatorUtility.showIndicator then "off" else "on"}
+              if ${if config.programs.recordingIndicatorUtility.showIndicator then "toggleState is 0" else "toggleState is 1"} then
+                -- Toggle is ${if config.programs.recordingIndicatorUtility.showIndicator then "on" else "off"}, so we can click to turn it ${if config.programs.recordingIndicatorUtility.showIndicator then "off" else "on"}
                 click toggleButton
-                log "Turned ${if config.recordingIndicatorUtility.showIndicator then "on" else "off"} Recording Indicator"
+                log "Turned ${if config.programs.recordingIndicatorUtility.showIndicator then "on" else "off"} Recording Indicator"
               else
-                -- Toggle is already ${if config.recordingIndicatorUtility.showIndicator then "on" else "off"}, no action needed
-                log "Recording Indicator is already ${if config.recordingIndicatorUtility.showIndicator then "on" else "off"}"
+                -- Toggle is already ${if config.programs.recordingIndicatorUtility.showIndicator then "on" else "off"}, no action needed
+                log "Recording Indicator is already ${if config.programs.recordingIndicatorUtility.showIndicator then "on" else "off"}"
               end if
             end tell
           end tell
@@ -51,14 +51,15 @@ let
         end tell
 EOF
       # save state to statefile
-      echo "${if config.recordingIndicatorUtility.showIndicator then "on" else "off"}" > "$statefile"
+      echo "${if config.programs.recordingIndicatorUtility.showIndicator then "on" else "off"}" > "$statefile"
     }
    
     statefile="/var/lib/recording_indicator_state.log"
-    desired_state="${if config.recordingIndicatorUtility.showIndicator then "on" else "off"}"
+    desired_state="${if config.programs.recordingIndicatorUtility.showIndicator then "on" else "off"}"
 
+    # generate the statefile, set default to "on"
     if [ ! -f "$statefile" ]; then
-      echo "$desired_state" > "$statefile"
+      echo "on" > "$statefile"
     fi
 
     current_state=$(cat "$statefile")
@@ -70,7 +71,7 @@ EOF
   '';
 in
 {
-  options.recordingIndicatorUtility = {
+  options.programs.recordingIndicatorUtility = {
     enable = lib.mkEnableOption "Recording Indicator Utility";
     showIndicator = lib.mkOption {
       type = lib.types.bool;
@@ -84,11 +85,11 @@ in
     };
   };
 
-  config = lib.mkIf config.recordingIndicatorUtility.enable {
+  config = lib.mkIf config.programs.recordingIndicatorUtility.enable {
     environment.systemPackages = [ recordingIndicatorUtility ];
 
     # Set default for acknowledging system override alert
-    system.defaults.CustomUserPreferences."com.mac.RecordingIndicatorUtility".AcknowledgedSystemOverrideAlert = if config.recordingIndicatorUtility.showWarning then 0 else 1;
+    system.defaults.CustomUserPreferences."com.mac.RecordingIndicatorUtility".AcknowledgedSystemOverrideAlert = if config.programs.recordingIndicatorUtility.showWarning then 0 else 1;
 
     system.activationScripts.postActivation.text = lib.mkAfter ''
       # Set default for showing recording indicator

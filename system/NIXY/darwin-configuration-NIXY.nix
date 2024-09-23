@@ -12,6 +12,7 @@
     ./modules/theme.nix
     ./modules/recording-indicator-utility.nix
     ./modules/okular.nix
+    ./modules/unmenu.nix
   ];
   # programs.okular.enable = true;
 
@@ -53,14 +54,23 @@
     zsh.enable = true;  # default shell on catalina
     bash.enable = true;
     fish.enable = true; #NOT Borne COMPAT? 
-  };
-
-  # Recording Indicator Utility
-  recordingIndicatorUtility = {
-    enable = true;
-    # package = pkgs.recordingIndicatorUtility;
-    showIndicator = false;
-    showWarning = false;
+    # Recording Indicator Utility
+    recordingIndicatorUtility = {
+      enable = true;
+      # package = pkgs.recordingIndicatorUtility;
+      showIndicator = false;
+      showWarning = false;
+    };
+    # unmenu = {
+    #   enable = true;
+    #   qwertyHotkey = "alt-d";
+    #   findApps = true;
+    #   findExecutables = true;
+    #   dirs = [
+    #     "/System/Applications/"
+    #     "/Applications/"
+    #   ];
+    # };
   };
 
   users.users.alex.shell = pkgs.zsh; 
