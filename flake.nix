@@ -40,6 +40,11 @@
     nix-std = {
       url = "github:chessai/nix-std";
     };
+
+    nixtheplanet = {
+      url = "github:matthewcroughan/nixtheplanet";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -56,6 +61,7 @@
       apple-silicon,
       nur,
       nix-std,
+      nixtheplanet,
     }:
     let
       inherit (self) inputs;
@@ -73,6 +79,7 @@
           nur
           self
           std
+          nixtheplanet
           ;
       };
       commonExtraSpecialArgs = {
@@ -86,6 +93,7 @@
           nur
           self
           std
+          nixtheplanet
           ;
       };
       systems = [

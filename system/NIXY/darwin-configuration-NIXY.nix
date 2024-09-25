@@ -13,6 +13,7 @@
     ./modules/recording-indicator-utility.nix
     ./modules/okular.nix
     ./modules/unmenu.nix
+    # ./modules/nix-the-planet.nix
   ];
   # programs.okular.enable = true;
 

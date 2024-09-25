@@ -26,3 +26,7 @@ nix --experimental-features 'nix-command flakes'  # Enable flakes
 The install can be configured through the flake.nix.
 Home-Manager Configuration is done per-user under Users/{user}/home.nix
 If you're lost, please [read the Notes](notes.md) to follow setup.
+
+
+# I'm being productive, I swear!
+![macOS-NIXY](./macOS-NIXY.png)
