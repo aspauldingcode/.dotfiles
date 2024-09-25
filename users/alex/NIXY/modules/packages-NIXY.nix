@@ -100,6 +100,7 @@ in
       ps.pandas
       ps.termcolor
       ps.plyvel
+      ps.opencv4
       #ps.pyautogui # broken
       # ps.pep517
       ps.biplist

@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, nix-colors,... }:
 
 let
   writeShellScriptBin = pkgs.writeShellScriptBin;
@@ -37,6 +37,8 @@ let
     echo "Dock has been updated. Only kept: ''${keep_apps[*]}"
     echo "Downloads stack and recent apps have been hidden."
   '';
+
+  inherit (config.colorScheme) colors;
 in
 {
   system = {
@@ -200,7 +202,13 @@ in
           AppleEnableMouseSwipeNavigateWithScrolls = 0;
           AppleEnableSwipeNavigateWithScrolls = 0;
           AppleFontSmoothing = 0;
-          AppleHighlightColor = "0.51372 0.64705 0.59607 Other"; # converted from nix-colors base0D = #83a598
+          AppleHighlightColor = let
+            hexColor = "${colors.base0D}"; # this should be base0D which is #83a598
+            hexColorConverted = builtins.toString (
+              (builtins.map (x: x / 255.0) (nix-colors.lib.conversions.hexToRGB hexColor))
+              ++ ["Others"]
+            );
+          in hexColorConverted;
           AppleInterfaceStyle = "Dark";
           AppleLanguages = [ "en-US" ];
           AppleLocale = "en_US";
@@ -235,25 +243,13 @@ in
           # 3 is yellow, 4 is green, 5 is blue, 6 is red, 7 is purple, 8 is orange
           NSColorSimulatedHardwareEnclosureNumber = 4; # hardware color choice 
           AppleHighlightColor = let
-            # Example hex color code
-            hexColor = "8ec07c";  # Replace with your hex color (without #)
-            # hexColor = "${colors.base0C}";
-
-            # Manually set RGB values
-            rgbValues = [
-              #rgb(142, 192, 124)
-              142
-              192
-              124
-            ];
-            
-            # Normalize RGB values to 0-1 range
-            r = builtins.elemAt rgbValues 0 / 255.0;
-            g = builtins.elemAt rgbValues 1 / 255.0;
-            b = builtins.elemAt rgbValues 2 / 255.0;
-          in "${toString r} ${toString g} ${toString b} Other";
+            hexColor = "${colors.base0D}"; # this should be base0D which is #83a598
+            hexColorConverted = builtins.toString (
+              (builtins.map (x: x / 255.0) (nix-colors.lib.conversions.hexToRGB hexColor))
+              ++ ["Others"]
+            );
+          in hexColorConverted;
         };
-      
         "~/Library/Preferences/com.apple.wallpaper" = {
           SonomaFirstRunMigrationPerformed = 1;
           StoreIndexMigrationVersion = 1;
