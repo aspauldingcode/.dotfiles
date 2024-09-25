@@ -62,8 +62,8 @@
       showWarning = false;
     };
     # unmenu = {
-    #   enable = true;
-    #   qwertyHotkey = "alt-d";
+      # enable = true;
+    #   qwerty/Hotkey = "alt-d";
     #   findApps = true;
     #   findExecutables = true;
     #   dirs = [

@@ -792,4 +792,20 @@ in
       StandardErrorPath = "/tmp/startMacForge.error.log";
     };
   };
+
+  launchd.user.agents.unmenu = {
+    serviceConfig = {
+      Label = "com.unmanbearpig.unmenu";
+      ProgramArguments = [
+        "/Users/alex/Applications/Home Manager Trampolines/unmenu.app/Contents/MacOS/unmenu"
+      ];
+      RunAtLoad = true;
+      KeepAlive = {
+        SuccessfulExit = false;
+        Crashed = true;
+      };
+      StandardOutPath = "/tmp/unmenu.log";
+      StandardErrorPath = "/tmp/unmenu.error.log";
+    };
+  };
 }
