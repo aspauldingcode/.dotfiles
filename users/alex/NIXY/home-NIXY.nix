@@ -37,7 +37,8 @@
     ./modules/afloaty.nix
     ./modules/qutebrowser.nix
     ./modules/sketchybar/sketchybar.nix
-    ./modules/yabai.nix # contains skhd and borders config.
+    # ./modules/yabai.nix # contains skhd and borders config.
+    # ./modules/window-manager.nix
     ./modules/phoenix/phoenix.nix # new window-manager for macOS!
   ];
 

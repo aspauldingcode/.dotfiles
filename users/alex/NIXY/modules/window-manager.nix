@@ -1,12 +1,10 @@
-{ config, pkgs, unstable, ... }:
+{ config, pkgs, ... }:
 
 let
   systemType = pkgs.stdenv.hostPlatform.system;
   homebrewPath = if systemType == "aarch64-darwin" then "/opt/homebrew/bin" else if systemType == "x86_64-darwin" then "/usr/local/bin" else throw "Homebrew Unsupported architecture: ${systemType}";
-  # yabai = "${homebrewPath}/yabai";
-  yabai = "${pkgs.yabai}/bin/yabai";
-  # sketchybar = "${homebrewPath}/sketchybar";
-  sketchybar = "${pkgs.sketchybar}/bin/sketchybar";
+  yabai = "${homebrewPath}/yabai";
+  sketchybar = "${homebrewPath}/sketchybar";
   # borders = "${homebrewPath}/borders";
   borders = "~/JankyBorders/bin/borders";
   i3-msg = "${homebrewPath}/i3-msg";
@@ -21,7 +19,6 @@ let
   wallpaper = ./../../extraConfig/wallpapers/gruvbox-nix.png;
 in
 {
-  # yabai config
   home.file.yabai = {
     executable = true;
     target = ".config/yabai/yabairc";
@@ -198,6 +195,9 @@ in
         }
 
         _update_cache
+
+        # load wallpaper!
+        
 
         echo "yabai configuration loaded.."
       '';

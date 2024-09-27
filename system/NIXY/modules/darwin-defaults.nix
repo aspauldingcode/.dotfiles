@@ -206,7 +206,7 @@ in
             hexColor = "${colors.base0D}"; # this should be base0D which is #83a598
             hexColorConverted = builtins.toString (
               (builtins.map (x: x / 255.0) (nix-colors.lib.conversions.hexToRGB hexColor))
-              ++ ["Others"]
+              ++ ["Other"]
             );
           in hexColorConverted;
           AppleInterfaceStyle = "Dark";
@@ -246,7 +246,7 @@ in
             hexColor = "${colors.base0D}"; # this should be base0D which is #83a598
             hexColorConverted = builtins.toString (
               (builtins.map (x: x / 255.0) (nix-colors.lib.conversions.hexToRGB hexColor))
-              ++ ["Others"]
+              ++ ["Other"]
             );
           in hexColorConverted;
         };

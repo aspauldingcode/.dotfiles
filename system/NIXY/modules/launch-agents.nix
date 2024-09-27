@@ -56,128 +56,128 @@ in
       '';
     };
     
-    "com.koekeishiya.skhd.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"?>
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>com.koekeishiya.skhd</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>/opt/homebrew/bin/skhd</string>
-            </array>
-            <key>EnvironmentVariables</key>
-            <dict>
-              <key>PATH</key>
-              <string>/opt/homebrew/bin:/opt/homebrew/sbin:/Users/alex/.nix-profile/bin:/etc/profiles/per-user/alex/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin</string>
-            </dict>
-            <key>RunAtLoad</key>
-            <true/>
-            <key>KeepAlive</key>
-            <dict>
-              <key>SuccessfulExit</key>
-              <false/>
-              <key>Crashed</key>
-              <true/>
-            </dict>
-            <key>StandardOutPath</key>
-            <string>/tmp/skhd_alex.out.log</string>
-            <key>StandardErrorPath</key>
-            <string>/tmp/skhd_alex.err.log</string>
-            <key>ProcessType</key>
-            <string>Interactive</string>
-            <key>Nice</key>
-            <integer>-20</integer>
-          </dict>
-        </plist>
-      '';
-    };
+    # "com.koekeishiya.skhd.plist" = {
+    #   enable = true;
+    #   text = ''
+    #     <?xml version="1.0" encoding="UTF-8"?>
+    #     <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"?>
+    #     <plist version="1.0">
+    #       <dict>
+    #         <key>Label</key>
+    #         <string>com.koekeishiya.skhd</string>
+    #         <key>ProgramArguments</key>
+    #         <array>
+    #           <string>/opt/homebrew/bin/skhd</string>
+    #         </array>
+    #         <key>EnvironmentVariables</key>
+    #         <dict>
+    #           <key>PATH</key>
+    #           <string>/opt/homebrew/bin:/opt/homebrew/sbin:/Users/alex/.nix-profile/bin:/etc/profiles/per-user/alex/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin</string>
+    #         </dict>
+    #         <key>RunAtLoad</key>
+    #         <true/>
+    #         <key>KeepAlive</key>
+    #         <dict>
+    #           <key>SuccessfulExit</key>
+    #           <false/>
+    #           <key>Crashed</key>
+    #           <true/>
+    #         </dict>
+    #         <key>StandardOutPath</key>
+    #         <string>/tmp/skhd_alex.out.log</string>
+    #         <key>StandardErrorPath</key>
+    #         <string>/tmp/skhd_alex.err.log</string>
+    #         <key>ProcessType</key>
+    #         <string>Interactive</string>
+    #         <key>Nice</key>
+    #         <integer>-20</integer>
+    #       </dict>
+    #     </plist>
+    #   '';
+    # };
 
-    "homebrew.mxcl.sketchybar.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"?>
-        <plist version="1.0">
-          <dict>
-            <key>EnvironmentVariables</key>
-            <dict>
-              <key>LANG</key>
-              <string>en_US.UTF-8</string>
-              <key>PATH</key>
-              <string>/opt/homebrew/bin:/opt/homebrew/sbin:/usr/bin:/bin:/usr/sbin:/sbin</string>
-            </dict>
-            <key>KeepAlive</key>
-            <true/>
-            <key>Label</key>
-            <string>homebrew.mxcl.sketchybar</string>
-            <key>LimitLoadToSessionType</key>
-            <array>
-              <string>Aqua</string>
-              <string>Background</string>
-              <string>LoginWindow</string>
-              <string>StandardIO</string>
-              <string>System</string>
-            </array>
-            <key>ProcessType</key>
-            <string>Interactive</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>/opt/homebrew/opt/sketchybar/bin/sketchybar</string>
-            </array>
-            <key>RunAtLoad</key>
-            <true/>
-            <key>StandardErrorPath</key>
-            <string>/opt/homebrew/var/log/sketchybar/sketchybar.err.log</string>
-            <key>StandardOutPath</key>
-            <string>/opt/homebrew/var/log/sketchybar/sketchybar.out.log</string>
-          </dict>
-        </plist>
-      '';
-    };
+    # "homebrew.mxcl.sketchybar.plist" = {
+    #   enable = true;
+    #   text = ''
+    #     <?xml version="1.0" encoding="UTF-8"?>
+    #     <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"?>
+    #     <plist version="1.0">
+    #       <dict>
+    #         <key>EnvironmentVariables</key>
+    #         <dict>
+    #           <key>LANG</key>
+    #           <string>en_US.UTF-8</string>
+    #           <key>PATH</key>
+    #           <string>/opt/homebrew/bin:/opt/homebrew/sbin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    #         </dict>
+    #         <key>KeepAlive</key>
+    #         <true/>
+    #         <key>Label</key>
+    #         <string>homebrew.mxcl.sketchybar</string>
+    #         <key>LimitLoadToSessionType</key>
+    #         <array>
+    #           <string>Aqua</string>
+    #           <string>Background</string>
+    #           <string>LoginWindow</string>
+    #           <string>StandardIO</string>
+    #           <string>System</string>
+    #         </array>
+    #         <key>ProcessType</key>
+    #         <string>Interactive</string>
+    #         <key>ProgramArguments</key>
+    #         <array>
+    #           <string>/opt/homebrew/opt/sketchybar/bin/sketchybar</string>
+    #         </array>
+    #         <key>RunAtLoad</key>
+    #         <true/>
+    #         <key>StandardErrorPath</key>
+    #         <string>/opt/homebrew/var/log/sketchybar/sketchybar.err.log</string>
+    #         <key>StandardOutPath</key>
+    #         <string>/opt/homebrew/var/log/sketchybar/sketchybar.out.log</string>
+    #       </dict>
+    #     </plist>
+    #   '';
+    # };
 
-    "com.koekeishiya.yabai.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"?>
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>com.koekeishiya.yabai</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>/opt/homebrew/bin/yabai</string>
-            </array>
-            <key>EnvironmentVariables</key>
-            <dict>
-              <key>PATH</key>
-              <string>/opt/homebrew/bin:/opt/homebrew/sbin:/Users/alex/.nix-profile/bin:/etc/profiles/per-user/alex/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin</string>
-            </dict>
-            <key>RunAtLoad</key>
-            <true/>
-            <key>KeepAlive</key>
-            <dict>
-              <key>SuccessfulExit</key>
-              <false/>
-              <key>Crashed</key>
-              <true/>
-            </dict>
-            <key>StandardOutPath</key>
-            <string>/tmp/yabai_alex.out.log</string>
-            <key>StandardErrorPath</key>
-            <string>/tmp/yabai_alex.err.log</string>
-            <key>ProcessType</key>
-            <string>Interactive</string>
-            <key>Nice</key>
-            <integer>-20</integer>
-          </dict>
-        </plist>
-      '';
-    };
+    # "com.koekeishiya.yabai.plist" = {
+    #   enable = true;
+    #   text = ''
+    #     <?xml version="1.0" encoding="UTF-8"?>
+    #     <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"?>
+    #     <plist version="1.0">
+    #       <dict>
+    #         <key>Label</key>
+    #         <string>com.koekeishiya.yabai</string>
+    #         <key>ProgramArguments</key>
+    #         <array>
+    #           <string>/opt/homebrew/bin/yabai</string>
+    #         </array>
+    #         <key>EnvironmentVariables</key>
+    #         <dict>
+    #           <key>PATH</key>
+    #           <string>/opt/homebrew/bin:/opt/homebrew/sbin:/Users/alex/.nix-profile/bin:/etc/profiles/per-user/alex/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin</string>
+    #         </dict>
+    #         <key>RunAtLoad</key>
+    #         <true/>
+    #         <key>KeepAlive</key>
+    #         <dict>
+    #           <key>SuccessfulExit</key>
+    #           <false/>
+    #           <key>Crashed</key>
+    #           <true/>
+    #         </dict>
+    #         <key>StandardOutPath</key>
+    #         <string>/tmp/yabai_alex.out.log</string>
+    #         <key>StandardErrorPath</key>
+    #         <string>/tmp/yabai_alex.err.log</string>
+    #         <key>ProcessType</key>
+    #         <string>Interactive</string>
+    #         <key>Nice</key>
+    #         <integer>-20</integer>
+    #       </dict>
+    #     </plist>
+    #   '';
+    # };
 
     # "com.example.mousecape.plist" = {
     #   enable = true;

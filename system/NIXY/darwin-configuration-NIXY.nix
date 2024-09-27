@@ -12,7 +12,18 @@
     ./modules/theme.nix
     ./modules/recording-indicator-utility.nix
     ./modules/okular.nix
-    ./modules/unmenu.nix
+    # ./modules/macforge.nix
+    # ./modules/cursorcerer.nix
+
+    ./modules/windowManagement/borders.nix
+    ./modules/windowManagement/cursorcerer.nix
+    ./modules/windowManagement/karabiner.nix
+    ./modules/windowManagement/macforge.nix
+    ./modules/windowManagement/yabai.nix
+    ./modules/windowManagement/sketchybar.nix
+    ./modules/windowManagement/skhd.nix
+    ./modules/windowManagement/toggle-scripts.nix
+    ./modules/windowManagement/unmenu.nix
     # ./modules/nix-the-planet.nix
   ];
   # programs.okular.enable = true;
@@ -136,20 +147,13 @@
   #  ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk20}/zulu-20.jdk" "/Library/Java/JavaVirtualMachines/"
   #'';
 
-             system.stateVersion = 5;
+  system.stateVersion = 5;
   system.activationScripts = {
     extraActivation.text = ''
       # symlink (zulu) jdk22 to /Library/Java/JavaVirtualMachines/ # NEEDED for macOS!!
       ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk22}/zulu-22.jdk" "/Library/Java/JavaVirtualMachines/"
-      
-      # Fixes cursorcerer symlink!
-      ln -sf "${pkgs.callPackage ./modules/cursorcerer.nix { }}/Cursorcerer.prefPane" "/Library/PreferencePanes/"
-      
-      # adds MacForge Plugins (could use gnu stow moving forward)..
-      cd ${../../users/alex/extraConfig/macforge-plugins} # cd into the directory where the plugins are. idk why we need to do this.
-      find . -type d ! -name '.*' -exec mkdir -p /Library/Application\ Support/MacEnhance/Plugins/{} \; # create directories. These must not be symlinks.
-      find . -type f ! -name '.*' -exec ln -sf ${../../users/alex/extraConfig/macforge-plugins}/{} /Library/Application\ Support/MacEnhance/Plugins/{} \; # create symlinks for files
     '';
+
     postUserActivation.text = ''
       rsyncArgs="--archive --checksum --chmod=-w --copy-unsafe-links --delete"
       apps_source="${config.system.build.applications}/Applications"

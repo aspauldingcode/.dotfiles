@@ -1,9 +1,12 @@
 {
+  config,
+  pkgs,
   stdenv,
   fetchurl,
   unzip,
 }:
 
+# installs cursorcerer.
 stdenv.mkDerivation {
   pname = "cursorcerer";
   version = "3.5";
@@ -29,5 +32,12 @@ stdenv.mkDerivation {
   meta = {
     homepage = "https://doomlaser.com/cursorcerer-hide-your-cursor-at-will/";
     description = "A tool to hide the Mac's cursor at any time using a global hotkey, with features to autohide an idle cursor and reactivate it on movement.";
+  };
+
+  system.activationScripts = {
+    extraActivation.text = ''
+      # Fixes cursorcerer symlink!
+      ln -sf "${pkgs.cursorcerer}/Library/PreferencePanes/Cursorcerer.prefPane" "/Library/PreferencePanes/Cursorcerer.prefPane"
+    '';
   };
 }

@@ -24,6 +24,7 @@
     ifstat-legacy
     ranger
     # kdePackages.okular
+    spotify
 
     #darwin.iproute2mac #MUST BE BREW PACKAGE?
     ncurses6

@@ -15,9 +15,9 @@
       "x11vnc"
       "xorg-server"
       "choose-gui"
-      "yabai"
-      "skhd"
-      "sketchybar"
+      # "yabai"
+      # "skhd"
+      # "sketchybar"
       # "borders" #SUUUPER JANKY! Compile from master for now.
       "yazi"
       "cava"
@@ -31,7 +31,6 @@
       "portaudio"
       "iniparser"
       # "gcal" # GONER!
-      "spicetify-cli"
       "zenity"
       "cliclick"
       "iproute2mac"
@@ -61,7 +60,6 @@
       #"dmenu-mac" # USE UNMENU FORK!
       "kitty"
       "krita"
-      "spotify"
       "hiddenbar" #FIXME: disable for now, add back to build a working toggle.
       # "macforge" # out of date rn... need to use macforge beta
       "obs"

@@ -3,12 +3,12 @@
 # Create a derivation package for macOS InstantView application
 stdenvNoCC.mkDerivation (self:{ 
   name = "instantview";
-  version = "V3.19R0002";
+  version = "V3.21R0001";
 
   src = fetchurl {
     name = "instantview";
     url = "https://www.siliconmotion.com/downloads/macOS_InstantView_${self.version}.dmg";
-    hash = "sha256-ucJYzMqSKBoMlCE59+cFOmVQFcEiEkXEqDsRnmXPAIA=";
+    hash = "sha256-Fs0PB7/1EceI11qFCiFxIXZChVHtOdfjojZYRwj8Bpc=";
   };
 
   dontUnpack = true;
