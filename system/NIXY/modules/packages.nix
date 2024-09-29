@@ -56,10 +56,14 @@
     #lspconfig
     fd # find tool
     ripgrep
-    (pkgs.callPackage ./instantview.nix { })
-    (pkgs.callPackage ./macforge.nix { })
-    # (pkgs.callPackage ./cdock.nix { })
-    (pkgs.callPackage ./cursorcerer.nix { })
-    (pkgs.callPackage ./mousecape.nix { })
+    (pkgs.callPackage ./../customDerivations/instantview.nix { })
+    (pkgs.callPackage ./../customDerivations/macforge.nix { })
+    # (pkgs.callPackage ./../customDerivations/cdock.nix { })\
+    (pkgs.callPackage ./../customDerivations/cursorcerer.nix { })
+    (pkgs.callPackage ./../customDerivations/mousecape.nix { })
+    # (pkgs.callPackage ./../customDerivations/okular.nix { })
+    # (pkgs.callPackage ./../customDerivations/recording-indicator-utility.nix { })
+    (pkgs.callPackage ./../customDerivations/borders.nix { })
+    (pkgs.callPackage ./../customDerivations/yabai.nix { })
   ];
 }

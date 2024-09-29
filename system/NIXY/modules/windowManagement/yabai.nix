@@ -21,7 +21,7 @@ in
   services.yabai = {
     enable = true;
     enableScriptingAddition = true;
-    package = pkgs.yabai;
+    package = pkgs.callPackage ./../../customDerivations/yabai.nix { };
     config = {
       mouse_modifier = "alt";
       mouse_action1 = "move";

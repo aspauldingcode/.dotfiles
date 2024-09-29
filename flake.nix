@@ -11,7 +11,7 @@
     nix-colors.url = "github:misterio77/nix-colors";
 
     nix-darwin = {
-      url = "github:lnl7/nix-darwin";
+      url = "github:aspauldingcode/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs"; # Follows the stable nixpkgs version
     };
 

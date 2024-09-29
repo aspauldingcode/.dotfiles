@@ -6,8 +6,9 @@ in
 {
   services.jankyborders = {
     enable = true;
-    package = pkgs.jankyborders;
+    package = pkgs.callPackage ./../../customDerivations/borders.nix { };
     style = "round";
+    order = "above";
     width = 2.0;
     background_color = "0xff${colors.base00}";
     hidpi = true;

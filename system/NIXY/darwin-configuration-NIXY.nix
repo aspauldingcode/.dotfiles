@@ -6,14 +6,18 @@
     ./modules/homebrew-pkgs.nix
     ./modules/darwin-defaults.nix
     ./modules/launch-agents.nix
-    ./modules/yabai-sa.nix
-    ./modules/wg-quick.nix
+    # ./modules/yabai-sa.nix
+    # ./modules/wg-quick.nix
     ./modules/packages.nix
     ./modules/theme.nix
-    ./modules/recording-indicator-utility.nix
-    ./modules/okular.nix
-    # ./modules/macforge.nix
-    # ./modules/cursorcerer.nix
+
+    # ./customDerivations/apple-fonts.nix
+    # ./customDerivations/mousecape.nix
+    # ./customDerivations/macforge.nix
+    # ./customDerivations/cursorcerer.nix
+    # ./customDerivations/instantview.nix
+    ./customDerivations/recording-indicator-utility.nix
+    # ./customDerivations/okular.nix
 
     ./modules/windowManagement/borders.nix
     ./modules/windowManagement/cursorcerer.nix

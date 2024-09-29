@@ -23,8 +23,7 @@ for i in $(seq 0 $(($NCPU - 1))); do
   sketchybar --add item $NAME.core$i popup.$NAME \
     --set $NAME.core$i label="Core$i: $CPU_USAGE%" \
       label.padding_left=10 \
-      label.padding_right=10 \
-      y_offset=$(( 8 * i ))
+      label.padding_right=10
 done
 
 # Handle mouse events
