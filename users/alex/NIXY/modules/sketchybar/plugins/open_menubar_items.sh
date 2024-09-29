@@ -69,6 +69,20 @@ case $app_name in
     "battery")
         open x-apple.systempreferences:com.apple.preference.battery
         ;;
+    "cpu")
+        osascript -e 'tell application "System Events"
+            tell process "Activity Monitor"
+                keystroke "3" using command down
+            end tell
+        end tell'
+        ;;
+    "memory")
+        osascript -e 'tell application "System Events"
+            tell process "Activity Monitor"
+                keystroke "2" using command down
+            end tell
+        end tell'
+        ;;
     *)
         echo "Application not found."
         ;;

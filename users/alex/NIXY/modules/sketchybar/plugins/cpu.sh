@@ -4,14 +4,28 @@ source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 # source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 
-CPU=$(top -l 1 | awk '/^CPU usage:/ {print $3}' | tr -d '%' | cut -d "." -f1)
+CPU=$(top -l 1 | awk '/^CPU usage:/ {print int($3)}')
 
 sketchybar --set $NAME label="$CPU%" icon=$CPU_ICON
 
+TOTAL_CPU_USAGE=$(top -l 1 | awk '/^CPU usage:/ {print int($3)}')
 sketchybar --add item $NAME.popup popup.$NAME \
-  --set $NAME.popup label="$(uname -s -r -m)" \
+  --set $NAME.popup label="Total: $TOTAL_CPU_USAGE%" \
     label.padding_left=10 \
-    label.padding_right=10 \
+    label.padding_right=10
+
+# cpu popup which shows usage per core/thread
+# since apple silicon, doesn't have hyperthreading, the number of threads is the same as the number of cores.
+NCPU=$(sysctl -n hw.ncpu)
+
+for i in $(seq 0 $(($NCPU - 1))); do
+  CPU_USAGE=$(ps -A -o %cpu | awk -v core=$i 'NR>1 {sum+=$1} END {print int(sum/NR)}')
+  sketchybar --add item $NAME.core$i popup.$NAME \
+    --set $NAME.core$i label="Core$i: $CPU_USAGE%" \
+      label.padding_left=10 \
+      label.padding_right=10 \
+      y_offset=$(( 8 * i ))
+done
 
 # Handle mouse events
 case "$SENDER" in

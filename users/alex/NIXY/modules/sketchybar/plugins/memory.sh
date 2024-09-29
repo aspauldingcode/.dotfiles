@@ -10,10 +10,11 @@ MEMORY=$(vm_stat | awk '/Pages free:/ {free=$3} /Pages active:/ {active=$3} /Pag
 
 sketchybar --set $NAME label="$MEMORY%" icon=$MEMORY_ICON
 
+MEMORY_USED=$(vm_stat | awk '/Pages active:/ {active=$3} /Pages inactive:/ {inactive=$3} /Pages speculative:/ {speculative=$3} END {used=active + inactive + speculative; printf "%.1f", used * 4096 / 1024 / 1024 / 1024}')
 sketchybar --add item $NAME.popup popup.$NAME \
-  --set $NAME.popup label="$(uname -s -r -m)" \
+  --set $NAME.popup label="${MEMORY_USED}GiB used" \
     label.padding_left=10 \
-    label.padding_right=10 \
+    label.padding_right=10
 
 # Handle mouse events
 case "$SENDER" in

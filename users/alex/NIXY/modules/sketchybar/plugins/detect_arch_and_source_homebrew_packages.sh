@@ -10,12 +10,9 @@ else
 fi
 
 # define software fullpaths
-yabai="${homebrewPath}/yabai"
-jq="/run/current-system/sw/bin/jq"
-osascript="/usr/bin/osascript"
+yabai=$(which yabai)
+jq=$(which jq)
+osascript=$(which osascript)
+gcal=$(which gcal)
+toggle_sketchybar=$(which toggle-sketchybar)
 nightlight="${homebrewPath}/nightlight"
-toggle_sketchybar="" # how do I call the nixpkgs toggle-sketchybar script?
-
-gcal=$(which gcal) # use output of `which gcal`
-
-# this is a .sh file.

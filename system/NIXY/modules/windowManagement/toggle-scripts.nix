@@ -73,6 +73,9 @@ in
       if ! pgrep -x "kdeconnectd" > /dev/null; then
         kdeconnectd > /dev/null 2>&1 &
       fi
+
+      # start borders with order above
+      ${borders} order=above > /dev/null 2>&1 &
     '')
 
     # init_alias_items
