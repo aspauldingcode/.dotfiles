@@ -18,15 +18,16 @@ sketchybar --add item $NAME.popup popup.$NAME \
 # Handle mouse events
 case "$SENDER" in
   "mouse.entered")
-    #sleep 1
     sketchybar --set $NAME popup.drawing=on
+
     # highlight effect
     sketchybar --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
     ;;
   "mouse.exited" | "mouse.exited.global")
     sketchybar --set $NAME popup.drawing=off
+
     # unhighlight effect
-    sketchybar --set $NAME icon.highlight=off
+    sketchybar --set $NAME icon.highlight=off label.highlight=off
     ;;
   "mouse.clicked")
     # clicked effect

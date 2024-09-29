@@ -13,6 +13,7 @@ fi
 yabai="${homebrewPath}/yabai"
 jq="/run/current-system/sw/bin/jq"
 osascript="/usr/bin/osascript"
+nightlight="${homebrewPath}/nightlight"
 toggle_sketchybar="" # how do I call the nixpkgs toggle-sketchybar script?
 
 gcal=$(which gcal) # use output of `which gcal`

@@ -34,7 +34,7 @@ source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 # Adjust nightlight temperature based on the provided number of times
 adjust_temp() {
   local delta=$1
-  local current_temp_percentage=$(nightlight temp | grep -o '[0-9]\+')
+  local current_temp_percentage=$($nightlight temp | grep -o '[0-9]\+')
   local new_temp=$((current_temp_percentage + delta))
 
   if [[ $new_temp -gt 100 ]]; then
@@ -43,7 +43,7 @@ adjust_temp() {
     new_temp=0
   fi
 
-  nightlight temp $new_temp
+  $nightlight temp $new_temp
 }
 
 # Convert percentage to temperature value. 0% = 6500K, 100% = 3500K
@@ -54,9 +54,9 @@ current_temp() {
 }
 
 update_icon() {
-  current_temp_percentage=$(nightlight temp | grep -o '[0-9]\+')
+  current_temp_percentage=$($nightlight temp | grep -o '[0-9]\+')
   temp_value=$(current_temp $current_temp_percentage)
-  status=$(nightlight status)
+  status=$($nightlight status)
   status_label="off"
 
   if [[ $status == *"on"* ]]; then
@@ -119,7 +119,7 @@ case "$SENDER" in
   sketchybar --set $NAME icon.highlight=off label.highlight=off
   ;;
 "mouse.clicked")
-  nightlight toggle
+  $nightlight toggle
   
   # clicked effect
   sketchybar --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
