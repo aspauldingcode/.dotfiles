@@ -22,7 +22,41 @@ let
     export TRANSPARENT=0x00000000
   '';
   brightness = pkgs.writeShellScript "brightness" ''
-    export brightness="${pkgs.brightness}/bin/brightness"
+    #!/bin/sh
+
+    # Function to press the brightness up key
+    brightness_up() {
+      osascript -e 'tell application "System Events" to key code 144'
+    }
+
+    # Function to press the brightness down key
+    brightness_down() {
+      osascript -e 'tell application "System Events" to key code 145'
+    }
+
+    # Adjust brightness based on the provided number of times
+    brightness() {
+      local times=$1
+
+      if [[ $times -gt 0 ]]; then
+        for ((i = 0; i < times; i++)); do
+          brightness_up
+        done
+      elif [[ $times -lt 0 ]]; then
+        for ((i = 0; i < -times; i++)); do
+          brightness_down
+        done
+      fi
+    }
+
+    # Only run the brightness function if the script is executed directly
+    if [[ "''${BASH_SOURCE[0]}" == "''${0}" ]]; then
+      if [[ $# -ne 1 ]]; then
+        echo "Usage: $0 <number>"
+        exit 1
+      fi
+      brightness "$1"
+    fi
   '';
 in
 {

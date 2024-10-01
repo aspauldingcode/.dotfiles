@@ -5,7 +5,12 @@
   home.file.xinitrc = {
     target = ".xinitrc";
     text = ''
+      exec "xterm"
     '';
+      # exec "orb -m nixos -u alex"
+      # exec "ssh -Y -p 2222 alex@198.19.249.50 'startxfce4'"
+      # exec "orb -m nixos -u alex"
+      # ssh -Y -p 2222 alex@198.19.249.50
       # exec "/opt/local/bin/i3" # start i3 before xquartzwm does.`
       # exec "ssh -Y -p 2222 127.0.0.1 i3" # start i3 before xquartzwm does
       # exec "/opt/local/bin/python3.11 ~/.dotfiles/i3ipc-python-master/autotiling.py"

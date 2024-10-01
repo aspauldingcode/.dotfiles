@@ -25,6 +25,7 @@
     ranger
     # kdePackages.okular
     spotify
+    xquartz
 
     #darwin.iproute2mac #MUST BE BREW PACKAGE?
     ncurses6
@@ -63,7 +64,7 @@
     (pkgs.callPackage ./../customDerivations/mousecape.nix { })
     # (pkgs.callPackage ./../customDerivations/okular.nix { })
     # (pkgs.callPackage ./../customDerivations/recording-indicator-utility.nix { })
-    (pkgs.callPackage ./../customDerivations/borders.nix { })
+    # (pkgs.callPackage ./../customDerivations/borders.nix { })
     (pkgs.callPackage ./../customDerivations/yabai.nix { })
   ];
 }

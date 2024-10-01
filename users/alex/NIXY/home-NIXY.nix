@@ -20,6 +20,8 @@
     ./../universals/modules/btop.nix
     ./../universals/modules/git.nix
     ./../universals/modules/yazi.nix
+    ./../universals/modules/okular.nix
+
     ./modules/theme.nix
     ./modules/xcode/xcode.nix # FIXME: use nix-color theme
     ./modules/alacritty.nix

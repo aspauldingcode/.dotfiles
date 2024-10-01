@@ -275,35 +275,6 @@ in
       '';
     };
 
-    "com.example.startprograms.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0.dtd"?>
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>com.example.startprograms</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>${pkgs.start_programs_correctly}/bin/start_programs_correctly</string>
-            </array>
-            <key>EnvironmentVariables</key>
-            <dict>
-              <key>USER</key>
-              <string>$HOME</string>
-            </dict>
-            <key>RunAtLoad</key>
-            <true/>
-            <key>StandardErrorPath</key>
-            <string>/tmp/com.example.startprograms.err</string>
-            <key>StandardOutPath</key>
-            <string>/tmp/com.example.startprograms.out</string>
-          </dict>
-        </plist>
-      '';
-    };
-
     # "com.example.diskutil.plist" = {
     #   enable = true;
     #   text = ''
