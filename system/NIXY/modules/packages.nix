@@ -49,6 +49,7 @@
     undmg
     p7zip
     jq
+    neovim
     libusb
     darling-dmg
     lolcat

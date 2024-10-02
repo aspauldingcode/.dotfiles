@@ -38,6 +38,13 @@ in
       "Library/Preferences/okularpartrc" = 
         {
         text = ''
+          [Core General]
+          ExternalEditor=Custom
+          ExternalEditorCommand=nvim +%l %c
+
+          [Dlg Presentation]
+          SlidesBackgroundColor=#${colors.base00}
+
           [Document]
           ChangeColors=true
           RenderMode=Recolor
@@ -46,51 +53,20 @@ in
           RecolorBackground=#${colors.base00}
           RecolorForeground=#${colors.base07}
 
+          [General]
           ttsEngine=macos
           ttsVoice=Zarvox
 
           [PageView]
+          BackgroundColor=#${colors.base00}
+          UseCustomBackgroundColor=true
           MouseMode=TextSelect
 
           [Reviews]
-          QuickAnnotationTools=<tool default="true" id="1" name="Yellow Highlighter" type="highlight">
-            <engine color="#${colors.base0C}" type="TextSelector">
-              <annotation color="#${colors.base0C}" type="Highlight"/>
-            </engine>
-            <shortcut>1</shortcut>
-          </tool>,
-          <tool default="true" id="2" name="Green Highlighter" type="highlight">
-            <engine color="#${colors.base0B}" type="TextSelector">
-              <annotation color="#${colors.base0B}" type="Highlight"/>
-            </engine>
-            <shortcut>2</shortcut>
-          </tool>,
-          <tool id="3" type="underline">
-            <engine color="#${colors.base08}" type="TextSelector">
-              <annotation color="#${colors.base08}" type="Underline"/>
-            </engine>
-            <shortcut>3</shortcut>
-          </tool>,
-          <tool default="true" id="4" name="Insert Text" type="typewriter">
-            <engine block="true" type="PickPoint">
-              <annotation color="#${colors.base07}" textColor="#${colors.base00}" type="Typewriter" width="0"/>
-            </engine>
-            <shortcut>4</shortcut>
-          </tool>,
-          <tool id="5" type="note-inline">
-            <engine block="true" color="#${colors.base0A}" hoverIcon="tool-note-inline" type="PickPoint">
-              <annotation color="#${colors.base0A}" textColor="#ff${colors.base00}" type="FreeText"/>
-            </engine>
-            <shortcut>5</shortcut>
-          </tool>,
-          <tool id="6" type="note-linked">
-            <engine color="#${colors.base0A}" hoverIcon="tool-note" type="PickPoint">
-              <annotation color="#${colors.base0A}" icon="Note" type="Text"/>
-            </engine>
-            <shortcut>6</shortcut>
-            </tool>
-          '';
-        };
+          DrawingTools=<tool name="Red"><engine color="#${colors.base08}"><annotation color="#${colors.base08}" type="Ink" width="2"/></engine></tool>,<tool name="Green"><engine color="#${colors.base0B}"><annotation color="#${colors.base0B}" type="Ink" width="2"/></engine></tool>,<tool name="Blue"><engine color="#${colors.base0D}"><annotation color="#${colors.base0D}" type="Ink" width="2"/></engine></tool>,<tool name="Yellow"><engine color="#${colors.base0A}"><annotation color="#${colors.base0A}" type="Ink" width="2"/></engine></tool>,<tool name="Black"><engine color="#${colors.base00}"><annotation color="#${colors.base00}" type="Ink" width="2"/></engine></tool>,<tool name="White"><engine color="#${colors.base07}"><annotation color="#${colors.base07}" type="Ink" width="2"/></engine></tool>
+          QuickAnnotationTools=<tool default="true" id="1" name="Yellow Highlighter" type="highlight"><engine color="#${colors.base0C}" type="TextSelector"><annotation color="#${colors.base0C}" type="Highlight"/></engine><shortcut>1</shortcut></tool>,<tool default="true" id="2" name="Green Highlighter" type="highlight"><engine color="#${colors.base0B}" type="TextSelector"><annotation color="#${colors.base0B}" type="Highlight"/></engine><shortcut>2</shortcut></tool>,<tool id="3" type="underline"><engine color="#${colors.base08}" type="TextSelector"><annotation color="#${colors.base08}" type="Underline"/></engine><shortcut>3</shortcut></tool>,<tool default="true" id="4" name="Insert Text" type="typewriter"><engine block="true" type="PickPoint"><annotation color="#${colors.base07}" textColor="#${colors.base00}" type="Typewriter" width="0"/></engine><shortcut>4</shortcut></tool>,<tool id="5" type="note-inline"><engine block="true" color="#${colors.base0A}" hoverIcon="tool-note-inline" type="PickPoint"><annotation color="#${colors.base0A}" textColor="#ff${colors.base00}" type="FreeText"/></engine><shortcut>5</shortcut></tool>,<tool id="6" type="note-linked"><engine color="#${colors.base0A}" hoverIcon="tool-note" type="PickPoint"><annotation color="#${colors.base0A}" icon="Note" type="Text"/></engine><shortcut>6</shortcut></tool>
+        '';
+      };
     }
     else {
       ".config/okular/okularrc" = {
@@ -106,6 +82,13 @@ in
     };
     ".config/okular/okularpartrc" = {
       text = ''
+        [Core General]
+        ExternalEditor=Custom
+        ExternalEditorCommand=nvim +%l %c
+
+        [Dlg Presentation]
+        SlidesBackgroundColor=#${colors.base00}
+
         [Document]
         ChangeColors=true
         RenderMode=Recolor
@@ -118,46 +101,13 @@ in
         ttsVoice=samantha
 
         [PageView]
+        BackgroundColor=#${colors.base00}
+        UseCustomBackgroundColor=true
         MouseMode=TextSelect
 
         [Reviews]
-        QuickAnnotationTools=
-          <tool id="1" name="Yellow Highlighter" default="true" type="highlight">
-            <engine type="TextSelector" color="#${colors.base0C}">
-              <annotation type="Highlight" color="#${colors.base0C}"/>
-            </engine>
-            <shortcut>1</shortcut>
-          </tool>,
-          <tool id="2" name="Green Highlighter" default="true" type="highlight">
-            <engine type="TextSelector" color="#${colors.base0B}">
-              <annotation type="Highlight" color="#${colors.base0B}"/>
-            </engine>
-            <shortcut>2</shortcut>
-          </tool>,
-          <tool id="3" type="underline">
-            <engine type="TextSelector" color="#${colors.base08}">
-              <annotation type="Underline" color="#${colors.base08}"/>
-            </engine>
-            <shortcut>3</shortcut>
-          </tool>,
-          <tool id="4" name="Insert Text" default="true" type="typewriter">
-            <engine block="true" type="PickPoint">
-              <annotation width="0" textColor="#${colors.base00}" type="Typewriter" color="#${colors.base07}"/>
-            </engine>
-            <shortcut>4</shortcut>
-          </tool>,
-          <tool id="5" type="note-inline">
-            <engine hoverIcon="tool-note-inline" block="true" type="PickPoint" color="#${colors.base0A}">
-              <annotation textColor="#ff${colors.base00}" type="FreeText" color="#${colors.base0A}"/>
-            </engine>
-            <shortcut>5</shortcut>
-          </tool>,
-          <tool id="6" type="note-linked">
-            <engine hoverIcon="tool-note" type="PickPoint" color="#${colors.base0A}">
-              <annotation icon="Note" type="Text" color="#${colors.base0A}"/>
-            </engine>
-            <shortcut>6</shortcut>
-          </tool>
+        DrawingTools=<tool name="Red"><engine color="#${colors.base08}"><annotation color="#${colors.base08}" type="Ink" width="2"/></engine></tool>,<tool name="Green"><engine color="#${colors.base0B}"><annotation color="#${colors.base0B}" type="Ink" width="2"/></engine></tool>,<tool name="Blue"><engine color="#${colors.base0D}"><annotation color="#${colors.base0D}" type="Ink" width="2"/></engine></tool>,<tool name="Yellow"><engine color="#${colors.base0A}"><annotation color="#${colors.base0A}" type="Ink" width="2"/></engine></tool>,<tool name="Black"><engine color="#${colors.base00}"><annotation color="#${colors.base00}" type="Ink" width="2"/></engine></tool>,<tool name="White"><engine color="#${colors.base07}"><annotation color="#${colors.base07}" type="Ink" width="2"/></engine></tool>
+        QuickAnnotationTools=<tool default="true" id="1" name="Yellow Highlighter" type="highlight"><engine color="#${colors.base0C}" type="TextSelector"><annotation color="#${colors.base0C}" type="Highlight"/></engine><shortcut>1</shortcut></tool>,<tool default="true" id="2" name="Green Highlighter" type="highlight"><engine color="#${colors.base0B}" type="TextSelector"><annotation color="#${colors.base0B}" type="Highlight"/></engine><shortcut>2</shortcut></tool>,<tool id="3" type="underline"><engine color="#${colors.base08}" type="TextSelector"><annotation color="#${colors.base08}" type="Underline"/></engine><shortcut>3</shortcut></tool>,<tool default="true" id="4" name="Insert Text" type="typewriter"><engine block="true" type="PickPoint"><annotation color="#${colors.base07}" textColor="#${colors.base00}" type="Typewriter" width="0"/></engine><shortcut>4</shortcut></tool>,<tool id="5" type="note-inline"><engine block="true" color="#${colors.base0A}" hoverIcon="tool-note-inline" type="PickPoint"><annotation color="#${colors.base0A}" textColor="#ff${colors.base00}" type="FreeText"/></engine><shortcut>5</shortcut></tool>,<tool id="6" type="note-linked"><engine color="#${colors.base0A}" hoverIcon="tool-note" type="PickPoint"><annotation color="#${colors.base0A}" icon="Note" type="Text"/></engine><shortcut>6</shortcut></tool>
       '';
     };
   };
