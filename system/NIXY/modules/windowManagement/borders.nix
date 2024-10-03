@@ -6,9 +6,9 @@ in
 {
   services.jankyborders = {
     enable = true;
-    package = pkgs.callPackage ./../../customDerivations/borders.nix { };
+    # package = pkgs.callPackage ./../../customDerivations/borders.nix { };
+    # order = "above";
     style = "round";
-    order = "above";
     width = 2.0;
     background_color = "0xff${colors.base00}";
     hidpi = true;

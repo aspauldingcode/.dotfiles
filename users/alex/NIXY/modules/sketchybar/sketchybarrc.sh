@@ -372,6 +372,11 @@ sketchybar --set "KDE Connect,Item-0" "${alias_style[@]}" \
     click_script="$PLUGIN_DIR/open_menubar_items.sh kde-connect" \
     --subscribe "KDE Connect,Item-0" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
+sketchybar --add alias "MacForgeHelper,Item-0" $alias_position
+sketchybar --set "MacForgeHelper,Item-0" "${alias_style[@]}" \
+    click_script="$PLUGIN_DIR/open_menubar_items.sh macforge-helper" \
+    --subscribe "MacForgeHelper,Item-0" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
+
 # sketchybar --add alias "Control Center,Airdrop" $alias_position
 # sketchybar --set "Control Center,Airdrop" "${alias_style[@]}" \
 #     click_script="$PLUGIN_DIR/open_menubar_items.sh airdrop" \
@@ -430,9 +435,9 @@ sketchybar --add bracket lbracket apple space '/space\..*/' separator_left front
 sketchybar --add bracket cbracket volume backlight nightlight datetime cava spotify center \
   --set cbracket "${brackets[@]}" 
 sketchybar --add bracket rbracket "Control Center,BentoBox" \
-  "macOS InstantView,Item-0" "Karabiner-Menu,Item-0" "Background Music,Item-0" "Flameshot,Item-0" \
+  "macOS InstantView,Item-0" "Karabiner-Menu,Item-0" "MacForgeHelper,Item-0" "Background Music,Item-0" "Flameshot,Item-0" \
   "KDE Connect,Item-0" wifi battery bluetooth separator_right memory cpu right \
-  --set rbracket "${brackets[@]}" 
+  --set rbracket "${brackets[@]}"
 
 #initialize states
 printf "on\n" > "/tmp/sketchybar_state"
@@ -441,10 +446,5 @@ dismiss-notifications # not working?
 if [ -f "$HOME/.config/sketchybar/calendar_init_flag" ]; then
     rm "$HOME/.config/sketchybar/calendar_init_flag" # remove calendar flag at sketchybar launch if it exists
 fi
-sketchybar --update
 
-# # Fetch the menu items from sketchybar query
-# sleep 4
-# /opt/homebrew/bin/sketchybar --query default_menu_items | $jq -r '.[]' | while IFS= read -r item; do /opt/homebrew/bin/sketchybar --set "$item" alias.update_freq=0; done && sleep 4
-# # $yabai -m config menubar_opacity 0.0
-# $toggle_sketchybar off
+sketchybar --update

@@ -12,7 +12,7 @@ let
   jq = "${pkgs.jq}/bin/jq";
   yabai = "${pkgs.yabai}/bin/yabai";
   sketchybar = "${pkgs.sketchybar}/bin/sketchybar";
-  borders = "${pkgs.JankyBorders}/bin/borders";
+  borders = "";
   skhd = "${pkgs.skhd}/bin/skhd";
   inherit (config.colorScheme) colors;
 in

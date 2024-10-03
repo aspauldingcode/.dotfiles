@@ -1,7 +1,10 @@
 { config, pkgs, ... }:
 
 # yazi configuration!
-# FIXME: why is yazi broken on nixos? 
+# FIXME: why is yazi broken on nixos?
+let
+  inherit (config.colorScheme) colors;
+in
 {
   programs.yazi = {
     enable = true;
@@ -1270,796 +1273,796 @@
           {
             name = "ai";
             text = "\uf042";
-            fg_dark = "#f0a30a";
-            fg_light = "#f0a30a";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "avi";
             text = "\uf0aa";
-            fg_dark = "#f0a30a";
-            fg_light = "#f0a30a";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "bat";
             text = "\ue795";
-            fg_dark = "#4d5a5e";
-            fg_light = "#3a4446";
+            fg_dark = "#${colors.base0F}";
+            fg_light = "#${colors.base0F}";
           }
           {
             name = "bin";
             text = "\uf471";
-            fg_dark = "#76bbff";
-            fg_light = "#418cf0";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "bmp";
             text = "\uf1c5";
-            fg_dark = "#b44ac0";
-            fg_light = "#7d32a8";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "c";
             text = "\ue61e";
-            fg_dark = "#00589d";
-            fg_light = "#00589d";
+            fg_dark = "#${colors.base0B}";
+            fg_light = "#${colors.base0B}";
           }
           {
             name = "cc";
             text = "\ue61e";
-            fg_dark = "#00589d";
-            fg_light = "#00589d";
+            fg_dark = "#${colors.base0B}";
+            fg_light = "#${colors.base0B}";
           }
           {
             name = "cl";
             text = "\ue61f";
-            fg_dark = "#764da0";
-            fg_light = "#764da0";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "cmake";
             text = "\ue61f";
-            fg_dark = "#cd3c49";
-            fg_light = "#cd3c49";
+            fg_dark = "#${colors.base08}";
+            fg_light = "#${colors.base08}";
           }
           {
             name = "cpp";
             text = "\ue61d";
-            fg_dark = "#f34b7d";
-            fg_light = "#f34b7d";
+            fg_dark = "#${colors.base08}";
+            fg_light = "#${colors.base08}";
           }
           {
             name = "cs";
             text = "\uf81a";
-            fg_dark = "#68217a";
-            fg_light = "#68217a";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "css";
             text = "\uf13c";
-            fg_dark = "#563d7c";
-            fg_light = "#563d7c";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "csv";
             text = "\uf021";
-            fg_dark = "#e28b00";
-            fg_light = "#e28b00";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "d";
             text = "\uf1c0";
-            fg_dark = "#00589d";
-            fg_light = "#00589d";
+            fg_dark = "#${colors.base0B}";
+            fg_light = "#${colors.base0B}";
           }
           {
             name = "dart";
             text = "\ueae5";
-            fg_dark = "#0175c2";
-            fg_light = "#0175c2";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "db";
             text = "\uf1c0";
-            fg_dark = "#ffcb00";
-            fg_light = "#ffcb00";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "desktop";
             text = "\ue79e";
-            fg_dark = "#a074c4";
-            fg_light = "#a074c4";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "diff";
             text = "\uf068";
-            fg_dark = "#e34c26";
-            fg_light = "#e34c26";
+            fg_dark = "#${colors.base08}";
+            fg_light = "#${colors.base08}";
           }
           {
             name = "doc";
             text = "\uf1c2";
-            fg_dark = "#a074c4";
-            fg_light = "#a074c4";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "docx";
             text = "\uf1c2";
-            fg_dark = "#a074c4";
-            fg_light = "#a074c4";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "drawio";
             text = "\uf0b1";
-            fg_dark = "#e16547";
-            fg_light = "#e16547";
+            fg_dark = "#${colors.base08}";
+            fg_light = "#${colors.base08}";
           }
           {
             name = "dropbox";
             text = "\uf16b";
-            fg_dark = "#007ee5";
-            fg_light = "#007ee5";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "eex";
             text = "\ue60e";
-            fg_dark = "#a074c4";
-            fg_light = "#a074c4";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "elm";
             text = "\ue62c";
-            fg_dark = "#60b5cc";
-            fg_light = "#60b5cc";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "eot";
             text = "\uf031";
-            fg_dark = "#f06e99";
-            fg_light = "#f06e99";
+            fg_dark = "#${colors.base08}";
+            fg_light = "#${colors.base08}";
           }
           {
             name = "epub";
             text = "\ue600";
-            fg_dark = "#3d59a1";
-            fg_light = "#3d59a1";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "erb";
             text = "\ue21e";
-            fg_dark = "#701516";
-            fg_light = "#701516";
+            fg_dark = "#${colors.base08}";
+            fg_light = "#${colors.base08}";
           }
           {
             name = "erl";
             text = "\ue60e";
-            fg_dark = "#b83998";
-            fg_light = "#b83998";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "ex";
             text = "\ue60d";
-            fg_dark = "#6e4a7e";
-            fg_light = "#6e4a7e";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "exs";
             text = "\ue60d";
-            fg_dark = "#6e4a7e";
-            fg_light = "#6e4a7e";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "f#";
             text = "\ue7a7";
-            fg_dark = "#378bba";
-            fg_light = "#378bba";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "favicon";
             text = "\uf007";
-            fg_dark = "#f1e05a";
-            fg_light = "#f1e05a";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "fish";
             text = "\uf489";
-            fg_dark = "#4aadcf";
-            fg_light = "#4aadcf";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "flac";
             text = "\uf001";
-            fg_dark = "#f1e05a";
-            fg_light = "#f1e05a";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "fsharp";
             text = "\ue7a7";
-            fg_dark = "#378bba";
-            fg_light = "#378bba";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "gdoc";
             text = "\uf1c2";
-            fg_dark = "#4285f4";
-            fg_light = "#4285f4";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "gemfile";
             text = "\ue21e";
-            fg_dark = "#701516";
-            fg_light = "#701516";
+            fg_dark = "#${colors.base08}";
+            fg_light = "#${colors.base08}";
           }
           {
             name = "gif";
             text = "\uf1c5";
-            fg_dark = "#f1e05a";
-            fg_light = "#f1e05a";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "go";
             text = "\ue626";
-            fg_dark = "#375eab";
-            fg_light = "#375eab";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "godot";
             text = "\ue7a8";
-            fg_dark = "#7d91d0";
-            fg_light = "#7d91d0";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "gruntfile";
             text = "\ue21e";
-            fg_dark = "#fba919";
-            fg_light = "#fba919";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "gz";
             text = "\uf410";
-            fg_dark = "#e44b23";
-            fg_light = "#e44b23";
+            fg_dark = "#${colors.base08}";
+            fg_light = "#${colors.base08}";
           }
           {
             name = "h";
             text = "\ue61e";
-            fg_dark = "#a074c4";
-            fg_light = "#a074c4";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "hpp";
             text = "\ue61d";
-            fg_dark = "#f34b7d";
-            fg_light = "#f34b7d";
+            fg_dark = "#${colors.base08}";
+            fg_light = "#${colors.base08}";
           }
           {
             name = "hs";
             text = "\ue777";
-            fg_dark = "#a074c4";
-            fg_light = "#a074c4";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "html";
             text = "\uf13b";
-            fg_dark = "#e34c26";
-            fg_light = "#e34c26";
+            fg_dark = "#${colors.base08}";
+            fg_light = "#${colors.base08}";
           }
           {
             name = "ico";
             text = "\uf1c5";
-            fg_dark = "#f1e05a";
-            fg_light = "#f1e05a";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "java";
             text = "\ue204";
-            fg_dark = "#b07219";
-            fg_light = "#b07219";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "jpg";
             text = "\uf1c5";
-            fg_dark = "#a074c4";
-            fg_light = "#a074c4";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "jpeg";
             text = "\uf1c5";
-            fg_dark = "#a074c4";
-            fg_light = "#a074c4";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "json";
             text = "\ue60b";
-            fg_dark = "#f1e05a";
-            fg_light = "#f1e05a";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "jsx";
             text = "\ue7ba";
-            fg_dark = "#f1e05a";
-            fg_light = "#f1e05a";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "key";
             text = "\uf084";
-            fg_dark = "#f1e05a";
-            fg_light = "#f1e05a";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "kts";
             text = "\ue628";
-            fg_dark = "#f18e33";
-            fg_light = "#f18e33";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "less";
             text = "\ue749";
-            fg_dark = "#438eff";
-            fg_light = "#438eff";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "lock";
             text = "\uf023";
-            fg_dark = "#ffca28";
-            fg_light = "#ffca28";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "lua";
             text = "\ue620";
-            fg_dark = "#000080";
-            fg_light = "#000080";
+            fg_dark = "#${colors.base0B}";
+            fg_light = "#${colors.base0B}";
           }
           {
             name = "m";
             text = "\uf095";
-            fg_dark = "#f1e05a";
-            fg_light = "#f1e05a";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "markdown";
             text = "\uf48a";
-            fg_dark = "#083fa1";
-            fg_light = "#083fa1";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "md";
             text = "\uf48a";
-            fg_dark = "#083fa1";
-            fg_light = "#083fa1";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "mdx";
             text = "\uf48a";
-            fg_dark = "#083fa1";
-            fg_light = "#083fa1";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "mov";
             text = "\uf03d";
-            fg_dark = "#f1e05a";
-            fg_light = "#f1e05a";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "mp3";
             text = "\uf001";
-            fg_dark = "#f1e05a";
-            fg_light = "#f1e05a";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "mp4";
             text = "\uf03d";
-            fg_dark = "#f1e05a";
-            fg_light = "#f1e05a";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "nix";
             text = "\ue779";
-            fg_dark = "#7d4e4e";
-            fg_light = "#7d4e4e";
+            fg_dark = "#${colors.base0F}";
+            fg_light = "#${colors.base0F}";
           }
           {
             name = "node_modules";
             text = "\ue718";
-            fg_dark = "#00a8cc";
-            fg_light = "#00a8cc";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "npmignore";
             text = "\ue71e";
-            fg_dark = "#cb3837";
-            fg_light = "#cb3837";
+            fg_dark = "#${colors.base08}";
+            fg_light = "#${colors.base08}";
           }
           {
             name = "npmrc";
             text = "\ue71e";
-            fg_dark = "#cb3837";
-            fg_light = "#cb3837";
+            fg_dark = "#${colors.base08}";
+            fg_light = "#${colors.base08}";
           }
           {
             name = "odt";
             text = "\uf1c2";
-            fg_dark = "#ffcc00";
-            fg_light = "#ffcc00";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "opus";
             text = "\uf001";
-            fg_dark = "#f1e05a";
-            fg_light = "#f1e05a";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "otf";
             text = "\uf031";
-            fg_dark = "#000000";
-            fg_light = "#000000";
+            fg_dark = "#${colors.base00}";
+            fg_light = "#${colors.base00}";
           }
           {
             name = "pdf";
             text = "\uf1c1";
-            fg_dark = "#e34c26";
-            fg_light = "#e34c26";
+            fg_dark = "#${colors.base08}";
+            fg_light = "#${colors.base08}";
           }
           {
             name = "php";
             text = "\ue73d";
-            fg_dark = "#a074c4";
-            fg_light = "#a074c4";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "png";
             text = "\uf1c5";
-            fg_dark = "#a074c4";
-            fg_light = "#a074c4";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "ppt";
             text = "\uf1c4";
-            fg_dark = "#cb4a32";
-            fg_light = "#cb4a32";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "pptx";
             text = "\uf1c4";
-            fg_dark = "#cb4a32";
-            fg_light = "#cb4a32";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "procfile";
             text = "\ue21e";
-            fg_dark = "#6a737d";
-            fg_light = "#6a737d";
+            fg_dark = "#${colors.base0F}";
+            fg_light = "#${colors.base0F}";
           }
           {
             name = "py";
             text = "\ue606";
-            fg_dark = "#ffbc03";
-            fg_light = "#ffbc03";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "pyc";
             text = "\ue606";
-            fg_dark = "#ffe873";
-            fg_light = "#ffe873";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "pyo";
             text = "\ue606";
-            fg_dark = "#ffe873";
-            fg_light = "#ffe873";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "r";
             text = "\uf25d";
-            fg_dark = "#198ce7";
-            fg_light = "#198ce7";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "rakefile";
             text = "\ue21e";
-            fg_dark = "#701516";
-            fg_light = "#701516";
+            fg_dark = "#${colors.base08}";
+            fg_light = "#${colors.base08}";
           }
           {
             name = "rb";
             text = "\ue21e";
-            fg_dark = "#701516";
-            fg_light = "#701516";
+            fg_dark = "#${colors.base08}";
+            fg_light = "#${colors.base08}";
           }
           {
             name = "rs";
             text = "\ue7a8";
-            fg_dark = "#dea584";
-            fg_light = "#dea584";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "rss";
             text = "\uf09e";
-            fg_dark = "#fb9d18";
-            fg_light = "#fb9d18";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "rtf";
             text = "\uf1c2";
-            fg_dark = "#b07219";
-            fg_light = "#b07219";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "sass";
             text = "\ue603";
-            fg_dark = "#cb6699";
-            fg_light = "#cb6699";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "scss";
             text = "\ue603";
-            fg_dark = "#cb6699";
-            fg_light = "#cb6699";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "sh";
             text = "\uf489";
-            fg_dark = "#4d5a5e";
-            fg_light = "#4d5a5e";
+            fg_dark = "#${colors.base0F}";
+            fg_light = "#${colors.base0F}";
           }
           {
             name = "slim";
             text = "\ue73b";
-            fg_dark = "#e34c26";
-            fg_light = "#e34c26";
+            fg_dark = "#${colors.base08}";
+            fg_light = "#${colors.base08}";
           }
           {
             name = "sql";
             text = "\ue706";
-            fg_dark = "#dad8d8";
-            fg_light = "#dad8d8";
+            fg_dark = "#${colors.base05}";
+            fg_light = "#${colors.base05}";
           }
           {
             name = "sqlite3";
             text = "\ue706";
-            fg_dark = "#dad8d8";
-            fg_light = "#dad8d8";
+            fg_dark = "#${colors.base05}";
+            fg_light = "#${colors.base05}";
           }
           {
             name = "styl";
             text = "\ue600";
-            fg_dark = "#b3d107";
-            fg_light = "#b3d107";
+            fg_dark = "#${colors.base0A}";
+            fg_light = "#${colors.base0A}";
           }
           {
             name = "sublime-package";
             text = "\uf0f6";
-            fg_dark = "#e37933";
-            fg_light = "#e37933";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "sublime-settings";
             text = "\uf0f6";
-            fg_dark = "#e37933";
-            fg_light = "#e37933";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "svg";
             text = "\uf1c5";
-            fg_dark = "#f1e05a";
-            fg_light = "#f1e05a";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "swift";
             text = "\ue755";
-            fg_dark = "#f05138";
-            fg_light = "#f05138";
+            fg_dark = "#${colors.base08}";
+            fg_light = "#${colors.base08}";
           }
           {
             name = "tar";
             text = "\uf410";
-            fg_dark = "#b07219";
-            fg_light = "#b07219";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "tex";
             text = "\ue600";
-            fg_dark = "#3d6117";
-            fg_light = "#3d6117";
+            fg_dark = "#${colors.base0B}";
+            fg_light = "#${colors.base0B}";
           }
           {
             name = "ts";
             text = "\ue628";
-            fg_dark = "#007acc";
-            fg_light = "#007acc";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "tsx";
             text = "\ue7ba";
-            fg_dark = "#007acc";
-            fg_light = "#007acc";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "ttf";
             text = "\uf031";
-            fg_dark = "#000000";
-            fg_light = "#000000";
+            fg_dark = "#${colors.base00}";
+            fg_light = "#${colors.base00}";
           }
           {
             name = "txt";
             text = "\uf15c";
-            fg_dark = "#f1e05a";
-            fg_light = "#f1e05a";
+            fg_dark = "#${colors.base09}";
+            fg_light = "#${colors.base09}";
           }
           {
             name = "video";
             text = "\uf03d";
-            fg_dark = "#a074c4";
-            fg_light = "#a074c4";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "vue";
             text = "\ue62d";
-            fg_dark = "#42b883";
-            fg_light = "#42b883";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "webp";
             text = "\uf1c5";
-            fg_dark = "#a074c4";
-            fg_light = "#a074c4";
+            fg_dark = "#${colors.base0E}";
+            fg_light = "#${colors.base0E}";
           }
           {
             name = "xls";
             text = "\uf1c3";
-            fg_dark = "#207245";
-            fg_light = "#207245";
+            fg_dark = "#${colors.base0B}";
+            fg_light = "#${colors.base0B}";
           }
           {
             name = "xlsx";
             text = "\uf1c3";
-            fg_dark = "#207245";
-            fg_light = "#207245";
+            fg_dark = "#${colors.base0B}";
+            fg_light = "#${colors.base0B}";
           }
           {
             name = "xml";
             text = "\uf1c4";
-            fg_dark = "#00599d";
-            fg_light = "#00599d";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "yarn.lock";
             text = "\ue718";
-            fg_dark = "#2188b6";
-            fg_light = "#2188b6";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "yml";
             text = "\uf481";
-            fg_dark = "#cb171e";
-            fg_light = "#cb171e";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "zip";
             text = "\uf410";
-            fg_dark = "#b07219";
-            fg_light = "#b07219";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
         ];
         directories = [
           {
             name = ".config";
             text = "\uf423";
-            fg_dark = "#a074c4";
-            fg_light = "#a074c4";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = ".git";
             text = "\ue5fb";
-            fg_dark = "#f14e32";
-            fg_light = "#f14e32";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = ".github";
             text = "\uf7b2";
-            fg_dark = "#24292f";
-            fg_light = "#24292f";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = ".gitignore";
             text = "\ue702";
-            fg_dark = "#e84d31";
-            fg_light = "#e84d31";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = ".npmignore";
             text = "\ue71e";
-            fg_dark = "#cb3837";
-            fg_light = "#cb3837";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = ".vscode";
             text = "\ue70c";
-            fg_dark = "#0078d7";
-            fg_light = "#0078d7";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "bin";
             text = "\ue5fc";
-            fg_dark = "#f1e05a";
-            fg_light = "#f1e05a";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "build";
             text = "\ueb2a";
-            fg_dark = "#ff7f50";
-            fg_light = "#ff7f50";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "ci";
             text = "\uf085";
-            fg_dark = "#a74c4c";
-            fg_light = "#a74c4c";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "dist";
             text = "\uf78d";
-            fg_dark = "#e24329";
-            fg_light = "#e24329";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "doc";
             text = "\uf1c2";
-            fg_dark = "#a074c4";
-            fg_light = "#a074c4";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "docs";
             text = "\uf7b8";
-            fg_dark = "#3d5afe";
-            fg_light = "#3d5afe";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "img";
             text = "\uf302";
-            fg_dark = "#b07219";
-            fg_light = "#b07219";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "include";
             text = "\uf7b8";
-            fg_dark = "#a074c4";
-            fg_light = "#a074c4";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "lib";
             text = "\uf7b8";
-            fg_dark = "#a074c4";
-            fg_light = "#a074c4";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "logs";
             text = "\uf70e";
-            fg_dark = "#f1e05a";
-            fg_light = "#f1e05a";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "node_modules";
             text = "\uf898";
-            fg_dark = "#e34c26";
-            fg_light = "#e34c26";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "public";
             text = "\uf015";
-            fg_dark = "#4caf50";
-            fg_light = "#4caf50";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "src";
             text = "\ufb66";
-            fg_dark = "#586e75";
-            fg_light = "#586e75";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
           {
             name = "test";
             text = "\uf490";
-            fg_dark = "#a074c4";
-            fg_light = "#a074c4";
+            fg_dark = "#${colors.base0D}";
+            fg_light = "#${colors.base0D}";
           }
         ];
       };
