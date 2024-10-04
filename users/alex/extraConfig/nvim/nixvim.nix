@@ -93,7 +93,9 @@
           enable = true;
           setup = {
             all = {
-              linter = [ "codespell" "alex" ];
+              linter = [
+                "codespell"
+              ];
             };
             nix = {
               formatter = [ "nixfmt" ];
@@ -110,7 +112,9 @@
                 In my opinion, linters should be executable via the command-line. Hence i don't like SonarQube and sonalint.
               */
               formatter = [ "google_java_format" ];
-              linter = [ "alex" "codespell" ];
+              linter = [
+                "codespell"
+              ];
             };
             python = {
               formatter = [ "black" ];
@@ -126,7 +130,10 @@
             };
             bash = {
               formatter = [ "beautysh" ];
-              linter = [ "shellcheck" "bashate" ];
+              linter = [
+                "shellcheck"
+                "bashate"
+              ];
             };
             javascript = {
               formatter = [ "prettier" ];
@@ -142,7 +149,7 @@
             };
             html = {
               formatter = [ "prettier" ];
-              linter = [ "alex" ];
+              linter = [ "codespell" ];
             };
             yaml = {
               formatter = [ "prettier" ];
@@ -150,11 +157,15 @@
             };
             json = {
               formatter = [ "prettier" ];
-              linter = [ "alex" "codespell" ];
+              linter = [
+                "codespell"
+              ];
             };
             rust = {
               formatter = [ "rustfmt" ];
-              linter = [ "alex" "codespell" ];
+              linter = [
+                "codespell"
+              ];
             };
             go = {
               formatter = [ "gofmt" ];
@@ -284,16 +295,16 @@
           servers = {
             # https://nix-community.github.io/nixvim/plugins/lsp/
             ansiblels = {
-              enable = false;
-              package = pkgs.unstable.ansiblels;
+              enable = true;
+              package = pkgs.unstable.ansible-language-server;
             };
             astro = {
               enable = false;
               package = pkgs.unstable.astro-language-server;
             };
             bashls = {
-              enable = false;
-              package = ./derivations-for-nixvim/bash-language-server;
+              enable = true;
+              package = pkgs.unstable.bash-language-server;
             };
             beancount = {
               enable = false;
@@ -306,11 +317,11 @@
             ccls = {
               # C/C++/Objective-C language server
               enable = true;
-              package = pkgs.unstable.ccls; # set to pkgs.packagename
+              package = pkgs.unstable.ccls;
             };
             clangd = {
               enable = true;
-              package = pkgs.unstable.clang-tools; # set to pkgs.packagename
+              package = pkgs.unstable.clang-tools;
             };
             clojure-lsp = {
               enable = false;
@@ -318,7 +329,7 @@
             };
             cmake = {
               enable = true;
-              package = pkgs.unstable.cmake-language-server; # set to pkgs.packagename
+              package = pkgs.unstable.cmake-language-server;
             };
             csharp-ls = {
               enable = false;
@@ -405,9 +416,8 @@
               package = pkgs.unstable.nodePackages.vscode-langservers-extracted;
             };
             htmx = {
-              enable = false;
-              #  plugins.lsp.servers.htmx.package = ./htmx-lsp-derivation.nix;
-              package = pkgs.unstable.htmx-lsp; # FAILED
+              enable = true;
+              package = pkgs.unstable.htmx-lsp;
             };
             intelephense = {
               enable = false;
@@ -420,7 +430,7 @@
             };
             jsonls = {
               enable = true;
-              package = pkgs.unstable.nodePackages.vscode-langservers-extracted; # set to pkgs.packagename
+              package = pkgs.unstable.nodePackages.vscode-langservers-extracted;
             };
             julials = {
               enable = false;
@@ -440,7 +450,7 @@
             };
             lua-ls = {
               enable = true;
-              package = pkgs.unstable.lua-language-server; # set to pkgs.packagename
+              package = pkgs.unstable.lua-language-server;
             };
             marksman = {
               enable = false;
@@ -452,7 +462,7 @@
             };
             nil-ls = {
               enable = true;
-              package = pkgs.unstable.nil; # set to pkgs.packagename
+              package = pkgs.unstable.nil;
             };
             nixd = {
               enable = false;
@@ -503,7 +513,7 @@
               #linter - flake8
               #formatter - black
               enable = true;
-              package = pkgs.unstable.pyright; # set to pkgs.packagename
+              package = pkgs.unstable.pyright;
             };
             rnix-lsp = {
               enable = false; # using nil_ls instead!
@@ -515,7 +525,7 @@
             };
             rust-analyzer = {
               enable = true;
-              package = pkgs.unstable.rust-analyzer; # set to pkgs.packagename
+              package = pkgs.unstable.rust-analyzer;
               installCargo = true;
               installRustc = true;
             };
@@ -526,7 +536,7 @@
             sourcekit = {
               # Swift and C-based languages
               enable = false; # requires compilation of swift? NO THANKS!
-              # package = pkgs.unstable.sourcekit-lsp; # set to pkgs.packagename # FAILED TO COMPILE ON NIXOS
+              # package = pkgs.unstable.sourcekit-lsp; # FAILED TO COMPILE ON NIXOS
             };
             svelte = {
               enable = false;
@@ -537,8 +547,13 @@
               package = pkgs.unstable.nodePackages."@tailwindcss/language-server";
             };
             taplo = {
-              enable = false;
+              enable = true; # for TOML
               package = pkgs.unstable.taplo;
+              autostart = true;
+              filetypes = [ "toml" ]; # Include .toml files
+              rootDir = {
+                __raw = "require('lspconfig.util').root_pattern('*.toml', '.git')";
+              }; # IMPORTANT: this is required for taplo LSP to work in non-git repositories
             };
             templ = {
               enable = false;
@@ -554,7 +569,7 @@
             };
             ts-ls = {
               enable = true;
-              package = pkgs.unstable.nodePackages.typescript-language-server; # set to pkgs.packagename
+              package = pkgs.unstable.nodePackages.typescript-language-server;
             };
             typst-lsp = {
               enable = false;
@@ -587,6 +602,9 @@
         lsp-lines.enable = false; # damn annoyying
         lspkind.enable = true;
 
+        # color previews
+        nvim-colorizer.enable = true;
+
         # treesitter conf
         treesitter = {
           enable = true;
@@ -615,6 +633,7 @@
 
         nvim-ufo = {
           enable = true;
+          package = pkgs.unstable.vimPlugins.nvim-ufo;
           enableGetFoldVirtText = true;
           closeFoldKinds = {
             imports = true;
@@ -652,41 +671,29 @@
           openFoldHlTimeout = 300;
           providerSelector = "function(bufnr, filetype, buftype) return {'treesitter', 'indent'} end";
         };
-        
+
         statuscol = {
           enable = true;
           settings = {
             segments = [
               {
-                text = [
-                  "%s"
-                ];
+                text = [ "%s" ];
                 click = "v:lua.ScSa";
               }
               {
-                text = [
-                  {
-                    __raw = "function(args) return require('statuscol.builtin').lnumfunc(args) end";
-                  }
-                ];
+                text = [ { __raw = "function(args) return require('statuscol.builtin').lnumfunc(args) end"; } ];
                 click = "v:lua.ScLa";
               }
               {
                 text = [
                   " "
-                  {
-                    __raw = "require('statuscol.builtin').foldfunc";
-                  }
+                  { __raw = "require('statuscol.builtin').foldfunc"; }
                   " "
                 ];
                 condition = [
-                  {
-                    __raw = "require('statuscol.builtin').not_empty";
-                  }
+                  { __raw = "require('statuscol.builtin').not_empty"; }
                   true
-                  {
-                    __raw = "require('statuscol.builtin').not_empty";
-                  }
+                  { __raw = "require('statuscol.builtin').not_empty"; }
                 ];
                 click = "v:lua.ScFa";
               }
@@ -714,15 +721,31 @@
             };
           };
         };
-        
+
         # Filetree
         nvim-tree = {
           enable = true;
-          autoClose = true;
-          actions.openFile.quitOnOpen = true; # close on file open
-          tab.sync.close = true;
-          tab.sync.open = true;
-          renderer.addTrailing = false;
+          # package = pkgs.vimPlugins.nvim-tree-lua;
+          autoClose = false;
+          autoReloadOnWrite = null;
+          disableNetrw = null;
+          extraOptions = { };
+          gitPackage = pkgs.git;
+          hijackCursor = null;
+          hijackNetrw = null;
+          hijackUnnamedBufferWhenOpening = null;
+          ignoreBufferOnSetup = false;
+          ignoreFtOnSetup = [ ];
+          onAttach = null;
+          openOnSetup = true;
+          openOnSetupFile = false;
+          preferStartupRoot = null;
+          reloadOnBufenter = null;
+          respectBufCwd = null;
+          rootDirs = null;
+          selectPrompts = null;
+          sortBy = null;
+          syncRootWithCwd = null;
         };
 
         # file search/fuzzyfinder
@@ -812,7 +835,7 @@
             ];
           };
         };
-          #commenting
+        #commenting
         comment = {
           enable = true;
           settings.toggler.line = if pkgs.stdenv.isDarwin then "<D-/>" else "<C-/>";
@@ -869,7 +892,7 @@
           settings = {
             #completion = {
             #  min_chars = 2;
-              #nvim_cmp = true;
+            #nvim_cmp = true;
             #};
             new_notes_location = "current_dir";
             workspaces = [
