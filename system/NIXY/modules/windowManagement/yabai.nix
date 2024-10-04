@@ -15,7 +15,7 @@ let
   inherit (config.colorScheme) colors;
 
   desktoppr = "/usr/local/bin/desktoppr";
-  wallpaper = ./../../../../users/alex/extraConfig/wallpapers/gruvbox-nix.png;
+  wallpaper = "/Users/Shared/Wallpaper/wallpaper-nix-colors.png";
 in
 {
   services.yabai = {

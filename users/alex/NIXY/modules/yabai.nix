@@ -18,7 +18,7 @@ let
   inherit (config.colorScheme) colors;
 
   desktoppr = "/usr/local/bin/desktoppr";
-  wallpaper = ./../../extraConfig/wallpapers/gruvbox-nix.png;
+  wallpaper = "~/Pictures/wallpaper-recolored.png";
 in
 {
   # yabai config

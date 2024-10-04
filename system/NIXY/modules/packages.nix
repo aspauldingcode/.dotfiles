@@ -35,6 +35,9 @@
     rbenv
     postman
 
+    python311Packages.pillow
+    python311Packages.tqdm
+    python311Packages.numpy
     # javaPackages.openjfx19
     #inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk22
     jdk22
@@ -49,7 +52,7 @@
     undmg
     p7zip
     jq
-    neovim
+    # neovim
     libusb
     darling-dmg
     lolcat
@@ -66,5 +69,8 @@
     # (pkgs.callPackage ./../customDerivations/okular.nix { })
     # (pkgs.callPackage ./../customDerivations/recording-indicator-utility.nix { })
     (pkgs.callPackage ./../customDerivations/yabai.nix { })
+    git
+    clang
+    openssh
   ];
 }

@@ -34,6 +34,7 @@
     in
     {
       enable = true;
+      nixpkgs.pkgs = pkgs.unstable;
       enableMan = true; # enable man pages for nixvim options.
       opts = {
         number = true; # Show line numbers
@@ -70,32 +71,29 @@
         };
         clangd-extensions.enable = true;
         lsp-format.enable = true;
-        # none-ls = {
-        #   enable = true;
-        #   enableLspFormat = true;
-        #   sources = {
-        #     formatting = {
-        #       nixfmt = {
-        #         enable = true;
-        #         package = pkgs.nixfmt-rfc-style;
-        #       };
-        #       #trace: warning: alex profile: [DEV] Nixvim (plugins.none-ls): Some tools are declared locally but are not in the upstream list of supported plugins.
-        #       #-> [opentofu_fmt, typstyle, xmllint]
-        #       # typstyle.enable = false;
-        #       # opentofu_fmt.enable = false;
-        #       # xmllint.enable = false;
-        #     };
-        #   };
-        #   notifyFormat = "[null-ls] %s";
-        # };
+        none-ls = {
+          enable = true;
+          enableLspFormat = true;
+          sources = {
+            formatting = {
+              nixfmt = {
+                enable = true;
+                package = pkgs.nixfmt-rfc-style;
+              };
+            };
+          };
+          settings = {
+            notify_format = "[null-ls] %s";
+            diagnostics_format = "[#{c}] #{m} (#{s})";
+            temp_dir = "/tmp";
+            update_in_insert = false;
+          };
+        };
         efmls-configs = {
-          enable = false;
+          enable = true;
           setup = {
             all = {
-              #formatter = [
-              #  "languagetool"
-              #];
-              linter = [ "codespell" ];
+              linter = [ "codespell" "alex" ];
             };
             nix = {
               formatter = [ "nixfmt" ];
@@ -112,7 +110,7 @@
                 In my opinion, linters should be executable via the command-line. Hence i don't like SonarQube and sonalint.
               */
               formatter = [ "google_java_format" ];
-              #linter =   [ "" ]; 
+              linter = [ "alex" "codespell" ];
             };
             python = {
               formatter = [ "black" ];
@@ -120,18 +118,161 @@
             };
             markdown = {
               formatter = [ "mdformat" ];
-              #linter =   [];
+              linter = [ "markdownlint" ];
             };
             lua = {
               formatter = [ "lua_format" ];
-              #linter =   [];
+              linter = [ "luacheck" ];
             };
             bash = {
               formatter = [ "beautysh" ];
-              linter = [ "bashate" ];
+              linter = [ "shellcheck" "bashate" ];
+            };
+            javascript = {
+              formatter = [ "prettier" ];
+              linter = [ "eslint" ];
+            };
+            typescript = {
+              formatter = [ "prettier" ];
+              linter = [ "eslint" ];
+            };
+            css = {
+              formatter = [ "prettier" ];
+              linter = [ "stylelint" ];
+            };
+            html = {
+              formatter = [ "prettier" ];
+              linter = [ "alex" ];
+            };
+            yaml = {
+              formatter = [ "prettier" ];
+              linter = [ "yamllint" ];
+            };
+            json = {
+              formatter = [ "prettier" ];
+              linter = [ "alex" "codespell" ];
+            };
+            rust = {
+              formatter = [ "rustfmt" ];
+              linter = [ "alex" "codespell" ];
+            };
+            go = {
+              formatter = [ "gofmt" ];
+              linter = [ "golangci_lint" ];
+            };
+            c = {
+              formatter = [ "clang_format" ];
+              linter = [ "clang_tidy" ];
+            };
+            cpp = {
+              formatter = [ "clang_format" ];
+              linter = [ "clang_tidy" ];
             };
           };
-          toolPackages.nixfmt = pkgs.nixfmt-rfc-style;
+          toolPackages = {
+            actionlint = pkgs.unstable.actionlint;
+            alejandra = pkgs.unstable.alejandra;
+            alex = pkgs.unstable.nodePackages.alex;
+            ameba = pkgs.unstable.ameba;
+            ansible_lint = pkgs.unstable.ansible-lint;
+            astyle = pkgs.unstable.astyle;
+            autopep8 = pkgs.unstable.python3.pkgs.autopep8;
+            bashate = pkgs.unstable.bashate;
+            beautysh = pkgs.unstable.beautysh;
+            biome = pkgs.unstable.biome;
+            black = pkgs.unstable.black;
+            buf = pkgs.unstable.buf;
+            cbfmt = pkgs.unstable.cbfmt;
+            checkmake = pkgs.unstable.checkmake;
+            chktex = pkgs.unstable.texliveMedium;
+            clang_format = pkgs.unstable.clang-tools;
+            clang_tidy = pkgs.unstable.clang-tools;
+            clazy = pkgs.unstable.clazy;
+            clj_kondo = pkgs.unstable.clj-kondo;
+            cmake_lint = pkgs.unstable.cmake-format;
+            codespell = pkgs.unstable.codespell;
+            cppcheck = pkgs.unstable.cppcheck;
+            cpplint = pkgs.unstable.cpplint;
+            dartfmt = pkgs.unstable.dart;
+            dfmt = pkgs.unstable.dfmt;
+            djlint = pkgs.unstable.djlint;
+            dmd = pkgs.unstable.dmd;
+            dotnet_format = pkgs.unstable.dotnet-runtime;
+            dprint = pkgs.unstable.dprint;
+            eslint = pkgs.unstable.eslint;
+            eslint_d = pkgs.unstable.nodePackages.eslint_d;
+            fish = pkgs.unstable.fish;
+            fish_indent = pkgs.unstable.fish;
+            flake8 = pkgs.unstable.python3.pkgs.flake8;
+            flawfinder = pkgs.unstable.flawfinder;
+            fnlfmt = pkgs.unstable.fnlfmt;
+            fourmolu = pkgs.unstable.haskellPackages.fourmolu;
+            gcc = pkgs.unstable.gcc;
+            gitlint = pkgs.unstable.gitlint;
+            go_revive = pkgs.unstable.revive;
+            gofmt = pkgs.unstable.go;
+            gofumpt = pkgs.unstable.gofumpt;
+            goimports = pkgs.unstable.go-tools;
+            golangci_lint = pkgs.unstable.golangci-lint;
+            golines = pkgs.unstable.golines;
+            golint = pkgs.unstable.golint;
+            google_java_format = pkgs.unstable.google-java-format;
+            hadolint = pkgs.unstable.hadolint;
+            isort = pkgs.unstable.isort;
+            joker = pkgs.unstable.joker;
+            jq = pkgs.unstable.jq;
+            languagetool = pkgs.unstable.languagetool;
+            latexindent = pkgs.unstable.texliveMedium;
+            lua_format = pkgs.unstable.luaformatter;
+            luacheck = pkgs.luaPackages.luacheck;
+            markdownlint = pkgs.unstable.markdownlint-cli;
+            mcs = pkgs.unstable.mono;
+            mdformat = pkgs.unstable.python3.pkgs.mdformat;
+            mypy = pkgs.unstable.mypy;
+            nixfmt = pkgs.unstable.nixfmt-classic;
+            phan = pkgs.unstable.phpPackages.phan;
+            php = pkgs.unstable.php;
+            php_cs_fixer = pkgs.unstable.phpPackages.php-cs-fixer;
+            phpcbf = pkgs.unstable.phpPackages.php-codesniffer;
+            phpcs = pkgs.unstable.phpPackages.php-codesniffer;
+            phpstan = pkgs.unstable.phpPackages.phpstan;
+            prettier = pkgs.unstable.nodePackages.prettier;
+            prettier_d = pkgs.unstable.prettierd;
+            prettypst = pkgs.unstable.prettypst;
+            proselint = pkgs.unstable.proselint;
+            protolint = pkgs.unstable.protolint;
+            psalm = pkgs.unstable.phpPackages.psalm;
+            pylint = pkgs.unstable.pylint;
+            rubocop = pkgs.unstable.rubocop;
+            ruff = pkgs.unstable.ruff;
+            rustfmt = pkgs.unstable.rustfmt;
+            scalafmt = pkgs.unstable.scalafmt;
+            selene = pkgs.unstable.selene;
+            shellcheck = pkgs.unstable.shellcheck;
+            shellharden = pkgs.unstable.shellharden;
+            shfmt = pkgs.unstable.shfmt;
+            slither = pkgs.unstable.slither-analyzer;
+            smlfmt = pkgs.unstable.smlfmt;
+            sql-formatter = pkgs.unstable.nodePackages.sql-formatter;
+            sqlfluff = pkgs.unstable.sqlfluff;
+            staticcheck = pkgs.unstable.go-tools;
+            statix = pkgs.unstable.statix;
+            stylelint = pkgs.unstable.nodePackages.stylelint;
+            stylua = pkgs.unstable.stylua;
+            taplo = pkgs.unstable.taplo;
+            terraform_fmt = pkgs.unstable.terraform;
+            textlint = pkgs.unstable.nodePackages.textlint;
+            typstfmt = pkgs.unstable.typstfmt;
+            typstyle = pkgs.unstable.typstyle;
+            uncrustify = pkgs.unstable.uncrustify;
+            vale = pkgs.unstable.vale;
+            vint = pkgs.unstable.vim-vint;
+            vulture = pkgs.unstable.python3.pkgs.vulture;
+            write_good = pkgs.unstable.write-good;
+            yamllint = pkgs.unstable.yamllint;
+            yapf = pkgs.unstable.yapf;
+            yq = pkgs.unstable.yq-go;
+          };
         };
         notify = {
           enable = true;
@@ -144,11 +285,11 @@
             # https://nix-community.github.io/nixvim/plugins/lsp/
             ansiblels = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.ansiblels;
             };
             astro = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.astro-language-server;
             };
             bashls = {
               enable = false;
@@ -156,310 +297,311 @@
             };
             beancount = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.beancount-language-server;
             };
             biome = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.biome;
             };
             ccls = {
               # C/C++/Objective-C language server
               enable = true;
-              package = null; # set to pkgs.packagename
+              package = pkgs.unstable.ccls; # set to pkgs.packagename
             };
             clangd = {
               enable = true;
-              package = null; # set to pkgs.packagename
+              package = pkgs.unstable.clang-tools; # set to pkgs.packagename
             };
             clojure-lsp = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.clojure-lsp;
             };
             cmake = {
               enable = true;
-              package = null; # set to pkgs.packagename
+              package = pkgs.unstable.cmake-language-server; # set to pkgs.packagename
             };
             csharp-ls = {
               enable = false;
-              package = null; # NOT AVAILABLE on DARWIN
+              package = pkgs.unstable.csharp-ls; # NOT AVAILABLE on DARWIN
             };
             cssls = {
               enable = true;
-              package = null; # set to pkgs.packagename
+              package = pkgs.unstable.nodePackages.vscode-langservers-extracted; # CSS language server
             };
             dagger = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.dagger;
             };
             dartls = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.dart;
             };
             denols = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.deno;
             };
             dhall-lsp-server = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.dhall-lsp-server;
             };
             digestif = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.digestif;
             };
             dockerls = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.dockerfile-language-server-nodejs;
             };
             efm = {
               enable = true;
-              package = null;
+              package = pkgs.unstable.efm-langserver;
             };
             elixirls = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.elixir-ls;
             };
             elmls = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.elmPackages.elm-language-server;
             };
             emmet-ls = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.emmet-ls;
             };
             eslint = {
-              enable = false;
-              package = null;
+              enable = false; # Disable eslint language server
+              package = pkgs.unstable.nodePackages.vscode-langservers-extracted;
             };
             fsautocomplete = {
               enable = false;
-              package = null; # DOESN'T COMPILE ON DARWIN
+              package = pkgs.unstable.fsautocomplete; # DOESN'T COMPILE ON DARWIN
             };
             futhark-lsp = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.futhark;
             };
             gdscript = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.godot;
             };
             gleam = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.gleam;
             };
             gopls = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.gopls;
             };
             graphql = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.nodePackages.graphql-language-service-cli;
             };
             hls = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.haskell-language-server;
             };
             html = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.nodePackages.vscode-langservers-extracted;
             };
             htmx = {
               enable = false;
               #  plugins.lsp.servers.htmx.package = ./htmx-lsp-derivation.nix;
-              package = null; # FAILED
+              package = pkgs.unstable.htmx-lsp; # FAILED
             };
             intelephense = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.nodePackages.intelephense;
             };
             java-language-server = {
               # USING JDTLS instead!
               enable = false;
-              package = null;
+              package = pkgs.unstable.java-language-server;
             };
             jsonls = {
               enable = true;
-              package = null; # set to pkgs.packagename
+              package = pkgs.unstable.nodePackages.vscode-langservers-extracted; # set to pkgs.packagename
             };
             julials = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.julia-bin;
             };
             kotlin-language-server = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.kotlin-language-server;
             };
             leanls = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.lean4;
             };
             ltex = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.ltex-ls;
             };
             lua-ls = {
               enable = true;
-              package = null; # set to pkgs.packagename
+              package = pkgs.unstable.lua-language-server; # set to pkgs.packagename
             };
             marksman = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.marksman;
             };
             metals = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.metals;
             };
             nil-ls = {
               enable = true;
-              package = null; # set to pkgs.packagename
+              package = pkgs.unstable.nil; # set to pkgs.packagename
             };
             nixd = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.nixd;
             };
             nushell = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.nushell;
             };
             ols = {
               enable = false;
-              package = null; # FAILED
+              package = pkgs.unstable.ols; # FAILED
             };
             omnisharp = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.omnisharp-roslyn;
             };
             perlpls = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.perl534Packages.PLS;
             };
             pest-ls = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.pest-language-server;
             };
             phpactor = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.phpactor;
             };
             prismals = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.nodePackages."@prisma/language-server";
             };
             prolog-ls = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.swiProlog;
             };
             pylsp = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.python3Packages.python-lsp-server;
             };
             pylyzer = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.pylyzer;
             };
             pyright = {
               #lsp - pyright
               #linter - flake8
               #formatter - black
               enable = true;
-              package = null; # set to pkgs.packagename
+              package = pkgs.unstable.pyright; # set to pkgs.packagename
             };
             rnix-lsp = {
               enable = false; # using nil_ls instead!
-              package = null;
+              package = pkgs.unstable.rnix-lsp;
             };
             ruff-lsp = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.ruff-lsp;
             };
             rust-analyzer = {
               enable = true;
-              package = null; # set to pkgs.packagename
+              package = pkgs.unstable.rust-analyzer; # set to pkgs.packagename
               installCargo = true;
               installRustc = true;
             };
             solargraph = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.solargraph;
             };
             sourcekit = {
               # Swift and C-based languages
-              enable = true;
-              # package = null; # set to pkgs.packagename # FAILED TO COMPILE ON NIXOS
+              enable = false; # requires compilation of swift? NO THANKS!
+              # package = pkgs.unstable.sourcekit-lsp; # set to pkgs.packagename # FAILED TO COMPILE ON NIXOS
             };
             svelte = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.nodePackages.svelte-language-server;
             };
             tailwindcss = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.nodePackages."@tailwindcss/language-server";
             };
             taplo = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.taplo;
             };
             templ = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.templ;
             };
             terraformls = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.terraform-ls;
             };
             texlab = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.texlab;
             };
-            tsserver = {
+            ts-ls = {
               enable = true;
-              package = null; # set to pkgs.packagename
+              package = pkgs.unstable.nodePackages.typescript-language-server; # set to pkgs.packagename
             };
             typst-lsp = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.typst-lsp;
             };
             vls = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.vls;
             };
             volar = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.nodePackages."@volar/vue-language-server";
             };
             vuels = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.nodePackages.vue-language-server;
             };
             yamlls = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.yaml-language-server;
             };
             zls = {
               enable = false;
-              package = null;
+              package = pkgs.unstable.zls;
             };
           };
         };
+
+        web-devicons.enable = true;
         lsp-lines.enable = false; # damn annoyying
         lspkind.enable = true;
 
         # treesitter conf
         treesitter = {
           enable = true;
-          folding = true; 
-          # zc to close a fold
-          # zo to open a fold
-          # zM to close all folds
-          # zR to open all folds
-          indent = true;
-          incrementalSelection = {
-            enable = true;
-            keymaps = {
-              initSelection = "gnn";
-              nodeDecremental = "grm";
-              nodeIncremental = "grn";
-              scopeIncremental = "grc";
+          settings = {
+            indent = {
+              enable = true;
+            };
+            incrementalSelection = {
+              enable = true;
+              keymaps = {
+                initSelection = false;
+                nodeDecremental = "grm";
+                nodeIncremental = "grn";
+                scopeIncremental = "grc";
+              };
             };
           };
         };
@@ -622,7 +764,7 @@
         # statusbar
         lualine = {
           enable = true;
-          sections.lualine_c = [ "lsp_progress" ]; # Install lsp_progress!
+          settings.sections.lualine_c = [ "lsp_progress" ]; # Install lsp_progress!
         };
         noice.lsp.progress.enabled = true;
 
@@ -776,26 +918,26 @@
         enable = true;
         colorscheme =
           let
-            inherit (config.colorScheme) colors;
+            inherit (config.colorScheme) palette;
           in
           {
             # use nix-colors
-            base00 = "#${colors.base00}";
-            base01 = "#${colors.base01}";
-            base02 = "#${colors.base02}";
-            base03 = "#${colors.base03}";
-            base04 = "#${colors.base04}";
-            base05 = "#${colors.base05}";
-            base06 = "#${colors.base06}";
-            base07 = "#${colors.base07}";
-            base08 = "#${colors.base08}";
-            base09 = "#${colors.base09}";
-            base0A = "#${colors.base0A}";
-            base0B = "#${colors.base0B}";
-            base0C = "#${colors.base0C}";
-            base0D = "#${colors.base0D}";
-            base0E = "#${colors.base0E}";
-            base0F = "#${colors.base0F}";
+            base00 = "#${palette.base00}";
+            base01 = "#${palette.base01}";
+            base02 = "#${palette.base02}";
+            base03 = "#${palette.base03}";
+            base04 = "#${palette.base04}";
+            base05 = "#${palette.base05}";
+            base06 = "#${palette.base06}";
+            base07 = "#${palette.base07}";
+            base08 = "#${palette.base08}";
+            base09 = "#${palette.base09}";
+            base0A = "#${palette.base0A}";
+            base0B = "#${palette.base0B}";
+            base0C = "#${palette.base0C}";
+            base0D = "#${palette.base0D}";
+            base0E = "#${palette.base0E}";
+            base0F = "#${palette.base0F}";
           };
       };
 
@@ -827,7 +969,7 @@
         #cmp-nvim-lsp-document-symbol 
         #cmp-nvim-lsp-signature-help
 
-        nvim-web-devicons # optional, for file icons
+        # nvim-web-devicons # optional, for file icons
 
         # Code Snippits
         luasnip # FIXME: Do I need this too? NEEDED

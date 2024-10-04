@@ -60,8 +60,8 @@ let
 in
 {
   home.packages = with pkgs; [
-    oh-my-fish
-    fishPlugins.plugin-git
+    # oh-my-fish
+    # fishPlugins.plugin-git
     thefuck
   ];
 
@@ -112,52 +112,76 @@ in
       shellAliases = shellAliases;
     };
 
-    nushell = {
-      enable = true;
-      environmentVariables = {
-        PATH = lib.concatStringsSep ":" ([
-          "$HOME/.local/bin"
-          "$HOME/.cargo/bin"
-          "$HOME/.gem/ruby/3.3.0/bin"
-          "$HOME/.nix-profile/bin"
-          "/etc/profiles/per-user/$USER/bin"
-          "/run/current-system/sw/bin"
-          "/nix/var/nix/profiles/default/bin"
-          "/usr/local/bin"
-          "/usr/bin"
-          "/bin"
-          "/usr/sbin"
-          "/sbin"
-          "/run/wrappers/bin"
-        ] ++ lib.optionals pkgs.stdenv.isDarwin [
-          "/Applications/flameshot.app/Contents/MacOS"
-          "/opt/X11/bin"
-          "/usr/X11R6/bin"
-          "/opt/local/bin"
-          "/opt/local/sbin"
-          "/opt/homebrew/bin"
-          "/opt/homebrew/sbin"
-          "$HOME/.orbstack/bin"
-          "/opt/homebrew/opt/libiconv/bin"
-        ]);
-        EDITOR = "nvim";
-        VISUAL = "nvim";
-        DISPLAY = ":0";
-      } // lib.optionalAttrs pkgs.stdenv.isDarwin {
-        LDFLAGS = "-L/opt/homebrew/opt/libiconv/lib";
-        CPPFLAGS = "-I/opt/homebrew/opt/libiconv/include";
-        LIBRARY_PATH = "$LIBRARY_PATH:/opt/homebrew/opt/libiconv/lib";
-      };
-      shellAliases = shellAliases;
-      extraConfig = ''
-        # Enable case-insensitive tab completion
-        $env.config = {
-          completions: {
-            case_sensitive: false
-          }
-        }
-      '';
-    };
+        nushell = {
+          enable = true;
+          package = pkgs.unstable.nushell;
+          environmentVariables = if pkgs.stdenv.isDarwin then {
+            PATH = lib.concatStringsSep ":" ([
+              "$HOME/.local/bin"
+              "$HOME/.cargo/bin"
+              "$HOME/.gem/ruby/3.3.0/bin"
+              "$HOME/.nix-profile/bin"
+              "/etc/profiles/per-user/$USER/bin"
+              "/run/current-system/sw/bin"
+              "/nix/var/nix/profiles/default/bin"
+              "/usr/local/bin"
+              "/usr/bin"
+              "/bin"
+              "/usr/sbin"
+              "/sbin"
+              "/run/wrappers/bin"
+              "/Applications/flameshot.app/Contents/MacOS"
+              "/opt/X11/bin"
+              "/usr/X11R6/bin"
+              "/opt/local/bin"
+              "/opt/local/sbin"
+              "/opt/homebrew/bin"
+              "/opt/homebrew/sbin"
+              "$HOME/.orbstack/bin"
+              "/opt/homebrew/opt/libiconv/bin"
+            ]);
+            LDFLAGS = "-L/opt/homebrew/opt/libiconv/lib";
+            CPPFLAGS = "-I/opt/homebrew/opt/libiconv/include";
+            # Append to existing LIBRARY_PATH without using undefined 'lib.getEnv'
+            LIBRARY_PATH = "$LIBRARY_PATH:/opt/homebrew/opt/libiconv/lib";
+          } else {
+            PATH = lib.concatStringsSep ":" ([
+              "$HOME/.local/bin"
+              "$HOME/.cargo/bin"
+              "$HOME/.gem/ruby/3.3.0/bin"
+              "$HOME/.nix-profile/bin"
+              "/etc/profiles/per-user/$USER/bin"
+              "/run/current-system/sw/bin"
+              "/nix/var/nix/profiles/default/bin"
+              "/usr/local/bin"
+              "/usr/bin"
+              "/bin"
+              "/usr/sbin"
+              "/sbin"
+              "/run/wrappers/bin"
+            ]);
+          } // {
+            EDITOR = "^nvim";
+            VISUAL = "^nvim";
+            DISPLAY = "^:0";
+          };
+          shellAliases = shellAliases;
+          extraConfig = ''
+            # Enable case-insensitive tab completion
+            $env.config = {
+              completions: {
+                case_sensitive: false
+              }
+            }
+            # Generate init.nu for Oh My Posh
+            # Ensure the init.nu path is correct. Adjust the path if oh-my-posh provides a different location for init.nu
+            if (test -f "${pkgs.oh-my-posh}/init.nu") {
+              source "${pkgs.oh-my-posh}/init.nu"
+            } else {
+              echo "Warning: init.nu not found at ${pkgs.oh-my-posh}/init.nu. Please verify the oh-my-posh installation."
+            }
+          '';
+        };
 
     oh-my-posh = {
       enable = true;

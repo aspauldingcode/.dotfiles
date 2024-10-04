@@ -102,6 +102,9 @@ in
       ps.termcolor
       ps.plyvel
       ps.opencv4
+      ps.tqdm
+      ps.pillow
+      # ps.sklearn-deap
       #ps.pyautogui # broken
       # ps.pep517
       ps.biplist

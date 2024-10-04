@@ -5,7 +5,7 @@ let
 in
 {
   services.jankyborders = {
-    enable = true;
+    enable = false;
     # package = pkgs.callPackage ./../../customDerivations/borders.nix { };
     # order = "above";
     style = "round";

@@ -254,7 +254,7 @@ in
           SonomaFirstRunMigrationPerformed = 1;
           StoreIndexMigrationVersion = 1;
           # SystemWallpaperURL = "file:///System/Library/Desktop%20Pictures/.wallpapers/Sonoma%20Horizon/Sonoma%20Horizon.mov";
-          SystemWallpaperURL = "file://${../../../users/alex/extraConfig/wallpapers/gruvbox-nix.png}";
+          SystemWallpaperURL = "file:///Users/Shared/Wallpaper/wallpaper-nix-colors.png";
         };
 
         NSGlobalDomain.TISRomanSwitchState = 1;
