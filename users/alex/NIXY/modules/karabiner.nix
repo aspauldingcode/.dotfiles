@@ -361,6 +361,32 @@
                     ];
                   }
                   {
+                    description = "Open Firefox with Alt+Ctrl+Space";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "spacebar";
+                          modifiers = {
+                            mandatory = [
+                              "left_option"
+                              "left_control"
+                            ];
+                          };
+                        };
+                        to = [
+                          {
+                            software_function = {
+                              open_application = {
+                                bundle_identifier = "org.mozilla.firefox";
+                              };
+                            };
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
                     description = "Replace Command+H with Command+Y in Chromium-based browsers and Firefox";
                     manipulators = [
                       {
@@ -937,6 +963,41 @@
                               "^com\\.apple\\.ScreenSharing$" 
                               "^org\\.xquartz\\.X11$"
                             ];
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
+                    description = "Disable Spotlight by swapping Command+Space with Control+Space";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "spacebar";
+                          modifiers = {
+                            mandatory = ["left_command"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "spacebar";
+                            modifiers = ["left_control"];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "spacebar";
+                          modifiers = {
+                            mandatory = ["right_command"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "spacebar";
+                            modifiers = ["right_control"];
                           }
                         ];
                       }

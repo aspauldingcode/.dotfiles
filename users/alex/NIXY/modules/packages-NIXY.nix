@@ -104,6 +104,12 @@ in
       ps.opencv4
       ps.tqdm
       ps.pillow
+      ps.numpy
+      ps.torch
+      ps.torchvision
+      ps.diffusers
+      ps.transformers
+      ps.accelerate
       # ps.sklearn-deap
       #ps.pyautogui # broken
       # ps.pep517

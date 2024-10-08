@@ -12,7 +12,7 @@ let
   # - gruvbox-dark-soft
   # - catppuccin-macchiato
   # - katy
-  scheme = "gruvbox-dark-soft"; 
+  scheme = "katy"; 
 in
 # Choose from: https://nix-community.github.io/nixvim/colorschemes/base16/index.html#colorschemesbase16colorscheme
 {

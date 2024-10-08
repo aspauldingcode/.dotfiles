@@ -34,6 +34,7 @@
       "zenity"
       "cliclick"
       "iproute2mac"
+      "ansible"
       # "ruby@3.2"
       # "rbenv"
       # "ruby-build"
