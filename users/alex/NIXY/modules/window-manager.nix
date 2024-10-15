@@ -13,7 +13,7 @@ let
   # app_menu = "${homebrewPath}/dmenu-mac";
   app_menu = "/Applications/unmenu.app/Contents/MacOS/unmenu";
   jq = "${pkgs.jq}/bin/jq";
-  inherit (config.colorScheme) colors;
+  inherit (config.colorScheme) palette;
 
   desktoppr = "/usr/local/bin/desktoppr";
   wallpaper = ./../../extraConfig/wallpapers/gruvbox-nix.png;
@@ -71,7 +71,7 @@ in
         # yabai -m config window_opacity_duration     0.35
         # yabai -m config normal_window_opacity	      0.95
         yabai -m config active_window_opacity	      1.0
-        yabai -m config insert_feedback_color       0xff${colors.base07}
+        yabai -m config insert_feedback_color       0xff${palette.base07}
 
         # layout
         yabai -m config layout                      bsp # bsp | float
@@ -384,10 +384,10 @@ in
         style=round
         order=above
         width=2.0
-        background_color=0xff${colors.base00}
+        background_color=0xff${palette.base00}
         hidpi=on
-        active_color=0xff${colors.base07}
-        inactive_color=0xff${colors.base05}
+        active_color=0xff${palette.base07}
+        inactive_color=0xff${palette.base05}
         blacklist="google chrome,vmware fusion,xQuartz,dmenu-mac,unmenu,X11.bin,MacForge,python3.11"
       )
 

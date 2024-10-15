@@ -12,7 +12,7 @@ let
   firefox = "${homebrewPath}/firefox";
   app_menu = "/Applications/unmenu.app/Contents/MacOS/unmenu";
   jq = "${pkgs.jq}/bin/jq";
-  inherit (config.colorScheme) colors;
+  inherit (config.colorScheme) palette;
 
   desktoppr = "/usr/local/bin/desktoppr";
   wallpaper = "/Users/Shared/Wallpaper/wallpaper-nix-colors.png";
@@ -33,7 +33,7 @@ in
       window_opacity = "on";
       window_opacity_duration = 0.1;
       active_window_opacity = 1.0;
-      insert_feedback_color = "0xff${colors.base07}";
+      insert_feedback_color = "0xff${palette.base07}";
       layout = "bsp";
       auto_balance = "off";
       split_ratio = 0.50;

@@ -6,7 +6,7 @@
     target = "kitty/kitty.conf";
     text =
       let
-        inherit (config.colorScheme) colors;
+        inherit (config.colorScheme) palette;
       in
       # bash
       ''
@@ -29,23 +29,23 @@
         font_size        12.0
 
         # The foreground color
-        foreground       #${colors.base05}
+        foreground       #${palette.base05}
 
         # The background color
-        background       #${colors.base00}
+        background       #${palette.base00}
         background_opacity 0.9
 
         # The foreground for selections
-        selection_foreground #${colors.base08}
+        selection_foreground #${palette.base08}
 
         # The background for selections
-        selection_background #${colors.base02}
+        selection_background #${palette.base02}
 
         # Do NOT prompt for window close thingy
         confirm_os_window_close 0
 
         # The cursor color
-        cursor           #${colors.base02}
+        cursor           #${palette.base02}
 
         # The cursor shape can be one of (block, beam, underline)
         shell_integration no-cursor
@@ -145,36 +145,36 @@
         # bright version.
 
         # black
-        color0   #${colors.base00}
-        color8   #${colors.base03}
+        color0   #${palette.base00}
+        color8   #${palette.base03}
 
         # red
-        color1   #${colors.base08}
-        color9   #${colors.base08}
+        color1   #${palette.base08}
+        color9   #${palette.base08}
 
         # green
-        color2    #${colors.base0B}
-        color10   #${colors.base0B}
+        color2    #${palette.base0B}
+        color10   #${palette.base0B}
 
         # yellow
-        color3    #${colors.base0A}
-        color11   #${colors.base0A}
+        color3    #${palette.base0A}
+        color11   #${palette.base0A}
 
         # blue
-        color4   #${colors.base0D}
-        color12  #${colors.base0D}
+        color4   #${palette.base0D}
+        color12  #${palette.base0D}
 
         # magenta
-        color5   #${colors.base0E}
-        color13  #${colors.base0E}
+        color5   #${palette.base0E}
+        color13  #${palette.base0E}
 
         # cyan
-        color6   #${colors.base0C}
-        color14  #${colors.base0C}
+        color6   #${palette.base0C}
+        color14  #${palette.base0C}
 
         # white
-        color7   #${colors.base05}
-        color15  #${colors.base07}
+        color7   #${palette.base05}
+        color15  #${palette.base07}
 
         # Key mapping
         # For a list of key names, see: http://www.glfw.org/docs/latest/group__keys.html

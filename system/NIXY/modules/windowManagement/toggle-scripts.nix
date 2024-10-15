@@ -16,7 +16,7 @@ let
   # borders = "${pkgs.jankyborders}/bin/borders";
   borders = "";
   skhd = "${pkgs.skhd}/bin/skhd";
-  inherit (config.colorScheme) colors;
+  inherit (config.colorScheme) palette;
 in
 {
   environment.systemPackages = with pkgs; [
@@ -243,7 +243,7 @@ in
                 ${yabai} -m config external_bar all:0:0
             fi
           fi
-          ${borders} background_color=0xff${colors.base00}
+          ${borders} background_color=0xff${palette.base00}
         }
 
         if [ "$1" == "on" ]; then
@@ -633,7 +633,7 @@ in
           local x=$(echo "$current_display_frame" | ${jq} -r '.x')
           local y=$(echo "$current_display_frame" | ${jq} -r '.y')
 
-          ${borders} apply-to=$window_id width=0.0 style=square order=below background_color=0xff${colors.base00} active_color=0xff${colors.base00} inactive_color=0xff${colors.base00}
+          ${borders} apply-to=$window_id width=0.0 style=square order=below background_color=0xff${palette.base00} active_color=0xff${palette.base00} inactive_color=0xff${palette.base00}
           if [ "$is_floating" = "true" ]; then
             ${yabai} -m window --move abs:$x:$y
             ${yabai} -m window --grid 0:0:0:0:0:0
@@ -649,12 +649,12 @@ in
         # Read the gaps state file
           gaps_state=$(cat /tmp/gaps_state)
           if [ "$gaps_state" = "off" ]; then
-              ${borders} apply-to=$window_id width=5.0 style=square background_color=0x11${colors.base00} active_color=0xff${colors.base07} inactive_color=0xff${colors.base05} order=above 
+              ${borders} apply-to=$window_id width=5.0 style=square background_color=0x11${palette.base00} active_color=0xff${palette.base07} inactive_color=0xff${palette.base05} order=above 
           else
-              ${borders} apply-to=$window_id width=2.0 style=round  background_color=0x11${colors.base00} active_color=0xff${colors.base07} inactive_color=0xff${colors.base05} order=above 
+              ${borders} apply-to=$window_id width=2.0 style=round  background_color=0x11${palette.base00} active_color=0xff${palette.base07} inactive_color=0xff${palette.base05} order=above 
           fi
 
-          # ${borders} apply-to=$window_id width=2 style=round background_color=0x11${colors.base00} active_color=0xff${colors.base07} inactive_color=0xff${colors.base05} order=above 
+          # ${borders} apply-to=$window_id width=2 style=round background_color=0x11${palette.base00} active_color=0xff${palette.base07} inactive_color=0xff${palette.base05} order=above 
           window_position=$(grep -A 4 "id: $window_id position:" "$fullscreen_state_file" | tr -d '\n' | sed 's/$/ }/')
           echo "Window position block extracted: $window_position"  # Debugging statement
 

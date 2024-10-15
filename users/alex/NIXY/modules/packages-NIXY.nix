@@ -19,7 +19,7 @@ let
   sketchybar = "${homebrewPath}/sketchybar";
   borders = "${homebrewPath}/borders";
   skhd = "${homebrewPath}/skhd";
-  inherit (config.colorScheme) colors;
+  inherit (config.colorScheme) palette;
 in
 {
   # Copy Home-Manager Nix GUI apps to ~/Applications on darwin:

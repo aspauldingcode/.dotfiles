@@ -1,6 +1,6 @@
 { config, ... }:
 let
-   inherit (config.colorScheme) colors;
+   inherit (config.colorScheme) palette;
 in
 {
     programs.qutebrowser = {
@@ -8,8 +8,8 @@ in
       settings.colors = {
         # Becomes either 'dark' or 'light', based on your colors!
         webppage.preferred_color_scheme = "${config.colorScheme.variant}";
-        tabs.bar.bg = "#${config.colorScheme.palette.base00}";
-        keyhint.fg = "#${config.colorScheme.palette.base05}";
+        tabs.bar.bg = "#${palette.base00}";
+        keyhint.fg = "#${palette.base05}";
         # ...
       };
     };

@@ -323,7 +323,7 @@
               enable = true;
               package = pkgs.unstable.clang-tools;
             };
-            clojure-lsp = {
+            clojure_lsp = {
               enable = false;
               package = pkgs.unstable.clojure-lsp;
             };
@@ -331,7 +331,7 @@
               enable = true;
               package = pkgs.unstable.cmake-language-server;
             };
-            csharp-ls = {
+            csharp_ls = {
               enable = false;
               package = pkgs.unstable.csharp-ls; # NOT AVAILABLE on DARWIN
             };
@@ -351,7 +351,7 @@
               enable = false;
               package = pkgs.unstable.deno;
             };
-            dhall-lsp-server = {
+            dhall_lsp_server = {
               enable = false;
               package = pkgs.unstable.dhall-lsp-server;
             };
@@ -375,7 +375,7 @@
               enable = false;
               package = pkgs.unstable.elmPackages.elm-language-server;
             };
-            emmet-ls = {
+            emmet_ls = {
               enable = false;
               package = pkgs.unstable.emmet-ls;
             };
@@ -387,7 +387,7 @@
               enable = false;
               package = pkgs.unstable.fsautocomplete; # DOESN'T COMPILE ON DARWIN
             };
-            futhark-lsp = {
+            futhark_lsp = {
               enable = false;
               package = pkgs.unstable.futhark;
             };
@@ -423,7 +423,7 @@
               enable = false;
               package = pkgs.unstable.nodePackages.intelephense;
             };
-            java-language-server = {
+            java_language_server = {
               # USING JDTLS instead!
               enable = false;
               package = pkgs.unstable.java-language-server;
@@ -436,7 +436,7 @@
               enable = false;
               package = pkgs.unstable.julia-bin;
             };
-            kotlin-language-server = {
+            kotlin_language_server = {
               enable = false;
               package = pkgs.unstable.kotlin-language-server;
             };
@@ -448,7 +448,7 @@
               enable = false;
               package = pkgs.unstable.ltex-ls;
             };
-            lua-ls = {
+            lua_ls = {
               enable = true;
               package = pkgs.unstable.lua-language-server;
             };
@@ -460,7 +460,7 @@
               enable = false;
               package = pkgs.unstable.metals;
             };
-            nil-ls = {
+            nil_ls = {
               enable = true;
               package = pkgs.unstable.nil;
             };
@@ -484,7 +484,7 @@
               enable = false;
               package = pkgs.unstable.perl534Packages.PLS;
             };
-            pest-ls = {
+            pest_ls = {
               enable = false;
               package = pkgs.unstable.pest-language-server;
             };
@@ -496,7 +496,7 @@
               enable = false;
               package = pkgs.unstable.nodePackages."@prisma/language-server";
             };
-            prolog-ls = {
+            prolog_ls = {
               enable = false;
               package = pkgs.unstable.swiProlog;
             };
@@ -515,15 +515,15 @@
               enable = true;
               package = pkgs.unstable.pyright;
             };
-            rnix-lsp = {
+            rnix = {
               enable = false; # using nil_ls instead!
               package = pkgs.unstable.rnix-lsp;
             };
-            ruff-lsp = {
+            ruff_lsp = {
               enable = false;
               package = pkgs.unstable.ruff-lsp;
             };
-            rust-analyzer = {
+            rust_analyzer = {
               enable = true;
               package = pkgs.unstable.rust-analyzer;
               installCargo = true;
@@ -567,11 +567,11 @@
               enable = false;
               package = pkgs.unstable.texlab;
             };
-            ts-ls = {
+            ts_ls = {
               enable = true;
               package = pkgs.unstable.nodePackages.typescript-language-server;
             };
-            typst-lsp = {
+            typst_lsp = {
               enable = false;
               package = pkgs.unstable.typst-lsp;
             };
@@ -634,42 +634,44 @@
         nvim-ufo = {
           enable = true;
           package = pkgs.unstable.vimPlugins.nvim-ufo;
-          enableGetFoldVirtText = true;
-          closeFoldKinds = {
-            imports = true;
-            comment = true;
-          };
-          foldVirtTextHandler = ''
-            function(virtText, lnum, endLnum, width, truncate)
-              local newVirtText = {}
-              local suffix = ('  %d '):format(endLnum - lnum)
-              local sufWidth = vim.fn.strdisplaywidth(suffix)
-              local targetWidth = width - sufWidth
-              local curWidth = 0
-              for _, chunk in ipairs(virtText) do
-                local chunkText = chunk[1]
-                local chunkWidth = vim.fn.strdisplaywidth(chunkText)
-                if targetWidth > curWidth + chunkWidth then
-                  table.insert(newVirtText, chunk)
-                else
-                  chunkText = truncate(chunkText, targetWidth - curWidth)
-                  local hlGroup = chunk[2]
-                  table.insert(newVirtText, {chunkText, hlGroup})
-                  chunkWidth = vim.fn.strdisplaywidth(chunkText)
-                  -- str width returned from truncate() may less than 2nd argument, need padding
-                  if curWidth + chunkWidth < targetWidth then
-                    suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
+          settings = {
+            enable_get_fold_virt_text = true;
+            close_fold_kinds = {
+              imports = true;
+              comment = true;
+            };
+            fold_virt_text_handler = ''
+              function(virtText, lnum, endLnum, width, truncate)
+                local newVirtText = {}
+                local suffix = ('  %d '):format(endLnum - lnum)
+                local sufWidth = vim.fn.strdisplaywidth(suffix)
+                local targetWidth = width - sufWidth
+                local curWidth = 0
+                for _, chunk in ipairs(virtText) do
+                  local chunkText = chunk[1]
+                  local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+                  if targetWidth > curWidth + chunkWidth then
+                    table.insert(newVirtText, chunk)
+                  else
+                    chunkText = truncate(chunkText, targetWidth - curWidth)
+                    local hlGroup = chunk[2]
+                    table.insert(newVirtText, {chunkText, hlGroup})
+                    chunkWidth = vim.fn.strdisplaywidth(chunkText)
+                    -- str width returned from truncate() may less than 2nd argument, need padding
+                    if curWidth + chunkWidth < targetWidth then
+                      suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
+                    end
+                    break
                   end
-                  break
+                  curWidth = curWidth + chunkWidth
                 end
-                curWidth = curWidth + chunkWidth
+                table.insert(newVirtText, {suffix, 'MoreMsg'})
+                return newVirtText
               end
-              table.insert(newVirtText, {suffix, 'MoreMsg'})
-              return newVirtText
-            end
-          '';
-          openFoldHlTimeout = 300;
-          providerSelector = "function(bufnr, filetype, buftype) return {'treesitter', 'indent'} end";
+            '';
+            open_fold_hl_timeout = 300;
+            provider_selector = "function(bufnr, filetype, buftype) return {'treesitter', 'indent'} end";
+          };
         };
 
         statuscol = {
@@ -931,7 +933,7 @@
               #    home = "~/notes/home";
               #    work = "~/notes/work";
               #  };
-              #};
+            #};
             };
           };
         };

@@ -235,7 +235,7 @@ let
   };
 
   gruvboxTheme = let
-        inherit (config.colorScheme) colors;
+        inherit (config.colorScheme) palette;
       in
       ''
         /**
@@ -253,187 +253,187 @@ let
         .container-1QtPKm, .input-125oad {
             border-radius: 14px;
             cursor: pointer;
-            background-color: #${colors.base03} !important;
+            background-color: #${palette.base03} !important;
         }
 
         [data-popout-root],
         html {
-          --brand-experiment: #${colors.base0A};
-          --brand-experiment-330: #${colors.base07};
-          --brand-experiment-360: #${colors.base07};
-          --brand-experiment-400: #${colors.base03};
-          --brand-experiment-430: #${colors.base07};
-          --brand-experiment-460: #${colors.base07};
-          --brand-experiment-500: #${colors.base02};
-          --brand-experiment-530: #${colors.base06};
-          --brand-experiment-560: #${colors.base03};
-          --brand-experiment-600: #${colors.base04};
-          --brand-experiment-630: #${colors.base04};
-          --brand-experiment-660: #${colors.base0D};
-          --brand-experiment-700: #${colors.base0D};
-          --brand-experiment-730: #${colors.base0D};
-          --brand-experiment-760: #${colors.base0D};
-          --brand-experiment-800: #${colors.base0D};
-          --brand-experiment-830: #${colors.base0D};
-          --brand-experiment-860: #${colors.base0D};
-          --brand-experiment-900: #${colors.base0D};
+          --brand-experiment: #${palette.base0A};
+          --brand-experiment-330: #${palette.base07};
+          --brand-experiment-360: #${palette.base07};
+          --brand-experiment-400: #${palette.base03};
+          --brand-experiment-430: #${palette.base07};
+          --brand-experiment-460: #${palette.base07};
+          --brand-experiment-500: #${palette.base02};
+          --brand-experiment-530: #${palette.base06};
+          --brand-experiment-560: #${palette.base03};
+          --brand-experiment-600: #${palette.base04};
+          --brand-experiment-630: #${palette.base04};
+          --brand-experiment-660: #${palette.base0D};
+          --brand-experiment-700: #${palette.base0D};
+          --brand-experiment-730: #${palette.base0D};
+          --brand-experiment-760: #${palette.base0D};
+          --brand-experiment-800: #${palette.base0D};
+          --brand-experiment-830: #${palette.base0D};
+          --brand-experiment-860: #${palette.base0D};
+          --brand-experiment-900: #${palette.base0D};
         }
 
         .theme-dark,
         .theme-light {
-          --brand-260: #${colors.base0A};
-          --brand-500: #${colors.base0A};
-          --brand-560: #${colors.base00};
-          --primary-300: #${colors.base07};
-          --header-primary: #${colors.base07};
-          --header-secondary: #${colors.base07};
-          --text-normal: #${colors.base05};
-          --text-muted: #${colors.base04};
-          --text-link: #${colors.base0D};
-          --text-link-low-saturation: #${colors.base0C};
-          --text-positive: #${colors.base0A};
-          --text-warning: #${colors.base08};
-          --text-danger: #${colors.base0A};
-          --text-brand: #${colors.base0A};
-          --background-primary: #${colors.base00};
-          --background-secondary: #${colors.base00};
-          --background-secondary-alt: #${colors.base00};
-          --background-tertiary: #${colors.base00};
-          --background-accent: #${colors.base0A};
-          --background-floating: #${colors.base00};
-          --background-nested-floating: #${colors.base02};
-          --background-mobile-primary: #${colors.base00};
-          --background-modifier-hover: rgba(${colors.base04}, 0.15);
-          --background-modifier-selected: rgba(${colors.base05}, 0.2);
-          --background-modifier-accent: rgba(${colors.base04}, 0.26);
-          --background-modifier-active: rgba(${colors.base07}, 0.17);
-          --info-warning-background: rgba(${colors.base0A}, 0.15);
-          --info-warning-foreground: #${colors.base0A};
-          --info-warning-text: #${colors.base0A};
-          --info-danger-background: rgba(${colors.base08}, 0.15);
-          --info-danger-foreground: #${colors.base08};
-          --info-danger-text: #${colors.base08};
-          --info-help-background: rgba(${colors.base0A}, 0.10);
-          --info-help-foreground: #${colors.base0A};
-          --info-help-text: #${colors.base07};
-          --status-positive-background: #${colors.base0A};
-          --status-positive-text: #${colors.base00};
-          --status-warning-background: #${colors.base0A};
-          --status-warning-text: #${colors.base05};
-          --status-danger-background: #${colors.base0A};
-          --status-danger-text: #${colors.base00};
-          --status-danger: #${colors.base08};
-          --status-positive: #${colors.base0B};
-          --status-warning: #${colors.base0A};
-          --black-500: #${colors.base00};
-          --green-360: #${colors.base0B};
-          --primary-400: #${colors.base04};
-          --white-500: #${colors.base07};
-          --guild-boosting-pink: #${colors.base0E};
-          --premium-perk-yellow: #${colors.base0A};
-          --premium-perk-purple: #${colors.base0E};
-          --premium-perk-dark-blue: #${colors.base0D};
-          --premium-perk-light-blue: #${colors.base0D};
-          --premium-perk-blue: #${colors.base0D};
-          --premium-perk-green: #${colors.base0B};
-          --premium-perk-pink: #${colors.base0E};
-          --premium-perk-orange: #${colors.base09};
-          --button-danger-background: #${colors.base0A};
-          --button-danger-background-hover: #${colors.base0A};
-          --button-danger-background-active: #${colors.base07};
-          --button-danger-background-disabled: rgba(${colors.base0A}, 0.40);
-          --button-positive-background: #${colors.base0A};
-          --button-positive-background-hover: #${colors.base0A};
-          --button-positive-background-active: #${colors.base07};
-          --button-positive-background-disabled: rgba(${colors.base0A}, 0.40);
-          --button-secondary-background: #${colors.base02};
-          --button-secondary-background-hover: #${colors.base03};
-          --button-secondary-background-active: #${colors.base04};
-          --button-secondary-background-disabled: #${colors.base03};
-          --button-outline-danger-text: #${colors.base08};
-          --button-outline-danger-border: #${colors.base08};
+          --brand-260: #${palette.base0A};
+          --brand-500: #${palette.base0A};
+          --brand-560: #${palette.base00};
+          --primary-300: #${palette.base07};
+          --header-primary: #${palette.base07};
+          --header-secondary: #${palette.base07};
+          --text-normal: #${palette.base05};
+          --text-muted: #${palette.base04};
+          --text-link: #${palette.base0D};
+          --text-link-low-saturation: #${palette.base0C};
+          --text-positive: #${palette.base0A};
+          --text-warning: #${palette.base08};
+          --text-danger: #${palette.base0A};
+          --text-brand: #${palette.base0A};
+          --background-primary: #${palette.base00};
+          --background-secondary: #${palette.base00};
+          --background-secondary-alt: #${palette.base00};
+          --background-tertiary: #${palette.base00};
+          --background-accent: #${palette.base0A};
+          --background-floating: #${palette.base00};
+          --background-nested-floating: #${palette.base02};
+          --background-mobile-primary: #${palette.base00};
+          --background-modifier-hover: rgba(${palette.base04}, 0.15);
+          --background-modifier-selected: rgba(${palette.base05}, 0.2);
+          --background-modifier-accent: rgba(${palette.base04}, 0.26);
+          --background-modifier-active: rgba(${palette.base07}, 0.17);
+          --info-warning-background: rgba(${palette.base0A}, 0.15);
+          --info-warning-foreground: #${palette.base0A};
+          --info-warning-text: #${palette.base0A};
+          --info-danger-background: rgba(${palette.base08}, 0.15);
+          --info-danger-foreground: #${palette.base08};
+          --info-danger-text: #${palette.base08};
+          --info-help-background: rgba(${palette.base0A}, 0.10);
+          --info-help-foreground: #${palette.base0A};
+          --info-help-text: #${palette.base07};
+          --status-positive-background: #${palette.base0A};
+          --status-positive-text: #${palette.base00};
+          --status-warning-background: #${palette.base0A};
+          --status-warning-text: #${palette.base05};
+          --status-danger-background: #${palette.base0A};
+          --status-danger-text: #${palette.base00};
+          --status-danger: #${palette.base08};
+          --status-positive: #${palette.base0B};
+          --status-warning: #${palette.base0A};
+          --black-500: #${palette.base00};
+          --green-360: #${palette.base0B};
+          --primary-400: #${palette.base04};
+          --white-500: #${palette.base07};
+          --guild-boosting-pink: #${palette.base0E};
+          --premium-perk-yellow: #${palette.base0A};
+          --premium-perk-purple: #${palette.base0E};
+          --premium-perk-dark-blue: #${palette.base0D};
+          --premium-perk-light-blue: #${palette.base0D};
+          --premium-perk-blue: #${palette.base0D};
+          --premium-perk-green: #${palette.base0B};
+          --premium-perk-pink: #${palette.base0E};
+          --premium-perk-orange: #${palette.base09};
+          --button-danger-background: #${palette.base0A};
+          --button-danger-background-hover: #${palette.base0A};
+          --button-danger-background-active: #${palette.base07};
+          --button-danger-background-disabled: rgba(${palette.base0A}, 0.40);
+          --button-positive-background: #${palette.base0A};
+          --button-positive-background-hover: #${palette.base0A};
+          --button-positive-background-active: #${palette.base07};
+          --button-positive-background-disabled: rgba(${palette.base0A}, 0.40);
+          --button-secondary-background: #${palette.base02};
+          --button-secondary-background-hover: #${palette.base03};
+          --button-secondary-background-active: #${palette.base04};
+          --button-secondary-background-disabled: #${palette.base03};
+          --button-outline-danger-text: #${palette.base08};
+          --button-outline-danger-border: #${palette.base08};
           --button-outline-danger-background: transparent;
-          --button-outline-danger-background-hover: #${colors.base08};
-          --button-outline-danger-text-hover: #${colors.base00};
-          --button-outline-danger-border-hover: #${colors.base08};
-          --button-outline-danger-background-active: #${colors.base08};
-          --button-outline-danger-text-active: #${colors.base08};
-          --button-outline-danger-border-active: #${colors.base08};
-          --button-outline-positive-text: #${colors.base05};
-          --button-outline-positive-border: #${colors.base0A};
+          --button-outline-danger-background-hover: #${palette.base08};
+          --button-outline-danger-text-hover: #${palette.base00};
+          --button-outline-danger-border-hover: #${palette.base08};
+          --button-outline-danger-background-active: #${palette.base08};
+          --button-outline-danger-text-active: #${palette.base08};
+          --button-outline-danger-border-active: #${palette.base08};
+          --button-outline-positive-text: #${palette.base05};
+          --button-outline-positive-border: #${palette.base0A};
           --button-outline-positive-background: transparent;
-          --button-outline-positive-background-hover: #${colors.base0A};
-          --button-outline-positive-text-hover: #${colors.base00};
-          --button-outline-positive-border-hover: #${colors.base0A};
-          --button-outline-positive-background-active: #${colors.base0A};
-          --button-outline-positive-text-active: #${colors.base00};
-          --button-outline-positive-border-active: #${colors.base0A};
-          --button-outline-brand-text: #${colors.base05};
-          --button-outline-brand-border: #${colors.base0A};
+          --button-outline-positive-background-hover: #${palette.base0A};
+          --button-outline-positive-text-hover: #${palette.base00};
+          --button-outline-positive-border-hover: #${palette.base0A};
+          --button-outline-positive-background-active: #${palette.base0A};
+          --button-outline-positive-text-active: #${palette.base00};
+          --button-outline-positive-border-active: #${palette.base0A};
+          --button-outline-brand-text: #${palette.base05};
+          --button-outline-brand-border: #${palette.base0A};
           --button-outline-brand-background: transparent;
-          --button-outline-brand-background-hover: #${colors.base0A};
-          --button-outline-brand-text-hover: #${colors.base00};
-          --button-outline-brand-border-hover: #${colors.base0A};
-          --button-outline-brand-background-active: #${colors.base0A};
-          --button-outline-brand-text-active: #${colors.base00};
-          --button-outline-brand-border-active: #${colors.base0A};
-          --button-outline-primary-text: #${colors.base05};
-          --button-outline-primary-border: #${colors.base0A};
+          --button-outline-brand-background-hover: #${palette.base0A};
+          --button-outline-brand-text-hover: #${palette.base00};
+          --button-outline-brand-border-hover: #${palette.base0A};
+          --button-outline-brand-background-active: #${palette.base0A};
+          --button-outline-brand-text-active: #${palette.base00};
+          --button-outline-brand-border-active: #${palette.base0A};
+          --button-outline-primary-text: #${palette.base05};
+          --button-outline-primary-border: #${palette.base0A};
           --button-outline-primary-background: transparent;
-          --button-outline-primary-background-hover: #${colors.base0A};
-          --button-outline-primary-text-hover: #${colors.base00};
-          --button-outline-primary-border-hover: #${colors.base0A};
-          --button-outline-primary-background-active: #${colors.base0A};
-          --button-outline-primary-text-active: #${colors.base00};
-          --button-outline-primary-border-active: #${colors.base0A};
-          --modal-background: #${colors.base00};
-          --scrollbar-thin-thumb: #${colors.base02};
+          --button-outline-primary-background-hover: #${palette.base0A};
+          --button-outline-primary-text-hover: #${palette.base00};
+          --button-outline-primary-border-hover: #${palette.base0A};
+          --button-outline-primary-background-active: #${palette.base0A};
+          --button-outline-primary-text-active: #${palette.base00};
+          --button-outline-primary-border-active: #${palette.base0A};
+          --modal-background: #${palette.base00};
+          --scrollbar-thin-thumb: #${palette.base02};
           --scrollbar-thin-track: transparent;
-          --scrollbar-auto-thumb: #${colors.base02};
+          --scrollbar-auto-thumb: #${palette.base02};
           --scrollbar-auto-track: transparent;
-          --scrollbar-auto-scrollbar-color-thumb: #${colors.base02};
-          --scrollbar-auto-scrollbar-color-track: #${colors.base02};
-          --input-background: #${colors.base00};
-          --input-placeholder-text: #${colors.base04};
-          --control-brand-foreground: #${colors.base0A};
-          --mention-foreground: #${colors.base06};
-          --mention-background: rgba(${colors.base04}, 0.3);
-          --background-mentioned: rgba(${colors.base0A}, 0.1); 
-          --background-mentioned-hover: rgba(${colors.base0A}, 0.2);
-          --background-message-hover: rgba(${colors.base03}, 0.25);
-          --background-message-highlight: rgba(${colors.base03}, 0.4);
-          --channels-default: #${colors.base05};
-          --channel-icon: #${colors.base06};
-          --channel-text-area-placeholder: #${colors.base07};
+          --scrollbar-auto-scrollbar-color-thumb: #${palette.base02};
+          --scrollbar-auto-scrollbar-color-track: #${palette.base02};
+          --input-background: #${palette.base00};
+          --input-placeholder-text: #${palette.base04};
+          --control-brand-foreground: #${palette.base0A};
+          --mention-foreground: #${palette.base06};
+          --mention-background: rgba(${palette.base04}, 0.3);
+          --background-mentioned: rgba(${palette.base0A}, 0.1); 
+          --background-mentioned-hover: rgba(${palette.base0A}, 0.2);
+          --background-message-hover: rgba(${palette.base03}, 0.25);
+          --background-message-highlight: rgba(${palette.base03}, 0.4);
+          --channels-default: #${palette.base05};
+          --channel-icon: #${palette.base06};
+          --channel-text-area-placeholder: #${palette.base07};
 
           /* message input bar */
-          --channeltextarea-background: #${colors.base00}; 
+          --channeltextarea-background: #${palette.base00}; 
 
-          --textbox-markdown-syntax: #${colors.base03};
-          --deprecated-card-bg: #${colors.base00};
-          --deprecated-card-editable-bg: #${colors.base00};
-          --deprecated-text-input-bg: #${colors.base00};
-          --deprecated-text-input-border: #${colors.base03};
-          --focus-primary: #${colors.base0C};
-          --interactive-normal: #${colors.base04};
-          --interactive-muted: rgba(${colors.base04}, 0.3);
-          --interactive-hover: #${colors.base05};
-          --interactive-active: #${colors.base07};
+          --textbox-markdown-syntax: #${palette.base03};
+          --deprecated-card-bg: #${palette.base00};
+          --deprecated-card-editable-bg: #${palette.base00};
+          --deprecated-text-input-bg: #${palette.base00};
+          --deprecated-text-input-border: #${palette.base03};
+          --focus-primary: #${palette.base0C};
+          --interactive-normal: #${palette.base04};
+          --interactive-muted: rgba(${palette.base04}, 0.3);
+          --interactive-hover: #${palette.base05};
+          --interactive-active: #${palette.base07};
 
-          --primary-200: #${colors.base06};
+          --primary-200: #${palette.base06};
         }
         .theme-dark [class*=disabledPointerEvents],
         .theme-light [class*=disabledPointerEvents] {
-          --background-floating: #${colors.base00};
-          --background-tertiary: #${colors.base00};
+          --background-floating: #${palette.base00};
+          --background-tertiary: #${palette.base00};
         }
         .theme-dark [class*=disabledPointerEvents] svg[class|=activityIcon],
         .theme-light [class*=disabledPointerEvents] svg[class|=activityIcon] {
-          color: #${colors.base0A};
+          color: #${palette.base0A};
         }
 
         ::selection {
-          background-color: #${colors.base03};
+          background-color: #${palette.base03};
         }
 
         [class*=staffBadge-] {
@@ -462,189 +462,189 @@ let
 
         .theme-dark svg[class*=noItemsIcon-],
         .theme-light svg[class*=noItemsIcon-] {
-          background-color: #${colors.base03};
+          background-color: #${palette.base03};
         }
 
         .theme-dark svg[class*=tier1ProfilePerk-],
         .theme-light svg[class*=tier1ProfilePerk-] {
-          color: #${colors.base0D} !important;
+          color: #${palette.base0D} !important;
         }
 
         .theme-dark svg[class*=tier1BoostPerk-],
         .theme-light svg[class*=tier1BoostPerk-] {
-          color: #${colors.base0E} !important;
+          color: #${palette.base0E} !important;
         }
 
         .theme-dark svg[class*=tier1CustomEmojiPerk-],
         .theme-light svg[class*=tier1CustomEmojiPerk-] {
-          color: #${colors.base09} !important;
+          color: #${palette.base09} !important;
         }
 
         .theme-dark svg[class*=tier1UploadPerk-],
         .theme-light svg[class*=tier1UploadPerk-] {
-          color: #${colors.base0D} !important;
+          color: #${palette.base0D} !important;
         }
 
         .theme-dark svg[class*=tier1StreamPerk-],
         .theme-light svg[class*=tier1StreamPerk-] {
-          color: #${colors.base0B} !important;
+          color: #${palette.base0B} !important;
         }
 
         .theme-dark svg[class*=guildBoostingIcon-],
         .theme-light svg[class*=guildBoostingIcon-] {
-          color: #${colors.base0E} !important;
+          color: #${palette.base0E} !important;
         }
 
         .theme-dark svg[class*=guildSubscriptionSlotIcon-],
         .theme-light svg[class*=guildSubscriptionSlotIcon-] {
-          color: #${colors.base0E} !important;
+          color: #${palette.base0E} !important;
         }
 
         .theme-dark svg[class*=guildSubscriberCountIcon-],
         .theme-light svg[class*=guildSubscriberCountIcon-] {
-          color: #${colors.base0E} !important;
+          color: #${palette.base0E} !important;
         }
 
         .theme-dark svg[class*=gemWithLabel-],
         .theme-light svg[class*=gemWithLabel-] {
-          color: #${colors.base0E} !important;
+          color: #${palette.base0E} !important;
         }
 
         .theme-dark svg[class*=gemWithoutLabel-],
         .theme-light svg[class*=gemWithoutLabel-] {
-          color: #${colors.base04} !important;
+          color: #${palette.base04} !important;
         }
 
         .theme-dark svg[class*=memberBadgeIcon-],
         .theme-light svg[class*=memberBadgeIcon-] {
-          color: #${colors.base0E} !important;
+          color: #${palette.base0E} !important;
         }
 
         .theme-dark svg[class*=stickerIcon-],
         .theme-light svg[class*=stickerIcon-] {
-          color: #${colors.base0E} !important;
+          color: #${palette.base0E} !important;
         }
 
         .theme-dark svg[class*=audioQualityIcon-],
         .theme-light svg[class*=audioQualityIcon-] {
-          color: #${colors.base0D} !important;
+          color: #${palette.base0D} !important;
         }
 
         .theme-dark svg[class*=uploadSizeIcon-],
         .theme-light svg[class*=uploadSizeIcon-] {
-          color: #${colors.base0E} !important;
+          color: #${palette.base0E} !important;
         }
 
         .theme-dark svg[class*=threadIcon-],
         .theme-light svg[class*=threadIcon-] {
-          color: #${colors.base0C} !important;
+          color: #${palette.base0C} !important;
         }
 
         .theme-dark svg[class*=premiumIcon-],
         .theme-light svg[class*=premiumIcon-] {
-          color: #${colors.base0E} !important;
+          color: #${palette.base0E} !important;
         }
 
         .theme-dark svg[class*=gameIcon-],
         .theme-light svg[class*=gameIcon-] {
-          color: #${colors.base07} !important;
+          color: #${palette.base07} !important;
         }
 
         .theme-dark svg[class*=tierMarkerLabelPlusIcon-],
         .theme-light svg[class*=tierMarkerLabelPlusIcon-] {
-          color: #${colors.base0E} !important;
+          color: #${palette.base0E} !important;
         }
 
         .theme-dark svg[class*=currentTierIcon-],
         .theme-light svg[class*=currentTierIcon-] {
-          color: #${colors.base0E} !important;
+          color: #${palette.base0E} !important;
         }
 
         .theme-dark svg[class*=tier3Icon-],
         .theme-light svg[class*=tier3Icon-] {
-          color: #${colors.base0E} !important;
+          color: #${palette.base0E} !important;
         }
 
         .theme-dark svg[class*=searchIcon-],
         .theme-light svg[class*=searchIcon-] {
-          color: #${colors.base05} !important;
+          color: #${palette.base05} !important;
         }
 
         .theme-dark svg[class*=upsellIcon-],
         .theme-light svg[class*=upsellIcon-] {
-          color: #${colors.base0E} !important;
+          color: #${palette.base0E} !important;
         }
 
         [class*=lookFilled-][class*=colorBrand-], [class*=lookFilled-][class*=colorBrandNew-], [class*=lookFilled-][class*=colorLink-], [class*=lookFilled-][class*=colorYellow-], [class*=lookFilled-][class*=colorRed-], [class*=lookFilled-][class*=colorGreen-] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         [class*=lookFilled-][class*=colorBrand-] svg[class|=premiumIcon], [class*=lookFilled-][class*=colorBrandNew-] svg[class|=premiumIcon], [class*=lookFilled-][class*=colorLink-] svg[class|=premiumIcon], [class*=lookFilled-][class*=colorYellow-] svg[class|=premiumIcon], [class*=lookFilled-][class*=colorRed-] svg[class|=premiumIcon], [class*=lookFilled-][class*=colorGreen-] svg[class|=premiumIcon] {
-          color: #${colors.base0E};
+          color: #${palette.base0E};
         }
         [class*=lookFilled-][class*=colorBrand-] [class*=spinnerItem-], [class*=lookFilled-][class*=colorBrandNew-] [class*=spinnerItem-], [class*=lookFilled-][class*=colorLink-] [class*=spinnerItem-], [class*=lookFilled-][class*=colorYellow-] [class*=spinnerItem-], [class*=lookFilled-][class*=colorRed-] [class*=spinnerItem-], [class*=lookFilled-][class*=colorGreen-] [class*=spinnerItem-] {
-          background-color: #${colors.base00};
+          background-color: #${palette.base00};
         }
         [class*=lookFilled-][class*=colorBrand-] [class*=defaultColor-], [class*=lookFilled-][class*=colorBrandNew-] [class*=defaultColor-], [class*=lookFilled-][class*=colorLink-] [class*=defaultColor-], [class*=lookFilled-][class*=colorYellow-] [class*=defaultColor-], [class*=lookFilled-][class*=colorRed-] [class*=defaultColor-], [class*=lookFilled-][class*=colorGreen-] [class*=defaultColor-] {
-          color: #${colors.base07};
+          color: #${palette.base07};
         }
         [class*=lookFilled-][class*=colorPrimary-] {
-          color: #${colors.base07};
+          color: #${palette.base07};
         }
 
         div[class|=actionButtons] [class|=button][class*=buttonColor-],
         div[class|=actionButtons] [class|=button] [class*=buttonColor-] {
-          background-color: #${colors.base02};
+          background-color: #${palette.base02};
         }
         div[class|=actionButtons] [class|=button][class*=buttonColor-][class*=buttonActive-],
         div[class|=actionButtons] [class|=button] [class*=buttonColor-][class*=buttonActive-] {
-          background-color: #${colors.base0A};
-          color: #${colors.base00};
+          background-color: #${palette.base0A};
+          color: #${palette.base00};
         }
         div[class|=actionButtons] [class|=button][class*=buttonColor-][class*=buttonActive-] [class*=buttonContents-],
         div[class|=actionButtons] [class|=button] [class*=buttonColor-][class*=buttonActive-] [class*=buttonContents-] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=actionButtons] [class|=button][class*=buttonColor-][class*=buttonActive-] [class*=buttonContents-] svg,
         div[class|=actionButtons] [class|=button] [class*=buttonColor-][class*=buttonActive-] [class*=buttonContents-] svg {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
 
         [class*=lookInverted-][class*=colorBrand-] {
-          color: #${colors.base0D};
+          color: #${palette.base0D};
         }
         [class*=lookInverted-][class*=colorBrand-] svg[class|=premiumIcon] {
-          color: #${colors.base0E};
+          color: #${palette.base0E};
         }
 
         .theme-dark [class*=lookLink-][class*=colorPrimary-],
         .theme-light [class*=lookLink-][class*=colorPrimary-] {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
         .theme-dark [class*=lookFilled-][class*=colorTransparent-],
         .theme-light [class*=lookFilled-][class*=colorTransparent-] {
-          color: #${colors.base05};
-          background-color: #${colors.base02};
+          color: #${palette.base05};
+          background-color: #${palette.base02};
         }
 
         div[class*=button-][class*=dangerous-]:hover {
-          color: #${colors.base08};
+          color: #${palette.base08};
         }
 
         div[role=radio][class*=selected] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[role=radio][class*=selected][class*=allow] {
-          background-color: #${colors.base0B};
+          background-color: #${palette.base0B};
         }
 
         [class*=container-][style*="background-color: var(--green-360)"] {
-          --green-360: #${colors.base0B};
-          background-color: #${colors.base0B} !important;
+          --green-360: #${palette.base0B};
+          background-color: #${palette.base0B} !important;
         }
 
         [class*=container-][style*="background-color: var(--primary-400)"],
-        [class*=container-][style*="background-color: rgb(${colors.base03})"] {
-          background-color: #${colors.base03} !important;
+        [class*=container-][style*="background-color: rgb(${palette.base03})"] {
+          background-color: #${palette.base03} !important;
         }
 
         .vc-spotify-button-row .vc-spotify-button.vc-spotify-shuffle-on, .vc-spotify-button-row .vc-spotify-button.vc-spotify-repeat-context, .vc-spotify-button-row .vc-spotify-button.vc-spotify-repeat-track {
@@ -655,168 +655,168 @@ let
         }
 
         [class*=topGuildEmojiBadge-] {
-          background: linear-gradient(268.26deg, #${colors.base09}, #${colors.base0E} 102.45%);
+          background: linear-gradient(268.26deg, #${palette.base09}, #${palette.base0E} 102.45%);
         }
         [class*=topGuildEmojiBadge-] * {
-          color: #${colors.base00} !important;
+          color: #${palette.base00} !important;
         }
 
         [class*=newlyAddedBadge-] {
-          background: linear-gradient(268.26deg, #${colors.base0C}, #${colors.base0B} 102.45%);
+          background: linear-gradient(268.26deg, #${palette.base0C}, #${palette.base0B} 102.45%);
         }
         [class*=newlyAddedBadge-] * {
-          color: #${colors.base00} !important;
+          color: #${palette.base00} !important;
         }
 
         [class*=lookFilled-] [class*=premiumSubscribeButton-] > [class*=premiumIcon-] {
-          color: #${colors.base00} !important;
+          color: #${palette.base00} !important;
         }
 
         div[class|=sidebarRegion] div[class|=serverBoostTabItem] svg[class|=icon] {
-          fill: #${colors.base0E} !important;
+          fill: #${palette.base0E} !important;
         }
         div[class|=sidebarRegion] div[class|=serverBoostTabItem][class*=selected-] {
-          background-color: #${colors.base02} !important;
-          color: #${colors.base07} !important;
+          background-color: #${palette.base02} !important;
+          color: #${palette.base07} !important;
         }
         div[class|=sidebarRegion] div[class|=serverBoostTabItem][class*=selected-] svg[class|=icon] {
-          fill: #${colors.base07} !important;
+          fill: #${palette.base07} !important;
         }
         div[class|=sidebarRegion] div[class|=premiumTab] > div > svg > path {
-          fill: #${colors.base0E};
+          fill: #${palette.base0E};
         }
         div[class|=sidebarRegion] div[class|=premiumTab] > div[class*=selected] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=sidebarRegion] div[class|=premiumTab] > div[class*=selected] svg > path {
-          fill: #${colors.base00};
+          fill: #${palette.base00};
         }
         div[class|=sidebarRegion] div[class*=tabBarItemContainer-] [class*=textBadge-] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=sidebarRegion] div[class*=tabBarItemContainer-] [class*=textBadge-][style*="background-color: var(--brand-500);"] {
-          background-color: #${colors.base0D} !important;
+          background-color: #${palette.base0D} !important;
         }
 
-        div[class|=contentRegion] div[class*=noticeRegion-] div[style="background-color: #${colors.base00};"] {
-          background-color: #${colors.base00} !important;
+        div[class|=contentRegion] div[class*=noticeRegion-] div[style="background-color: #${palette.base00};"] {
+          background-color: #${palette.base00} !important;
         }
         div[class|=contentRegion] [class|=bar],
         div[class|=contentRegion] [class|=markDash] {
-          background: #${colors.base02};
+          background: #${palette.base02};
         }
         div[class|=contentRegion] [id="privacy-&-safety-tab"] div[class|=radioBar][style*="hsl(139,"] {
-          border-color: #${colors.base0B};
+          border-color: #${palette.base0B};
         }
         div[class|=contentRegion] [id="privacy-&-safety-tab"] div[class|=radioBar][style*="hsl(37,"] {
-          border-color: #${colors.base09};
+          border-color: #${palette.base09};
         }
         div[class|=contentRegion] [id="privacy-&-safety-tab"] div[class|=radioBar][style*="hsl(359,"] {
-          border-color: #${colors.base08};
+          border-color: #${palette.base08};
         }
         div[class|=contentRegion] [id="privacy-&-safety-tab"] div[class*=betaTagIcon] {
-          background-color: #${colors.base0A} !important;
-          color: #${colors.base00};
+          background-color: #${palette.base0A} !important;
+          color: #${palette.base00};
         }
         div[class|=contentRegion] #accessibility-tab button[class*=colorBrandNew] {
-          background-color: #${colors.base0D};
+          background-color: #${palette.base0D};
         }
         div[class|=contentRegion] #keybinds-tab span[class*=key] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=contentRegion] #keybinds-tab span[class*=key] g {
-          fill: #${colors.base00};
+          fill: #${palette.base00};
         }
         div[class|=contentRegion] #nitro-server-boost-tab circle[class|=circleProgress] {
-          color: #${colors.base0E};
+          color: #${palette.base0E};
         }
         div[class|=contentRegion] #nitro-server-boost-tab div[class*=gemIndicatorContainer-] {
-          background-color: #${colors.base01};
+          background-color: #${palette.base01};
         }
         div[class|=contentRegion] #nitro-server-boost-tab div[class*=gemIndicatorContainer-] div[class|=tierLabel] {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
         div[class|=contentRegion] #nitro-server-boost-tab button[class*=lookInverted-] {
-          color: #${colors.base00};
-          background-color: #${colors.base05};
+          color: #${palette.base00};
+          background-color: #${palette.base05};
         }
         div[class|=contentRegion] #nitro-server-boost-tab button[class*=lookInverted-]:hover {
-          background-color: #${colors.base05};
+          background-color: #${palette.base05};
         }
         div[class|=contentRegion] #nitro-server-boost-tab div[class*=card-],
         div[class|=contentRegion] #nitro-server-boost-tab h3[class*=price-] {
-          color: #${colors.base05} !important;
+          color: #${palette.base05} !important;
         }
         div[class|=contentRegion] #subscriptions-tab [class|=sectionAccountCredit],
         div[class|=contentRegion] #subscriptions-tab [class|=subscriptionDetails] {
           border-color: var(--background-modifier-accent);
         }
         div[class|=contentRegion] #library-inventory-tab div[class|=promotionIcon] {
-          background-color: #${colors.base00};
+          background-color: #${palette.base00};
         }
         div[class|=contentRegion] #discord-nitro-tab button[class*=buttonWhite] {
-          color: #${colors.base07} !important;
-          border-color: #${colors.base07} !important;
+          color: #${palette.base07} !important;
+          border-color: #${palette.base07} !important;
         }
         div[class|=contentRegion] #discord-nitro-tab h2 {
-          color: #${colors.base07} !important;
+          color: #${palette.base07} !important;
         }
         div[class|=contentRegion] #discord-nitro-tab svg[class*=sparkleStar-] {
-          color: #${colors.base07};
+          color: #${palette.base07};
         }
         div[class|=contentRegion] #discord-nitro-tab div[class*=description-] {
-          color: #${colors.base07} !important;
+          color: #${palette.base07} !important;
         }
         div[class|=contentRegion] #discord-nitro-tab div[class*=card-] {
-          color: #${colors.base07};
+          color: #${palette.base07};
         }
         div[class|=contentRegion] #discord-nitro-tab button[class*=lookInverted-] {
-          color: #${colors.base00};
-          background-color: #${colors.base07};
+          color: #${palette.base00};
+          background-color: #${palette.base07};
         }
         div[class|=contentRegion] #discord-nitro-tab button[class*=lookInverted-]:hover {
-          background-color: #${colors.base07};
+          background-color: #${palette.base07};
         }
         div[class|=contentRegion] #billing-tab div[class*=subtext] {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
         div[class|=contentRegion] #billing-tab [class*=Divider] {
           border-color: var(--background-modifier-accent);
         }
         div[class|=contentRegion] #billing-tab div[class|=defaultIndicator] {
-          color: #${colors.base07};
-          background-color: #${colors.base03};
+          color: #${palette.base07};
+          background-color: #${palette.base03};
         }
         div[class|=contentRegion] #billing-tab div[class*=summaryInfo],
         div[class|=contentRegion] #billing-tab [class|=paymentHeader] {
-          color: #${colors.base07};
+          color: #${palette.base07};
           border-color: var(--background-modifier-accent);
         }
         div[class|=contentRegion] #billing-tab div[class|=premiumIndicator] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=contentRegion] #billing-tab div[class|=paymentPane],
         div[class|=contentRegion] #billing-tab div[class*=paginator-],
         div[class|=contentRegion] #billing-tab div[class*=payment-] {
-          background-color: #${colors.base00};
-          color: #${colors.base07};
+          background-color: #${palette.base00};
+          color: #${palette.base07};
         }
         div[class|=contentRegion] #billing-tab div[class|=expandedInfo] {
-          background-color: #${colors.base00};
+          background-color: #${palette.base00};
         }
         div[class|=contentRegion] #billing-tab [class*=paymentText-] {
-          color: #${colors.base06};
+          color: #${palette.base06};
         }
         div[class|=contentRegion] #billing-tab div[class|=codeRedemptionRedirect] {
-          background-color: #${colors.base00};
-          color: #${colors.base06};
-          border-color: #${colors.base02};
+          background-color: #${palette.base00};
+          color: #${palette.base06};
+          border-color: #${palette.base02};
         }
         div[class|=contentRegion] [id="voice-&-video-tab"] div[class|=backgroundOptionRing] {
-          border-color: #${colors.base0D};
+          border-color: #${palette.base0D};
         }
         div[class|=contentRegion] #notifications-tab button[class*=marketingUnsubscribeButton-] {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
         div[class|=contentRegion] #game-activity-tab div[class*=nowPlayingAdd-],
         div[class|=contentRegion] #game-activity-tab div[class*=lastPlayed-],
@@ -824,189 +824,189 @@ let
           color: var(--text-muted);
         }
         div[class|=contentRegion] #game-activity-tab div[class*=activeGame-][class*=nowPlaying] * {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=contentRegion] #game-activity-tab div[class*=activeGame-][class*=nowPlaying] * svg > g > path {
-          fill: #${colors.base00};
+          fill: #${palette.base00};
         }
         div[class|=contentRegion] #game-activity-tab input[class|=gameName] {
-          color: #${colors.base07};
+          color: #${palette.base07};
         }
         div[class|=contentRegion] #game-activity-tab input[class*=gameNameInput-]:hover, div[class|=contentRegion] #game-activity-tab input[class*=gameNameInput-]:focus {
-          background-color: #${colors.base01};
-          border-color: #${colors.base00};
-          color: #${colors.base07};
+          background-color: #${palette.base01};
+          border-color: #${palette.base00};
+          color: #${palette.base07};
         }
         div[class|=contentRegion] #game-activity-tab div[class*=game-] {
           -webkit-box-shadow: 0 1px 0 0 var(--background-modifier-accent);
           box-shadow: 0 1px 0 0 var(--background-modifier-accent);
         }
         div[class|=contentRegion] #game-activity-tab div[class*=removeGame-] {
-          background-color: #${colors.base02};
+          background-color: #${palette.base02};
         }
         div[class|=contentRegion] #emoji-tab div[class*=emojiRemove-] {
-          background-color: #${colors.base02};
+          background-color: #${palette.base02};
         }
         div[class|=contentRegion] section[class|=inputSensitivityToggle] div[class*=speaking-] {
-          background: #${colors.base0B} !important;
+          background: #${palette.base0B} !important;
         }
         div[class|=contentRegion] div[class*=reactionMe-] {
-          background-color: #${colors.base02} !important;
+          background-color: #${palette.base02} !important;
         }
         div[class|=contentRegion] div[class|=control] > div[class*=checked-],
         div[class|=contentRegion] div[class|=sensitivity] div[class*=checked-],
         div[class|=contentRegion] div[style*="background-color: hsl(139, calc(var(--saturation-factor, 1) * 47.3%), 43.9%)"] {
-          background-color: #${colors.base0B} !important;
+          background-color: #${palette.base0B} !important;
         }
         div[class|=contentRegion] div[class|=control] > div[style*="background-color: hsl(218, calc(var(--saturation-factor, 1) * 4.6%), 46.9%)"] {
-          background-color: #${colors.base03} !important;
+          background-color: #${palette.base03} !important;
         }
         div[class|=contentRegion] div[class|=control] svg[class|=slider] > svg > path {
-          fill: #${colors.base0B} !important;
+          fill: #${palette.base0B} !important;
         }
         div[class|=contentRegion] #guild_premium-tab [class*=tierAccomplished-],
         div[class|=contentRegion] #guild_premium-tab [class*=tierCurrent-],
         div[class|=contentRegion] #guild_premium-tab [class*=tierFirst-] {
-          background: #${colors.base0E};
+          background: #${palette.base0E};
         }
         div[class|=contentRegion] #guild_premium-tab [class*=tierInProgress-] {
-          background-color: #${colors.base02};
+          background-color: #${palette.base02};
         }
         div[class|=contentRegion] #guild_premium-tab div[class|=progressWithSubscriptions] > svg > g > rect:first-child {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=contentRegion] #guild_premium-tab div[class|=progressWithSubscriptions] > svg > g > rect:nth-child(2) {
-          color: #${colors.base0E};
+          color: #${palette.base0E};
         }
         div[class|=contentRegion] #guild_premium-tab div[class|=tierHeaderUnlocked],
         div[class|=contentRegion] #guild_premium-tab div[class|=tierHeaderLocked] {
-          background-color: #${colors.base00};
-          color: #${colors.base05};
+          background-color: #${palette.base00};
+          color: #${palette.base05};
         }
         div[class|=contentRegion] #guild_premium-tab div[class|=tierHeaderUnlocked] div[class|=tierUnlocked],
         div[class|=contentRegion] #guild_premium-tab div[class|=tierHeaderLocked] div[class|=tierUnlocked] {
-          background-image: linear-gradient(90deg, #${colors.base0D}, #${colors.base0E});
-          color: #${colors.base00};
+          background-image: linear-gradient(90deg, #${palette.base0D}, #${palette.base0E});
+          color: #${palette.base00};
           font-weight: 600;
         }
         div[class|=contentRegion] #guild_premium-tab div[class|=tierHeaderUnlocked] svg[class|=tierIcon],
         div[class|=contentRegion] #guild_premium-tab div[class|=tierHeaderLocked] svg[class|=tierIcon] {
-          color: #${colors.base0E};
+          color: #${palette.base0E};
         }
         div[class|=contentRegion] #guild_premium-tab div[class|=tierHeaderUnlocked] svg[class*=tierIconLocked-],
         div[class|=contentRegion] #guild_premium-tab div[class|=tierHeaderLocked] svg[class*=tierIconLocked-] {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
         div[class|=contentRegion] #guild_premium-tab div[class|=tierHeaderUnlocked] svg[class|=tierLock],
         div[class|=contentRegion] #guild_premium-tab div[class|=tierHeaderLocked] svg[class|=tierLock] {
-          color: #${colors.base04};
+          color: #${palette.base04};
         }
         div[class|=contentRegion] #guild_premium-tab div[class|=tierBody] {
-          color: #${colors.base07};
-          background-color: #${colors.base00};
+          color: #${palette.base07};
+          background-color: #${palette.base00};
         }
         div[class|=contentRegion] svg[class|=activeCircle] {
-          color: #${colors.base00};
-          background-color: #${colors.base0B};
+          color: #${palette.base00};
+          background-color: #${palette.base0B};
         }
         div[class|=contentRegion] #discovery-tab div[class*=checklistIcon] svg[viewBox="0 0 14 14"] path {
-          fill: #${colors.base08};
+          fill: #${palette.base08};
         }
         div[class|=contentRegion] #discovery-tab div[class*=checklistIcon] svg[viewBox="0 0 20 20"] path {
-          fill: #${colors.base09};
+          fill: #${palette.base09};
         }
         div[class|=contentRegion] #guild_templates-tab svg[class*=descriptionIcon][viewBox="0 0 24 24"] path {
-          fill: #${colors.base0B};
+          fill: #${palette.base0B};
         }
         div[class|=contentRegion] #guild_templates-tab svg[class*=descriptionIcon][viewBox="0 0 14 14"] path {
-          fill: #${colors.base08};
+          fill: #${palette.base08};
         }
         div[class|=contentRegion] #guild_templates-tab svg[class*=descriptionIcon] circle {
-          fill: #${colors.base00};
+          fill: #${palette.base00};
         }
         div[class|=contentRegion] #stickers-tab div[class*=tierHeaderContent] {
-          background-color: #${colors.base00};
+          background-color: #${palette.base00};
         }
         div[class|=contentRegion] #stickers-tab div[class*=tierBody] {
-          background-color: #${colors.base00};
+          background-color: #${palette.base00};
         }
         div[class|=contentRegion] #roles-tab div[class*=previewContainer-] .theme-light img[class*=roleIcon-] {
-          content: "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11.0749 1.66667H4.99996C3.15901 1.66667 1.66663 3.15906 1.66663 5.00001V15C1.66663 16.841 3.15901 18.3333 4.99996 18.3333H15C16.8409 18.3333 18.3333 16.841 18.3333 15V8.92511C17.8052 9.08227 17.2458 9.16667 16.6666 9.16667C13.445 9.16667 10.8333 6.555 10.8333 3.33334C10.8333 2.75419 10.9177 2.19476 11.0749 1.66667ZM6.66663 5.00001C7.58596 5.00001 8.33329 5.74601 8.33329 6.66667C8.33329 7.58801 7.58596 8.33334 6.66663 8.33334C5.74529 8.33334 4.99996 7.58801 4.99996 6.66667C4.99996 5.74601 5.74529 5.00001 6.66663 5.00001ZM4.99996 15L7.49996 11.6667L9.16663 13.3333L12.5 9.16667L15 15H4.99996Z' fill='%23${colors.base03}'/%3E%3Cpath d='M17.5 0V2.5H20V4.16667H17.5V6.66667H15.8334V4.16667H13.3334V2.5H15.8334V0H17.5Z' fill='%23${colors.base03}'/%3E%3C/svg%3E";
+          content: "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11.0749 1.66667H4.99996C3.15901 1.66667 1.66663 3.15906 1.66663 5.00001V15C1.66663 16.841 3.15901 18.3333 4.99996 18.3333H15C16.8409 18.3333 18.3333 16.841 18.3333 15V8.92511C17.8052 9.08227 17.2458 9.16667 16.6666 9.16667C13.445 9.16667 10.8333 6.555 10.8333 3.33334C10.8333 2.75419 10.9177 2.19476 11.0749 1.66667ZM6.66663 5.00001C7.58596 5.00001 8.33329 5.74601 8.33329 6.66667C8.33329 7.58801 7.58596 8.33334 6.66663 8.33334C5.74529 8.33334 4.99996 7.58801 4.99996 6.66667C4.99996 5.74601 5.74529 5.00001 6.66663 5.00001ZM4.99996 15L7.49996 11.6667L9.16663 13.3333L12.5 9.16667L15 15H4.99996Z' fill='%23${palette.base03}'/%3E%3Cpath d='M17.5 0V2.5H20V4.16667H17.5V6.66667H15.8334V4.16667H13.3334V2.5H15.8334V0H17.5Z' fill='%23${palette.base03}'/%3E%3C/svg%3E";
         }
         div[class|=contentRegion] #roles-tab div[class*=previewContainer-] .theme-dark img[class*=roleIcon-] {
           content: "data:image/svg+xml,%3Csvg fill='none' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23c6d0f5'%3E%3Cpath clip-rule='evenodd' d='m11.0749 1.66667h-6.07488c-1.84095 0-3.33333 1.49239-3.33333 3.33334v9.99999c0 1.841 1.49238 3.3333 3.33333 3.3333h9.99998c1.841 0 3.3334-1.4923 3.3334-3.3333v-6.07489c-.5281.15716-1.0876.24156-1.6667.24156-3.2217 0-5.8333-2.61167-5.8333-5.83333 0-.57915.0844-1.13858.2415-1.66667zm-4.40821 3.33334c.91933 0 1.66666.746 1.66666 1.66666 0 .92134-.74733 1.66667-1.66666 1.66667-.92134 0-1.66667-.74533-1.66667-1.66667 0-.92066.74533-1.66666 1.66667-1.66666zm-1.66667 9.99999 2.5-3.3333 1.66667 1.6666 3.33331-4.16663 2.5 5.83333z' fill-rule='evenodd'/%3E%3Cpath d='m17.5 0v2.5h2.5v1.66667h-2.5v2.5h-1.6667v-2.5h-2.5v-1.66667h2.5v-2.5z'/%3E%3C/g%3E%3C/svg%3E";
         }
 
         .bd-settings-title {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
 
         .bd-switch-body {
-          --switch-color: #${colors.base03};
+          --switch-color: #${palette.base03};
         }
         .bd-switch input:checked + .bd-switch-body {
-          --switch-color: #${colors.base0B};
+          --switch-color: #${palette.base0B};
         }
         .bd-switch input:checked + .bd-switch-body svg.bd-switch-symbol path {
-          fill: #${colors.base0B};
+          fill: #${palette.base0B};
         }
 
         .bd-button {
-          background-color: #${colors.base0D};
-          color: #${colors.base00};
+          background-color: #${palette.base0D};
+          color: #${palette.base00};
         }
         .bd-button.bd-button-danger {
-          background-color: #${colors.base08};
+          background-color: #${palette.base08};
         }
 
         .bd-controls > .bd-addon-button svg {
-          fill: #${colors.base00};
+          fill: #${palette.base00};
         }
 
         .bd-addon-views .bd-view-button.selected {
-          background-color: #${colors.base0D};
+          background-color: #${palette.base0D};
         }
         .bd-addon-views .bd-view-button.selected svg {
-          fill: #${colors.base00};
+          fill: #${palette.base00};
         }
 
         div[class|=perksModal] {
-          background-color: #${colors.base01};
+          background-color: #${palette.base01};
         }
         div[class|=perksModal] li[class|=perk] {
-          background-color: #${colors.base02};
+          background-color: #${palette.base02};
         }
         div[class|=perksModal] li[class|=perk] svg {
-          color: #${colors.base0E};
+          color: #${palette.base0E};
         }
         div[class|=perksModal] svg[class|=giftIcon] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=perksModal] div[class|=tierHeaderUnlocked] {
-          background-image: linear-gradient(90deg, #${colors.base0D}, #${colors.base0E});
-          color: #${colors.base01};
+          background-image: linear-gradient(90deg, #${palette.base0D}, #${palette.base0E});
+          color: #${palette.base01};
         }
         div[class|=perksModal] div[class|=tierUnlocked],
         div[class|=perksModal] div[class|=tierMarkerBackground] {
-          background-color: #${colors.base01};
+          background-color: #${palette.base01};
         }
         div[class|=perksModal] div[class|=barBackground],
         div[class|=perksModal] div[class|=tierMarkerInProgress],
         div[class|=perksModal] div[class|=tierBody] {
-          background-color: #${colors.base00} !important;
+          background-color: #${palette.base00} !important;
         }
         div[class|=perksModal] div[class|=tierMarkerAccomplished] {
-          background: #${colors.base0E} !important;
+          background: #${palette.base0E} !important;
         }
         div[class|=perksModal] div[class|=tierMarkerInProgress] [class|=currentTierIcon] {
-          color: #${colors.base0E};
+          color: #${palette.base0E};
         }
         div[class|=perksModal] div[class|=barForeground],
         div[class|=perksModal] div[class|=tierMarkerAccomplished] {
-          background-color: #${colors.base0E};
+          background-color: #${palette.base0E};
         }
         div[class|=perksModal] svg[class|=currentTierIcon] {
-          color: #${colors.base01};
+          color: #${palette.base01};
         }
         div[class|=perksModal] div[class*=tierMarkerLabelText],
         div[class|=perksModal] svg[class|=tierLock] {
@@ -1016,41 +1016,41 @@ let
           color: var(--text-normal);
         }
         div[class|=perksModal] div[class|=tierHeaderLocked] {
-          background-color: #${colors.base00};
+          background-color: #${palette.base00};
           color: var(--text-muted);
         }
         div[class|=perksModal] svg[class*=unlocked] {
-          color: #${colors.base0B};
+          color: #${palette.base0B};
         }
 
         div[class|=sidebar] div[class|=container] div[class|=progressBar] {
-          background: linear-gradient(90deg, #${colors.base0D}, #${colors.base0E});
+          background: linear-gradient(90deg, #${palette.base0D}, #${palette.base0E});
         }
         div[class|=sidebar] div[class|=container]:hover div[class|=progressBar] {
-          background: linear-gradient(90deg, #${colors.base0D}, #${colors.base0E} 34%, #${colors.base0D} 67%, #${colors.base0E});
+          background: linear-gradient(90deg, #${palette.base0D}, #${palette.base0E} 34%, #${palette.base0D} 67%, #${palette.base0E});
         }
         div[class|=sidebar] div[class|=container] div[class|=divider] {
           border-color: var(--background-modifier-accent);
         }
 
         div[class|=pageWrapper] {
-          background: #${colors.base00} !important;
+          background: #${palette.base00} !important;
         }
         div[class|=pageWrapper] div[class*=searchBox-] {
-          background-color: #${colors.base02};
+          background-color: #${palette.base02};
         }
         div[class|=pageWrapper] div[class*=searchBox-] svg[class*=clearIcon] path {
-          fill: #${colors.base04};
+          fill: #${palette.base04};
         }
         div[class|=pageWrapper] div[class*=categoryPill-][class*=selected-] div {
-          color: #${colors.base00} !important;
+          color: #${palette.base00} !important;
         }
 
         div[class|=homeContainer] {
-          background: #${colors.base00} !important;
+          background: #${palette.base00} !important;
         }
         div[class|=homeContainer] > div[class|=homeContent] div[class*=card-] {
-          background: #${colors.base02} !important;
+          background: #${palette.base02} !important;
         }
 
         section[class|=title] {
@@ -1059,238 +1059,238 @@ let
 
         div[class|=categoryItem][class*=selectedCategoryItem],
         button[class*=lookFilled] div[class*=addButton] {
-          color: #${colors.base00} !important;
+          color: #${palette.base00} !important;
         }
 
         div[class|=itemInner] div[class|=new] > div[class*=newText-] {
-          color: #${colors.base00} !important;
+          color: #${palette.base00} !important;
         }
 
         div[class*=directoryModal-] {
-          background-color: #${colors.base01} !important;
+          background-color: #${palette.base01} !important;
         }
         div[class*=directoryModal-] [class*=searchBox] {
-          background-color: #${colors.base02} !important;
+          background-color: #${palette.base02} !important;
         }
         div[class*=directoryModal-] [class*=searchBox] [name=search]::placeholder {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
         div[class*=directoryModal-] [role=button][class*=activeButton] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
 
         section[class|=guildListSection] div[class|=guildList]:first-child div[class|=iconContainer] {
-          background-color: #${colors.base0B};
+          background-color: #${palette.base0B};
         }
         section[class|=guildListSection] div[class|=guildList]:first-child div[class|=iconContainer] > div[class|=icon] {
-          background-image: url("data:image/svg+xml,%3Csvg fill='none' height='24' viewBox='0 0 25 24' width='25' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23${colors.base00}'%3E%3Cpath clip-rule='evenodd' d='m13.25 18v-12h-1.5v12z' fill-rule='evenodd'/%3E%3Cpath clip-rule='evenodd' d='m7 12.75c-.69036 0-1.25.5596-1.25 1.25v4h-1.5v-4c0-1.5188 1.23122-2.75 2.75-2.75h11c1.5188 0 2.75 1.2312 2.75 2.75v4h-1.5v-4c0-.6904-.5596-1.25-1.25-1.25z' fill-rule='evenodd'/%3E%3Cpath d='m12.5 7c-1.3807 0-2.5-1.11929-2.5-2.5s1.1193-2.5 2.5-2.5 2.5 1.11929 2.5 2.5-1.1193 2.5-2.5 2.5z'/%3E%3Cpath d='m20 22c-1.3807 0-2.5-1.1193-2.5-2.5s1.1193-2.5 2.5-2.5 2.5 1.1193 2.5 2.5-1.1193 2.5-2.5 2.5z'/%3E%3Cpath d='m12.5 22c-1.3807 0-2.5-1.1193-2.5-2.5s1.1193-2.5 2.5-2.5 2.5 1.1193 2.5 2.5-1.1193 2.5-2.5 2.5z'/%3E%3Cpath d='m5 22c-1.38071 0-2.5-1.1193-2.5-2.5s1.11929-2.5 2.5-2.5 2.5 1.1193 2.5 2.5-1.11929 2.5-2.5 2.5z'/%3E%3C/g%3E%3C/svg%3E");
+          background-image: url("data:image/svg+xml,%3Csvg fill='none' height='24' viewBox='0 0 25 24' width='25' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23${palette.base00}'%3E%3Cpath clip-rule='evenodd' d='m13.25 18v-12h-1.5v12z' fill-rule='evenodd'/%3E%3Cpath clip-rule='evenodd' d='m7 12.75c-.69036 0-1.25.5596-1.25 1.25v4h-1.5v-4c0-1.5188 1.23122-2.75 2.75-2.75h11c1.5188 0 2.75 1.2312 2.75 2.75v4h-1.5v-4c0-.6904-.5596-1.25-1.25-1.25z' fill-rule='evenodd'/%3E%3Cpath d='m12.5 7c-1.3807 0-2.5-1.11929-2.5-2.5s1.1193-2.5 2.5-2.5 2.5 1.11929 2.5 2.5-1.1193 2.5-2.5 2.5z'/%3E%3Cpath d='m20 22c-1.3807 0-2.5-1.1193-2.5-2.5s1.1193-2.5 2.5-2.5 2.5 1.1193 2.5 2.5-1.1193 2.5-2.5 2.5z'/%3E%3Cpath d='m12.5 22c-1.3807 0-2.5-1.1193-2.5-2.5s1.1193-2.5 2.5-2.5 2.5 1.1193 2.5 2.5-1.1193 2.5-2.5 2.5z'/%3E%3Cpath d='m5 22c-1.38071 0-2.5-1.1193-2.5-2.5s1.11929-2.5 2.5-2.5 2.5 1.1193 2.5 2.5-1.11929 2.5-2.5 2.5z'/%3E%3C/g%3E%3C/svg%3E");
         }
 
         path[d="M22 12.4065C21.8956 14.9141 20.8533 17.2908 19.0798 19.0654C17.3062 20.8401 14.931 21.883 12.425 21.9875L13.7625 15.646L17.2375 17.9224C17.3214 17.9702 17.416 17.996 17.5125 17.9975C17.6481 17.9962 17.7781 17.9424 17.875 17.8474C17.9439 17.7577 17.9813 17.6478 17.9813 17.5347C17.9813 17.4216 17.9439 17.3117 17.875 17.222L15.6 13.7323L22 12.4065ZM13.7625 8.34148L17.2375 6.06504C17.3352 6.00866 17.4487 5.98608 17.5605 6.00084C17.6723 6.0156 17.7762 6.06686 17.8559 6.14665C17.9357 6.22645 17.9869 6.33037 18.0017 6.44225C18.0164 6.55413 17.9938 6.66772 17.9375 6.76548L15.6625 10.2551L22 11.581C21.8956 9.07342 20.8533 6.69669 19.0798 4.92206C17.3062 3.14742 14.931 2.10449 12.425 2L13.7625 8.34148ZM10.275 8.34148L11.6 2C9.09402 2.10449 6.71878 3.14742 4.94525 4.92206C3.17172 6.69669 2.12945 9.07342 2.02502 11.581L8.37497 10.2551L6.08752 6.76548C6.02873 6.66774 6.00413 6.55315 6.01772 6.43988C6.0313 6.32661 6.08228 6.22113 6.16252 6.14009C6.24233 6.05781 6.34797 6.00542 6.46175 5.99176C6.57552 5.97809 6.69052 6.00399 6.78752 6.06504L10.275 8.34148ZM6.16252 17.8474C6.08228 17.7663 6.0313 17.6609 6.01772 17.5476C6.00413 17.4343 6.02873 17.3197 6.08752 17.222L8.37497 13.7323L2 12.4065C2.10442 14.9141 3.1467 17.2908 4.92023 19.0654C6.69376 20.8401 9.06899 21.883 11.575 21.9875L10.25 15.646L6.7625 17.9224C6.67925 17.9718 6.58428 17.9977 6.48753 17.9975C6.35971 17.9937 6.23848 17.9398 6.15001 17.8474H6.16252Z"] {
-          fill: #${colors.base0C};
+          fill: #${palette.base0C};
         }
 
         path[d="M22 12.4065C21.8956 14.9141 20.8533 17.2908 19.0798 19.0654C17.3062 20.8401 14.931 21.883 12.425 21.9875L13.7625 15.646L17.2375 17.9224C17.3214 17.9702 17.416 17.996 17.5125 17.9975C17.6481 17.9962 17.7781 17.9424 17.875 17.8474C17.9439 17.7577 17.9813 17.6478 17.9813 17.5347C17.9813 17.4216 17.9439 17.3117 17.875 17.222L15.6 13.7323L22 12.4065ZM13.7625 8.34148L17.2375 6.06504C17.3352 6.00866 17.4487 5.98608 17.5605 6.00084C17.6723 6.0156 17.7762 6.06686 17.8559 6.14665C17.9357 6.22645 17.9869 6.33037 18.0017 6.44225C18.0164 6.55413 17.9938 6.66772 17.9375 6.76548L15.6625 10.2551L22 11.581C21.8956 9.07342 20.8533 6.69669 19.0798 4.92206C17.3062 3.14742 14.931 2.10449 12.425 2L13.7625 8.34148ZM10.275 8.34148L11.6 2C9.09402 2.10449 6.71878 3.14742 4.94525 4.92206C3.17172 6.69669 2.12945 9.07342 2.02502 11.581L8.37497 10.2551L6.08752 6.76548C6.02873 6.66774 6.00413 6.55315 6.01772 6.43988C6.0313 6.32661 6.08228 6.22113 6.16252 6.14009C6.24233 6.05781 6.34797 6.00542 6.46175 5.99176C6.57552 5.97809 6.69052 6.00399 6.78752 6.06504L10.275 8.34148ZM6.16252 17.8474C6.08228 17.7663 6.0313 17.6609 6.01772 17.5476C6.00413 17.4343 6.02873 17.3197 6.08752 17.222L8.37497 13.7323L2 12.4065C2.10442 14.9141 3.1467 17.2908 4.92023 19.0654C6.69376 20.8401 9.06899 21.883 11.575 21.9875L10.25 15.646L6.7625 17.9224C6.67925 17.9718 6.58428 17.9977 6.48753 17.9975C6.35971 17.9937 6.23848 17.9398 6.15001 17.8474H6.16252Z"] {
-          fill: #${colors.base0C};
+          fill: #${palette.base0C};
         }
 
         path[d="M17.225 6.06504C17.3227 6.00866 17.4362 5.98608 17.548 6.00084C17.6598 6.0156 17.7637 6.06686 17.8434 6.14665C17.9232 6.22645 17.9744 6.33037 17.9892 6.44225C18.0039 6.55413 17.9813 6.66772 17.925 6.76548L15.65 10.2551L21.9875 11.581C21.9875 11.7185 21.9875 11.8562 21.9875 11.9937C21.9875 12.1313 21.9875 12.2689 21.9875 12.4065L15.65 13.7323L17.925 17.222C17.9939 17.3117 18.0313 17.4216 18.0313 17.5347C18.0313 17.6478 17.9939 17.7577 17.925 17.8474C17.8281 17.9424 17.6982 17.9962 17.5625 17.9975C17.466 17.996 17.3714 17.9702 17.2875 17.9224L13.8125 15.646L12.4125 22H11.5875L10.2625 15.6585L6.77501 17.935C6.69176 17.9843 6.59672 18.0102 6.49997 18.01C6.43455 18.0098 6.3699 17.9963 6.30977 17.9705C6.24964 17.9447 6.1953 17.9072 6.15001 17.8599C6.06977 17.7789 6.01879 17.6734 6.0052 17.5601C5.99162 17.4468 6.01621 17.3323 6.07501 17.2345L8.36253 13.7449L2 12.4065C2 12.2689 2 12.1313 2 11.9937C2 11.8562 2 11.7185 2 11.581L8.35002 10.2551L6.0625 6.76548C6.0037 6.66774 5.97918 6.55315 5.99277 6.43988C6.00635 6.32661 6.05726 6.22113 6.1375 6.14009C6.21731 6.05781 6.32295 6.00542 6.43672 5.99176C6.5505 5.97809 6.6655 6.00399 6.7625 6.06504L10.25 8.34148L11.575 2H12.4L13.7375 8.34148L17.225 6.06504Z"] {
-          fill: #${colors.base00};
+          fill: #${palette.base00};
         }
 
         div[class|=tierPreviews] button[class|=button] {
-          background: linear-gradient(90deg, #${colors.base0C}, #${colors.base0D});
+          background: linear-gradient(90deg, #${palette.base0C}, #${palette.base0D});
         }
 
         div[class|=notice] div[class*=noticeText-] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=notice] div[class*=header-] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=notice] div[class|=closeButton] > svg > path {
-          fill: #${colors.base00};
+          fill: #${palette.base00};
         }
         div[class|=notice] button[class|=button] {
-          border-color: #${colors.base07};
-          color: #${colors.base00};
+          border-color: #${palette.base07};
+          color: #${palette.base00};
         }
         div[class|=notice] button[class|=button]:hover {
-          background: #${colors.base0D};
+          background: #${palette.base0D};
         }
 
         nav[class*=guilds-] foreignObject > div[data-list-item-id|=guildsnav_] {
-          background-color: #${colors.base02};
+          background-color: #${palette.base02};
         }
         nav[class*=guilds-] foreignObject > div[data-list-item-id|=guildsnav_]:hover > div[class|=childWrapper], nav[class*=guilds-] foreignObject > div[data-list-item-id|=guildsnav_][class*=selected] > div[class|=childWrapper] {
-          color: #${colors.base00};
+          color: #${palette.base00};
           font-weight: 600;
         }
         nav[class*=guilds-] div[data-list-item-id=guildsnav___home] {
-          --background-primary: #${colors.base02};
+          --background-primary: #${palette.base02};
         }
         nav[class*=guilds-] span[class|=expandedFolderBackground] {
-          background-color: #${colors.base01};
+          background-color: #${palette.base01};
         }
         nav[class*=guilds-] div[class|=folder][class*=hover-] {
-          background-color: #${colors.base03};
+          background-color: #${palette.base03};
         }
         .closedFolderIconWrapper-3tRb2d {
-          background-color: #${colors.base02};
+          background-color: #${palette.base02};
         }
         .closedFolderIconWrapper-3tRb2d:hover {
-          background-color: #${colors.base03};
+          background-color: #${palette.base03};
         }
         nav[class*=guilds-] div[data-list-item-id=guildsnav___create-join-button] svg > path,
         nav[class*=guilds-] div[data-list-item-id=guildsnav___guild-discover-button] svg > path,
         nav[class*=guilds-] div[data-list-item-id=guildsnav___app-download-button] svg > path {
-          fill: #${colors.base0B};
+          fill: #${palette.base0B};
         }
         .circleIconButton-1VxDrg.selected-2r1Hvo {
-          background-color: #${colors.base03};
+          background-color: #${palette.base03};
         }
 
         div[class|=upperBadge] > div[class|=iconBadge] path {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=upperBadge] div[class*=participating-] {
-          background: #${colors.base07};
+          background: #${palette.base07};
         }
 
         div[class|=lowerBadge] div[class|=iconBadge] path {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
 
         svg[class|=spine] {
-          color: #${colors.base04};
+          color: #${palette.base04};
         }
 
         div[class|=spineBorder] {
-          background: #${colors.base04};
+          background: #${palette.base04};
         }
 
         ul[aria-label$=" threads"] > li:nth-child(1n) {
-          --channels-default: #${colors.base05};
-          --interactive-hover: #${colors.base08};
-          --interactive-active: #${colors.base08};
+          --channels-default: #${palette.base05};
+          --interactive-hover: #${palette.base08};
+          --interactive-active: #${palette.base08};
         }
 
         ul[aria-label$=" threads"] > li:nth-child(2n) {
-          --channels-default: #${colors.base05};
-          --interactive-hover: #${colors.base09};
-          --interactive-active: #${colors.base09};
+          --channels-default: #${palette.base05};
+          --interactive-hover: #${palette.base09};
+          --interactive-active: #${palette.base09};
         }
 
         ul[aria-label$=" threads"] > li:nth-child(3n) {
-          --channels-default: #${colors.base05};
-          --interactive-hover: #${colors.base09};
-          --interactive-active: #${colors.base09};
+          --channels-default: #${palette.base05};
+          --interactive-hover: #${palette.base09};
+          --interactive-active: #${palette.base09};
         }
 
         ul[aria-label$=" threads"] > li:nth-child(4n) {
-          --channels-default: #${colors.base05};
-          --interactive-hover: #${colors.base0B};
-          --interactive-active: #${colors.base0B};
+          --channels-default: #${palette.base05};
+          --interactive-hover: #${palette.base0B};
+          --interactive-active: #${palette.base0B};
         }
 
         ul[aria-label$=" threads"] > li:nth-child(5n) {
-          --channels-default: #${colors.base05};
-          --interactive-hover: #${colors.base0C};
-          --interactive-active: #${colors.base0C};
+          --channels-default: #${palette.base05};
+          --interactive-hover: #${palette.base0C};
+          --interactive-active: #${palette.base0C};
         }
 
         ul[aria-label$=" threads"] > li:nth-child(6n) {
-          --channels-default: #${colors.base05};
-          --interactive-hover: #${colors.base0E};
-          --interactive-active: #${colors.base0E};
+          --channels-default: #${palette.base05};
+          --interactive-hover: #${palette.base0E};
+          --interactive-active: #${palette.base0E};
         }
 
         [class|=botText] {
-          color: #${colors.base00};
+          color: #${palette.base00};
           font-weight: 600;
         }
 
         svg[class|=botTagVerified] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
 
         div[class*=activePostCount-] {
-          background-color: #${colors.base02};
-          color: #${colors.base05} !important;
+          background-color: #${palette.base02};
+          color: #${palette.base05} !important;
         }
 
         div[class*=newPostCount-] {
-          background-color: #${colors.base05};
-          color: #${colors.base00};
+          background-color: #${palette.base05};
+          color: #${palette.base00};
         }
 
         div[class*=liveSmall-] {
-          background-color: #${colors.base0A}!important;
-          color: #${colors.base00};
+          background-color: #${palette.base0A}!important;
+          color: #${palette.base00};
         }
 
         [class|=chatContent] div[class*=wrapperAudio-] div[class*=audioControls],
         [class|=chatContent] div[class*=wrapperAudio-] div[class*=videoControls-],
         [class|=chatContent] div[class*=imageWrapper-] div[class*=audioControls],
         [class|=chatContent] div[class*=imageWrapper-] div[class*=videoControls-] {
-          background-color: rgba(${colors.base01}, 0.8);
+          background-color: rgba(${palette.base01}, 0.8);
         }
         [class|=chatContent] div[class*=wrapperAudio-] div[class*=audioControls] svg[class*=controlIcon-],
         [class|=chatContent] div[class*=wrapperAudio-] div[class*=videoControls-] svg[class*=controlIcon-],
         [class|=chatContent] div[class*=imageWrapper-] div[class*=audioControls] svg[class*=controlIcon-],
         [class|=chatContent] div[class*=imageWrapper-] div[class*=videoControls-] svg[class*=controlIcon-] {
           opacity: 1;
-          color: #${colors.base07};
+          color: #${palette.base07};
         }
         [class|=chatContent] #---new-messages-bar span[class|=unreadPill] {
-          color: #${colors.base07};
+          color: #${palette.base07};
         }
         [class|=chatContent] div[class|=newMessagesBar] button {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         [class|=chatContent] div[class|=channelTextArea] div[class|=buttons] * {
           color: var(--interactive-normal) !important;
         }
         [class|=chatContent] [id|=message-reactions] div[class|=reaction] {
-          background-color: #${colors.base02};
+          background-color: #${palette.base02};
         }
         [class|=chatContent] [id|=message-reactions] div[class|=reaction]:hover {
-          background-color: #${colors.base02};
-          border-color: #${colors.base03};
+          background-color: #${palette.base02};
+          border-color: #${palette.base03};
         }
         [class|=chatContent] div[class*=isBurstReactionPicker-] {
-          box-shadow: 0 0 0 2px #${colors.base0E}, 0 0 16px #${colors.base0D};
+          box-shadow: 0 0 0 2px #${palette.base0E}, 0 0 16px #${palette.base0D};
         }
         [class|=chatContent] div[class|=navButtonSuperReactActive],
         [class|=chatContent] div[class|=navButtonSuperReactActive]:hover {
-          background: linear-gradient(270deg, #${colors.base0E}, #${colors.base0D} 33.63%, #${colors.base0E});
-          color: #${colors.base00};
+          background: linear-gradient(270deg, #${palette.base0E}, #${palette.base0D} 33.63%, #${palette.base0E});
+          color: #${palette.base00};
         }
         [class|=chatContent] div[class*=betaTag-] {
           background: var(--brand-experiment) !important;
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         [class|=chatContent] button[class*=navButtonActive-],
         [class|=chatContent] button[class*=navButtonActive-]:hover {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         [class|=chatContent] div[class*=colorPremiumGradient-][class*=focused-] {
-          background: linear-gradient(270deg, #${colors.base0E}, #${colors.base0D} 33.63%, #${colors.base0E});
-          color: #${colors.base00} !important;
+          background: linear-gradient(270deg, #${palette.base0E}, #${palette.base0D} 33.63%, #${palette.base0E});
+          color: #${palette.base00} !important;
         }
         [class|=chatContent] div[class*=isBurstReactionPicker] {
           border: none;
-          box-shadow: 0 0 0 2px #${colors.base0E}, 0 0 16px #${colors.base0D};
+          box-shadow: 0 0 0 2px #${palette.base0E}, 0 0 16px #${palette.base0D};
         }
         [class|=chatContent] div[class*=playButtonContainer-] {
           background: var(--brand-experiment) !important;
         }
         [class|=chatContent] svg[class*=playIcon-] path {
-          fill: #${colors.base00};
+          fill: #${palette.base00};
         }
         [class|=chatContent] div[class|=container][class*=header-] div[class*=addReactButton-],
         [class|=chatContent] div[class|=container][class*=header-] div[class|=buttons]:not([class*=lookBlank-]) div[class|=contents] {
-          background: #${colors.base02};
+          background: #${palette.base02};
         }
         [class|=chatContent] div[class|=container][class*=header-] div[class*=addReactButton-]:hover,
         [class|=chatContent] div[class|=container][class*=header-] div[class|=buttons]:not([class*=lookBlank-]) div[class|=contents]:hover {
@@ -1298,60 +1298,60 @@ let
           border-color: var(--brand-experiment-30a);
         }
         [class|=chatContent] div[class|=messagesErrorBar] div[class*=barButtonBase-] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         [class|=chatContent] [class*=inlineCode-] {
-          background: #${colors.base02};
+          background: #${palette.base02};
         }
         [class|=chatContent] code.inline {
-          background: #${colors.base02};
+          background: #${palette.base02};
         }
         [class|=chatContent] div[class|=container] div[class|=cardWrapper] div[class*=completed-] svg[class|=checkmark] {
-          background-color: #${colors.base0B};
-          color: #${colors.base00};
+          background-color: #${palette.base0B};
+          color: #${palette.base00};
         }
 
         div[style*="d1382af8d9e755bc44811b1fd92990a8.svg"] {
-          background-image: url("data:image/svg+xml,%3Csvg height='18' width='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cpath d='m18 0h-18v18h18z'/%3E%3Cpath d='m0 8h14.2l-3.6-3.6 1.4-1.4 6 6-6 6-1.4-1.4 3.6-3.6h-14.2' fill='%23${colors.base0B}'/%3E%3C/g%3E%3C/svg%3E") !important;
+          background-image: url("data:image/svg+xml,%3Csvg height='18' width='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cpath d='m18 0h-18v18h18z'/%3E%3Cpath d='m0 8h14.2l-3.6-3.6 1.4-1.4 6 6-6 6-1.4-1.4 3.6-3.6h-14.2' fill='%23${palette.base0B}'/%3E%3C/g%3E%3C/svg%3E") !important;
           filter: none !important;
         }
 
         main[class|=chatContent] div[id|=message-content] svg[class|=icon] > path[d="M4 0L0 4V8L4 12L8 8V4L4 0ZM7 7.59L4 10.59L1 7.59V4.41L4 1.41L7 4.41V7.59Z"],
         main[class|=chatContent] div[id|=message-content] svg[class|=icon] > path[d="M2 4.83V7.17L4 9.17L6 7.17V4.83L4 2.83L2 4.83Z"] {
-          color: #${colors.base0E};
+          color: #${palette.base0E};
         }
 
         .theme-dark span[class|=spoilerContent],
         .theme-dark div[class|=spoilerContent],
         .theme-light span[class|=spoilerContent],
         .theme-light div[class|=spoilerContent] {
-          background-color: #${colors.base04};
+          background-color: #${palette.base04};
         }
         .theme-dark span[class|=spoilerContent][class*=hidden],
         .theme-dark div[class|=spoilerContent][class*=hidden],
         .theme-light span[class|=spoilerContent][class*=hidden],
         .theme-light div[class|=spoilerContent][class*=hidden] {
-          background-color: #${colors.base03};
+          background-color: #${palette.base03};
         }
         .theme-dark span[class|=spoilerContent][class*=hidden]:hover,
         .theme-dark div[class|=spoilerContent][class*=hidden]:hover,
         .theme-light span[class|=spoilerContent][class*=hidden]:hover,
         .theme-light div[class|=spoilerContent][class*=hidden]:hover {
-          background-color: #${colors.base03};
+          background-color: #${palette.base03};
         }
         .theme-dark div[class|=spoilerContainer] div[class|=spoilerWarning],
         .theme-light div[class|=spoilerContainer] div[class|=spoilerWarning] {
-          color: #${colors.base07};
-          background-color: rgba(${colors.base00}, 0.7);
+          color: #${palette.base07};
+          background-color: rgba(${palette.base00}, 0.7);
         }
         .theme-dark div[class|=spoilerContainer]:hover div[class|=spoilerWarning],
         .theme-light div[class|=spoilerContainer]:hover div[class|=spoilerWarning] {
-          color: #${colors.base07};
-          background-color: rgba(${colors.base00}, 0.7);
+          color: #${palette.base07};
+          background-color: rgba(${palette.base00}, 0.7);
         }
         .theme-dark div[class|=spoilerContainer] article[class*=embedFull-],
         .theme-light div[class|=spoilerContainer] article[class*=embedFull-] {
-          border-color: #${colors.base03};
+          border-color: #${palette.base03};
         }
 
         div[class|=cooldownWrapper] {
@@ -1359,10 +1359,10 @@ let
         }
 
         div[class*=autocomplete-] {
-          background-color: #${colors.base01} !important;
+          background-color: #${palette.base01} !important;
         }
         div[class*=autocomplete-] div[class*=categoryHeader] {
-          background-color: #${colors.base01} !important;
+          background-color: #${palette.base01} !important;
         }
         div[class*=autocomplete-] div[class*=autocompleteRowSubheading] {
           background-color: transparent;
@@ -1371,10 +1371,10 @@ let
           background-color: transparent;
         }
         div[class*=autocomplete-] div[class|=usageWrapper] > div[class*=title-] {
-          color: #${colors.base0D} !important;
+          color: #${palette.base0D} !important;
         }
         div[class*=autocomplete-] strong {
-          color: #${colors.base0D} !important;
+          color: #${palette.base0D} !important;
         }
 
         div[class|=channelTextArea] button[class*=emojiButton-] {
@@ -1382,76 +1382,76 @@ let
         }
 
         [class|=uploadDropModal][class*=error] {
-          background-color: #${colors.base08};
+          background-color: #${palette.base08};
         }
         [class|=uploadDropModal] div[class|=inner] {
-          border-color: #${colors.base06};
+          border-color: #${palette.base06};
         }
         [class|=uploadDropModal] div[class|=inner] * {
-          color: #${colors.base07} !important;
+          color: #${palette.base07} !important;
         }
 
         div[class|=chat] > div[class|=content] > div[class|=container] {
-          background-color: #${colors.base00};
+          background-color: #${palette.base00};
         }
         div[class|=chat] > div[class|=content] > div[class|=container] div[class|=pinIcon] > svg > path,
         div[class|=chat] > div[class|=content] > div[class|=container] div[class|=stepStatus] > svg > path {
-          fill: #${colors.base05};
+          fill: #${palette.base05};
         }
         div[class|=chat] > div[class|=content] > div[class|=container] div[class|=pinIcon][style*="background-color: var(--status-positive-background);"] > svg > path,
         div[class|=chat] > div[class|=content] > div[class|=container] div[class|=stepStatus][style*="background-color: var(--status-positive-background);"] > svg > path {
-          fill: #${colors.base00};
+          fill: #${palette.base00};
         }
         div[class|=chat] > div[class|=content] > div[class|=container] div[class*=countText] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=chat] > div[class|=content] > div[class|=container] svg[class|=discordIcon] {
-          background-color: #${colors.base0D};
-          color: #${colors.base00};
+          background-color: #${palette.base0D};
+          color: #${palette.base00};
         }
         div[class|=chat] > div[class|=content] > div[class|=container] div[class|=newBadge] {
-          background-color: #${colors.base0D} !important;
-          color: #${colors.base00};
+          background-color: #${palette.base0D} !important;
+          color: #${palette.base00};
         }
         div[class|=chat] > div[class|=content] > div[class|=container] div[class*=mainCard-] {
-          background-color: #${colors.base00};
+          background-color: #${palette.base00};
         }
 
         div[class|=sidebar] > section[class|=panels] svg[class*=buttonIcon-],
         div[class|=sidebar] > section[class|=panels] div[class*=buttonContents] {
-          fill: #${colors.base05};
-          color: #${colors.base06};
+          fill: #${palette.base05};
+          color: #${palette.base06};
         }
 
         [data-list-id|=forum-channel-list] div[class|=body] > div[class|=tags] div[class*=pill] {
-          background-color: #${colors.base01};
+          background-color: #${palette.base01};
         }
         [data-list-id|=forum-channel-list] button[class|=submitButton][class*=colorBrand] {
-          background-color: #${colors.base0A};
-          color: #${colors.base00} !important;
+          background-color: #${palette.base0A};
+          color: #${palette.base00} !important;
         }
 
         .text-md-bold-1mgErV, .text-md-semibold-2VMhBr {
-          color: #${colors.base07};
+          color: #${palette.base07};
         }
 
         .submitIcon-E3Vuaz {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
 
         .theme-dark svg[class*=searchIcon-], .theme-light svg[class*=searchIcon-] {
-            color: #${colors.base04} !important;
+            color: #${palette.base04} !important;
         }
 
         .name-3Uvkvr {
-          color: #${colors.base07};
+          color: #${palette.base07};
         }
 
         div[class|=applicationCommand] span[class*=selectedPill-] {
-          border-color: #${colors.base0D} !important;
+          border-color: #${palette.base0D} !important;
         }
         div[class|=applicationCommand] span[class*=erroredPill-] {
-          border-color: #${colors.base08} !important;
+          border-color: #${palette.base08} !important;
         }
 
         div[class|=chat] > div[class|=content] main[class|=chatContent] + div[class|=container] {
@@ -1459,182 +1459,182 @@ let
         }
 
         [class*=channelTextAreaInnerError-] {
-          border: 1px solid #${colors.base08} !important;
+          border: 1px solid #${palette.base08} !important;
         }
 
         [class*=barButtonBase-] {
-          color: #${colors.base00} !important;
+          color: #${palette.base00} !important;
         }
 
         div[class|=callContainer] [class*=controlIcon-] {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
         div[class|=callContainer] [class*=controlIcon-]:hover {
-          color: #${colors.base06};
+          color: #${palette.base06};
         }
         div[class|=callContainer] div[class*=tile-],
         div[class|=callContainer] div[class*=background-] {
-          background-color: #${colors.base00} !important;
+          background-color: #${palette.base00} !important;
         }
         div[class|=callContainer] div[class*=overlayTitle],
         div[class|=callContainer] svg[class*=status-] {
-          background-color: #${colors.base02};
-          color: #${colors.base07};
+          background-color: #${palette.base02};
+          color: #${palette.base07};
         }
         div[class|=callContainer] div[class*=header],
         div[class|=callContainer] svg[class*=selectedIcon-] {
-          color: #${colors.base07};
+          color: #${palette.base07};
         }
         div[class|=callContainer] div[class*=button-][class*=contents-],
         div[class|=callContainer] button[class*=cta-],
         div[class|=callContainer] button[class*=participantsButton-] {
-          background-color: #${colors.base00};
-          color: #${colors.base07};
+          background-color: #${palette.base00};
+          color: #${palette.base07};
         }
         div[class|=callContainer] div[class|=indicators] div[class|=liveQualityIndicator] {
           background-color: transparent !important;
         }
         div[class|=callContainer] div[class|=indicators] div[class|=liveQualityIndicator] svg[class|=premiumStreamIcon] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=callContainer] div[class|=videoControls] div[class|=children] div[class*=playingText-] {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
         div[class|=callContainer] div[class|=videoControls] div[class|=toolbar] svg[class|=controlIcon] {
-          fill: #${colors.base04} !important;
+          fill: #${palette.base04} !important;
         }
         div[class|=callContainer] div[class|=videoControls] div[class|=toolbar] div[class|=streamQualityIndicator] div[class|=liveQualityIndicator] {
-          background-color: #${colors.base02} !important;
+          background-color: #${palette.base02} !important;
         }
         div[class|=callContainer] div[class|=videoControls] div[class|=toolbar] div[class|=streamQualityIndicator] div[class|=liveQualityIndicator] div[class|=qualityIndicator] {
-          color: #${colors.base06};
+          color: #${palette.base06};
         }
         div[class|=callContainer] div[class|=videoControls] div[class|=toolbar] div[class|=streamQualityIndicator] div[class|=liveQualityIndicator] svg[class|=premiumStreamIcon] {
-          color: #${colors.base06};
+          color: #${palette.base06};
         }
         div[class|=callContainer] div[class|=videoControls] div[class|=toolbar] div[class|=liveIndicator] div[class|=live] {
-          background-color: #${colors.base08} !important;
-          color: #${colors.base00} !important;
+          background-color: #${palette.base08} !important;
+          color: #${palette.base00} !important;
         }
         div[class|=callContainer] div[class|=videoControls] button[class*=leftTrayIcon-][class*=buttonColor-] {
-          background-color: #${colors.base02};
-          color: #${colors.base06};
+          background-color: #${palette.base02};
+          color: #${palette.base06};
         }
         div[class|=callContainer] div[class|=videoControls] div[class|=badge] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=callContainer] div[class|=videoControls] [class*=colorable-][class*=red-] {
-          background: #${colors.base08};
+          background: #${palette.base08};
         }
         div[class|=callContainer] div[class|=videoControls] [class*=colorable-][class*=red-] [class*=centerIcon-] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=callContainer] div[class|=videoControls] [class*=colorable-][class*=primaryDark-] {
-          background: #${colors.base07};
-          color: #${colors.base06};
+          background: #${palette.base07};
+          color: #${palette.base06};
         }
         div[class|=callContainer] div[class|=videoControls] [class*=colorable-][class*=primaryDark-] [class*=centerIcon-] {
-          color: #${colors.base06};
+          color: #${palette.base06};
         }
         div[class|=callContainer] div[class|=videoControls] [class*=colorable-][class*=green-] {
-          background: #${colors.base0B};
+          background: #${palette.base0B};
         }
         div[class|=callContainer] div[class|=videoControls] [class*=colorable-][class*=green-] [class*=centerIcon-] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=callContainer] div[class|=videoControls] [class*=colorable-][class*=white-] {
-          color: #${colors.base00};
-          background-color: #${colors.base05};
+          color: #${palette.base00};
+          background-color: #${palette.base05};
         }
         div[class|=callContainer] div[class|=videoControls] [class*=colorable-][class*=white-] [class*=centerIcon-] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=callContainer] div[class|=videoControls] [class*=colorable-][class*=white-]:hover, div[class|=callContainer] div[class|=videoControls] [class*=colorable-][class*=white-][class*=active-] {
-          background: #${colors.base06};
+          background: #${palette.base06};
         }
 
         div[class*=giftCodeContainer] [class*=tile] {
-          background-color: #${colors.base01};
+          background-color: #${palette.base01};
         }
         div[class*=giftCodeContainer] [class*=tile] > [class*=description] {
-          color: #${colors.base06};
+          color: #${palette.base06};
         }
 
         div[class*=chat-] section[class*=header-] {
-          background-color: #${colors.base00};
+          background-color: #${palette.base00};
         }
         div[class*=chat-] div[class*=content-][class*=container-] {
-          background-color: #${colors.base00};
+          background-color: #${palette.base00};
         }
         div[class*=chat-] div[class*=content-][class*=container-] div[class*=container] {
-          background-color: #${colors.base00};
+          background-color: #${palette.base00};
         }
         div[class*=chat-] div[class*=content-][class*=container-] div[class*=search-] {
-          background-color: #${colors.base01} !important;
+          background-color: #${palette.base01} !important;
         }
         div[class*=chat-] div[class*=content-][class*=container-] div[class*=search-] input::placeholder {
-          color: #${colors.base04};
+          color: #${palette.base04};
         }
         div[class*=chat-] div[class*=content-][class*=container-] div[class*=browser] div[class*=content] div[class|=container] {
-          background-color: #${colors.base01};
+          background-color: #${palette.base01};
         }
         div[class*=chat-] div[class*=content-][class*=container-] div[class*=scrollerContainer-] {
-          background-color: #${colors.base00};
+          background-color: #${palette.base00};
         }
         div[class*=chat-] div[class*=content-][class*=container-] div[class*=scrollerContainer-] div[class*=checkIcon-][style*="opacity: 1;"] > svg > path {
-          fill: #${colors.base00};
+          fill: #${palette.base00};
         }
         div[class*=chat-] div[class*=content-][class*=container-] div[role=tablist] {
-          background-color: #${colors.base00};
-          border-bottom: 2px solid #${colors.base02};
+          background-color: #${palette.base00};
+          border-bottom: 2px solid #${palette.base02};
         }
         div[class*=chat-] div[class*=content-][class*=container-] div[role=tablist] [class*=textBadge-] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
 
         div[class*=chat-] section[class*=title] div[class*=searchBar] span[class*=search] {
-          background-color: #${colors.base02};
-          color: #${colors.base06};
+          background-color: #${palette.base02};
+          color: #${palette.base06};
         }
         div[class*=chat-] nav[class*=pageControl] div[class*=roundButton][class*=activeButton] span {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
 
         div[class*=chat-] li[class*=mainCard-][class*=container] {
-          background-color: #${colors.base01};
+          background-color: #${palette.base01};
         }
         div[class*=chat-] li[class*=mainCard-][class*=container]:hover {
-          background-color: #${colors.base02};
+          background-color: #${palette.base02};
         }
         div[class*=chat-] li[class*=mainCard-][class*=container] div[class*=contentPreview-] {
-          background-color: #${colors.base03};
+          background-color: #${palette.base03};
           border: none;
         }
         div[class*=chat-] li[class*=mainCard-][class*=container] div[class*=contentPreview-] div[class*=textContentFooter-] {
           background: none;
         }
         div[class*=chat-] li[class*=mainCard-][class*=container] div[class*=tags-] div[class*=tagPill-] {
-          background-color: #${colors.base01};
+          background-color: #${palette.base01};
         }
         div[class*=chat-] div[class*=emptyPage] {
-          background-color: #${colors.base01};
+          background-color: #${palette.base01};
         }
         div[class*=chat-] div[class*=innerHeader]:after {
           background: none;
         }
 
         [id*=message-accessories-] > [class*=invite-] {
-          background-color: #${colors.base01};
+          background-color: #${palette.base01};
         }
         [id*=message-accessories-] > [class*=invite-] [class*=inFront-][class*=header-] {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
         [id*=message-accessories-] > [class*=invite-] [class*=partyStatus-] {
-          color: #${colors.base06};
+          color: #${palette.base06};
         }
 
         [class|=avatar] [class|=dots] {
-          color: #${colors.base01};
+          color: #${palette.base01};
         }
 
         div[class|=chat][class*=page-] div[class|=content][class*=container-] {
@@ -1642,11 +1642,11 @@ let
         }
 
         .messagelogger-deleted div {
-          color: #${colors.base08} !important;
+          color: #${palette.base08} !important;
         }
 
         .messagelogger-deleted div a {
-          color: #${colors.base08} !important;
+          color: #${palette.base08} !important;
         }
 
         div[class|=layerContainer] [role=menu] {
@@ -1654,23 +1654,23 @@ let
           --brand-experiment-600: var(--brand-experiment);
         }
         div[class|=layerContainer] [role=menu] [class*=colorDefault][class*=colorBrand] {
-          color: #${colors.base0D};
+          color: #${palette.base0D};
         }
         div[class|=layerContainer] [role=menu] [class*=colorDefault][class*=focused]:not([class*=colorDanger]),
         div[class|=layerContainer] [role=menu] [class*=colorDefault][class*=focused] [class*=checkbox-] {
-          color: #${colors.base00};
-          background-color: #${colors.base0A};
+          color: #${palette.base00};
+          background-color: #${palette.base0A};
         }
         div[class|=layerContainer] [role=menu] [class*=colorDefault][role=menuitem]:not([class*=colorDanger]):not([id*=user-context-user-volume]):hover {
           background: var(--background-accent);
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=layerContainer] [role=menu] [class*=colorDefault][role=menuitem]:not([class*=colorDanger]):not([id*=user-context-user-volume]):hover [class*=subtext],
         div[class|=layerContainer] [role=menu] [class*=colorDefault][role=menuitem]:not([class*=colorDanger]):not([id*=user-context-user-volume]):hover [class*=caret-] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=layerContainer] [role=menu] [class*=colorDefault] [class*=caret] {
-          color: #${colors.base04};
+          color: #${palette.base04};
         }
         div[class|=layerContainer] [role=menu] [class*=colorDefault]:active:not([class*=hideInteraction-]) {
           color: var(--background-floating);
@@ -1682,112 +1682,112 @@ let
           color: var(--background-floating);
         }
         div[class|=layerContainer] [role=menu] [class*=focused] [class*=userMenuUsername] * {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=layerContainer] [role=menu] [class*=colorDanger][class*=focused],
         div[class|=layerContainer] [role=menu] [class*=colorDefault] [class*=check-] {
           color: var(--background-floating);
-          background-color: #${colors.base08};
+          background-color: #${palette.base08};
         }
         div[class|=layerContainer] [role=menu] #guild-header-popout-premium-subscribe div[class|=iconContainer] > svg {
-          color: #${colors.base0E};
+          color: #${palette.base0E};
         }
         div[class|=layerContainer] [role=menu] #user-context-user-volume div[class*=slider-] div[class*=bar-] {
-          background-color: #${colors.base02};
+          background-color: #${palette.base02};
         }
 
         .theme-dark div[class|=layerContainer] div[id|=popout_] > div[class*=didRender-]:not([class|=animatorBottom]) > div div[class*=flowerStarContainer-] svg[class*=flowerStar-] *,
         .theme-light div[class|=layerContainer] div[id|=popout_] > div[class*=didRender-]:not([class|=animatorBottom]) > div div[class*=flowerStarContainer-] svg[class*=flowerStar-] * {
-          fill: #${colors.base0D};
+          fill: #${palette.base0D};
         }
         .theme-dark div[class|=layerContainer] div[id|=popout_] > div[class*=didRender-] div[class*=countText],
         .theme-light div[class|=layerContainer] div[id|=popout_] > div[class*=didRender-] div[class*=countText] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         .theme-dark div[class|=layerContainer] div[id|=popout_] > div[class*=didRender-] svg[class*=activeIcon] circle,
         .theme-light div[class|=layerContainer] div[id|=popout_] > div[class*=didRender-] svg[class*=activeIcon] circle {
-          fill: #${colors.base0D};
+          fill: #${palette.base0D};
         }
         .theme-dark div[class|=layerContainer] div[id|=popout_] > div[class*=didRender-] svg[class*=activeIcon] g path,
         .theme-light div[class|=layerContainer] div[id|=popout_] > div[class*=didRender-] svg[class*=activeIcon] g path {
-          fill: #${colors.base0D};
+          fill: #${palette.base0D};
         }
         .theme-dark div[class|=layerContainer] div[id|=popout_] > div[class*=didRender-] div[class*=container] div[class*=autocompleteArrow-],
         .theme-dark div[class|=layerContainer] div[id|=popout_] > div[class*=didRender-] div[class*=container] header,
         .theme-light div[class|=layerContainer] div[id|=popout_] > div[class*=didRender-] div[class*=container] div[class*=autocompleteArrow-],
         .theme-light div[class|=layerContainer] div[id|=popout_] > div[class*=didRender-] div[class*=container] header {
-          background-color: #${colors.base01};
+          background-color: #${palette.base01};
         }
         .theme-dark div[class|=layerContainer] div[id|=popout_] > div[class*=didRender-] div[class*=container] header > input::placeholder,
         .theme-light div[class|=layerContainer] div[id|=popout_] > div[class*=didRender-] div[class*=container] header > input::placeholder {
-          color: #${colors.base04};
+          color: #${palette.base04};
         }
         .theme-dark div[class|=layerContainer] div[id|=popout_] > div[class*=didRender-] div[class*=container] section,
         .theme-light div[class|=layerContainer] div[id|=popout_] > div[class*=didRender-] div[class*=container] section {
-          background-color: #${colors.base01};
-          color: #${colors.base06};
+          background-color: #${palette.base01};
+          color: #${palette.base06};
         }
 
         div[class*=recentMentionsPopout] div[class|=header] div[class|=tabBar] div[class|=badge],
         div[class*=recentMentionsPopout] div[class|=header] div[class|=tabBar] div[class|=tab][class*=active-] {
-          color: #${colors.base01};
+          color: #${palette.base01};
         }
         div[class*=recentMentionsPopout] div[class|=header] div[class|=controls-] {
-          --background-secondary: #${colors.base02};
-          --background-primary: rgba(${colors.base02}, 0.9);
+          --background-secondary: #${palette.base02};
+          --background-primary: rgba(${palette.base02}, 0.9);
         }
         div[class*=recentMentionsPopout] div[class|=scroller] [role=button] {
-          --background-tertiary: rgba(${colors.base05}, 0.15);
-          --background-floating: rgba(${colors.base01}, 0.12);
+          --background-tertiary: rgba(${palette.base05}, 0.15);
+          --background-floating: rgba(${palette.base01}, 0.12);
         }
         div[class*=recentMentionsPopout] div[class|=scroller] [role=button] div[class*=jumpButton-] {
-          background-color: #${colors.base03};
+          background-color: #${palette.base03};
         }
 
         div[class*=rolesList] div[class|=role],
         div[class*=rolesList] button[class|=addButton] {
-          background-color: #${colors.base02};
+          background-color: #${palette.base02};
         }
-        div[class*=rolesList] div[class|=role] span[class|=roleCircle][style*="background-color: #${colors.base04}"] {
-          background-color: #${colors.base04} !important;
+        div[class*=rolesList] div[class|=role] span[class|=roleCircle][style*="background-color: #${palette.base04}"] {
+          background-color: #${palette.base04} !important;
         }
-        div[class*=rolesList] div[class|=role] span[class|=roleCircle][style*="background-color: #${colors.base01}"], div[class*=rolesList] div[class|=role] span[class|=roleCircle][style*="background-color: rgb(53, 57, 64)"] {
-          background-color: #${colors.base02} !important;
+        div[class*=rolesList] div[class|=role] span[class|=roleCircle][style*="background-color: #${palette.base01}"], div[class*=rolesList] div[class|=role] span[class|=roleCircle][style*="background-color: rgb(53, 57, 64)"] {
+          background-color: #${palette.base02} !important;
         }
 
         div[class*=layerContainer] > div[class*=layer] div[class|=reactors] {
-          background-color: #${colors.base01};
+          background-color: #${palette.base01};
         }
         div[class*=layerContainer] > div[class*=layer] div[class*=reactorDefault] {
-          -webkit-box-shadow: inset 0 -1px 0 #${colors.base03};
-          box-shadow: inset 0 -1px 0 #${colors.base03};
+          -webkit-box-shadow: inset 0 -1px 0 #${palette.base03};
+          box-shadow: inset 0 -1px 0 #${palette.base03};
         }
         div[class*=layerContainer] > div[class*=layer] div[class*=reactionSelected] {
-          background-color: #${colors.base02};
+          background-color: #${palette.base02};
         }
         div[class*=layerContainer] > div[class*=layer] div[class*=friendSelected] {
-          background: #${colors.base02} !important;
+          background: #${palette.base02} !important;
         }
 
         section[class|=positionContainer] button[class*=navButtonActive] {
-          background-color: #${colors.base0A};
-          color: #${colors.base00};
+          background-color: #${palette.base0A};
+          color: #${palette.base00};
         }
 
         .theme-light section[class|=positionContainer] div[class|=categoryText] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
 
         #emoji-picker-tab-panel [class*=stickerInspected-] [class*=inspectedIndicator],
         #emoji-picker-tab-panel [class|=emojiItem][class*=emojiItemSelected-] {
-          background-color: #${colors.base03} !important;
+          background-color: #${palette.base03} !important;
         }
         #emoji-picker-tab-panel [class*=newlyAddedHighlight-] {
-          border: 1px solid #${colors.base0B};
+          border: 1px solid #${palette.base0B};
         }
         #emoji-picker-tab-panel [class*=newlyAddedHighlight-] ~ [class*=newlyAddedBadge-] {
-          background: #${colors.base0B} !important;
-          color: #${colors.base00};
+          background: #${palette.base0B} !important;
+          color: #${palette.base00};
         }
 
         [class*=stickerInspected-] [class|=inspectedIndicator] {
@@ -1795,31 +1795,31 @@ let
         }
 
         .theme-light > div[class|=focusLock] > div[class|=root] > div[class|=container] div[class*=footer][class*=footerSeparator-] {
-          box-shadow: inset 0 1px 0 #${colors.base03};
-          -webkit-box-shadow: inset 0 1px 0 #${colors.base03};
+          box-shadow: inset 0 1px 0 #${palette.base03};
+          -webkit-box-shadow: inset 0 1px 0 #${palette.base03};
         }
         .theme-light > div[class|=focusLock] > div[class|=root] {
-          box-shadow: 0 0 0 1px #${colors.base03}, 0 2px 10px 0 hsla(0, calc(var(--saturation-factor, 1) * 0%), 0%, 0.1);
-          -webkit-box-shadow: 0 0 0 1px #${colors.base03}, 0 2px 10px 0 hsla(0, calc(var(--saturation-factor, 1) * 0%), 0%, 0.1);
+          box-shadow: 0 0 0 1px #${palette.base03}, 0 2px 10px 0 hsla(0, calc(var(--saturation-factor, 1) * 0%), 0%, 0.1);
+          -webkit-box-shadow: 0 0 0 1px #${palette.base03}, 0 2px 10px 0 hsla(0, calc(var(--saturation-factor, 1) * 0%), 0%, 0.1);
         }
         .theme-light div[class|=focusLock] div[class|=downloadApps] {
-          background-color: #${colors.base00} !important;
+          background-color: #${palette.base00} !important;
         }
         .theme-light div[class|=focusLock] div[class|=downloadApps] button[class|=modalCloseButton],
         .theme-light div[class|=focusLock] div[class|=downloadApps] h2,
         .theme-light div[class|=focusLock] div[class|=downloadApps] h3 {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
         .theme-light div[class|=focusLock] div[class|=downloadApps] div[class*=footer-] {
-          color: #${colors.base05} !important;
+          color: #${palette.base05} !important;
           background-color: unset !important;
         }
         .theme-light div[class|=focusLock] div[class|=downloadApps] div[class*=footer-] a {
-          color: #${colors.base0D};
+          color: #${palette.base0D};
         }
         .theme-light div[class|=focusLock] div[class|=downloadApps] li[class*=active-] a[class*=downloadButton-] {
           transition: all 0.3s ease-in-out;
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         .theme-light[class*=profileColors-] [class*=userTagUsernameBase-],
         .theme-light[class*=profileColors-] [class*=discrimBase-],
@@ -1832,10 +1832,10 @@ let
         .theme-light[class*=profileColors-] [class*=section-],
         .theme-light[class*=profileColors-] [class*=additionalActionsIcon-],
         .theme-light[class*=profileColors-] [class*=overlayBackground-] * {
-          --interactive-normal: #${colors.base00};
-          --text-normal: #${colors.base00};
-          --interactive-active: #${colors.base00};
-          --interactive-hover: #${colors.base00};
+          --interactive-normal: #${palette.base00};
+          --text-normal: #${palette.base00};
+          --interactive-active: #${palette.base00};
+          --interactive-hover: #${palette.base00};
         }
         .theme-light[class*=profileColors-] [class*=userTagUsernameBase-]:not(a),
         .theme-light[class*=profileColors-] [class*=discrimBase-]:not(a),
@@ -1855,28 +1855,28 @@ let
         div[class|=layerContainer] #guild-context,
         div[class|=layerContainer] div[id|=channel-context],
         div[class|=layerContainer] div[id|=user-context] {
-          background: #${colors.base00};
+          background: #${palette.base00};
         }
         div[class|=layerContainer] > div[class*=layer] div[role=listbox] {
-          background-color: #${colors.base00};
+          background-color: #${palette.base00};
         }
         div[class|=layerContainer] > div[class*=layer] div[role=listbox] div[role=option][aria-selected=true] {
-          background: #${colors.base02};
+          background: #${palette.base02};
         }
         div[class|=layerContainer] > div[class*=layer] div[role=listbox] div[role=option] svg[class*=selectedIcon] circle {
-          fill: #${colors.base00};
+          fill: #${palette.base00};
         }
         div[class|=layerContainer] > div[class*=layer] div[role=listbox] div[class*=queryText-] {
-          color: #${colors.base04};
+          color: #${palette.base04};
         }
         div[class|=layerContainer] > div[class*=layer] div[role=listbox] div[class*=queryText-] strong {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] div[class|=modal],
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] div[class|=modalSize],
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] div[class|=uploadModal],
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] div[class|=contentWrapper] {
-          background-color: #${colors.base00};
+          background-color: #${palette.base00};
         }
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] div[class|=modal] li,
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] div[class|=modal] p,
@@ -1890,16 +1890,16 @@ let
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] div[class|=contentWrapper] li,
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] div[class|=contentWrapper] p,
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] div[class|=contentWrapper] span {
-          color: #${colors.base07};
+          color: #${palette.base07};
         }
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] div[class*=footer] {
-          background-color: #${colors.base00};
+          background-color: #${palette.base00};
         }
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] div[class*=footer] button[type=submit] span {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=layerContainer] > div[class*=layer] div[class|=ffffffock] div[class*=footer] [class*=footerText-] {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] h1[class|=fixed],
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] h2[class|=fixed],
@@ -1907,7 +1907,7 @@ let
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] h4[class|=fixed],
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] h5[class|=fixed],
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] h6[class|=fixed] {
-          color: #${colors.base08};
+          color: #${palette.base08};
         }
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] h1[class|=fixed]:after,
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] h2[class|=fixed]:after,
@@ -1915,25 +1915,25 @@ let
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] h4[class|=fixed]:after,
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] h5[class|=fixed]:after,
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] h6[class|=fixed]:after {
-          background-color: #${colors.base08};
+          background-color: #${palette.base08};
         }
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock] div[class*=message-] {
           background-color: transparent;
         }
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock][aria-label=Activities] div[class*=activityItem-] {
-          background-color: #${colors.base00};
+          background-color: #${palette.base00};
         }
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock][aria-label=Activities] div[class*=activityItem-] div[class*=previewBadge-] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock][aria-label=Activities] div[class*=activityTag-] {
-          background-color: rgba(${colors.base03}, 0.5);
+          background-color: rgba(${palette.base03}, 0.5);
         }
         div[class|=layerContainer] > div[class*=layer] div[class|=focusLock][aria-label="Manage Accounts"] div[class*=navRow-] {
-          background-color: #${colors.base00};
+          background-color: #${palette.base00};
         }
         div[class|=layerContainer] div[class|=addGamePopout] {
-          background-color: #${colors.base01};
+          background-color: #${palette.base01};
         }
         div[class|=layerContainer] div[class*=searchOption-]::after,
         div[class|=layerContainer] div[class*=option-]::after,
@@ -1941,40 +1941,40 @@ let
           display: none;
         }
         div[class|=layerContainer] div[class|=queryContainer] {
-          background-color: #${colors.base00} !important;
+          background-color: #${palette.base00} !important;
         }
         div[class|=layerContainer] div[class|=queryContainer] span[class|=key] {
-          color: #${colors.base05};
-          background-color: #${colors.base01};
+          color: #${palette.base05};
+          background-color: #${palette.base01};
         }
         div[class|=layerContainer] [class*=tooltipBrand-],
         div[class|=layerContainer] [class*=tooltipRed-],
         div[class|=layerContainer] [class*=tooltipGreen-],
         div[class|=layerContainer] [class*=tooltipYellow] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=layerContainer] div[class|=popout] div[class|=row][role=button]:hover {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class|=layerContainer] div[class|=popout] div[class|=row][role=button]:hover [class*=timestamp] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
 
         form[class*=card-] {
-          background-color: #${colors.base01};
+          background-color: #${palette.base01};
         }
 
         div[class*=userInfoSection-] div[class|=connectedAccountContainer] {
-          background-color: rgba(${colors.base03}, 0.45) !important;
+          background-color: rgba(${palette.base03}, 0.45) !important;
         }
 
         div[class*=cardWarning-] div[class*=warning-] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
 
         #emoji-picker-tab-panel,
         #sticker-picker-tab-panel {
-          /* --background-floating: #${colors.base03};
+          /* --background-floating: #${palette.base03};
 
             + div[class|="slotsContainer"] {
               background-color: $surface0;
@@ -1983,165 +1983,165 @@ let
         }
         #emoji-picker-tab-panel div[class|=tooltipContainer] label[class|=label][class*=labelChecked-],
         #sticker-picker-tab-panel div[class|=tooltipContainer] label[class|=label][class*=labelChecked-] {
-          background: -webkit-gradient(linear, right top, left top, from(#${colors.base0E}), color-stop(33.33%, #${colors.base0E}), to(#${colors.base0D}));
-          background: linear-gradient(270deg, #${colors.base0E}, #${colors.base0E} 33.33%, #${colors.base0D});
+          background: -webkit-gradient(linear, right top, left top, from(#${palette.base0E}), color-stop(33.33%, #${palette.base0E}), to(#${palette.base0D}));
+          background: linear-gradient(270deg, #${palette.base0E}, #${palette.base0E} 33.33%, #${palette.base0D});
         }
 
         div[class*=keyboardShortcutsModal-] {
-          background-color: #${colors.base01} !important;
+          background-color: #${palette.base01} !important;
         }
         div[class*=keyboardShortcutsModal-] div[class|=keybindShortcut] span[class|=key] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
         div[class*=keyboardShortcutsModal-] div[class|=keybindShortcut] span[class|=key] svg g {
-          fill: #${colors.base00} !important;
+          fill: #${palette.base00} !important;
         }
 
         .react-datepicker,
         .react-datepicker__header {
-          background-color: #${colors.base01} !important;
+          background-color: #${palette.base01} !important;
         }
 
         .react-datepicker__day {
-          background-color: #${colors.base00} !important;
+          background-color: #${palette.base00} !important;
         }
 
         .react-datepicker__day:active {
-          background: #${colors.base0D} !important;
+          background: #${palette.base0D} !important;
         }
 
         .react-datepicker__day--selected:after {
-          background-color: #${colors.base0D} !important;
+          background-color: #${palette.base0D} !important;
         }
 
         [class|=datePickerHint] [class|=hintValue] {
-          color: #${colors.base00} !important;
+          color: #${palette.base00} !important;
         }
 
         div[class*=layerContainer-] div[class|=control] div[class*=checked-] {
-          background-color: #${colors.base0B} !important;
+          background-color: #${palette.base0B} !important;
         }
-        div[class*=layerContainer-] div[class|=control] div[style*="background-color: rgb(${colors.base04});"] {
-          background-color: #${colors.base04} !important;
+        div[class*=layerContainer-] div[class|=control] div[style*="background-color: rgb(${palette.base04});"] {
+          background-color: #${palette.base04} !important;
         }
 
         div[class*=layerContainer-] div[class*=guildPopout-][role=dialog] {
-          background-color: #${colors.base02};
+          background-color: #${palette.base02};
         }
         div[class*=layerContainer-] div[class*=guildPopout-][role=dialog] div[class*=guildName-] {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
 
         div[class*=layerContainer-] [role*=dialog] a[class*=downloadLink-] {
-          color: #${colors.base04} !important;
+          color: #${palette.base04} !important;
           opacity: 1;
         }
         div[class*=layerContainer-] [role*=dialog] a[class*=downloadLink-]:hover {
-          color: #${colors.base05} !important;
+          color: #${palette.base05} !important;
         }
 
         div[class*=userPopoutOuter-] div[aria-label="HypeSquad Bravery"] img,
         div[class*=userProfileOuter-] div[aria-label="HypeSquad Bravery"] img {
-          content: url("data:image/svg+xml,%3Csvg height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath clip-rule='evenodd' d='m5.01502 4h13.97008c.1187 0 .215.09992.215.22305v9.97865c0 .0697-.0312.1343-.0837.1767l-6.985 5.5752c-.0389.0313-.0847.0464-.1314.0464-.0466 0-.0924-.0151-.1313-.0464l-6.985-5.5752c-.05252-.0424-.08365-.107-.08365-.1767v-9.97865c0-.12313.0963-.22305.21497-.22305zm7.82148 7.0972 4.1275-2.71296c.1039-.06863.2299.04542.1725.15644l-1.7114 3.36192c-.0403.0807.0182.1756.1079.1756h1.0246c.118 0 .1664.1504.0706.219l-4.6267 3.3175c-.0414.0303-.0978.0303-.1402 0l-4.6267-3.3175c-.0948-.0686-.04639-.219.07059-.219h1.02356c.09076 0 .14925-.0949.10791-.1756l-1.71132-3.36293c-.05648-.11001.06958-.22305.17345-.15543l4.12851 2.71296c.0716.0474.1291.112.1674.1887l.6293 1.2636c.0444.0888.1714.0888.2158 0l.6293-1.2636c.0383-.0767.0958-.1423.1674-.1887z' fill='%23${colors.base0E}' fill-rule='evenodd'/%3E%3C/svg%3E");
+          content: url("data:image/svg+xml,%3Csvg height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath clip-rule='evenodd' d='m5.01502 4h13.97008c.1187 0 .215.09992.215.22305v9.97865c0 .0697-.0312.1343-.0837.1767l-6.985 5.5752c-.0389.0313-.0847.0464-.1314.0464-.0466 0-.0924-.0151-.1313-.0464l-6.985-5.5752c-.05252-.0424-.08365-.107-.08365-.1767v-9.97865c0-.12313.0963-.22305.21497-.22305zm7.82148 7.0972 4.1275-2.71296c.1039-.06863.2299.04542.1725.15644l-1.7114 3.36192c-.0403.0807.0182.1756.1079.1756h1.0246c.118 0 .1664.1504.0706.219l-4.6267 3.3175c-.0414.0303-.0978.0303-.1402 0l-4.6267-3.3175c-.0948-.0686-.04639-.219.07059-.219h1.02356c.09076 0 .14925-.0949.10791-.1756l-1.71132-3.36293c-.05648-.11001.06958-.22305.17345-.15543l4.12851 2.71296c.0716.0474.1291.112.1674.1887l.6293 1.2636c.0444.0888.1714.0888.2158 0l.6293-1.2636c.0383-.0767.0958-.1423.1674-.1887z' fill='%23${palette.base0E}' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
         div[class*=userPopoutOuter-] div[aria-label="HypeSquad Balance"],
         div[class*=userProfileOuter-] div[aria-label="HypeSquad Balance"] {
-          content: url("data:image/svg+xml,%3Csvg height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath clip-rule='evenodd' d='m11.8622 4.05696c.076-.07595.1996-.07595.2756 0l7.8048 7.80474c.0371.0362.0574.0865.0574.1377 0 .0513-.0212.1016-.0574.1378l-7.8048 7.8047c-.038.038-.0883.0574-.1378.0574s-.0998-.0194-.1378-.0574l-7.8048-7.8047c-.03709-.0362-.0574-.0857-.0574-.1378s.02031-.1015.0574-.1377zm.9299 8.29474 3.6146-2.37377c.0909-.05917.2013.03977.151.13597l-1.4986 2.9416c-.0354.0707.0158.1537.0944.1537h.8973c.1033 0 .1457.1316.0618.1916l-4.0517 2.9028c-.0362.0265-.0856.0265-.1227 0l-4.05168-2.9028c-.08301-.06-.04062-.1916.06182-.1916h.89634c.07948 0 .1307-.083.09449-.1537l-1.49862-2.9416c-.04945-.0962.06094-.19514.1519-.13597l3.61545 2.37377c.0627.0415.113.098.1465.1651l.5511 1.1057c.0389.0777.1501.0777.189 0l.551-1.1057c.0336-.0671.0839-.1245.1466-.1651z' fill='%23${colors.base0C}' fill-rule='evenodd'/%3E%3C/svg%3E");
+          content: url("data:image/svg+xml,%3Csvg height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath clip-rule='evenodd' d='m11.8622 4.05696c.076-.07595.1996-.07595.2756 0l7.8048 7.80474c.0371.0362.0574.0865.0574.1377 0 .0513-.0212.1016-.0574.1378l-7.8048 7.8047c-.038.038-.0883.0574-.1378.0574s-.0998-.0194-.1378-.0574l-7.8048-7.8047c-.03709-.0362-.0574-.0857-.0574-.1378s.02031-.1015.0574-.1377zm.9299 8.29474 3.6146-2.37377c.0909-.05917.2013.03977.151.13597l-1.4986 2.9416c-.0354.0707.0158.1537.0944.1537h.8973c.1033 0 .1457.1316.0618.1916l-4.0517 2.9028c-.0362.0265-.0856.0265-.1227 0l-4.05168-2.9028c-.08301-.06-.04062-.1916.06182-.1916h.89634c.07948 0 .1307-.083.09449-.1537l-1.49862-2.9416c-.04945-.0962.06094-.19514.1519-.13597l3.61545 2.37377c.0627.0415.113.098.1465.1651l.5511 1.1057c.0389.0777.1501.0777.189 0l.551-1.1057c.0336-.0671.0839-.1245.1466-.1651z' fill='%23${palette.base0C}' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
         div[class*=userPopoutOuter-] div[aria-label="HypeSquad Brilliance"],
         div[class*=userProfileOuter-] div[aria-label="HypeSquad Brilliance"] {
-          content: url("data:image/svg+xml,%3Csvg height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath clip-rule='evenodd' d='m12 20c4.4183 0 8-3.5817 8-8 0-4.41828-3.5817-8-8-8-4.41828 0-8 3.58172-8 8 0 4.4183 3.58172 8 8 8zm.7921-8.275 3.6146-2.3738c.0909-.05916.2013.03974.151.136l-1.4986 2.9416c-.0354.0707.0158.1537.0944.1537h.8973c.1033 0 .1457.1315.0618.1916l-4.0517 2.9027c-.0362.0265-.0856.0265-.1227 0l-4.05168-2.9027c-.08301-.0601-.04062-.1916.06182-.1916h.89634c.07948 0 .1307-.083.09449-.1537l-1.49862-2.9416c-.04945-.09626.06094-.19516.1519-.136l3.61545 2.3738c.0627.0415.113.098.1465.1651l.5511 1.1057c.0389.0777.1501.0777.189 0l.551-1.1057c.0336-.0671.0839-.1245.1466-.1651z' fill='%23${colors.base08}' fill-rule='evenodd'/%3E%3C/svg%3E");
+          content: url("data:image/svg+xml,%3Csvg height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath clip-rule='evenodd' d='m12 20c4.4183 0 8-3.5817 8-8 0-4.41828-3.5817-8-8-8-4.41828 0-8 3.58172-8 8 0 4.4183 3.58172 8 8 8zm.7921-8.275 3.6146-2.3738c.0909-.05916.2013.03974.151.136l-1.4986 2.9416c-.0354.0707.0158.1537.0944.1537h.8973c.1033 0 .1457.1315.0618.1916l-4.0517 2.9027c-.0362.0265-.0856.0265-.1227 0l-4.05168-2.9027c-.08301-.0601-.04062-.1916.06182-.1916h.89634c.07948 0 .1307-.083.09449-.1537l-1.49862-2.9416c-.04945-.09626.06094-.19516.1519-.136l3.61545 2.3738c.0627.0415.113.098.1465.1651l.5511 1.1057c.0389.0777.1501.0777.189 0l.551-1.1057c.0336-.0671.0839-.1245.1466-.1651z' fill='%23${palette.base08}' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
         div[class*=userPopoutOuter-] div[aria-label="Active Developer"],
         div[class*=userProfileOuter-] div[aria-label="Active Developer"] {
-          content: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.47213 4L4 6.47213V17.5279L6.47217 20H17.5278L20 17.5279V6.47213L17.5279 4H6.47213ZM10.8582 16.4255H8.64551C8.64551 14.5952 7.1567 13.1064 5.32642 13.1064V10.8936C7.1567 10.8936 8.64551 9.40483 8.64551 7.57454H10.8582C10.8582 9.39042 9.96684 10.9908 8.61129 12C9.96684 13.0093 10.8582 14.6096 10.8582 16.4255ZM18.6667 13.1064C16.8364 13.1064 15.3476 14.5952 15.3476 16.4255H13.1348C13.1348 14.6096 14.0263 13.0093 15.3818 12C14.0263 10.9908 13.1348 9.39042 13.1348 7.57454H15.3476C15.3476 9.40483 16.8364 10.8936 18.6667 10.8936V13.1064V13.1064Z' fill='%23${colors.base0B}'/%3E%3C/svg%3E");
+          content: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.47213 4L4 6.47213V17.5279L6.47217 20H17.5278L20 17.5279V6.47213L17.5279 4H6.47213ZM10.8582 16.4255H8.64551C8.64551 14.5952 7.1567 13.1064 5.32642 13.1064V10.8936C7.1567 10.8936 8.64551 9.40483 8.64551 7.57454H10.8582C10.8582 9.39042 9.96684 10.9908 8.61129 12C9.96684 13.0093 10.8582 14.6096 10.8582 16.4255ZM18.6667 13.1064C16.8364 13.1064 15.3476 14.5952 15.3476 16.4255H13.1348C13.1348 14.6096 14.0263 13.0093 15.3818 12C14.0263 10.9908 13.1348 9.39042 13.1348 7.57454H15.3476C15.3476 9.40483 16.8364 10.8936 18.6667 10.8936V13.1064V13.1064Z' fill='%23${palette.base0B}'/%3E%3C/svg%3E");
         }
         div[class*=userPopoutOuter-] div[aria-label="Early Verified Bot Developer"],
         div[class*=userProfileOuter-] div[aria-label="Early Verified Bot Developer"] {
-          content: url("data:image/svg+xml,%3Csvg height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m21.58 11.4-4.28-7.39-.35-.6h-9.91l-.35.6-4.27 7.39-.35.6.35.6 4.27 7.39.35.6h9.92l.35-.6 4.28-7.39.35-.6zm-13.07-1.03-1.63 1.63 1.63 1.63v2.73l-4.36-4.36 4.37-4.37v2.74zm3.12 6.93-2.04-.63 3.1-9.98 2.04.64zm3.86-.93v-2.73l1.63-1.64-1.63-1.63v-2.74l4.36 4.37z' fill='%23${colors.base0D}'/%3E%3C/svg%3E");
+          content: url("data:image/svg+xml,%3Csvg height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m21.58 11.4-4.28-7.39-.35-.6h-9.91l-.35.6-4.27 7.39-.35.6.35.6 4.27 7.39.35.6h9.92l.35-.6 4.28-7.39.35-.6zm-13.07-1.03-1.63 1.63 1.63 1.63v2.73l-4.36-4.36 4.37-4.37v2.74zm3.12 6.93-2.04-.63 3.1-9.98 2.04.64zm3.86-.93v-2.73l1.63-1.64-1.63-1.63v-2.74l4.36 4.37z' fill='%23${palette.base0D}'/%3E%3C/svg%3E");
         }
         div[class*=userPopoutOuter-] div[class|=userPopoutOverlayBackground] > div[class|=scroller] > div[class|=section]:first-child > div[class|=buttonsContainer] > button:nth-child(2),
         div[class*=userProfileOuter-] div[class|=userPopoutOverlayBackground] > div[class|=scroller] > div[class|=section]:first-child > div[class|=buttonsContainer] > button:nth-child(2) {
-          background: #${colors.base0D};
+          background: #${palette.base0D};
         }
 
         [class*=layerContainer-] [id|=slate-toolbar] {
-          background-color: #${colors.base00};
+          background-color: #${palette.base00};
         }
         [class*=layerContainer-] [id|=slate-toolbar] [class*=buttons-] [class*=icon-] {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
 
         [class*=layerContainer-] div[id=sort-and-view] div[id=sort-and-view-reset-all] [style="color: var(--text-normal);"]:hover {
-          color: #${colors.base00} !important;
+          color: #${palette.base00} !important;
         }
 
         [class|=layerContainer] [class|=quickswitcher] [class*=badge-] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
-        rect[fill="#${colors.base0B}"],
+        rect[fill="#${palette.base0B}"],
         foreignObject[mask="url(#svg-mask-status-online)"] > div,
         div[class|=dotOnline],
         i[class|=statusOnline] {
-          fill: #${colors.base0B} !important;
-          background-color: #${colors.base0B} !important;
+          fill: #${palette.base0B} !important;
+          background-color: #${palette.base0B} !important;
         }
 
-        rect[fill="rgba(${colors.base0B}, 1)"] {
-          fill: #${colors.base0B} !important;
+        rect[fill="rgba(${palette.base0B}, 1)"] {
+          fill: #${palette.base0B} !important;
         }
 
-        rect[fill="#${colors.base09}"],
+        rect[fill="#${palette.base09}"],
         foreignObject[mask="url(#svg-mask-status-idle)"] > div {
-          fill: #${colors.base09} !important;
-          background-color: #${colors.base09} !important;
+          fill: #${palette.base09} !important;
+          background-color: #${palette.base09} !important;
         }
 
-        rect[fill="rgba(${colors.base09}, 1)"] {
-          fill: #${colors.base09} !important;
+        rect[fill="rgba(${palette.base09}, 1)"] {
+          fill: #${palette.base09} !important;
         }
 
-        rect[fill="#${colors.base08}"],
+        rect[fill="#${palette.base08}"],
         foreignObject[mask="url(#svg-mask-status-dnd)"] > div {
-          fill: #${colors.base08} !important;
-          background-color: #${colors.base08} !important;
+          fill: #${palette.base08} !important;
+          background-color: #${palette.base08} !important;
         }
 
-        rect[fill="rgba(${colors.base08}, 1)"] {
-          fill: #${colors.base08} !important;
+        rect[fill="rgba(${palette.base08}, 1)"] {
+          fill: #${palette.base08} !important;
         }
 
-        rect[fill="#${colors.base04}"],
+        rect[fill="#${palette.base04}"],
         foreignObject[mask="url(#svg-mask-status-offline)"] > div,
         foreignObject[mask="url(#svg-mask-status-offline)"] > rect,
         div[class|=dotOffline],
         i[class|=statusOffline] {
-          fill: #${colors.base04} !important;
-          background-color: #${colors.base04} !important;
+          fill: #${palette.base04} !important;
+          background-color: #${palette.base04} !important;
         }
 
-        rect[fill="rgba(${colors.base04}, 1)"] {
-          fill: #${colors.base04} !important;
+        rect[fill="rgba(${palette.base04}, 1)"] {
+          fill: #${palette.base04} !important;
         }
 
-        rect[fill="#${colors.base0E}"] {
-          fill: #${colors.base0E} !important;
+        rect[fill="#${palette.base0E}"] {
+          fill: #${palette.base0E} !important;
         }
 
         .vc-platform-indicator svg[fill*="--green-"] {
-          fill: #${colors.base0B};
+          fill: #${palette.base0B};
         }
 
         .vc-platform-indicator svg[fill*="--yellow-"] {
-          fill: #${colors.base09};
+          fill: #${palette.base09};
         }
 
         .vc-platform-indicator svg[fill*="--red-"] {
-          fill: #${colors.base08};
+          fill: #${palette.base08};
         }
 
         .vc-platform-indicator svg[fill*="--primary-400"] {
-          fill: #${colors.base04};
+          fill: #${palette.base04};
         }
 
         [src="/assets/eaeac24163b35f7526704a3d9b3c7722.svg"] {
@@ -2151,7 +2151,7 @@ let
           -webkit-mask-image: url("https://discord.com/assets/eaeac24163b35f7526704a3d9b3c7722.svg");
           -webkit-mask-repeat: no-repeat;
           -webkit-mask-size: contain;
-          background: #${colors.base0B};
+          background: #${palette.base0B};
         }
 
         .vc-user-connection [src="/assets/eaeac24163b35f7526704a3d9b3c7722.svg"] {
@@ -2159,293 +2159,293 @@ let
         }
 
         #vencordthemes-tab [class*=input-]:focus {
-          border-color: #${colors.base0D} !important;
+          border-color: #${palette.base0D} !important;
         }
 
         svg[class|=cursorDefault] svg[class|=dots] circle {
-          fill: #${colors.base00} !important;
+          fill: #${palette.base00} !important;
         }
 
         [style*="background-color: hsl(235, calc(var(--saturation-factor, 1) * 85.6%), 64.7%)"] {
-          background-color: #${colors.base0D} !important;
-          color: #${colors.base00};
+          background-color: #${palette.base0D} !important;
+          color: #${palette.base00};
         }
 
-        span[class*=username-][style*="color: #${colors.base00}"],
-        span[class*=username-][style*="color: #${colors.base01}"] {
-          color: #${colors.base00} !important;
+        span[class*=username-][style*="color: #${palette.base00}"],
+        span[class*=username-][style*="color: #${palette.base01}"] {
+          color: #${palette.base00} !important;
         }
 
         div[class*=flowerStarContainer-][class*=boostedGuildTierIconBackgroundWithVisibleBanner] svg[class*=flowerStar-] * {
-          fill: #${colors.base05};
+          fill: #${palette.base05};
         }
         div[class*=flowerStarContainer-][class*=boostedGuildTierIconBackgroundWithVisibleBanner] div[class|=childContainer] svg * {
-          fill: #${colors.base00};
+          fill: #${palette.base00};
         }
         div[class*=flowerStarContainer-][class*=iconBackgroundTierOne-] svg[class*=flowerStar-] *, div[class*=flowerStarContainer-][class*=iconBackgroundTierTwo-]:not([class*=boostedGuildTierIconBackgroundWithVisibleBanner]) svg[class*=flowerStar-] * {
-          fill: #${colors.base03};
+          fill: #${palette.base03};
         }
         div[class*=flowerStarContainer-][class*=iconBackgroundTierOne-] div[class|=childContainer] svg *, div[class*=flowerStarContainer-][class*=iconBackgroundTierTwo-]:not([class*=boostedGuildTierIconBackgroundWithVisibleBanner]) div[class|=childContainer] svg * {
-          fill: #${colors.base05};
+          fill: #${palette.base05};
         }
         div[class*=flowerStarContainer-][class*=iconBackgroundTierThree-] svg[class*=flowerStar-] * {
-          fill: #${colors.base0E};
+          fill: #${palette.base0E};
         }
         div[class*=flowerStarContainer-][class*=iconBackgroundTierThree-] div[class|=childContainer] svg * {
-          fill: #${colors.base00};
+          fill: #${palette.base00};
         }
         div[class*=flowerStarContainer-][class*=verified-] svg[class*=flowerStar-] * {
-          fill: #${colors.base0B};
+          fill: #${palette.base0B};
         }
         div[class*=flowerStarContainer-][class*=verified-] div[class|=childContainer] svg * {
-          fill: #${colors.base00};
+          fill: #${palette.base00};
         }
         div[class*=flowerStarContainer-][class*=partnered-] svg[class*=flowerStar-] * {
-          fill: #${colors.base0D};
+          fill: #${palette.base0D};
         }
         div[class*=flowerStarContainer-][class*=partnered-] div[class|=childContainer] svg * {
-          fill: #${colors.base00};
+          fill: #${palette.base00};
         }
 
         div[class|=communityInfoPill] {
-          --background-accent: rgba(${colors.base02}, 0.7);
-          color: #${colors.base05};
+          --background-accent: rgba(${palette.base02}, 0.7);
+          color: #${palette.base05};
         }
         div[class|=communityInfoPill] div[class|=text] {
           font-weight: 500;
         }
 
         a[class*=socialLink-][href*=discord] {
-          color: #${colors.base04};
+          color: #${palette.base04};
         }
 
         svg[class|=uploadIcon] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
 
         .theme-dark h2[class|=emptyStateHeader],
         .theme-light h2[class|=emptyStateHeader] {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
         .theme-dark p[class|=emptyStateSubtext],
         .theme-light p[class|=emptyStateSubtext] {
-          color: #${colors.base04};
+          color: #${palette.base04};
         }
 
         div[class*=unreadMentionsBar-],
         div[class*=unreadBar-] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
 
         div[class|=numberBadge] {
           font-weight: 700;
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
 
         div[class|=newChannel] {
-          color: #${colors.base00};
-          background-color: #${colors.base0D} !important;
+          color: #${palette.base00};
+          background-color: #${palette.base0D} !important;
         }
 
         div[class|=botTag] {
-          background-color: #${colors.base0D};
+          background-color: #${palette.base0D};
         }
 
         div[class|=addFriendInputWrapper]:focus-within {
-          border-color: #${colors.base03};
+          border-color: #${palette.base03};
         }
 
         button[class|=attachButton] svg path[class|=attachButtonPlay] {
-          color: #${colors.base0B};
-          fill: #${colors.base0B};
+          color: #${palette.base0B};
+          fill: #${palette.base0B};
         }
 
         div[class|=tags] div[class|=pinIcon] path {
-          fill: #${colors.base01} !important;
+          fill: #${palette.base01} !important;
         }
 
         div[class*=avatarSpeaking-] {
-          -webkit-box-shadow: inset 0 0 0 2px #${colors.base0B}, inset 0 0 0 3px var(--background-secondary);
-          box-shadow: inset 0 0 0 2px #${colors.base0B}, inset 0 0 0 3px var(--background-secondary);
+          -webkit-box-shadow: inset 0 0 0 2px #${palette.base0B}, inset 0 0 0 3px var(--background-secondary);
+          box-shadow: inset 0 0 0 2px #${palette.base0B}, inset 0 0 0 3px var(--background-secondary);
         }
 
         div[class*=videoLayer-] > div[class|=tileChild] > div[class|=border][class*=speaking-] {
-          -webkit-box-shadow: inset 0 0 0 2px #${colors.base0B}, inset 0 0 0 3px #${colors.base0B};
-          box-shadow: inset 0 0 0 2px #${colors.base0B}, inset 0 0 0 3px #${colors.base0B};
+          -webkit-box-shadow: inset 0 0 0 2px #${palette.base0B}, inset 0 0 0 3px #${palette.base0B};
+          box-shadow: inset 0 0 0 2px #${palette.base0B}, inset 0 0 0 3px #${palette.base0B};
         }
         div[class*=videoLayer-] > div[class|=tileChild] > div[class|=border][class*=voiceChannelEffect-] {
-          -webkit-box-shadow: inset 0 0 0 2px #${colors.base0D}, inset 0 0 0 3px #${colors.base0D};
-          box-shadow: inset 0 0 0 2px #${colors.base0D}, inset 0 0 0 3px #${colors.base0D};
+          -webkit-box-shadow: inset 0 0 0 2px #${palette.base0D}, inset 0 0 0 3px #${palette.base0D};
+          box-shadow: inset 0 0 0 2px #${palette.base0D}, inset 0 0 0 3px #${palette.base0D};
         }
 
         div[class*=featureIcon-] path {
-          fill: #${colors.base0D};
+          fill: #${palette.base0D};
         }
 
         div[class*=backgroundAccent-] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
 
         div[class*=profileBadges-] div[aria-label="Supports Commands"] img {
-          content: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23${colors.base0B}'%3E%3Cpath d='m8.1176653 16.0847263 4.8330812-8.1694527h2.9315882l-4.8330812 8.1694527z'/%3E%3Cpath d='m20.4189453 9.4038086v-2.4311524c0-1.9775391-1.0825195-3.1118164-2.9697266-3.1118164h-1.5581055v1.7802734l.9594727-.0014648c.8540039 0 1.34375.5683594 1.34375 1.5585938v2.3969727c0 .8300781.1806641 1.8422852 1.5893555 2.3100586l.2856445.0947265-.2856445.0947266c-1.4086914.4677734-1.5893555 1.4799804-1.5893555 2.3100586v2.3964844c0 .9907227-.4897461 1.559082-1.34375 1.559082l-.9594727-.0014648v1.7802734h1.5581055c1.887207 0 2.9697266-1.1342773 2.9697266-3.1118164v-2.4316406c0-1.2583008.3432617-1.6264648 1.5810547-1.6445312v-1.9023438c-1.237793-.0180665-1.5810547-.3862305-1.5810547-1.6450196z'/%3E%3Cpath d='m5.8061523 7.1982422c0-.9760742.5024414-1.5585938 1.3432617-1.5585938l.9594727.0014648v-1.7802734h-1.5576172c-1.887207 0-2.9697266 1.1342773-2.9697266 3.1118164v2.4311523c0 1.2587891-.3432617 1.6269531-1.581543 1.6450195v1.9023438c1.2382812.0180664 1.581543.3862305 1.581543 1.6445312v2.4316406c0 1.9775391 1.0825195 3.1118164 2.9697266 3.1118164h1.5576172v-1.7802734l-.9594727.0014648c-.8408203 0-1.3432617-.5830078-1.3432617-1.559082v-2.3964844c0-.8300781-.1806641-1.8422852-1.5898438-2.3100586l-.2856444-.0947264.2856445-.0947266c1.4091797-.4677734 1.5898437-1.4799804 1.5898437-2.3100586z'/%3E%3C/g%3E%3C/svg%3E");
+          content: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23${palette.base0B}'%3E%3Cpath d='m8.1176653 16.0847263 4.8330812-8.1694527h2.9315882l-4.8330812 8.1694527z'/%3E%3Cpath d='m20.4189453 9.4038086v-2.4311524c0-1.9775391-1.0825195-3.1118164-2.9697266-3.1118164h-1.5581055v1.7802734l.9594727-.0014648c.8540039 0 1.34375.5683594 1.34375 1.5585938v2.3969727c0 .8300781.1806641 1.8422852 1.5893555 2.3100586l.2856445.0947265-.2856445.0947266c-1.4086914.4677734-1.5893555 1.4799804-1.5893555 2.3100586v2.3964844c0 .9907227-.4897461 1.559082-1.34375 1.559082l-.9594727-.0014648v1.7802734h1.5581055c1.887207 0 2.9697266-1.1342773 2.9697266-3.1118164v-2.4316406c0-1.2583008.3432617-1.6264648 1.5810547-1.6445312v-1.9023438c-1.237793-.0180665-1.5810547-.3862305-1.5810547-1.6450196z'/%3E%3Cpath d='m5.8061523 7.1982422c0-.9760742.5024414-1.5585938 1.3432617-1.5585938l.9594727.0014648v-1.7802734h-1.5576172c-1.887207 0-2.9697266 1.1342773-2.9697266 3.1118164v2.4311523c0 1.2587891-.3432617 1.6269531-1.581543 1.6450195v1.9023438c1.2382812.0180664 1.581543.3862305 1.581543 1.6445312v2.4316406c0 1.9775391 1.0825195 3.1118164 2.9697266 3.1118164h1.5576172v-1.7802734l-.9594727.0014648c-.8408203 0-1.3432617-.5830078-1.3432617-1.559082v-2.3964844c0-.8300781-.1806641-1.8422852-1.5898438-2.3100586l-.2856444-.0947264.2856445-.0947266c1.4091797-.4677734 1.5898437-1.4799804 1.5898437-2.3100586z'/%3E%3C/g%3E%3C/svg%3E");
         }
 
         div[class*=newBadge-],
         div[class*=tryItOutBadge-] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
 
         [class|=tabBar] [class|=badge] {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
 
         span[class*=channelMention]:hover,
         [class*=mention]:not([class*=mentionButton-],
         [class*=mentionIcon-]):hover {
-          color: #${colors.base00};
+          color: #${palette.base00};
         }
 
         .theme-dark code.hljs {
-          color: #${colors.base07};
-          background: #${colors.base01};
+          color: #${palette.base07};
+          background: #${palette.base01};
         }
         .theme-dark code .hljs-keyword {
-          color: #${colors.base0E};
+          color: #${palette.base0E};
         }
         .theme-dark code .hljs-built_in {
-          color: #${colors.base08};
+          color: #${palette.base08};
         }
         .theme-dark code .hljs-type {
-          color: #${colors.base09};
+          color: #${palette.base09};
         }
         .theme-dark code .hljs-literal {
-          color: #${colors.base09};
+          color: #${palette.base09};
         }
         .theme-dark code .hljs-number {
-          color: #${colors.base09};
+          color: #${palette.base09};
         }
         .theme-dark code .hljs-operator {
-          color: #${colors.base0C};
+          color: #${palette.base0C};
         }
         .theme-dark code .hljs-punctuation {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
         .theme-dark code .hljs-property {
-          color: #${colors.base0C};
+          color: #${palette.base0C};
         }
         .theme-dark code .hljs-regexp {
-          color: #${colors.base0E};
+          color: #${palette.base0E};
         }
         .theme-dark code .hljs-string {
-          color: #${colors.base0B};
+          color: #${palette.base0B};
         }
         .theme-dark code .hljs-char.escape_ {
-          color: #${colors.base0B};
+          color: #${palette.base0B};
         }
         .theme-dark code .hljs-subst {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
         .theme-dark code .hljs-symbol {
-          color: #${colors.base08};
+          color: #${palette.base08};
         }
         .theme-dark code .hljs-variable {
-          color: #${colors.base0E};
+          color: #${palette.base0E};
         }
         .theme-dark code .hljs-variable.language_ {
-          color: #${colors.base0E};
+          color: #${palette.base0E};
         }
         .theme-dark code .hljs-variable.constant_ {
-          color: #${colors.base09};
+          color: #${palette.base09};
         }
         .theme-dark code .hljs-title {
-          color: #${colors.base0D};
+          color: #${palette.base0D};
         }
         .theme-dark code .hljs-title.class_ {
-          color: #${colors.base09};
+          color: #${palette.base09};
         }
         .theme-dark code .hljs-title.function_ {
-          color: #${colors.base0D};
+          color: #${palette.base0D};
         }
         .theme-dark code .hljs-params {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
         .theme-dark code .hljs-comment {
-          color: #${colors.base03};
+          color: #${palette.base03};
         }
         .theme-dark code .hljs-doctag {
-          color: #${colors.base08};
+          color: #${palette.base08};
         }
         .theme-dark code .hljs-meta {
-          color: #${colors.base09};
+          color: #${palette.base09};
         }
         .theme-dark code .hljs-section {
-          color: #${colors.base0D};
+          color: #${palette.base0D};
         }
         .theme-dark code .hljs-tag {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
         .theme-dark code .hljs-name {
-          color: #${colors.base0E};
+          color: #${palette.base0E};
         }
         .theme-dark code .hljs-attr {
-          color: #${colors.base0D};
+          color: #${palette.base0D};
         }
         .theme-dark code .hljs-attribute {
-          color: #${colors.base0B};
+          color: #${palette.base0B};
         }
         .theme-dark code .hljs-bullet {
-          color: #${colors.base0C};
+          color: #${palette.base0C};
         }
         .theme-dark code .hljs-code {
-          color: #${colors.base0B};
+          color: #${palette.base0B};
         }
         .theme-dark code .hljs-emphasis {
-          color: #${colors.base08};
+          color: #${palette.base08};
           font-style: italic;
         }
         .theme-dark code .hljs-strong {
-          color: #${colors.base08};
+          color: #${palette.base08};
           font-weight: bold;
         }
         .theme-dark code .hljs-formula {
-          color: #${colors.base0C};
+          color: #${palette.base0C};
         }
         .theme-dark code .hljs-link {
-          color: #${colors.base0D};
+          color: #${palette.base0D};
           font-style: italic;
         }
         .theme-dark code .hljs-quote {
-          color: #${colors.base0B};
+          color: #${palette.base0B};
           font-style: italic;
         }
         .theme-dark code .hljs-selector-tag {
-          color: #${colors.base09};
+          color: #${palette.base09};
         }
         .theme-dark code .hljs-selector-id {
-          color: #${colors.base0D};
+          color: #${palette.base0D};
         }
         .theme-dark code .hljs-selector-class {
-          color: #${colors.base0C};
+          color: #${palette.base0C};
         }
         .theme-dark code .hljs-selector-attr {
-          color: #${colors.base0E};
+          color: #${palette.base0E};
         }
         .theme-dark code .hljs-selector-pseudo {
-          color: #${colors.base0C};
+          color: #${palette.base0C};
         }
         .theme-dark code .hljs-template-tag {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
         .theme-dark code .hljs-template-variable {
-          color: #${colors.base05};
+          color: #${palette.base05};
         }
         .theme-dark code .hljs-diff-addition {
-          color: #${colors.base0B};
-          background: rgba(${colors.base0B}, 0.15);
+          color: #${palette.base0B};
+          background: rgba(${palette.base0B}, 0.15);
         }
         .theme-dark code .hljs-diff-deletion {
-          color: #${colors.base08};
-          background: rgba(${colors.base08}, 0.15);
+          color: #${palette.base08};
+          background: rgba(${palette.base08}, 0.15);
         }
 
         .pngImage-1vIgLy:hover, .lottieCanvas-c2HE82 {
@@ -2453,43 +2453,43 @@ let
         }
 
         .colorStreamerMode-8uoRWd {
-            background-color: #${colors.base0E};
-            color: #${colors.base07};
+            background-color: #${palette.base0E};
+            color: #${palette.base07};
         }
 
         div[class|=notice] button[class|=button] {
-            border-color: #${colors.base07};
-            color: #${colors.base07};
+            border-color: #${palette.base07};
+            color: #${palette.base07};
         }
 
         div[class|=notice] button[class|=button]:hover {
-            background: #${colors.base07};
-          color: #${colors.base00};
+            background: #${palette.base07};
+          color: #${palette.base00};
         }
 
         div[class|=notice] div[class|=closeButton] > svg > path {
-            fill: #${colors.base07};
+            fill: #${palette.base07};
         }
 
         [class|=chatContent] code.inline {
-            background: #${colors.base00};
+            background: #${palette.base00};
         }
 
         .contents-3NembX .button-ejjZWC {
-            color: #${colors.base00};
+            color: #${palette.base00};
         }
 
         .gradientBackground-MytxDL {
-          background: #${colors.base0E};
+          background: #${palette.base0E};
         }
 
         .upsellText-29l7Q- {
-            color: #${colors.base07};
+            color: #${palette.base07};
             margin-left: 6px;
         }
 
         .contents-3NembX {
-          color: #${colors.base07};
+          color: #${palette.base07};
         }
 
         .icon-2O29O0 {
@@ -2497,25 +2497,25 @@ let
         }
 
         div[class|=newChannel] {
-            color: #${colors.base00};
-            background-color: #${colors.base0A} !important;
+            color: #${palette.base00};
+            background-color: #${palette.base0A} !important;
         }
 
         .fakeActivityIcon-KeXVoI.activityCharacterWumpus-31wmZ9 {
-            background-color: #${colors.base02};
+            background-color: #${palette.base02};
         }
 
         .theme-dark .customColorPicker-C_jddW {
-            background: #${colors.base00};
-            border-color: #${colors.base00};
+            background: #${palette.base00};
+            border-color: #${palette.base00};
         }
 
         .grabber-3R-Rx9 {
-          background-color: #${colors.base07};
+          background-color: #${palette.base07};
         }
 
         div[class|=contentRegion] [class|=bar], div[class|=contentRegion] [class|=markDash] {
-            background: #${colors.base02};
+            background: #${palette.base02};
         }
 
         .theme-dark .checkbox-1LuCGM {
@@ -2523,169 +2523,169 @@ let
         }
 
         .lookFilled-1H2Jvj.colorBrand-2M3O3N {
-            color: #${colors.base07};
-            background-color: #${colors.base0A};
+            color: #${palette.base07};
+            background-color: #${palette.base0A};
         }
 
         .lookFilled-1H2Jvj.colorRed-2VFhM4 {
-            color: #${colors.base07};
-            background-color: #${colors.base0A};
+            color: #${palette.base07};
+            background-color: #${palette.base0A};
         }
 
         .lookFilled-1H2Jvj.colorRed-2VFhM4:hover {
-            background-color: #${colors.base09};
+            background-color: #${palette.base09};
         }
 
         .lookFilled-1H2Jvj.colorBrand-2M3O3N:hover {
-            background-color: #${colors.base09};
+            background-color: #${palette.base09};
         }
 
         .lookInverted-2GrLaB.colorBrand-2M3O3N {
-            color: #${colors.base0D};
-            background-color: #${colors.base0E};
+            color: #${palette.base0D};
+            background-color: #${palette.base0E};
         }
 
         .lookInverted-2GrLaB.colorBrand-2M3O3N:hover {
-            background-color: #${colors.base0D};
+            background-color: #${palette.base0D};
         }
 
         .theme-dark p[class|=emptyStateSubtext], .theme-light p[class|=emptyStateSubtext] {
-            color: #${colors.base04};
+            color: #${palette.base04};
         }
 
 
         div[class|=contentRegion] #discord-nitro-tab button[class*=lookInverted-] {
-            color: #${colors.base07};
-            background-color: #${colors.base0E};
+            color: #${palette.base07};
+            background-color: #${palette.base0E};
         }
 
         div[class|=contentRegion] #discord-nitro-tab button[class*=lookInverted-]:hover {
-            background-color: #${colors.base0D};
+            background-color: #${palette.base0D};
         }
 
         div[class|=contentRegion] #keybinds-tab span[class*=key] {
-            color: #${colors.base07};
+            color: #${palette.base07};
         }
 
         div[class|=layerContainer] div[class|=addGamePopout] {
-            background-color: #${colors.base00};
+            background-color: #${palette.base00};
         }
 
         div[class|=contentRegion] #accessibility-tab button[class*=colorBrandNew] {
-            background-color: #${colors.base0A};
+            background-color: #${palette.base0A};
         }
 
         .reactionInner-YJjOtT {
-          background-color: #${colors.base01};
+          background-color: #${palette.base01};
         }
 
         div[class|=contentRegion] #guild_premium-tab div[class|=tierHeaderUnlocked] div[class|=tierUnlocked], div[class|=contentRegion] #guild_premium-tab div[class|=tierHeaderLocked] div[class|=tierUnlocked] {
-            background-image: linear-gradient(90deg, #${colors.base0D}, #${colors.base0E});
-            color: #${colors.base07};
+            background-image: linear-gradient(90deg, #${palette.base0D}, #${palette.base0E});
+            color: #${palette.base07};
             font-weight: 600;
         }
 
         .lookFilled-1H2Jvj.colorBrandNew-abZT3v:disabled, .lookFilled-1H2Jvj.colorBrandNew-abZT3v[aria-disabled=true] {
-            background-color: #${colors.base09};
+            background-color: #${palette.base09};
         }
 
         .text-sm-normal-AEQz4v {
-          color: #${colors.base06};
+          color: #${palette.base06};
         }
 
         div[class|=callContainer] div[class|=videoControls] [class*=colorable-][class*=white-] {
-            color: #${colors.base06};
-            background-color: #${colors.base03};
+            color: #${palette.base06};
+            background-color: #${palette.base03};
         }
 
         div[class|=callContainer] div[class|=videoControls] [class*=colorable-][class*=white-]:hover, div[class|=callContainer] div[class|=videoControls] [class*=colorable-][class*=white-][class*=active-] {
-            color: #${colors.base06};
-            background-color: #${colors.base03};
+            color: #${palette.base06};
+            background-color: #${palette.base03};
         }
 
         div[class|=callContainer] div[class|=videoControls] [class*=colorable-][class*=primaryDark-] {
-            background: #${colors.base02};
+            background: #${palette.base02};
         }
         div[class|=callContainer] div[class|=videoControls] [class*=colorable-][class*=primaryDark-] {
-            background: #${colors.base02};
-          color: #${colors.base05};
+            background: #${palette.base02};
+          color: #${palette.base05};
         }
 
         div[class|=callContainer] div[class|=videoControls] button[class*=leftTrayIcon-][class*=buttonColor-] {
-            background-color: #${colors.base02};
-            color: #${colors.base07};
+            background-color: #${palette.base02};
+            color: #${palette.base07};
         }
 
         [class|=chatContent] div[class*=wrapperAudio-] div[class*=audioControls], [class|=chatContent] div[class*=wrapperAudio-] div[class*=videoControls-], [class|=chatContent] div[class*=imageWrapper-] div[class*=audioControls], [class|=chatContent] div[class*=imageWrapper-] div[class*=videoControls-] {
-            background-color: rgba(${colors.base00}, 0.8);
+            background-color: rgba(${palette.base00}, 0.8);
         }
 
         div[class|=chat] > div[class|=content] > div[class|=container] div[class|=newBadge] {
-            background-color: #${colors.base0D} !important;
-            color: #${colors.base00};
+            background-color: #${palette.base0D} !important;
+            color: #${palette.base00};
         }
 
         div[class|=callContainer] div[class|=videoControls] div[class|=toolbar] div[class|=streamQualityIndicator] div[class|=liveQualityIndicator] {
-            background-color: #${colors.base00} !important;
+            background-color: #${palette.base00} !important;
         }
 
         .qualityResolution-RP9GCP {
             margin-right: 4px;
-            color: #${colors.base07};
-            background-color: #${colors.base00};
+            color: #${palette.base07};
+            background-color: #${palette.base00};
         }
 
         div[class|=callContainer] div[class|=videoControls] div[class|=children] div[class*=playingText-] {
-            color: #${colors.base07};
+            color: #${palette.base07};
         }
 
         .grid-21dB-S>div:first-child, .headerRow-1MKoR-, .list-3FIpnh>div:first-child {
             min-width: 480px;
             width: 100%;
             position: relative;
-            background-color: #${colors.base00};
+            background-color: #${palette.base00};
         }
 
         div[class|=callContainer] div[class|=videoControls] [class*=colorable-][class*=primaryDark-] [class*=centerIcon-] {
-            color: #${colors.base07};
+            color: #${palette.base07};
         }
 
         div[class|=callContainer] [class*=controlIcon-] {
-            color: #${colors.base05};
+            color: #${palette.base05};
         }
 
         div[class|=callContainer] [class*=controlIcon-]:hover {
-            color: #${colors.base05};
+            color: #${palette.base05};
         }
 
         div[class|=callContainer] div[class|=videoControls] div[class|=toolbar] div[class|=streamQualityIndicator] div[class|=liveQualityIndicator] div[class|=qualityIndicator] {
-            background-color: #${colors.base01};
-            color: #${colors.base07};
+            background-color: #${palette.base01};
+            color: #${palette.base07};
         }
 
         div[class|=callContainer] div[class|=videoControls] div[class|=toolbar] div[class|=streamQualityIndicator] div[class|=liveQualityIndicator] svg[class|=premiumStreamIcon] {
-            color: #${colors.base07};
+            color: #${palette.base07};
         }
 
         div[class|=layerContainer] [role=menu] [class*=colorDefault][class*=colorBrand] {
-            color: #${colors.base0D};
+            color: #${palette.base0D};
         }
 
         .item-5ApiZt:hover {
-            color: #${colors.base00};
-            background-color: #${colors.base0A};
+            color: #${palette.base00};
+            background-color: #${palette.base0A};
         }
 
         .colorDefault-2_rLdz .checkbox-397WsK, .colorDefault-2_rLdz .radioSelection-3PDNAQ {
-            color: #${colors.base05};
+            color: #${palette.base05};
         }
 
         .colorDefault-2_rLdz .checkbox-397WsK, .colorDefault-2_rLdz .radioSelection-3PDNAQ:hover {
-            fill: #${colors.base05};
+            fill: #${palette.base05};
         }
 
         .emojiButton-3FRTuj {
-            background-color: #${colors.base00} !important;
+            background-color: #${palette.base00} !important;
         }
 
         .unreadIcon-3dqgX9, .voiceChannelsIcon-2smmeE {
@@ -2693,65 +2693,65 @@ let
         }
 
         .button-3_1yil, .notice-12Koq- {
-            background-color: #${colors.base0A};
+            background-color: #${palette.base0A};
         }
 
         div[class|=notice] button[class|=button] {
-            border-color: #${colors.base00};
+            border-color: #${palette.base00};
         }
 
         div[class|=notice] button[class|=button]:hover {
-            background: #${colors.base0A};
-            color: #${colors.base00};
+            background: #${palette.base0A};
+            color: #${palette.base00};
         }
 
         .text-md-medium-2n7Vn5, .text-md-normal-2rFCH3 {
-            color: #${colors.base07} !important;
+            color: #${palette.base07} !important;
         }
 
         .controlIcon-10O-4h {
-            color: #${colors.base07} !important;
+            color: #${palette.base07} !important;
         }
 
         .theme-dark .categoryFadeBlurple-1l49_Q, .theme-light .categoryFadeBlurple-1l49_Q  {
-            background-color: rgba(${colors.base03}, 0.8);
+            background-color: rgba(${palette.base03}, 0.8);
         }
 
         .theme-dark .categoryFadeBlurple-1l49_Q:hover, .theme-light .categoryFadeBlurple-1l49_Q:hover {
-            background-color: rgba(${colors.base03}, 0.8);
+            background-color: rgba(${palette.base03}, 0.8);
         }
 
         .pngImage-1vIgLy:hover, .lottieCanvas-c2HE82 {
-            background-color: #${colors.base03};
+            background-color: #${palette.base03};
         }
 
         .theme-dark div[class|=spoilerContainer] div[class|=spoilerWarning], .theme-light div[class|=spoilerContainer] div[class|=spoilerWarning] {
-            color: #${colors.base07};
-            background-color: rgba(${colors.base00}, 0.7);
+            color: #${palette.base07};
+            background-color: rgba(${palette.base00}, 0.7);
         }
 
         div[class*=userInfoSection-] div[class|=connectedAccountContainer] {
-            background-color: #${colors.base00} !important;
+            background-color: #${palette.base00} !important;
         }
 
         .editIcon-3h_5Rm {
-            color: #${colors.base07};
+            color: #${palette.base07};
         }
 
         .iconBadge-3Mmg92 {
-            background-color: #${colors.base08};
+            background-color: #${palette.base08};
         }
 
         .theme-dark svg[class*=threadIcon-], .theme-light svg[class*=threadIcon-] {
-            color: #${colors.base05} !important;
+            color: #${palette.base05} !important;
         }
 
         div[class|=notice] button[class|=button] {
-            color: #${colors.base00};
+            color: #${palette.base00};
         }
 
         div[class|=notice] button[class|=button]:hover {
-            border-color: #${colors.base00};
+            border-color: #${palette.base00};
         }
 
         .closeIcon-3eoP1e {
@@ -2759,48 +2759,48 @@ let
         }
 
         .assetWrapperMasked-1iw9lV {
-            background-color: #${colors.base02};
+            background-color: #${palette.base02};
         }
 
         .lookFilled-1H2Jvj.colorGreen-jIPCAS, .lookFilled-1H2Jvj.colorGreen-jIPCAS:hover{
-            background-color: #${colors.base0B};
+            background-color: #${palette.base0B};
         }
 
         a[class*=socialLink-][href*=discord] {
-            color: #${colors.base05};
+            color: #${palette.base05};
         }
 
         .reaction-102jx9.reactionMe-2zhiyZ .reactionCount-SWXh9W {
-            color: #${colors.base07};
+            color: #${palette.base07};
         }
 
         .updateReactionButton-13dIN9>div {
-            background: #${colors.base05};
+            background: #${palette.base05};
         }
 
         svg[class|=spine] {
-            color: #${colors.base02};
+            color: #${palette.base02};
         }
 
         div[class|=spineBorder] {
-            background: #${colors.base02};
+            background: #${palette.base02};
         }
 
         ul[aria-label$=" threads"] > li:nth-child(2n) {
-            --channels-default: #${colors.base04};
+            --channels-default: #${palette.base04};
         }
 
         .clickable_d23a1a .icon__4cb88, .clickable_d23a1a .icon__4cb88:hover {
-            color: #${colors.base07};
+            color: #${palette.base07};
         }
 
         .button__66e8c .buttonColor_a6eb73.buttonActive__407a7, .button__66e8c.buttonColor_a6eb73.buttonActive__407a7 {
-            background-color: #${colors.base0B};
-            color: #${colors.base07};
+            background-color: #${palette.base0B};
+            color: #${palette.base07};
         }
 
         .button__66e8c .buttonColor_a6eb73.buttonActive__407a7:hover, .button__66e8c.buttonColor_a6eb73.buttonActive__407a7:hover {
-            background-color: #${colors.base0B};
+            background-color: #${palette.base0B};
         }
 
         .gradientBackground_aa82b3 {
@@ -2808,7 +2808,7 @@ let
         }
 
         .theme-dark .footerSeparator__57d95 {
-            background-color: #${colors.base00};
+            background-color: #${palette.base00};
         }
     '';
   themeFileLocation = if pkgs.stdenv.isDarwin then 

@@ -160,7 +160,7 @@
 
     postUserActivation.text =
     let
-      inherit (config.colorScheme) colors;
+      inherit (config.colorScheme) palette;
     in
     ''
       rsyncArgs="--archive --checksum --chmod=-w --copy-unsafe-links --delete"
@@ -173,7 +173,7 @@
 
       echo "Recoloring Wallpapers..."
       mkdir -p /Users/Shared/Wallpaper/
-      ${pkgs.python3.withPackages (ps: [ ps.pillow ps.numpy ps.tqdm ])}/bin/python3 ${./../../users/alex/extraConfig/recolor_base16_hue_filter_efficient.py} ${./../../users/alex/extraConfig/wallpapers/galaxy.png} /Users/Shared/Wallpaper/wallpaper-nix-colors.png ${colors.base00},${colors.base01},${colors.base02},${colors.base03},${colors.base04},${colors.base05},${colors.base06},${colors.base07},${colors.base08},${colors.base09},${colors.base0A},${colors.base0B},${colors.base0C},${colors.base0D},${colors.base0E},${colors.base0F}
+      ${pkgs.python3.withPackages (ps: [ ps.pillow ps.numpy ps.tqdm ])}/bin/python3 ${./../../users/alex/extraConfig/recolor_base16_hue_filter_efficient.py} ${./../../users/alex/extraConfig/wallpapers/galaxy.png} /Users/Shared/Wallpaper/wallpaper-nix-colors.png ${palette.base00},${palette.base01},${palette.base02},${palette.base03},${palette.base04},${palette.base05},${palette.base06},${palette.base07},${palette.base08},${palette.base09},${palette.base0A},${palette.base0B},${palette.base0C},${palette.base0D},${palette.base0E},${palette.base0F}
       echo "Wallpapers recolored!"
     '';
   };

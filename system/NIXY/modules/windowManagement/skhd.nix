@@ -11,7 +11,7 @@ let
   firefox = "${homebrewPath}/firefox";
   app_menu = "/Applications/unmenu.app/Contents/MacOS/unmenu";
   jq = "${pkgs.jq}/bin/jq";
-  inherit (config.colorScheme) colors;
+  inherit (config.colorScheme) palette;
 
   desktoppr = "/usr/local/bin/desktoppr";
   wallpaper = "/Users/Shared/Wallpaper/wallpaper-nix-colors.png";

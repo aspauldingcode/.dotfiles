@@ -79,7 +79,7 @@
     target = ".config/btop/themes/nix-colors.theme";
     text =
       let
-        inherit (config.colorScheme) colors;
+        inherit (config.colorScheme) palette;
       in
       # python
       ''
@@ -92,86 +92,86 @@
         # Use "start", "mid" and "end" for three color gradient
 
         # Main background, empty for terminal default, need to be empty if you want transparent background
-        theme[main_bg]="#${colors.base00}"
+        theme[main_bg]="#${palette.base00}"
 
         # Main text color
-        theme[main_fg]="#${colors.base04}"
+        theme[main_fg]="#${palette.base04}"
 
         # Title color for boxes
-        theme[title]="#${colors.base05}"
+        theme[title]="#${palette.base05}"
 
         # Higlight color for keyboard shortcuts
-        theme[hi_fg]="#${colors.base0A}"
+        theme[hi_fg]="#${palette.base0A}"
 
         # Background color of selected items
-        theme[selected_bg]="#${colors.base02}"
+        theme[selected_bg]="#${palette.base02}"
 
         # Foreground color of selected items
-        theme[selected_fg]="#${colors.base0A}"
+        theme[selected_fg]="#${palette.base0A}"
 
         # Color of inactive/disabled text
-        theme[inactive_fg]="#${colors.base03}"
+        theme[inactive_fg]="#${palette.base03}"
 
         # Color of text appearing on top of graphs, i.e uptime and current network graph scaling
-        theme[graph_text]="#${colors.base03}"
+        theme[graph_text]="#${palette.base03}"
 
         # Misc colors for processes box including mini cpu graphs, details memory graph and details status text
-        theme[proc_misc]="#${colors.base04}"
+        theme[proc_misc]="#${palette.base04}"
 
         # Cpu box outline color
-        theme[cpu_box]="#${colors.base03}"
+        theme[cpu_box]="#${palette.base03}"
 
         # Memory/disks box outline color
-        theme[mem_box]="#${colors.base02}"
+        theme[mem_box]="#${palette.base02}"
 
         # Net up/down box outline color
-        theme[net_box]="#${colors.base02}"
+        theme[net_box]="#${palette.base02}"
 
         # Processes box outline color
-        theme[proc_box]="#${colors.base02}"
+        theme[proc_box]="#${palette.base02}"
 
         # Box divider line and small boxes line color
-        theme[div_line]="#${colors.base02}"
+        theme[div_line]="#${palette.base02}"
 
         # Temperature graph colors
-        theme[temp_start]="#${colors.base0A}"
-        theme[temp_mid]="#${colors.base0A}"
-        theme[temp_end]="#${colors.base08}"
+        theme[temp_start]="#${palette.base0A}"
+        theme[temp_mid]="#${palette.base0A}"
+        theme[temp_end]="#${palette.base08}"
 
         # CPU graph colors
-        theme[cpu_start]="#${colors.base0B}"
-        theme[cpu_mid]="#${colors.base0B}"
-        theme[cpu_end]="#${colors.base0B}"
+        theme[cpu_start]="#${palette.base0B}"
+        theme[cpu_mid]="#${palette.base0B}"
+        theme[cpu_end]="#${palette.base0B}"
 
         # Mem/Disk free meter
-        theme[free_start]="#${colors.base0B}"
+        theme[free_start]="#${palette.base0B}"
         theme[free_mid]=""
-        theme[free_end]="#${colors.base0B}"
+        theme[free_end]="#${palette.base0B}"
 
         # Mem/Disk cached meter
-        theme[cached_start]="#${colors.base0D}"
+        theme[cached_start]="#${palette.base0D}"
         theme[cached_mid]=""
-        theme[cached_end]="#${colors.base0D}"
+        theme[cached_end]="#${palette.base0D}"
 
         # Mem/Disk available meter
-        theme[available_start]="#${colors.base0A}"
+        theme[available_start]="#${palette.base0A}"
         theme[available_mid]=""
-        theme[available_end]="#${colors.base0A}"
+        theme[available_end]="#${palette.base0A}"
 
         # Mem/Disk used meter
-        theme[used_start]="#${colors.base08}" # make darker?
+        theme[used_start]="#${palette.base08}" # make darker?
         theme[used_mid]=""
-        theme[used_end]="#${colors.base08}" 
+        theme[used_end]="#${palette.base08}" 
 
         # Download graph colors
-        theme[download_start]="#${colors.base0E}"
-        theme[download_mid]="#${colors.base0F}"
-        theme[download_end]="#${colors.base06}"
+        theme[download_start]="#${palette.base0E}"
+        theme[download_mid]="#${palette.base0F}"
+        theme[download_end]="#${palette.base06}"
 
         # Upload graph colors
         theme[upload_start]=
-        theme[upload_mid]="#${colors.base0E}"
-        theme[upload_end]="#${colors.base0F}"
+        theme[upload_mid]="#${palette.base0E}"
+        theme[upload_end]="#${palette.base0F}"
       '';
   };
 }

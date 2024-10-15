@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  inherit (config.colorScheme) colors;
+  inherit (config.colorScheme) palette;
 in
 {
   services.jankyborders = {
@@ -10,10 +10,10 @@ in
     # order = "above";
     style = "round";
     width = 2.0;
-    background_color = "0xff${colors.base00}";
+    background_color = "0xff${palette.base00}";
     hidpi = true;
-    active_color = "0xff${colors.base07}";
-    inactive_color = "0xff${colors.base05}";
+    active_color = "0xff${palette.base07}";
+    inactive_color = "0xff${palette.base05}";
     blacklist = [
       "google chrome"
       "vmware fusion"

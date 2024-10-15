@@ -22,7 +22,7 @@
     target = ".Xresources";
     text =
       let
-        inherit (config.colorScheme) colors;
+        inherit (config.colorScheme) palette;
       in
       ''
         ! Use a truetype font and size.
@@ -30,46 +30,46 @@
         xterm*faceSize: 12
 
         ! Set the background color
-        xterm*background: #${colors.base00}
+        xterm*background: #${palette.base00}
 
         ! Set the foreground color
-        xterm*foreground: #${colors.base05}
+        xterm*foreground: #${palette.base05}
 
         ! Set the cursor color
-        xterm*cursorColor: #${colors.base05}
+        xterm*cursorColor: #${palette.base05}
 
         ! Set the bold color
-        xterm*colorBD: #${colors.base0A}
+        xterm*colorBD: #${palette.base0A}
 
         ! Set the underline color
-        xterm*colorUL: #${colors.base0E}
+        xterm*colorUL: #${palette.base0E}
 
         ! Set the highlight color
-        xterm*highlightColor: #${colors.base0B}
+        xterm*highlightColor: #${palette.base0B}
 
         ! Define all base16 colors for xterm
-        xterm*color0:  #${colors.base00}
-        xterm*color1:  #${colors.base08}
-        xterm*color2:  #${colors.base0B}
-        xterm*color3:  #${colors.base0A}
-        xterm*color4:  #${colors.base0D}
-        xterm*color5:  #${colors.base0E}
-        xterm*color6:  #${colors.base0C}
-        xterm*color7:  #${colors.base05}
-        xterm*color8:  #${colors.base03}
-        xterm*color9:  #${colors.base08}
-        xterm*color10: #${colors.base0B}
-        xterm*color11: #${colors.base0A}
-        xterm*color12: #${colors.base0D}
-        xterm*color13: #${colors.base0E}
-        xterm*color14: #${colors.base0C}
-        xterm*color15: #${colors.base07}
-        xterm*color16: #${colors.base09}
-        xterm*color17: #${colors.base0F}
-        xterm*color18: #${colors.base01}
-        xterm*color19: #${colors.base02}
-        xterm*color20: #${colors.base04}
-        xterm*color21: #${colors.base06}
+        xterm*color0:  #${palette.base00}
+        xterm*color1:  #${palette.base08}
+        xterm*color2:  #${palette.base0B}
+        xterm*color3:  #${palette.base0A}
+        xterm*color4:  #${palette.base0D}
+        xterm*color5:  #${palette.base0E}
+        xterm*color6:  #${palette.base0C}
+        xterm*color7:  #${palette.base05}
+        xterm*color8:  #${palette.base03}
+        xterm*color9:  #${palette.base08}
+        xterm*color10: #${palette.base0B}
+        xterm*color11: #${palette.base0A}
+        xterm*color12: #${palette.base0D}
+        xterm*color13: #${palette.base0E}
+        xterm*color14: #${palette.base0C}
+        xterm*color15: #${palette.base07}
+        xterm*color16: #${palette.base09}
+        xterm*color17: #${palette.base0F}
+        xterm*color18: #${palette.base01}
+        xterm*color19: #${palette.base02}
+        xterm*color20: #${palette.base04}
+        xterm*color21: #${palette.base06}
 
         ! Set the scrollbar to appear on the right side
         xterm*scrollBar: true
@@ -95,28 +95,28 @@
         URxvt.font: xft:JetBrains Mono:size=12
 
         ! Define all base16 colors for URxvt
-        URxvt*color0:  #${colors.base00}
-        URxvt*color1:  #${colors.base08}
-        URxvt*color2:  #${colors.base0B}
-        URxvt*color3:  #${colors.base0A}
-        URxvt*color4:  #${colors.base0D}
-        URxvt*color5:  #${colors.base0E}
-        URxvt*color6:  #${colors.base0C}
-        URxvt*color7:  #${colors.base05}
-        URxvt*color8:  #${colors.base03}
-        URxvt*color9:  #${colors.base08}
-        URxvt*color10: #${colors.base0B}
-        URxvt*color11: #${colors.base0A}
-        URxvt*color12: #${colors.base0D}
-        URxvt*color13: #${colors.base0E}
-        URxvt*color14: #${colors.base0C}
-        URxvt*color15: #${colors.base07}
-        URxvt*color16: #${colors.base09}
-        URxvt*color17: #${colors.base0F}
-        URxvt*color18: #${colors.base01}
-        URxvt*color19: #${colors.base02}
-        URxvt*color20: #${colors.base04}
-        URxvt*color21: #${colors.base06}
+        URxvt*color0:  #${palette.base00}
+        URxvt*color1:  #${palette.base08}
+        URxvt*color2:  #${palette.base0B}
+        URxvt*color3:  #${palette.base0A}
+        URxvt*color4:  #${palette.base0D}
+        URxvt*color5:  #${palette.base0E}
+        URxvt*color6:  #${palette.base0C}
+        URxvt*color7:  #${palette.base05}
+        URxvt*color8:  #${palette.base03}
+        URxvt*color9:  #${palette.base08}
+        URxvt*color10: #${palette.base0B}
+        URxvt*color11: #${palette.base0A}
+        URxvt*color12: #${palette.base0D}
+        URxvt*color13: #${palette.base0E}
+        URxvt*color14: #${palette.base0C}
+        URxvt*color15: #${palette.base07}
+        URxvt*color16: #${palette.base09}
+        URxvt*color17: #${palette.base0F}
+        URxvt*color18: #${palette.base01}
+        URxvt*color19: #${palette.base02}
+        URxvt*color20: #${palette.base04}
+        URxvt*color21: #${palette.base06}
       '';
   };
 }

@@ -14,7 +14,7 @@ let
   sketchybar = "${pkgs.sketchybar}/bin/sketchybar";
   borders = "";
   skhd = "${pkgs.skhd}/bin/skhd";
-  inherit (config.colorScheme) colors;
+  inherit (config.colorScheme) palette;
 in
 {
   home = {

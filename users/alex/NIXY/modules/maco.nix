@@ -1,5 +1,8 @@
 { config, lib, ... }:
 
+let
+  inherit (config.colorScheme) palette;
+in
 {
   home.file.".config/maco/config" = {
     text = ''
@@ -10,16 +13,16 @@
       anchor=top-right
 
       font=monospace 10
-      background-color=#${config.colorScheme.palette.base00}E6
-      text-color=#${config.colorScheme.palette.base05}
+      background-color=#${palette.base00}E6
+      text-color=#${palette.base05}
       width=300
       height=100
       margin=10
       padding=5
       border-size=8
-      border-color=#${config.colorScheme.palette.base07}
+      border-color=#${palette.base07}
       border-radius=0
-      progress-color=over #${config.colorScheme.palette.base0D}
+      progress-color=over #${palette.base0D}
       icons=true
       max-icon-size=64
 

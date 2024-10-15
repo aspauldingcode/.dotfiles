@@ -56,7 +56,7 @@ let
 
   shellAliases = commonAliases // (if pkgs.stdenv.isDarwin then darwinAliases else linuxAliases);
 
-  inherit (config.colorScheme) colors;
+  inherit (config.colorScheme) palette;
 in
 {
   home.packages = with pkgs; [
@@ -200,15 +200,15 @@ in
             alignment = "left";
             segments = [
               {
-                background = "#${colors.base01}";
-                foreground = "#${colors.base05}";
+                background = "#${palette.base01}";
+                foreground = "#${palette.base05}";
                 style = "powerline";
                 template = "{{ if .WSL }}WSL at{{ end }} {{.Icon}} ";
                 type = "os";
               }
               {
-                background = "#${colors.base0D}";
-                foreground = "#${colors.base00}";
+                background = "#${palette.base0D}";
+                foreground = "#${palette.base00}";
                 powerline_symbol = "";
                 properties = {
                   style = "full";
@@ -218,14 +218,14 @@ in
                 type = "path";
               }
               {
-                background = "#${colors.base0B}";
+                background = "#${palette.base0B}";
                 background_templates = [
-                  "{{ if or (.Working.Changed) (.Staging.Changed) }}#${colors.base09}{{ end }}"
-                  "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#${colors.base0A}{{ end }}"
-                  "{{ if gt .Ahead 0 }}#${colors.base0C}{{ end }}"
-                  "{{ if gt .Behind 0 }}#${colors.base0E}{{ end }}"
+                  "{{ if or (.Working.Changed) (.Staging.Changed) }}#${palette.base09}{{ end }}"
+                  "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#${palette.base0A}{{ end }}"
+                  "{{ if gt .Ahead 0 }}#${palette.base0C}{{ end }}"
+                  "{{ if gt .Behind 0 }}#${palette.base0E}{{ end }}"
                 ];
-                foreground = "#${colors.base00}";
+                foreground = "#${palette.base00}";
                 leading_diamond = "◀";
                 powerline_symbol = "";
                 properties = {
@@ -241,8 +241,8 @@ in
                 type = "git";
               }
               {
-                background = "#${colors.base0A}";
-                foreground = "#${colors.base00}";
+                background = "#${palette.base0A}";
+                foreground = "#${palette.base00}";
                 powerline_symbol = "";
                 properties = {
                   fetch_version = true;
@@ -252,8 +252,8 @@ in
                 type = "go";
               }
               {
-                background = "#${colors.base0C}";
-                foreground = "#${colors.base00}";
+                background = "#${palette.base0C}";
+                foreground = "#${palette.base00}";
                 powerline_symbol = "";
                 properties = {
                   fetch_version = true;
@@ -263,8 +263,8 @@ in
                 type = "julia";
               }
               {
-                background = "#${colors.base09}";
-                foreground = "#${colors.base00}";
+                background = "#${palette.base09}";
+                foreground = "#${palette.base00}";
                 powerline_symbol = "";
                 properties = {
                   display_mode = "files";
@@ -275,8 +275,8 @@ in
                 type = "python";
               }
               {
-                background = "#${colors.base0E}";
-                foreground = "#${colors.base00}";
+                background = "#${palette.base0E}";
+                foreground = "#${palette.base00}";
                 powerline_symbol = "";
                 properties = {
                   display_mode = "files";
@@ -287,8 +287,8 @@ in
                 type = "ruby";
               }
               {
-                background = "#${colors.base0D}";
-                foreground = "#${colors.base00}";
+                background = "#${palette.base0D}";
+                foreground = "#${palette.base00}";
                 powerline_symbol = "";
                 properties = {
                   display_mode = "files";
@@ -300,10 +300,10 @@ in
               }
               {
                 background_templates = [
-                  "{{if contains \"default\" .Profile}}#${colors.base09}{{end}}"
-                  "{{if contains \"jan\" .Profile}}#${colors.base0A}{{end}}"
+                  "{{if contains \"default\" .Profile}}#${palette.base09}{{end}}"
+                  "{{if contains \"jan\" .Profile}}#${palette.base0A}{{end}}"
                 ];
-                foreground = "#${colors.base00}";
+                foreground = "#${palette.base00}";
                 powerline_symbol = "";
                 properties = {
                   display_default = false;
@@ -313,16 +313,16 @@ in
                 type = "aws";
               }
               {
-                background = "#${colors.base0C}";
-                foreground = "#${colors.base00}";
+                background = "#${palette.base0C}";
+                foreground = "#${palette.base00}";
                 powerline_symbol = "";
                 style = "powerline";
                 template = " 🔧 ";
                 type = "root";
               }
               {
-                background = "#${colors.base03}";
-                foreground = "#${colors.base05}";
+                background = "#${palette.base03}";
+                foreground = "#${palette.base05}";
                 powerline_symbol = "";
                 style = "powerline";
                 template = " {{ .Name }} ";

@@ -38,7 +38,7 @@ let
     echo "Downloads stack and recent apps have been hidden."
   '';
 
-  inherit (config.colorScheme) colors;
+  inherit (config.colorScheme) palette;
 in
 {
   system = {
@@ -203,7 +203,7 @@ in
           AppleEnableSwipeNavigateWithScrolls = 0;
           AppleFontSmoothing = 0;
           AppleHighlightColor = let
-            hexColor = "${colors.base0D}"; # this should be base0D which is #83a598
+            hexColor = "${palette.base0D}"; # this should be base0D which is #83a598
             hexColorConverted = builtins.toString (
               (builtins.map (x: x / 255.0) (nix-colors.lib.conversions.hexToRGB hexColor))
               ++ ["Other"]
@@ -243,7 +243,7 @@ in
           # 3 is yellow, 4 is green, 5 is blue, 6 is red, 7 is purple, 8 is orange
           NSColorSimulatedHardwareEnclosureNumber = 4; # hardware color choice 
           AppleHighlightColor = let
-            hexColor = "${colors.base0D}"; # this should be base0D which is #83a598
+            hexColor = "${palette.base0D}"; # this should be base0D which is #83a598
             hexColorConverted = builtins.toString (
               (builtins.map (x: x / 255.0) (nix-colors.lib.conversions.hexToRGB hexColor))
               ++ ["Other"]

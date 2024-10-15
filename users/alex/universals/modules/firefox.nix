@@ -6,7 +6,7 @@
   ...
 }: let
   inherit (lib) mkForce;
-  inherit (config.colorscheme) colors;
+  inherit (config.colorscheme) palette;
 in {
   programs.firefox = {
     enable = true;
@@ -19,19 +19,19 @@ in {
         userChrome = ''
           /* Use Nix-Colors theme */
           #navigator-toolbox {
-            --toolbar-bgcolor: #${colors.base00};
+            --toolbar-bgcolor: #${palette.base00};
           }
 
           /* Customize toolbar icons color */
           .toolbarbutton-icon {
-            fill: #${colors.base05} !important;
+            fill: #${palette.base05} !important;
             fill-opacity: 1 !important;
           }
 
           /* Adjust icon color on hover and active states */
           .toolbarbutton-1:not([disabled]):hover .toolbarbutton-icon,
           .toolbarbutton-1:not([disabled])[open] .toolbarbutton-icon {
-            fill: #${colors.base0D} !important;
+            fill: #${palette.base0D} !important;
           }
 
           /* Hide titlebar buttons and adjust spacing on macOS */
@@ -156,9 +156,9 @@ in {
           }
 
           :root {
-            --toolbar-bgcolor: #${colors.base00};
-            --toolbar-color: #${colors.base05};
-            --toolbar-border-color: #${colors.base03};
+            --toolbar-bgcolor: #${palette.base00};
+            --toolbar-color: #${palette.base05};
+            --toolbar-border-color: #${palette.base03};
 
             /* Adds a gradient outline to selected tab. This is going to need modifications if you use tabs that don't follow Proton styling. */
 
@@ -177,8 +177,8 @@ in {
               grid-area: 1/1;
               margin-block: var(--tab-block-margin);
               /* Edit gradient colors here */
-              /* background: repeat linear-gradient(45deg,#${colors.base03},#${colors.base08},#${colors.base0C},#${colors.base0E},#${colors.base0B},#${colors.base09})!important; */
-              background-color: #${colors.base07} !important;
+              /* background: repeat linear-gradient(45deg,#${palette.base03},#${palette.base08},#${palette.base0C},#${palette.base0E},#${palette.base0B},#${palette.base09})!important; */
+              background-color: #${palette.base07} !important;
             }
           }
 
@@ -206,45 +206,45 @@ in {
           }
           /* Change the background color of the search bar when active */
           #urlbar-background {
-            background-color: #${colors.base01} !important;
+            background-color: #${palette.base01} !important;
           }
           
           /* Change the text color of the search bar when active */
           #urlbar-input {
-            color: #${colors.base05} !important;
+            color: #${palette.base05} !important;
           }
           
           /* Add a subtle border to the search bar when active */
           #urlbar[focused="true"] > #urlbar-background {
-            border: 1px solid #${colors.base0D} !important;
-            box-shadow: 0 0 3px #${colors.base0D} !important;
+            border: 1px solid #${palette.base0D} !important;
+            box-shadow: 0 0 3px #${palette.base0D} !important;
           }
 
           /* Add this new rule for the menu panel */
           #appMenu-popup {
-            --arrowpanel-background: #${colors.base00} !important;
-            --arrowpanel-color: #${colors.base05} !important;
+            --arrowpanel-background: #${palette.base00} !important;
+            --arrowpanel-color: #${palette.base05} !important;
           }
 
           /* Change the background color of the customize toolbar page */
           #customization-container {
-            background-color: #${colors.base00} !important;
+            background-color: #${palette.base00} !important;
           }
 
           /* Style for the customize toolbar button */
           #customization-done-button {
-            background-color: #${colors.base02} !important;
-            color: #${colors.base05} !important;
-            border-color: #${colors.base03} !important;
+            background-color: #${palette.base02} !important;
+            color: #${palette.base05} !important;
+            border-color: #${palette.base03} !important;
           }
 
           #customization-done-button:hover {
-            background-color: #${colors.base03} !important;
-            border-color: #${colors.base0D} !important;
+            background-color: #${palette.base03} !important;
+            border-color: #${palette.base0D} !important;
           }
 
           #customization-done-button:active {
-            background-color: #${colors.base04} !important;
+            background-color: #${palette.base04} !important;
           }
 
           /* Hide toolbar context menu */
@@ -254,97 +254,97 @@ in {
 
           /* Style the urlbar results popup */
           /* .urlbarView {
-            background-color: #${colors.base00} !important;
-            color: #${colors.base05} !important;
+            background-color: #${palette.base00} !important;
+            color: #${palette.base05} !important;
           } */
 
           /* Style individual result items */
           .urlbarView-row {
-            color: #${colors.base05} !important;
+            color: #${palette.base05} !important;
           }
 
           /* Style the selected result */
           .urlbarView-row[selected] {
-            background-color: #${colors.base02} !important;
-            color: #${colors.base06} !important;
+            background-color: #${palette.base02} !important;
+            color: #${palette.base06} !important;
           }
 
           /* Style the search engine icon */
           .urlbarView-type-icon {
-            fill: #${colors.base05} !important;
+            fill: #${palette.base05} !important;
           }
 
           /* Style the "Search with" text */
           .urlbarView-action {
-            color: #${colors.base04} !important;
+            color: #${palette.base04} !important;
           }
 
           /* Style the extensions popup background */
           #unified-extensions-view,
           .panel-arrowcontent {
-            background-color: #${colors.base00} !important;
+            background-color: #${palette.base00} !important;
           }
 
           /* Style the individual extension items */
           .unified-extensions-item {
-            background-color: #${colors.base00} !important;
-            color: #${colors.base05} !important;
+            background-color: #${palette.base00} !important;
+            color: #${palette.base05} !important;
           }
 
           .unified-extensions-item:hover {
-            background-color: #${colors.base01} !important;
+            background-color: #${palette.base01} !important;
           }
 
           /* Style the "Manage extensions" button at the bottom */
           #unified-extensions-manage-extensions {
-            background-color: #${colors.base01} !important;
-            color: #${colors.base05} !important;
+            background-color: #${palette.base01} !important;
+            color: #${palette.base05} !important;
           }
 
           #unified-extensions-manage-extensions:hover {
-            background-color: #${colors.base02} !important;
+            background-color: #${palette.base02} !important;
           }
 
           /* Add this new rule for addon icons */
           .webextension-browser-action {
-            filter: grayscale(100%) brightness(1.2) contrast(1.2) opacity(0.7) drop-shadow(0 0 0 #${colors.base05}) !important;
+            filter: grayscale(100%) brightness(1.2) contrast(1.2) opacity(0.7) drop-shadow(0 0 0 #${palette.base05}) !important;
           }
 
           /* Style the sidebar title and context menu */
           #sidebar-header,
           #sidebar-switcher-target,
           #viewButton {
-            background-color: #${colors.base00} !important;
-            color: #${colors.base05} !important;
+            background-color: #${palette.base00} !important;
+            color: #${palette.base05} !important;
           }
 
           #sidebar-switcher-target:hover,
           #viewButton:hover {
-            background-color: #${colors.base01} !important;
+            background-color: #${palette.base01} !important;
           }
 
           /* Style the sidebar context menu */
           #sidebarMenu-popup {
-            --arrowpanel-background: #${colors.base00} !important;
-            --arrowpanel-color: #${colors.base05} !important;
-            --arrowpanel-border-color: #${colors.base03} !important;
+            --arrowpanel-background: #${palette.base00} !important;
+            --arrowpanel-color: #${palette.base05} !important;
+            --arrowpanel-border-color: #${palette.base03} !important;
           }
 
           #sidebarMenu-popup menuitem:hover {
-            background-color: #${colors.base01} !important;
+            background-color: #${palette.base01} !important;
           }
 
           /* Style the sidebar itself */
           #sidebar-box,
           #sidebar {
-            background-color: #${colors.base00} !important;
-            color: #${colors.base05} !important;
+            background-color: #${palette.base00} !important;
+            color: #${palette.base05} !important;
           }
 
           /* Style for permission prompts */
           .popup-notification-panel {
-            background-color: #${colors.base01} !important;
-            color: #${colors.base05} !important;
+            background-color: #${palette.base01} !important;
+            color: #${palette.base05} !important;
             border: none !important;
             border-radius: 8px !important;
           }
@@ -354,7 +354,7 @@ in {
           .popup-notification-content,
           .popup-notification-header {
             background-color: transparent !important;
-            color: #${colors.base05} !important;
+            color: #${palette.base05} !important;
           }
 
           /* Ensure buttons are visible */
@@ -365,13 +365,13 @@ in {
           
           /* Ensure only the notification background is set correctly */
           .popup-notification-panel *:not(.popup-notification-button):not(.popup-notification-primary-button):not(.popup-notification-secondary-button):not(.popup-notification-button *):not(.popup-notification-primary-button *):not(.popup-notification-secondary-button *):not(.text-link):not(.checkbox-check):not(.checkbox-label) {
-            background-color: #${colors.base00} !important;
+            background-color: #${palette.base00} !important;
           }
 
           /* Style for both buttons */
           .popup-notification-button {
-            background-color: #${colors.base02} !important;
-            color: #${colors.base05} !important;
+            background-color: #${palette.base02} !important;
+            color: #${palette.base05} !important;
             border: none !important;
             border-radius: 4px !important;
             margin: 4px !important;
@@ -380,35 +380,35 @@ in {
 
           /* Style for the "Allow" (primary) button */
           .popup-notification-primary-button {
-            background-color: #${colors.base0D} !important;
-            color: #${colors.base00} !important;
+            background-color: #${palette.base0D} !important;
+            color: #${palette.base00} !important;
           }
 
           .popup-notification-primary-button:hover {
-            background-color: #${colors.base0C} !important;
+            background-color: #${palette.base0C} !important;
           }
 
           /* Style for the "Block" (secondary) button */
           .popup-notification-secondary-button:hover {
-            background-color: #${colors.base03} !important;
+            background-color: #${palette.base03} !important;
           }
 
           .checkbox-check {
             background-color: transparent !important;
-            border: 1px solid #${colors.base04} !important;
+            border: 1px solid #${palette.base04} !important;
           }
 
           .checkbox-label {
-            color: #${colors.base04} !important;
+            color: #${palette.base04} !important;
           }
 
           /* Style for the "Learn more" link */
           .text-link {
-            color: #${colors.base0D} !important;
+            color: #${palette.base0D} !important;
           }
 
           .text-link:hover {
-            color: #${colors.base0C} !important;
+            color: #${palette.base0C} !important;
             text-decoration: none !important;
           }
 
@@ -416,23 +416,23 @@ in {
           .panel-arrowcontent,
           .panel-arrowbox,
           .panel-arrow {
-            background-color: #${colors.base00} !important;
+            background-color: #${palette.base00} !important;
           }
 
           /* Style for warning messages */
           .message-bar,
           .message-bar-content,
           .message-bar-button {
-            background-color: #${colors.base00} !important;
-            color: #${colors.base05} !important;
+            background-color: #${palette.base00} !important;
+            color: #${palette.base05} !important;
           }
 
           /* Ensure any overlays or additional panels are styled */
           .panel-viewstack,
           .panel-mainview,
           .panel-subview {
-            background-color: #${colors.base00} !important;
-            color: #${colors.base05} !important;
+            background-color: #${palette.base00} !important;
+            color: #${palette.base05} !important;
           }
         '';
         userContent = ''
@@ -561,7 +561,7 @@ in {
           "browser.download.viewableInternally.typeWasRegistered.xml" = true;
           "browser.fullscreen.autohide" = false;
           "browser.link.open_newwindow" = 3; # Open links in new tabs
-          "browser.newtabpage.activity-stream.newNewtabExperience.colors" = "#${colors.base0D},#${colors.base08},#${colors.base0B},#${colors.base09},#${colors.base0E},#${colors.base0A},#${colors.base0F}";
+          "browser.newtabpage.activity-stream.newNewtabExperience.colors" = "#${palette.base0D},#${palette.base08},#${palette.base0B},#${palette.base09},#${palette.base0E},#${palette.base0A},#${palette.base0F}";
           "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
           "browser.search.isUS" = true;
           "browser.search.region" = "US";
@@ -617,18 +617,18 @@ in {
           "layout.css.osx-font-smoothing.enabled" = true;
           "network.proxy.socks_remote_dns" = true;
           "pdfjs.forcePageColors" = false;
-          "pdfjs.highlightEditorColors" = "yellow=#${colors.base0A},green=#${colors.base0B},blue=#${colors.base0D},pink=#${colors.base0E},red=#${colors.base08}";
-          "pdfjs.pageColorsBackground" = "#${colors.base00}";
-          "pdfjs.pageColorsForeground" = "#${colors.base05}";
+          "pdfjs.highlightEditorColors" = "yellow=#${palette.base0A},green=#${palette.base0B},blue=#${palette.base0D},pink=#${palette.base0E},red=#${palette.base08}";
+          "pdfjs.pageColorsBackground" = "#${palette.base00}";
+          "pdfjs.pageColorsForeground" = "#${palette.base05}";
           "privacy.donottrackheader.enabled" = true;
           "privacy.trackingprotection.enabled" = true;
           "privacy.webrtc.sharedTabWarning" = true;
           "reader.colors_menu.enabled" = false;
-          "reader.custom_colors.background" = "#${colors.base00}";
-          "reader.custom_colors.foreground" = "#${colors.base05}";
-          "reader.custom_colors.selection-highlight" = "#${colors.base0A}";
-          "reader.custom_colors.unvisited-links" = "#${colors.base0D}";
-          "reader.custom_colors.visited-links" = "#${colors.base0E}";
+          "reader.custom_colors.background" = "#${palette.base00}";
+          "reader.custom_colors.foreground" = "#${palette.base05}";
+          "reader.custom_colors.selection-highlight" = "#${palette.base0A}";
+          "reader.custom_colors.unvisited-links" = "#${palette.base0D}";
+          "reader.custom_colors.visited-links" = "#${palette.base0E}";
           "permissions.fullscreen.allowed" = true;
           "security.webauth.u2f" = true;
           "security.webauth.webauthn" = true;
@@ -640,73 +640,73 @@ in {
           "webgl.colorspaces.prototype" = false;
           # "widget.gtk.libadwaita-colors.enabled" = true;
           # "widget.gtk.theme-scrollbar-colors.enabled" = true;
-          # "widget.gtk.theme-scrollbar-colors.scrollbar-color" = "#${colors.base00}";
-          # "widget.gtk.theme-scrollbar-colors.scrollbar-color-hover" = "#${colors.base02}";
-          # "widget.gtk.theme-scrollbar-colors.scrollbar-color-active" = "#${colors.base0D}";
+          # "widget.gtk.theme-scrollbar-colors.scrollbar-color" = "#${palette.base00}";
+          # "widget.gtk.theme-scrollbar-colors.scrollbar-color-hover" = "#${palette.base02}";
+          # "widget.gtk.theme-scrollbar-colors.scrollbar-color-active" = "#${palette.base0D}";
 
           # Firefox Color settings
           "browser.display.use_system_colors" = false;
-          "browser.display.background_color" = "#${colors.base00}";
-          "browser.display.foreground_color" = "#${colors.base05}";
-          "browser.display.focus_background_color" = "#${colors.base0D}";
-          "browser.display.focus_text_color" = "#${colors.base05}";
+          "browser.display.background_color" = "#${palette.base00}";
+          "browser.display.foreground_color" = "#${palette.base05}";
+          "browser.display.focus_background_color" = "#${palette.base0D}";
+          "browser.display.focus_text_color" = "#${palette.base05}";
           "browser.display.document_color_use" = 2; # Override the colors specified by the page with your selections above
-          "browser.anchor_color" = "#${colors.base0D}";
-          "browser.visited_color" = "#${colors.base0E}";
-          "browser.active_color" = "#${colors.base0B}";
-          "browser.hover_color" = "#${colors.base0A}";
-          "browser.text_color" = "#${colors.base05}";
-          "browser.text_background_color" = "#${colors.base00}";
-          "browser.text_anchor_color" = "#${colors.base0D}";
-          "browser.text_visited_color" = "#${colors.base0E}";
-          "browser.text_active_color" = "#${colors.base0B}";
-          "browser.text_hover_color" = "#${colors.base0A}";
-          "browser.text_selection_color" = "#${colors.base0A}";
-          "browser.text_highlight_color" = "#${colors.base0B}";
-          "browser.text_link_color" = "#${colors.base0D}";
-          "browser.text_visited_link_color" = "#${colors.base0E}";
-          "browser.text_active_link_color" = "#${colors.base0B}";
-          "browser.text_hover_link_color" = "#${colors.base0A}";
-          "browser.textfield_color" = "#${colors.base05}";
-          "browser.textfield_background_color" = "#${colors.base00}";
-          "browser.textfield_border_color" = "#${colors.base03}";
-          "browser.textfield_placeholder_color" = "#${colors.base04}";
-          "browser.textfield_focus_color" = "#${colors.base06}";
-          "browser.textfield_focus_background_color" = "#${colors.base01}";
-          "browser.textfield_focus_border_color" = "#${colors.base0D}";
-          "browser.textfield_disabled_color" = "#${colors.base02}";
-          "browser.textfield_disabled_background_color" = "#${colors.base01}";
-          "browser.textfield_disabled_border_color" = "#${colors.base03}";
-          "browser.textfield_selection_color" = "#${colors.base0A}";
-          "browser.textfield_highlight_color" = "#${colors.base0B}";
-          "browser.textfield_link_color" = "#${colors.base0D}";
-          "browser.textfield_visited_link_color" = "#${colors.base0E}";
-          "browser.textfield_active_link_color" = "#${colors.base0B}";
-          "browser.textfield_hover_link_color" = "#${colors.base0A}";
-          "browser.button_text_color" = "#${colors.base05}";
-          "browser.button_background_color" = "#${colors.base00}";
-          "browser.button_border_color" = "#${colors.base03}";
-          "browser.button_hover_text_color" = "#${colors.base06}";
-          "browser.button_hover_background_color" = "#${colors.base01}";
-          "browser.button_hover_border_color" = "#${colors.base0D}";
-          "browser.button_active_text_color" = "#${colors.base05}";
-          "browser.button_active_background_color" = "#${colors.base00}";
-          "browser.button_active_border_color" = "#${colors.base03}";
-          "browser.button_disabled_text_color" = "#${colors.base02}";
-          "browser.button_disabled_background_color" = "#${colors.base01}";
-          "browser.button_disabled_border_color" = "#${colors.base03}";
-          "browser.menu_text_color" = "#${colors.base05}";
-          "browser.menu_background_color" = "#${colors.base00}";
-          "browser.menu_border_color" = "#${colors.base03}";
-          "browser.menu_hover_text_color" = "#${colors.base06}";
-          "browser.menu_hover_background_color" = "#${colors.base01}";
-          "browser.menu_hover_border_color" = "#${colors.base0D}";
-          "browser.menu_active_text_color" = "#${colors.base05}";
-          "browser.menu_active_background_color" = "#${colors.base00}";
-          "browser.menu_active_border_color" = "#${colors.base03}";
-          "browser.menu_disabled_text_color" = "#${colors.base02}";
-          "browser.menu_disabled_background_color" = "#${colors.base01}";
-          "browser.menu_disabled_border_color" = "#${colors.base03}";
+          "browser.anchor_color" = "#${palette.base0D}";
+          "browser.visited_color" = "#${palette.base0E}";
+          "browser.active_color" = "#${palette.base0B}";
+          "browser.hover_color" = "#${palette.base0A}";
+          "browser.text_color" = "#${palette.base05}";
+          "browser.text_background_color" = "#${palette.base00}";
+          "browser.text_anchor_color" = "#${palette.base0D}";
+          "browser.text_visited_color" = "#${palette.base0E}";
+          "browser.text_active_color" = "#${palette.base0B}";
+          "browser.text_hover_color" = "#${palette.base0A}";
+          "browser.text_selection_color" = "#${palette.base0A}";
+          "browser.text_highlight_color" = "#${palette.base0B}";
+          "browser.text_link_color" = "#${palette.base0D}";
+          "browser.text_visited_link_color" = "#${palette.base0E}";
+          "browser.text_active_link_color" = "#${palette.base0B}";
+          "browser.text_hover_link_color" = "#${palette.base0A}";
+          "browser.textfield_color" = "#${palette.base05}";
+          "browser.textfield_background_color" = "#${palette.base00}";
+          "browser.textfield_border_color" = "#${palette.base03}";
+          "browser.textfield_placeholder_color" = "#${palette.base04}";
+          "browser.textfield_focus_color" = "#${palette.base06}";
+          "browser.textfield_focus_background_color" = "#${palette.base01}";
+          "browser.textfield_focus_border_color" = "#${palette.base0D}";
+          "browser.textfield_disabled_color" = "#${palette.base02}";
+          "browser.textfield_disabled_background_color" = "#${palette.base01}";
+          "browser.textfield_disabled_border_color" = "#${palette.base03}";
+          "browser.textfield_selection_color" = "#${palette.base0A}";
+          "browser.textfield_highlight_color" = "#${palette.base0B}";
+          "browser.textfield_link_color" = "#${palette.base0D}";
+          "browser.textfield_visited_link_color" = "#${palette.base0E}";
+          "browser.textfield_active_link_color" = "#${palette.base0B}";
+          "browser.textfield_hover_link_color" = "#${palette.base0A}";
+          "browser.button_text_color" = "#${palette.base05}";
+          "browser.button_background_color" = "#${palette.base00}";
+          "browser.button_border_color" = "#${palette.base03}";
+          "browser.button_hover_text_color" = "#${palette.base06}";
+          "browser.button_hover_background_color" = "#${palette.base01}";
+          "browser.button_hover_border_color" = "#${palette.base0D}";
+          "browser.button_active_text_color" = "#${palette.base05}";
+          "browser.button_active_background_color" = "#${palette.base00}";
+          "browser.button_active_border_color" = "#${palette.base03}";
+          "browser.button_disabled_text_color" = "#${palette.base02}";
+          "browser.button_disabled_background_color" = "#${palette.base01}";
+          "browser.button_disabled_border_color" = "#${palette.base03}";
+          "browser.menu_text_color" = "#${palette.base05}";
+          "browser.menu_background_color" = "#${palette.base00}";
+          "browser.menu_border_color" = "#${palette.base03}";
+          "browser.menu_hover_text_color" = "#${palette.base06}";
+          "browser.menu_hover_background_color" = "#${palette.base01}";
+          "browser.menu_hover_border_color" = "#${palette.base0D}";
+          "browser.menu_active_text_color" = "#${palette.base05}";
+          "browser.menu_active_background_color" = "#${palette.base00}";
+          "browser.menu_active_border_color" = "#${palette.base03}";
+          "browser.menu_disabled_text_color" = "#${palette.base02}";
+          "browser.menu_disabled_background_color" = "#${palette.base01}";
+          "browser.menu_disabled_border_color" = "#${palette.base03}";
         };
       };
     };
@@ -751,7 +751,7 @@ in {
 					userSettings = rec {
 						uiTheme = "auto";
 						uiAccentCustom = true;
-						uiAccentCustom0 = "#${colors.base0D}";
+						uiAccentCustom0 = "#${palette.base0D}";
 						cloudStorageEnabled = mkForce false; # Security liability?
 						importedLists = [
 							"https://filters.adtidy.org/extension/ublock/filters/3.txt"
