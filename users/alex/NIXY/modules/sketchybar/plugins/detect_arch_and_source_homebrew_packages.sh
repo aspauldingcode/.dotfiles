@@ -16,3 +16,5 @@ osascript=$(which osascript)
 gcal=$(which gcal)
 toggle_sketchybar=$(which toggle-sketchybar)
 nightlight="${homebrewPath}/nightlight"
+desktoppr=$(which desktoppr)
+wallpaper="/Users/Shared/Wallpaper/wallpaper-nix-colors.png"

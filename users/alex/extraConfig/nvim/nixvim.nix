@@ -605,6 +605,9 @@
         # color previews
         nvim-colorizer.enable = true;
 
+        # better nix highlighting with vim-nix
+        nix.enable = true;
+
         # treesitter conf
         treesitter = {
           enable = true;
@@ -976,12 +979,6 @@
           config = toLuaFile ./plugin/scrollview.lua;
         }
 
-        # LSP
-        #{
-        #  plugin = nvim-lspconfig;
-        #  config = toLuaFile ./plugin/lsp.lua;
-        #}
-
         # FIXME: y u no worky? >:(
         # lsp-status-nvim # FIXME: What about lspinfo?
         # lazy-lsp-nvim # FIXME: LEARN MORE
@@ -1002,27 +999,6 @@
         friendly-snippets
         #cmp_luasnip # completion for lua snippits
 
-        #{
-        #  plugin = pkgs.vimPlugins.cmp-nvim-tags;
-        #  config = toLuaFile ./plugin/cmp-tags.lua;
-        #}
-
-        # # Visual Fixes
-        # {
-        #   plugin = feline-nvim;
-        #   config = let inherit (config.colorscheme) colors; in
-        #   toLuaFile ./plugin/feline.lua;
-        # }
-
-        # {
-        #   plugin = winbar-nvim;
-        #   config = toLuaFile ./plugin/winbar.lua;
-        # }
-
-        # {
-        #   plugin = indent-blankline-nvim; # lines to identify codeblocks
-        #   config = toLuaFile ./plugin/indent-blankline.lua;
-        # }
         # Behavior Fixes
         vim-autoswap
         neodev-nvim # FIXME: WTF is neodev-nvim? NEEDED
@@ -1031,14 +1007,7 @@
         #telescope-fzf-native-nvim # FIXME: How do I use?
 
         # Syntax Highlighting
-        #vim-nix # better highlighting for nix files
-
-        # Emacs Org for nvim
-        #{
-        #  plugin = neorg;
-        #  config = toLuaFile ./plugin/neorg.lua;
-        #}
-        #neorg-telescope
+        # vim-nix # better highlighting for nix files
       ];
     };
 }

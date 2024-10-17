@@ -12,7 +12,10 @@ let
   # - gruvbox-dark-soft
   # - catppuccin-macchiato
   # - katy
-  scheme = "katy"; 
+  # - selenized-dark
+  # - pandora
+  # - papercolor-dark
+  scheme = "selenized-dark"; 
 in
 # Choose from: https://nix-community.github.io/nixvim/colorschemes/base16/index.html#colorschemesbase16colorscheme
 {

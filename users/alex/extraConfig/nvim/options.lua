@@ -325,3 +325,27 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.o.statuscolumn = vim.o.statuscolumn
   end,
 })
+
+-- Ensure Startify is loaded first and open NvimTree and then focus on Startify
+vim.api.nvim_create_autocmd("VimEnter", {
+  pattern = "*",
+  callback = function()
+    if vim.bo.modifiable and vim.fn.argc() == 0 then
+      vim.cmd("Startify")
+      vim.cmd("NvimTreeOpen")
+      -- Wait for NvimTree to be focused, then move focus back to Startify
+      vim.defer_fn(function()
+        if vim.bo.filetype == "NvimTree" then
+          vim.cmd("wincmd p") -- Move focus back to the previous window (Startify)
+        end
+      end, 100) -- Adjust the delay (in milliseconds) as needed
+    end
+  end
+})
+
+
+-- FIXME: Not even working!? :(
+-- enable syntax highlighting for nix files with vim-nix on macOS!
+if vim.fn.has('macunix') == 1 then
+    vim.cmd("syntax on")
+end

@@ -52,6 +52,8 @@ in
     extraConfig = ''
       # set wallpaper first
       ${desktoppr} ${wallpaper}
+      # fix a bug with desktoppr not updating the desktop immediately
+      ${desktoppr} color 000000
 
       # unsure if needed... 
       yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"

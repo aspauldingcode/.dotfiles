@@ -55,6 +55,7 @@
       # "xquartz" # what an ugly app
       "alacritty"
       "chatgpt"
+      "pppc-utility"
       "hammerspoon"
       "phoenix"
       "prismlauncher"

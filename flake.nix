@@ -41,6 +41,11 @@
       url = "github:matthewcroughan/nixtheplanet";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -58,6 +63,7 @@
       nur,
       nix-std,
       nixtheplanet,
+      agenix,
     }:
     let
       inherit (self) inputs;
@@ -133,12 +139,16 @@
                 backupFileExtension = "backup";
               };
             }
+            agenix.nixosModules.default
           ];
         };
         NIXEDUP = nixpkgs.lib.nixosSystem {
           pkgs = nixpkgs.legacyPackages.aarch64-linux;
           specialArgs = commonSpecialArgs;
-          modules = [ ./system/NIXEDUP/configuration-NIXEDUP.nix ];
+          modules = [ 
+            ./system/NIXEDUP/configuration-NIXEDUP.nix 
+            agenix.nixosModules.default
+          ];
         };
         NIXY2 = nixpkgs.lib.nixosSystem {
           pkgs = import nixpkgs {
@@ -171,6 +181,7 @@
                 backupFileExtension = "backup";
               };
             }
+            agenix.nixosModules.default
           ];
         };
       };
@@ -205,6 +216,7 @@
                 backupFileExtension = "backup";
               };
             }
+            agenix.darwinModules.default
           ];
         };
       };
