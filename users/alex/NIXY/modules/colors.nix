@@ -3,7 +3,7 @@
 # generate a color palette from nix-colors (to view all colors in a file!)
 {
   home.file = {
-    "colors.txt" = 
+    "colors.json" = 
     let
       hexColorBase00 = "${config.colorscheme.colors.base00}";
       hexColorConvertedBase00 = builtins.toString (
@@ -89,44 +89,48 @@
       # convert image to nix-colors:
       
     in {
-      text = ''
+      text = builtins.toJSON {
+        # nix-colors palette information
+        variant = config.colorscheme.variant;
+        slug = config.colorscheme.slug;
+
         # nix-colors palette as hex values
-        base00: #${config.colorscheme.colors.base00}
-        base01: #${config.colorscheme.colors.base01}
-        base02: #${config.colorscheme.colors.base02}
-        base03: #${config.colorscheme.colors.base03}
-        base04: #${config.colorscheme.colors.base04}
-        base05: #${config.colorscheme.colors.base05}
-        base06: #${config.colorscheme.colors.base06}
-        base07: #${config.colorscheme.colors.base07}
-        base08: #${config.colorscheme.colors.base08}
-        base09: #${config.colorscheme.colors.base09}
-        base0A: #${config.colorscheme.colors.base0A}
-        base0B: #${config.colorscheme.colors.base0B}
-        base0C: #${config.colorscheme.colors.base0C}
-        base0D: #${config.colorscheme.colors.base0D}
-        base0E: #${config.colorscheme.colors.base0E}
-        base0F: #${config.colorscheme.colors.base0F}
+        base00 = "#${config.colorscheme.colors.base00}";
+        base01 = "#${config.colorscheme.colors.base01}";
+        base02 = "#${config.colorscheme.colors.base02}";
+        base03 = "#${config.colorscheme.colors.base03}";
+        base04 = "#${config.colorscheme.colors.base04}";
+        base05 = "#${config.colorscheme.colors.base05}";
+        base06 = "#${config.colorscheme.colors.base06}";
+        base07 = "#${config.colorscheme.colors.base07}";
+        base08 = "#${config.colorscheme.colors.base08}";
+        base09 = "#${config.colorscheme.colors.base09}";
+        base0A = "#${config.colorscheme.colors.base0A}";
+        base0B = "#${config.colorscheme.colors.base0B}";
+        base0C = "#${config.colorscheme.colors.base0C}";
+        base0D = "#${config.colorscheme.colors.base0D}";
+        base0E = "#${config.colorscheme.colors.base0E}";
+        base0F = "#${config.colorscheme.colors.base0F}";
         
         # AppleHighlightColor example run in terminal:
         # defaults read -g AppleHighlightColor
-        base00: ${hexColorConvertedBase00};
-        base01: ${hexColorConvertedBase01};
-        base02: ${hexColorConvertedBase02};
-        base03: ${hexColorConvertedBase03};
-        base04: ${hexColorConvertedBase04};
-        base05: ${hexColorConvertedBase05};
-        base06: ${hexColorConvertedBase06};
-        base07: ${hexColorConvertedBase07};
-        base08: ${hexColorConvertedBase08};
-        base09: ${hexColorConvertedBase09};
-        base0A: ${hexColorConvertedBase0A};
-        base0B: ${hexColorConvertedBase0B};
-        base0C: ${hexColorConvertedBase0C};
-        base0D: ${hexColorConvertedBase0D};
-        base0E: ${hexColorConvertedBase0E};
-        base0F: ${hexColorConvertedBase0F};
-      '';
+        # base00_converted = hexColorConvertedBase00;
+        # base01_converted = hexColorConvertedBase01;
+        # base02_converted = hexColorConvertedBase02;
+        # base03_converted = hexColorConvertedBase03;
+        # base04_converted = hexColorConvertedBase04;
+        # base05_converted = hexColorConvertedBase05;
+        # base06_converted = hexColorConvertedBase06;
+        # base07_converted = hexColorConvertedBase07;
+        # base08_converted = hexColorConvertedBase08;
+        # base09_converted = hexColorConvertedBase09;
+        # base0A_converted = hexColorConvertedBase0A;
+        # base0B_converted = hexColorConvertedBase0B;
+        # base0C_converted = hexColorConvertedBase0C;
+        # base0D_converted = hexColorConvertedBase0D;
+        # base0E_converted = hexColorConvertedBase0E;
+        # base0F_converted = hexColorConvertedBase0F;
+      };
     };
   };
 }

@@ -232,41 +232,41 @@ in
           ${modifier} + ${smod} - f :             toggle-instant-fullscreen
 
           # # Move focused window to workspace N and follow focus
-          ${modifier} + ${smod} - 1 : ${yabai} -m window --space 1; ${yabai} -m space --focus 1; ${desktoppr} ${wallpaper}
-          ${modifier} + ${smod} - 2 : ${yabai} -m window --space 2; ${yabai} -m space --focus 2; ${desktoppr} ${wallpaper}
-          ${modifier} + ${smod} - 3 : ${yabai} -m window --space 3; ${yabai} -m space --focus 3; ${desktoppr} ${wallpaper}
-          ${modifier} + ${smod} - 4 : ${yabai} -m window --space 4; ${yabai} -m space --focus 4; ${desktoppr} ${wallpaper}
-          ${modifier} + ${smod} - 5 : ${yabai} -m window --space 5; ${yabai} -m space --focus 5; ${desktoppr} ${wallpaper}
-          ${modifier} + ${smod} - 6 : ${yabai} -m window --space 6; ${yabai} -m space --focus 6; ${desktoppr} ${wallpaper}
-          ${modifier} + ${smod} - 7 : ${yabai} -m window --space 7; ${yabai} -m space --focus 7; ${desktoppr} ${wallpaper}
-          ${modifier} + ${smod} - 8 : ${yabai} -m window --space 8; ${yabai} -m space --focus 8; ${desktoppr} ${wallpaper}
-          ${modifier} + ${smod} - 9 : ${yabai} -m window --space 9; ${yabai} -m space --focus 9; ${desktoppr} ${wallpaper}
-          ${modifier} + ${smod} - 0 : ${yabai} -m window --space 10; ${yabai} -m space --focus 10; ${desktoppr} ${wallpaper}
+          ${modifier} + ${smod} - 1 : ${yabai} -m window --space 1; ${yabai} -m space --focus 1
+          ${modifier} + ${smod} - 2 : ${yabai} -m window --space 2; ${yabai} -m space --focus 2
+          ${modifier} + ${smod} - 3 : ${yabai} -m window --space 3; ${yabai} -m space --focus 3
+          ${modifier} + ${smod} - 4 : ${yabai} -m window --space 4; ${yabai} -m space --focus 4
+          ${modifier} + ${smod} - 5 : ${yabai} -m window --space 5; ${yabai} -m space --focus 5
+          ${modifier} + ${smod} - 6 : ${yabai} -m window --space 6; ${yabai} -m space --focus 6
+          ${modifier} + ${smod} - 7 : ${yabai} -m window --space 7; ${yabai} -m space --focus 7
+          ${modifier} + ${smod} - 8 : ${yabai} -m window --space 8; ${yabai} -m space --focus 8
+          ${modifier} + ${smod} - 9 : ${yabai} -m window --space 9; ${yabai} -m space --focus 9
+          ${modifier} + ${smod} - 0 : ${yabai} -m window --space 10; ${yabai} -m space --focus 10
           
           # move focus to workspace n
-          ${modifier} - 1 : ${yabai} -m space --focus 1; ${desktoppr} ${wallpaper}
-          ${modifier} - 2 : ${yabai} -m space --focus 2; ${desktoppr} ${wallpaper}
-          ${modifier} - 3 : ${yabai} -m space --focus 3; ${desktoppr} ${wallpaper}    
-          ${modifier} - 4 : ${yabai} -m space --focus 4; ${desktoppr} ${wallpaper}
-          ${modifier} - 5 : ${yabai} -m space --focus 5; ${desktoppr} ${wallpaper}
-          ${modifier} - 6 : ${yabai} -m space --focus 6; ${desktoppr} ${wallpaper}  
-          ${modifier} - 7 : ${yabai} -m space --focus 7; ${desktoppr} ${wallpaper}
-          ${modifier} - 8 : ${yabai} -m space --focus 8; ${desktoppr} ${wallpaper}
-          ${modifier} - 9 : ${yabai} -m space --focus 9; ${desktoppr} ${wallpaper}
-          ${modifier} - 0 : ${yabai} -m space --focus 10; ${desktoppr} ${wallpaper}
+          ${modifier} - 1 : ${yabai} -m space --focus 1
+          ${modifier} - 2 : ${yabai} -m space --focus 2
+          ${modifier} - 3 : ${yabai} -m space --focus 3
+          ${modifier} - 4 : ${yabai} -m space --focus 4
+          ${modifier} - 5 : ${yabai} -m space --focus 5
+          ${modifier} - 6 : ${yabai} -m space --focus 6
+          ${modifier} - 7 : ${yabai} -m space --focus 7
+          ${modifier} - 8 : ${yabai} -m space --focus 8
+          ${modifier} - 9 : ${yabai} -m space --focus 9
+          ${modifier} - 0 : ${yabai} -m space --focus 10
           
           ${modifier} + ${smod} - y : ${yabai} -m space --mirror y-axis
           ${modifier} + ${smod} - x : ${yabai} -m space --mirror x-axis
 
           # send window to next/prev space and follow focus (use alt instead of cmd with arrows to maintian built-in insertion points https://github.com/aspauldingcode/.dotfiles/issues/11#issuecomment-2185355283)
-          ${mod4} + ${smod} - ${left} :   ${yabai} -m window --space prev; ${yabai} -m space --focus prev; ${desktoppr} ${wallpaper}
-          ${mod4} + ${smod} - ${down} :   ${yabai} -m window --space next; ${yabai} -m space --focus next; ${desktoppr} ${wallpaper}
-          ${mod4} + ${smod} - ${up} :     ${yabai} -m window --space prev; ${yabai} -m space --focus prev; ${desktoppr} ${wallpaper}
-          ${mod4} + ${smod} - ${right} :  ${yabai} -m window --space next; ${yabai} -m space --focus next; ${desktoppr} ${wallpaper}
-          ${modifier} + ${smod} - left :      ${yabai} -m window --space prev; ${yabai} -m space --focus prev; ${desktoppr} ${wallpaper}
-          ${modifier} + ${smod} - down :      ${yabai} -m window --space next; ${yabai} -m space --focus next; ${desktoppr} ${wallpaper}
-          ${modifier} + ${smod} - up :        ${yabai} -m window --space prev; ${yabai} -m space --focus prev; ${desktoppr} ${wallpaper}
-          ${modifier} + ${smod} - right :     ${yabai} -m window --space next; ${yabai} -m space --focus next; ${desktoppr} ${wallpaper}
+          ${mod4} + ${smod} - ${left} :   ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+          ${mod4} + ${smod} - ${down} :   ${yabai} -m window --space next; ${yabai} -m space --focus next
+          ${mod4} + ${smod} - ${up} :     ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+          ${mod4} + ${smod} - ${right} :  ${yabai} -m window --space next; ${yabai} -m space --focus next
+          ${modifier} + ${smod} - left :      ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+          ${modifier} + ${smod} - down :      ${yabai} -m window --space next; ${yabai} -m space --focus next
+          ${modifier} + ${smod} - up :        ${yabai} -m window --space prev; ${yabai} -m space --focus prev
+          ${modifier} + ${smod} - right :     ${yabai} -m window --space next; ${yabai} -m space --focus next
 
           # focus window in stacked, else in bsp (use cmd instead of alt with arrows to maintian built-in insertion points https://github.com/aspauldingcode/.dotfiles/issues/11#issuecomment-2185355283)
           ${modifier} - ${left} :   if [ "$(${yabai} -m query --spaces --space | jq -r '.type')" = "stack" ]; then ${yabai} -m window --focus stack.next; else ${yabai} -m window --focus west; fi

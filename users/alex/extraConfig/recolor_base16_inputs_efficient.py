@@ -6,14 +6,15 @@ def parse_palette(palette_str):
     """Parse a comma-separated string of hex colors into a list."""
     return palette_str.split(',')
 
-if len(sys.argv) < 4:
-    print("Usage: python recolor_base16_inputs_efficient.py <input_image_path> <output_image_path> <palette>")
-    print("Example palette: '#32302f,#3c3836,#504945,#665c54,#bdae93,#d5c4a1,#ebdbb2,#fbf1c7,#fb4934,#fe8019,#fabd2f,#b8bb26,#8ec07c,#83a598,#d3869b,#d65d0e'")
+if len(sys.argv) < 5:
+    print("Usage: python recolor_base16_inputs_efficient.py <input_image_path> <output_image_path> <mode> <palette>")
+    print("Example palette: 'dark,#32302f,#3c3836,#504945,#665c54,#bdae93,#d5c4a1,#ebdbb2,#fbf1c7,#fb4934,#fe8019,#fabd2f,#b8bb26,#8ec07c,#83a598,#d3869b,#d65d0e'")
     sys.exit(1)
 
 input_path = sys.argv[1]
 output_path = sys.argv[2]
-palette_str = sys.argv[3]
+mode = sys.argv[3].lower()
+palette_str = sys.argv[4]
 
 # Define a Base16 color palette using hexadecimal values from CLI
 BASE16_PALETTE = parse_palette(palette_str)
@@ -127,7 +128,7 @@ def recolor_image(input_path, output_path):
     pixels_flat = pixels.reshape(-1, 3)
     num_pixels = pixels_flat.shape[0]
 
-    # Compute distances between each pixel and acccent palette colors first
+    # Compute distances between each pixel and accent palette colors first
     distances_accent = np.linalg.norm(pixels_flat[:, np.newaxis, :] - accent_palette[np.newaxis, :, :], axis=2)
     closest_accent = np.argmin(distances_accent, axis=1)
     min_dist_accent = np.min(distances_accent, axis=1)
@@ -148,6 +149,10 @@ def recolor_image(input_path, output_path):
 
     # Map pixels to palette colors
     recolored_pixels_flat = full_palette[indices]
+
+    # Invert colors if mode is light
+    if mode == 'light':
+        recolored_pixels_flat = 255 - recolored_pixels_flat
 
     # Ensure every color in the palette is used at least once
     used_colors = np.unique(indices)

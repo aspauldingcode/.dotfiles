@@ -173,14 +173,18 @@
       mkdir -p "$app_target"
       ${pkgs.rsync}/bin/rsync $rsyncArgs "$apps_source/" "$app_target"
 
-      echo "Recoloring Wallpapers..."
+      echo "Recoloring Wallpapers to ${config.colorscheme.slug} color scheme..."
       mkdir -p /Users/Shared/Wallpaper/
-      ${pkgs.python3.withPackages (ps: [ ps.pillow ps.numpy ps.tqdm ])}/bin/python3 ${./../../users/alex/extraConfig/recolor_base16_inputs_efficient.py} ${./../../users/alex/extraConfig/wallpapers/gruvbox-nix.png} /Users/Shared/Wallpaper/wallpaper-nix-colors.png ${palette.base00},${palette.base01},${palette.base02},${palette.base03},${palette.base04},${palette.base05},${palette.base06},${palette.base07},${palette.base08},${palette.base09},${palette.base0A},${palette.base0B},${palette.base0C},${palette.base0D},${palette.base0E},${palette.base0F}
-      echo "Setting wallpaper..."
+      ${pkgs.python3.withPackages (ps: [ ps.pillow ps.numpy ps.tqdm ])}/bin/python3 ${./../../users/alex/extraConfig/recolor_base16_inputs_efficient.py} ${./../../users/alex/extraConfig/wallpapers/gruvbox-nix.png} /Users/Shared/Wallpaper/wallpaper-nix-colors.png ${config.colorScheme.variant} ${palette.base00},${palette.base01},${palette.base02},${palette.base03},${palette.base04},${palette.base05},${palette.base06},${palette.base07},${palette.base08},${palette.base09},${palette.base0A},${palette.base0B},${palette.base0C},${palette.base0D},${palette.base0E},${palette.base0F}
+      echo "Setting ${config.colorscheme.variant} wallpaper..."
       ${desktoppr} ${wallpaper}
       # fix a bug with desktoppr not updating the desktop immediately
       ${desktoppr} color 000000
       echo "Wallpapers recolored!"
+
+      # set darkmode/lightmode for the system
+      echo "Setting ${config.colorscheme.variant}mode for the system..."
+      toggle-darkmode ${config.colorscheme.variant}
     '';
   };
 }
