@@ -109,6 +109,10 @@ def recolor_image(input_path, output_path):
     pixels = np.array(image)
     height, width = pixels.shape[:2]
 
+    # Invert colors if mode is light
+    if mode == 'light':
+        pixels = 255 - pixels
+
     # Convert palette to RGB array
     palette_rgb = np.array([hex_to_rgb(color) for color in BASE16_PALETTE])
     num_base = 8  # base00 to base07
@@ -149,10 +153,6 @@ def recolor_image(input_path, output_path):
 
     # Map pixels to palette colors
     recolored_pixels_flat = full_palette[indices]
-
-    # Invert colors if mode is light
-    if mode == 'light':
-        recolored_pixels_flat = 255 - recolored_pixels_flat
 
     # Ensure every color in the palette is used at least once
     used_colors = np.unique(indices)
