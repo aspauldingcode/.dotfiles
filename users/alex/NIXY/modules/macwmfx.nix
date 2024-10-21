@@ -1,9 +1,7 @@
 { config, ... }:
 
-let
-  inherit (config.colorScheme) palette;
-in
-{
+let inherit (config.colorScheme) palette;
+in {
   home.file.".config/macwmfx/config" = {
     force = true; # overwrite the file
     text = builtins.toJSON {
@@ -18,8 +16,8 @@ in
       whitelistedBundleIdentifiers = [ "com.apple.safari" ];
       outlineWindow = {
         enabled = true;
-        width = "2";
-        cornerRadius = "";
+        width = 3;
+        cornerRadius = ;
         activeColor = "${palette.base07}";
         inactiveColor = "${palette.base05}";
       };

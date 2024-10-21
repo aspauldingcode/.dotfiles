@@ -158,8 +158,62 @@ in
         </plist>
       '';
     };
-  };
 
+    "org.nix-community.home.xdg_cache_home.plist" = {
+      enable = true;
+      text = ''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"?>
+        <plist version="1.0">
+          <dict>
+            <key>Label</key>
+            <string>org.nix-community.home.xdg_cache_home</string>
+            <key>Program</key>
+            <string>/bin/launchctl</string>
+            <key>ProgramArguments</key>
+            <array>
+              <string>/bin/launchctl</string>
+              <string>unload</string>
+              <string>-F</string>
+              <string>/System/Library/LaunchAgents/com.apple.OSDUIHelper.plist</string>
+            </array>
+            <key>RunAtLoad</key>
+            <true/>
+            <key>StandardErrorPath</key>
+            <string>/dev/null</string>
+            <key>StandardOutPath</key>
+            <string>/dev/null</string>
+          </dict>
+        </plist>
+      '';
+    };
+
+    "com.user.desktop-cleaner.plist" = {
+      enable = true;
+      text = ''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+          <dict>
+            <key>Label</key>
+            <string>com.user.desktop-cleaner</string>
+            <key>ProgramArguments</key>
+            <array>
+              <string>${desktop_cleaner}/bin/desktop_cleaner</string>
+            </array>
+            <key>RunAtLoad</key>
+            <true/>
+            <key>KeepAlive</key>
+            <true/>
+            <key>StandardOutPath</key>
+            <string>/tmp/desktop_cleaner.log</string>
+            <key>StandardErrorPath</key>
+            <string>/tmp/desktop_cleaner.error.log</string>
+          </dict>
+        </plist>
+      '';
+    };
+  };
   environment.launchDaemons = {
     "com.macenhance.MacForge.Injector.plist" = {
       enable = true;
