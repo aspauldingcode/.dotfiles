@@ -12,10 +12,11 @@ let
   firefox = "${homebrewPath}/firefox";
   app_menu = "/Applications/unmenu.app/Contents/MacOS/unmenu";
   jq = "${pkgs.jq}/bin/jq";
-  inherit (config.colorScheme) palette;
-
   desktoppr = "/usr/local/bin/desktoppr";
+  m = "${homebrewPath}/m";
   wallpaper = "/Users/Shared/Wallpaper/wallpaper-nix-colors.png";
+
+  inherit (config.colorScheme) palette;
 in
 {
   services.yabai = {
@@ -51,7 +52,8 @@ in
     };
     extraConfig = ''
       # set wallpaper first
-      ${desktoppr} ${wallpaper}
+      # ${desktoppr} ${wallpaper}
+      ${m} wallpaper "${wallpaper}"
 
       # unsure if needed... 
       yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"

@@ -15,10 +15,11 @@ let
   # app_menu = "${homebrewPath}/dmenu-mac";
   app_menu = "/Applications/unmenu.app/Contents/MacOS/unmenu";
   jq = "${pkgs.jq}/bin/jq";
-  inherit (config.colorScheme) palette;
-
   desktoppr = "/usr/local/bin/desktoppr";
-  wallpaper = "~/Pictures/wallpaper-recolored.png";
+  m = "${homebrewPath}/m";
+  wallpaper = "/Users/Shared/Wallpaper/wallpaper-nix-colors.png";
+
+  inherit (config.colorScheme) palette;
 in
 {
   # yabai config
@@ -31,7 +32,8 @@ in
         #!/usr/bin/env sh
 
         # set wallpaper first
-        ${desktoppr} ${wallpaper}
+        # ${desktoppr} ${wallpaper}
+        ${m} wallpaper "${wallpaper}"
 
         # update_sudoers() {
         #   YABAI_PATH=$(which yabai)

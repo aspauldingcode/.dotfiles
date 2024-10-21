@@ -75,6 +75,8 @@ in
         kdeconnectd > /dev/null 2>&1 &
       fi
 
+      toggle-darkmode ${config.colorScheme.variant}
+
       # start borders with order above
       ${borders} order=above > /dev/null 2>&1 &
     '')
@@ -755,23 +757,11 @@ in
           echo "Toggling to light cape for dark mode."
         fi
       elif [ "$1" == "light" ]; then
-        CURRENT_CAPE=$(cat "$HOME/Library/Application Support/Mousecape/current_cape.txt")
-        if [ "$CURRENT_CAPE" == "$CAPE_LIGHT" ]; then
-          echo "Light cape for dark mode is already applied."
-          exit 0
-        else
-          CAPE_NAME=$CAPE_LIGHT
-          echo "Applying light cape for dark mode."
-        fi
+        CAPE_NAME=$CAPE_LIGHT
+        echo "Applying light cape for dark mode."
       elif [ "$1" == "dark" ]; then
-        CURRENT_CAPE=$(cat "$HOME/Library/Application Support/Mousecape/current_cape.txt")
-        if [ "$CURRENT_CAPE" == "$CAPE_DARK" ]; then
-          echo "Dark cape for light mode is already applied."
-          exit 0
-        else
-          CAPE_NAME=$CAPE_DARK
-          echo "Applying dark cape for light mode."
-        fi
+        CAPE_NAME=$CAPE_DARK
+        echo "Applying dark cape for light mode."
       else
         echo "Invalid argument. Please specify 'light' or 'dark' or leave empty to toggle."
         exit 1

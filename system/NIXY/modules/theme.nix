@@ -16,7 +16,8 @@ let
   # - pandora
   # - papercolor-dark
   # - zenburn
-  scheme = "atelier-dune-light"; 
+  # - atelier-dune-light
+  scheme = "pandora"; 
 in
 # Choose from: https://nix-community.github.io/nixvim/colorschemes/base16/index.html#colorschemesbase16colorscheme
 {

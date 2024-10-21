@@ -23,7 +23,10 @@ in
         activeColor = "${palette.base07}";
         inactiveColor = "${palette.base05}";
       };
+      systemColorSchemeVariant = "${config.colorScheme.variant}";
       transparency = 1.0;
+      # blurRadius = 10;
+      # blurPasses = 1;
     };
   };
 }

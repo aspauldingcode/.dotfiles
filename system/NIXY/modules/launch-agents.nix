@@ -49,155 +49,39 @@ in
             <array>
               <string>/Applications/Flameshot.app/Contents/MacOS/flameshot</string>
             </array>
-            <key>RunAtLoad</key>z
+            <key>RunAtLoad</key>
             <true/>
           </dict>
         </plist>
       '';
     };
-    
-    # "com.koekeishiya.skhd.plist" = {
-    #   enable = true;
-    #   text = ''
-    #     <?xml version="1.0" encoding="UTF-8"?>
-    #     <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"?>
-    #     <plist version="1.0">
-    #       <dict>
-    #         <key>Label</key>
-    #         <string>com.koekeishiya.skhd</string>
-    #         <key>ProgramArguments</key>
-    #         <array>
-    #           <string>/opt/homebrew/bin/skhd</string>
-    #         </array>
-    #         <key>EnvironmentVariables</key>
-    #         <dict>
-    #           <key>PATH</key>
-    #           <string>/opt/homebrew/bin:/opt/homebrew/sbin:/Users/alex/.nix-profile/bin:/etc/profiles/per-user/alex/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin</string>
-    #         </dict>
-    #         <key>RunAtLoad</key>
-    #         <true/>
-    #         <key>KeepAlive</key>
-    #         <dict>
-    #           <key>SuccessfulExit</key>
-    #           <false/>
-    #           <key>Crashed</key>
-    #           <true/>
-    #         </dict>
-    #         <key>StandardOutPath</key>
-    #         <string>/tmp/skhd_alex.out.log</string>
-    #         <key>StandardErrorPath</key>
-    #         <string>/tmp/skhd_alex.err.log</string>
-    #         <key>ProcessType</key>
-    #         <string>Interactive</string>
-    #         <key>Nice</key>
-    #         <integer>-20</integer>
-    #       </dict>
-    #     </plist>
-    #   '';
-    # };
 
-    # "homebrew.mxcl.sketchybar.plist" = {
-    #   enable = true;
-    #   text = ''
-    #     <?xml version="1.0" encoding="UTF-8"?>
-    #     <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"?>
-    #     <plist version="1.0">
-    #       <dict>
-    #         <key>EnvironmentVariables</key>
-    #         <dict>
-    #           <key>LANG</key>
-    #           <string>en_US.UTF-8</string>
-    #           <key>PATH</key>
-    #           <string>/opt/homebrew/bin:/opt/homebrew/sbin:/usr/bin:/bin:/usr/sbin:/sbin</string>
-    #         </dict>
-    #         <key>KeepAlive</key>
-    #         <true/>
-    #         <key>Label</key>
-    #         <string>homebrew.mxcl.sketchybar</string>
-    #         <key>LimitLoadToSessionType</key>
-    #         <array>
-    #           <string>Aqua</string>
-    #           <string>Background</string>
-    #           <string>LoginWindow</string>
-    #           <string>StandardIO</string>
-    #           <string>System</string>
-    #         </array>
-    #         <key>ProcessType</key>
-    #         <string>Interactive</string>
-    #         <key>ProgramArguments</key>
-    #         <array>
-    #           <string>/opt/homebrew/opt/sketchybar/bin/sketchybar</string>
-    #         </array>
-    #         <key>RunAtLoad</key>
-    #         <true/>
-    #         <key>StandardErrorPath</key>
-    #         <string>/opt/homebrew/var/log/sketchybar/sketchybar.err.log</string>
-    #         <key>StandardOutPath</key>
-    #         <string>/opt/homebrew/var/log/sketchybar/sketchybar.out.log</string>
-    #       </dict>
-    #     </plist>
-    #   '';
-    # };
-
-    # "com.koekeishiya.yabai.plist" = {
-    #   enable = true;
-    #   text = ''
-    #     <?xml version="1.0" encoding="UTF-8"?>
-    #     <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"?>
-    #     <plist version="1.0">
-    #       <dict>
-    #         <key>Label</key>
-    #         <string>com.koekeishiya.yabai</string>
-    #         <key>ProgramArguments</key>
-    #         <array>
-    #           <string>/opt/homebrew/bin/yabai</string>
-    #         </array>
-    #         <key>EnvironmentVariables</key>
-    #         <dict>
-    #           <key>PATH</key>
-    #           <string>/opt/homebrew/bin:/opt/homebrew/sbin:/Users/alex/.nix-profile/bin:/etc/profiles/per-user/alex/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin</string>
-    #         </dict>
-    #         <key>RunAtLoad</key>
-    #         <true/>
-    #         <key>KeepAlive</key>
-    #         <dict>
-    #           <key>SuccessfulExit</key>
-    #           <false/>
-    #           <key>Crashed</key>
-    #           <true/>
-    #         </dict>
-    #         <key>StandardOutPath</key>
-    #         <string>/tmp/yabai_alex.out.log</string>
-    #         <key>StandardErrorPath</key>
-    #         <string>/tmp/yabai_alex.err.log</string>
-    #         <key>ProcessType</key>
-    #         <string>Interactive</string>
-    #         <key>Nice</key>
-    #         <integer>-20</integer>
-    #       </dict>
-    #     </plist>
-    #   '';
-    # };
-
-    # "com.example.mousecape.plist" = {
-    #   enable = true;
-    #   text = ''
-    #     <?xml version="1.0" encoding="UTF-8"?>
-    #     <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0.dtd"?>
-    #     <plist version="1.0">
-    #       <dict>
-    #         <key>Label</key>
-    #         <string>com.example.mousecape</string>
-    #         <key>ProgramArguments</key>
-    #         <array>
-    #           <string>/Applications/Mousecape.app/Contents/MacOS/Mousecape</string>
-    #         </array>
-    #         <key>RunAtLoad</key>
-    #         <true/>
-    #       </dict>
-    #     </plist>
-    #   '';
-    # };
+    "com.aspauldingcode.toggle-darkmode.plist" = {
+      enable = true;
+      text = ''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"?>
+        <plist version="1.0">
+          <dict>
+            <key>Label</key>
+            <string>com.user.toggle-darkmode</string>
+            <key>ProgramArguments</key>
+            <array>
+              <string>toggle-darkmode</string>
+              <string>${config.colorScheme.variant}</string>
+            </array>
+            <key>RunAtLoad</key>
+            <true/>
+            <key>KeepAlive</key>
+            <false/>
+            <key>StandardOutPath</key>
+            <string>/tmp/toggle-darkmode.log</string>
+            <key>StandardErrorPath</key>
+            <string>/tmp/toggle-darkmode.error.log</string>
+          </dict>
+        </plist>
+      '';
+    };
 
     "com.lwouis.alt-tab-macos.plist" = {
       enable = true;
@@ -274,104 +158,8 @@ in
         </plist>
       '';
     };
-
-    # "com.example.diskutil.plist" = {
-    #   enable = true;
-    #   text = ''
-    #     <?xml version="1.0" encoding="UTF-8"?>
-    #     <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0.dtd"?>
-    #     <plist version="1.0">
-    #       <dict>
-    #         <key>Label</key>
-    #         <string>com.example.diskutil</string>
-    #         <key>ProgramArguments</key>
-    #         <array>
-    #           <string>/usr/sbin/diskutil</string>
-    #           <string>repairPermissions</string>
-    #           <string>/</string>
-    #         </array>
-    #         <key>RunAtLoad</key>
-    #         <true/>
-    #       </dict>
-    #     </plist>
-    #   '';
-    # };
-
-    # "com.example.unnaturalscrollwheels.plist" = {
-    #   enable = true;
-    #   text = ''
-    #     <?xml version="1.0" encoding="UTF-8"?>
-    #     <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0.dtd"?>
-    #     <plist version="1.0">
-    #       <dict>
-    #         <key>Label</key>
-    #         <string>com.example.unnaturalscrollwheels</string>
-    #         <key>ProgramArguments</key>
-    #         <array>
-    #           <string>/Applications/UnnaturalScrollWheels.app/Contents/MacOS/UnnaturalScrollWheels</string>
-    #         </array>
-    #         <key>RunAtLoad</key>
-    #         <true/>
-    #       </dict>
-    #     </plist>
-    #   '';
-    # };
-
-    "org.nix-community.home.xdg_cache_home.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"?>
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>org.nix-community.home.xdg_cache_home</string>
-            <key>Program</key>
-            <string>/bin/launchctl</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>/bin/launchctl</string>
-              <string>unload</string>
-              <string>-F</string>
-              <string>/System/Library/LaunchAgents/com.apple.OSDUIHelper.plist</string>
-            </array>
-            <key>RunAtLoad</key>
-            <true/>
-            <key>StandardErrorPath</key>
-            <string>/dev/null</string>
-            <key>StandardOutPath</key>
-            <string>/dev/null</string>
-          </dict>
-        </plist>
-      '';
-    };
-
-    "com.user.desktop-cleaner.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>com.user.desktop-cleaner</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>${desktop_cleaner}/bin/desktop_cleaner</string>
-            </array>
-            <key>RunAtLoad</key>
-            <true/>
-            <key>KeepAlive</key>
-            <true/>
-            <key>StandardOutPath</key>
-            <string>/tmp/desktop_cleaner.log</string>
-            <key>StandardErrorPath</key>
-            <string>/tmp/desktop_cleaner.error.log</string>
-          </dict>
-        </plist>
-      '';
-    };
   };
+
   environment.launchDaemons = {
     "com.macenhance.MacForge.Injector.plist" = {
       enable = true;
@@ -625,106 +413,6 @@ in
         </plist>
       '';
     };
-
-    # "org.freedesktop.dbus-system.plist" = {
-    #   enable = true;
-    #   text = ''
-    #     <?xml version='1.0' encoding='UTF-8'?>
-    #     <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-    #     <plist version='1.0'>
-    #     <dict>
-    #       <key>Label</key>
-    #       <string>org.freedesktop.dbus-system</string>
-    #       <key>ProgramArguments</key>
-    #       <array>
-    #         <string>/opt/local/bin/dbus-daemon</string>
-    #         <string>--system</string>
-    #         <string>--nofork</string>
-    #       </array>
-    #       <key>KeepAlive</key>
-    #       <true/>
-    #       <key>Disabled</key>
-    #       <true/>
-    #     </dict>
-    #     </plist>
-    #   '';
-    # };
-
-    # "org.pqrs.Karabiner-DriverKit-VirtualHIDDeviceClient.plist" = {
-    #   enable = true;
-    #   text = ''
-    #     <?xml version="1.0" encoding="UTF-8"?>
-    #     <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-    #     <plist version="1.0">
-    #     <dict>
-    #       <key>Label</key>
-    #       <string>org.pqrs.Karabiner-DriverKit-VirtualHIDDeviceClient</string>
-    #       <key>AssociatedBundleIdentifiers</key>
-    #       <string>org.pqrs.Karabiner-DriverKit-VirtualHIDDeviceClient</string>
-    #       <key>Disabled</key>
-    #       <false/>
-    #       <key>KeepAlive</key>
-    #       <true/>
-    #       <key>ProcessType</key>
-    #       <string>Interactive</string>
-    #       <key>ProgramArguments</key>
-    #       <array>
-    #         <string>/Library/Application Support/org.pqrs/Karabiner-DriverKit-VirtualHIDDevice/Applications/Karabiner-DriverKit-VirtualHIDDeviceClient.app/Contents/MacOS/Karabiner-DriverKit-VirtualHIDDeviceClient</string>
-    #       </array>
-    #     </dict>
-    #     </plist>
-    #   '';
-    # };
-
-    # "org.pqrs.karabiner.karabiner_grabber.plist" = {
-    #   enable = true;
-    #   text = ''
-    #     <?xml version="1.0" encoding="UTF-8"?>
-    #     <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-    #     <plist version="1.0">
-    #     <dict>
-    #       <key>Label</key>
-    #       <string>org.pqrs.karabiner.karabiner_grabber</string>
-    #       <key>AssociatedBundleIdentifiers</key>
-    #       <string>org.pqrs.Karabiner-Elements.Settings</string>
-    #       <key>Disabled</key>
-    #       <false/>
-    #       <key>KeepAlive</key>
-    #       <true/>
-    #       <key>ProcessType</key>
-    #       <string>Interactive</string>
-    #       <key>ProgramArguments</key>
-    #       <array>
-    #         <string>/Library/Application Support/org.pqrs/Karabiner-Elements/bin/karabiner_grabber</string>
-    #       </array>
-    #     </dict>
-    #     </plist>
-    #   '';
-    # };
-
-    # "org.pqrs.karabiner.karabiner_observer.plist" = {
-    #   enable = true;
-    #   text = ''
-    #     <?xml version="1.0" encoding="UTF-8"?>
-    #     <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-    #     <plist version="1.0">
-    #     <dict>
-    #       <key>Label</key>
-    #       <string>org.pqrs.karabiner.karabiner_observer</string>
-    #       <key>AssociatedBundleIdentifiers</key>
-    #       <string>org.pqrs.Karabiner-Elements.Settings</string>
-    #       <key>Disabled</key>
-    #       <false/>
-    #       <key>KeepAlive</key>
-    #       <true/>
-    #       <key>ProgramArguments</key>
-    #       <array>
-    #         <string>/Library/Application Support/org.pqrs/Karabiner-Elements/bin/karabiner_observer</string>
-    #       </array>
-    #     </dict>
-    #     </plist>
-    #   '';
-    # };
   };
 
   launchd.user.agents.startMacForge = {
