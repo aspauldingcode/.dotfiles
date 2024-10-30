@@ -8,7 +8,7 @@
       exec "xterm"
     '';
       # exec "orb -m nixos -u alex"
-      # exec "ssh -Y -p 2222 alex@198.19.249.50 'startxfce4'"
+      # exec "◊"
       # exec "orb -m nixos -u alex"
       # ssh -Y -p 2222 alex@198.19.249.50
       # exec "/opt/local/bin/i3" # start i3 before xquartzwm does.`

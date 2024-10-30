@@ -46,184 +46,195 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    mac-app-util = {
+      url = "github:hraban/mac-app-util";
+    };
   };
 
-  outputs =
-    {
-      self,
-      nixpkgs,
-      unstable_nixpkgs,
-      nix-darwin,
-      home-manager,
-      nixvim,
-      flake-parts,
-      nix-colors,
-      mobile-nixos,
-      apple-silicon,
-      nur,
-      nix-std,
-      nixtheplanet,
-      agenix,
-    }:
-    let
-      inherit (self) inputs;
-      std = nix-std.lib;
-      # Define common specialArgs for nixosConfigurations and homeConfigurations
-      commonSpecialArgs = {
-        inherit
-          inputs
-          nix-darwin
-          nixvim
-          home-manager
-          flake-parts
-          nix-colors
-          apple-silicon
-          nur
-          self
-          std
-          nixtheplanet
-          ;
-      };
-      commonExtraSpecialArgs = {
-        inherit
-          inputs
-          nix-darwin
-          nixvim
-          flake-parts
-          nix-colors
-	        apple-silicon
-          nur
-          self
-          std
-          nixtheplanet
-          ;
-      };
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-        "x86_64-darwin"
-        "aarch64-darwin"
-      ];
-      eachSystem = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
-
-      # Define NixOS configurations
-      nixosConfigurations = {
-        NIXSTATION64 = nixpkgs.lib.nixosSystem {
-          pkgs = import nixpkgs {
-            system = "x86_64-linux";
-            config = {
-              allowUnfree = true;
-              permittedInsecurePackages = [ "electron-19.1.9" ];
-            };
-            overlays = [
-              inputs.nur.overlay
-              (final: _prev: {
-                unstable = import unstable_nixpkgs {
-                  inherit (final) system config;
-                };
-              })
-            ];
-          };
-          specialArgs = commonSpecialArgs; # // { extraPkgs = [ mobile-nixos ]; };
-          modules = [
-            ./system/NIXSTATION64/configuration-NIXSTATION64.nix
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                users.alex = import ./users/alex/NIXSTATION64/home-NIXSTATION64.nix;
-                # Optionally, use home-manager.extraSpecialArgs to pass
-                # arguments to home.nix
-                extraSpecialArgs = commonExtraSpecialArgs;
-                backupFileExtension = "backup";
-              };
-            }
-            agenix.nixosModules.default
-          ];
-        };
-        NIXEDUP = nixpkgs.lib.nixosSystem {
-          pkgs = nixpkgs.legacyPackages.aarch64-linux;
-          specialArgs = commonSpecialArgs;
-          modules = [ 
-            ./system/NIXEDUP/configuration-NIXEDUP.nix 
-            agenix.nixosModules.default
-          ];
-        };
-        NIXY2 = nixpkgs.lib.nixosSystem {
-          pkgs = import nixpkgs {
-            system = "aarch64-linux";
-            config = {
-              allowUnfree = true;
-              permittedInsecurePackages = [ "electron-19.1.9" ];
-            };
-            overlays = [
-              inputs.nur.overlay
-              (final: _prev: {
-                unstable = import unstable_nixpkgs {
-                  inherit (final) system config;
-                };
-              })
-            ];
-          };
-          specialArgs = commonSpecialArgs; # // { extraPkgs = [ mobile-nixos ]; };
-          modules = [
-            ./system/NIXY2/configuration-NIXY2.nix
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                users.alex = import ./users/alex/NIXY2/home-NIXY2.nix;
-                # Optionally, use home-manager.extraSpecialArgs to pass
-                # arguments to home.nix
-                extraSpecialArgs = commonExtraSpecialArgs;
-                backupFileExtension = "backup";
-              };
-            }
-            agenix.nixosModules.default
-          ];
-        };
-      };
-
-      # Define Darwin (macOS) configurations
-      darwinConfigurations = {
-        NIXY = nix-darwin.lib.darwinSystem {
-          pkgs = import nixpkgs {
-            system = "aarch64-darwin";
-            config.allowUnfree = true;
-            overlays = [
-              inputs.nur.overlay
-              (final: _prev: {
-                unstable = import unstable_nixpkgs {
-                  inherit (final) system config;
-                };
-              })
-            ];
-          };
-          specialArgs = commonSpecialArgs;
-          modules = [
-            ./system/NIXY/darwin-configuration-NIXY.nix
-            home-manager.darwinModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                users.alex = import ./users/alex/NIXY/home-NIXY.nix;
-                # Optionally, use home-manager.extraSpecialArgs to pass
-                # arguments to home.nix
-                extraSpecialArgs = commonExtraSpecialArgs;
-                backupFileExtension = "backup";
-              };
-            }
-            agenix.darwinModules.default
-          ];
-        };
-      };
-    in
-    {
-      # Return all the configurations
-      nixosConfigurations = nixosConfigurations;
-      darwinConfigurations = darwinConfigurations;
+  outputs = {
+    self,
+    nixpkgs,
+    unstable_nixpkgs,
+    nix-darwin,
+    home-manager,
+    nixvim,
+    flake-parts,
+    nix-colors,
+    mobile-nixos,
+    apple-silicon,
+    nur,
+    nix-std,
+    nixtheplanet,
+    agenix,
+    mac-app-util,
+  }:
+  let
+    inherit (self) inputs;
+    std = nix-std.lib;
+    # Define common specialArgs for nixosConfigurations and homeConfigurations
+    commonSpecialArgs = {
+      inherit
+        inputs
+        nix-darwin
+        nixvim
+        home-manager
+        flake-parts
+        nix-colors
+        apple-silicon
+        nur
+        self
+        std
+        nixtheplanet
+        ;
     };
+    commonExtraSpecialArgs = {
+      inherit
+        inputs
+        nix-darwin
+        nixvim
+        flake-parts
+        nix-colors
+        apple-silicon
+        nur
+        self
+        std
+        nixtheplanet
+        ;
+    };
+    systems = [
+      "x86_64-linux"
+      "aarch64-linux"
+      "x86_64-darwin"
+      "aarch64-darwin"
+    ];
+    eachSystem = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
+
+    # Define NixOS configurations
+    nixosConfigurations = {
+      NIXSTATION64 = nixpkgs.lib.nixosSystem {
+        pkgs = import nixpkgs {
+          system = "x86_64-linux";
+          config = {
+            allowUnfree = true;
+            permittedInsecurePackages = [ "electron-19.1.9" ];
+          };
+          overlays = [
+            inputs.nur.overlay
+            (final: _prev: {
+              unstable = import unstable_nixpkgs {
+                inherit (final) system config;
+              };
+            })
+          ];
+        };
+        specialArgs = commonSpecialArgs; # // { extraPkgs = [ mobile-nixos ]; };
+        modules = [
+          ./system/NIXSTATION64/configuration-NIXSTATION64.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              users.alex = import ./users/alex/NIXSTATION64/home-NIXSTATION64.nix;
+              # Optionally, use home-manager.extraSpecialArgs to pass
+              # arguments to home.nix
+              extraSpecialArgs = commonExtraSpecialArgs;
+              backupFileExtension = "backup";
+            };
+          }
+          agenix.nixosModules.default
+        ];
+      };
+      NIXEDUP = nixpkgs.lib.nixosSystem {
+        pkgs = nixpkgs.legacyPackages.aarch64-linux;
+        specialArgs = commonSpecialArgs;
+        modules = [ 
+          ./system/NIXEDUP/configuration-NIXEDUP.nix 
+          agenix.nixosModules.default
+        ];
+      };
+      NIXY2 = nixpkgs.lib.nixosSystem {
+        pkgs = import nixpkgs {
+          system = "aarch64-linux";
+          config = {
+            allowUnfree = true;
+            permittedInsecurePackages = [ "electron-19.1.9" ];
+          };
+          overlays = [
+            inputs.nur.overlay
+            (final: _prev: {
+              unstable = import unstable_nixpkgs {
+                inherit (final) system config;
+              };
+            })
+          ];
+        };
+        specialArgs = commonSpecialArgs; # // { extraPkgs = [ mobile-nixos ]; };
+        modules = [
+          ./system/NIXY2/configuration-NIXY2.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              users.alex = import ./users/alex/NIXY2/home-NIXY2.nix;
+              # Optionally, use home-manager.extraSpecialArgs to pass
+              # arguments to home.nix
+              extraSpecialArgs = commonExtraSpecialArgs;
+              backupFileExtension = "backup";
+            };
+          }
+          agenix.nixosModules.default
+        ];
+      };
+    };
+
+    # Define Darwin (macOS) configurations
+    darwinConfigurations = {
+      NIXY = nix-darwin.lib.darwinSystem {
+        pkgs = import nixpkgs {
+          system = "aarch64-darwin";
+          config.allowUnfree = true;
+          overlays = [
+            inputs.nur.overlay
+            (final: _prev: {
+              unstable = import unstable_nixpkgs {
+                inherit (final) system config;
+              };
+            })
+          ];
+        };
+        specialArgs = commonSpecialArgs;
+        modules = [
+          ./system/NIXY/darwin-configuration-NIXY.nix
+          mac-app-util.darwinModules.default
+          home-manager.darwinModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              # Optionally, use home-manager.extraSpecialArgs to pass
+              # arguments to home.nix
+              extraSpecialArgs = commonExtraSpecialArgs;
+              backupFileExtension = "backup";
+              sharedModules = [
+                # mac-app-util.homeManagerModules.default # FIXME: permission issues.
+              ];
+              users.alex.imports = [
+                ./users/alex/NIXY/home-NIXY.nix
+              ];
+            };
+          }
+          agenix.darwinModules.default
+        ];
+      };
+    };
+  in
+  {
+    # Return all the configurations
+    nixosConfigurations = nixosConfigurations;
+    darwinConfigurations = darwinConfigurations;
+    # FIXME: add nixvim here so I can build from any device without installing the dotfiles.
+  };
 }

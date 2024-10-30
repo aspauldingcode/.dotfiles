@@ -200,6 +200,26 @@
                     ];
                   }
                   {
+                    description = "Lock screen with Alt+L";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "l";
+                          modifiers = {
+                            mandatory = ["left_alt"];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "q";
+                            modifiers = ["left_control" "left_command"];
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
                     description = "Swap Control+Shift+3/4/5 with Command+Shift+3/4/5";
                     manipulators = [
                       {

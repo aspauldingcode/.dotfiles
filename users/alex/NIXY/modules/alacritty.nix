@@ -164,7 +164,9 @@ in
         };
         blink_interval = 750;
       };
-      live_config_reload = true;
+      general = {
+        live_config_reload = true;
+      };
 
       selection = {
         save_to_clipboard = true; # copy on selection

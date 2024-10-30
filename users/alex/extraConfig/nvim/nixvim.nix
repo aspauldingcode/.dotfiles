@@ -794,7 +794,7 @@
           enable = true;
           settings.sections.lualine_c = [ "lsp_progress" ]; # Install lsp_progress!
         };
-        noice.lsp.progress.enabled = true;
+        noice.settings.lsp.progress.enabled = true;
 
         # nvim window tabs!
         bufferline.enable = true;

@@ -16,8 +16,8 @@ in {
       whitelistedBundleIdentifiers = [ "com.apple.safari" ];
       outlineWindow = {
         enabled = true;
-        width = 3;
-        cornerRadius = ;
+        width = 4;
+        cornerRadius = 0; # try 10, 40, 0...
         activeColor = "${palette.base07}";
         inactiveColor = "${palette.base05}";
       };

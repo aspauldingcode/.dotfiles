@@ -49,6 +49,9 @@ in
       # Disable persistence opening apps at login
       defaults write -g ApplePersistence -bool no
 
+      # Show AirDrop in the sidebar
+      defaults write com.apple.sidebarlists systemitems -dict-add ShowAirDrop -bool true
+
       # call the update_dock_pins script
       ${update_dock_pins}/bin/update-dock-pins
     '';

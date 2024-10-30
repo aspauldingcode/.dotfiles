@@ -74,10 +74,10 @@ in
     obsidian
     libnotify
     sl
+    asciidoctor
     fzf
     lavat
     libsForQt5.ki18n
-    #vscode
     # bonsai #Only available on mac?
     rustc
     tt
