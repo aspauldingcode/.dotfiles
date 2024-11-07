@@ -141,6 +141,7 @@ in
       };
       ".GlobalPreferences"."com.apple.mouse.scaling" = 8.0;
       ActivityMonitor.IconType = null;
+      WindowManager.EnableStandardClickToShowDesktop = false;
       CustomSystemPreferences = {
         NSGlobalDomain = {
           TISRomanSwitchState = 1;

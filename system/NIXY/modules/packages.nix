@@ -15,7 +15,6 @@
     #zellij
     jetbrains.idea-community
     teams
-    fastfetch
     gnumake
     pfetch
     htop
@@ -34,6 +33,7 @@
     ruby_3_3
     rbenv
     postman
+    arc-browser
 
     python311Packages.pillow
     python311Packages.tqdm

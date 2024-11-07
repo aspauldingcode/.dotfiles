@@ -57,8 +57,6 @@
       "alacritty"
       "chatgpt"
       "pppc-utility"
-      "hammerspoon"
-      "phoenix"
       "prismlauncher"
       #"dmenu-mac" # USE UNMENU FORK!
       "kitty"
@@ -67,8 +65,6 @@
       # "macforge" # out of date rn... need to use macforge beta
       "obs"
       "obs-websocket"
-      "flameshot"
-      "element"
       "cursor"
       "brave-browser"
       "firefox"

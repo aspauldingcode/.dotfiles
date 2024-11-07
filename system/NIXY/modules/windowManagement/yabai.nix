@@ -31,10 +31,10 @@ in
       mouse_drop_action = "swap";
       focus_follows_mouse = "autoraise";
       mouse_follows_focus = "on";
-      window_shadow = "off";
-      window_opacity = "on";
-      window_opacity_duration = 0.1;
-      active_window_opacity = 1.0;
+      # window_shadow = "off"; # manage with macwmfx instead.
+      # window_opacity = "on"; # manage with macwmfx instead.
+      # window_opacity_duration = 0.1; # manage with macwmfx instead.
+      # active_window_opacity = 1.0; # manage with macwmfx instead.
       insert_feedback_color = "0xff${palette.base07}";
       layout = "bsp";
       auto_balance = "off";

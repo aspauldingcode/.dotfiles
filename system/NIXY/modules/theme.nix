@@ -17,9 +17,12 @@ let
   # - papercolor-dark
   # - zenburn
   # - atelier-dune-light
-  scheme = "pandora"; 
+  # - sakura
+  # - horizon-light
+
+  scheme = "horizon-light"; 
 in
-# Choose from: https://nix-community.github.io/nixvim/colorschemes/base16/index.html#colorschemesbase16colorscheme
+  # Choose from: https://tinted-theming.github.io/base16-gallery/
 {
   # Import the default home manager modules from nix-colors
   imports = [ nix-colors.homeManagerModules.default ];
@@ -36,7 +39,7 @@ in
         configuration = {
           # Override the color scheme with a specific one (katy) for the light-theme specialisation
           # The mkForce function is used to ensure that this value takes precedence over any other definitions
-          colorScheme = lib.mkForce nix-colors.colorSchemes.katy;
+          colorScheme = lib.mkForce nix-colors.colorSchemes.sakura;
         };
       };
     };

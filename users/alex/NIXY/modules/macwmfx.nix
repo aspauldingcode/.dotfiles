@@ -14,17 +14,21 @@ in {
         "com.apple.screencaptureui"
       ];
       whitelistedBundleIdentifiers = [ "com.apple.safari" ];
+      disableTitlebar = true;
+      disableWindowSizeConstraints = true;
+      disableTrafficLights = true;
       outlineWindow = {
         enabled = true;
+        type = "inline"; # inline, outline, center
         width = 4;
-        cornerRadius = 0; # try 10, 40, 0...
+        cornerRadius = 10; # try 10, 40, 0...
         activeColor = "${palette.base07}";
         inactiveColor = "${palette.base05}";
       };
       systemColorSchemeVariant = "${config.colorScheme.variant}";
       transparency = 1.0;
-      # blurRadius = 10;
-      # blurPasses = 1;
+      blurRadius = 10;
+      blurPasses = 1;
     };
   };
 }

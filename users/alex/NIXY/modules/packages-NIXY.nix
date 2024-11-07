@@ -55,6 +55,7 @@ in
     cmus
     cmusfm
     bat
+    flameshot
     newsboat
     audacity
     pkgconf

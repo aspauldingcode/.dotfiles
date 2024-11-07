@@ -2826,48 +2826,48 @@ let
 in
 {
   # if is darwin, create a derivation for vesktop package..
-    # home.packages = with pkgs; [
-    #   (if pkgs.stdenv.isDarwin then
-    #     pkgs.stdenv.mkDerivation {
-    #       name = "vesktop";
-    #       src = fetchurl {
-    #         url = "https://vencord.dev/download/vesktop/universal/dmg";
-    #         sha256 = "sha256-ceOUNHSOaEqCbzkM64RtUu0Yhrq4tThcXZTDd+OsEXI="; # Replace with actual sha256
-    #       };
-    #       dontUnpack = true;
-    #       dontConfigure = true;
-    #       dontBuild = true;
+    home.packages = with pkgs; [
+      (if pkgs.stdenv.isDarwin then
+        pkgs.stdenv.mkDerivation {
+          name = "vesktop";
+          src = fetchurl {
+            url = "https://vencord.dev/download/vesktop/universal/dmg";
+            sha256 = "sha256-ceOUNHSOaEqCbzkM64RtUu0Yhrq4tThcXZTDd+OsEXI="; # Replace with actual sha256
+          };
+          dontUnpack = true;
+          dontConfigure = true;
+          dontBuild = true;
 
-    #       # The filename is Vesktop-1.5.3-universal.dmg when downloaded.
-    #       # We keep the package name pname = vesktop
-    #       # and the version is 1.5.3
-    #       version = "1.5.3";
+          # The filename is Vesktop-1.5.3-universal.dmg when downloaded.
+          # We keep the package name pname = vesktop
+          # and the version is 1.5.3
+          version = "1.5.3";
 
-    #       # We need to rename the version based on the name of the package when downloaded.
-    #       # So we need to extract the version from the filename.
-    #       # The filename is Vesktop-1.5.3-universal.dmg when downloaded.
-    #       # So we need to extract the version from the filename.
-    #       # version = builtins.parseDrvName (builtins.baseNameOf src).version;
+          # We need to rename the version based on the name of the package when downloaded.
+          # So we need to extract the version from the filename.
+          # The filename is Vesktop-1.5.3-universal.dmg when downloaded.
+          # So we need to extract the version from the filename.
+          # version = builtins.parseDrvName (builtins.baseNameOf src).version;
 
-    #       installPhase = 
-    #       let hdiutil = "/usr/bin/hdiutil"; in ''
-    #         dir=$(mktemp -d)
-    #         ${hdiutil} attach "$src" -mountpoint "$dir"
-    #         detach() {
-    #           while ! ${hdiutil} detach -force "$dir"; do
-    #             echo "failed to detach image at $dir"
-    #             sleep 1
-    #           done
-    #         }
-    #         trap detach EXIT
+          installPhase = 
+          let hdiutil = "/usr/bin/hdiutil"; in ''
+            dir=$(mktemp -d)
+            ${hdiutil} attach "$src" -mountpoint "$dir"
+            detach() {
+              while ! ${hdiutil} detach -force "$dir"; do
+                echo "failed to detach image at $dir"
+                sleep 1
+              done
+            }
+            trap detach EXIT
 
-    #         mkdir -p $out/Applications
-    #         cp -r "$dir"/Vesktop.app $out/Applications/
-    #       '';
-    #     }
-    #   else
-    #     pkgs.vesktop)
-    # ];
+            mkdir -p $out/Applications
+            cp -r "$dir"/Vesktop.app $out/Applications/
+          '';
+        }
+      else
+        pkgs.vesktop)
+    ];
 
   # To prevent discord from checking for new versions.
   home.file = {

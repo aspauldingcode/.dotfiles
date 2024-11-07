@@ -47,7 +47,7 @@ in
             <string>com.example.flameshot</string>
             <key>ProgramArguments</key>
             <array>
-              <string>/Applications/Flameshot.app/Contents/MacOS/flameshot</string>
+              <string>${pkgs.flameshot}/Applications/flameshot.app/Contents/MacOS/flameshot</string>
             </array>
             <key>RunAtLoad</key>
             <true/>
@@ -213,7 +213,34 @@ in
         </plist>
       '';
     };
+
+    "com.user.fix-wm.plist" = {
+      enable = true;
+      text = ''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+          <dict>
+            <key>Label</key>
+            <string>com.user.fix-wm</string>
+            <key>ProgramArguments</key>
+            <array>
+              <string>fix-wm</string>
+            </array>
+            <key>RunAtLoad</key>
+            <true/>
+            <key>KeepAlive</key>
+            <false/>
+            <key>StandardOutPath</key>
+            <string>/tmp/fix-wm.log</string>
+            <key>StandardErrorPath</key>
+            <string>/tmp/fix-wm.error.log</string>
+          </dict>
+        </plist>
+      '';
+    };
   };
+
   environment.launchDaemons = {
     "com.macenhance.MacForge.Injector.plist" = {
       enable = true;

@@ -208,7 +208,7 @@
         specialArgs = commonSpecialArgs;
         modules = [
           ./system/NIXY/darwin-configuration-NIXY.nix
-          mac-app-util.darwinModules.default
+          # mac-app-util.darwinModules.default
           home-manager.darwinModules.home-manager
           {
             home-manager = {

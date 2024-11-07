@@ -22,6 +22,7 @@
     ./../universals/modules/git.nix
     ./../universals/modules/yazi.nix
     ./../universals/modules/okular.nix
+    ./../universals/modules/fastfetch.nix
 
     ./modules/theme.nix
     ./modules/xcode/xcode.nix # FIXME: use nix-color theme
@@ -40,9 +41,6 @@
     ./modules/macwmfx.nix
     ./modules/qutebrowser.nix
     ./modules/sketchybar/sketchybar.nix
-    # ./modules/yabai.nix # contains skhd and borders config.
-    # ./modules/window-manager.nix
-    ./modules/phoenix/phoenix.nix # new window-manager for macOS!
   ];
 
   home = {
