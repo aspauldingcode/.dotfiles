@@ -18,7 +18,7 @@ in {
       disableWindowSizeConstraints = true;
       disableTrafficLights = true;
       outlineWindow = {
-        enabled = true;
+        enabled = false;
         type = "inline"; # inline, outline, center
         width = 4;
         cornerRadius = 10; # try 10, 40, 0...

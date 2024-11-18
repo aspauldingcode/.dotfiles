@@ -12,6 +12,8 @@ let
     add_app_to_dock() {
         app_path=$(mdfind "kMDItemCFBundleIdentifier == '$1'" | head -n 1)
         if [ -n "$app_path" ]; then
+            # Resolve the full path of the app, following symlinks
+            app_path=$(realpath "$app_path")
             defaults write com.apple.dock persistent-apps -array-add "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>$app_path</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
         fi
     }

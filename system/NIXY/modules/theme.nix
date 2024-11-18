@@ -20,7 +20,7 @@ let
   # - sakura
   # - horizon-light
 
-  scheme = "horizon-light"; 
+  scheme = "tomorrow-night"; 
 in
   # Choose from: https://tinted-theming.github.io/base16-gallery/
 {

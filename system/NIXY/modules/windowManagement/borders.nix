@@ -5,9 +5,9 @@ let
 in
 {
   services.jankyborders = {
-    enable = false;
-    # package = pkgs.callPackage ./../../customDerivations/borders.nix { };
-    # order = "above";
+    enable = true;
+    package = pkgs.callPackage ./../../customDerivations/borders.nix { };
+    order = "above";
     style = "round";
     width = 2.0;
     background_color = "0xff${palette.base00}";

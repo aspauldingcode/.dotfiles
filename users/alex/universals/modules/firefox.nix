@@ -436,7 +436,13 @@ in {
           }
         '';
         userContent = ''
-          # Here too
+          @-moz-document url("about:newtab") {
+            body {
+              background-image: url("${./../../extraConfig/wallpapers/sweden.png}") !important;
+              background-size: cover !important;
+              background-position: center !important;
+            }
+          }
         '';
         bookmarks = {};
         extensions = with pkgs.nur.repos.rycee.firefox-addons; [
@@ -569,7 +575,7 @@ in {
           "browser.sessionstore.resume_from_crash" = false;
           "browser.shell.checkDefaultBrowser" = false;
           "browser.shell.defaultBrowserCheckCount" = 1;
-          "browser.startup.homepage" = "moz-extension://0dd99676-bbe1-4617-8bd4-8dd185fa3238/index.html";
+          "browser.startup.homepage" = "moz-extension://9d877b4e-2fe9-4689-b41a-566a02359dd1/index.html";
           "browser.tabs.inTitlebar" =
             if pkgs.stdenv.isDarwin
             then 1

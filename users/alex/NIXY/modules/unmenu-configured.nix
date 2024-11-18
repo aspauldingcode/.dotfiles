@@ -14,7 +14,7 @@
         "/System/Library/CoreServices/"
         "~/Applications/Home Manager Trampolines/"
         # "~/Applications/Home Manager Apps/"
-        # "~/Applications/Nix Trampolines/"
+        "~/Applications/Nix Trampolines/"
         # "/Applications/Nix Apps/"
         "/Applications/"
         # "/etc/profiles/per-user/alex/bin/"
