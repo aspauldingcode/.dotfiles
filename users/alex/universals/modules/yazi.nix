@@ -51,88 +51,90 @@ in
       opener = {
         edit = [
           {
-            run = "${"EDITOR:=nvim"} \"$@\"";
-            desc = "$EDITOR";
+            run = "nvim $@";
+            desc = "Open in Neovim";
             block = true;
             for = "unix";
           }
           {
-            run = "code \"%*\"";
+            run = "code %*";
+            desc = "Open in VS Code";
             orphan = true;
-            desc = "code";
             for = "windows";
           }
           {
-            run = "code -w \"%*\"";
+            run = "code -w %*";
+            desc = "Open in VS Code (blocking)";
             block = true;
-            desc = "code (block)";
             for = "windows";
           }
         ];
         open = [
           {
-            run = "xdg-open \"$@\"";
-            desc = "Open";
+            run = "xdg-open $@";
+            desc = "Open with default app";
             for = "linux";
           }
           {
-            run = "open \"$@\"";
-            desc = "Open";
+            run = "open $@";
+            desc = "Open with default app";
             for = "macos";
           }
           {
-            run = "start \"\" \"%1\"";
+            run = "start \"\" %1";
+            desc = "Open with default app";
             orphan = true;
-            desc = "Open";
             for = "windows";
           }
         ];
         reveal = [
           {
-            run = "open -R \"$1\"";
-            desc = "Reveal";
+            run = "open -R $1";
+            desc = "Reveal in Finder";
             for = "macos";
           }
           {
-            run = "explorer /select, \"%1\"";
+            run = "explorer /select, %1";
+            desc = "Reveal in Explorer";
             orphan = true;
-            desc = "Reveal";
             for = "windows";
           }
           {
-            run = "exiftool \"$1\"; echo \"Press enter to exit\"; read _";
+            run = "exiftool $1; echo \"Press enter to exit\"; read _";
+            desc = "Show EXIF data";
             block = true;
-            desc = "Show EXIF";
             for = "unix";
           }
         ];
         extract = [
           {
-            run = "unar \"$1\"";
-            desc = "Extract here";
+            run = "unar $1";
+            desc = "Extract archive";
             for = "unix";
           }
           {
-            run = "unar \"%1\"";
-            desc = "Extract here";
+            run = "unar %1";
+            desc = "Extract archive";
             for = "windows";
           }
         ];
         play = [
           {
-            run = "mpv \"$@\"";
+            run = "mpv $@";
+            desc = "Play in mpv";
             orphan = true;
             for = "unix";
           }
           {
-            run = "mpv \"%1\"";
+            run = "mpv %1";
+            desc = "Play in mpv";
             orphan = true;
             for = "windows";
           }
           {
-            run = "mediainfo \"$1\"; echo \"Press enter to exit\"; read _";
-            block = true;
+            run = "mediainfo $1; echo \"Press enter to exit\"; read _";
             desc = "Show media info";
+            block = true;
             for = "unix";
           }
         ];

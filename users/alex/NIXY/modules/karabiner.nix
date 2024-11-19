@@ -396,11 +396,7 @@
                         };
                         to = [
                           {
-                            software_function = {
-                              open_application = {
-                                bundle_identifier = "org.mozilla.firefox";
-                              };
-                            };
+                            shell_command = "open -na Firefox";
                           }
                         ];
                       }

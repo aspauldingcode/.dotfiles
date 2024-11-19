@@ -639,7 +639,7 @@
           package = pkgs.unstable.vimPlugins.nvim-ufo;
           settings = {
             enable_get_fold_virt_text = true;
-            close_fold_kinds = {
+            close_fold_kinds_for_ft = {
               imports = true;
               comment = true;
             };
