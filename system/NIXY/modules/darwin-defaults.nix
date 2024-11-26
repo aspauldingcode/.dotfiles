@@ -395,6 +395,10 @@ in
           DSDontWriteNetworkStores = true;
           DSDontWriteUSBStores = true;
         };
+        "com.lwouis.alt-tab-macos.plist" = {
+          holdShortcut = "\\U2318";
+          nextWindowShortcut = "\\U21e5";
+        };
         # "com.mac.RecordingIndicatorUtility" = {
           # AcknowledgedSystemOverrideAlert = 1;
         # };

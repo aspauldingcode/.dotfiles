@@ -33,7 +33,7 @@
 
         # The background color
         background       #${palette.base00}
-        background_opacity 0.9
+        background_opacity 1.0
 
         # The foreground for selections
         selection_foreground #${palette.base08}

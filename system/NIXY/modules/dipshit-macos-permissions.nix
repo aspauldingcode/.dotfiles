@@ -1,5 +1,6 @@
 { config, lib, pkgs, ... }:
 
+# this doesn't even work. tf man.
 {
   system.activationScripts.postActivation.text = ''
     # Fix binary quarantine attributes

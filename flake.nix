@@ -195,7 +195,12 @@
       NIXY = nix-darwin.lib.darwinSystem {
         pkgs = import nixpkgs {
           system = "aarch64-darwin";
-          config.allowUnfree = true;
+          config = {
+            allowUnfree = true;
+            permittedInsecurePackages = [
+              "python-2.7.18.7-env"
+            ]; # FIXME: remove this python if I can't get robixnix to work on macOS.
+          };
           overlays = [
             inputs.nur.overlay
             (final: _prev: {

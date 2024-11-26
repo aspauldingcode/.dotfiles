@@ -1,6 +1,7 @@
 { ... }:
 
 # nix-configured karabiner config allows for commenting!
+# Karabiner is a powerful tool for customizing keyboard shortcuts and behaviors. I treasure it.
 {
   home.file.karabiner = {
     force = true;
@@ -315,7 +316,7 @@
                     ];
                   }
                   {
-                    description = "Replace Command+Tab with Control+Tab";
+                    description = "Swap Command+Tab and Control+Tab";
                     manipulators = [
                       {
                         type = "basic";
@@ -332,10 +333,25 @@
                           }
                         ];
                       }
+                      {
+                        type = "basic";
+                        from = {
+                          "key_code" = "tab";
+                          modifiers = {
+                            mandatory = [ "left_control" ];
+                          };
+                        };
+                        to = [
+                          {
+                            "key_code" = "tab";
+                            modifiers = [ "left_command" ];
+                          }
+                        ];
+                      }
                     ];
                   }
                   {
-                    description = "Replace Command+Shift+Tab with Control+Shift+Tab";
+                    description = "Swap Command+Shift+Tab and Control+Shift+Tab";
                     manipulators = [
                       {
                         type = "basic";
@@ -353,6 +369,27 @@
                             "key_code" = "tab";
                             modifiers = [
                               "left_control"
+                              "left_shift"
+                            ];
+                          }
+                        ];
+                      }
+                      {
+                        type = "basic";
+                        from = {
+                          "key_code" = "tab";
+                          modifiers = {
+                            mandatory = [
+                              "left_control"
+                              "left_shift"
+                            ];
+                          };
+                        };
+                        to = [
+                          {
+                            "key_code" = "tab";
+                            modifiers = [
+                              "left_command"
                               "left_shift"
                             ];
                           }

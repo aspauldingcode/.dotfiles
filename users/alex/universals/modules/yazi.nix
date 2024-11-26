@@ -1172,8 +1172,8 @@ in
         syntect_theme = "";
       };
       status = {
-        separator_open = "\ue0b6";
-        separator_close = "\ue0b4";
+        separator_open = "";
+        separator_close = "";
         separator_style = {
           fg = "gray";
           bg = "gray";

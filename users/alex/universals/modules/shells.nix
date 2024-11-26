@@ -12,6 +12,8 @@ let
     export EDITOR=nvim
     export VISUAL="$EDITOR"
     export DISPLAY=:0
+    export LC_ALL=en_US.UTF-8
+    export LANG=en_US.UTF-8
     touch ~/.hushlogin
     eval $(thefuck --alias)
   '';
@@ -144,6 +146,8 @@ in
             CPPFLAGS = "-I/opt/homebrew/opt/libiconv/include";
             # Append to existing LIBRARY_PATH without using undefined 'lib.getEnv'
             LIBRARY_PATH = "$LIBRARY_PATH:/opt/homebrew/opt/libiconv/lib";
+            LC_ALL = "en_US.UTF-8";
+            LANG = "en_US.UTF-8";
           } else {
             PATH = lib.concatStringsSep ":" ([
               "$HOME/.local/bin"
@@ -160,6 +164,8 @@ in
               "/sbin"
               "/run/wrappers/bin"
             ]);
+            LC_ALL = "en_US.UTF-8";
+            LANG = "en_US.UTF-8";
           } // {
             EDITOR = "^nvim";
             VISUAL = "^nvim";

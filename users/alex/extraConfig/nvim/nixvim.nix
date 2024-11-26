@@ -357,7 +357,7 @@
             };
             digestif = {
               enable = false;
-              package = pkgs.unstable.digestif;
+              package = pkgs.unstable.texlivePackages.digestif;
             };
             dockerls = {
               enable = false;
@@ -564,7 +564,7 @@
               package = pkgs.unstable.terraform-ls;
             };
             texlab = {
-              enable = false;
+              enable = true;
               package = pkgs.unstable.texlab;
             };
             ts_ls = {
@@ -588,7 +588,7 @@
               package = pkgs.unstable.nodePackages.vue-language-server;
             };
             yamlls = {
-              enable = false;
+              enable = true;
               package = pkgs.unstable.yaml-language-server;
             };
             zls = {
@@ -792,7 +792,13 @@
         # statusbar
         lualine = {
           enable = true;
-          settings.sections.lualine_c = [ "lsp_progress" ]; # Install lsp_progress!
+          settings = {
+            sections.lualine_c = [ "lsp_progress" ]; # Install lsp_progress!
+            separators = {
+              left = "";
+              right = "";
+            };
+          };
         };
         noice.settings.lsp.progress.enabled = true;
 
@@ -843,9 +849,8 @@
         #commenting
         comment = {
           enable = true;
-          settings.toggler.line = if pkgs.stdenv.isDarwin then "<D-/>" else "<C-/>";
+          settings.opleader.line = if pkgs.stdenv.isDarwin then "<D-/>" else "<C-/>";
         };
-
         # outline code blocks
         indent-blankline = {
           enable = true;

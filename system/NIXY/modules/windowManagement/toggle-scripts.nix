@@ -530,35 +530,16 @@ in
           echo "Usage: $0 [on|off]"
           exit 1
       fi
-    '')
 
-    #toggle-float2
-    (pkgs.writeShellScriptBin "toggle-float2" ''
-      #!/bin/bash
-
-      # Used to toggle a window between floating and tiling
-
-      read -r id floating <<< $(echo $(${yabai} -m query --windows --window | ${jq} '.id, .floating'))
-      tmpfile=/tmp/${yabai}-float-toggle/$id
-
-      # If the window is floating, toggle it to be tiling and record its position and size
-      if [ "$floating" = "1" ]
-      then
-        [ -e $tmpfile ] && rm $tmpfile
-        echo $(${yabai} -m query --windows --window | ${jq} .frame) >> $tmpfile
-        ${yabai} -m window --toggle float
-
-      # If the window is tiling, toggle it to be floating, 
-      # and restore its previous position and size
+      # Ensure topmost is on when floating and off when tiling
+      if is_floating; then
+          if ! is_topmost; then
+              ${yabai} -m window --toggle topmost
+          fi
       else
-        ${yabai} -m window --toggle float
-        if [ -e $tmpfile ]
-        then
-          read -r x y w h <<< $(echo $(cat $tmpfile | ${jq} '.x, .y, .w, .h'))
-          ${yabai} -m window --move abs:$x:$y
-          ${yabai} -m window --resize abs:$w:$h
-          rm $tmpfile
-        fi
+          if is_topmost; then
+              ${yabai} -m window --toggle topmost
+          fi
       fi
     '')
 
@@ -596,6 +577,89 @@ in
         echo "Invalid argument. Please specify 'light' or 'dark' or leave empty to toggle."
         exit 1
       fi
+    '')
+
+    # toggle-zoom-fullscreen # FIXME: this doesn't work as expected.
+    (pkgs.writeShellScriptBin "toggle-zoom-fullscreen" ''
+      ZOOM_FULLSCREEN_STATE=$(${yabai} -m query --windows --window | ${jq} -r '."zoom-fullscreen"')
+      is_floating=$(${yabai} -m query --windows --window | ${jq} -r '."is-floating"')
+
+      # Function to toggle the zoom-fullscreen state of the current window
+      toggle_zoom_fullscreen() {
+          # Get the current zoom-fullscreen state
+          local current_state=$ZOOM_FULLSCREEN_STATE
+          
+          # Get the current window id
+          window_id=$(${yabai} -m query --windows --window | ${jq} -r '."id"')
+
+          # If the current state is zoom-fullscreen (1), toggle it off
+          if [ "$current_state" = "1" ]; then
+              # But first, determine the previous floating state
+              if grep -q "id: $window_id floating: true" /tmp/zoom_fullscreen_floating_state; then
+                  was_floating="true"
+              else
+                  was_floating="false"
+              fi
+
+              # Toggle zoom-fullscreen off first
+              ${yabai} -m window --toggle zoom-fullscreen
+
+              # If the window was floating but not zoom-fullscreen, toggle float off first
+              if [ "$was_floating" = "true" ]; then
+                  toggle-float on
+              fi
+              
+              # Check if the window id exists in the state file and restore its floating state
+              if grep -q "id: $window_id " /tmp/zoom_fullscreen_floating_state; then
+                  was_floating=$(grep "id: $window_id " /tmp/zoom_fullscreen_floating_state | awk '{print $4}')
+                  [ "$was_floating" = "true" ] && toggle-float on
+              fi
+          else
+              # if the current state is not zoom-fullscreen (0), toggle it on
+              # But first, determine the current floating state
+              is_floating=$(${yabai} -m query --windows --window | ${jq} -r '."is-floating"')
+
+              # If the window is floating but not zoom-fullscreen, toggle float off first
+              if [ "$is_floating" = "true" ]; then
+                  toggle-float off
+              fi
+
+              # Update the state file with the current window's floating state
+              if grep -q "id: $window_id " /tmp/zoom_fullscreen_floating_state; then
+                  # Update the existing entry
+                  sed -i "" "s/id: $window_id floating: .*/id: $window_id floating: $is_floating/" /tmp/zoom_fullscreen_floating_state
+              else
+                  # Add a new entry
+                  echo "id: $window_id floating: $is_floating" >> /tmp/zoom_fullscreen_floating_state
+              fi
+
+              ${yabai} -m window --toggle zoom-fullscreen
+          fi
+      }
+
+      case "$1" in
+          "")
+              toggle_zoom_fullscreen
+              ;;
+          "on")
+              if [ "$ZOOM_FULLSCREEN_STATE" = "1" ]; then
+                  echo "Zoom-fullscreen is already on."
+              else
+                  toggle_zoom_fullscreen
+              fi
+              ;;
+          "off")
+              if [ "$ZOOM_FULLSCREEN_STATE" = "0" ]; then
+                  echo "Zoom-fullscreen is already off."
+              else
+                  toggle_zoom_fullscreen
+              fi
+              ;;
+          *)
+              echo "Invalid argument. Please specify 'on', 'off', or leave empty to toggle."
+              exit 1
+              ;;
+      esac
     '')
 
     # toggle-instant-fullscreen

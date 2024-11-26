@@ -77,5 +77,6 @@
     git
     clang
     openssh
+    inputs.agenix.packages.${pkgs.system}.agenix # Add agenix CLI tool
   ];
 }

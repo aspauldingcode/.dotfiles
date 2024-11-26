@@ -11,6 +11,7 @@
     ./modules/packages.nix
     ./modules/theme.nix
     ./modules/dipshit-macos-permissions.nix
+    # ./modules/openssh.nix
 
     # ./customDerivations/apple-fonts.nix
     # ./customDerivations/mousecape.nix
@@ -92,6 +93,7 @@
 
   users.users.alex.shell = pkgs.zsh; 
   nix = {
+    # optimise.automatic = true;
     # https://nixos.wiki/wiki/Distributed_build
     # distributedBuilds = false; # set true after configuration
     # buildMachines = [ ]; #FIXME: add NIXSTATION64 as a builder!
@@ -113,7 +115,6 @@
       options = "--delete-older-than 30d --delete-old-generations 10"; 
     };
     settings = {
-      auto-optimise-store = true;
       # FIXME: add cahcix.nixos.org so I don't have to rebuild home-manager all the time
       # substituters = [ 
       #   "https://cache.nixos.org/" 
