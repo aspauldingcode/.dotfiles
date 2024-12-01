@@ -117,7 +117,7 @@ in
       ps.biplist
       # ps.build
       #ps.i3ipc
-      ps.matplotlib
+      #ps.matplotlib # broken macos atm?
     ]))
   ];
 }
