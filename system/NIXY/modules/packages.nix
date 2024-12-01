@@ -29,7 +29,7 @@
     #darwin.iproute2mac #MUST BE BREW PACKAGE?
     ncurses6
     hexedit
-    # texliveTeTeX
+    texliveTeTeX
     ruby_3_3
     rbenv
     postman
