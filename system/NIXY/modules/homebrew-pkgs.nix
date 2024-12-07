@@ -108,6 +108,7 @@
   };
   # fix xcode license and run first launch.
   system.activationScripts.postUserActivation.text = ''
+    sudo xcode-select -s /Applications/Xcode.app
     sudo xcodebuild -license accept
     xcodebuild -runFirstLaunch
   '';
