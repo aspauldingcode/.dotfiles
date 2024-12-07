@@ -2,17 +2,10 @@
   description = "Universal Flake by Alex - macOS and NixOS";
 
   inputs = {
-<<<<<<< HEAD
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05"; # Set to the desired stable version
-    unstable_nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    home-manager = {
-      url = "github:nix-community/home-manager/release-24.05";
-=======
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11"; # Set to the desired stable version
     unstable_nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager = {
       url = "github:nix-community/home-manager/release-24.11";
->>>>>>> 4dae5de (fixes to shitmcgee)
       inputs.nixpkgs.follows = "nixpkgs"; # Ensure home-manager follows the stable nixpkgs version
     };
     nix-colors.url = "github:misterio77/nix-colors";
