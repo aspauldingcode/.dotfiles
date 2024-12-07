@@ -24,11 +24,7 @@
     ranger
     # kdePackages.okular
     spotify
-<<<<<<< HEAD
-    xquartz
-=======
     # xquartz
->>>>>>> 4dae5de (fixes to shitmcgee)
 
     #darwin.iproute2mac #MUST BE BREW PACKAGE?
     ncurses6
@@ -49,11 +45,7 @@
     python311Packages.accelerate
     # javaPackages.openjfx19
     #inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk22
-<<<<<<< HEAD
-    jdk22
-=======
     jdk23
->>>>>>> 4dae5de (fixes to shitmcgee)
     #python311
     oh-my-zsh # zsh shell framework
     oh-my-fish # fish shell framework
@@ -66,11 +58,7 @@
     p7zip
     jq
     # neovim
-<<<<<<< HEAD
-    libusb
-=======
     libusb1
->>>>>>> 4dae5de (fixes to shitmcgee)
     darling-dmg
     lolcat
     tree-sitter
