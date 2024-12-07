@@ -157,11 +157,7 @@
   system.activationScripts = {
     extraActivation.text = ''
       # symlink (zulu) jdk22 to /Library/Java/JavaVirtualMachines/ # NEEDED for macOS!!
-<<<<<<< HEAD
-      ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk22}/zulu-22.jdk" "/Library/Java/JavaVirtualMachines/"
-=======
   #    ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk23}/zulu-23.jdk" "/Library/Java/JavaVirtualMachines/"
->>>>>>> 4dae5de (fixes to shitmcgee)
     '';
 
     postUserActivation.text =
@@ -180,11 +176,7 @@
       app_target_base="$HOME/Applications"
       app_target="$app_target_base/$moniker"
       mkdir -p "$app_target"
-<<<<<<< HEAD
-      ${pkgs.rsync}/bin/rsync $rsyncArgs "$apps_source/" "$app_target"
-=======
       ${pkgs.rsync}/bin/rsync "$rsyncArgs" "$apps_source/" "$app_target"
->>>>>>> 4dae5de (fixes to shitmcgee)
 
       echo "Recoloring Wallpapers to ${config.colorscheme.slug} color scheme..."
       mkdir -p /Users/Shared/Wallpaper/
