@@ -376,16 +376,28 @@
         ]
       },
       "locked": {
+<<<<<<< HEAD
         "lastModified": 1726989464,
         "narHash": "sha256-Vl+WVTJwutXkimwGprnEtXc/s/s8sMuXzqXaspIGlwM=",
         "owner": "nix-community",
         "repo": "home-manager",
         "rev": "2f23fa308a7c067e52dfcc30a0758f47043ec176",
+=======
+        "lastModified": 1733572789,
+        "narHash": "sha256-zjO6m5BqxXIyjrnUziAzk4+T4VleqjstNudSqWcpsHI=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "c7ffc9727d115e433fd884a62dc164b587ff651d",
+>>>>>>> 4dae5de (fixes to shitmcgee)
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
+<<<<<<< HEAD
         "ref": "release-24.05",
+=======
+        "ref": "release-24.11",
+>>>>>>> 4dae5de (fixes to shitmcgee)
         "repo": "home-manager",
         "type": "github"
       }
@@ -614,16 +626,28 @@
     },
     "nixpkgs_2": {
       "locked": {
+<<<<<<< HEAD
         "lastModified": 1731797254,
         "narHash": "sha256-df3dJApLPhd11AlueuoN0Q4fHo/hagP75LlM5K1sz9g=",
         "owner": "nixos",
         "repo": "nixpkgs",
         "rev": "e8c38b73aeb218e27163376a2d617e61a2ad9b59",
+=======
+        "lastModified": 1733412085,
+        "narHash": "sha256-FillH0qdWDt/nlO6ED7h4cmN+G9uXwGjwmCnHs0QVYM=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "4dc2fc4e62dbf62b84132fe526356fbac7b03541",
+>>>>>>> 4dae5de (fixes to shitmcgee)
         "type": "github"
       },
       "original": {
         "owner": "nixos",
+<<<<<<< HEAD
         "ref": "nixos-24.05",
+=======
+        "ref": "nixos-24.11",
+>>>>>>> 4dae5de (fixes to shitmcgee)
         "repo": "nixpkgs",
         "type": "github"
       }

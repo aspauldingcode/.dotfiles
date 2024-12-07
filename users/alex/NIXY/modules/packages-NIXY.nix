@@ -97,7 +97,10 @@ in
     (pkgs.python311.withPackages (ps: [
       ps.tkinter
       ps.pygame
+<<<<<<< HEAD
       ps.cx-freeze
+=======
+>>>>>>> 4dae5de (fixes to shitmcgee)
       ps.textwrap3
       ps.pandas
       ps.termcolor
