@@ -2832,7 +2832,7 @@ in
           name = "vesktop";
           src = fetchurl {
             url = "https://vencord.dev/download/vesktop/universal/dmg";
-            sha256 = "sha256-ceOUNHSOaEqCbzkM64RtUu0Yhrq4tThcXZTDd+OsEXI="; # Replace with actual sha256
+            sha256 = "sha256-9FOe3RzmhF1oBl6ceW0Ogb5UmmS9RGzTUjdXDkyiZ6Q=";
           };
           dontUnpack = true;
           dontConfigure = true;
