@@ -156,7 +156,6 @@
   system.stateVersion = 5;
   system.activationScripts = {
     extraActivation.text = ''
-      softwareupdate --install-rosetta --agree-to-license
       # symlink (zulu) jdk22 to /Library/Java/JavaVirtualMachines/ # NEEDED for macOS!!
       ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk23}/zulu-23.jdk" "/Library/Java/JavaVirtualMachines/"
     '';
