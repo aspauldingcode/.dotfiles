@@ -453,7 +453,6 @@ in {
           bitwarden
           tampermonkey
           return-youtube-dislikes
-          refined-github
           re-enable-right-click
           privacy-badger
           unpaywall

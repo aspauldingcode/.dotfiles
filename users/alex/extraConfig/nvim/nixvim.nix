@@ -287,7 +287,27 @@
         };
         notify = {
           enable = true;
-          #stages = "slide";
+          package = pkgs.vimPlugins.nvim-notify;
+          # backgroundColour = "";
+          extraOptions = { };
+          fps = null;
+          level = null;
+          maxHeight = 20;
+          maxWidth = 80;
+          minimumWidth = 20;
+          onClose = null;
+          onOpen = null;
+          render = "wrapped-compact"; # Type: null or one of “default”, “minimal”, “simple”, “compact”, “wrapped-compact” or raw lua code
+          stages = null;
+          timeout = 3500;
+          topDown = true;
+          icons = {
+            debug = "";
+            error = "";
+            info = "";
+            trace = "✎";
+            warn = "";
+          };
         };
         gitsigns.enable = true;
         lsp = {
@@ -766,30 +786,6 @@
           #};
         };
 
-        markdown-preview = {
-          enable = true;
-          settings = {
-            auto_close = 1;
-            auto_start = 1;
-            browser = "firefox";
-            browserfunc = "";
-            combine_preview = 0;
-            combine_preview_auto_refresh = 1;
-            command_for_global = 0;
-            echo_preview_url = 1;
-            filetypes = [ "markdown" ];
-            highlight_css = "";
-            images_path = "";
-            markdown_css = "";
-            open_ip = "";
-            open_to_the_world = 0;
-            page_title = "「Markdown Preview」";
-            port = "8080";
-            refresh_slow = 0;
-            theme = "dark";
-          };
-        };
-
         # code-completion
         # cmp-nvim-lua.enable = true;
         # cmp-nvim-lsp.enable = true;
@@ -941,6 +937,7 @@
             ];
           };
         };
+
         neorg = {
           enable = true;
           modules = {
@@ -966,6 +963,133 @@
               #    work = "~/notes/work";
               #  };
             #};
+            };
+          };
+        };
+
+        markdown-preview = {
+          enable = true;
+          settings = {
+            auto_close = 1;
+            auto_start = 1;
+            browser = "firefox";
+            browserfunc = "";
+            combine_preview = 0;
+            combine_preview_auto_refresh = 1;
+            command_for_global = 0;
+            echo_preview_url = 1;
+            filetypes = [ "markdown" ];
+            highlight_css = "";
+            images_path = "";
+            markdown_css = "";
+            open_ip = "";
+            open_to_the_world = 0;
+            page_title = "「Markdown Preview」";
+            port = "8080";
+            refresh_slow = 0;
+            theme = "dark";
+          };
+        };
+
+        # Animation
+        # Smooth scrolling animations
+        neoscroll = {
+          enable = true;
+          settings = {
+            # All default mappings
+            mappings = [
+              "<C-u>"  # Half page up
+              "<C-d>"  # Half page down
+              "<C-b>"  # Page up
+              "<C-f>"  # Page down
+              "<C-y>"  # Line up
+              "<C-e>"  # Line down
+              "zt"     # Current line to top
+              "zz"     # Current line to middle
+              "zb"     # Current line to bottom
+            ];
+            # Hide cursor while scrolling for better experience
+            hide_cursor = true;
+            # Stop at EOF when scrolling down
+            stop_eof = true;
+            # Don't maintain scrolloff distance during scroll
+            respect_scrolloff = false;
+            # The cursor will keep scrolling even if window can't scroll further
+            cursor_scrolls_alone = true;
+            # Use quadratic easing for smooth acceleration/deceleration
+            easing = "quadratic";
+            # No performance mode optimizations
+            performance_mode = false; 
+            # No custom hooks
+            pre_hook = null;
+            post_hook = null;
+            # Global duration multiplier
+            duration_multiplier = 1.0;
+            # Ignore these events while scrolling
+            ignored_events = [
+              "WinScrolled"
+              "CursorMoved"
+            ];
+          };
+        };
+
+        # nvim-mini cursor animations.
+        mini = {
+          enable = true;
+          modules = {
+            animate = {
+              cursor = {
+                enable = true;
+                timing = {
+                  __raw = "require('mini.animate').gen_timing.linear({ duration = 100, unit = 'total' })";
+                };
+              };
+              scroll = {
+                enable = true;
+                timing = {
+                  __raw = "require('mini.animate').gen_timing.linear({ duration = 150, unit = 'total' })";
+                };
+              };
+              resize = {
+                enable = true;
+                timing = {
+                  __raw = "require('mini.animate').gen_timing.linear({ duration = 100, unit = 'total' })";
+                };
+              };
+              open = {
+                enable = true;
+                timing = {
+                  __raw = "require('mini.animate').gen_timing.linear({ duration = 100, unit = 'total' })";
+                };
+              };
+              close = {
+                enable = true;
+                timing = {
+                  __raw = "require('mini.animate').gen_timing.linear({ duration = 100, unit = 'total' })";
+                };
+              };
+            };
+          };
+        };
+
+        # nvim-specs #FIXME: Learn more - idfk how to use.
+        specs = {
+          enable = true;
+          settings = {
+            show_jumps = true;
+            min_jump = 30;
+            popup = {
+              delay_ms = 0; # delay before popup displays
+              inc_ms = 10; # time increments used for fade/resize effects 
+              blend = 10; # starting blend, between 0-100 (fully transparent), see :h winblend
+              width = 10;
+              winhl = "PMenu";
+              fader = "require('specs').linear_fader";
+              resizer = "require('specs').shrink_resizer";
+            };
+            ignore_filetypes = { };
+            ignore_buftypes = {
+              nofile = true;
             };
           };
         };
@@ -999,6 +1123,18 @@
       };
 
       extraPlugins = with pkgs.vimPlugins; [
+        {
+          plugin = windows-nvim;
+          config = toLuaFile ./plugin/windows-nvim.lua;
+        }
+        {
+          plugin = animation-nvim;
+          # config = toLuaFile ./plugin/animation-nvim.lua;
+        }
+        {
+          plugin = middleclass;
+          # config = toLuaFile ./plugin/middleclass.lua;
+        }
         #{
         #  plugin = nvim-scrollbar;
         #  config = toLuaFile ./plugin/scrollbar.lua;
