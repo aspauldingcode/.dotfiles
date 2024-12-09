@@ -67,7 +67,6 @@
       "obs-websocket"
       "cursor"
       "brave-browser"
-      "firefox"
       "alt-tab"
       "azure-data-studio"
       "orbstack"

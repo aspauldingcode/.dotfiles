@@ -12,7 +12,7 @@ in {
     enable = true;
     package =
       if pkgs.stdenv.isDarwin
-      then null
+      then pkgs.firefox-bin
       else pkgs.firefox;
     profiles = {
       alex = {

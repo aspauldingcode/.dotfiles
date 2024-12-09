@@ -73,7 +73,6 @@
     (pkgs.callPackage ./../customDerivations/mousecape.nix { })
     # (pkgs.callPackage ./../customDerivations/okular.nix { })
     # (pkgs.callPackage ./../customDerivations/recording-indicator-utility.nix { })
-    (pkgs.callPackage ./../customDerivations/yabai.nix { })
     git
     clang
     openssh

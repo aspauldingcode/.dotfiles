@@ -21,9 +21,8 @@ in
 {
   services.yabai = {
     enable = true;
-    # package = pkgs.unstable.yabai; # 7.1.3
+    package = pkgs.unstable.yabai; # 7.1.5
     enableScriptingAddition = true;
-    package = pkgs.callPackage ./../../customDerivations/yabai.nix { }; # 7.1.4
     config = {
       mouse_modifier = "alt";
       mouse_action1 = "move";
@@ -52,13 +51,6 @@ in
       menubar_opacity = 1.0;
     };
     extraConfig = ''
-      # set wallpaper first
-      # ${desktoppr} ${wallpaper}
-      ${m} wallpaper "${wallpaper}"
-
-      # unsure if needed... 
-      yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
-
       yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus &> /dev/null"
       yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces &> /dev/null"
       yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces &> /dev/null"

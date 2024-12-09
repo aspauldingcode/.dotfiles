@@ -149,4 +149,9 @@ in
     target = if pkgs.stdenv.isDarwin then "Library/Application Support/azuredatastudio/User/settings.json" else ".config/azuredatastudio/User/settings.json";
     text = commonSettings;
   };
+
+  # extensions for vscode:
+  programs.vscode.extensions = [
+    "jnoortheen.nix-ide"
+  ];
 }

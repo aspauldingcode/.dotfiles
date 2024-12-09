@@ -50,6 +50,10 @@
     mac-app-util = {
       url = "github:hraban/mac-app-util";
     };
+
+    nixpkgs-firefox-darwin = {
+      url = "github:bandithedoge/nixpkgs-firefox-darwin";
+    };
   };
 
   outputs = {
@@ -68,6 +72,7 @@
     nixtheplanet,
     agenix,
     mac-app-util,
+    nixpkgs-firefox-darwin,
   }:
   let
     inherit (self) inputs;
@@ -198,11 +203,12 @@
           config = {
             allowUnfree = true;
             permittedInsecurePackages = [
-              "python-2.7.18.7-env"
-            ]; # FIXME: remove this python if I can't get robixnix to work on macOS.
+              #"python-2.7.18.7-env"
+            ];
           };
           overlays = [
             inputs.nur.overlay
+            inputs.nixpkgs-firefox-darwin.overlay
             (final: _prev: {
               unstable = import unstable_nixpkgs {
                 inherit (final) system config;

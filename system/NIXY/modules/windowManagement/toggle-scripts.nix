@@ -15,6 +15,8 @@ let
   sketchybar = "${pkgs.sketchybar}/bin/sketchybar";
   borders = "${pkgs.callPackage ./../../customDerivations/borders.nix { }}/bin/borders";
   skhd = "${pkgs.skhd}/bin/skhd";
+  wallpaper = "/Users/Shared/Wallpaper/wallpaper-nix-colors.png";
+  m = "${homebrewPath}/m";
   inherit (config.colorScheme) palette;
 in
 {
@@ -28,6 +30,9 @@ in
       [ -f /tmp/sketchybar_state ] && rm -f /tmp/sketchybar_state
       [ -f /tmp/menubar_state ] && rm -f /tmp/menubar_state
       [ -f /tmp/darkmode_state ] && rm -f /tmp/darkmode_state
+      
+      # remove current wallpaper if it exists.
+      [ -f ${wallpaper} ] && rm -f ${wallpaper}
 
       #restart window management (yabai, skhd, sketchybar, borders, etc.)
       if pgrep yabai > /dev/null; then killall yabai > /dev/null 2>&1; fi
