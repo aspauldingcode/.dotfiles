@@ -52,6 +52,8 @@
         echo "Skipping 'fix-wm' as -f argument not provided."
       fi
 
+      echo "Updating readme.md."
+      ${pkgs.bash}/bin/bash ${../../count_lines_of_code.sh}
       date +"%I:%M:%S %p"
     '')
 
