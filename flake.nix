@@ -54,6 +54,11 @@
     nixpkgs-firefox-darwin = {
       url = "github:bandithedoge/nixpkgs-firefox-darwin";
     };
+
+    spicetify-nix = {
+      url = "github:Gerg-L/spicetify-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -73,6 +78,7 @@
     agenix,
     mac-app-util,
     nixpkgs-firefox-darwin,
+    spicetify-nix,
   }:
   let
     inherit (self) inputs;
@@ -91,6 +97,7 @@
         self
         std
         nixtheplanet
+        spicetify-nix
         ;
     };
     commonExtraSpecialArgs = {
@@ -105,6 +112,7 @@
         self
         std
         nixtheplanet
+        spicetify-nix
         ;
     };
     systems = [
@@ -125,7 +133,7 @@
             permittedInsecurePackages = [ "electron-19.1.9" ];
           };
           overlays = [
-            inputs.nur.overlay
+            inputs.nur.overlays.default
             (final: _prev: {
               unstable = import unstable_nixpkgs {
                 inherit (final) system config;
@@ -167,7 +175,7 @@
             permittedInsecurePackages = [ "electron-19.1.9" ];
           };
           overlays = [
-            inputs.nur.overlay
+            inputs.nur.overlays.default
             (final: _prev: {
               unstable = import unstable_nixpkgs {
                 inherit (final) system config;
@@ -207,7 +215,7 @@
             ];
           };
           overlays = [
-            inputs.nur.overlay
+            inputs.nur.overlays.default
             inputs.nixpkgs-firefox-darwin.overlay
             (final: _prev: {
               unstable = import unstable_nixpkgs {
@@ -231,6 +239,7 @@
               backupFileExtension = "backup";
               sharedModules = [
                 mac-app-util.homeManagerModules.default
+                spicetify-nix.homeManagerModules.default
               ];
               users.alex.imports = [
                 ./users/alex/NIXY/home-NIXY.nix

@@ -623,7 +623,7 @@
         lspkind.enable = true;
 
         # color previews
-        nvim-colorizer.enable = true;
+        colorizer.enable = true;
 
         # better nix highlighting with vim-nix
         nix.enable = true;

@@ -164,7 +164,7 @@
       systemType = pkgs.stdenv.hostPlatform.system;
       homebrewPath = if systemType == "aarch64-darwin" then "/opt/homebrew/bin" else if systemType == "x86_64-darwin" then "/usr/local/bin" else throw "Homebrew Unsupported architecture: ${systemType}";
       inherit (config.colorScheme) palette;
-      wallpaper_input = ./../../users/alex/extraConfig/wallpapers/gruvbox-nix.png;
+      wallpaper_input = if pkgs.stdenv.isDarwin then ./../../users/alex/extraConfig/wallpapers/nix-colors-wallpaper-darwin.png else ./../../users/alex/extraConfig/wallpapers/nix-colors-wallpaper.png;
       wallpaper_output = "/Users/Shared/Wallpaper/wallpaper-nix-colors.png";
       wallpaper_recolor_script = ./../../users/alex/extraConfig/recolor_base16_inputs_efficient.py;
       m = "${homebrewPath}/m";

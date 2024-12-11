@@ -37,7 +37,6 @@ in
     calcurse
     losslesscut-bin
     chatgpt-cli
-    spicetify-cli
     cowsay
     cmus
     cmusfm

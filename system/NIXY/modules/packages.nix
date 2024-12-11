@@ -23,7 +23,7 @@
     ifstat-legacy
     ranger
     # kdePackages.okular
-    spotify
+    # spotify
     # xquartz
 
     #darwin.iproute2mac #MUST BE BREW PACKAGE?

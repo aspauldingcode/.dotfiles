@@ -34,6 +34,7 @@
     ./modules/packages-NIXY.nix
     ./modules/instantview.nix
     ./modules/karabiner.nix
+    ./modules/spicetify/spicetify.nix
     ./modules/cava.nix
     ./modules/xinit.nix
     ./modules/colors.nix # generate a color palette from nix-colors (to view all colors in a file!)

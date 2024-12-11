@@ -20,7 +20,7 @@ let
   # - sakura
   # - horizon-light
 
-  scheme = "tomorrow-night"; 
+  scheme = "gruvbox-dark-soft"; 
 in
   # Choose from: https://tinted-theming.github.io/base16-gallery/
 {
