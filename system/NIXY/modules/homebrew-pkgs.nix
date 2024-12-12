@@ -54,7 +54,7 @@
     #];
     casks = [
       # "xquartz" # what an ugly app
-      "alacritty"
+      "arduino-ide"
       "chatgpt"
       "pppc-utility"
       "prismlauncher"

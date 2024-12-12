@@ -7,7 +7,7 @@ let
   sketchybar = "${pkgs.sketchybar}/bin/sketchybar";
   borders = "${pkgs.callPackage ./../../customDerivations/borders.nix { }}/bin/borders";
   i3-msg = "${homebrewPath}/i3-msg";
-  alacritty = "${homebrewPath}/alacritty";
+  alacritty = "${pkgs.alacritty}/bin/alacritty";
   firefox = "${homebrewPath}/firefox";
   app_menu = "/Applications/unmenu.app/Contents/MacOS/unmenu";
   jq = "${pkgs.jq}/bin/jq";
