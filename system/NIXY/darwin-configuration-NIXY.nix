@@ -12,6 +12,9 @@
     # ./modules/wg-quick.nix
     # ./modules/openssh.nix
 
+    ./sa-resources/ammonia.nix
+    ./sa-resources/glow.nix
+
     # ./customDerivations/apple-fonts.nix
     # ./customDerivations/mousecape.nix
     # ./customDerivations/macforge.nix
