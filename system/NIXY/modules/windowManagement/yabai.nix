@@ -22,7 +22,7 @@ in
   services.yabai = {
     enable = true;
     package = pkgs.unstable.yabai; # 7.1.5
-    enableScriptingAddition = true;
+    enableScriptingAddition = false;
     config = {
       mouse_modifier = "alt";
       mouse_action1 = "move";
@@ -68,7 +68,7 @@ in
       yabai -m rule --add app='^XQuartz$' manage=off
       yabai -m rule --add app='^X11\.bin$' manage=off
       yabai -m rule --add app='^X11$' manage=off
-      yabai -m rule --add app='^Archive Utility$' manage=off
+      yabai -m rule --add app='^Archi`ve Utility$' manage=off
       yabai -m rule --add app='^Display Calibrator$' manage=off
       yabai -m rule --add app='^Installer$' manage=off
       yabai -m rule --add app='^Karabiner-EventViewer$' manage=off
@@ -81,23 +81,6 @@ in
       yabai -m rule --add app='borders' layer=below
       ${borders}
       
-      mkdir -p ~/.config/yabai/cache/
-      touch ~/.config/yabai/cache/lockfile
-      YABAI_CACHE=~/.config/yabai/cache/
-      function _update_cache {
-        local lockfile current
-        lockfile="$YABAI_CACHE/lockfile"
-        current="$(who -b)"
-        if [[ ! -e "$lockfile" ]]; then
-          print -r -- "$current" >"$lockfile"
-        elif [[ "$current" != "$(cat "$lockfile")" ]]; then
-          rm -rf "$YABAI_CACHE"
-          mkdir -p "$YABAI_CACHE"
-          print -r -- "$current" >"$lockfile"
-        fi
-      }
-      _update_cache
-
       echo "yabai configuration loaded.."
     '';
   };

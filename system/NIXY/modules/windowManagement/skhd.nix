@@ -41,7 +41,7 @@ in
       ${mod4} + ${mod5} - delete :          sudo reboot
       ${mod4} + ${mod5} + ${smod} - delete :  sudo shutdown -h now
       ${modifier} + ${smod} - q :           ${yabai} -m window --close
-      ${modifier} - f :                     ${yabai} -m window --toggle zoom-fullscreen 
+      ${modifier} - f :                     ${yabai} -m window --toggle zoom-fullscreen
       ${modifier} + ${smod} - f :             toggle-instant-fullscreen
 
       # # Move focused window to workspace N and follow focus
@@ -142,13 +142,12 @@ in
       #           ${yabai} -m window --toggle pip
 
       # equalize windows
-      # ${modifier} + ${smod} - u : ${yabai} -m space --balance
+      ${modifier} + ${smod} - u : ${yabai} -m space --balance
 
       # toggle sketchybar
       ${modifier} - m : toggle-sketchybar
 
       # toggle native macOS menubar, or dock
-      #${modifier} + ${smod} - m : current=$(osascript -e 'tell application "System Events" to tell dock preferences to get autohide menu bar'); new_state=$(if [[ "$1" == "on" ]]; then echo false; elif [[ "$1" == "off" ]]; then echo true; else [[ "$current" == "true" ]] && echo false || echo true; fi); osascript -e "tell application \"System Events\" to tell dock preferences to set autohide menu bar to $new_state" && ${yabai} -m config menubar_opacity $(if [[ "$new_state" == "true" ]]; then echo 0.0; else echo 1.0; fi) && echo "Menu bar turned $(if [[ "$new_state" == "true" ]]; then echo OFF; else echo ON; fi)"
       ${modifier} + ${smod} - m : toggle-menubar
 
       ${modifier} - space : toggle-dock

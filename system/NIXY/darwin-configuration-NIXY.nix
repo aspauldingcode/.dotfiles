@@ -14,14 +14,8 @@
 
     ./sa-resources/ammonia.nix
     ./sa-resources/glow.nix
-
-    # ./customDerivations/apple-fonts.nix
-    # ./customDerivations/mousecape.nix
-    # ./customDerivations/macforge.nix
-    # ./customDerivations/cursorcerer.nix
-    # ./customDerivations/instantview.nix
+   
     ./customDerivations/recording-indicator-utility.nix
-    # ./customDerivations/okular.nix
 
     ./modules/windowManagement/borders.nix
     ./modules/windowManagement/cursorcerer.nix
@@ -157,12 +151,44 @@
 
   system.stateVersion = 5;
   system.activationScripts = {
-    extraActivation.text = ''
+    # setNVRAM.text = ''
+    #   # Required for yabai scripting addition
+    #   sudo nvram boot-args=-arm64e_preview_abi
+    # '';
+    setJDKmacOS.text = ''
       # symlink (zulu) jdk22 to /Library/Java/JavaVirtualMachines/ # NEEDED for macOS!!
       ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk23}/zulu-23.jdk" "/Library/Java/JavaVirtualMachines/"
     '';
 
-    postUserActivation.text =
+    # selectKeyboardInputSource.text =
+    # let
+    #   InputSourceSelector = pkgs.callPackage ./customDerivations/inputsourceselector.nix {};
+    # in
+    # ''
+    #   # Get the actual logged in user
+    #   REAL_USER=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
+    #   echo -e "\033[33m=== Current enabled input sources ===\033[0m"
+    #   echo "USER: $REAL_USER"
+    #   sudo -u "$REAL_USER" ${InputSourceSelector}/bin/InputSourceSelector list-enabled
+
+    #   echo -e "\033[33m\n=== Enabling Unicode Hex Input ===\033[0m"
+    #   sudo -u "$REAL_USER" ${InputSourceSelector}/bin/InputSourceSelector enable "com.apple.keylayout.UnicodeHexInput"
+
+    #   echo -e "\033[33m\n=== Disabling all other input sources ===\033[0m"
+    #   # Get all enabled input sources and disable them except Unicode Hex Input
+    #   sudo -u "$REAL_USER" ${InputSourceSelector}/bin/InputSourceSelector list-enabled | while read -r line; do
+    #       input_id=$(echo "$line" | cut -d" " -f1)
+    #       if [ "$input_id" != "com.apple.keylayout.UnicodeHexInput" ]; then
+    #           echo -e "\033[33mDisabling: $line\033[0m"
+    #           sudo -u "$REAL_USER" ${InputSourceSelector}/bin/InputSourceSelector disable "$input_id"
+    #       fi
+    #   done
+
+    #   echo -e "\033[33m\n=== Final enabled input sources ===\033[0m"
+    #   sudo -u "$USER" ${InputSourceSelector}/bin/InputSourceSelector list-enabled
+    # '';
+
+    setWallpaper.text =
     let
       systemType = pkgs.stdenv.hostPlatform.system;
       homebrewPath = if systemType == "aarch64-darwin" then "/opt/homebrew/bin" else if systemType == "x86_64-darwin" then "/usr/local/bin" else throw "Homebrew Unsupported architecture: ${systemType}";
