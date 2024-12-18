@@ -59,6 +59,34 @@
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+    
+    # Homebrew taps
+    homebrew-core = {
+      url = "github:homebrew/homebrew-core";
+      flake = false;
+    };
+    homebrew-bundle = {
+      url = "github:homebrew/homebrew-bundle";
+      flake = false;
+    };
+    homebrew-services = {
+      url = "github:homebrew/homebrew-services";
+      flake = false;
+    };
+    homebrew-koekeishiya = {
+      url = "github:koekeishiya/homebrew-formulae";
+      flake = false;
+    };
+    homebrew-felixkratz = {
+      url = "github:FelixKratz/homebrew-formulae";
+      flake = false;
+    };
+    homebrew-smudge = {
+      url = "github:smudge/homebrew-smudge";
+      flake = false;
+    };
   };
 
   outputs = {
@@ -79,6 +107,13 @@
     mac-app-util,
     nixpkgs-firefox-darwin,
     spicetify-nix,
+    nix-homebrew,
+    homebrew-core,
+    homebrew-bundle,
+    homebrew-services,
+    homebrew-koekeishiya,
+    homebrew-felixkratz,
+    homebrew-smudge,
   }:
   let
     inherit (self) inputs;
@@ -247,6 +282,7 @@
             };
           }
           agenix.darwinModules.default
+          nix-homebrew.darwinModules.nix-homebrew
         ];
       };
     };
