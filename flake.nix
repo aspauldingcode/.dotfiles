@@ -87,6 +87,10 @@
       url = "github:smudge/homebrew-smudge";
       flake = false;
     };
+    homebrew-cask = {
+      url = "github:homebrew/homebrew-cask";
+      flake = false;
+    };
   };
 
   outputs = {
@@ -114,6 +118,7 @@
     homebrew-koekeishiya,
     homebrew-felixkratz,
     homebrew-smudge,
+    homebrew-cask,
   }:
   let
     inherit (self) inputs;

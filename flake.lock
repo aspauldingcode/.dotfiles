@@ -502,6 +502,22 @@
         "type": "github"
       }
     },
+    "homebrew-cask": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1734537870,
+        "narHash": "sha256-kpWB7MjxnR1hA1OE9Uc6YF0RKamBm+7OCsmAoyETOfU=",
+        "owner": "homebrew",
+        "repo": "homebrew-cask",
+        "rev": "33c80079758e8e2db0f7238fa7ebaab582805c66",
+        "type": "github"
+      },
+      "original": {
+        "owner": "homebrew",
+        "repo": "homebrew-cask",
+        "type": "github"
+      }
+    },
     "homebrew-core": {
       "flake": false,
       "locked": {
@@ -1065,6 +1081,7 @@
         "flake-parts": "flake-parts",
         "home-manager": "home-manager_2",
         "homebrew-bundle": "homebrew-bundle",
+        "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
         "homebrew-felixkratz": "homebrew-felixkratz",
         "homebrew-koekeishiya": "homebrew-koekeishiya",
