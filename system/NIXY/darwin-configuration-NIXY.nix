@@ -17,7 +17,6 @@
    
     ./customDerivations/recording-indicator-utility.nix
 
-    ./modules/windowManagement/borders.nix
     ./modules/windowManagement/cursorcerer.nix
     ./modules/windowManagement/karabiner.nix
     ./modules/windowManagement/macforge.nix

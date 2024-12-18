@@ -6,7 +6,7 @@ let
   homebrewPath = if systemType == "aarch64-darwin" then "/opt/homebrew/bin" else if systemType == "x86_64-darwin" then "/usr/local/bin" else throw "Homebrew Unsupported architecture: ${systemType}";
   yabai = "${pkgs.yabai}/bin/yabai";
   sketchybar = "${pkgs.sketchybar}/bin/sketchybar";
-  borders = "${pkgs.jankyborders}/bin/borders";
+  borders = "";
   i3-msg = "${homebrewPath}/i3-msg";
   alacritty = "${homebrewPath}/alacritty";
   firefox = "${homebrewPath}/firefox";
@@ -22,7 +22,7 @@ in
   services.yabai = {
     enable = true;
     package = pkgs.unstable.yabai; # 7.1.5
-    enableScriptingAddition = false;
+    enableScriptingAddition = true;
     config = {
       mouse_modifier = "alt";
       mouse_action1 = "move";

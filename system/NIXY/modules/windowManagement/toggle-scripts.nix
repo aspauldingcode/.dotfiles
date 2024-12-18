@@ -13,7 +13,7 @@ let
   jq = "${pkgs.jq}/bin/jq";
   yabai = "${pkgs.yabai}/bin/yabai";
   sketchybar = "${pkgs.sketchybar}/bin/sketchybar";
-  borders = "${pkgs.callPackage ./../../customDerivations/borders.nix { }}/bin/borders";
+  borders = "";
   skhd = "${pkgs.skhd}/bin/skhd";
   wallpaper = "/Users/Shared/Wallpaper/wallpaper-nix-colors.png";
   m = "${homebrewPath}/m";

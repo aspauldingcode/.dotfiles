@@ -5,7 +5,7 @@ let
   homebrewPath = if systemType == "aarch64-darwin" then "/opt/homebrew/bin" else if systemType == "x86_64-darwin" then "/usr/local/bin" else throw "Homebrew Unsupported architecture: ${systemType}";
   yabai = "${pkgs.yabai}/bin/yabai";
   sketchybar = "${pkgs.sketchybar}/bin/sketchybar";
-  borders = "${pkgs.callPackage ./../../customDerivations/borders.nix { }}/bin/borders";
+  borders = "";
   i3-msg = "${homebrewPath}/i3-msg";
   alacritty = "${pkgs.alacritty}/bin/alacritty";
   firefox = "${homebrewPath}/firefox";
