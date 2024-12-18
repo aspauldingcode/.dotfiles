@@ -8,7 +8,7 @@
     ./modules/launch-agents.nix
     ./modules/packages.nix
     ./modules/theme.nix
-    ./modules/dipshit-macos-permissions.nix
+    ./modules/macos-activation-scripts.nix
     # ./modules/wg-quick.nix
     # ./modules/openssh.nix
 
@@ -141,82 +141,5 @@
     };
   };
 
-  # system.activationScripts.script.text = ''
-    # cp /home/alex/.dotfiles/users/alex/face.png /var/lib/AccountsService/icons/alex
-  # '';
-
-  #system.activationScripts.extraActivation.text = ''
-  #  ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk20}/zulu-20.jdk" "/Library/Java/JavaVirtualMachines/"
-  #'';
-
   system.stateVersion = 5;
-  system.activationScripts = {
-    # setNVRAM.text = ''
-    #   # Required for yabai scripting addition
-    #   sudo nvram boot-args=-arm64e_preview_abi
-    # '';
-    setJDKmacOS.text = ''
-      # symlink (zulu) jdk22 to /Library/Java/JavaVirtualMachines/ # NEEDED for macOS!!
-      ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk23}/zulu-23.jdk" "/Library/Java/JavaVirtualMachines/"
-    '';
-
-    # selectKeyboardInputSource.text =
-    # let
-    #   InputSourceSelector = pkgs.callPackage ./customDerivations/inputsourceselector.nix {};
-    # in
-    # ''
-    #   # Get the actual logged in user
-    #   REAL_USER=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
-    #   echo -e "\033[33m=== Current enabled input sources ===\033[0m"
-    #   echo "USER: $REAL_USER"
-    #   sudo -u "$REAL_USER" ${InputSourceSelector}/bin/InputSourceSelector list-enabled
-
-    #   echo -e "\033[33m\n=== Enabling Unicode Hex Input ===\033[0m"
-    #   sudo -u "$REAL_USER" ${InputSourceSelector}/bin/InputSourceSelector enable "com.apple.keylayout.UnicodeHexInput"
-
-    #   echo -e "\033[33m\n=== Disabling all other input sources ===\033[0m"
-    #   # Get all enabled input sources and disable them except Unicode Hex Input
-    #   sudo -u "$REAL_USER" ${InputSourceSelector}/bin/InputSourceSelector list-enabled | while read -r line; do
-    #       input_id=$(echo "$line" | cut -d" " -f1)
-    #       if [ "$input_id" != "com.apple.keylayout.UnicodeHexInput" ]; then
-    #           echo -e "\033[33mDisabling: $line\033[0m"
-    #           sudo -u "$REAL_USER" ${InputSourceSelector}/bin/InputSourceSelector disable "$input_id"
-    #       fi
-    #   done
-
-    #   echo -e "\033[33m\n=== Final enabled input sources ===\033[0m"
-    #   sudo -u "$USER" ${InputSourceSelector}/bin/InputSourceSelector list-enabled
-    # '';
-
-    setWallpaper.text =
-    let
-      systemType = pkgs.stdenv.hostPlatform.system;
-      homebrewPath = if systemType == "aarch64-darwin" then "/opt/homebrew/bin" else if systemType == "x86_64-darwin" then "/usr/local/bin" else throw "Homebrew Unsupported architecture: ${systemType}";
-      inherit (config.colorScheme) palette;
-      wallpaper_input = if pkgs.stdenv.isDarwin then ./../../users/alex/extraConfig/wallpapers/nix-colors-wallpaper-darwin.png else ./../../users/alex/extraConfig/wallpapers/nix-colors-wallpaper.png;
-      wallpaper_output = "/Users/Shared/Wallpaper/wallpaper-nix-colors.png";
-      wallpaper_recolor_script = ./../../users/alex/extraConfig/recolor_base16_inputs_efficient.py;
-      m = "${homebrewPath}/m";
-    in
-    ''
-      # create the wallpaper directory if it doesn't exist
-      mkdir -p /Users/Shared/Wallpaper/
-      
-      # recolor the wallpaper only if the wallpaper output file doesn't exist
-      if [ ! -f ${wallpaper_output} ]; then
-        echo "Recoloring Wallpapers to ${config.colorscheme.slug} color scheme..."
-        ${pkgs.python3.withPackages (ps: [ ps.pillow ps.numpy ps.tqdm ])}/bin/python3 ${wallpaper_recolor_script} ${wallpaper_input} ${wallpaper_output} ${config.colorScheme.variant} ${palette.base00},${palette.base01},${palette.base02},${palette.base03},${palette.base04},${palette.base05},${palette.base06},${palette.base07},${palette.base08},${palette.base09},${palette.base0A},${palette.base0B},${palette.base0C},${palette.base0D},${palette.base0E},${palette.base0F}
-      else
-        echo "Using existing wallpaper..."
-      fi
-      
-      # set the wallpaper
-      echo "Setting ${config.colorscheme.variant} wallpaper..."
-      ${m} wallpaper "${wallpaper_output}"
-
-      # set darkmode/lightmode for the system
-      echo "Setting ${config.colorscheme.variant}mode for the system..."
-      toggle-darkmode ${config.colorscheme.variant}
-    '';
-  };
 }
