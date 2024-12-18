@@ -12,7 +12,13 @@ let
 in
 {
   system.activationScripts.postActivation.text = ''
-    # Fix binary quarantine attributes
+
+    # ===================================================================
+    # Binary Quarantine Attribute Cleanup
+    # Purpose: Clear quarantine flags from selected executables
+    # Action:  Strip quarantine metadata from flagged binaries
+    # ===================================================================
+    
     echo "Fixing macOS binary quarantine attributes..."
 
     # Fix specific problematic binaries if they exist
@@ -26,6 +32,12 @@ in
         xattr -d com.apple.quarantine "$binary" 2>/dev/null || true
       fi
     done
+
+    # ===================================================================
+    # Input Source Selector
+    # Purpose: Configure keyboard input source
+    # Action:  Set to Unicode Hex Input mode for extended character support
+    # ===================================================================
 
     # Get the actual logged in user
     REAL_USER=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
@@ -49,8 +61,20 @@ in
     echo -e "\033[33m\n=== Final enabled input sources ===\033[0m"
     sudo -u "$USER" ${InputSourceSelector}/bin/InputSourceSelector list-enabled
 
-    # symlink (zulu) jdk22 to /Library/Java/JavaVirtualMachines/ # NEEDED for macOS!!
+    # ===================================================================
+    # Java Development Kit Symlink
+    # Purpose: Configure system-wide JDK access
+    # Action:  Create symlink to JDK in standard macOS Java location
+    # ===================================================================
+
+    # symlink (zulu) jdk23 to /Library/Java/JavaVirtualMachines/ # NEEDED for macOS!!
     ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk23}/zulu-23.jdk" "/Library/Java/JavaVirtualMachines/"
+
+    # ===================================================================
+    # macOS Wallpaper Configuration
+    # Purpose: Set system wallpaper with custom recoloring
+    # Action:  Recolor and apply wallpaper based on color scheme
+    # ===================================================================
 
     # create the wallpaper directory if it doesn't exist
     mkdir -p /Users/Shared/Wallpaper/
@@ -63,15 +87,25 @@ in
       echo "Using existing wallpaper..."
     fi
     
-    # set the wallpaper
     echo "Setting ${config.colorscheme.variant} wallpaper..."
     ${m} wallpaper "${wallpaper_output}"
 
-    # set darkmode/lightmode for the system
+    # ===================================================================
+    # macOS Dark/Light Mode Configuration
+    # Purpose: Set system appearance mode based on color scheme
+    # Action:  Toggle between dark and light mode
+    # ===================================================================
+
     echo "Setting ${config.colorscheme.variant}mode for the system..."
     toggle-darkmode ${config.colorscheme.variant}
 
-    # Required for yabai scripting addition
+    # ===================================================================
+    # System Boot Arguments Configuration
+    # Purpose: Enable preview ABI for yabai scripting and other tools
+    # Action:  Set nvram boot arguments for arm64e preview ABI support
+    # ===================================================================
+
+    echo "Setting nvram boot-args preview abi for yabai scripting addition and glow/ammonia..."
     sudo nvram boot-args=-arm64e_preview_abi
   '';
 }
