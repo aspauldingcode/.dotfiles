@@ -800,8 +800,7 @@ in
       CAPE_NAME=''${CAPE_FILES[$((CAPE_INDEX-1))]}
 
       # Command to apply the cape
-      cd "$HOME/Applications/Nix Trampolines/Mousecape.app/Contents/MacOS"
-      ./mousecloak --apply "$HOME/Library/Application Support/Mousecape/capes/$CAPE_NAME"
+      "/Applications/Nix Apps/Mousecape.app/Contents/MacOS/mousecloak" --apply "$HOME/Library/Application Support/Mousecape/capes/$CAPE_NAME"
       echo "Applied cape: $CAPE_NAME"
     '')
 
@@ -836,8 +835,7 @@ in
       fi
 
       # Command to apply the selected cape
-      cd "$HOME/Applications/Nix Trampolines/Mousecape.app/Contents/MacOS"
-      ./mousecloak --apply "$HOME/Library/Application Support/Mousecape/capes/$CAPE_NAME"
+      "/Applications/Nix Apps/Mousecape.app/Contents/MacOS/mousecloak" --apply "$HOME/Library/Application Support/Mousecape/capes/$CAPE_NAME"
       echo "Applied cape: $CAPE_NAME"
 
       # Save the current cape state

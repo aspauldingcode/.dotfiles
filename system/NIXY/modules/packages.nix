@@ -23,6 +23,7 @@
     tree
     ifstat-legacy
     ranger
+    qemu
     # kdePackages.okular
     # spotify
     # xquartz
