@@ -1,4 +1,4 @@
-{ ... }:
+{ inputs,... }:
 
 {
   nix-homebrew = {
@@ -7,12 +7,12 @@
     user = "alex";
     mutableTaps = false;
     taps = {
-      "homebrew/homebrew-core" = homebrew-core;
-      "homebrew/homebrew-bundle" = homebrew-bundle;
-      "homebrew/homebrew-services" = homebrew-services;
-      "koekeishiya/homebrew-formulae" = homebrew-koekeishiya;
-      "FelixKratz/homebrew-formulae" = homebrew-felixkratz;
-      "smudge/homebrew-smudge" = homebrew-smudge;
+      "homebrew/homebrew-core" = inputs.homebrew-core;
+      "homebrew/homebrew-bundle" = inputs.homebrew-bundle; 
+      "homebrew/homebrew-services" = inputs.homebrew-services;
+      "koekeishiya/homebrew-formulae" = inputs.homebrew-koekeishiya;
+      "FelixKratz/homebrew-formulae" = inputs.homebrew-felixkratz;
+      "smudge/homebrew-smudge" = inputs.homebrew-smudge;
     };
   };
 
