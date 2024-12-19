@@ -4,10 +4,21 @@
   lib,
   config,
   ...
-}: let
+}: 
+
+let
   inherit (lib) mkForce;
   inherit (config.colorscheme) palette;
 in {
+
+  home.packages = if pkgs.stdenv.isDarwin then [ pkgs.defaultbrowser ] else [];
+
+  home.activation = if pkgs.stdenv.isDarwin then {
+    setDefaultBrowser = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      ${pkgs.defaultbrowser}/bin/defaultbrowser firefox
+    '';
+  } else {};
+
   programs.firefox = {
     enable = true;
     package =

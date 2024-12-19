@@ -767,7 +767,7 @@
       "inputs": {
         "nixos-generators": "nixos-generators",
         "nixpkgs": [
-          "nixpkgs"
+          "unstable_nixpkgs"
         ]
       },
       "locked": {

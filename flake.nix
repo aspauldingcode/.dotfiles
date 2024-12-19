@@ -94,7 +94,7 @@
 
     nix-rosetta-builder = {
       url = "github:cpick/nix-rosetta-builder";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "unstable_nixpkgs";
     };
   };
 
@@ -301,7 +301,7 @@
           # { nix.linux-builder.enable = true; }
           # Then: uncomment `nix-rosetta-builder`, remove `linux-builder`, and `darwin-rebuild switch`
           # a second time. Subsequently, `nix-rosetta-builder` can rebuild itself.
-          #nix-rosetta-builder.darwinModules.default
+          # nix-rosetta-builder.darwinModules.default
         ];
       };
     };
