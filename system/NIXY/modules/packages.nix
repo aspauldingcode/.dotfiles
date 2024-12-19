@@ -81,4 +81,34 @@
     openssh
     inputs.agenix.packages.${pkgs.system}.agenix # Add agenix CLI tool
   ];
+
+  nixpkgs.config = {
+    allowUnfree = true;
+    extra-platforms = [ "aarch64-linux" "x86_64-linux" ];
+  };
+
+  # Enable Linux building support
+  nix.settings = {
+    extra-platforms = [ "aarch64-linux" "x86_64-linux" ];
+    trusted-users = [ "@admin" "root" "demo" "alex" ];
+    extra-sandbox-paths = [ "/bin/sh=${pkgs.bash}/bin/sh" ];
+    builders-use-substitutes = true;
+    experimental-features = [ "nix-command" "flakes" ];
+  };
+
+  # Enable remote builder for Orb VM
+  nix.buildMachines = [{
+    hostName = "alex@nixos@orb";
+    system = "aarch64-linux";
+    maxJobs = 4;
+    speedFactor = 2;
+    supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
+    mandatoryFeatures = [ ];
+  }];
+  nix.distributedBuilds = true;
+
+  # Add SSH config symlink for OrbStack
+  #environment.etc."ssh/ssh_config.d/orbstack_config".text = ''
+  #  Include /Users/${config.users.users.alex.name}/.orbstack/ssh/config
+  #'';
 }

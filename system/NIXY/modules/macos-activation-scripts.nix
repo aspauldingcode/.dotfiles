@@ -39,27 +39,25 @@ in
     # Action:  Set to Unicode Hex Input mode for extended character support
     # ===================================================================
 
-    # Get the actual logged in user
-    REAL_USER=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
     echo -e "\033[33m=== Current enabled input sources ===\033[0m"
-    echo "USER: $REAL_USER"
-    sudo -u "$REAL_USER" ${InputSourceSelector}/bin/InputSourceSelector list-enabled
+    echo "USER: alex"
+    sudo -u "alex" ${InputSourceSelector}/bin/InputSourceSelector list-enabled
 
     echo -e "\033[33m\n=== Enabling Unicode Hex Input ===\033[0m"
-    sudo -u "$REAL_USER" ${InputSourceSelector}/bin/InputSourceSelector enable "com.apple.keylayout.UnicodeHexInput"
+    sudo -u "alex" ${InputSourceSelector}/bin/InputSourceSelector enable "com.apple.keylayout.UnicodeHexInput"
 
     echo -e "\033[33m\n=== Disabling all other input sources ===\033[0m"
     # Get all enabled input sources and disable them except Unicode Hex Input
-    sudo -u "$REAL_USER" ${InputSourceSelector}/bin/InputSourceSelector list-enabled | while read -r line; do
+    sudo -u "alex" ${InputSourceSelector}/bin/InputSourceSelector list-enabled | while read -r line; do
         input_id=$(echo "$line" | cut -d" " -f1)
         if [ "$input_id" != "com.apple.keylayout.UnicodeHexInput" ]; then
             echo -e "\033[33mDisabling: $line\033[0m"
-            sudo -u "$REAL_USER" ${InputSourceSelector}/bin/InputSourceSelector disable "$input_id"
+            sudo -u "alex" ${InputSourceSelector}/bin/InputSourceSelector disable "$input_id"
         fi
     done
 
     echo -e "\033[33m\n=== Final enabled input sources ===\033[0m"
-    sudo -u "$USER" ${InputSourceSelector}/bin/InputSourceSelector list-enabled
+    sudo -u "alex" ${InputSourceSelector}/bin/InputSourceSelector list-enabled
 
     # ===================================================================
     # Java Development Kit Symlink
@@ -107,5 +105,15 @@ in
 
     echo "Setting nvram boot-args preview abi for yabai scripting addition and glow/ammonia..."
     sudo nvram boot-args=-arm64e_preview_abi
+
+    # ===================================================================
+    # OrbStack Machine Configuration
+    # Purpose: Configure OrbStack virtual machines and settings
+    # Action:  Set up OrbStack ssh for remote linux builds to work on NIXY
+    # ===================================================================
+
+    echo "Setting up OrbStack ssh for remote linux builds to work on NIXY..."
+    su - alex -c "/Users/alex/.orbstack/bin/orb create nixos"
+    su - alex -c "/Users/alex/.orbstack/bin/orb start nixos"
   '';
 }
