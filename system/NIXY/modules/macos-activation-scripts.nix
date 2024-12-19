@@ -109,11 +109,13 @@ in
     # ===================================================================
     # OrbStack Machine Configuration
     # Purpose: Configure OrbStack virtual machines and settings
-    # Action:  Set up OrbStack ssh for remote linux builds to work on NIXY
+    # Action:  Set up OrbStack ssh for linux virtual machines to work on NIXY
     # ===================================================================
 
     echo "Setting up OrbStack ssh for remote linux builds to work on NIXY..."
     su - alex -c "/Users/alex/.orbstack/bin/orb create nixos"
     su - alex -c "/Users/alex/.orbstack/bin/orb start nixos"
+    su - alex -c "/Users/alex/.orbstack/bin/orb create ubuntu"
+    su - alex -c "/Users/alex/.orbstack/bin/orb start ubuntu"
   '';
 }
