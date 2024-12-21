@@ -21,7 +21,8 @@ if [ -d "$root_dir/.git" ]; then
     # Update README.md with new line count
     formatted_lines=$(printf "%'d" $lines_in_repo)
     DATE=$(date)
-    sed -i.bak "s/There are [0-9,]* lines of code in this repo.*/There are $formatted_lines lines of code in this repo. Last updated: $DATE/" README.md
+    # Use perl instead of sed for better cross-platform compatibility
+    perl -i -pe "s/There are [0-9,]* lines of code in this repo.*/There are $formatted_lines lines of code in this repo. Last updated: $DATE/" README.md
     echo "Updated line count in README.md to $formatted_lines"
 else
     echo "Error: Not a git repository"
