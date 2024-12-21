@@ -69,7 +69,7 @@
     fd # find tool
     ripgrep
     (pkgs.callPackage ./../customDerivations/instantview.nix { })
-    (pkgs.callPackage ./../customDerivations/macforge.nix { })
+    #(pkgs.callPackage ./../customDerivations/macforge.nix { })
     # (pkgs.callPackage ./../customDerivations/cdock.nix { })
     (pkgs.callPackage ./../customDerivations/cursorcerer.nix { })
     (pkgs.callPackage ./../customDerivations/mousecape.nix { })
@@ -96,14 +96,24 @@
     experimental-features = [ "nix-command" "flakes" ];
   };
 
+  #nix.linux-builder.enable = true;
+  nix.settings.substituters = [ "https://cache.nixos.org/" ];
+  nix.settings.trusted-public-keys = [ "hydra.nixos.org-1:CNHJZBh9K4tP3EKF6FkkgeVYsS3ohTl+oS0Qa8bezVs=" ];
+  nix.settings.always-allow-substitutes = true;
+
   # # Enable remote builder for Orb VM
   # nix.buildMachines = [{
-  #   hostName = "alex@nixos@orb";
+  #   hostName = "localhost:32222";
+  #   sshUser = "default";
   #   system = "aarch64-linux";
   #   maxJobs = 4;
   #   speedFactor = 2;
   #   supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
   #   mandatoryFeatures = [ ];
+  #   protocol = "ssh";
+  #   sshKey = "/Users/alex/.orbstack/ssh/id_ed25519";
+  #   #    ~/.orbstack/ssh  zsh  base64 -b 0 -i id_ed25519.pub
+  #   publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUQ2a2xMZWRxSEF3eTI3L25pWjhjUW5qMy9DUElwT2tPNTViTzM3OTVmTHIK";
   # }];
   # nix.distributedBuilds = true;
 }

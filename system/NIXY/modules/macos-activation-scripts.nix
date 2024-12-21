@@ -113,9 +113,14 @@ in
     # ===================================================================
 
     echo "Setting up OrbStack ssh for remote linux builds to work on NIXY..."
-    su - alex -c "/Users/alex/.orbstack/bin/orb create nixos"
+    if ! su - alex -c "/Users/alex/.orbstack/bin/orb list | grep -q nixos"; then
+      su - alex -c "/Users/alex/.orbstack/bin/orb create nixos"
+    fi
     su - alex -c "/Users/alex/.orbstack/bin/orb start nixos"
-    su - alex -c "/Users/alex/.orbstack/bin/orb create ubuntu"
+
+    if ! su - alex -c "/Users/alex/.orbstack/bin/orb list | grep -q ubuntu"; then
+      su - alex -c "/Users/alex/.orbstack/bin/orb create ubuntu"
+    fi
     su - alex -c "/Users/alex/.orbstack/bin/orb start ubuntu"
   '';
 }

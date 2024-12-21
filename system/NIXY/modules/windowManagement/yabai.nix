@@ -20,7 +20,7 @@ let
 in
 {
   services.yabai = {
-    enable = true;
+    enable = true; # yabai breaks on macOS 14.7.2. fixed on master, but not in release 7.1.5.
     package = pkgs.unstable.yabai; # 7.1.5
     enableScriptingAddition = true;
     config = {
