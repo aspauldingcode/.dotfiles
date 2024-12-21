@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# example: sudo ./erase-install-invokation-tool.sh --version=14.4.1 --erase
+
 ERASE_INSTALL_PATH="/Library/Management/erase-install/erase-install.sh"
 
 # Check if erase-install.sh exists
