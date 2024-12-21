@@ -1,0 +1,561 @@
+https://github.com/grahampugh/erase-install
+
+# erase-install
+
+A powerful macOS reinstallation script by Graham Pugh that provides automated downloading and installation of macOS.
+
+## Key Features
+
+- Downloads macOS installers directly from Apple using mist-cli or softwareupdate
+- Supports reinstalling, upgrading or erasing macOS
+- Interactive user dialogs via swiftDialog
+- Flexible options for different workflows and management tools
+- Compatible with Jamf Pro and other MDM solutions
+- Supports macOS 10.15 and newer (legacy branch for 10.15 and older)
+
+## Requirements
+
+- macOS 10.15+ for main branch (10.15 or older supported via legacy branch)
+- macOS 11+ required for softwareupdate installer downloads
+- macOS 11+ required for swiftDialog support
+
+## Usage Warning
+
+**CAUTION: This is a self-destruct script that can erase your system. Do not test on production devices!**
+
+## Documentation
+
+Full documentation available in the [project Wiki](https://github.com/grahampugh/erase-install/wiki)
+
+## License
+
+Apache-2.0
+
+## Links
+
+- [GitHub Repository](https://github.com/grahampugh/erase-install)
+- [Latest Release](https://github.com/grahampugh/erase-install/releases)
+- [Sponsor the Project](https://grahamrpugh.com/sponsor.html)
+
+
+https://github.com/grahampugh/erase-install/wiki
+
+# Wiki Documentation
+
+## Overview
+erase-install.sh is a script for reinstalling macOS directly from the system volume using `startosinstall`. It supports downloading macOS installers and performing reinstalls, upgrades or complete system erases.
+
+## Version Compatibility
+- Version 28+:
+  - Requires macOS 11.0 or newer
+  - Uses mist-cli instead of python/installinstallmacos.py
+  - Uses swiftDialog for notifications
+- Version 27.x (Legacy):
+  - Supports macOS 10.15 and older
+  - Will be supported until macOS 14 release
+
+## Key Features
+- Compatible with any/no management systems
+- SwiftDialog integration for user notifications
+- Localized in English, German, French, Dutch and Spanish
+- Flexible command line options for various workflows
+- Direct downloads from Apple's servers
+
+## Basic Usage
+Example command to download and upgrade to macOS Big Sur:
+
+
+
+1. Installation
+Graham Pugh edited this page Aug 31, 2023 · 6 revisions
+Requirements and limitations
+
+    The script must run as root or sudo.
+    macOS 11 is required. If you need to run erase-install.sh on older versions of macOS, use version 27.x.
+    The file system must be APFS.
+
+Recommended method - installer package
+
+The easiest to maintain method of deploying the script is to install the latest package from the Releases page. The package contains the latest copies of erase-install.sh, with tested compatible versions of mist and swiftDialog bundled into the package.
+Download the script from GitHub
+
+The erase-install.sh script can be downloaded directly from GitHub. If run as a standalone script, it will download mist and swiftDialog directly from GitHub if required.
+Run the script directly from GitHub
+
+You can also run the script directly from GitHub using the following command from Terminal, or with a remote management tool that allows script execution. The sudo command can be left off if executing from root prompt or through remote management tool that executes commands with root privileges.
+
+curl -s https://raw.githubusercontent.com/grahampugh/erase-install/release/erase-install.sh | sudo zsh /dev/stdin <arguments>
+
+NOTE: If using the legacy version (27.x), you use bash instead of zsh, so the following command is required:
+
+curl -s https://raw.githubusercontent.com/grahampugh/erase-install/legacy/erase-install.sh | sudo bash /dev/stdin <arguments>
+
+
+
+2. Searching for a specific macOS installer
+Graham Pugh edited this page Jan 16, 2023 · 3 revisions
+
+The Apple catalogs maintain multiple versions of the macOS installer. erase-install.sh uses mist, or optionally softwareupdate --list-full-installers, to search for all the installers available. By default it will download the latest version available that is compatible with the hardware on which the script is being run.
+
+If you wish to obtain a different installer, you might want to search the catalog to find the appropriate installer version to download.
+Options associated with listing
+--list
+
+To see which versions of the macOS installer app are available, run sudo /path/to/erase-install.sh --list from Terminal. You will see an output something like below:
+
+┌──────────────────┐
+│ INPUT VALIDATION │
+└──────────────────┘
+  ├─ Search only for latest (first) result will be 'false'...
+  ├─ Include betas in search results will be 'false'...
+  ├─ Only include compatible installers will be 'true'...
+  ├─ Export path will be '/Library/Management/erase-install/mist-list.json'...
+  ├─ Export path file extension is valid...
+  ├─ Output type will be 'ascii'...
+┌────────┐
+│ SEARCH │
+└────────┘
+  ├─ Searching for macOS Installer versions...
+  ├─ Exported list as JSON: '/Library/Management/erase-install/mist-list.json'
+  └─ Found 16 macOS Installer(s) available for download
+
+Identifier │ Name           │ Version │ Build   │ Size     │ Date       │ Compatible
+───────────┼────────────────┼─────────┼─────────┼──────────┼────────────┼───────────
+012-60271  │ macOS Ventura  │ 13.1    │ 22C65   │ 12.23 GB │ 2023-01-11 │ True      
+012-93766  │ macOS Ventura  │ 13.0.1  │ 22A400  │ 12.16 GB │ 2022-11-09 │ True      
+012-92138  │ macOS Ventura  │ 13.0    │ 22A380  │ 12.16 GB │ 2022-10-24 │ True      
+032-12843  │ macOS Monterey │ 12.6.2  │ 21G320  │ 12.40 GB │ 2023-01-11 │ True      
+012-90254  │ macOS Monterey │ 12.6.1  │ 21G217  │ 12.41 GB │ 2022-10-24 │ True      
+012-40494  │ macOS Monterey │ 12.6    │ 21G115  │ 12.40 GB │ 2022-09-20 │ True      
+032-12833  │ macOS Big Sur  │ 11.7.2  │ 20G1020 │ 12.42 GB │ 2023-01-11 │ True      
+012-90253  │ macOS Big Sur  │ 11.7.1  │ 20G918  │ 12.42 GB │ 2022-10-24 │ True      
+012-38280  │ macOS Big Sur  │ 11.7    │ 20G817  │ 12.42 GB │ 2022-09-20 │ True      
+012-08272  │ macOS Big Sur  │ 11.6.6  │ 20G624  │ 12.42 GB │ 2022-05-24 │ True      
+002-77154  │ macOS Big Sur  │ 11.6.5  │ 20G527  │ 12.42 GB │ 2022-04-11 │ True      
+002-65695  │ macOS Big Sur  │ 11.6.4  │ 20G417  │ 12.45 GB │ 2022-02-17 │ True      
+002-57023  │ macOS Big Sur  │ 11.6.3  │ 20G415  │ 12.44 GB │ 2022-01-26 │ True      
+002-42341  │ macOS Big Sur  │ 11.6.2  │ 20G314  │ 12.44 GB │ 2022-01-14 │ True      
+002-23589  │ macOS Big Sur  │ 11.6.1  │ 20G224  │ 12.43 GB │ 2021-12-01 │ True      
+071-78704  │ macOS Big Sur  │ 11.5.2  │ 20G95   │ 12.45 GB │ 2021-08-18 │ True      
+
+Note that only installers compatible with the system on which the script is running will be listed.
+--list --beta
+
+Add the --beta flag to search for beta versions.
+--list --ffi
+
+To see which versions of the macOS installer app are available via the --fetch-full-installer option, run sudo /path/to/erase-install.sh --list-full-installers from Terminal. You will see an output something like below:
+
+Finding available software
+Software Update found the following full installers:
+* Title: macOS Ventura, Version: 13.1, Size: 11931164KiB, Build: 22C65, Deferred: NO
+* Title: macOS Ventura, Version: 13.0.1, Size: 11866460KiB, Build: 22A400, Deferred: NO
+* Title: macOS Ventura, Version: 13.0, Size: 11866804KiB, Build: 22A380, Deferred: NO
+* Title: macOS Monterey, Version: 12.6.2, Size: 12104568KiB, Build: 21G320, Deferred: NO
+* Title: macOS Monterey, Version: 12.6.1, Size: 12108491KiB, Build: 21G217, Deferred: NO
+* Title: macOS Monterey, Version: 12.6, Size: 12104042KiB, Build: 21G115, Deferred: NO
+* Title: macOS Big Sur, Version: 11.7.2, Size: 12119307KiB, Build: 20G1020, Deferred: NO
+* Title: macOS Big Sur, Version: 11.7.1, Size: 12119247KiB, Build: 20G918, Deferred: NO
+* Title: macOS Big Sur, Version: 11.7, Size: 12118755KiB, Build: 20G817, Deferred: NO
+* Title: macOS Big Sur, Version: 11.6.6, Size: 12121263KiB, Build: 20G624, Deferred: NO
+* Title: macOS Big Sur, Version: 11.6.5, Size: 12121404KiB, Build: 20G527, Deferred: NO
+* Title: macOS Big Sur, Version: 11.6.4, Size: 12147782KiB, Build: 20G417, Deferred: NO
+* Title: macOS Big Sur, Version: 11.6.3, Size: 12143674KiB, Build: 20G415, Deferred: NO
+* Title: macOS Big Sur, Version: 11.6.2, Size: 12141944KiB, Build: 20G314, Deferred: NO
+* Title: macOS Big Sur, Version: 11.6.1, Size: 12137180KiB, Build: 20G224, Deferred: NO
+* Title: macOS Big Sur, Version: 11.5.2, Size: 12149332KiB, Build: 20G95, Deferred: NO
+
+Note that no compatibility check is made on the available versions using this method. This is because no Build Version is accessible via this method, so a reliable comparison cannot be made.
+--list --ffi --seed PROGRAM_TYPE
+When using the --list parameter together with --ffi, you can --seed (or --seedprogram) to search for available versions of the macOS installer app in each seed program. This is commonly used to find beta installers. The available seed programs are PublicSeed, CustomerSeed and DeveloperSeed. These correspond to the Public Beta, AppleSeed and Developer catalogs.
+
+
+
+3. Downloading a macOS Installer
+Graham Pugh edited this page Oct 12, 2023 · 4 revisions
+
+When erase-install.sh is run without any options, it will download the latest available production macOS installer into the /Applications folder.
+
+If an installer is already cached on the system in /Applications, or an installer package is present in the working directory, the script will detect this and do nothing more.
+
+Installer applications in other locations will not be detected.
+
+    Note: by default, the working directory is /Library/Management/erase-install. This is where the erase-install.sh script is installed from the package, and where the log files are saved.
+
+Options associated with downloading
+--pkg
+
+If the --pkg option is used, the InstallAssistant.pkg is extracted from the downloaded Installer application and stored in the working directory. This option can be useful if you do not want the installer to be cached in /Applications where users will see it.
+--fetch-full-installer
+
+If the --fetch-full-installer (or --ffi) option is used, erase-install.sh will use the softwareupdate --fetch-full-installer command to obtain or list installers rather than using mist. The installer will be placed into the /Applications folder.
+
+When using the --fetch-full-installer option. It will set the seed catalog supplied with the --seedprogram argument, using macOS's built in seedutil command. The --fetch-full-installer option can be used in conjunction with the --overwrite, --update, --replace-invalid, --reinstall, and --erase options.
+
+    Note: this option may allow the use of a Caching Server, meaning the installer could be obtained more quickly.
+
+--move
+
+If the --move parameter is used, the installer application is subsequently extracted from the InstallAssistant.pkg and placed in the /Applications folder.
+--overwrite
+
+If the --overwrite parameter is used, any cached installer, whether in the working directory or in /Applications, is deleted and the latest installer is downloaded from Apple's catalogs.
+--update
+
+If the --update parameter is used, and an installer application is already cached on the system, the script will compare the version of the cached system with the installer that is available from Apple's catalogs. If a newer version is available, the cached installer is removed and the latest version is downloaded. Nothing is downloaded if the versions are the same or the cached system is newer (for example there is a cached beta installer).
+
+    Note: the --update parameter is ignored if the --overwrite parameter is used.
+
+--replace-invalid
+
+The --replace-invalid parameter works similarly to the --update parameter, but any cached installer is only replaced if the script detects that it is incompatible with the local hardware (usually because the version of the cached installer is older than the current system).
+
+    Note: the --replace-invalid parameter is ignored if the --overwrite parameter is used.
+
+--clear-cache-only
+
+The --clear-cache-only parameter can be used in conjunction with --update or --overwrite to facilitate removal of cached installers, so that you do not need to create any sort of clean up script yourself. This option will remove any installers from the local system when used with --overwrite, or any outdated installers when used with --update, and then will exit.
+--beta
+
+If the --beta parameter is used, the script will include beta versions in its search.
+--catalog XY
+
+By default, Apple's production catalog for the OS that the system is running is used to obtain macOS installer applications. You can specify a different catalog instead by adding the --catalog option and the OS you require, e.g. --catalog 13 to use the catalog normally used on macOS 13.
+--seedprogram PROGRAM_TYPE
+
+By default, Apple's production catalog is used to obtain macOS installer applications. However, you can access installers from one of Apple's seed programs. The available seed programs are PublicSeed, CustomerSeed and DeveloperSeed. These correspond to the Public Beta, AppleSeed and Developer catalogs.
+Options to filter a specific installer
+
+The Apple catalogs maintain multiple versions of the macOS installer. erase-install.sh can download any that is available. By default it will download the latest version available that is compatible with the hardware on which the script is being run.
+
+If you wish to obtain a different installer, you can use one of the options below.
+--samebuild
+
+Run the script with argument --samebuild to obtain the installer which matches the current system macOS build (using sw_vers), rather than the latest production installer available.
+
+This allows the reinstallation of a forked or beta version that is already installed on the system volume, so long as that version is still available in the catalog.
+--sameos
+
+Run the script with argument --sameos to obtain the installer which matches the currently installed macOS major version, for example 10.15, 11 etc. This basically filters by major version, and looks for the latest build matching the currently installed major version.
+
+This is useful if you want to avoid upgrading during an erase-install workflow, but don't want to have to specify a particular OS.
+--os MAJOR_VERSION
+
+Run the script with argument --os=MAJOR_VERSION or --os MAJOR_VERSION to check for the installer which matches the specified macOS major version. This basically filters by major version, and looks for the latest build matching the currently installed major version.
+
+For example, sudo bash erase-install.sh --os=11 will obtain the latest version of macOS 11 available in the catalog, so long as it is compatible with the system on which the script is being run.
+
+    Important: You can only specify an OS Version with the OS parameter. To specify a point release version, e.g. 11.4, use the --version parameter instead.
+
+--version VERSION
+
+Run the script with argument --version=VERSION or --version VERSION (example 10.14.3, 11.3) to check for the installer which matches the specified macOS minor version. This basically filters by version, and looks for the highest build matching the version.
+--build BUILD_ID
+
+Run the script with argument --build=BUILD_ID or --build BUILD_ID (example 19A123) to check for the installer which matches the specified build ID, rather than the latest production installer or the same build.
+
+Note that this will only work if the build is compatible with the device on which you are running the script.
+--dialog-on-download
+
+A notification message is not normally displayed during the download process unless the workflow also includes --reinstall or --erase. However, you can make the download dialog appear with the --dialog-on-download argument. The dialog will close once the download is complete.
+download
+
+
+4. Upgrading or reinstalling macOS without wiping the system
+Graham Pugh edited this page Nov 25, 2024 · 7 revisions
+
+Use the --reinstall parameter to initiate the reinstallation of the system volume without erasing it. This is commonly used for upgrading to a new version of macOS, but can also be used to reinstall the same version when troubleshooting, similar to reinstalling macOS via the Recovery Partition without first wiping the partition in Disk Utility.
+
+If the --reinstall parameter is used alone, erase-install.sh will check for a cached installer in the working directory and in /Applications. If it finds one, it will use this installer for the reinstall process described below. If it does not find one, it will download the latest compatible installer for the system on which the script is running. This is also compatible with the --fetch-full-installer and --pkg parameters described elsewhere.
+
+The reinstall process calls startosinstall (startosinstall is a command-line tool included in the macOS installer app).
+Apple Silicon Mac
+
+The startosinstall command requires user credentials to be supplied when run on an Apple Silicon Mac. When running this script on an Apple Silicon Mac, the user will be prompted to enter a username and password via a dialog window. The current user is pre-filled in the dialog and chosen if skipped by the user, but a different user can be filled in instead. The script checks that the user exists, is a "Volume Owner", and that the password is correct.
+ask_for_credentials
+--max-password-attempts
+
+The user is given a number of attempts to enter their password, with the default number set to 5. This can be overridden using the --max-password-attempts option. If --max-password-attempts is set to infinite, then there is no limit, and the cancel button is removed.
+Available drive space
+
+macOS Big Sur requires around 45 GB spare drive space to perform an upgrade using startosinstall. If this space is not available, the user is informed via a dialog and the script ends.
+--min-drive-space NN
+
+The specific amount of space required on the drive for reinstallation is not exact, and varies with each OS. You can override the default minimum space required for startosinstall to run with the --min-drive-space=NN or --min-drive-space NN parameter, where NN is a value in GB. Example --min-drive-space 30. It's up to you to test whether the figure you specify is enough.
+User dialog during download
+
+A notification message is displayed during the download process. Once the download is complete, the window is closed and the script moves on to the reinstall process described below.
+download
+--fs
+
+If the --fs parameter is added, the download dialog will be fullscreen.
+download_fs
+User dialog during preparation for reinstallation
+
+Once the reinstall process is ready to begin, another dialog is launched.
+reinstall_fs
+
+You can add the --no-fs parameter to switch to a utility window instead of the full screen window.
+reinstall_rebootdelay
+
+Cmd+C will quit the dialogs (not the script).
+Additional options
+
+There are various additional parameters that can customise the reinstall workflow.
+Choosing a specific version of macOS to install
+
+You can specify a specific OS, version or Build ID to download using the --os, --version or --build parameters. You can keep to the same OS as the current system using the --sameos parameter. You can keep to the same Build ID using the --samebuild parameter. See the section on downloading a specific version for more details of how these parameters work.
+--rebootdelay
+
+Recent versions of macOS have a long preparation phase followed by a short post-restart phase when reinstalling/upgrading. You can minimise the disruption to a user by allowing them to continue to work during the preparation phase. To do this, use the --rebootdelay option, e.g. --rebootdelay 300 to allow a period of time (in seconds) after the preparation has completed for the user to save their work.
+
+Note: If you specify a reboot delay of more than 10 seconds, the dialog window during the preparation phase is not full screen. A new dialog is shown when the preparation is complete.
+post_prep_work
+--cleanup-after-use
+
+If the --cleanup-after-use option is used, the script cleans up after itself after an upgrade/reinstallation is made. This is achieved by setting a LaunchDaemon that wipes erase-install's working directory upon startup.
+--check-power
+
+If the --check-power option is used, the script will check if the computer is connected to AC power. If it isn't, it will wait for a default of 60 seconds for power to be added, and otherwise fail.
+
+The default time to wait can be altered by setting the --power-wait-limit option, e.g. --power-wait-limit 180 for 3 minutes.
+
+This is the dialog shown:
+power-countdown
+
+Once the time is up, this is the dialog shown:
+power-timeup
+--preinstall-command
+
+This parameter enables you to supply a shell command to run immediately prior to startosinstall running. An example might be:
+
+--preinstall-command "jamf recon -department Spare"
+
+Ensure that the command is in quotes.
+--postinstall-command
+
+This parameter enables you to supply a shell command to run immediately after startosinstall runs, but before the computer restarts. An example might be:
+
+--postinstall-command "rm -rf /Applications/Google Chrome.app"
+
+Ensure that the command is in quotes.
+
+Note: this does NOT run after the computer restarts, but after startosinstall has finished preparing the update and immediately before the restart. So it is not useful for Jamf Pro users who wish to run recon. If you want to do that, create a separate policy that runs "Update Inventory" after every restart.
+--very-insecure-mode / --credentials
+
+If you want to upgrade or erase a system without asking the user for credentials, you can supply credentials in advance using --very-insecure-mode.
+
+NOTE THIS IS VERY INSECURE! ONLY USE IN A SAFE ENVIRONMENT!!!
+
+    Use the supplied script set-credentials.sh to generate the base64-encoded credentials.
+    Alternatively use the following shell command:
+
+printf "%s:%s" "<USERNAME>" "<PASSWORD>" | iconv -t ISO-8859-1 | base64 -i -
+
+    Add the following option: --credentials ENCODEDCREDENTIALS (where ENCODEDCREDENTIALS is the output of the script or command above.
+    You must also add this option: --very-insecure-mode (this is required in addition to the --credentials option!).
+
+--test-run
+For testing out the script, you can add the --test-run parameter. This runs through the entire workflow up to but not including the startosinstall command. Instead, a sleep 120 command is run.
+
+
+
+5. Erasing macOS
+Graham Pugh edited this page Jan 12, 2024 · 9 revisions
+
+Use the --erase parameter to initiate the erase and reinstall of the system volume.
+
+If the --erase parameter is used alone, erase-install.sh will check for a cached installer in /Applications, or an installed package in the working directory. If it finds one, it will use this installer for the erase-and-reinstall process described below. If it does not find one, it will download the latest compatible installer for the system on which the script is running. This is also compatible with the --fetch-full-installer and --pkg parameters described elsewhere.
+
+The erase-and-reinstall process calls startosinstall --eraseinstall (startosinstall is a command-line tool included in the macOS installer app).
+Apple Silicon Mac
+
+The startosinstall command requires user credentials to be supplied when run on an Apple Silicon Mac. When running this script on an Apple Silicon Mac, the user will be prompted to enter a username and password via a dialog window. The current user is pre-filled in the dialog and chosen if skipped by the user, but a different user can be filled in instead. The script checks that the user exists, is a "Volume Owner", and that the password is correct.
+ask-for-credentials-erase
+--max-password-attempts
+
+The user is given a number of attempts to enter their password, with the default number set to 5. This can be overridden using the --max-password-attempts option. If --max-password-attempts is set to infinite, then there is no limit, and the cancel button is removed.
+Available drive space
+
+macOS Big Sur requires around 45 GB spare drive space to perform an upgrade using startosinstall. If this space is not available, the user is informed via a dialog and the script ends.
+--min-drive-space NN
+
+The specific amount of space required on the drive for reinstallation is not exact, and varies with each OS. You can override the default minimum space required for startosinstall to run with the --min-drive-space=NN or --min-drive-space NN parameter, where NN is a value in GB. Example --min-drive-space 30. It's up to you to test whether the figure you specify is enough.
+User dialog during download
+
+A notification message is displayed during the download process. Once the download is complete, the window is closed and the script moves on to the reinstall process described below.
+download
+--fs
+
+If the --fs parameter is added, the download dialog will be fullscreen.
+download_fs
+--confirm
+
+If you wish for the user of the computer to confirm that they wish to erase the device before startosinstall is called, add the --confirm parameter. This will bring up a dialog asking the user to confirm that they wish to proceed.
+confirm-erase
+User dialog during preparation for erase and reinstallation
+
+Once the erase-and-reinstall process is ready to begin, a fullscreen dialog is launched.
+erase_fs
+
+You can add the --no-fs parameter to switch to a utility window instead of the full screen window.
+erase_no_fs
+
+Shift+Cmd+C will quit the dialog window (not the script).
+Additional options
+
+There are various additional parameters that can customise the erase-and-reinstall workflow.
+Choosing a specific version of macOS to install
+
+You can specify a specific OS, version or Build ID to download using the --os, --version or --build parameters. You can keep to the same OS as the current system using the --sameos parameter. You can keep to the same Build ID using the --samebuild parameter. See the section on downloading a specific version for more details of how these parameters work.
+Add packages to be installed after the reinstallation
+
+You can place any signed packages in a folder named extras in the working directory. These packages will be installed on the system as part of the erase-and-reinstall process. These packages must be signed.
+
+The path to search for these packages can be overridden with the --extras argument:
+
+sudo /path/to/erase-install.sh --erase --extras /path/containing/extra/packages
+
+--check-power
+
+If the --check-power option is used, the script will check if the computer is connected to AC power. If it isn't, it will wait for a default of 60 seconds for power to be added, and otherwise fail.
+
+The default time to wait can be altered by setting the --power-wait-limit option, e.g. --power-wait-limit 180 for 3 minutes.
+
+This is the dialog shown:
+power-countdown
+
+Once the time is up, this is the dialog shown:
+power-timeup
+--preinstall-command
+
+This parameter enables you to supply a shell command to run immediately prior to startosinstall running. An example might be:
+
+--preinstall-command "jamf recon -department Spare"
+
+Ensure that the command is in quotes.
+--postinstall-command
+
+This parameter enables you to supply a shell command to run immediately after startosinstall runs, but before the computer restarts. An example might be:
+
+--postinstall-command "rm -rf /Applications/Google Chrome.app"
+
+Ensure that the command is in quotes.
+
+Note: this does NOT run after the computer restarts, but after startosinstall has finished preparing the update and immediately before the restart. So it is not useful for Jamf Pro users who wish to run recon. If you want to do that, create a separate policy that runs "Update Inventory" after every restart.
+--very-insecure-mode / --credentials
+
+If you want to upgrade or erase a system without asking the user for credentials, you can supply credentials in advance using --very-insecure-mode.
+
+NOTE THIS IS VERY INSECURE! ONLY USE IN A SAFE ENVIRONMENT!!!
+
+    Use the supplied script set-credentials.sh to generate the base64-encoded credentials.
+    Alternatively use the following shell command:
+
+printf "%s:%s" "<USERNAME>" "<PASSWORD>" | iconv -t ISO-8859-1 | base64 -i -
+
+    Add the following option: --credentials ENCODEDCREDENTIALS (where ENCODEDCREDENTIALS is the output of the script or command above.
+    You must also add this option: --very-insecure-mode (this is required in addition to the --credentials option!).
+
+--test-run
+
+For testing out the script, you can add the --test-run parameter. This runs through the entire workflow up to but not including the startosinstall command. Instead, a sleep 120 command is run.
+Pages 16
+
+Home
+1. Installation
+2. Searching for a specific macOS installer
+3. Downloading a macOS Installer
+4. Upgrading or reinstalling macOS without wiping the system
+5. Erasing macOS
+
+    Apple Silicon Mac
+    --max-password-attempts
+    Available drive space
+    --min-drive-space NN
+    User dialog during download
+    --fs
+    --confirm
+    User dialog during preparation for erase and reinstallation
+    Additional options
+    Choosing a specific version of macOS to install
+    Add packages to be installed after the reinstallation
+    --check-power
+    --preinstall-command
+    --postinstall-command
+    --very-insecure-mode / --credentials
+    --test-run
+
+6. Use in Jamf Pro
+FAQs
+Legacy 1. Installation
+Legacy 2. Downloading (caching) the latest macOS installer app
+Legacy 3. Downloading (caching) a macOS installer pkg
+Legacy 4. Searching for a specific macOS installer
+Legacy 5. Downloading (caching) a specific version or build of macOS
+Legacy 6. Upgrading or reinstalling macOS
+Legacy 7. Erasing and reinstalling macOS
+Clone this wiki locally
+Footer
+
+
+
+6. Use in Jamf Pro
+Graham Pugh edited this page Aug 31, 2023 · 11 revisions
+
+There are two ways you can use the script in Jamf Pro.
+Option 1: Installer package (recommended)
+
+The installer package contains the latest copies of erase-install.sh, mist and swiftDialog. erase-install.sh is installed into the /Library/Management/erase-install folder.
+
+Attach this package to a policy, and use the Execute Command field to run the script with the desired parameters, for example:
+
+/Library/Management/erase-install/erase-install.sh --os 12 --update --reinstall --confirm
+
+Alternatively, you can add a launcher script to the policy that runs the above command. The advantage of a launcher script is that if erase-install fails for some reason, this will get reported as a failure to the Policy Logs, whereas the Execute Command always returns a success. For an example of such a script, see erase-install-launch-script-example.sh in this repo.
+Option 2: Upload erase-install.sh into Jamf Pro and use policy script parameters
+
+If you upload the script directly into Jamf Pro, and are intending to attach it to a policy, then you can use script parameters to provide the arguments.
+
+In the script parameters of the Policy (not the Parameter Labels of the script itself!!), add the desired options, including the -- double-dashes, just as if you are supplying them in the command line. Any parameters which provide a value must use an = so that they are interpreted as a single parameter. It does not matter which order the parameters are added.
+
+For example, to create a policy named Erase and Reinstall macOS which is scoped to models of Mac that will reinstall the same macOS Version as is currently installed, set parameters as follows:
+
+    Parameter 4: --erase
+    Parameter 5: --sameos
+
+If you want to download a particular version of macOS, create a policy scoped to the devices that require the specific version, and set parameters as follows (make sure to use an equals sign for parameters that require a value):
+
+    Parameter 4: --erase
+    Parameter 5: --version=12.6.2
+
+If you want to upgrade to the latest macOS, use:
+
+    Parameter 4: --reinstall
+
+If you want to upgrade to the latest macOS and ensure that any cached version is replaced when it gets out of date:
+
+    Parameter 4: --reinstall
+    Parameter 5: --update
+
+If you want to upgrade Macs running Big Sur (11) to the latest version of Monterey (12), use:
+
+    Parameter 4: --reinstall
+    Parameter 5: --os=12
+
+If you just want to cache the latest installer app on the client, then I recommend this parameter:
+
+    Parameter 4: --update
+
+Just to reiterate, any parameter can be supplied in any order in the policy's Script Parameters section, and only one parameter can be supplied into each Parameter field. There is of course a limit of 7 parameters using this method. If you need more parameters, I recommend that you deploy the package as described in Option 1.
+Option 3: Run the script directly from GitHub
+
+You can use a Run Command or a launcher script that uses curl to download the script directly from GitHub without having to upload it to Jamf. Arguments/parameters can be supplied in the command.
+
+curl -s https://raw.githubusercontent.com/grahampugh/erase-install/release/erase-install.sh | sudo zsh /dev/stdin <arguments>
+
+A note about Policy Logs
+
+Please note that when using this script in a Jamf policy with the --erase or --reinstall options, the policy will not be logged as completed, because the computer restarts before the script can complete. Therefore, it is important that you do not have this policy set to run automatically on a "Once Per Computer" basis. I recommend that you use it in Self Service, and for use with --reinstall (for upgrading) scope based on whether the OS you want to be installed is already on the client. For this to work effectively, you will want to create a policy that Updates Inventory on startup.
+
+If you use a separate launcher script you can at least get a recon sent if the policy fails. See our example launcher script here.
