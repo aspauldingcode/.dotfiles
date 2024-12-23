@@ -83,19 +83,5 @@
         StandardOutPath = "/dev/null";
       };
     };
-    notificationcenter = {
-      enable = true;
-      config = {
-        ProgramArguments = [
-          "/bin/launchctl"
-          "unload"
-          "-w"
-          "/System/Library/LaunchAgents/com.apple.notificationcenterui.plist"
-        ];
-        RunAtLoad = true;
-        StandardOutPath = "/dev/null";
-        StandardErrorPath = "/dev/null";
-      };
-    };
   };
 }

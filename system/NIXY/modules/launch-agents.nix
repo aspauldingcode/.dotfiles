@@ -15,17 +15,17 @@ let
       [ -z "$(ls -A "$DESKTOP_PATH")" ]
     }
 
-    # Function to move items and notify
-    move_and_notify() {
-      mv "$DESKTOP_PATH"/* "$REDIRECT_PATH"
-      osascript -e 'display notification "Desktop items have been moved to ~/Desktop_Redirect" with title "Desktop Cleaned"'
+    # Function to move items and notify if desktop was not empty
+    move_and_notify_if_cleaned() {
+      if ! is_desktop_empty; then
+        mv "$DESKTOP_PATH"/* "$REDIRECT_PATH"
+        osascript -e 'display notification "Desktop items have been moved to ~/Desktop_Redirect" with title "Desktop Cleaned"'
+      fi
     }
 
     # Main loop
     while true; do
-      if ! is_desktop_empty; then
-        move_and_notify
-      fi
+      move_and_notify_if_cleaned
       sleep 5  # Check every 5 seconds
     done
   '';
@@ -235,6 +235,39 @@ in
             <string>/tmp/fix-wm.log</string>
             <key>StandardErrorPath</key>
             <string>/tmp/fix-wm.error.log</string>
+          </dict>
+        </plist>
+      '';
+    };
+
+    # disable notification center at login
+    notificationcenter = {
+      enable = true;
+      text = ''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+          <dict>
+            <key>Label</key>
+            <string>com.user.notificationcenter</string>
+            <key>ProgramArguments</key>
+            <array>
+              <string>launchctl</string>
+              <string>unload</string>
+              <string>-w</string>
+              <string>/System/Library/LaunchAgents/com.apple.notificationcenterui.plist</string>
+              <string>&&</string>
+              <string>killall</string>
+              <string>NotificationCenter</string>
+            </array>
+            <key>RunAtLoad</key>
+            <true/>
+            <key>KeepAlive</key>
+            <false/>
+            <key>StandardOutPath</key>
+            <string>/tmp/notificationcenter.log</string>
+            <key>StandardErrorPath</key>
+            <string>/tmp/notificationcenter.error.log</string>
           </dict>
         </plist>
       '';

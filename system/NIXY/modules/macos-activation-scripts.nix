@@ -9,6 +9,7 @@ let
   wallpaper_output = "/Users/Shared/Wallpaper/wallpaper-nix-colors.png";
   wallpaper_recolor_script = ./../../../users/alex/extraConfig/recolor_base16_inputs_efficient.py;
   m = "${homebrewPath}/m";
+  orb = "${homebrewPath}/orb";
 in
 {
   system.activationScripts.postActivation.text = ''
@@ -113,14 +114,14 @@ in
     # ===================================================================
 
     echo "Setting up OrbStack ssh for remote linux builds to work on NIXY..."
-    if ! su - alex -c "/Users/alex/.orbstack/bin/orb list | grep -q nixos"; then
-      su - alex -c "/Users/alex/.orbstack/bin/orb create nixos"
+    if ! su - alex -c "${orb} list | grep -q nixos"; then
+      su - alex -c "${orb} create nixos"
     fi
-    su - alex -c "/Users/alex/.orbstack/bin/orb start nixos"
+    su - alex -c "${orb} start nixos"
 
-    if ! su - alex -c "/Users/alex/.orbstack/bin/orb list | grep -q ubuntu"; then
-      su - alex -c "/Users/alex/.orbstack/bin/orb create ubuntu"
+    if ! su - alex -c "${orb} list | grep -q ubuntu"; then
+      su - alex -c "${orb} create ubuntu"
     fi
-    su - alex -c "/Users/alex/.orbstack/bin/orb start ubuntu"
+    su - alex -c "${orb} start ubuntu"
   '';
 }

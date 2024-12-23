@@ -15,8 +15,6 @@
     ./sa-resources/ammonia.nix
     ./sa-resources/glow.nix
    
-    ./customDerivations/recording-indicator-utility.nix
-
     ./modules/windowManagement/cursorcerer.nix
     ./modules/windowManagement/karabiner.nix
     ./modules/windowManagement/macforge.nix
@@ -67,13 +65,6 @@
     zsh.enable = true;  # default shell on catalina
     bash.enable = true;
     fish.enable = true; #NOT Borne COMPAT? 
-    # Recording Indicator Utility
-    recordingIndicatorUtility = {
-      enable = true;
-      # package = pkgs.recordingIndicatorUtility;
-      showIndicator = false;
-      showWarning = false;
-    };
     # unmenu = {
       # enable = true;
     #   qwerty/Hotkey = "alt-d";
