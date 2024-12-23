@@ -10,11 +10,12 @@ else
 fi
 
 # define software fullpaths
-yabai=$(which yabai)
-jq=$(which jq)
-osascript=$(which osascript)
-gcal=$(which gcal)
-toggle_sketchybar=$(which toggle-sketchybar)
+yabai=$(realpath $(which yabai))
+jq=$(realpath $(which jq))
+osascript=$(realpath $(which osascript))
+gcal=$(realpath $(which gcal))
+toggle_sketchybar=$(realpath $(which toggle-sketchybar))
 nightlight="${homebrewPath}/nightlight"
-desktoppr=$(which desktoppr)
+desktoppr=$(realpath $(which desktoppr))
 wallpaper="/Users/Shared/Wallpaper/wallpaper-nix-colors.png"
+blueutil=$(realpath $(which blueutil))

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
+
 app_name=$1
 
 case $app_name in
@@ -60,7 +63,8 @@ case $app_name in
         end tell'
         ;;
     "bluetooth")
-        open x-apple.systempreferences:com.apple.preferences.Bluetooth
+        # open x-apple.systempreferences:com.apple.preferences.Bluetooth
+        $blueutil --power toggle
         ;;
     "userswitcher")
         open x-apple.systempreferences:com.apple.preferences.users

@@ -19,6 +19,7 @@
     gnumake
     pfetch
     htop
+    blueutil
     git
     tree
     ifstat-legacy

@@ -15,7 +15,7 @@ let
   desktoppr = "/usr/local/bin/desktoppr";
   m = "${homebrewPath}/m";
   wallpaper = "/Users/Shared/Wallpaper/wallpaper-nix-colors.png";
-
+  blueutil = "${pkgs.blueutil}/bin/blueutil";
   inherit (config.colorScheme) palette;
 in
 {

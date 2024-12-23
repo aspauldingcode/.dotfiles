@@ -95,8 +95,11 @@ battery=(
 bluetooth=(
   script="$PLUGIN_DIR/bluetooth.sh"
   click_script="$PLUGIN_DIR/open_menubar_items.sh bluetooth"
+  icon=$BLUETOOTH_UNKNOWN
+  popup.align=right
   icon.padding_left=5
   icon.padding_right=5
+  update_freq=5
 )
 
 volume=(

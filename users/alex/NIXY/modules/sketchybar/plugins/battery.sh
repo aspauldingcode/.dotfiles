@@ -45,7 +45,7 @@ update_battery() {
   # Define battery popup properties
   battery_popup=(
     $NAME.popup label="$PERCENTAGE%"
-    icon="$ICON" 
+    icon="$ICON"
     icon.padding_left=10
     label.padding_left=8
     label.padding_right=10

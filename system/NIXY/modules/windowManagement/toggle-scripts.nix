@@ -30,9 +30,10 @@ in
       [ -f /tmp/sketchybar_state ] && rm -f /tmp/sketchybar_state
       [ -f /tmp/menubar_state ] && rm -f /tmp/menubar_state
       [ -f /tmp/darkmode_state ] && rm -f /tmp/darkmode_state
+      [ -f /tmp/sketchybar_bluetooth_favorited_devices ] && rm -f /tmp/sketchybar_bluetooth_favorited_devices
       
       # remove current wallpaper if it exists.
-      [ -f ${wallpaper} ] && rm -f ${wallpaper}
+      # [ -f ${wallpaper} ] && sudo rm -f ${wallpaper}
 
       #restart window management (yabai, skhd, sketchybar, borders, etc.)
       if pgrep yabai > /dev/null; then killall yabai > /dev/null 2>&1; fi
