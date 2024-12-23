@@ -28,3 +28,6 @@
 
 # ignore unsupported files
 fifo
+
+# ignore pkg installers
+*.pkg
