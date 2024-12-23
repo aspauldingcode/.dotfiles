@@ -78,8 +78,15 @@ update_bluetooth() {
     # Get discoverable status
     local discoverable=$($blueutil --discoverable)
     local global_status_text="$GLOBAL_STATUS"
+    
+    # Check if any device is connected
+    local any_device_connected=$($blueutil --paired --format json-pretty | $jq -r '[.[] | select(.connected == true)] | length > 0')
+    
     if [ "$GLOBAL_STATUS" = "Bluetooth (on)" ]; then
-        if [ "$discoverable" -eq 1 ]; then
+        if [ "$any_device_connected" = "true" ]; then
+            GLOBAL_ICON="$BLUETOOTH_CONNECTED"
+            global_status_text="Bluetooth (on, Connected)"
+        elif [ "$discoverable" -eq 1 ]; then
             global_status_text="Bluetooth (on, Discoverable)"
         else
             global_status_text="Bluetooth (on)"
