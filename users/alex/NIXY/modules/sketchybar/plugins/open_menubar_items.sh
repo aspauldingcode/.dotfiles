@@ -63,8 +63,8 @@ case $app_name in
         end tell'
         ;;
     "bluetooth")
-        # open x-apple.systempreferences:com.apple.preferences.Bluetooth
-        $blueutil --power toggle
+        open x-apple.systempreferences:com.apple.preferences.Bluetooth
+        # $blueutil --power toggle # FIXME: this works but popup items in sketchybar aren't clickable.
         ;;
     "userswitcher")
         open x-apple.systempreferences:com.apple.preferences.users
