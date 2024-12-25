@@ -31,7 +31,6 @@
       "xorg-server"
       "choose-gui"
       "yazi"
-      "cava"
       "fftw"
       "ncurses"
       "libtool"

@@ -61,8 +61,3 @@ case "$SENDER" in
 esac
 
 update_sketchybar_label
-# Replace $NAME with the actual name you want to set for sketchybar
-# For example: NAME=my_window_label update_sketchybar
-
-# source "$HOME/.config/sketchybar/plugins/yabai_i3_switch.sh" # in charge of detecting if we are on a x11.bin window or not. Fixes mouse resize.
-# yabai_i3_switch # run the working one instead.

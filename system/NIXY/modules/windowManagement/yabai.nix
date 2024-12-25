@@ -7,7 +7,6 @@ let
   yabai = "${pkgs.yabai}/bin/yabai";
   sketchybar = "${pkgs.sketchybar}/bin/sketchybar";
   borders = "";
-  i3-msg = "${homebrewPath}/i3-msg";
   alacritty = "${homebrewPath}/alacritty";
   firefox = "${homebrewPath}/firefox";
   app_menu = "/Applications/unmenu.app/Contents/MacOS/unmenu";
@@ -68,6 +67,7 @@ in
       yabai -m rule --add app='^XQuartz$' manage=off
       yabai -m rule --add app='^X11\.bin$' manage=off
       yabai -m rule --add app='^X11$' manage=off
+      yabai -m rule --add app='^sketchybar$' manage=off
       yabai -m rule --add app='^Archi`ve Utility$' manage=off
       yabai -m rule --add app='^Display Calibrator$' manage=off
       yabai -m rule --add app='^Installer$' manage=off

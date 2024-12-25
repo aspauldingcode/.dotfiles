@@ -1,8 +1,6 @@
 {
   pkgs,
   inputs,
-  config,
-  lib,
   ...
 }:
 
@@ -19,9 +17,12 @@
     gnumake
     pfetch
     htop
+    cmake
     blueutil
+    cava
     git
     tree
+    nowplaying-cli
     ifstat-legacy
     ranger
     qemu

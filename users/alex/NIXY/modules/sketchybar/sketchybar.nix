@@ -58,6 +58,32 @@ let
       brightness "$1"
     fi
   '';
+  detect_arch_and_source_homebrew_packages = pkgs.writeShellScript "detect_arch_and_source_homebrew_packages" ''
+    #!/bin/sh
+    
+    systemType=$(uname -m)
+    if [ "$systemType" = "arm64" ]; then
+      homebrewPath="/opt/homebrew/bin"
+    elif [ "$systemType" = "x86_64" ]; then
+      homebrewPath="/usr/local/bin"
+    else
+      echo "Unsupported architecture: $systemType"
+      exit 1
+    fi
+
+    # define software fullpaths
+    yabai="${pkgs.yabai}/bin/yabai"
+    jq="${pkgs.jq}/bin/jq"
+    osascript="/usr/bin/osascript"
+    gcal="${pkgs.gcal}/bin/gcal"
+    toggle_sketchybar="${pkgs.sketchybar}/bin/toggle-sketchybar"
+    nightlight="''${homebrewPath}/nightlight"
+    desktoppr="/usr/local/bin/desktoppr"
+    wallpaper="/Users/Shared/Wallpaper/wallpaper-nix-colors.png"
+    blueutil="${pkgs.blueutil}/bin/blueutil"
+    nowplaying_cli="${pkgs.nowplaying-cli}/bin/nowplaying-cli"
+    cava="${pkgs.cava}/bin/cava"
+  '';
 in
 {
   # ALL MUST BE MARKED AS EXECUTABLE!
@@ -65,11 +91,10 @@ in
   xdg.configFile."sketchybar/icons.sh".source = ./icons.sh;
   xdg.configFile."sketchybar/colors.sh".source = nixy_colors;
   xdg.configFile."sketchybar/brightness.sh".source = brightness;
-  xdg.configFile."sketchybar/plugins/detect_arch_and_source_homebrew_packages.sh".source = ./plugins/detect_arch_and_source_homebrew_packages.sh;
+  xdg.configFile."sketchybar/plugins/detect_arch_and_source_homebrew_packages.sh".source = detect_arch_and_source_homebrew_packages;
   xdg.configFile."sketchybar/plugins/sway_spaces.sh".source = ./plugins/sway_spaces.sh;
   xdg.configFile."sketchybar/plugins/add_spaces_sketchybar.sh".source = ./plugins/add_spaces_sketchybar.sh;
   xdg.configFile."sketchybar/plugins/print_spaces_sketchybar.sh".source = ./plugins/print_spaces_sketchybar.sh;
-  xdg.configFile."sketchybar/plugins/yabai_i3_switch.sh".source = ./plugins/yabai_i3_switch.sh;
   xdg.configFile."sketchybar/plugins/fullscreen_lock.sh".source = ./plugins/fullscreen_lock.sh;
   xdg.configFile."sketchybar/plugins/apple.sh".source = ./plugins/apple.sh;
   xdg.configFile."sketchybar/plugins/battery.sh".source = ./plugins/battery.sh;
@@ -87,6 +112,7 @@ in
   xdg.configFile."sketchybar/plugins/wifi.sh".source = ./plugins/wifi.sh;
   xdg.configFile."sketchybar/plugins/open_menubar_items.sh".source = ./plugins/open_menubar_items.sh;
   xdg.configFile."sketchybar/plugins/nightlight.sh".source = ./plugins/nightlight.sh;
+  xdg.configFile."sketchybar/plugins/media_control.sh".source = ./plugins/media_control.sh;
 
   # Specify executable for each file
   xdg.configFile."sketchybar/sketchybarrc".executable = true;
@@ -97,7 +123,6 @@ in
   xdg.configFile."sketchybar/plugins/sway_spaces.sh".executable = true;
   xdg.configFile."sketchybar/plugins/add_spaces_sketchybar.sh".executable = true;
   xdg.configFile."sketchybar/plugins/print_spaces_sketchybar.sh".executable = true;
-  xdg.configFile."sketchybar/plugins/yabai_i3_switch.sh".executable = true;
   xdg.configFile."sketchybar/plugins/fullscreen_lock.sh".executable = true;
   xdg.configFile."sketchybar/plugins/apple.sh".executable = true;
   xdg.configFile."sketchybar/plugins/battery.sh".executable = true;
@@ -115,4 +140,5 @@ in
   xdg.configFile."sketchybar/plugins/wifi.sh".executable = true;
   xdg.configFile."sketchybar/plugins/open_menubar_items.sh".executable = true;
   xdg.configFile."sketchybar/plugins/nightlight.sh".executable = true;
+  xdg.configFile."sketchybar/plugins/media_control.sh".executable = true;
 }

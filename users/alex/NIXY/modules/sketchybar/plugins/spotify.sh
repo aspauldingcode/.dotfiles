@@ -45,11 +45,12 @@ spotify_cover=(
   label.drawing=off
   icon.drawing=off
   padding_left=12
-  padding_right=10
-  background.image.scale=0.13
+  padding_right=12
+  background.image.scale=0.20
   background.image.drawing=on
   background.drawing=on
   background.image="/tmp/cover.jpg"
+  background.image.y_offset=10
 )
 
 sketchybar --add item spotify.cover popup.spotify \

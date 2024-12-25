@@ -6,13 +6,14 @@ source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 
-# SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
+SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
 POPUP_TOGGLE_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
 
 #events
 sketchybar --add event window_focus \
            --add event title_change \
-           --add event windows_on_spaces
+           --add event windows_on_spaces \
+           --add event spotify_change $SPOTIFY_EVENT 
 
 # module styles
 bar=(
@@ -125,31 +126,17 @@ nightlight=(
 
 cava=(
   update_freq=0
+  updates=on
   script="$PLUGIN_DIR/cava.sh"
+  click_script="$PLUGIN_DIR/media_control.sh toggle"
   label.drawing=on
   label.font="Hack Nerd Font Mono:Regular:13.0"
   icon.drawing=off
   label="cava"
   label.padding_left=4
   label.padding_right=10
+  popup.align=right
 )
-
-# spotify=(
-#   #click_script="$POPUP_TOGGLE_SCRIPT"
-#   popup.horizontal=on
-#   popup.align=center
-#   popup.height=100
-#   icon=$SPOTIFY
-#   icon.padding_right=18
-#   icon.padding_left=18
-#   background.color=$base02
-#   background.height=19
-#   background.corner_radius=10
-#   #background.padding_left=3
-#   background.padding_right=3
-#   script="$PLUGIN_DIR/spotify.sh"
-#   update_freq=5
-# )
 
 memory=(
   icon.padding_left=15
@@ -277,12 +264,11 @@ sketchybar --add item datetime center \
 
 sketchybar --add item cava center \
   --set cava "${cava[@]}" \
-  --subscribe cava volume_change mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global 
-sketchybar --add event spotify_change $SPOTIFY_EVENT \
+  --subscribe cava volume_change spotify_change mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global 
+sketchybar \
   --add item spotify center \
   --set spotify "${spotify[@]}" \
   --subscribe spotify mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global 
-
 # Right Items
 sketchybar --add item memory right \
   --set memory "${memory[@]}" \
