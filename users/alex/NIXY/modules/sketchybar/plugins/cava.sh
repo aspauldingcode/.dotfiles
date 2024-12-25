@@ -15,7 +15,7 @@ fi
 
 # open Background Music if it is not open.
 if ! pgrep BackgroundMusic > /dev/null; then
-  open -a "Background Music"
+  nohup open -g -a "Background Music" >/dev/null 2>&1 &
 fi
 
 if ! pgrep cava > /dev/null; then

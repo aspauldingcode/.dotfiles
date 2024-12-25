@@ -75,6 +75,9 @@ in
       yabai -m rule --add app='^Karabiner-Elements$' manage=off
       yabai -m rule --add app='MacForge' manage=off
       yabai -m rule --add app='^macOS InstantView$' manage=off
+      yabai -m rule --add app='^Background Music$' manage=off
+      yabai -m rule --add app='^BackgroundMusic$' manage=off
+      yabai -m rule --add app='^Background Music Helper$' manage=off
       yabai -m rule --add app='^Dock$' manage=off
       yabai -m rule --add app='Brave Browser' layer=below
       yabai -m rule --add app='Sketchybar' layer=below

@@ -51,6 +51,14 @@ in
       if pgrep Karabiner-Menu > /dev/null; then pkill Karabiner-Menu > /dev/null 2>&1; fi
       if pgrep Karabiner-Elements > /dev/null; then pkill Karabiner-Elements > /dev/null 2>&1; fi
       if pgrep cava > /dev/null; then sudo pkill -9 -f cava > /dev/null 2>&1; fi
+      
+      # Restart CoreAudio more safely
+      if pgrep coreaudiod > /dev/null; then
+        sudo launchctl unload /System/Library/LaunchDaemons/com.apple.audio.coreaudiod.plist > /dev/null 2>&1
+        sleep 1
+        sudo launchctl load /System/Library/LaunchDaemons/com.apple.audio.coreaudiod.plist > /dev/null 2>&1
+      fi
+
       launchctl stop org.pqrs.karabiner.karabiner_console_user_server > /dev/null 2>&1 && launchctl start org.pqrs.karabiner.karabiner_console_user_server > /dev/null 2>&1
       launchctl stop org.pqrs.karabiner.karabiner_grabber > /dev/null 2>&1 && launchctl start org.pqrs.karabiner.karabiner_grabber > /dev/null 2>&1
       launchctl stop org.pqrs.karabiner.karabiner_observer > /dev/null 2>&1 && launchctl start org.pqrs.karabiner.karabiner_observer > /dev/null 2>&1
@@ -64,17 +72,17 @@ in
       fi
 
       if ! pgrep -x "Finder" > /dev/null; then
-        open -a Finder # fixes yabai workspaces issue.
+        open -g -a Finder # fixes yabai workspaces issue, -g prevents focus
       fi
 
       if ! pgrep -x "flameshot" > /dev/null; then
-        flameshot > /dev/null 2>&1 &
+        open -g -a flameshot > /dev/null 2>&1 &
       fi
       if ! pgrep -x "Background Music" > /dev/null; then
-        open -a "Background Music"
+        open -g -a "Background Music"
       fi
       if ! pgrep -x "macOS InstantView" > /dev/null; then
-        open -a "macOS InstantView"
+        open -g -a "macOS InstantView"
       fi
       if ! pgrep -x "kdeconnectd" > /dev/null; then
         kdeconnectd > /dev/null 2>&1 &

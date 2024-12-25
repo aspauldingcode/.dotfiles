@@ -126,7 +126,6 @@ nightlight=(
 
 cava=(
   update_freq=0
-  updates=on
   script="$PLUGIN_DIR/cava.sh"
   click_script="$PLUGIN_DIR/media_control.sh toggle"
   label.drawing=on
