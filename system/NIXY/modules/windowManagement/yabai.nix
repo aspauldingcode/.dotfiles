@@ -21,13 +21,17 @@ in
   services.yabai = {
     enable = true; # yabai breaks on macOS 14.7.2. fixed on master, but not in release 7.1.5.
     package = pkgs.unstable.yabai; # 7.1.5
+    # To stop the yabai service that's managed by launchd on macOS, you can use one of these commands in the terminal:
+    # launchctl unload ~/Library/LaunchAgents/org.nixos.yabai.plist
+    # or 
+    # sudo launchctl unload /Library/LaunchDaemons/org.nixos.yabai.plist
     enableScriptingAddition = true;
     config = {
       mouse_modifier = "alt";
       mouse_action1 = "move";
       mouse_action2 = "resize";
       mouse_drop_action = "swap";
-      focus_follows_mouse = "autoraise";
+      focus_follows_mouse = "autofocus";
       mouse_follows_focus = "on";
       # window_shadow = "off"; # manage with macwmfx instead.
       # window_opacity = "on"; # manage with macwmfx instead.

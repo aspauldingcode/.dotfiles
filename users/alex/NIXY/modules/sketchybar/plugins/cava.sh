@@ -164,8 +164,4 @@ case "$SENDER" in
     sketchybar --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
     sketchybar --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
     ;;
-  "routine")
-    # Update battery info periodically
-    update_cava_popups
-    ;;
 esac

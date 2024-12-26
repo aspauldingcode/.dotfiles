@@ -96,6 +96,10 @@
       url = "github:cpick/nix-rosetta-builder";
       inputs.nixpkgs.follows = "unstable_nixpkgs";
     };
+
+    frida-nix = {
+      url = "github:itstarsun/frida-nix";
+    };
   };
 
   outputs = {
@@ -125,6 +129,7 @@
     homebrew-smudge,
     homebrew-cask,
     nix-rosetta-builder,
+    frida-nix,
   }:
   let
     inherit (self) inputs;
@@ -263,6 +268,7 @@
           overlays = [
             inputs.nur.overlays.default
             inputs.nixpkgs-firefox-darwin.overlay
+            inputs.frida-nix.overlays.default
             (final: _prev: {
               unstable = import unstable_nixpkgs {
                 inherit (final) system config;
