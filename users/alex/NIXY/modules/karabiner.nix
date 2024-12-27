@@ -1085,6 +1085,12 @@
                       };
                       to = [ { "key_code" = "left_command"; } ];
                     }
+                    {
+                      from = {
+                        "key_code" = "right_command";
+                      };
+                      to = [ { "key_code" = "left_fn"; } ];
+                    }
                   ];
                   "treat_as_built_in_keyboard" = false;
                 }

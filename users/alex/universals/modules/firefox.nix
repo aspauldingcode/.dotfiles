@@ -731,6 +731,7 @@ in {
       AppAutoUpdate = false;
       BackgroundAppUpdate = false;
       DisableBuiltinPDFViewer = true;
+      DisableCrashReporter = true;
       DisableFirefoxAccounts = false;
       DisableFirefoxScreenshots = true;
       DisableFirefoxStudies = true;

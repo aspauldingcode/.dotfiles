@@ -118,7 +118,7 @@ in
         };
 
         selection = {
-          text = "#${colors.base08}"; # Default Background
+          text = "#${colors.base05}"; # Default Background
           background = "#${colors.base02}"; # Default Foreground, Caret, Delimiters, Operators
         };
 

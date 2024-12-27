@@ -58,6 +58,14 @@ in
       ${update_dock_pins}/bin/update-dock-pins
     '';
     startup.chime = false; # MUTE STARTUP CHIME!
+    keyboard = {
+      enableKeyMapping = true;
+      remapCapsLockToControl = false;
+      remapCapsLockToEscape = false;
+      nonUS.remapTilde = false;
+      swapLeftCommandAndLeftAlt = false;
+      swapLeftCtrlAndFn = false;
+    };
     defaults = {
       finder = {
         CreateDesktop = true; # REQUIRED true to fix https://github.com/koekeishiya/yabai/issues/863 and https://github.com/koekeishiya/yabai/issues/2313#issuecomment-2225438696
@@ -67,10 +75,17 @@ in
         FXEnableExtensionChangeWarning = false;
         FXPreferredViewStyle = "Nlsv";
         QuitMenuItem = true;
-        ShowPathbar = false;
+        ShowPathbar = true;
         ShowStatusBar = false;
+        ShowExternalHardDrivesOnDesktop = false;
+        ShowHardDrivesOnDesktop = false;
+        ShowMountedServersOnDesktop = false;
+        ShowRemovableMediaOnDesktop = false;
         _FXShowPosixPathInTitle = true;
+        _FXSortFoldersFirst = true;
+        _FXSortFoldersFirstOnDesktop = true;
       };
+      hitoolbox.AppleFnUsageType = "Do Nothing";
       loginwindow = {
         DisableConsoleAccess = true;
         GuestEnabled = false;
@@ -129,7 +144,7 @@ in
         ShowSeconds = true;
       };
       trackpad = {
-        ActuationStrength = 0;
+        ActuationStrength = 1;
         Clicking = false;
         Dragging = true;
         FirstClickThreshold = 1;

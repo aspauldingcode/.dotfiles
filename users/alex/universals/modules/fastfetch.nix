@@ -118,7 +118,7 @@
       #   "tpm"
       #   "version"
       #   "break"
-      #   "colors"
+        "colors"
       ];
     };
   };

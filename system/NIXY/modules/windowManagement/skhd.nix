@@ -8,6 +8,7 @@ let
   borders = "";
   i3-msg = "${homebrewPath}/i3-msg";
   alacritty = "${pkgs.alacritty}/bin/alacritty";
+  kitty = "${pkgs.kitty}/bin/kitty";
   firefox = "${homebrewPath}/firefox";
   app_menu = "/Applications/unmenu.app/Contents/MacOS/unmenu";
   jq = "${pkgs.jq}/bin/jq";
@@ -33,7 +34,8 @@ in
       smod = "shift";
     in ''
       # Launch shortcuts
-      ${modifier} - return :                ${alacritty} msg create-window || open -na ${alacritty}
+      # ${modifier} - return :                ${alacritty} msg create-window || open -na ${alacritty}
+      ${modifier} - return :                  open -na ${kitty}
       ${mod1} + ${mod5} - space :             open -na ${firefox}
       ${mod1} + ${smod} + ${mod5} - space :   open -na ${firefox} --args -private-window
       ${mod4} + ${mod5} - 0x33 :            sudo reboot # using cmd ctrl backspace
