@@ -334,7 +334,7 @@ in
         ${yabai} -m config bottom_padding  2
         ${yabai} -m config left_padding    2
         ${yabai} -m config right_padding   2
-        ${yabai} -m config window_gap      5
+        ${yabai} -m config window_gap      4
         if [ "$sketchybar_state" == "off" ]; then
           ${yabai} -m config external_bar all:0:0
         else
