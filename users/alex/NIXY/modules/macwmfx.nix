@@ -17,16 +17,17 @@ in {
       disableTitlebar = true;
       disableWindowSizeConstraints = true;
       disableTrafficLights = true;
+      disableWindowShadow = true;
       outlineWindow = {
         enabled = true;
         type = "inline"; # inline, outline, centerline
-        width = 4;
-        cornerRadius = 10; # try 10, 40, 0...
+        width = 2;
+        cornerRadius = 0; # try 10, 40, 0...
         activeColor = "${palette.base07}";
         inactiveColor = "${palette.base05}";
       };
       systemColorSchemeVariant = "${config.colorScheme.variant}";
-      transparency = 1.0;
+      transparency = 0.95;
       blurRadius = 10;
       blurPasses = 1;
     };

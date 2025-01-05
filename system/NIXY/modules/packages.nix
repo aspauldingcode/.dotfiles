@@ -67,6 +67,8 @@
     lolcat
     tree-sitter
     nodejs_20
+    unstable.nodePackages.vercel
+
     #lspconfig
     fd # find tool
     ripgrep

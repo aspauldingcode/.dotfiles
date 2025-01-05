@@ -281,6 +281,17 @@ in
       toggle_sketchybar "$1"
     '')
 
+    # toggle-yabai
+    (pkgs.writeShellScriptBin "toggle-yabai" ''
+      if launchctl list | grep -q "org.nixos.yabai"; then
+        launchctl unload $HOME/Library/LaunchAgents/org.nixos.yabai.plist
+        echo "Yabai unloaded"
+      else
+        launchctl load $HOME/Library/LaunchAgents/org.nixos.yabai.plist
+        echo "Yabai loaded"
+      fi
+    '')
+
     #toggle-gaps
     (pkgs.writeShellScriptBin "toggle-gaps" ''
       # Initialize a variable to store the current state

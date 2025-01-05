@@ -1,45 +1,6 @@
 { config, lib, pkgs, nix-colors,... }:
 
 let
-  writeShellScriptBin = pkgs.writeShellScriptBin;
-  update_dock_pins = writeShellScriptBin "update-dock-pins" ''
-    #!/bin/bash
-
-    # List of apps to keep
-    keep_apps=("Finder" "Launchpad" "Spotify" "Alacritty" "Firefox" "Cursor")
-
-    # Function to add an app to the Dock
-    add_app_to_dock() {
-        app_path=$(mdfind "kMDItemCFBundleIdentifier == '$1'" | head -n 1)
-        if [ -n "$app_path" ]; then
-            # Resolve the full path of the app, following symlinks
-            app_path=$(realpath "$app_path")
-            defaults write com.apple.dock persistent-apps -array-add "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>$app_path</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
-        fi
-    }
-
-    # Clear the current Dock
-    defaults write com.apple.dock persistent-apps -array
-
-    # Add specified apps to the Dock (excluding Finder)
-    add_app_to_dock "com.apple.launchpad.launcher"
-    add_app_to_dock "com.spotify.client"
-    add_app_to_dock "io.alacritty"
-    add_app_to_dock "org.mozilla.firefox"
-    add_app_to_dock "com.cursor.Cursor"
-
-    # Hide the Downloads stack and recent apps
-    defaults write com.apple.dock show-recents -bool false
-    defaults write com.apple.dock recent-apps -array
-    defaults write com.apple.dock persistent-others -array
-
-    # Restart the Dock to apply changes
-    killall Dock
-
-    echo "Dock has been updated. Only kept: ''${keep_apps[*]}"
-    echo "Downloads stack and recent apps have been hidden."
-  '';
-
   inherit (config.colorScheme) palette;
 in
 {
@@ -53,9 +14,6 @@ in
 
       # Show AirDrop in the sidebar
       defaults write com.apple.sidebarlists systemitems -dict-add ShowAirDrop -bool true
-
-      # call the update_dock_pins script
-      ${update_dock_pins}/bin/update-dock-pins
     '';
     startup.chime = false; # MUTE STARTUP CHIME!
     keyboard = {
@@ -68,7 +26,7 @@ in
     };
     defaults = {
       finder = {
-        CreateDesktop = true; # REQUIRED true to fix https://github.com/koekeishiya/yabai/issues/863 and https://github.com/koekeishiya/yabai/issues/2313#issuecomment-2225438696
+        CreateDesktop = false; # REQUIRED true to fix https://github.com/koekeishiya/yabai/issues/863 and https://github.com/koekeishiya/yabai/issues/2313#issuecomment-2225438696
         AppleShowAllFiles = true;
         AppleShowAllExtensions = true;
         FXDefaultSearchScope = "SCcf";

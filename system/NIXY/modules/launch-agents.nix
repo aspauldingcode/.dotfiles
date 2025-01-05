@@ -139,55 +139,6 @@ in
       '';
     };
 
-    "com.example.macforgehelper.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0.dtd"?>
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>com.example.macforgehelper</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>/Applications/MacForge.app/Contents/MacOS/MacForgeHelper</string>
-            </array>
-            <key>RunAtLoad</key>
-            <true/>
-          </dict>
-        </plist>
-      '';
-    };
-
-    "org.nix-community.home.xdg_cache_home.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"?>
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>org.nix-community.home.xdg_cache_home</string>
-            <key>Program</key>
-            <string>/bin/launchctl</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>/bin/launchctl</string>
-              <string>unload</string>
-              <string>-F</string>
-              <string>/System/Library/LaunchAgents/com.apple.OSDUIHelper.plist</string>
-            </array>
-            <key>RunAtLoad</key>
-            <true/>
-            <key>StandardErrorPath</key>
-            <string>/dev/null</string>
-            <key>StandardOutPath</key>
-            <string>/dev/null</string>
-          </dict>
-        </plist>
-      '';
-    };
-
     "com.user.desktop-cleaner.plist" = {
       enable = true;
       text = ''
@@ -526,43 +477,6 @@ in
         </dict>
         </plist>
       '';
-    };
-  };
-
-  launchd.user.agents.startMacForge = {
-    serviceConfig = {
-      Label = "com.user.startMacForge";
-      ProgramArguments = [ "${pkgs.bash}/bin/bash" "${pkgs.writeScript "start-macforge" ''
-        #!/bin/bash
-
-        # Function to check if MacForge is running
-        is_macforge_running() {
-            pgrep -x "MacForge" > /dev/null
-        }
-
-        # Start MacForge if it is not running
-        if ! is_macforge_running; then
-            open -a "MacForge" --hide
-            sleep 5  # Wait for a few seconds to allow MacForge to start
-        fi
-
-        # Check again if MacForge is running
-        if is_macforge_running; then
-
-            # Close the MacForge app window
-            osascript -e 'tell application "MacForge" to quit' > /dev/null 2>&1
-            
-            killall Finder
-            sleep 2  # Wait for a few seconds to allow Finder to close
-            if ! pgrep -x "Finder" > /dev/null; then
-                open -a "Finder"
-            fi
-        fi
-      ''}" ];
-      RunAtLoad = true;
-      KeepAlive = false;
-      StandardOutPath = "/tmp/startMacForge.log";
-      StandardErrorPath = "/tmp/startMacForge.error.log";
     };
   };
 
