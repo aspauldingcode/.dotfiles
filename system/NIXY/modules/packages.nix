@@ -17,6 +17,32 @@
     gnumake
     pfetch
     htop
+    prismlauncher
+    kitty
+    nixfmt-rfc-style
+    alt-tab-macos
+    unnaturalscrollwheels
+    docker
+    # xorg.xinit      # FIXME: Broken package darwin
+    # xorg.xorgserver # FIXME: Broken package darwin
+    yazi
+    fftw
+    libtool
+    automake
+    autoconf-archive
+    portaudio
+    iniparser
+    zenity
+    unstable.iproute2mac
+    m-cli
+    ansible
+    gtk-mac-integration
+    libiconv
+    # choose-gui
+    # ddcctl
+    # cliclick
+    # sublime4
+    # nightlight
     cmake
     blueutil
     cava
@@ -61,7 +87,7 @@
     undmg
     p7zip
     jq
-    # neovim
+    # gittyup
     libusb1
     darling-dmg
     lolcat

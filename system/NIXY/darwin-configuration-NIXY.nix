@@ -41,7 +41,10 @@
   };
   # system.build = builtins.exec "echo 'hello, world.'";
   # Auto upgrade nix package and the daemon service.
-  services.nix-daemon.enable = true;
+  services = {
+    nix-daemon.enable = true;
+    tailscale.enable = true;
+  };
   networking = {
     computerName = "NIXY"; # REQUIRED! "NIXY" to build nix flakes
     #FIXME: first install - Check to see if it works with computerName!
