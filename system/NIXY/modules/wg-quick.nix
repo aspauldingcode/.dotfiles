@@ -8,13 +8,17 @@
   #to generate a key.
 
   networking.wg-quick.interfaces = {
-    NIXSTATION64 = { # Host interface
-      address = [ # The IP addresses of the host.
+    NIXSTATION64 = {
+      # Host interface
+      address = [
+        # The IP addresses of the host.
         "192.168.1.21/24"
       ];
-      peers = [ # Peers linked to the host.
+      peers = [
+        # Peers linked to the host.
         {
-          allowedIPs = [ # Allowed IP addresses for the peer.
+          allowedIPs = [
+            # Allowed IP addresses for the peer.
             "192.168.1.34/24"
           ];
           publicKey = "3w1nCIUCf70s3rSOrZEuv4Uy4/ND5TEoY6Ybz+SYg1M=";
@@ -24,13 +28,17 @@
       autostart = true; # Start the interface automatically on system boot.
     };
 
-    NIXY = { # Peer interface
-      address = [ # The IP addresses of the peer.
+    NIXY = {
+      # Peer interface
+      address = [
+        # The IP addresses of the peer.
         "192.168.1.34/24"
       ];
-      peers = [ # Peers linked to the peer.
+      peers = [
+        # Peers linked to the peer.
         {
-          allowedIPs = [ # Allowed IP addresses for the host.
+          allowedIPs = [
+            # Allowed IP addresses for the host.
             "192.168.1.21/24" # Adjusted to /32 to specify a single IP address
           ];
           publicKey = "3w1nCIUCf70s3rSOrZEuv4Uy4/ND5TEoY6Ybz+SYg1M="; # Replace with the public key of NIXSTATION64.

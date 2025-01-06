@@ -6,7 +6,7 @@
 }:
 
 # Configure GTK, QT themes, color schemes.. USE NIXOS MODULE
-#let 
+#let
 #  theme = "gruvbox-dark-soft";
 #  # Choose from: https://nix-community.github.io/nixvim/colorschemes/base16/index.html#colorschemesbase16colorscheme
 #in
@@ -18,7 +18,7 @@ in
 
   home = {
     packages = with pkgs; [
-      # note the hiPrio which makes this script more important than others and is usually used in nix to resolve name conflicts 
+      # note the hiPrio which makes this script more important than others and is usually used in nix to resolve name conflicts
       (pkgs.hiPrio (
         pkgs.writeShellApplication {
           name = "toggle-theme";
@@ -28,7 +28,7 @@ in
             ripgrep
           ];
           # the interesting part about the script below is that we go back two generations
-          # since every time we invoke an activation script home-manager creates a new generation 
+          # since every time we invoke an activation script home-manager creates a new generation
           text = ''
             "$(home-manager generations | head -2 | tail -1 | rg -o '/[^ ]*')"/activate
           '';
@@ -51,12 +51,12 @@ in
     #  package = pkgs.bibata-cursors;
     #};
     # theme = {
-      # name = "gruvbox gtk theme";
-      # package = pkgs.gruvbox-gtk-theme;
-      # name = "${config.colorScheme.slug}";
-      # package = gtkThemeFromScheme {scheme = config.colorScheme;};
-      # name = "WhiteSur-GTK-Theme";
-      # package = pkgs.whitesur-gtk-theme;
+    # name = "gruvbox gtk theme";
+    # package = pkgs.gruvbox-gtk-theme;
+    # name = "${config.colorScheme.slug}";
+    # package = gtkThemeFromScheme {scheme = config.colorScheme;};
+    # name = "WhiteSur-GTK-Theme";
+    # package = pkgs.whitesur-gtk-theme;
     # };
     #iconTheme = {
     #name = "WhiteSur-GTK-Icons";

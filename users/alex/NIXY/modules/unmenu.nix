@@ -1,4 +1,10 @@
-{ config, lib, pkgs, std, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  std,
+  ...
+}:
 
 let
   cfg = config.programs.unmenu;
@@ -245,7 +251,7 @@ in
           };
         };
       };
-      default = {};
+      default = { };
       description = "Unmenu settings";
     };
   };

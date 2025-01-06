@@ -17,9 +17,8 @@ pkgs.stdenv.mkDerivation {
   dontConfigure = true;
   dontBuild = true;
 
-  installPhase =
-    ''
-      mkdir -p $out/Applications
-      cp -r $out/Mousecape.app $out/Applications/
-    '';
+  installPhase = ''
+    mkdir -p $out/Applications
+    cp -r $out/Mousecape.app $out/Applications/
+  '';
 }

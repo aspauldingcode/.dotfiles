@@ -1,4 +1,9 @@
-{ lib, config, pkgs, ... }: 
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 
 {
   #You can import other home-manager modules here
@@ -16,7 +21,8 @@
       username = "susu";
       homeDirectory = "/Users/susu";
       stateVersion = "23.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-      file = { # MANAGE DOTFILES?
+      file = {
+        # MANAGE DOTFILES?
       };
     };
 
@@ -24,7 +30,7 @@
       home-manager.enable = true;
       git = {
         enable = true;
-        userName  = "aspauldingcode";
+        userName = "aspauldingcode";
         userEmail = "aspauldingcode@gmail.com";
       };
       fish.enable = true;
@@ -38,4 +44,3 @@
     systemd.user.startServices = "sd-switch"; # TODO: UPDATE IF USING DIFFERENT BOOTLOADER!
   };
 }
-

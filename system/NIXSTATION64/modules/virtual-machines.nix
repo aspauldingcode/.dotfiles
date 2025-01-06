@@ -58,7 +58,7 @@
     ];
   };
   # A set of virtual proxy device labels with backing physical device ids.
-  # persistent-evdev.devices = [ 
+  # persistent-evdev.devices = [
   #
   # ];
 }

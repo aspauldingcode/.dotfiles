@@ -1,14 +1,30 @@
-{ config, lib, pkgs, inputs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 
 let
-  InputSourceSelector = pkgs.callPackage ../customDerivations/inputsourceselector.nix {};
+  InputSourceSelector = pkgs.callPackage ../customDerivations/inputsourceselector.nix { };
   systemType = pkgs.stdenv.hostPlatform.system;
-  homebrewPath = if systemType == "aarch64-darwin" then "/opt/homebrew/bin" else if systemType == "x86_64-darwin" then "/usr/local/bin" else throw "Homebrew Unsupported architecture: ${systemType}";
+  homebrewPath =
+    if systemType == "aarch64-darwin" then
+      "/opt/homebrew/bin"
+    else if systemType == "x86_64-darwin" then
+      "/usr/local/bin"
+    else
+      throw "Homebrew Unsupported architecture: ${systemType}";
   inherit (config.colorScheme) palette;
-  wallpaper_input = if pkgs.stdenv.isDarwin then ./../../../users/alex/extraConfig/wallpapers/nix-colors-wallpaper-darwin.png else ./../../../users/alex/extraConfig/wallpapers/nix-colors-wallpaper.png;
+  wallpaper_input =
+    if pkgs.stdenv.isDarwin then
+      ./../../../users/alex/extraConfig/wallpapers/nix-colors-wallpaper-darwin.png
+    else
+      ./../../../users/alex/extraConfig/wallpapers/nix-colors-wallpaper.png;
   wallpaper_output = "/Users/Shared/Wallpaper/wallpaper-nix-colors.png";
   wallpaper_recolor_script = ./../../../users/alex/extraConfig/recolor_base16_inputs_efficient.py;
-  m = "${homebrewPath}/m";
+  m = "${pkgs.m-cli}/bin/m";
   orb = "${homebrewPath}/orb";
 in
 {
@@ -19,7 +35,7 @@ in
     # Purpose: Clear quarantine flags from selected executables
     # Action:  Strip quarantine metadata from flagged binaries
     # ===================================================================
-    
+
     echo "Fixing macOS binary quarantine attributes..."
 
     # Fix specific problematic binaries if they exist
@@ -77,15 +93,21 @@ in
 
     # create the wallpaper directory if it doesn't exist
     mkdir -p /Users/Shared/Wallpaper/
-    
+
     # recolor the wallpaper only if the wallpaper output file doesn't exist
     if [ ! -f ${wallpaper_output} ]; then
       echo "Recoloring Wallpapers to ${config.colorscheme.slug} color scheme..."
-      ${pkgs.python3.withPackages (ps: [ ps.pillow ps.numpy ps.tqdm ])}/bin/python3 ${wallpaper_recolor_script} ${wallpaper_input} ${wallpaper_output} ${config.colorScheme.variant} ${palette.base00},${palette.base01},${palette.base02},${palette.base03},${palette.base04},${palette.base05},${palette.base06},${palette.base07},${palette.base08},${palette.base09},${palette.base0A},${palette.base0B},${palette.base0C},${palette.base0D},${palette.base0E},${palette.base0F}
+      ${
+        pkgs.python3.withPackages (ps: [
+          ps.pillow
+          ps.numpy
+          ps.tqdm
+        ])
+      }/bin/python3 ${wallpaper_recolor_script} ${wallpaper_input} ${wallpaper_output} ${config.colorScheme.variant} ${palette.base00},${palette.base01},${palette.base02},${palette.base03},${palette.base04},${palette.base05},${palette.base06},${palette.base07},${palette.base08},${palette.base09},${palette.base0A},${palette.base0B},${palette.base0C},${palette.base0D},${palette.base0E},${palette.base0F}
     else
       echo "Using existing wallpaper..."
     fi
-    
+
     echo "Setting ${config.colorscheme.variant} wallpaper..."
     ${m} wallpaper "${wallpaper_output}"
 

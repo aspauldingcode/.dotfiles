@@ -3,7 +3,8 @@
   pkgs,
   lib,
   ...
-}: {
+}:
+{
   imports = [
     ./waybar.nix
   ];
@@ -14,28 +15,28 @@
     checkConfig = lib.mkForce false;
     config = rec {
       bars = [
-        {command = "if pgrep -x waybar; then pkill waybar; ${pkgs.waybar}/bin/waybar; fi";}
+        { command = "if pgrep -x waybar; then pkill waybar; ${pkgs.waybar}/bin/waybar; fi"; }
       ];
       modifier = "Mod4";
       left = "h";
       down = "j";
       up = "k";
       right = "l";
-       # Assign workspaces to outputs
-       workspaceOutputAssign = [
-         {
-           workspace = "1";
-           output = "Ancor Communications Inc VE248 G1LMQS085722";
-         }
-         {
-           workspace = "2";
-           output = "Ancor Communications Inc ASUS VE278 JCLMTF141603";
-         }
-         {
-           workspace = "3";
-           output = "Ancor Communications Inc ASUS VE278 J7LMTF164099";
-         }
-       ];
+      # Assign workspaces to outputs
+      workspaceOutputAssign = [
+        {
+          workspace = "1";
+          output = "Ancor Communications Inc VE248 G1LMQS085722";
+        }
+        {
+          workspace = "2";
+          output = "Ancor Communications Inc ASUS VE278 JCLMTF141603";
+        }
+        {
+          workspace = "3";
+          output = "Ancor Communications Inc ASUS VE278 J7LMTF164099";
+        }
+      ];
       output = {
         "Ancor Communications Inc VE248 G1LMQS085722" = {
           res = "1920x1080";
@@ -59,7 +60,7 @@
       terminal = "alacritty";
       startup = [
         # Launch alacritty on start
-        {command = "alacritty";}
+        { command = "alacritty"; }
       ];
       menu = "bemenu-run";
       window.titlebar = false;
@@ -117,7 +118,8 @@
 
         # Screenshot
         "Alt+Shift+3" = "exec screenshot"; # All visible outputs
-        "Alt+Shift+4" = ''exec grimshot --notify save anything ~/Desktop/"Screenshot $(date '+%Y-%m-%d at %I.%M.%S %p').png"'';
+        "Alt+Shift+4" =
+          ''exec grimshot --notify save anything ~/Desktop/"Screenshot $(date '+%Y-%m-%d at %I.%M.%S %p').png"'';
 
         # Screen recording
         #"${modifier}+Print" = "exec wayrecorder --notify screen";
@@ -148,7 +150,8 @@
 
         "${modifier}+r" = "exec python3.11 ~/.dotfiles/i3-tools-master/rotate_layout.py 0 -m -f"; # ??? orrresize mode
 
-        "${modifier}+Shift+Space" = "floating toggle ; [floating] resize set 81ppt 81ppt ; move position center";
+        "${modifier}+Shift+Space" =
+          "floating toggle ; [floating] resize set 81ppt 81ppt ; move position center";
         "${modifier}+Space" = "focus mode_toggle";
         "${modifier}+u" = "focus parent";
 
@@ -182,10 +185,14 @@
         # "${modifier}+Shift+${down}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus down, swap container with mark "_swap", focus down, unmark "_swap"; [floating con_id="__focused__"] move down 20px'';
         # "${modifier}+Shift+${up}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus up, swap container with mark "_swap", focus up, unmark "_swap"; [floating con_id="__focused__"] move up 20px'';
         # "${modifier}+Shift+${right}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"; [floating con_id="__focused__"] move right 20px'';
-        "${modifier}+Shift+Left" = ''mark --add "_swap", focus left, swap container with mark "_swap", focus left, unmark "_swap"; [floating con_id="__focused__"] move left 20px'';
-        "${modifier}+Shift+Down" = ''mark --add "_swap", focus down, swap container with mark "_swap", focus down, unmark "_swap"; [floating con_id="__focused__"] move down 20px'';
-        "${modifier}+Shift+Up" = ''mark --add "_swap", focus up, swap container with mark "_swap", focus up, unmark "_swap"; [floating con_id="__focused__"] move up 20px'';
-        "${modifier}+Shift+Right" = ''mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"; [floating con_id="__focused__"] move right 20px'';
+        "${modifier}+Shift+Left" =
+          ''mark --add "_swap", focus left, swap container with mark "_swap", focus left, unmark "_swap"; [floating con_id="__focused__"] move left 20px'';
+        "${modifier}+Shift+Down" =
+          ''mark --add "_swap", focus down, swap container with mark "_swap", focus down, unmark "_swap"; [floating con_id="__focused__"] move down 20px'';
+        "${modifier}+Shift+Up" =
+          ''mark --add "_swap", focus up, swap container with mark "_swap", focus up, unmark "_swap"; [floating con_id="__focused__"] move up 20px'';
+        "${modifier}+Shift+Right" =
+          ''mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"; [floating con_id="__focused__"] move right 20px'';
 
         # Swap positions of the current window with the one on $direction
         # "${modifier}+Shift+${left}" = ''mark --add "_swap", focus left,  swap container with mark "_swap", focus left,  unmark "_swap"'';
@@ -265,120 +272,122 @@
       };
     };
 
-    extraConfig = let
-      inherit (config.colorscheme) colors;
-    in ''
-      set $mod Mod4
-        # Idle configuration
-        exec swayidle -w \
-        timeout 7320 'swaylock -f -c 000000' \
-        timeout 8000 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-        before-sleep 'swaylock -f -c 000000'
+    extraConfig =
+      let
+        inherit (config.colorscheme) colors;
+      in
+      ''
+        set $mod Mod4
+          # Idle configuration
+          exec swayidle -w \
+          timeout 7320 'swaylock -f -c 000000' \
+          timeout 8000 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+          before-sleep 'swaylock -f -c 000000'
 
-        exec --no-startup-id gammastep # enable gammastep server
+          exec --no-startup-id gammastep # enable gammastep server
 
-        # You can get the names of your inputs by running: swaymsg -t get_inputs
-        # Read `man 5 sway-input` for more information about this section.
-        # Launch the network manager widget!
-        # exec nm-applet
-        exec --no-startup-id 'nm-applet --indicator'
+          # You can get the names of your inputs by running: swaymsg -t get_inputs
+          # Read `man 5 sway-input` for more information about this section.
+          # Launch the network manager widget!
+          # exec nm-applet
+          exec --no-startup-id 'nm-applet --indicator'
 
-        # Launch the bluetooth applet
-        exec blueman-applet
+          # Launch the bluetooth applet
+          exec blueman-applet
 
-        # Delayed launch of the bluetooth applet
-        exec "sleep 5 && blueman-applet"
+          # Delayed launch of the bluetooth applet
+          exec "sleep 5 && blueman-applet"
 
-        # autotile!
-        exec autotiling
+          # autotile!
+          exec autotiling
 
-        # way-displays: Auto Manage Your Wayland Displays
-        exec way-displays > /tmp/way-displays.''${XDG_VTNR}.''${USER}.log 2>&1
+          # way-displays: Auto Manage Your Wayland Displays
+          exec way-displays > /tmp/way-displays.''${XDG_VTNR}.''${USER}.log 2>&1
 
-        ## FLOAT WINDOWS FROM THE TREE!!
-        for_window [app_id="firefox" title="Picture-in-Picture"] floating enable, sticky enable
+          ## FLOAT WINDOWS FROM THE TREE!!
+          for_window [app_id="firefox" title="Picture-in-Picture"] floating enable, sticky enable
 
-        # STYLIZE!
-        gaps inner 10
-        gaps top -2
-        corner_radius 8
+          # STYLIZE!
+          gaps inner 10
+          gaps top -2
+          corner_radius 8
 
-        #FIX waybar tooltips!
-        for_window [app_id="waybar" floating] {
-          move position cursor
-          move down 120px # adjust if some menus still don't fit
-        }
+          #FIX waybar tooltips!
+          for_window [app_id="waybar" floating] {
+            move position cursor
+            move down 120px # adjust if some menus still don't fit
+          }
 
-        # Enable csd borders # options are: none | normal | csd | pixel [<n>]
-        bindsym $mod+Shift+B exec swaymsg border toggle
+          # Enable csd borders # options are: none | normal | csd | pixel [<n>]
+          bindsym $mod+Shift+B exec swaymsg border toggle
 
-        #for all windows, brute-force use of "pixel"
-        for_window [shell="xdg_shell"] border pixel 2
-        for_window [shell="xwayland"] border pixel 2
+          #for all windows, brute-force use of "pixel"
+          for_window [shell="xdg_shell"] border pixel 2
+          for_window [shell="xwayland"] border pixel 2
 
-        # Window background blur
-        # blur on #FIXME: TURN ON! Floating window loses its borders...
-        # blur_xray on
-        # blur_passes 2
-        # blur_radius 2
+          # Window background blur
+          # blur on #FIXME: TURN ON! Floating window loses its borders...
+          # blur_xray on
+          # blur_passes 2
+          # blur_radius 2
 
-        # for_window [tiling] shadows off
-        # for_window [floating] shadows on
-        # shadows_on_csd disable
-        # shadow_blur_radius 30
-        # shadow_color #000000ff
+          # for_window [tiling] shadows off
+          # for_window [floating] shadows on
+          # shadows_on_csd disable
+          # shadow_blur_radius 30
+          # shadow_color #000000ff
 
-        # Enable background blur for Waybar-Square
-        # layer_effects "waybar" blur enable; corner_radius 0; blur_ignore_transparent enable
+          # Enable background blur for Waybar-Square
+          # layer_effects "waybar" blur enable; corner_radius 0; blur_ignore_transparent enable
 
-        # Enable background blur for Waybar-Round
-        # layer_effects "waybar" blur enable; corner_radius 10; blur_ignore_transparent enable
+          # Enable background blur for Waybar-Round
+          # layer_effects "waybar" blur enable; corner_radius 10; blur_ignore_transparent enable
 
-        # Enable background blur for waybar tooltips
-        # FIXME
+          # Enable background blur for waybar tooltips
+          # FIXME
 
-        # Enable background blur for Mako notifications
-        # layer_effects "notifications" blur enable; corner_radius 10
+          # Enable background blur for Mako notifications
+          # layer_effects "notifications" blur enable; corner_radius 10
 
-        # Enable background blur for GTK-based layer shell applications
-        # layer_effects "gtk-layer-shell" blur enable; corner_radius 10
+          # Enable background blur for GTK-based layer shell applications
+          # layer_effects "gtk-layer-shell" blur enable; corner_radius 10
 
-        # inactive window fade amount. 0.0 = no dimming, 1.0 = fully dimmed
-        #default_dim_inactive .3
-        #dim_inactive_colors.unfocused "#000000"
-        #dim_inactive_colors.urgent "#900000"
+          # inactive window fade amount. 0.0 = no dimming, 1.0 = fully dimmed
+          #default_dim_inactive .3
+          #dim_inactive_colors.unfocused "#000000"
+          #dim_inactive_colors.urgent "#900000"
 
-        # FIXME:Prevent floating windows from being swapped with tiled ones, regardless of display
-        for_window [floating] sticky enable
-        for_window [floating] focus_on_window_activation focus
+          # FIXME:Prevent floating windows from being swapped with tiled ones, regardless of display
+          for_window [floating] sticky enable
+          for_window [floating] focus_on_window_activation focus
 
-        # HIDE CURSOR AUTOMATICALLY
-        seat * hide_cursor 8000
+          # HIDE CURSOR AUTOMATICALLY
+          seat * hide_cursor 8000
 
-        # HIDE TITLEBAR!
-        # SET BORDER TO 2 PIXELS!
-        default_border pixel 2
-        default_floating_border pixel 2
-        client.unfocused ${colors.base05} ${colors.base05} ${colors.base05} ${colors.base05}
-        client.focused_inactive ${colors.base05} ${colors.base05} ${colors.base05} ${colors.base05}
-        client.focused ${colors.base07} ${colors.base07} ${colors.base07} ${colors.base07}
+          # HIDE TITLEBAR!
+          # SET BORDER TO 2 PIXELS!
+          default_border pixel 2
+          default_floating_border pixel 2
+          client.unfocused ${colors.base05} ${colors.base05} ${colors.base05} ${colors.base05}
+          client.focused_inactive ${colors.base05} ${colors.base05} ${colors.base05} ${colors.base05}
+          client.focused ${colors.base07} ${colors.base07} ${colors.base07} ${colors.base07}
 
-        exec {
-          gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
-          gsettings set org.gnome.desktop.interface icon-theme 'elementary'
-          gsettings set org.gnome.desktop.interface cursor-theme 'elementary'
-          gsettings set org.gnome.desktop.interface font-name 'Roboto Slab 10'
-        }
+          exec {
+            gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+            gsettings set org.gnome.desktop.interface icon-theme 'elementary'
+            gsettings set org.gnome.desktop.interface cursor-theme 'elementary'
+            gsettings set org.gnome.desktop.interface font-name 'Roboto Slab 10'
+          }
 
-        # Fix zoom
-        for_window [app_id="zoom"] floating enable
-        for_window [app_id="zoom" title="Choose ONE of the audio conference options"] floating enable
-        for_window [app_id="zoom" title="zoom"] floating enable
-        for_window [app_id="zoom" title="Zoom Meeting"] floating disable
-        for_window [app_id="zoom" title="Zoom - Free Account"] floating disable
+          # Fix zoom
+          for_window [app_id="zoom"] floating enable
+          for_window [app_id="zoom" title="Choose ONE of the audio conference options"] floating enable
+          for_window [app_id="zoom" title="zoom"] floating enable
+          for_window [app_id="zoom" title="Zoom Meeting"] floating disable
+          for_window [app_id="zoom" title="Zoom - Free Account"] floating disable
 
-        # run fix-wm once.
-        # exec fix-wm
-    '';
+          # run fix-wm once.
+          # exec fix-wm
+      '';
   };
 }

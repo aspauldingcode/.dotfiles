@@ -20,9 +20,9 @@ let
   # - sakura
   # - horizon-light
 
-  scheme = "gruvbox-dark-soft"; 
+  scheme = "gruvbox-dark-soft";
 in
-  # Choose from: https://tinted-theming.github.io/base16-gallery/
+# Choose from: https://tinted-theming.github.io/base16-gallery/
 {
   # Import the default home manager modules from nix-colors
   imports = [ nix-colors.homeManagerModules.default ];

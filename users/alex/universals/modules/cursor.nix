@@ -6,14 +6,24 @@ let
     editor.semanticTokenColorCustomizations = {
       enabled = true;
       rules = {
-        "*.declaration" = { foreground = "#${config.colorScheme.palette.base0A}"; fontStyle = "bold"; };
-        "*.readonly" = { foreground = "#${config.colorScheme.palette.base08}"; fontStyle = "italic"; };
+        "*.declaration" = {
+          foreground = "#${config.colorScheme.palette.base0A}";
+          fontStyle = "bold";
+        };
+        "*.readonly" = {
+          foreground = "#${config.colorScheme.palette.base08}";
+          fontStyle = "italic";
+        };
       };
     };
     editor.tokenColorCustomizations = {
       textMateRules = [
         {
-          scope = [ "comment" "punctuation.definition.comment" "string.comment" ];
+          scope = [
+            "comment"
+            "punctuation.definition.comment"
+            "string.comment"
+          ];
           settings = {
             foreground = "#${config.colorScheme.palette.base03}"; # Adjusted for comments
           };
@@ -136,17 +146,29 @@ let
 in
 {
   home.file.cursorSettings = {
-    target = if pkgs.stdenv.isDarwin then "Library/Application Support/Cursor/User/settings.json" else ".config/Cursor/User/settings.json";
+    target =
+      if pkgs.stdenv.isDarwin then
+        "Library/Application Support/Cursor/User/settings.json"
+      else
+        ".config/Cursor/User/settings.json";
     text = commonSettings;
   };
 
   home.file.vscodeSettings = {
-    target = if pkgs.stdenv.isDarwin then "Library/Application Support/Code/User/settings.json" else ".config/Code/User/settings.json";
+    target =
+      if pkgs.stdenv.isDarwin then
+        "Library/Application Support/Code/User/settings.json"
+      else
+        ".config/Code/User/settings.json";
     text = commonSettings;
   };
 
   home.file.azureDataStudioSettings = {
-    target = if pkgs.stdenv.isDarwin then "Library/Application Support/azuredatastudio/User/settings.json" else ".config/azuredatastudio/User/settings.json";
+    target =
+      if pkgs.stdenv.isDarwin then
+        "Library/Application Support/azuredatastudio/User/settings.json"
+      else
+        ".config/azuredatastudio/User/settings.json";
     text = commonSettings;
   };
 

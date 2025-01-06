@@ -1180,7 +1180,8 @@
           };
           to = [
             {
-              "shell_command" = "/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend";
+              "shell_command" =
+                "/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend";
             }
           ];
           type = "basic";
@@ -1227,7 +1228,8 @@
           };
           to = [
             {
-              "shell_command" = "/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend";
+              "shell_command" =
+                "/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend";
             }
           ];
           type = "basic";
@@ -1900,7 +1902,8 @@
           };
           to = [
             {
-              "shell_command" = "open -b $(/usr/libexec/PlistBuddy -c 'print :persistent-apps:0:tile-data:bundle-identifier' ~/Library/Preferences/com.apple.dock.plist)";
+              "shell_command" =
+                "open -b $(/usr/libexec/PlistBuddy -c 'print :persistent-apps:0:tile-data:bundle-identifier' ~/Library/Preferences/com.apple.dock.plist)";
             }
           ];
           type = "basic";
@@ -1943,7 +1946,8 @@
           };
           to = [
             {
-              "shell_command" = "open -b $(/usr/libexec/PlistBuddy -c 'print :persistent-apps:1:tile-data:bundle-identifier' ~/Library/Preferences/com.apple.dock.plist)";
+              "shell_command" =
+                "open -b $(/usr/libexec/PlistBuddy -c 'print :persistent-apps:1:tile-data:bundle-identifier' ~/Library/Preferences/com.apple.dock.plist)";
             }
           ];
           type = "basic";
@@ -1986,7 +1990,8 @@
           };
           to = [
             {
-              "shell_command" = "open -b $(/usr/libexec/PlistBuddy -c 'print :persistent-apps:2:tile-data:bundle-identifier' ~/Library/Preferences/com.apple.dock.plist)";
+              "shell_command" =
+                "open -b $(/usr/libexec/PlistBuddy -c 'print :persistent-apps:2:tile-data:bundle-identifier' ~/Library/Preferences/com.apple.dock.plist)";
             }
           ];
           type = "basic";
@@ -2029,7 +2034,8 @@
           };
           to = [
             {
-              "shell_command" = "open -b $(/usr/libexec/PlistBuddy -c 'print :persistent-apps:3:tile-data:bundle-identifier' ~/Library/Preferences/com.apple.dock.plist)";
+              "shell_command" =
+                "open -b $(/usr/libexec/PlistBuddy -c 'print :persistent-apps:3:tile-data:bundle-identifier' ~/Library/Preferences/com.apple.dock.plist)";
             }
           ];
           type = "basic";
@@ -2072,7 +2078,8 @@
           };
           to = [
             {
-              "shell_command" = "open -b $(/usr/libexec/PlistBuddy -c 'print :persistent-apps:4:tile-data:bundle-identifier' ~/Library/Preferences/com.apple.dock.plist)";
+              "shell_command" =
+                "open -b $(/usr/libexec/PlistBuddy -c 'print :persistent-apps:4:tile-data:bundle-identifier' ~/Library/Preferences/com.apple.dock.plist)";
             }
           ];
           type = "basic";
@@ -2115,7 +2122,8 @@
           };
           to = [
             {
-              "shell_command" = "open -b $(/usr/libexec/PlistBuddy -c 'print :persistent-apps:5:tile-data:bundle-identifier' ~/Library/Preferences/com.apple.dock.plist)";
+              "shell_command" =
+                "open -b $(/usr/libexec/PlistBuddy -c 'print :persistent-apps:5:tile-data:bundle-identifier' ~/Library/Preferences/com.apple.dock.plist)";
             }
           ];
           type = "basic";
@@ -2158,7 +2166,8 @@
           };
           to = [
             {
-              "shell_command" = "open -b $(/usr/libexec/PlistBuddy -c 'print :persistent-apps:6:tile-data:bundle-identifier' ~/Library/Preferences/com.apple.dock.plist)";
+              "shell_command" =
+                "open -b $(/usr/libexec/PlistBuddy -c 'print :persistent-apps:6:tile-data:bundle-identifier' ~/Library/Preferences/com.apple.dock.plist)";
             }
           ];
           type = "basic";
@@ -2201,7 +2210,8 @@
           };
           to = [
             {
-              "shell_command" = "open -b $(/usr/libexec/PlistBuddy -c 'print :persistent-apps:7:tile-data:bundle-identifier' ~/Library/Preferences/com.apple.dock.plist)";
+              "shell_command" =
+                "open -b $(/usr/libexec/PlistBuddy -c 'print :persistent-apps:7:tile-data:bundle-identifier' ~/Library/Preferences/com.apple.dock.plist)";
             }
           ];
           type = "basic";

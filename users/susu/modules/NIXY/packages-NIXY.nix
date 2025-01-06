@@ -1,4 +1,9 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 
 # NIXY-specific packages
 {
@@ -6,7 +11,7 @@
     ../packages-UNIVERSAL.nix
   ];
   home.packages = with pkgs; [
-  	# magnet?
+    # magnet?
 
   ];
 }

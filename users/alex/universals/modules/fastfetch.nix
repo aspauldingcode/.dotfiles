@@ -1,4 +1,9 @@
-{ config, pkgs, nix-colors, ... }:
+{
+  config,
+  pkgs,
+  nix-colors,
+  ...
+}:
 
 {
   programs.fastfetch = {
@@ -11,7 +16,7 @@
       };
       modules = [
         "title"
-        "separator" 
+        "separator"
         "os"
         "host"
         "bios"
@@ -31,7 +36,7 @@
         "editor"
         "display"
         "brightness"
-      #   "monitor"
+        #   "monitor"
         # "lm"
         "de"
         {
@@ -42,82 +47,82 @@
           type = "theme";
           themeText = "${config.colorScheme.slug} (${config.colorScheme.variant})";
         }
-      #   "icons"
-      #   "font"
+        #   "icons"
+        #   "font"
         {
           type = "cursor";
           format = "Bibata-Modern-Ice";
         }
-      #   "wallpaper"
-      #   "terminal"
-      #   "terminalfont"
-      #   "terminalsize"
-      #   "terminaltheme"
-      #   {
-      #     type = "cpu";
-      #     showPeCoreCount = true;
-      #     temp = true;
-      #   }
-      #   "cpucache"
-      #   "cpuusage"
-      #   {
-      #     type = "gpu";
-      #     driverSpecific = true;
-      #     temp = true;
-      #   }
-      #   "memory"
-      #   "physicalmemory"
-      #   "swap"
-      #   "disk"
-      #   "btrfs"
-      #   "zpool"
-      #   {
-      #     type = "battery";
-      #     temp = true;
-      #   }
-      #   "poweradapter"
-      #   "player"
-      #   "media"
-      #   {
-      #     type = "publicip";
-      #     timeout = 1000;
-      #   }
-      #   {
-      #     type = "localip";
-      #     showIpv6 = true;
-      #     showMac = true;
-      #     showSpeed = true;
-      #     showMtu = true;
-      #     showLoop = true;
-      #     showFlags = true;
-      #     showAllIps = true;
-      #   }
-      #   "dns"
-      #   "wifi"
-      #   "datetime"
-      #   "locale"
-      #   "vulkan"
-      #   "opengl"
-      #   "opencl" 
-      #   "users"
-      #   "bluetooth"
-      #   "bluetoothradio"
-      #   "sound"
-      #   "camera"
-      #   "gamepad"
-      #   {
-      #     type = "weather";
-      #     timeout = 1000;
-      #   }
-      #   "netio"
-      #   "diskio"
-      #   {
-      #     type = "physicaldisk";
-      #     temp = true;
-      #   }
-      #   "tpm"
-      #   "version"
-      #   "break"
+        #   "wallpaper"
+        #   "terminal"
+        #   "terminalfont"
+        #   "terminalsize"
+        #   "terminaltheme"
+        #   {
+        #     type = "cpu";
+        #     showPeCoreCount = true;
+        #     temp = true;
+        #   }
+        #   "cpucache"
+        #   "cpuusage"
+        #   {
+        #     type = "gpu";
+        #     driverSpecific = true;
+        #     temp = true;
+        #   }
+        #   "memory"
+        #   "physicalmemory"
+        #   "swap"
+        #   "disk"
+        #   "btrfs"
+        #   "zpool"
+        #   {
+        #     type = "battery";
+        #     temp = true;
+        #   }
+        #   "poweradapter"
+        #   "player"
+        #   "media"
+        #   {
+        #     type = "publicip";
+        #     timeout = 1000;
+        #   }
+        #   {
+        #     type = "localip";
+        #     showIpv6 = true;
+        #     showMac = true;
+        #     showSpeed = true;
+        #     showMtu = true;
+        #     showLoop = true;
+        #     showFlags = true;
+        #     showAllIps = true;
+        #   }
+        #   "dns"
+        #   "wifi"
+        #   "datetime"
+        #   "locale"
+        #   "vulkan"
+        #   "opengl"
+        #   "opencl"
+        #   "users"
+        #   "bluetooth"
+        #   "bluetoothradio"
+        #   "sound"
+        #   "camera"
+        #   "gamepad"
+        #   {
+        #     type = "weather";
+        #     timeout = 1000;
+        #   }
+        #   "netio"
+        #   "diskio"
+        #   {
+        #     type = "physicaldisk";
+        #     temp = true;
+        #   }
+        #   "tpm"
+        #   "version"
+        #   "break"
         "colors"
       ];
     };

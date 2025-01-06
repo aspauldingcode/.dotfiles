@@ -1,4 +1,10 @@
-{ config, lib, pkgs, std, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  std,
+  ...
+}:
 
 let
   unmenu = pkgs.stdenv.mkDerivation rec {

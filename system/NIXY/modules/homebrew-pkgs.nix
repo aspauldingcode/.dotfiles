@@ -10,7 +10,7 @@
     taps = {
       "homebrew/homebrew-core" = inputs.homebrew-core;
       "homebrew/homebrew-cask" = inputs.homebrew-cask;
-      "homebrew/homebrew-bundle" = inputs.homebrew-bundle; 
+      "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
       "homebrew/homebrew-services" = inputs.homebrew-services;
       "koekeishiya/homebrew-formulae" = inputs.homebrew-koekeishiya;
       "FelixKratz/homebrew-formulae" = inputs.homebrew-felixkratz;

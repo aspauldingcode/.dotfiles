@@ -1,71 +1,71 @@
 { pkgs, ... }:
 
-{ 
+{
   home = {
     packages = with pkgs; [
-    #screenshot
-    (pkgs.writeShellScriptBin "screenshot" ''
-      # Specify the full path to your desktop directory
-      output_directory="$HOME/Desktop"
+      #screenshot
+      (pkgs.writeShellScriptBin "screenshot" ''
+        # Specify the full path to your desktop directory
+        output_directory="$HOME/Desktop"
 
-      # Get the list of output names
-      output_names=$(swaymsg -t get_outputs | jq -r '.[].name')
+        # Get the list of output names
+        output_names=$(swaymsg -t get_outputs | jq -r '.[].name')
 
-      # Loop through each output and save its contents to the desktop directory
-      for output_name in $output_names
-      do
-          output_file="$output_directory/Screenshot $(date '+%Y-%m-%d at %I.%M.%S %p') $output_name.png"
-          grim -o $output_name "$output_file"
-      done      
-    '')
-    #maximize (FIXME maximize sway windows to window size rather than fullscreen)
-    (pkgs.writeShellScriptBin "maximize" ''
-      # un/maximize script for i3 and sway
-      # bindsym $mod+m exec ~/.config/i3/maximize.sh
+        # Loop through each output and save its contents to the desktop directory
+        for output_name in $output_names
+        do
+            output_file="$output_directory/Screenshot $(date '+%Y-%m-%d at %I.%M.%S %p') $output_name.png"
+            grim -o $output_name "$output_file"
+        done      
+      '')
+      #maximize (FIXME maximize sway windows to window size rather than fullscreen)
+      (pkgs.writeShellScriptBin "maximize" ''
+        # un/maximize script for i3 and sway
+        # bindsym $mod+m exec ~/.config/i3/maximize.sh
 
-      WRKSPC_FILE=~/.config/wrkspc
-      RESERVED_WORKSPACE=f
-      MSG=swaymsg
-      if [ "$XDG_SESSION_TYPE" == "x11"]
-      then
-        MSG=i3-msg
-      fi
-
-      # using xargs to remove quotes
-      CURRENT_WORKSPACE=$($MSG -t get_workspaces | jq '.[] | select(.focused==true) | .name' | xargs)
-
-      if [ -f "$WRKSPC_FILE" ]
-      then # restore window back
-        if [ "$CURRENT_WORKSPACE" != "$RESERVED_WORKSPACE" ]
+        WRKSPC_FILE=~/.config/wrkspc
+        RESERVED_WORKSPACE=f
+        MSG=swaymsg
+        if [ "$XDG_SESSION_TYPE" == "x11"]
         then
-          RESERVED_WORKSPACE_EXISTS=$($MSG -t get_workspaces | jq '.[] .num' | grep "^$RESERVED_WORKSPACE$")
-          if [ -z "$RESERVED_WORKSPACE_EXISTS" ]
+          MSG=i3-msg
+        fi
+
+        # using xargs to remove quotes
+        CURRENT_WORKSPACE=$($MSG -t get_workspaces | jq '.[] | select(.focused==true) | .name' | xargs)
+
+        if [ -f "$WRKSPC_FILE" ]
+        then # restore window back
+          if [ "$CURRENT_WORKSPACE" != "$RESERVED_WORKSPACE" ]
           then
-            notify-send "Reserved workspace $RESERVED_WORKSPACE does not exist. Noted."
-            rm -f $WRKSPC_FILE
+            RESERVED_WORKSPACE_EXISTS=$($MSG -t get_workspaces | jq '.[] .num' | grep "^$RESERVED_WORKSPACE$")
+            if [ -z "$RESERVED_WORKSPACE_EXISTS" ]
+            then
+              notify-send "Reserved workspace $RESERVED_WORKSPACE does not exist. Noted."
+              rm -f $WRKSPC_FILE
+            else
+              notify-send "Clean your workspace $RESERVED_WORKSPACE first."
+            fi
           else
-            notify-send "Clean your workspace $RESERVED_WORKSPACE first."
+            # move the window back
+            $MSG move container to workspace $(cat $WRKSPC_FILE)
+            $MSG workspace number $(cat $WRKSPC_FILE)
+            notify-send "Returned back to workspace $(cat $WRKSPC_FILE)."
+            rm -f $WRKSPC_FILE
           fi
-        else
-          # move the window back
-          $MSG move container to workspace $(cat $WRKSPC_FILE)
-          $MSG workspace number $(cat $WRKSPC_FILE)
-          notify-send "Returned back to workspace $(cat $WRKSPC_FILE)."
-          rm -f $WRKSPC_FILE
+        else # send window to the reserved workspace
+          if [ "$CURRENT_WORKSPACE" == "$RESERVED_WORKSPACE" ]
+          then
+            notify-send "You're already on reserved workspace $RESERVED_WORKSPACE."
+          else
+            # remember current workspace
+            echo $CURRENT_WORKSPACE > $WRKSPC_FILE
+            $MSG move container to workspace $RESERVED_WORKSPACE
+            $MSG workspace $RESERVED_WORKSPACE
+            notify-send "Saved workspace $CURRENT_WORKSPACE and moved to workspace $RESERVED_WORKSPACE."
+          fi
         fi
-      else # send window to the reserved workspace
-        if [ "$CURRENT_WORKSPACE" == "$RESERVED_WORKSPACE" ]
-        then
-          notify-send "You're already on reserved workspace $RESERVED_WORKSPACE."
-        else
-          # remember current workspace
-          echo $CURRENT_WORKSPACE > $WRKSPC_FILE
-          $MSG move container to workspace $RESERVED_WORKSPACE
-          $MSG workspace $RESERVED_WORKSPACE
-          notify-send "Saved workspace $CURRENT_WORKSPACE and moved to workspace $RESERVED_WORKSPACE."
-        fi
-      fi
-    '')
+      '')
 
       #fix-wm
       (pkgs.writeShellScriptBin "fix-wm" ''
@@ -173,51 +173,50 @@
       #  turn_on() {
       #      # Turn on, by decreasing the brightness to the one recorded in statefile
       #      while [ $(echo "$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{print $2}' | tr -d '\0' 2>/dev/null) > $statefile_brightness" | bc -l) -eq 1 ]; do
-#                busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d -0.02 > /dev/null 2>&1
-#            done
-#            echo "$statefile_brightness" > $statefile
-#            echo "Brightness is now on."
-#        }
+      #                busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d -0.02 > /dev/null 2>&1
+      #            done
+      #            echo "$statefile_brightness" > $statefile
+      #            echo "Brightness is now on."
+      #        }
 
-#        turn_off() {
-#            # Turn off by setting to maximum brightness (1.0)
-#            while [ $(echo "$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{print $2}' | tr -d '\0' 2>/dev/null) < 1.0" | bc -l) -eq 1 ]; do
-#                busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d +0.02 > /dev/null 2>&1
-#            done
-#            echo "Brightness is now off."
-#        }
+      #        turn_off() {
+      #            # Turn off by setting to maximum brightness (1.0)
+      #            while [ $(echo "$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{print $2}' | tr -d '\0' 2>/dev/null) < 1.0" | bc -l) -eq 1 ]; do
+      #                busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d +0.02 > /dev/null 2>&1
+      #            done
+      #            echo "Brightness is now off."
+      #        }
 
-#        if [ "$(wc -l < $statefile)" -gt 1 ]; then
-#            echo "$statefile_brightness" > $statefile
-#        fi
+      #        if [ "$(wc -l < $statefile)" -gt 1 ]; then
+      #            echo "$statefile_brightness" > $statefile
+      #        fi
 
-#        case "$1" in
-#            on)
-#                if [ $(echo "$current_brightness < 1.0" | bc -l) -eq 1 ]; then
-#                    echo "Brightness is already on."
-#                else
-#                    turn_on
-#                fi
-#                ;;
-#            off)
-#                if [ $(echo "$current_brightness >= 1.0" | bc -l) -eq 1 ]; then
-#                    echo "Brightness is already off."
-#                else
-#                    echo "$current_brightness" > $statefile
-#                    turn_off
-#                fi
-#                ;;
-#            *)
-#                if [ $(echo "$current_brightness >= 1.0" | bc -l) -eq 1 ]; then
-#                    turn_on
-#                else
-#                    echo "$current_brightness" > $statefile
-#                    turn_off
-#                fi
-#                ;;
-#        esac
+      #        case "$1" in
+      #            on)
+      #                if [ $(echo "$current_brightness < 1.0" | bc -l) -eq 1 ]; then
+      #                    echo "Brightness is already on."
+      #                else
+      #                    turn_on
+      #                fi
+      #                ;;
+      #            off)
+      #                if [ $(echo "$current_brightness >= 1.0" | bc -l) -eq 1 ]; then
+      #                    echo "Brightness is already off."
+      #                else
+      #                    echo "$current_brightness" > $statefile
+      #                    turn_off
+      #                fi
+      #                ;;
+      #            *)
+      #                if [ $(echo "$current_brightness >= 1.0" | bc -l) -eq 1 ]; then
+      #                    turn_on
+      #                else
+      #                    echo "$current_brightness" > $statefile
+      #                    turn_off
+      #                fi
+      #                ;;
+      #        esac
 
-      
       # toggle-waybar
       (pkgs.writeShellScriptBin "toggle-waybar" ''
         #!/bin/bash
@@ -380,21 +379,21 @@
       '')
 
       # notif-test
-    (pkgs.writeShellScriptBin "notif-test" ''
-      if [[ "$OSTYPE" == "darwin"* ]]; then
-        for i in {1..10}; do
-          osascript -e "display notification \"This is the detailed content for notification number $i. It includes an icon, a title, and this message body.\" with title \"Notification $i\" subtitle \"Subtitle $i\" sound name \"default\""
-          sleep 1
-        done
-      else
-        for i in {1..10}; do
-          notify-send -i ~/.dotfiles/users/alex/face.png \
-               "Notification $i" \
-               "This is the detailed content for notification number $i. It includes an icon, a title, and this message body."
-          sleep 1
-        done
-      fi
-    '')
+      (pkgs.writeShellScriptBin "notif-test" ''
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+          for i in {1..10}; do
+            osascript -e "display notification \"This is the detailed content for notification number $i. It includes an icon, a title, and this message body.\" with title \"Notification $i\" subtitle \"Subtitle $i\" sound name \"default\""
+            sleep 1
+          done
+        else
+          for i in {1..10}; do
+            notify-send -i ~/.dotfiles/users/alex/face.png \
+                 "Notification $i" \
+                 "This is the detailed content for notification number $i. It includes an icon, a title, and this message body."
+            sleep 1
+          done
+        fi
+      '')
 
       # xvnc-iphone
       (pkgs.writeShellScriptBin "xvnc-iphone" ''
@@ -619,27 +618,26 @@
         exit 1
       '')
 
-      
-# restart-input-remapper
-(pkgs.writeShellScriptBin "restart-input-remapper" ''
-  sudo pkill input-remapper || log "No running input-remapper processes found."
+      # restart-input-remapper
+      (pkgs.writeShellScriptBin "restart-input-remapper" ''
+        sudo pkill input-remapper || log "No running input-remapper processes found."
 
-  pkexec input-remapper-control --command start-reader-service
+        pkexec input-remapper-control --command start-reader-service
 
-  # Wait briefly to ensure the service has time to start
-  sleep 2
+        # Wait briefly to ensure the service has time to start
+        sleep 2
 
-  # Check if the service is running
-  if ! pgrep -f "input-remapper-reader-service" > /dev/null; then
-    log "Error: input-remapper service did not start correctly."
-    exit 1
-  fi
+        # Check if the service is running
+        if ! pgrep -f "input-remapper-reader-service" > /dev/null; then
+          log "Error: input-remapper service did not start correctly."
+          exit 1
+        fi
 
-  # Apply the preset for the specified device
-  retry input-remapper-control --command start --device "Apple Internal Keyboard / Trackpad" --preset swap_internal_mod_keys
+        # Apply the preset for the specified device
+        retry input-remapper-control --command start --device "Apple Internal Keyboard / Trackpad" --preset swap_internal_mod_keys
 
-  log "Input-remapper service restarted successfully."
-'')
+        log "Input-remapper service restarted successfully."
+      '')
 
     ];
   };

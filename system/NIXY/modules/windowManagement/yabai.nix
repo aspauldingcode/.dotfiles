@@ -1,9 +1,20 @@
-{ config, pkgs, unstable, ... }:
+{
+  config,
+  pkgs,
+  unstable,
+  ...
+}:
 
 # config for yabai, skhd, sketchybar, and borders.
 let
   systemType = pkgs.stdenv.hostPlatform.system;
-  homebrewPath = if systemType == "aarch64-darwin" then "/opt/homebrew/bin" else if systemType == "x86_64-darwin" then "/usr/local/bin" else throw "Homebrew Unsupported architecture: ${systemType}";
+  homebrewPath =
+    if systemType == "aarch64-darwin" then
+      "/opt/homebrew/bin"
+    else if systemType == "x86_64-darwin" then
+      "/usr/local/bin"
+    else
+      throw "Homebrew Unsupported architecture: ${systemType}";
   yabai = "${pkgs.yabai}/bin/yabai";
   sketchybar = "${pkgs.sketchybar}/bin/sketchybar";
   borders = "";
@@ -23,7 +34,7 @@ in
     package = pkgs.unstable.yabai; # 7.1.5
     # To stop the yabai service that's managed by launchd on macOS, you can use one of these commands in the terminal:
     # launchctl unload ~/Library/LaunchAgents/org.nixos.yabai.plist
-    # or 
+    # or
     # sudo launchctl unload /Library/LaunchDaemons/org.nixos.yabai.plist
     enableScriptingAddition = true;
     config = {
@@ -87,7 +98,7 @@ in
       yabai -m rule --add app='Sketchybar' layer=below
       yabai -m rule --add app='borders' layer=below
       ${borders}
-      
+
       echo "yabai configuration loaded.."
     '';
   };

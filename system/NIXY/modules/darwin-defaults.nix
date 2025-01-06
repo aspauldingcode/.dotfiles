@@ -1,4 +1,10 @@
-{ config, lib, pkgs, nix-colors,... }:
+{
+  config,
+  lib,
+  pkgs,
+  nix-colors,
+  ...
+}:
 
 let
   inherit (config.colorScheme) palette;
@@ -8,7 +14,7 @@ in
     activationScripts.postUserActivation.text = ''
       # Following line should allow us to avoid a logout/login cycle
       /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-      
+
       # Disable persistence opening apps at login
       defaults write -g ApplePersistence -bool no
 
@@ -134,7 +140,8 @@ in
           DisableSendAnimations = true;
           DisableReplyAnimations = true;
         };
-        "com.apple.Safari"."com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled" = true;
+        "com.apple.Safari"."com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled" =
+          true;
         "/Library/Preferences/com.apple.security.libraryvalidation".DisableLibraryValidation = true;
         "/Library/Preferences/com.apple.Accessibility" = {
           AccessibilityEnabled = 1;
@@ -151,13 +158,14 @@ in
           AppleEnableMouseSwipeNavigateWithScrolls = 0;
           AppleEnableSwipeNavigateWithScrolls = 0;
           AppleFontSmoothing = 0;
-          AppleHighlightColor = let
-            hexColor = "${palette.base0D}"; # this should be base0D which is #83a598
-            hexColorConverted = builtins.toString (
-              (builtins.map (x: x / 255.0) (nix-colors.lib.conversions.hexToRGB hexColor))
-              ++ ["Other"]
-            );
-          in hexColorConverted;
+          AppleHighlightColor =
+            let
+              hexColor = "${palette.base0D}"; # this should be base0D which is #83a598
+              hexColorConverted = builtins.toString (
+                (builtins.map (x: x / 255.0) (nix-colors.lib.conversions.hexToRGB hexColor)) ++ [ "Other" ]
+              );
+            in
+            hexColorConverted;
           AppleInterfaceStyle = "Dark";
           AppleLanguages = [ "en-US" ];
           AppleLocale = "en_US";
@@ -190,14 +198,15 @@ in
         NSGlobalDomain = {
           NSColorSimulateHardwareAccent = true; # hardware accent colors M1 iMacs
           # 3 is yellow, 4 is green, 5 is blue, 6 is red, 7 is purple, 8 is orange
-          NSColorSimulatedHardwareEnclosureNumber = 4; # hardware color choice 
-          AppleHighlightColor = let
-            hexColor = "${palette.base0D}"; # this should be base0D which is #83a598
-            hexColorConverted = builtins.toString (
-              (builtins.map (x: x / 255.0) (nix-colors.lib.conversions.hexToRGB hexColor))
-              ++ ["Other"]
-            );
-          in hexColorConverted;
+          NSColorSimulatedHardwareEnclosureNumber = 4; # hardware color choice
+          AppleHighlightColor =
+            let
+              hexColor = "${palette.base0D}"; # this should be base0D which is #83a598
+              hexColorConverted = builtins.toString (
+                (builtins.map (x: x / 255.0) (nix-colors.lib.conversions.hexToRGB hexColor)) ++ [ "Other" ]
+              );
+            in
+            hexColorConverted;
         };
         "~/Library/Preferences/com.apple.wallpaper" = {
           SonomaFirstRunMigrationPerformed = 1;
@@ -348,7 +357,7 @@ in
           "NSStatusItem Preferred Position hiddenbar_terminate" = 146;
           alwaysHiddenSectionEnabled = 1;
           areSeparatorsHidden = 0;
-          globalKey = { 
+          globalKey = {
             length = 144;
           };
           isAutoHide = 0;
@@ -358,8 +367,8 @@ in
           useFullStatusBarOnExpandEnabled = 0;
         };
         "com.bearisdriving.BGM.App" = {
-            SelectedMusicPlayerID = "EC2A907F-8515-4687-9570-1BF63176E6D8";
-            StatusBarIcon = 0;
+          SelectedMusicPlayerID = "EC2A907F-8515-4687-9570-1BF63176E6D8";
+          StatusBarIcon = 0;
         };
         "com.apple.audio.AudioMIDISetup" = {
           "audioDevice.selected" = "BGMDevice"; # select BGM for Cava to work.
@@ -373,7 +382,7 @@ in
           nextWindowShortcut = "\\U21e5";
         };
         # "com.mac.RecordingIndicatorUtility" = {
-          # AcknowledgedSystemOverrideAlert = 1;
+        # AcknowledgedSystemOverrideAlert = 1;
         # };
       };
       LaunchServices.LSQuarantine = false;

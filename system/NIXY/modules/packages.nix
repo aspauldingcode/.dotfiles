@@ -20,6 +20,7 @@
     prismlauncher
     kitty
     nixfmt-rfc-style
+    luaformatter
     alt-tab-macos
     unnaturalscrollwheels
     docker
@@ -114,21 +115,37 @@
 
   nixpkgs.config = {
     allowUnfree = true;
-    extra-platforms = [ "aarch64-linux" "x86_64-linux" ];
+    extra-platforms = [
+      "aarch64-linux"
+      "x86_64-linux"
+    ];
   };
 
   # Enable Linux building support
   nix.settings = {
-    extra-platforms = [ "aarch64-linux" "x86_64-linux" ];
-    trusted-users = [ "@admin" "root" "demo" "alex" ];
+    extra-platforms = [
+      "aarch64-linux"
+      "x86_64-linux"
+    ];
+    trusted-users = [
+      "@admin"
+      "root"
+      "demo"
+      "alex"
+    ];
     extra-sandbox-paths = [ "/bin/sh=${pkgs.bash}/bin/sh" ];
     builders-use-substitutes = true;
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
   };
 
   #nix.linux-builder.enable = true;
   nix.settings.substituters = [ "https://cache.nixos.org/" ];
-  nix.settings.trusted-public-keys = [ "hydra.nixos.org-1:CNHJZBh9K4tP3EKF6FkkgeVYsS3ohTl+oS0Qa8bezVs=" ];
+  nix.settings.trusted-public-keys = [
+    "hydra.nixos.org-1:CNHJZBh9K4tP3EKF6FkkgeVYsS3ohTl+oS0Qa8bezVs="
+  ];
   nix.settings.always-allow-substitutes = true;
 
   # # Enable remote builder for Orb VM

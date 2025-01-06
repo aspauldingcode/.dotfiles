@@ -1,7 +1,7 @@
 { stdenvNoCC, fetchurl }:
 
 # Create a derivation package for macOS InstantView application
-stdenvNoCC.mkDerivation (self:{ 
+stdenvNoCC.mkDerivation (self: {
   name = "instantview";
   version = "V3.21R0001";
 
@@ -15,19 +15,22 @@ stdenvNoCC.mkDerivation (self:{
   dontConfigure = true;
   dontBuild = true;
 
-  installPhase = 
-  let hdiutil = "/usr/bin/hdiutil"; in ''
-  dir=$(mktemp -d)
-  ${hdiutil} attach "$src" -mountpoint "$dir"
-  detach() {
-    while ! ${hdiutil} detach -force "$dir"; do
-    echo "failed to detach image at $dir"
-    sleep 1
-    done
-  }
-  trap detach EXIT
+  installPhase =
+    let
+      hdiutil = "/usr/bin/hdiutil";
+    in
+    ''
+      dir=$(mktemp -d)
+      ${hdiutil} attach "$src" -mountpoint "$dir"
+      detach() {
+        while ! ${hdiutil} detach -force "$dir"; do
+        echo "failed to detach image at $dir"
+        sleep 1
+        done
+      }
+      trap detach EXIT
 
-  mkdir -p $out/Applications
-  cp -r "$dir"/'macOS InstantView.app' $out/Applications/
-  '';
+      mkdir -p $out/Applications
+      cp -r "$dir"/'macOS InstantView.app' $out/Applications/
+    '';
 })

@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   services.openssh = {
@@ -9,23 +14,23 @@
       KbdInteractiveAuthentication = false;
       PermitRootLogin = "yes";
       StrictModes = true;
-      
+
       # Security settings
       X11Forwarding = true;
       UsePAM = true;
       UseDns = true;
       GatewayPorts = "no";
-      
+
       # Logging and display
       LogLevel = "INFO";
       PrintMotd = true;
-      
+
       # Access control
       AllowGroups = [ ];
       AllowUsers = [ "alex" ];
       DenyGroups = [ ];
       DenyUsers = [ ];
-      
+
       # Crypto settings
       Ciphers = [
         "chacha20-poly1305@openssh.com"
@@ -53,25 +58,25 @@
         "ssh-ed25519-cert-v01@openssh.com"
       ];
     };
-    
+
     # Port and firewall settings
     openFirewall = true;
     ports = [ 22 ];
     startWhenNeeded = true;
-    
+
     # SFTP configuration
     # allowSFTP = true; # error: The option `services.openssh.allowSFTP' does not exist.
     sftpFlags = [ ];
     sftpServerExecutable = "internal-sftp";
-    
+
     # Additional configuration
-    # authorizedKeysInHomedir = true; # error: The option `services.openssh.authorizedKeysInHomedir' does not exist. 
+    # authorizedKeysInHomedir = true; # error: The option `services.openssh.authorizedKeysInHomedir' does not exist.
     authorizedKeysFiles = [ ];
-    # authorizedKeysCommand = null; # error: The option `services.openssh.authorizedKeysCommand' does not exist. 
+    # authorizedKeysCommand = null; # error: The option `services.openssh.authorizedKeysCommand' does not exist.
     # authorizedKeysCommandUser = null; #error: The option `services.openssh.authorizedKeysCommandUser' does not exist.
     # banner = null; # error: The option `services.openssh.banner' does not exist.
     extraConfig = "";
-    
+
     # Listen addresses
     listenAddresses = [
       {
@@ -79,11 +84,11 @@
         port = 22;
       }
     ];
-    
+
     # Host keys and known hosts can be configured here
     hostKeys = [ ];
     knownHosts = { };
-    
+
     # Moduli file for DH key exchange
     moduliFile = null;
   };

@@ -1,4 +1,9 @@
-{ config, pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 ### System Configuration.nix for Darwin
 {
   imports = [
@@ -15,7 +20,7 @@
 
     ./sa-resources/ammonia.nix
     ./sa-resources/glow.nix
-   
+
     ./modules/windowManagement/cursorcerer.nix
     ./modules/windowManagement/karabiner.nix
     ./modules/windowManagement/macforge.nix
@@ -36,7 +41,12 @@
       font-awesome_5
       jetbrains-mono
       # (pkgs.callPackage ./apple-fonts.nix {})
-      (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" "Hack" ]; })
+      (nerdfonts.override {
+        fonts = [
+          "NerdFontsSymbolsOnly"
+          "Hack"
+        ];
+      })
     ];
   };
   # system.build = builtins.exec "echo 'hello, world.'";
@@ -66,11 +76,11 @@
 
   # Create /etc/zshrc that loads the nix-darwin environment.
   programs = {
-    zsh.enable = true;  # default shell on catalina
+    zsh.enable = true; # default shell on catalina
     bash.enable = true;
-    fish.enable = true; #NOT Borne COMPAT? 
+    fish.enable = true; # NOT Borne COMPAT?
     # unmenu = {
-      # enable = true;
+    # enable = true;
     #   qwerty/Hotkey = "alt-d";
     #   findApps = true;
     #   findExecutables = true;
@@ -81,7 +91,7 @@
     # };
   };
 
-  users.users.alex.shell = pkgs.zsh; 
+  users.users.alex.shell = pkgs.zsh;
   nix = {
     # optimise.automatic = true;
     # https://nixos.wiki/wiki/Distributed_build
@@ -102,15 +112,15 @@
     gc = {
       automatic = true;
       interval.Hour = 23; # Automaitcally collect garbage each day
-      options = "--delete-older-than 30d --delete-old-generations 10"; 
+      options = "--delete-older-than 30d --delete-old-generations 10";
     };
     settings = {
       # FIXME: add cahcix.nixos.org so I don't have to rebuild home-manager all the time
-      # substituters = [ 
-      #   "https://cache.nixos.org/" 
+      # substituters = [
+      #   "https://cache.nixos.org/"
       # ];
-      # trusted-public-keys = [ 
-      #   "hydra.nixos.org-1:CNHJZBh9K4tP3EKF6FkkgeVYsS3ohTl+oS0Qa8bezVs=" 
+      # trusted-public-keys = [
+      #   "hydra.nixos.org-1:CNHJZBh9K4tP3EKF6FkkgeVYsS3ohTl+oS0Qa8bezVs="
       # ]; # By default, only the key for cache.nixos.org is included
       # trusted-substituters = [
       #   "https://hydra.nixos.org/"
@@ -121,8 +131,8 @@
       ];
     };
     extraOptions = ''
-    extra-platforms = aarch64-darwin x86_64-darwin
-    experimental-features = nix-command flakes
+      extra-platforms = aarch64-darwin x86_64-darwin
+      experimental-features = nix-command flakes
     '';
   };
 

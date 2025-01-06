@@ -67,7 +67,7 @@
   };
 
   # disable Volume/Brightness HUD on macOS at login!
-  launchd.agents = { 
+  launchd.agents = {
     xdg_cache_home = {
       enable = true;
       config = {

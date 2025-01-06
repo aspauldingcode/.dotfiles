@@ -3,12 +3,13 @@
 #You can use WhiteSur theme now btw,,,
 # Sddm Sonoma theme!
 let
-  /* profile = pkgs.fetchurl {
-       url =  "https://avatars.githubusercontent.com/u/10196826?v=4"; # https link to image
-       sha256 = ""; # hash of image file
-     };
+  /*
+    profile = pkgs.fetchurl {
+      url =  "https://avatars.githubusercontent.com/u/10196826?v=4"; # https link to image
+      sha256 = ""; # hash of image file
+    };
   */
-  #profile = 
+  #profile =
   background = ./../../users/alex/extraConfig/wallpapers/ghibliwp.jpg; # background image?
 in
 pkgs.stdenv.mkDerivation {
@@ -34,20 +35,21 @@ pkgs.stdenv.mkDerivation {
   '';
 }
 
-/* FOLDER OUTLINE:
-   nix/store...w4pxwif-sddm-theme-sonoma-v2
-    images                                                                                                                             │  VirtualKeyboard.qml
-    fonts                                                                                                                              │  TextConstants.qml
-    components                                                                                                                         │  ShutdownToolTip.qml
-    theme.conf.user                                                                                                                    │  RebootToolTip.qml
-    theme.conf                                                                                                                         │  Clock.qml
-    screenshot.png                                                                                                                     │
-    metadata.desktop                                                                                                                   │
-    background.jpg                                                                                                                     │
-    SessionButton.qml                                                                                                                  │
-    Main.qml                                                                                                                           │
-    LICENSE                                                                                                                            │
-    AUTHORS                                                                                                                            │
+/*
+  FOLDER OUTLINE:
+  nix/store...w4pxwif-sddm-theme-sonoma-v2
+   images                                                                                                                             │  VirtualKeyboard.qml
+   fonts                                                                                                                              │  TextConstants.qml
+   components                                                                                                                         │  ShutdownToolTip.qml
+   theme.conf.user                                                                                                                    │  RebootToolTip.qml
+   theme.conf                                                                                                                         │  Clock.qml
+   screenshot.png                                                                                                                     │
+   metadata.desktop                                                                                                                   │
+   background.jpg                                                                                                                     │
+   SessionButton.qml                                                                                                                  │
+   Main.qml                                                                                                                           │
+   LICENSE                                                                                                                            │
+   AUTHORS                                                                                                                            │
 */
 
 #Main.qml contains info on the sizing of profile photo, the name of the "Enter Password" greeting, etc.
@@ -64,21 +66,22 @@ pkgs.stdenv.mkDerivation {
 
 # https://files04.pling.com/api/files/download/j/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjE3MDcwNjcxNzEiLCJ1IjpudWxsLCJsdCI6ImRvd25sb2FkIiwicyI6ImNlYjNlMDY1MDZhMWRlNWRkYWIzNWMzODM4YmUwMDMxOTQ2Zjg1NDM0M2RmZWEwNTM1OTQzNTRmZjk2NGQ4YjUyMThlMjRjNGZhZTZjN2YxZTNlNGJjYzAwMGZkYWJiOTNmMGM4OGQ4YjNmZmMwODMwODliOTEyNmVlNjA4YWU1IiwidCI6MTcwOTMzODkxNiwic3RmcCI6bnVsbCwic3RpcCI6bnVsbH0.tVNB03J5rYoFyHyEaiTAMCprZSwSXpE6L6u3oNqG3p0/Apple-Sonoma-v3.tar.xz
 
-/* WORKING
-   { pkgs }:
+/*
+  WORKING
+  { pkgs }:
 
-   pkgs.stdenv.mkDerivation {
-     name = "sddm-theme";
-     src = pkgs.fetchFromGitHub {
-       owner = "MarianArlt";
-       repo = "sddm-sugar-dark";
-       rev = "ceb2c455663429be03ba62d9f898c571650ef7fe";
-       sha256 = "0153z1kylbhc9d12nxy9vpn0spxgrhgy36wy37pk6ysq7akaqlvy";
-     };
+  pkgs.stdenv.mkDerivation {
+    name = "sddm-theme";
+    src = pkgs.fetchFromGitHub {
+      owner = "MarianArlt";
+      repo = "sddm-sugar-dark";
+      rev = "ceb2c455663429be03ba62d9f898c571650ef7fe";
+      sha256 = "0153z1kylbhc9d12nxy9vpn0spxgrhgy36wy37pk6ysq7akaqlvy";
+    };
 
-     installPhase = ''
-     mkdir -p $out
-     cp -R ./* $out/
-     '';
-   }
+    installPhase = ''
+    mkdir -p $out
+    cp -R ./* $out/
+    '';
+  }
 */

@@ -1,9 +1,14 @@
-{ lib, config, pkgs, ... }: 
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 
 {
   #You can import other home-manager modules here
   imports = [
-    ./modules/NIXSTATION/packages-NIXEDUP.nix  
+    ./modules/NIXSTATION/packages-NIXEDUP.nix
   ];
   # Configure your nixpkgs instance
   config = {
@@ -11,13 +16,13 @@
     # Workaround for https://github.com/nix-community/home-manager/issues/2942
     allowUnfreePredicate = _: true; # Still open ticket as of: 10/04/23.
 
-
     # You can place the 'home' and 'programs' sections within the 'config' attribute as follows:
     home = {
       username = "alex";
       homeDirectory = "/home/alex";
       stateVersion = "23.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-      file = { # MANAGE DOTFILES?
+      file = {
+        # MANAGE DOTFILES?
       };
     };
 
@@ -25,7 +30,7 @@
       home-manager.enable = true;
       git = {
         enable = true;
-        userName  = "aspauldingcode";
+        userName = "aspauldingcode";
         userEmail = "aspauldingcode@gmail.com";
       };
       fish.enable = true;

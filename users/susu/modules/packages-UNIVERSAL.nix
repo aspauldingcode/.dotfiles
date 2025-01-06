@@ -2,9 +2,9 @@
 
 # Su Su's Applications
 {
-	home.packages = with pkgs; [
-		google-chrome
-		anydesk
+  home.packages = with pkgs; [
+    google-chrome
+    anydesk
 
-	];
+  ];
 }

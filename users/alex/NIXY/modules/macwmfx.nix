@@ -1,7 +1,9 @@
 { config, ... }:
 
-let inherit (config.colorScheme) palette;
-in {
+let
+  inherit (config.colorScheme) palette;
+in
+{
   home.file.".config/macwmfx/config" = {
     force = true; # overwrite the file
     text = builtins.toJSON {

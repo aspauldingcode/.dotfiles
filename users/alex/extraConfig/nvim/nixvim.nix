@@ -943,7 +943,7 @@
           modules = {
             #  require('neorg').setup {
             #    load = {
-            #      ["core.defaults"] = {}, -- 
+            #      ["core.defaults"] = {}, --
             #      ["core.concealer"] = {}, -- Allows for use of icons
             #    };
             #  }
@@ -962,7 +962,7 @@
               #    home = "~/notes/home";
               #    work = "~/notes/work";
               #  };
-            #};
+              #};
             };
           };
         };
@@ -998,15 +998,15 @@
           settings = {
             # All default mappings
             mappings = [
-              "<C-u>"  # Half page up
-              "<C-d>"  # Half page down
-              "<C-b>"  # Page up
-              "<C-f>"  # Page down
-              "<C-y>"  # Line up
-              "<C-e>"  # Line down
-              "zt"     # Current line to top
-              "zz"     # Current line to middle
-              "zb"     # Current line to bottom
+              "<C-u>" # Half page up
+              "<C-d>" # Half page down
+              "<C-b>" # Page up
+              "<C-f>" # Page down
+              "<C-y>" # Line up
+              "<C-e>" # Line down
+              "zt" # Current line to top
+              "zz" # Current line to middle
+              "zb" # Current line to bottom
             ];
             # Hide cursor while scrolling for better experience
             hide_cursor = true;
@@ -1019,7 +1019,7 @@
             # Use quadratic easing for smooth acceleration/deceleration
             easing = "quadratic";
             # No performance mode optimizations
-            performance_mode = false; 
+            performance_mode = false;
             # No custom hooks
             pre_hook = null;
             post_hook = null;
@@ -1080,7 +1080,7 @@
             min_jump = 30;
             popup = {
               delay_ms = 0; # delay before popup displays
-              inc_ms = 10; # time increments used for fade/resize effects 
+              inc_ms = 10; # time increments used for fade/resize effects
               blend = 10; # starting blend, between 0-100 (fully transparent), see :h winblend
               width = 10;
               winhl = "PMenu";
@@ -1153,7 +1153,7 @@
           config = toLuaFile ./plugin/cmp.lua;
         }
         #cmp-nvim-lsp # FIXME: Learn more
-        #cmp-nvim-lsp-document-symbol 
+        #cmp-nvim-lsp-document-symbol
         #cmp-nvim-lsp-signature-help
 
         # nvim-web-devicons # optional, for file icons

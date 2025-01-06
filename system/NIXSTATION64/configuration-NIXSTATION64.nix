@@ -47,7 +47,7 @@
     };
   };
 
-  hardware = { 
+  hardware = {
     amdgpu.initrd.enable = true;
     bluetooth = {
       enable = true;
@@ -82,15 +82,23 @@
 
     networkmanager.dns = lib.mkForce "default"; # Use NetworkManager's default DNS settings
     firewall = {
-      allowedTCPPorts = [ 5354 1714 1764 ];
-      allowedUDPPorts = [ 5353 1714 1764 ];
-    };    
+      allowedTCPPorts = [
+        5354
+        1714
+        1764
+      ];
+      allowedUDPPorts = [
+        5353
+        1714
+        1764
+      ];
+    };
   };
 
   systemd.services.avahi-daemon = {
-      serviceConfig = {
-        Restart = "always";
-        RestartSec = "5";
+    serviceConfig = {
+      Restart = "always";
+      RestartSec = "5";
     };
   };
 
@@ -100,7 +108,10 @@
 
   systemd.user.services.mpris-proxy = {
     description = "Mpris proxy";
-    after = [ "network.target" "sound.target" ];
+    after = [
+      "network.target"
+      "sound.target"
+    ];
     wantedBy = [ "default.target" ];
     serviceConfig.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
   };
@@ -144,8 +155,14 @@
           theme_name = "Adwaita";
         };
         commands = {
-          reboot = [ "systemctl" "reboot" ];
-          poweroff = [ "systemctl" "poweroff" ];
+          reboot = [
+            "systemctl"
+            "reboot"
+          ];
+          poweroff = [
+            "systemctl"
+            "poweroff"
+          ];
         };
         appearance = {
           greeting_msg = "Welcome back!";
@@ -223,11 +240,16 @@
         };
       };
       wireplumber.extraConfig.bluetoothEnhancements = {
-          "monitor.bluez.properties" = {
-            "bluez5.enable-sbc-xq" = true;
-            "bluez5.enable-msbc" = true;
-            "bluez5.enable-hw-volume" = true;
-            "bluez5.roles" = [ "hsp_hs" "hsp_ag" "hfp_hf" "hfp_ag" ];
+        "monitor.bluez.properties" = {
+          "bluez5.enable-sbc-xq" = true;
+          "bluez5.enable-msbc" = true;
+          "bluez5.enable-hw-volume" = true;
+          "bluez5.roles" = [
+            "hsp_hs"
+            "hsp_ag"
+            "hfp_hf"
+            "hfp_ag"
+          ];
         };
       };
     };
@@ -406,7 +428,7 @@
     activationScripts.script.text = ''
       cp /home/alex/.dotfiles/users/alex/face.png /var/lib/AccountsService/icons/alex
       cp /home/alex/.dotfiles/users/susu/face.png /var/lib/AccountsService/icons/susu
-      
+
       # adds way-displays configuration
       cd ${../../system/NIXSTATION64/modules/way-displays}
       find . -type d -exec mkdir -p /etc/way-displays/{} \;

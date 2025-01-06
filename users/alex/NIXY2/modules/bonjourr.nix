@@ -1,5 +1,9 @@
-
-{ buildFirefoxXpiAddon, fetchurl, lib, stdenv }:
+{
+  buildFirefoxXpiAddon,
+  fetchurl,
+  lib,
+  stdenv,
+}:
 
 {
   bonjourr = buildFirefoxXpiAddon {

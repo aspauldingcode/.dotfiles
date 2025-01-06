@@ -1,0 +1,56 @@
+# One CLI to format the code tree - https://github.com/numtide/treefmt
+
+# Global options
+fail-on-change = false
+allow-missing-formatter = false
+on-unmatched = "warn"
+
+# Global excludes
+excludes = [
+    "*.png",
+    "*.jpg", 
+    "*.jpeg",
+    "*.gif",
+    "*.ico",
+    "*.icns",
+    "*.car",
+    "*.bundle/**",
+    "*.psd",
+    "*.xcf",
+    "*.kra",
+    "*.cape",
+    "*.DS_Store",
+    "*.tar.gz",
+    "*.sh",
+    "*.py",
+    "*.css",
+    "*.vim",
+    "*.plist",
+    "*.yaml",
+    "*.yml",
+    "*.json",
+    "*.md",
+    "*.lock",
+    "*.pub",
+    "*.conf",
+    "sway-config",
+    "*.loctable",
+    "*.mac13g",
+    "*.bk",
+    "*.txt",
+    "*.norg",
+    "*.kra~",
+    "*.png~",
+    "*.gitignore",
+    "*.xccolortheme"
+]
+
+# Nix formatter
+[formatter.nixfmt-rfc-style]
+command = "nixfmt"
+includes = ["*.nix"]
+
+# Lua formatter
+[formatter.lua-format]
+command = "lua-format"
+includes = ["*.lua"]

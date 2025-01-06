@@ -60,7 +60,7 @@ let
   '';
   detect_arch_and_source_homebrew_packages = pkgs.writeShellScript "detect_arch_and_source_homebrew_packages" ''
     #!/bin/sh
-    
+
     systemType=$(uname -m)
     if [ "$systemType" = "arm64" ]; then
       homebrewPath="/opt/homebrew/bin"
@@ -91,10 +91,13 @@ in
   xdg.configFile."sketchybar/icons.sh".source = ./icons.sh;
   xdg.configFile."sketchybar/colors.sh".source = nixy_colors;
   xdg.configFile."sketchybar/brightness.sh".source = brightness;
-  xdg.configFile."sketchybar/plugins/detect_arch_and_source_homebrew_packages.sh".source = detect_arch_and_source_homebrew_packages;
+  xdg.configFile."sketchybar/plugins/detect_arch_and_source_homebrew_packages.sh".source =
+    detect_arch_and_source_homebrew_packages;
   xdg.configFile."sketchybar/plugins/sway_spaces.sh".source = ./plugins/sway_spaces.sh;
-  xdg.configFile."sketchybar/plugins/add_spaces_sketchybar.sh".source = ./plugins/add_spaces_sketchybar.sh;
-  xdg.configFile."sketchybar/plugins/print_spaces_sketchybar.sh".source = ./plugins/print_spaces_sketchybar.sh;
+  xdg.configFile."sketchybar/plugins/add_spaces_sketchybar.sh".source =
+    ./plugins/add_spaces_sketchybar.sh;
+  xdg.configFile."sketchybar/plugins/print_spaces_sketchybar.sh".source =
+    ./plugins/print_spaces_sketchybar.sh;
   xdg.configFile."sketchybar/plugins/fullscreen_lock.sh".source = ./plugins/fullscreen_lock.sh;
   xdg.configFile."sketchybar/plugins/apple.sh".source = ./plugins/apple.sh;
   xdg.configFile."sketchybar/plugins/battery.sh".source = ./plugins/battery.sh;
@@ -129,7 +132,7 @@ in
   xdg.configFile."sketchybar/plugins/bluetooth.sh".executable = true;
   xdg.configFile."sketchybar/plugins/cpu.sh".executable = true;
   xdg.configFile."sketchybar/plugins/datetime.sh".executable = true;
-  xdg.configFile."sketchybar/plugins/memory.sh".executable = true;   
+  xdg.configFile."sketchybar/plugins/memory.sh".executable = true;
   xdg.configFile."sketchybar/plugins/space.sh".executable = true;
   xdg.configFile."sketchybar/plugins/front_app.sh".executable = true;
   xdg.configFile."sketchybar/plugins/spotify.sh".executable = true;

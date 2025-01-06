@@ -35,19 +35,19 @@
                         from = {
                           key_code = "c";
                           modifiers = {
-                            mandatory = ["left_control"];
+                            mandatory = [ "left_control" ];
                           };
                         };
                         to = [
                           {
                             key_code = "c";
-                            modifiers = ["left_command"];
+                            modifiers = [ "left_command" ];
                           }
                         ];
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                            bundle_identifiers = [ "com.tigervnc.tigervnc" ];
                           }
                         ];
                       }
@@ -56,19 +56,19 @@
                         from = {
                           key_code = "c";
                           modifiers = {
-                            mandatory = ["left_command"];
+                            mandatory = [ "left_command" ];
                           };
                         };
                         to = [
                           {
                             key_code = "c";
-                            modifiers = ["left_control"];
+                            modifiers = [ "left_control" ];
                           }
                         ];
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                            bundle_identifiers = [ "com.tigervnc.tigervnc" ];
                           }
                         ];
                       }
@@ -77,19 +77,25 @@
                         from = {
                           key_code = "c";
                           modifiers = {
-                            mandatory = ["left_control" "left_shift"];
+                            mandatory = [
+                              "left_control"
+                              "left_shift"
+                            ];
                           };
                         };
                         to = [
                           {
                             key_code = "c";
-                            modifiers = ["left_command" "left_shift"];
+                            modifiers = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           }
                         ];
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                            bundle_identifiers = [ "com.tigervnc.tigervnc" ];
                           }
                         ];
                       }
@@ -98,19 +104,25 @@
                         from = {
                           key_code = "c";
                           modifiers = {
-                            mandatory = ["left_command" "left_shift"];
+                            mandatory = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           };
                         };
                         to = [
                           {
                             key_code = "c";
-                            modifiers = ["left_control" "left_shift"];
+                            modifiers = [
+                              "left_control"
+                              "left_shift"
+                            ];
                           }
                         ];
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                            bundle_identifiers = [ "com.tigervnc.tigervnc" ];
                           }
                         ];
                       }
@@ -119,19 +131,19 @@
                         from = {
                           key_code = "x";
                           modifiers = {
-                            mandatory = ["left_control"];
+                            mandatory = [ "left_control" ];
                           };
                         };
                         to = [
                           {
                             key_code = "x";
-                            modifiers = ["left_command"];
+                            modifiers = [ "left_command" ];
                           }
                         ];
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                            bundle_identifiers = [ "com.tigervnc.tigervnc" ];
                           }
                         ];
                       }
@@ -140,19 +152,19 @@
                         from = {
                           key_code = "x";
                           modifiers = {
-                            mandatory = ["left_command"];
+                            mandatory = [ "left_command" ];
                           };
                         };
                         to = [
                           {
                             key_code = "x";
-                            modifiers = ["left_control"];
+                            modifiers = [ "left_control" ];
                           }
                         ];
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                            bundle_identifiers = [ "com.tigervnc.tigervnc" ];
                           }
                         ];
                       }
@@ -161,19 +173,25 @@
                         from = {
                           key_code = "x";
                           modifiers = {
-                            mandatory = ["left_control" "left_shift"];
+                            mandatory = [
+                              "left_control"
+                              "left_shift"
+                            ];
                           };
                         };
                         to = [
                           {
                             key_code = "x";
-                            modifiers = ["left_command" "left_shift"];
+                            modifiers = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           }
                         ];
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                            bundle_identifiers = [ "com.tigervnc.tigervnc" ];
                           }
                         ];
                       }
@@ -182,19 +200,25 @@
                         from = {
                           key_code = "x";
                           modifiers = {
-                            mandatory = ["left_command" "left_shift"];
+                            mandatory = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           };
                         };
                         to = [
                           {
                             key_code = "x";
-                            modifiers = ["left_control" "left_shift"];
+                            modifiers = [
+                              "left_control"
+                              "left_shift"
+                            ];
                           }
                         ];
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            bundle_identifiers = ["com.tigervnc.tigervnc"];
+                            bundle_identifiers = [ "com.tigervnc.tigervnc" ];
                           }
                         ];
                       }
@@ -208,13 +232,16 @@
                         from = {
                           key_code = "l";
                           modifiers = {
-                            mandatory = ["left_alt"];
+                            mandatory = [ "left_alt" ];
                           };
                         };
                         to = [
                           {
                             key_code = "q";
-                            modifiers = ["left_control" "left_command"];
+                            modifiers = [
+                              "left_control"
+                              "left_command"
+                            ];
                           }
                         ];
                       }
@@ -228,13 +255,19 @@
                         from = {
                           key_code = "3";
                           modifiers = {
-                            mandatory = ["left_control" "left_shift"];
+                            mandatory = [
+                              "left_control"
+                              "left_shift"
+                            ];
                           };
                         };
                         to = [
                           {
                             key_code = "3";
-                            modifiers = ["left_command" "left_shift"];
+                            modifiers = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           }
                         ];
                       }
@@ -243,13 +276,19 @@
                         from = {
                           key_code = "3";
                           modifiers = {
-                            mandatory = ["left_command" "left_shift"];
+                            mandatory = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           };
                         };
                         to = [
                           {
                             key_code = "3";
-                            modifiers = ["left_control" "left_shift"];
+                            modifiers = [
+                              "left_control"
+                              "left_shift"
+                            ];
                           }
                         ];
                       }
@@ -258,13 +297,19 @@
                         from = {
                           key_code = "4";
                           modifiers = {
-                            mandatory = ["left_control" "left_shift"];
+                            mandatory = [
+                              "left_control"
+                              "left_shift"
+                            ];
                           };
                         };
                         to = [
                           {
                             key_code = "4";
-                            modifiers = ["left_command" "left_shift"];
+                            modifiers = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           }
                         ];
                       }
@@ -273,13 +318,19 @@
                         from = {
                           key_code = "4";
                           modifiers = {
-                            mandatory = ["left_command" "left_shift"];
+                            mandatory = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           };
                         };
                         to = [
                           {
                             key_code = "4";
-                            modifiers = ["left_control" "left_shift"];
+                            modifiers = [
+                              "left_control"
+                              "left_shift"
+                            ];
                           }
                         ];
                       }
@@ -288,13 +339,19 @@
                         from = {
                           key_code = "5";
                           modifiers = {
-                            mandatory = ["left_control" "left_shift"];
+                            mandatory = [
+                              "left_control"
+                              "left_shift"
+                            ];
                           };
                         };
                         to = [
                           {
                             key_code = "5";
-                            modifiers = ["left_command" "left_shift"];
+                            modifiers = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           }
                         ];
                       }
@@ -303,13 +360,19 @@
                         from = {
                           key_code = "5";
                           modifiers = {
-                            mandatory = ["left_command" "left_shift"];
+                            mandatory = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           };
                         };
                         to = [
                           {
                             key_code = "5";
-                            modifiers = ["left_control" "left_shift"];
+                            modifiers = [
+                              "left_control"
+                              "left_shift"
+                            ];
                           }
                         ];
                       }
@@ -487,7 +550,10 @@
                         to = [
                           {
                             "key_code" = "l";
-                            modifiers = [ "left_command" "left_option" ];
+                            modifiers = [
+                              "left_command"
+                              "left_option"
+                            ];
                           }
                         ];
                         conditions = [
@@ -512,7 +578,10 @@
                         type = "basic";
                         from = {
                           key_code = "q";
-                          modifiers.mandatory = [ "left_option" "left_shift" ];
+                          modifiers.mandatory = [
+                            "left_option"
+                            "left_shift"
+                          ];
                         };
                         to = [
                           {
@@ -523,7 +592,10 @@
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            bundle_identifiers = [ "^org\\.alacritty$" "^com\\.apple\\.SystemProfiler$" ];
+                            bundle_identifiers = [
+                              "^org\\.alacritty$"
+                              "^com\\.apple\\.SystemProfiler$"
+                            ];
                           }
                         ];
                       }
@@ -612,12 +684,18 @@
                         type = "basic";
                         from = {
                           key_code = "c";
-                          modifiers.mandatory = [ "left_command" "left_shift" ];
+                          modifiers.mandatory = [
+                            "left_command"
+                            "left_shift"
+                          ];
                         };
                         to = [
                           {
                             key_code = "c";
-                            modifiers = [ "left_control" "left_shift" ];
+                            modifiers = [
+                              "left_control"
+                              "left_shift"
+                            ];
                           }
                         ];
                         conditions = [
@@ -631,12 +709,18 @@
                         type = "basic";
                         from = {
                           key_code = "c";
-                          modifiers.mandatory = [ "left_control" "left_shift" ];
+                          modifiers.mandatory = [
+                            "left_control"
+                            "left_shift"
+                          ];
                         };
                         to = [
                           {
                             key_code = "c";
-                            modifiers = [ "left_command" "left_shift" ];
+                            modifiers = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           }
                         ];
                         conditions = [
@@ -650,12 +734,18 @@
                         type = "basic";
                         from = {
                           key_code = "x";
-                          modifiers.mandatory = [ "left_command" "left_shift" ];
+                          modifiers.mandatory = [
+                            "left_command"
+                            "left_shift"
+                          ];
                         };
                         to = [
                           {
                             key_code = "x";
-                            modifiers = [ "left_control" "left_shift" ];
+                            modifiers = [
+                              "left_control"
+                              "left_shift"
+                            ];
                           }
                         ];
                         conditions = [
@@ -669,12 +759,18 @@
                         type = "basic";
                         from = {
                           key_code = "x";
-                          modifiers.mandatory = [ "left_control" "left_shift" ];
+                          modifiers.mandatory = [
+                            "left_control"
+                            "left_shift"
+                          ];
                         };
                         to = [
                           {
                             key_code = "x";
-                            modifiers = [ "left_command" "left_shift" ];
+                            modifiers = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           }
                         ];
                         conditions = [
@@ -693,14 +789,14 @@
                         type = "basic";
                         from = {
                           key_code = "left_arrow";
-                          modifiers = { 
-                            mandatory = ["left_command"]; 
+                          modifiers = {
+                            mandatory = [ "left_command" ];
                           };
                         };
                         to = [
                           {
                             key_code = "left_arrow";
-                            modifiers = ["left_option"];
+                            modifiers = [ "left_option" ];
                           }
                         ];
                       }
@@ -708,14 +804,14 @@
                         type = "basic";
                         from = {
                           key_code = "right_arrow";
-                          modifiers = { 
-                            mandatory = ["left_command"]; 
-                          }; 
+                          modifiers = {
+                            mandatory = [ "left_command" ];
+                          };
                         };
                         to = [
                           {
                             key_code = "right_arrow";
-                            modifiers = ["left_option"];
+                            modifiers = [ "left_option" ];
                           }
                         ];
                       }
@@ -723,14 +819,14 @@
                         type = "basic";
                         from = {
                           key_code = "up_arrow";
-                          modifiers = { 
-                            mandatory = ["left_command"]; 
+                          modifiers = {
+                            mandatory = [ "left_command" ];
                           };
                         };
                         to = [
                           {
                             key_code = "up_arrow";
-                            modifiers = ["left_option"];
+                            modifiers = [ "left_option" ];
                           }
                         ];
                       }
@@ -738,14 +834,14 @@
                         type = "basic";
                         from = {
                           key_code = "down_arrow";
-                          modifiers = { 
-                            mandatory = ["left_command"]; 
+                          modifiers = {
+                            mandatory = [ "left_command" ];
                           };
                         };
                         to = [
                           {
                             key_code = "down_arrow";
-                            modifiers = ["left_option"];
+                            modifiers = [ "left_option" ];
                           }
                         ];
                       }
@@ -753,14 +849,14 @@
                         type = "basic";
                         from = {
                           key_code = "delete_or_backspace";
-                          modifiers = { 
-                            mandatory = ["left_command"]; 
+                          modifiers = {
+                            mandatory = [ "left_command" ];
                           };
                         };
                         to = [
                           {
                             key_code = "delete_or_backspace";
-                            modifiers = ["left_option"];
+                            modifiers = [ "left_option" ];
                           }
                         ];
                       }
@@ -773,14 +869,20 @@
                         type = "basic";
                         from = {
                           key_code = "left_arrow";
-                          modifiers = { 
-                            mandatory = ["left_command" "left_shift"]; 
+                          modifiers = {
+                            mandatory = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           };
                         };
                         to = [
                           {
                             key_code = "left_arrow";
-                            modifiers = ["left_option" "left_shift"];
+                            modifiers = [
+                              "left_option"
+                              "left_shift"
+                            ];
                           }
                         ];
                       }
@@ -788,14 +890,20 @@
                         type = "basic";
                         from = {
                           key_code = "right_arrow";
-                          modifiers = { 
-                            mandatory = ["left_command" "left_shift"]; 
-                          }; 
+                          modifiers = {
+                            mandatory = [
+                              "left_command"
+                              "left_shift"
+                            ];
+                          };
                         };
                         to = [
                           {
                             key_code = "right_arrow";
-                            modifiers = ["left_option" "left_shift"];
+                            modifiers = [
+                              "left_option"
+                              "left_shift"
+                            ];
                           }
                         ];
                       }
@@ -803,14 +911,20 @@
                         type = "basic";
                         from = {
                           key_code = "up_arrow";
-                          modifiers = { 
-                            mandatory = ["left_command" "left_shift"]; 
+                          modifiers = {
+                            mandatory = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           };
                         };
                         to = [
                           {
                             key_code = "up_arrow";
-                            modifiers = ["left_option" "left_shift"];
+                            modifiers = [
+                              "left_option"
+                              "left_shift"
+                            ];
                           }
                         ];
                       }
@@ -818,14 +932,20 @@
                         type = "basic";
                         from = {
                           key_code = "down_arrow";
-                          modifiers = { 
-                            mandatory = ["left_command" "left_shift"]; 
+                          modifiers = {
+                            mandatory = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           };
                         };
                         to = [
                           {
                             key_code = "down_arrow";
-                            modifiers = ["left_option" "left_shift"];
+                            modifiers = [
+                              "left_option"
+                              "left_shift"
+                            ];
                           }
                         ];
                       }
@@ -833,14 +953,20 @@
                         type = "basic";
                         from = {
                           key_code = "delete_or_backspace";
-                          modifiers = { 
-                            mandatory = ["left_command" "left_shift"]; 
+                          modifiers = {
+                            mandatory = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           };
                         };
                         to = [
                           {
                             key_code = "delete_or_backspace";
-                            modifiers = ["left_option" "left_shift"];
+                            modifiers = [
+                              "left_option"
+                              "left_shift"
+                            ];
                           }
                         ];
                       }
@@ -853,14 +979,14 @@
                         type = "basic";
                         from = {
                           key_code = "left_arrow";
-                          modifiers = { 
-                            mandatory = ["left_option"]; 
+                          modifiers = {
+                            mandatory = [ "left_option" ];
                           };
                         };
                         to = [
                           {
                             key_code = "left_arrow";
-                            modifiers = ["left_command"];
+                            modifiers = [ "left_command" ];
                           }
                         ];
                       }
@@ -868,14 +994,14 @@
                         type = "basic";
                         from = {
                           key_code = "right_arrow";
-                          modifiers = { 
-                            mandatory = ["left_option"]; 
-                          }; 
+                          modifiers = {
+                            mandatory = [ "left_option" ];
+                          };
                         };
                         to = [
                           {
                             key_code = "right_arrow";
-                            modifiers = ["left_command"];
+                            modifiers = [ "left_command" ];
                           }
                         ];
                       }
@@ -883,14 +1009,14 @@
                         type = "basic";
                         from = {
                           key_code = "up_arrow";
-                          modifiers = { 
-                            mandatory = ["left_option"]; 
+                          modifiers = {
+                            mandatory = [ "left_option" ];
                           };
                         };
                         to = [
                           {
                             key_code = "up_arrow";
-                            modifiers = ["left_command"];
+                            modifiers = [ "left_command" ];
                           }
                         ];
                       }
@@ -898,14 +1024,14 @@
                         type = "basic";
                         from = {
                           key_code = "down_arrow";
-                          modifiers = { 
-                            mandatory = ["left_option"]; 
+                          modifiers = {
+                            mandatory = [ "left_option" ];
                           };
                         };
                         to = [
                           {
                             key_code = "down_arrow";
-                            modifiers = ["left_command"];
+                            modifiers = [ "left_command" ];
                           }
                         ];
                       }
@@ -918,14 +1044,20 @@
                         type = "basic";
                         from = {
                           key_code = "left_arrow";
-                          modifiers = { 
-                            mandatory = ["left_option" "left_shift"]; 
+                          modifiers = {
+                            mandatory = [
+                              "left_option"
+                              "left_shift"
+                            ];
                           };
                         };
                         to = [
                           {
                             key_code = "left_arrow";
-                            modifiers = ["left_command" "left_shift"];
+                            modifiers = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           }
                         ];
                       }
@@ -933,14 +1065,20 @@
                         type = "basic";
                         from = {
                           key_code = "right_arrow";
-                          modifiers = { 
-                            mandatory = ["left_option" "left_shift"]; 
-                          }; 
+                          modifiers = {
+                            mandatory = [
+                              "left_option"
+                              "left_shift"
+                            ];
+                          };
                         };
                         to = [
                           {
                             key_code = "right_arrow";
-                            modifiers = ["left_command" "left_shift"];
+                            modifiers = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           }
                         ];
                       }
@@ -948,14 +1086,20 @@
                         type = "basic";
                         from = {
                           key_code = "up_arrow";
-                          modifiers = { 
-                            mandatory = ["left_option" "left_shift"]; 
+                          modifiers = {
+                            mandatory = [
+                              "left_option"
+                              "left_shift"
+                            ];
                           };
                         };
                         to = [
                           {
                             key_code = "up_arrow";
-                            modifiers = ["left_command" "left_shift"];
+                            modifiers = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           }
                         ];
                       }
@@ -963,14 +1107,20 @@
                         type = "basic";
                         from = {
                           key_code = "down_arrow";
-                          modifiers = { 
-                            mandatory = ["left_option" "left_shift"]; 
+                          modifiers = {
+                            mandatory = [
+                              "left_option"
+                              "left_shift"
+                            ];
                           };
                         };
                         to = [
                           {
                             key_code = "down_arrow";
-                            modifiers = ["left_command" "left_shift"];
+                            modifiers = [
+                              "left_command"
+                              "left_shift"
+                            ];
                           }
                         ];
                       }
@@ -992,7 +1142,7 @@
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            "bundle_identifiers" = [ 
+                            "bundle_identifiers" = [
                               "^com\\.apple\\.ScreenSharing$"
                               "^org\\.xquartz\\.X11$"
                             ];
@@ -1012,8 +1162,8 @@
                         conditions = [
                           {
                             type = "frontmost_application_if";
-                            "bundle_identifiers" = [ 
-                              "^com\\.apple\\.ScreenSharing$" 
+                            "bundle_identifiers" = [
+                              "^com\\.apple\\.ScreenSharing$"
                               "^org\\.xquartz\\.X11$"
                             ];
                           }
@@ -1029,13 +1179,13 @@
                         from = {
                           key_code = "spacebar";
                           modifiers = {
-                            mandatory = ["left_command"];
+                            mandatory = [ "left_command" ];
                           };
                         };
                         to = [
                           {
                             key_code = "spacebar";
-                            modifiers = ["left_control"];
+                            modifiers = [ "left_control" ];
                           }
                         ];
                       }
@@ -1044,13 +1194,13 @@
                         from = {
                           key_code = "spacebar";
                           modifiers = {
-                            mandatory = ["right_command"];
+                            mandatory = [ "right_command" ];
                           };
                         };
                         to = [
                           {
                             key_code = "spacebar";
-                            modifiers = ["right_control"];
+                            modifiers = [ "right_control" ];
                           }
                         ];
                       }
@@ -1257,4 +1407,3 @@
         };
   };
 }
-

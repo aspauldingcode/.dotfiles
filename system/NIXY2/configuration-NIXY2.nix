@@ -52,7 +52,7 @@
       peripheralFirmwareDirectory = ./firmware-NIXY2;
       useExperimentalGPUDriver = true;
     };
-    
+
     bluetooth = {
       enable = true;
       powerOnBoot = true;
@@ -87,11 +87,13 @@
       };
     };
     interfaces."usb" = {
-	useDHCP = false;
-	ipv4.addresses = [ {
-	    address = "192.168.7.1";
-	    prefixLength = 24;
-	} ];
+      useDHCP = false;
+      ipv4.addresses = [
+        {
+          address = "192.168.7.1";
+          prefixLength = 24;
+        }
+      ];
     };
     networkmanager = {
       enable = true;
@@ -99,13 +101,13 @@
       dns = "dnsmasq";
     };
     firewall = {
-	enable = true;
-	extraCommands = ''
-    # Replace "eth0" with your primary network interface
-    iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-    iptables -A FORWARD -i eth0 -o usb0 -m state --state RELATED,ESTABLISHED -j ACCEPT
-    iptables -A FORWARD -i usb0 -o eth0 -j ACCEPT
-  '';
+      enable = true;
+      extraCommands = ''
+        # Replace "eth0" with your primary network interface
+        iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+        iptables -A FORWARD -i eth0 -o usb0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+        iptables -A FORWARD -i usb0 -o eth0 -j ACCEPT
+      '';
     };
   };
 
@@ -133,8 +135,14 @@
           theme_name = "Adwaita";
         };
         commands = {
-          reboot = [ "systemctl" "reboot" ];
-          poweroff = [ "systemctl" "poweroff" ];
+          reboot = [
+            "systemctl"
+            "reboot"
+          ];
+          poweroff = [
+            "systemctl"
+            "poweroff"
+          ];
         };
         appearance = {
           greeting_msg = "Welcome back!";

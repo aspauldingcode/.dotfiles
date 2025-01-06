@@ -105,6 +105,6 @@ in
       ps.frida
     ]))
     # Frida packages
-    fridaPackages.frida-tools    # CLI tools like frida-ps, frida-ls-devices, etc.
+    fridaPackages.frida-tools # CLI tools like frida-ps, frida-ls-devices, etc.
   ];
 }

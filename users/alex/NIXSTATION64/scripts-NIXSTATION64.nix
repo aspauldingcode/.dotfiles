@@ -1,71 +1,71 @@
 { pkgs, ... }:
 
-{ 
+{
   home = {
     packages = with pkgs; [
-    #screenshot
-    (pkgs.writeShellScriptBin "screenshot" ''
-      # Specify the full path to your desktop directory
-      output_directory="$HOME/Desktop"
+      #screenshot
+      (pkgs.writeShellScriptBin "screenshot" ''
+        # Specify the full path to your desktop directory
+        output_directory="$HOME/Desktop"
 
-      # Get the list of output names
-      output_names=$(swaymsg -t get_outputs | jq -r '.[].name')
+        # Get the list of output names
+        output_names=$(swaymsg -t get_outputs | jq -r '.[].name')
 
-      # Loop through each output and save its contents to the desktop directory
-      for output_name in $output_names
-      do
-          output_file="$output_directory/Screenshot $(date '+%Y-%m-%d at %I.%M.%S %p') $output_name.png"
-          grim -o $output_name "$output_file"
-      done      
-    '')
-    #maximize (FIXME maximize sway windows to window size rather than fullscreen)
-    (pkgs.writeShellScriptBin "maximize" ''
-      # un/maximize script for i3 and sway
-      # bindsym $mod+m exec ~/.config/i3/maximize.sh
+        # Loop through each output and save its contents to the desktop directory
+        for output_name in $output_names
+        do
+            output_file="$output_directory/Screenshot $(date '+%Y-%m-%d at %I.%M.%S %p') $output_name.png"
+            grim -o $output_name "$output_file"
+        done      
+      '')
+      #maximize (FIXME maximize sway windows to window size rather than fullscreen)
+      (pkgs.writeShellScriptBin "maximize" ''
+        # un/maximize script for i3 and sway
+        # bindsym $mod+m exec ~/.config/i3/maximize.sh
 
-      WRKSPC_FILE=~/.config/wrkspc
-      RESERVED_WORKSPACE=f
-      MSG=swaymsg
-      if [ "$XDG_SESSION_TYPE" == "x11"]
-      then
-        MSG=i3-msg
-      fi
-
-      # using xargs to remove quotes
-      CURRENT_WORKSPACE=$($MSG -t get_workspaces | jq '.[] | select(.focused==true) | .name' | xargs)
-
-      if [ -f "$WRKSPC_FILE" ]
-      then # restore window back
-        if [ "$CURRENT_WORKSPACE" != "$RESERVED_WORKSPACE" ]
+        WRKSPC_FILE=~/.config/wrkspc
+        RESERVED_WORKSPACE=f
+        MSG=swaymsg
+        if [ "$XDG_SESSION_TYPE" == "x11"]
         then
-          RESERVED_WORKSPACE_EXISTS=$($MSG -t get_workspaces | jq '.[] .num' | grep "^$RESERVED_WORKSPACE$")
-          if [ -z "$RESERVED_WORKSPACE_EXISTS" ]
+          MSG=i3-msg
+        fi
+
+        # using xargs to remove quotes
+        CURRENT_WORKSPACE=$($MSG -t get_workspaces | jq '.[] | select(.focused==true) | .name' | xargs)
+
+        if [ -f "$WRKSPC_FILE" ]
+        then # restore window back
+          if [ "$CURRENT_WORKSPACE" != "$RESERVED_WORKSPACE" ]
           then
-            notify-send "Reserved workspace $RESERVED_WORKSPACE does not exist. Noted."
-            rm -f $WRKSPC_FILE
+            RESERVED_WORKSPACE_EXISTS=$($MSG -t get_workspaces | jq '.[] .num' | grep "^$RESERVED_WORKSPACE$")
+            if [ -z "$RESERVED_WORKSPACE_EXISTS" ]
+            then
+              notify-send "Reserved workspace $RESERVED_WORKSPACE does not exist. Noted."
+              rm -f $WRKSPC_FILE
+            else
+              notify-send "Clean your workspace $RESERVED_WORKSPACE first."
+            fi
           else
-            notify-send "Clean your workspace $RESERVED_WORKSPACE first."
+            # move the window back
+            $MSG move container to workspace $(cat $WRKSPC_FILE)
+            $MSG workspace number $(cat $WRKSPC_FILE)
+            notify-send "Returned back to workspace $(cat $WRKSPC_FILE)."
+            rm -f $WRKSPC_FILE
           fi
-        else
-          # move the window back
-          $MSG move container to workspace $(cat $WRKSPC_FILE)
-          $MSG workspace number $(cat $WRKSPC_FILE)
-          notify-send "Returned back to workspace $(cat $WRKSPC_FILE)."
-          rm -f $WRKSPC_FILE
+        else # send window to the reserved workspace
+          if [ "$CURRENT_WORKSPACE" == "$RESERVED_WORKSPACE" ]
+          then
+            notify-send "You're already on reserved workspace $RESERVED_WORKSPACE."
+          else
+            # remember current workspace
+            echo $CURRENT_WORKSPACE > $WRKSPC_FILE
+            $MSG move container to workspace $RESERVED_WORKSPACE
+            $MSG workspace $RESERVED_WORKSPACE
+            notify-send "Saved workspace $CURRENT_WORKSPACE and moved to workspace $RESERVED_WORKSPACE."
+          fi
         fi
-      else # send window to the reserved workspace
-        if [ "$CURRENT_WORKSPACE" == "$RESERVED_WORKSPACE" ]
-        then
-          notify-send "You're already on reserved workspace $RESERVED_WORKSPACE."
-        else
-          # remember current workspace
-          echo $CURRENT_WORKSPACE > $WRKSPC_FILE
-          $MSG move container to workspace $RESERVED_WORKSPACE
-          $MSG workspace $RESERVED_WORKSPACE
-          notify-send "Saved workspace $CURRENT_WORKSPACE and moved to workspace $RESERVED_WORKSPACE."
-        fi
-      fi
-    '')
+      '')
 
       #fix-wm
       (pkgs.writeShellScriptBin "fix-wm" ''
@@ -217,7 +217,7 @@
                 ;;
         esac
       '')
-      
+
       # toggle-waybar
       (pkgs.writeShellScriptBin "toggle-waybar" ''
         #!/bin/bash
@@ -380,21 +380,21 @@
       '')
 
       # notif-test
-    (pkgs.writeShellScriptBin "notif-test" ''
-      if [[ "$OSTYPE" == "darwin"* ]]; then
-        for i in {1..10}; do
-          osascript -e "display notification \"This is the detailed content for notification number $i. It includes an icon, a title, and this message body.\" with title \"Notification $i\" subtitle \"Subtitle $i\" sound name \"default\""
-          sleep 1
-        done
-      else
-        for i in {1..10}; do
-          notify-send -i ~/.dotfiles/users/alex/face.png \
-               "Notification $i" \
-               "This is the detailed content for notification number $i. It includes an icon, a title, and this message body."
-          sleep 1
-        done
-      fi
-    '')
+      (pkgs.writeShellScriptBin "notif-test" ''
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+          for i in {1..10}; do
+            osascript -e "display notification \"This is the detailed content for notification number $i. It includes an icon, a title, and this message body.\" with title \"Notification $i\" subtitle \"Subtitle $i\" sound name \"default\""
+            sleep 1
+          done
+        else
+          for i in {1..10}; do
+            notify-send -i ~/.dotfiles/users/alex/face.png \
+                 "Notification $i" \
+                 "This is the detailed content for notification number $i. It includes an icon, a title, and this message body."
+            sleep 1
+          done
+        fi
+      '')
 
       # xvnc-iphone
       (pkgs.writeShellScriptBin "xvnc-iphone" ''

@@ -1,9 +1,14 @@
-{ lib, config, pkgs, ... }: 
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 
 {
   imports = [
-  ./modules/NIXSTATION64/packages-NIXSTATION64.nix
-  ]; 
+    ./modules/NIXSTATION64/packages-NIXSTATION64.nix
+  ];
   config = {
     allowUnfree = true; # Enable Unfree
     # Workaround for https://github.com/nix-community/home-manager/issues/2942
@@ -14,7 +19,8 @@
       username = "susu";
       homeDirectory = "/home/susu";
       stateVersion = "23.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-      file = { # MANAGE DOTFILES?
+      file = {
+        # MANAGE DOTFILES?
       };
     };
 
@@ -22,7 +28,7 @@
       home-manager.enable = true;
       git = {
         enable = true;
-        userName  = "aspauldingcode";
+        userName = "aspauldingcode";
         userEmail = "aspauldingcode@gmail.com";
       };
       fish.enable = true;
@@ -35,6 +41,5 @@
     # Nicely reload system units when changing configs
     systemd.user.startServices = "sd-switch"; # TODO: UPDATE IF USING DIFFERENT BOOTLOADER!
   };
-
 
 }

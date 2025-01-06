@@ -4,27 +4,29 @@
   lib,
   config,
   ...
-}: 
+}:
 
 let
   inherit (lib) mkForce;
   inherit (config.colorscheme) palette;
-in {
+in
+{
 
-  home.packages = if pkgs.stdenv.isDarwin then [ pkgs.defaultbrowser ] else [];
+  home.packages = if pkgs.stdenv.isDarwin then [ pkgs.defaultbrowser ] else [ ];
 
-  home.activation = if pkgs.stdenv.isDarwin then {
-    setDefaultBrowser = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      ${pkgs.defaultbrowser}/bin/defaultbrowser firefox
-    '';
-  } else {};
+  home.activation =
+    if pkgs.stdenv.isDarwin then
+      {
+        setDefaultBrowser = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          ${pkgs.defaultbrowser}/bin/defaultbrowser firefox
+        '';
+      }
+    else
+      { };
 
   programs.firefox = {
     enable = true;
-    package =
-      if pkgs.stdenv.isDarwin
-      then pkgs.firefox-bin
-      else pkgs.firefox;
+    package = if pkgs.stdenv.isDarwin then pkgs.firefox-bin else pkgs.firefox;
     profiles = {
       alex = {
         userChrome = ''
@@ -219,12 +221,12 @@ in {
           #urlbar-background {
             background-color: #${palette.base01} !important;
           }
-          
+
           /* Change the text color of the search bar when active */
           #urlbar-input {
             color: #${palette.base05} !important;
           }
-          
+
           /* Add a subtle border to the search bar when active */
           #urlbar[focused="true"] > #urlbar-background {
             border: 1px solid #${palette.base0D} !important;
@@ -373,7 +375,7 @@ in {
           .popup-notification-secondary-button {
             display: inline-block !important;
           }
-          
+
           /* Ensure only the notification background is set correctly */
           .popup-notification-panel *:not(.popup-notification-button):not(.popup-notification-primary-button):not(.popup-notification-secondary-button):not(.popup-notification-button *):not(.popup-notification-primary-button *):not(.popup-notification-secondary-button *):not(.text-link):not(.checkbox-check):not(.checkbox-label) {
             background-color: #${palette.base00} !important;
@@ -455,7 +457,7 @@ in {
             }
           }
         '';
-        bookmarks = {};
+        bookmarks = { };
         extensions = with pkgs.nur.repos.rycee.firefox-addons; [
           enhancer-for-youtube # non-free
           sponsorblock
@@ -500,7 +502,7 @@ in {
               homepage = "https://unhook.app/";
               description = "Hide YouTube distractions including related videos, comments, suggestions, and trending content.";
               license = lib.licenses.unfree;
-              mozPermissions = ["storage"];
+              mozPermissions = [ "storage" ];
               platforms = lib.platforms.all;
             };
           })
@@ -538,7 +540,7 @@ in {
               homepage = "https://github.com/domdomegg/hideytthumbnails-extension";
               description = "A simple browser extension which removes thumbnails from YouTube, for less clickbaity browsing.";
               license = lib.licenses.mit;
-              mozPermissions = ["storage"];
+              mozPermissions = [ "storage" ];
               platforms = lib.platforms.all;
             };
           })
@@ -552,7 +554,7 @@ in {
               homepage = "https://github.com/domdomegg/hideytthumbnails-extension";
               description = "Watch videos on YouTube fullscreen within your browsers screen.";
               license = lib.licenses.mpl20;
-              mozPermissions = ["storage"];
+              mozPermissions = [ "storage" ];
               platforms = lib.platforms.all;
             };
           })
@@ -577,7 +579,8 @@ in {
           "browser.download.viewableInternally.typeWasRegistered.xml" = true;
           "browser.fullscreen.autohide" = false;
           "browser.link.open_newwindow" = 3; # Open links in new tabs
-          "browser.newtabpage.activity-stream.newNewtabExperience.colors" = "#${palette.base0D},#${palette.base08},#${palette.base0B},#${palette.base09},#${palette.base0E},#${palette.base0A},#${palette.base0F}";
+          "browser.newtabpage.activity-stream.newNewtabExperience.colors" =
+            "#${palette.base0D},#${palette.base08},#${palette.base0B},#${palette.base09},#${palette.base0E},#${palette.base0A},#${palette.base0F}";
           "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
           "browser.search.isUS" = true;
           "browser.search.region" = "US";
@@ -586,17 +589,15 @@ in {
           "browser.shell.checkDefaultBrowser" = false;
           "browser.shell.defaultBrowserCheckCount" = 1;
           "browser.startup.homepage" = "moz-extension://9d877b4e-2fe9-4689-b41a-566a02359dd1/index.html";
-          "browser.tabs.inTitlebar" =
-            if pkgs.stdenv.isDarwin
-            then 1
-            else 0; # Set 0 for Default OS titlebar, 1 for no titlebar
+          "browser.tabs.inTitlebar" = if pkgs.stdenv.isDarwin then 1 else 0; # Set 0 for Default OS titlebar, 1 for no titlebar
           "browser.tabs.loadInBackground" = true;
           "browser.tabs.warnOnClose" = false;
           "browser.tabs.warnOnCloseOtherTabs" = false;
           "browser.tabs.tabmanager.enabled" = false;
           "browser.warnOnQuit" = false;
           "browser.warnOnQuitShortcut" = false;
-          "browser.uiCustomization.state" = ''{"placements":{"nav-bar":["_3c078156-979c-498b-8990-85f7987dd929_-browser-action","back-button","forward-button","stop-reload-button","urlbar-container","ublock0_raymondhill_net-browser-action","_testpilot-containers-browser-action"],"TabsToolbar":["tabbrowser-tabs","new-tab-button"],"PersonalToolbar":["import-button","personal-bookmarks"]},"seen":["ublock0_raymondhill_net-browser-action","_testpilot-containers-browser-action"],"dirtyAreaCache":["nav-bar","PersonalToolbar","TabsToolbar"],"currentVersion":18}'';
+          "browser.uiCustomization.state" =
+            ''{"placements":{"nav-bar":["_3c078156-979c-498b-8990-85f7987dd929_-browser-action","back-button","forward-button","stop-reload-button","urlbar-container","ublock0_raymondhill_net-browser-action","_testpilot-containers-browser-action"],"TabsToolbar":["tabbrowser-tabs","new-tab-button"],"PersonalToolbar":["import-button","personal-bookmarks"]},"seen":["ublock0_raymondhill_net-browser-action","_testpilot-containers-browser-action"],"dirtyAreaCache":["nav-bar","PersonalToolbar","TabsToolbar"],"currentVersion":18}'';
           "browser.urlbar.placeholderName" = "DuckDuckGo";
           "browser.urlbar.quickactions.enabled" = false;
           "browser.urlbar.quickactions.showPrefs" = false;
@@ -633,7 +634,8 @@ in {
           "layout.css.osx-font-smoothing.enabled" = true;
           "network.proxy.socks_remote_dns" = true;
           "pdfjs.forcePageColors" = false;
-          "pdfjs.highlightEditorColors" = "yellow=#${palette.base0A},green=#${palette.base0B},blue=#${palette.base0D},pink=#${palette.base0E},red=#${palette.base08}";
+          "pdfjs.highlightEditorColors" =
+            "yellow=#${palette.base0A},green=#${palette.base0B},blue=#${palette.base0D},pink=#${palette.base0E},red=#${palette.base08}";
           "pdfjs.pageColorsBackground" = "#${palette.base00}";
           "pdfjs.pageColorsForeground" = "#${palette.base05}";
           "privacy.donottrackheader.enabled" = true;
@@ -759,39 +761,39 @@ in {
       };
       "3rdparty".Extensions = {
         # https://github.com/libredirect/browser_extension/blob/b3457faf1bdcca0b17872e30b379a7ae55bc8fd0/src/config.json
-				"7esoorv3@alefvanoon.anonaddy.me" = {
-					# FIXME(Krey): This doesn't work
-					services.youtube.options.enabled = true;
-				};
+        "7esoorv3@alefvanoon.anonaddy.me" = {
+          # FIXME(Krey): This doesn't work
+          services.youtube.options.enabled = true;
+        };
         # https://github.com/gorhill/uBlock/blob/master/platform/common/managed_storage.json
         "uBlock0@raymondhill.net".adminSettings = {
-					userSettings = rec {
-						uiTheme = "auto";
-						uiAccentCustom = true;
-						uiAccentCustom0 = "#${palette.base0D}";
-						cloudStorageEnabled = mkForce false; # Security liability?
-						importedLists = [
-							"https://filters.adtidy.org/extension/ublock/filters/3.txt"
-							"https://github.com/DandelionSprout/adfilt/raw/master/LegitimateURLShortener.txt"
-						];
-						externalLists = lib.concatStringsSep "\n" importedLists;
-					};
-					selectedFilterLists = [
-						"CZE-0"
-						"adguard-generic"
-						"adguard-annoyance"
-						"adguard-spyware-url"
-						"easylist"
-						"easyprivacy"
-						"https://github.com/DandelionSprout/adfilt/raw/master/LegitimateURLShortener.txt"
-						"plowe-0"
-						"ublock-abuse"
-						"ublock-badware"
-						"ublock-filters"
-						"ublock-privacy"
-						"ublock-quick-fixes"
-						"ublock-unbreak"
-						"urlhaus-1"
+          userSettings = rec {
+            uiTheme = "auto";
+            uiAccentCustom = true;
+            uiAccentCustom0 = "#${palette.base0D}";
+            cloudStorageEnabled = mkForce false; # Security liability?
+            importedLists = [
+              "https://filters.adtidy.org/extension/ublock/filters/3.txt"
+              "https://github.com/DandelionSprout/adfilt/raw/master/LegitimateURLShortener.txt"
+            ];
+            externalLists = lib.concatStringsSep "\n" importedLists;
+          };
+          selectedFilterLists = [
+            "CZE-0"
+            "adguard-generic"
+            "adguard-annoyance"
+            "adguard-spyware-url"
+            "easylist"
+            "easyprivacy"
+            "https://github.com/DandelionSprout/adfilt/raw/master/LegitimateURLShortener.txt"
+            "plowe-0"
+            "ublock-abuse"
+            "ublock-badware"
+            "ublock-filters"
+            "ublock-privacy"
+            "ublock-quick-fixes"
+            "ublock-unbreak"
+            "urlhaus-1"
           ];
         };
         # FIXME: Bonjourr settings BROKEN AT THE MOMENT!
@@ -1535,9 +1537,9 @@ in {
   };
 
   xdg.mimeApps.defaultApplications = {
-    "text/html" = ["firefox.desktop"];
-    "text/xml" = ["firefox.desktop"];
-    "x-scheme-handler/http" = ["firefox.desktop"];
-    "x-scheme-handler/https" = ["firefox.desktop"];
+    "text/html" = [ "firefox.desktop" ];
+    "text/xml" = [ "firefox.desktop" ];
+    "x-scheme-handler/http" = [ "firefox.desktop" ];
+    "x-scheme-handler/https" = [ "firefox.desktop" ];
   };
 }

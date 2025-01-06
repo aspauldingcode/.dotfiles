@@ -4,7 +4,10 @@
   nixpkgs = {
     config = {
       allowUnfree = true;
-      permittedInsecurePackages = [ "electron-19.1.9" "openjdk-19-ga" ];
+      permittedInsecurePackages = [
+        "electron-19.1.9"
+        "openjdk-19-ga"
+      ];
       allowUnfreePredicate = (_: true);
       allowUnsupportedSystem = false;
       allowBroken = false;
@@ -99,7 +102,7 @@
       wofi
       wshowkeys
       wtype
-      wob 
+      wob
       pamixer
 
       # Gaming and emulation

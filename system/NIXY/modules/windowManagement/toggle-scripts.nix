@@ -1,4 +1,10 @@
-{ pkgs, inputs, config, lib, ... }:
+{
+  pkgs,
+  inputs,
+  config,
+  lib,
+  ...
+}:
 
 # window management toggle scripts.
 let
@@ -31,7 +37,7 @@ in
       [ -f /tmp/menubar_state ] && rm -f /tmp/menubar_state
       [ -f /tmp/darkmode_state ] && rm -f /tmp/darkmode_state
       [ -f /tmp/sketchybar_bluetooth_favorited_devices ] && rm -f /tmp/sketchybar_bluetooth_favorited_devices
-      
+
       # remove current wallpaper if it exists.
       # [ -f ${wallpaper} ] && sudo rm -f ${wallpaper}
 
@@ -51,7 +57,7 @@ in
       if pgrep Karabiner-Menu > /dev/null; then pkill Karabiner-Menu > /dev/null 2>&1; fi
       if pgrep Karabiner-Elements > /dev/null; then pkill Karabiner-Elements > /dev/null 2>&1; fi
       if pgrep cava > /dev/null; then sudo pkill -9 -f cava > /dev/null 2>&1; fi
-      
+
       # Restart CoreAudio more safely
       if pgrep coreaudiod > /dev/null; then
         sudo launchctl unload /System/Library/LaunchDaemons/com.apple.audio.coreaudiod.plist > /dev/null 2>&1
@@ -154,7 +160,7 @@ in
       fi
     '')
 
-        #brightness
+    #brightness
     (pkgs.writeShellScriptBin "brightness" ''
       #!/bin/sh
 
@@ -192,7 +198,7 @@ in
       adjust_brightness "$1"
     '')
 
-        #mic (for sketchybar!)
+    #mic (for sketchybar!)
     (pkgs.writeShellScriptBin "mic" ''
       MIC_VOLUME=$(osascript -e 'input volume of (get volume settings)')
       if [[ $MIC_VOLUME -eq 0 ]]; then

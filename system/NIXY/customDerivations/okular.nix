@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
@@ -9,8 +14,8 @@ let
   okularSrc = pkgs.fetchFromGitLab {
     domain = "invent.kde.org";
     owner = "graphics";
-    repo  = "okular";
-    rev   = "v23.08.2"; # Use a valid tag
+    repo = "okular";
+    rev = "v23.08.2"; # Use a valid tag
     sha256 = "sha256-DODFFjBjdzpmkyY8bXWnVsQXU/gsJCBOFerKRJLmRTg=";
   };
 
@@ -116,45 +121,48 @@ let
       extra-cmake-modules
     ];
 
-    buildInputs = with pkgs; [
-      libsForQt5.qtbase
-      libsForQt5.qtdeclarative
-      libsForQt5.qtsvg
-      libsForQt5.qtspeech
-      libsForQt5.phonon
-      poppler
-      poppler_utils
-      libsForQt5.poppler
-      libsForQt5.karchive
-      libsForQt5.kbookmarks
-      libsForQt5.kconfig
-      libsForQt5.kconfigwidgets
-      libsForQt5.kcoreaddons
-      libsForQt5.kcrash
-      libsForQt5.kiconthemes
-      libsForQt5.kio
-      libsForQt5.kparts
-      libsForQt5.kservice
-      libsForQt5.ktextwidgets
-      libsForQt5.kxmlgui
-      libsForQt5.threadweaver
-      libsForQt5.kpty
-      libsForQt5.khtml
-      libkexiv2
-      discount
-      freetype
-      zlib
-      libjpeg
-      libpng
-      kdegraphics-mobipocket
-      ebook_tools
-      djvulibre
-      libzip
-      chmlib
-      libspectre
-    ] ++ optionals stdenv.isDarwin [
-      darwin.apple_sdk.frameworks.Cocoa
-    ];
+    buildInputs =
+      with pkgs;
+      [
+        libsForQt5.qtbase
+        libsForQt5.qtdeclarative
+        libsForQt5.qtsvg
+        libsForQt5.qtspeech
+        libsForQt5.phonon
+        poppler
+        poppler_utils
+        libsForQt5.poppler
+        libsForQt5.karchive
+        libsForQt5.kbookmarks
+        libsForQt5.kconfig
+        libsForQt5.kconfigwidgets
+        libsForQt5.kcoreaddons
+        libsForQt5.kcrash
+        libsForQt5.kiconthemes
+        libsForQt5.kio
+        libsForQt5.kparts
+        libsForQt5.kservice
+        libsForQt5.ktextwidgets
+        libsForQt5.kxmlgui
+        libsForQt5.threadweaver
+        libsForQt5.kpty
+        libsForQt5.khtml
+        libkexiv2
+        discount
+        freetype
+        zlib
+        libjpeg
+        libpng
+        kdegraphics-mobipocket
+        ebook_tools
+        djvulibre
+        libzip
+        chmlib
+        libspectre
+      ]
+      ++ optionals stdenv.isDarwin [
+        darwin.apple_sdk.frameworks.Cocoa
+      ];
 
     cmakeFlags = [
       "-DCMAKE_BUILD_TYPE=Release"
@@ -203,9 +211,9 @@ let
 
     meta = with lib; {
       description = "Okular: Universal document viewer";
-      homepage    = "https://okular.kde.org/";
-      license     = licenses.gpl2Plus;
-      platforms   = platforms.linux ++ platforms.darwin;
+      homepage = "https://okular.kde.org/";
+      license = licenses.gpl2Plus;
+      platforms = platforms.linux ++ platforms.darwin;
     };
   };
 in

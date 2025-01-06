@@ -1,13 +1,18 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   services.kanata = {
     enable = true; # Enable the Kanata service
-    
+
     keyboards = {
       "internalKeyboard" = {
         devices = [ "/dev/input/event2" ]; # Use the event associated with your internal keyboard
-        
+
         config = ''
           (defsrc
             grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
