@@ -471,7 +471,7 @@ in
           unpaywall
           languagetool
           ff2mpv
-          link-cleaner
+          clearurls
           hover-zoom-plus
           (pkgs.nur.repos.rycee.firefox-addons.buildFirefoxXpiAddon {
             pname = "bonjourr";

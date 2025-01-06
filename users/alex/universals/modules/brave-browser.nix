@@ -33,34 +33,58 @@
         id = "gebbhagfogifgggkldgodflihgfeippi"; # Return YouTube Dislikes
       }
       {
-        id = "hipekcciheckooncpjeljhnekcoolahp"; # Enhancer for YouTube
+        id = "ponfpcnoihfmfllpaingbgckeeldkhle"; # Enhancer for YouTube
       }
       {
         id = "mnjggcdmjocbbbhaepdhchncahnbgone"; # SponsorBlock
       }
       {
+        id = "khncfooichmfjbepaaaebmommgaepoid"; # Unhook - Remove YouTube Recommended Videos
+      }
+      {
+        id = "oldceeleldhonbafppcapldpdifcinji"; # AI Grammar Checker & Paraphraser
+      }
+      {
+        id = "hnafhkjheookmokbkpnfpmemlppjdgoi"; # Allow Right Click
+      }
+      {
+        id = "gkkmiofalnjagdcjheckamobghglpdpm"; # YouTube Windowed FullScreen
+      }
+      {
+        id = "phmcfcbljjdlomoipaffekhgfnpndbef"; # Hide YouTube Thumbnails
+      }
+      {
+        id = "lckanjgmijmafbedllaakclkaicjfmnk"; # ClearURLs
+      }
+      {
+        id = "ephjcajbkgplkjmelpglennepbpmdpjg"; # ff2mpv
+      }
+      {
         id = "njdfdhgcmkocbgbhcioffdbicglldapd"; # LocalCDN (similar to Privacy Badger)
+      }
+      {
+        id = "iplffkdpngmdjhlpjmppncnlhomiipha"; # Unpaywall
       }
       {
         id = "eimadpbcbfnmbkopoojfekhnkhdbieeh"; # Dark Reader
       }
       {
-        id = "iaiomicjabeggjcfkbimgmglanimpnae"; # Tab Manager Plus
-      }
-      {
         id = "ldpochfccmkkmhdbclfhpagapcfdljkj"; # Decentraleyes
       }
       {
-        id = "fihnjjcciajhdojfnbdddfaoknhalnja"; # I still don't care about cookies
+        id = "edibdbjcniadpccecjdfdjjppcpchdlm"; # I still don't care about cookies
       }
       {
-        id = "noaijdpnepcgjemiklgfkcfbkokogabh"; # Clear URLs
+        id = "lckanjgmijmafbedllaakclkaicjfmnk"; # ClearURLs
       }
       {
-        id = "mnjfcmpnjpjgkpklkafaicpipahihpgl"; # Hover Zoom+
+        id = "pccckmaobkjjboncdfnnofkonhgpceea"; # Hover Zoom+
       }
       {
-        id = "ophjlpahpchlmihnnnihgmmeilfjmjjc"; # Vercel
+        id = "lahhiofdgnbcgmemekkmjnpifojdaelb"; # Vercel
+      }
+      {
+        id = "dlnejlppicbjfcfcedcflplfjajinajd"; # Bonjourr - Minimalist startpage
       }
     ];
   };
