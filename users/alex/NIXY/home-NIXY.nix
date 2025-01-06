@@ -13,8 +13,9 @@
   imports = [
     nix-colors.homeManagerModules.default
     ./scripts-NIXY.nix
-    ./../extraConfig/nvim/nixvim.nix # FIXME: BROKEN atm
+    ./../extraConfig/nvim/nixvim.nix
     ./../universals/modules/firefox.nix
+    ./../universals/modules/brave-browser.nix
     ./../universals/modules/cursor.nix # vscode with ai
     ./../universals/modules/discord.nix
     ./../universals/modules/shells.nix
