@@ -940,29 +940,15 @@
 
         neorg = {
           enable = true;
-          modules = {
-            #  require('neorg').setup {
-            #    load = {
-            #      ["core.defaults"] = {}, --
-            #      ["core.concealer"] = {}, -- Allows for use of icons
-            #    };
-            #  }
-            #}
+          settings.load = {
             "core.defaults" = {
               # Load all the default modules
-              #__empty = null;
             };
             "core.concealer" = {
               # Allows for the use of icons
             };
             "core.dirman" = {
-              # idk what this does
-              #config = {
-              #  workspaces = {
-              #    home = "~/notes/home";
-              #    work = "~/notes/work";
-              #  };
-              #};
+              # Manages workspaces and directories
             };
           };
         };

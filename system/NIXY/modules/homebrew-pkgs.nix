@@ -44,7 +44,7 @@
       # "m-cli"
       # "ansible"
       # "gtk-mac-integration"
-      # "libiconv"
+      "libiconv"
       "cliclick"
       "whalebrew"
       "ddcctl"

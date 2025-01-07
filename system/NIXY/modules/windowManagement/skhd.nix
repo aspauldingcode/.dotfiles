@@ -52,7 +52,7 @@ in
         ${mod4} + ${mod5} + ${smod} - delete :  sudo shutdown -h now
         ${modifier} + ${smod} - q :           ${yabai} -m window --close
         ${modifier} - f :                     ${yabai} -m window --toggle zoom-fullscreen
-        ${modifier} + ${smod} - f :             toggle-instant-fullscreen
+        ${modifier} + ${smod} - f :             ${yabai} -m window --toggle native-fullscreen
 
         # # Move focused window to workspace N and follow focus
         ${modifier} + ${smod} - 1 : ${yabai} -m window --space 1; ${yabai} -m space --focus 1

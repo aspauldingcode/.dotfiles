@@ -13,7 +13,7 @@
     wget
     #zellij
     jetbrains.idea-community
-    teams
+    # teams # FIXMEL failing atm.
     gnumake
     pfetch
     htop
@@ -38,7 +38,7 @@
     m-cli
     ansible
     gtk-mac-integration
-    libiconv
+    # libiconv
     # choose-gui
     # ddcctl
     # cliclick

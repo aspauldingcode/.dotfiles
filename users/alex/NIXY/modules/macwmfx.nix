@@ -24,7 +24,7 @@ in
         enabled = true;
         type = "inline"; # inline, outline, centerline
         width = 2;
-        cornerRadius = 0; # try 10, 40, 0...
+        cornerRadius = 40; # try 10, 40, 0...
         activeColor = "${palette.base07}";
         inactiveColor = "${palette.base05}";
       };
