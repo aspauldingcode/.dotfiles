@@ -546,6 +546,22 @@
         "type": "github"
       }
     },
+    "homebrew-gcenx": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1735601037,
+        "narHash": "sha256-3EShgEuTENcW1Qp4bWZ5gSDFxOWuX85DA6DK4FOgr1w=",
+        "owner": "gcenx",
+        "repo": "homebrew-wine",
+        "rev": "1b2afa7cfa7718d9ea209698f3d1b11f87bba205",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gcenx",
+        "repo": "homebrew-wine",
+        "type": "github"
+      }
+    },
     "homebrew-koekeishiya": {
       "flake": false,
       "locked": {
@@ -1154,6 +1170,7 @@
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
         "homebrew-felixkratz": "homebrew-felixkratz",
+        "homebrew-gcenx": "homebrew-gcenx",
         "homebrew-koekeishiya": "homebrew-koekeishiya",
         "homebrew-services": "homebrew-services",
         "homebrew-smudge": "homebrew-smudge",

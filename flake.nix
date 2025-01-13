@@ -91,7 +91,10 @@
       url = "github:homebrew/homebrew-cask";
       flake = false;
     };
-
+    homebrew-gcenx = {
+      url = "github:gcenx/homebrew-wine";
+      flake = false;
+    };
     nix-rosetta-builder = {
       url = "github:cpick/nix-rosetta-builder";
       inputs.nixpkgs.follows = "unstable_nixpkgs";
@@ -103,36 +106,37 @@
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      unstable_nixpkgs,
-      nix-darwin,
-      home-manager,
-      nixvim,
-      flake-parts,
-      nix-colors,
-      mobile-nixos,
-      apple-silicon,
-      nur,
-      nix-std,
-      nixtheplanet,
-      agenix,
-      mac-app-util,
-      nixpkgs-firefox-darwin,
-      spicetify-nix,
-      nix-homebrew,
-      homebrew-core,
-      homebrew-bundle,
-      homebrew-services,
-      homebrew-koekeishiya,
-      homebrew-felixkratz,
-      homebrew-smudge,
-      homebrew-cask,
-      nix-rosetta-builder,
-      frida-nix,
-    }:
+    { self
+    , nixpkgs
+    , unstable_nixpkgs
+    , nix-darwin
+    , home-manager
+    , nixvim
+    , flake-parts
+    , nix-colors
+    , mobile-nixos
+    , apple-silicon
+    , nur
+    , nix-std
+    , nixtheplanet
+    , agenix
+    , mac-app-util
+    , nixpkgs-firefox-darwin
+    , spicetify-nix
+    , nix-homebrew
+    , homebrew-core
+    , homebrew-bundle
+    , homebrew-services
+    , homebrew-koekeishiya
+    , homebrew-felixkratz
+    , homebrew-smudge
+    , homebrew-cask
+    , homebrew-gcenx
+    , nix-rosetta-builder
+    , frida-nix    
+    }@inputs:
     let
+      user = "alex";
       inherit (self) inputs;
       std = nix-std.lib;
       # Define common specialArgs for nixosConfigurations and homeConfigurations
@@ -150,6 +154,7 @@
           std
           nixtheplanet
           spicetify-nix
+          user
           ;
       };
       commonExtraSpecialArgs = {
@@ -165,6 +170,7 @@
           std
           nixtheplanet
           spicetify-nix
+          user
           ;
       };
       systems = [
@@ -201,7 +207,7 @@
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                users.alex = import ./users/alex/NIXSTATION64/home-NIXSTATION64.nix;
+                users.${user} = import ./users/${user}/NIXSTATION64/home-NIXSTATION64.nix;
                 # Optionally, use home-manager.extraSpecialArgs to pass
                 # arguments to home.nix
                 extraSpecialArgs = commonExtraSpecialArgs;
@@ -243,7 +249,7 @@
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                users.alex = import ./users/alex/NIXY2/home-NIXY2.nix;
+                users.${user} = import ./users/${user}/NIXY2/home-NIXY2.nix;
                 # Optionally, use home-manager.extraSpecialArgs to pass
                 # arguments to home.nix
                 extraSpecialArgs = commonExtraSpecialArgs;
@@ -282,6 +288,7 @@
             ./system/NIXY/darwin-configuration-NIXY.nix
             mac-app-util.darwinModules.default
             home-manager.darwinModules.home-manager
+            spicetify-nix.nixosModules.default
             {
               home-manager = {
                 useGlobalPkgs = true;
@@ -292,11 +299,17 @@
                 backupFileExtension = "backup";
                 sharedModules = [
                   mac-app-util.homeManagerModules.default
-                  spicetify-nix.homeManagerModules.default
+                  # spicetify-nix.homeManagerModules.default
                 ];
-                users.alex.imports = [
-                  ./users/alex/NIXY/home-NIXY.nix
-                ];
+                users.${user} = {
+                  imports = [
+                    ./users/${user}/NIXY/home-NIXY.nix
+                  ];
+                  home = {
+                    username = "${user}";
+                    homeDirectory = nixpkgs.lib.mkForce "/Users/${user}";
+                  };
+                };
               };
             }
             agenix.darwinModules.default

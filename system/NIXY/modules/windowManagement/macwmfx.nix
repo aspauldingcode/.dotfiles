@@ -1,21 +1,17 @@
+# assuming you mean a nix-darwin option, i believe there's no nice way to do it. 
+# once my nix-darwin PR is merged, then 
+# system.file."Library/Application Support/exampleapp/config".source = <drv>;
+# https://github.com/LnL7/nix-darwin/pull/1205
+
 { config, ... }:
 
 let
   inherit (config.colorScheme) palette;
 in
 {
-  home.file.".config/macwmfx/config" = {
+  system.file."Library/Application Support/macwmfx/config" = {
     force = true; # overwrite the file
     text = builtins.toJSON {
-      # blacklistedBundleIdentifiers = [
-      #   "com.apple.dock"
-      #   "com.vmware.vmware-vmx"
-      #   "com.apple.loginwindow"
-      #   "com.apple.Spotlight"
-      #   "com.apple.SystemUIServer"
-      #   "com.apple.screencaptureui"
-      # ];
-      # whitelistedBundleIdentifiers = [ "com.apple.safari" ];
       disableTitlebar = true;
       disableWindowSizeConstraints = true;
       disableTrafficLights = true;
@@ -30,8 +26,11 @@ in
       };
       systemColorSchemeVariant = "${config.colorScheme.variant}";
       transparency = 0.95;
-      blurRadius = 10;
-      blurPasses = 1;
+      blur = {
+        enabled = true;
+        radius = 10;
+        passes = 1;
+      };
     };
   };
 }

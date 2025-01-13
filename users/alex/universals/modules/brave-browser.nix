@@ -42,6 +42,9 @@
         id = "khncfooichmfjbepaaaebmommgaepoid"; # Unhook - Remove YouTube Recommended Videos
       }
       {
+        id = "nalkmonnmldhpfcpdlbdpljlaajlaphh"; # PiP - Picture in Picture
+      }
+      {
         id = "oldceeleldhonbafppcapldpdifcinji"; # AI Grammar Checker & Paraphraser
       }
       {

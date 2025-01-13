@@ -572,6 +572,38 @@
                     ];
                   }
                   {
+                    description = "Replace Alt+Shift+F with Command+Control+F in Alacritty for fullscreen";
+                    manipulators = [
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "f";
+                          modifiers = {
+                            mandatory = [
+                              "left_option"
+                              "left_shift"
+                            ];
+                          };
+                        };
+                        to = [
+                          {
+                            key_code = "f";
+                            modifiers = [
+                              "left_command"
+                              "left_control"
+                            ];
+                          }
+                        ];
+                        conditions = [
+                          {
+                            type = "frontmost_application_if";
+                            bundle_identifiers = [ "^org\\.alacritty$" ];
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
                     description = "Replace Alt+Shift+Q with Command+W in Alacritty and com.apple.SystemProfiler";
                     manipulators = [
                       {

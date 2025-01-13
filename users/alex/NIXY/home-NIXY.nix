@@ -35,19 +35,16 @@
     ./modules/packages-NIXY.nix
     ./modules/instantview.nix
     ./modules/karabiner.nix
-    ./modules/spicetify/spicetify.nix
+    # ./modules/spicetify/spicetify.nix
     ./modules/cava.nix
     ./modules/xinit.nix
     ./modules/colors.nix # generate a color palette from nix-colors (to view all colors in a file!)
     ./modules/i3.nix
-    ./modules/macwmfx.nix
     ./modules/qutebrowser.nix
     ./modules/sketchybar/sketchybar.nix
   ];
 
   home = {
-    username = "alex";
-    homeDirectory = lib.mkForce "/Users/alex";
     stateVersion = "23.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
     shellAliases = {
       python = "python3.11";

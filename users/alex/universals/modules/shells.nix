@@ -88,6 +88,7 @@ in
 
     bash = {
       enable = true;
+      package = pkgs.bashInteractive;
       enableCompletion = true;
       initExtra =
         fullSetup
@@ -95,114 +96,153 @@ in
           shopt -s histappend
           # Enable case-insensitive tab completion
           bind "set completion-ignore-case on"
+          # Prevent the default interactive shell message
+          export BASH_SILENCE_DEPRECATION_WARNING=1
         '';
       shellAliases = shellAliases;
+
+      # enableCompletion = true;
+      # initExtra =
+      #   fullSetup
+      #   + ''
+      #     shopt -s histappend
+      #     # Enable case-insensitive tab completion
+      #     bind "set completion-ignore-case on"
+      #     # Prevent the default interactive shell message
+      #     export BASH_SILENCE_DEPRECATION_WARNING=1
+      #   '';
+      # shellAliases = shellAliases;
     };
 
     fish = {
       enable = true;
-      shellInit =
-        fullSetup
-        + lib.optionalString pkgs.stdenv.isDarwin ''
-          fish_add_path -p "/opt/X11/bin" "/usr/X11R6/bin" "/opt/local/bin"
-          fish_add_path -p "/opt/local/sbin" "/opt/homebrew/bin"
-          fish_add_path -p "/opt/homebrew/sbin" "$HOME/.orbstack/bin"
-          fish_add_path -p (ruby -e 'puts Gem.user_dir')/bin
-          fish_add_path -p "/opt/homebrew/opt/libiconv/bin"
-          set -Ux LDFLAGS "-L/opt/homebrew/opt/libiconv/lib"
-          set -Ux CPPFLAGS "-I/opt/homebrew/opt/libiconv/include"
-          set -Ux LIBRARY_PATH "$LIBRARY_PATH:/opt/homebrew/opt/libiconv/lib"
-          # Enable case-insensitive tab completion
-          set -g fish_complete_path (string match -v '*/__fish_build_paths.fish' $fish_complete_path)
-          set -g fish_complete_path $fish_complete_path ~/.config/fish/completions
-          set -U fish_features qmark-noglob
-        '';
+      # shellInit =
+      #   fullSetup
+      #   + lib.optionalString pkgs.stdenv.isDarwin ''
+      #     fish_add_path -p "/opt/X11/bin" "/usr/X11R6/bin" "/opt/local/bin"
+      #     fish_add_path -p "/opt/local/sbin" "/opt/homebrew/bin"
+      #     fish_add_path -p "/opt/homebrew/sbin" "$HOME/.orbstack/bin"
+      #     fish_add_path -p (ruby -e 'puts Gem.user_dir')/bin
+      #     fish_add_path -p "/opt/homebrew/opt/libiconv/bin"
+      #     set -Ux LDFLAGS "-L/opt/homebrew/opt/libiconv/lib"
+      #     set -Ux CPPFLAGS "-I/opt/homebrew/opt/libiconv/include"
+      #     set -Ux LIBRARY_PATH "$LIBRARY_PATH:/opt/homebrew/opt/libiconv/lib"
+      #     # Enable case-insensitive tab completion
+      #     set -g fish_complete_path (string match -v '*/__fish_build_paths.fish' $fish_complete_path)
+      #     set -g fish_complete_path $fish_complete_path ~/.config/fish/completions
+      #     set -U fish_features qmark-noglob
+      #   '';
       interactiveShellInit = ''
         set fish_greeting ""
         # Enable case-insensitive tab completion
         set -g fish_completion_ignore_case 1
       '';
-      shellAliases = shellAliases;
+      # shellAliases = shellAliases;
     };
 
     nushell = {
       enable = true;
       package = pkgs.unstable.nushell;
-      environmentVariables =
-        if pkgs.stdenv.isDarwin then
-          {
-            PATH = lib.concatStringsSep ":" ([
-              "$HOME/.local/bin"
-              "$HOME/.cargo/bin"
-              "$HOME/.gem/ruby/3.3.0/bin"
-              "$HOME/.nix-profile/bin"
-              "/etc/profiles/per-user/$USER/bin"
-              "/run/current-system/sw/bin"
-              "/nix/var/nix/profiles/default/bin"
-              "/usr/local/bin"
-              "/usr/bin"
-              "/bin"
-              "/usr/sbin"
-              "/sbin"
-              "/run/wrappers/bin"
-              "/Applications/flameshot.app/Contents/MacOS"
-              "/opt/X11/bin"
-              "/usr/X11R6/bin"
-              "/opt/local/bin"
-              "/opt/local/sbin"
-              "/opt/homebrew/bin"
-              "/opt/homebrew/sbin"
-              "$HOME/.orbstack/bin"
-              "/opt/homebrew/opt/libiconv/bin"
-            ]);
-            LDFLAGS = "-L/opt/homebrew/opt/libiconv/lib";
-            CPPFLAGS = "-I/opt/homebrew/opt/libiconv/include";
-            # Append to existing LIBRARY_PATH without using undefined 'lib.getEnv'
-            LIBRARY_PATH = "$LIBRARY_PATH:/opt/homebrew/opt/libiconv/lib";
-            LC_ALL = "en_US.UTF-8";
-            LANG = "en_US.UTF-8";
-          }
-        else
-          {
-            PATH = lib.concatStringsSep ":" ([
-              "$HOME/.local/bin"
-              "$HOME/.cargo/bin"
-              "$HOME/.gem/ruby/3.3.0/bin"
-              "$HOME/.nix-profile/bin"
-              "/etc/profiles/per-user/$USER/bin"
-              "/run/current-system/sw/bin"
-              "/nix/var/nix/profiles/default/bin"
-              "/usr/local/bin"
-              "/usr/bin"
-              "/bin"
-              "/usr/sbin"
-              "/sbin"
-              "/run/wrappers/bin"
-            ]);
-            LC_ALL = "en_US.UTF-8";
-            LANG = "en_US.UTF-8";
-          }
-          // {
-            EDITOR = "^nvim";
-            VISUAL = "^nvim";
-            DISPLAY = "^:0";
-          };
-      shellAliases = shellAliases;
+      configFile = {
+        source = null;
+        text = ''
+        '';
+      };
+      envFile = {
+        source = null;
+        text = ''
+        '';
+      };
+      loginFile = {
+        source = null;
+        text = ''
+        '';
+      };
+      environmentVariables = {};
       extraConfig = ''
-        # Enable case-insensitive tab completion
-        $env.config = {
-          completions: {
-            case_sensitive: false
-          }
-        }
-        # Generate init.nu for Oh My Posh
-        # Ensure the init.nu path is correct. Adjust the path if oh-my-posh provides a different location for init.nu
-        if (test -f "${pkgs.oh-my-posh}/init.nu") {
-          source "${pkgs.oh-my-posh}/init.nu"
-        } else {
-          echo "Warning: init.nu not found at ${pkgs.oh-my-posh}/init.nu. Please verify the oh-my-posh installation."
-        }
+        $env.config.show_banner = false
       '';
+      extraEnv = ''
+      '';
+      extraLogin = ''
+      '';
+      shellAliases = {};
+
+      # environmentVariables =
+      #   if pkgs.stdenv.isDarwin then
+      #     {
+      #       PATH = lib.concatStringsSep ":" ([
+      #         "$HOME/.local/bin"
+      #         "$HOME/.cargo/bin"
+      #         "$HOME/.gem/ruby/3.3.0/bin"
+      #         "$HOME/.nix-profile/bin"
+      #         "/etc/profiles/per-user/$USER/bin"
+      #         "/run/current-system/sw/bin"
+      #         "/nix/var/nix/profiles/default/bin"
+      #         "/usr/local/bin"
+      #         "/usr/bin"
+      #         "/bin"
+      #         "/usr/sbin"
+      #         "/sbin"
+      #         "/run/wrappers/bin"
+      #         "/Applications/flameshot.app/Contents/MacOS"
+      #         "/opt/X11/bin"
+      #         "/usr/X11R6/bin"
+      #         "/opt/local/bin"
+      #         "/opt/local/sbin"
+      #         "/opt/homebrew/bin"
+      #         "/opt/homebrew/sbin"
+      #         "$HOME/.orbstack/bin"
+      #         "/opt/homebrew/opt/libiconv/bin"
+      #       ]);
+      #       LDFLAGS = "-L/opt/homebrew/opt/libiconv/lib";
+      #       CPPFLAGS = "-I/opt/homebrew/opt/libiconv/include";
+      #       # Append to existing LIBRARY_PATH without using undefined 'lib.getEnv'
+      #       LIBRARY_PATH = "$LIBRARY_PATH:/opt/homebrew/opt/libiconv/lib";
+      #       LC_ALL = "en_US.UTF-8";
+      #       LANG = "en_US.UTF-8";
+      #     }
+      #   else
+      #     {
+      #       PATH = lib.concatStringsSep ":" ([
+      #         "$HOME/.local/bin"
+      #         "$HOME/.cargo/bin"
+      #         "$HOME/.gem/ruby/3.3.0/bin"
+      #         "$HOME/.nix-profile/bin"
+      #         "/etc/profiles/per-user/$USER/bin"
+      #         "/run/current-system/sw/bin"
+      #         "/nix/var/nix/profiles/default/bin"
+      #         "/usr/local/bin"
+      #         "/usr/bin"
+      #         "/bin"
+      #         "/usr/sbin"
+      #         "/sbin"
+      #         "/run/wrappers/bin"
+      #       ]);
+      #       LC_ALL = "en_US.UTF-8";
+      #       LANG = "en_US.UTF-8";
+      #     }
+      #     // {
+      #       EDITOR = "^nvim";
+      #       VISUAL = "^nvim";
+      #       DISPLAY = "^:0";
+      #     };
+      # shellAliases = shellAliases;
+      # extraConfig = ''
+      #   # Enable case-insensitive tab completion
+      #   $env.config = {
+      #     completions: {
+      #       case_sensitive: false
+      #     }
+      #   }
+      #   # Generate init.nu for Oh My Posh
+      #   # Ensure the init.nu path is correct. Adjust the path if oh-my-posh provides a different location for init.nu
+      #   if (test -f "${pkgs.oh-my-posh}/init.nu") {
+      #     source "${pkgs.oh-my-posh}/init.nu"
+      #   } else {
+      #     echo "Warning: init.nu not found at ${pkgs.oh-my-posh}/init.nu. Please verify the oh-my-posh installation."
+      #   }
+      # '';
     };
 
     oh-my-posh = {

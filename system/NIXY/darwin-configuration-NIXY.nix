@@ -15,6 +15,7 @@
     ./modules/theme.nix
     ./modules/macos-activation-scripts.nix
     ./modules/macos-dock.nix
+    ./modules/spicetify/spicetify.nix
     # ./modules/wg-quick.nix
     # ./modules/openssh.nix
 
@@ -79,19 +80,9 @@
     zsh.enable = true; # default shell on catalina
     bash.enable = true;
     fish.enable = true; # NOT Borne COMPAT?
-    # unmenu = {
-    # enable = true;
-    #   qwerty/Hotkey = "alt-d";
-    #   findApps = true;
-    #   findExecutables = true;
-    #   dirs = [
-    #     "/System/Applications/"
-    #     "/Applications/"
-    #   ];
-    # };
   };
 
-  users.users.alex.shell = pkgs.zsh;
+  users.users.alex.shell = pkgs.bashInteractive; # must use nixpkgs bash instead of apple's ancient bash (3.2 id dated)
   nix = {
     # optimise.automatic = true;
     # https://nixos.wiki/wiki/Distributed_build

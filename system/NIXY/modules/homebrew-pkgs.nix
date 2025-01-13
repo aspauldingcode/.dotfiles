@@ -15,6 +15,7 @@
       "koekeishiya/homebrew-formulae" = inputs.homebrew-koekeishiya;
       "FelixKratz/homebrew-formulae" = inputs.homebrew-felixkratz;
       "smudge/homebrew-smudge" = inputs.homebrew-smudge;
+      "gcenx/wine" = inputs.homebrew-gcenx;
     };
   };
 
@@ -56,6 +57,7 @@
       "gittyup"
       "pppc-utility"
       "krita"
+      "kdenlive"
       "hiddenbar"
       "obs"
       "obs-websocket"
@@ -68,6 +70,10 @@
       "background-music"
       "sublime-text"
       "themeengine"
+      {
+        name = "gcenx/wine/kegworks";
+        args = { no_quarantine = true; };
+      }
     ];
 
     masApps = {
