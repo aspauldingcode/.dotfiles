@@ -77,12 +77,18 @@
 
   # Create /etc/zshrc that loads the nix-darwin environment.
   programs = {
-    zsh.enable = true; # default shell on catalina
-    bash.enable = true;
-    fish.enable = true; # NOT Borne COMPAT?
+    zsh.enable = true;
+    bash = {
+      enable = true;
+      completion.enable = true;
+    };
+    fish.enable = true;
+  };
+  
+  users.users.alex = {
+    shell = pkgs.bashInteractive;
   };
 
-  users.users.alex.shell = pkgs.bashInteractive; # must use nixpkgs bash instead of apple's ancient bash (3.2 id dated)
   nix = {
     # optimise.automatic = true;
     # https://nixos.wiki/wiki/Distributed_build
