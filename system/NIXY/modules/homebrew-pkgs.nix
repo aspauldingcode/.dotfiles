@@ -15,7 +15,7 @@
       "koekeishiya/homebrew-formulae" = inputs.homebrew-koekeishiya;
       "FelixKratz/homebrew-formulae" = inputs.homebrew-felixkratz;
       "smudge/homebrew-smudge" = inputs.homebrew-smudge;
-      "gcenx/wine" = inputs.homebrew-gcenx;
+      # "gcenx/wine" = inputs.homebrew-gcenx; # FIXME: This is not working on first-install.
     };
   };
 
@@ -70,10 +70,10 @@
       "background-music"
       "sublime-text"
       "themeengine"
-      {
-        name = "gcenx/wine/kegworks";
-        args = { no_quarantine = true; };
-      }
+      #{
+      #  name = "gcenx/wine/kegworks";
+      #  args = { no_quarantine = true; };
+      #}
     ];
 
     masApps = {
