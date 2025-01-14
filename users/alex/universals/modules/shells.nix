@@ -99,7 +99,17 @@
       '';
       extraLogin = ''
       '';
-      shellAliases = {};
+      shellAliases = {
+        # Basic aliases
+        ll = "ls -l";
+        la = "ls -a";
+        
+        # System control aliases
+        reboot = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
+        rb = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
+        shutdown = if pkgs.stdenv.isDarwin then "sudo shutdown -h now" else "sudo systemctl poweroff";
+        sd = if pkgs.stdenv.isDarwin then "sudo shutdown -h now" else "sudo systemctl poweroff";
+      };
     };
 
     oh-my-posh = {
