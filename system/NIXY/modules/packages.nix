@@ -49,6 +49,7 @@
     cava
     git
     tree
+    treefmt2
     nowplaying-cli
     ifstat-legacy
     ranger
