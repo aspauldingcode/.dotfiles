@@ -61,7 +61,19 @@
   programs = {
     # allow Home-Manager to configure itself
     home-manager.enable = true;
-    ssh.addKeysToAgent = true;
+    ssh = {
+      enable = true;
+      addKeysToAgent = "confirm";
+      
+      matchBlocks = {
+        "github.com" = {
+          hostname = "github.com";
+          user = "git";
+          identityFile = "~/.ssh/id_ed25519";
+          identitiesOnly = true;
+        };
+      };
+    };
   };
 
   # disable Volume/Brightness HUD on macOS at login!
