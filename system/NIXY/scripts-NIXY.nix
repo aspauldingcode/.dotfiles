@@ -20,8 +20,10 @@
       echo "Updating readme.md."
       ${pkgs.bash}/bin/bash ${../../count_lines_of_code.sh}
       echo "Formatting all nix files..."
-      ${pkgs.treefmt2}/bin/treefmt ${if pkgs.stdenv.isDarwin then "/Users/alex/.dotfiles" else "/home/alex/.dotfiles"}
-      
+      ${pkgs.treefmt2}/bin/treefmt ${
+        if pkgs.stdenv.isDarwin then "/Users/alex/.dotfiles" else "/home/alex/.dotfiles"
+      }
+
       echo "Done."
       date +"%I:%M:%S %p"
     '')

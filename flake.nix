@@ -2,10 +2,8 @@
   description = "Universal Flake by Alex - macOS and NixOS";
 
   inputs = {
-    # nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11" # Set to the desired stable version
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-24.11-darwin"; # Use darwin-specific branch
-    # unstable_nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable"; # Use nixos-specific branch
-    unstable_nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable"; # Use darwin-specific branch
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11"; # Set to the desired stable version
+    unstable_nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable"; # Use nixos-specific branch
     home-manager = {
       url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs"; # Ensure home-manager follows the stable nixpkgs version
@@ -108,34 +106,35 @@
   };
 
   outputs =
-    { self
-    , nixpkgs
-    , unstable_nixpkgs
-    , nix-darwin
-    , home-manager
-    , nixvim
-    , flake-parts
-    , nix-colors
-    , mobile-nixos
-    , apple-silicon
-    , nur
-    , nix-std
-    , nixtheplanet
-    , agenix
-    , mac-app-util
-    , nixpkgs-firefox-darwin
-    , spicetify-nix
-    , nix-homebrew
-    , homebrew-core
-    , homebrew-bundle
-    , homebrew-services
-    , homebrew-koekeishiya
-    , homebrew-felixkratz
-    , homebrew-smudge
-    , homebrew-cask
-    , homebrew-gcenx
-    , nix-rosetta-builder
-    , frida-nix    
+    {
+      self,
+      nixpkgs,
+      unstable_nixpkgs,
+      nix-darwin,
+      home-manager,
+      nixvim,
+      flake-parts,
+      nix-colors,
+      mobile-nixos,
+      apple-silicon,
+      nur,
+      nix-std,
+      nixtheplanet,
+      agenix,
+      mac-app-util,
+      nixpkgs-firefox-darwin,
+      spicetify-nix,
+      nix-homebrew,
+      homebrew-core,
+      homebrew-bundle,
+      homebrew-services,
+      homebrew-koekeishiya,
+      homebrew-felixkratz,
+      homebrew-smudge,
+      homebrew-cask,
+      homebrew-gcenx,
+      nix-rosetta-builder,
+      frida-nix,
     }@inputs:
     let
       user = "alex";
@@ -290,7 +289,7 @@
             ./system/NIXY/darwin-configuration-NIXY.nix
             mac-app-util.darwinModules.default
             home-manager.darwinModules.home-manager
-            spicetify-nix.nixosModules.default # FIXME: use darwinModules when 
+            spicetify-nix.nixosModules.default # FIXME: use darwinModules when
             {
               home-manager = {
                 useGlobalPkgs = true;

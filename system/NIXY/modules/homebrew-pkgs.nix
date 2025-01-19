@@ -49,6 +49,7 @@
       "cliclick"
       "whalebrew"
       "ddcctl"
+      "winetricks"
     ];
 
     casks = [
@@ -70,6 +71,7 @@
       "background-music"
       "sublime-text"
       "themeengine"
+      "wine-stable"
       #{
       #  name = "gcenx/wine/kegworks";
       #  args = { no_quarantine = true; };

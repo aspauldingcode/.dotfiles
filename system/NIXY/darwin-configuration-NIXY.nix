@@ -84,7 +84,7 @@
     };
     fish.enable = true;
   };
-  
+
   users.users.alex = {
     shell = pkgs.bashInteractive;
   };

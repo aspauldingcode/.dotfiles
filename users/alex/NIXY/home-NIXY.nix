@@ -64,7 +64,7 @@
     ssh = {
       enable = true;
       addKeysToAgent = "confirm";
-      
+
       matchBlocks = {
         "github.com" = {
           hostname = "github.com";

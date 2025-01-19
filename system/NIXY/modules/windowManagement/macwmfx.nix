@@ -1,5 +1,5 @@
-# assuming you mean a nix-darwin option, i believe there's no nice way to do it. 
-# once my nix-darwin PR is merged, then 
+# assuming you mean a nix-darwin option, i believe there's no nice way to do it.
+# once my nix-darwin PR is merged, then
 # system.file."Library/Application Support/exampleapp/config".source = <drv>;
 # https://github.com/LnL7/nix-darwin/pull/1205
 

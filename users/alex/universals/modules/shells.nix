@@ -13,16 +13,22 @@
     zsh = {
       enable = true;
       enableCompletion = true;
-      initExtra =
-        ''
-          setopt APPEND_HISTORY
-          zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
-        '';
+      initExtra = ''
+        setopt APPEND_HISTORY
+        zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+
+        # Kill extra ssh-agents if more than one is running
+        if [ "$(pgrep ssh-agent | wc -l)" -gt 1 ] &>/dev/null; then
+          pkill -f ssh-agent &>/dev/null
+        fi
+        # Start ssh-agent if none are running
+        [ -n "$(pgrep ssh-agent)" ] &>/dev/null || eval "$(ssh-agent -s)" &>/dev/null
+      '';
       shellAliases = {
         # Basic aliases
         ll = "ls -l";
         la = "ls -a";
-        
+
         # System control aliases
         reboot = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
         rb = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
@@ -35,17 +41,23 @@
       enable = true;
       package = pkgs.bashInteractive;
       enableCompletion = true;
-      initExtra =
-        ''
-          shopt -s histappend
-          bind "set completion-ignore-case on"
-          export BASH_SILENCE_DEPRECATION_WARNING=1
-        '';
+      initExtra = ''
+        shopt -s histappend
+        bind "set completion-ignore-case on"
+        export BASH_SILENCE_DEPRECATION_WARNING=1
+
+        # Kill extra ssh-agents if more than one is running
+        if [ "$(pgrep ssh-agent | wc -l)" -gt 1 ] &>/dev/null; then
+          pkill -f ssh-agent &>/dev/null
+        fi
+        # Start ssh-agent if none are running
+        [ -n "$(pgrep ssh-agent)" ] &>/dev/null || eval "$(ssh-agent -s)" &>/dev/null
+      '';
       shellAliases = {
         # Basic aliases
         ll = "ls -l";
         la = "ls -a";
-        
+
         # System control aliases
         reboot = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
         rb = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
@@ -59,12 +71,21 @@
       interactiveShellInit = ''
         set fish_greeting ""
         set -g fish_completion_ignore_case 1
+
+        # Kill extra ssh-agents if more than one is running
+        if test (pgrep ssh-agent | wc -l) -gt 1 &>/dev/null
+          pkill -f ssh-agent &>/dev/null
+        end
+        # Start ssh-agent if none are running
+        if not test -n (pgrep ssh-agent) &>/dev/null
+          eval (ssh-agent -s) &>/dev/null
+        end
       '';
       shellAliases = {
         # Basic aliases
         ll = "ls -l";
         la = "ls -a";
-        
+
         # System control aliases
         reboot = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
         rb = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
@@ -78,32 +99,36 @@
       package = pkgs.unstable.nushell;
       configFile = {
         source = null;
-        text = ''
-        '';
+        text = '''';
       };
       envFile = {
         source = null;
-        text = ''
-        '';
+        text = '''';
       };
       loginFile = {
         source = null;
-        text = ''
-        '';
+        text = '''';
       };
-      environmentVariables = {};
+      environmentVariables = { };
       extraConfig = ''
         $env.config.show_banner = false
+
+        # Kill extra ssh-agents if more than one is running
+        if (pgrep ssh-agent | lines | length) > 1 {
+          pkill -f ssh-agent
+        }
+        # Start ssh-agent if none are running
+        if (pgrep ssh-agent | lines | length) == 0 {
+          ssh-agent -s | lines | each { |line| evaluate $line }
+        }
       '';
-      extraEnv = ''
-      '';
-      extraLogin = ''
-      '';
+      extraEnv = '''';
+      extraLogin = '''';
       shellAliases = {
         # Basic aliases
         ll = "ls -l";
         la = "ls -a";
-        
+
         # System control aliases
         reboot = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
         rb = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
