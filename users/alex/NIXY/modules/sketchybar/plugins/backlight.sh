@@ -2,6 +2,7 @@
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
+source "$HOME/.config/sketchybar/source_sketchybar.sh"
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
@@ -49,10 +50,10 @@ brightness_change() {
     ;;
   esac
 
-  sketchybar --set backlight label="$ICON $INFO%" highlight.color=$base07 # add the icon and the percentage
+  $SKETCHYBAR_EXEC --set backlight label="$ICON $INFO%" highlight.color=$base07 # add the icon and the percentage
 }
 
-sketchybar --add item backlight.popup popup.backlight \
+$SKETCHYBAR_EXEC --add item backlight.popup popup.backlight \
   --set backlight.popup label="Display Brightness" \
   label.padding_left=10 \
   label.padding_right=10
@@ -67,24 +68,24 @@ case "$SENDER" in
   brightness $SCROLL_DELTA
   ;;
 "mouse.entered")
-  sketchybar --set backlight popup.drawing=on
+  $SKETCHYBAR_EXEC --set backlight popup.drawing=on
 
   # highlight effect
-  sketchybar --set backlight icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
+  $SKETCHYBAR_EXEC --set backlight icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
   ;;
 "mouse.exited" | "mouse.exited.global")
-  sketchybar --set backlight popup.drawing=off icon.highlight=off
+  $SKETCHYBAR_EXEC --set backlight popup.drawing=off icon.highlight=off
   
   # unhighlight effect
-  sketchybar --set backlight icon.highlight=off label.highlight=off
+  $SKETCHYBAR_EXEC --set backlight icon.highlight=off label.highlight=off
   ;;
 "mouse.clicked")
   open /System/Library/PreferencePanes/Displays.prefPane
   
   # button clicked effect
-  sketchybar --set backlight icon.highlight_color=$base04 label.highlight_color=$base04
-  sketchybar --set backlight icon.highlight_color=$base07 label.highlight_color=$base07
-  sketchybar --set backlight icon.highlight=off label.highlight=off popup.drawing=off
+  $SKETCHYBAR_EXEC --set backlight icon.highlight_color=$base04 label.highlight_color=$base04
+  $SKETCHYBAR_EXEC --set backlight icon.highlight_color=$base07 label.highlight_color=$base07
+  $SKETCHYBAR_EXEC --set backlight icon.highlight=off label.highlight=off popup.drawing=off
   ;;
 "routine")
   # Update brightness info periodically

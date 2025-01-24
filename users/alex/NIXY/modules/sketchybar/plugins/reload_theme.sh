@@ -1,10 +1,11 @@
 
 #CHECK HERE TO IMPLEMENT FULLY:
-https://github.com/FelixKratz/SketchyBar/discussions/12#discussioncomment-5771466
-It replaces all the colors on the fly without needing to restart sketchybar, makes use of the nice animation feature as well..
+#https://github.com/FelixKratz/SketchyBar/discussions/12#discussioncomment-5771466
+#It replaces all the colors on the fly without needing to restart sketchybar, makes use of the nice animation feature as well..
 
 #!/bin/zsh
 
+source "$HOME/.config/sketchybar/source_sketchybar.sh"
 source $HOME/.config/sketchybar/constants.sh
 LIGHT_THEME_COLORS=(${LIGHT_THEME_COLORS:l})
 DARK_THEME_COLORS=(${DARK_THEME_COLORS:l})
@@ -22,18 +23,18 @@ for color in $LIGHT_THEME_COLORS; do
 done
 
 updated_item_properties() {
-  sketchybar --query $1 |
+  $SKETCHYBAR_EXEC --query $1 |
     jq -r 'leaf_paths as $path | ($path | join(".")) + "=" + (getpath($path)|tostring) | select(contains("color"))' |
     grep -E "$(echo $source_colors | tr ' ' '|')" |
     sed -e "${sub_map}s/geometry.//g;" |
     tr ' \n' ' '
 }
 
-sketchybar --animate linear 10 --bar $(updated_item_properties bar) &
-sketchybar --query bar |
+$SKETCHYBAR_EXEC --animate linear 10 --bar $(updated_item_properties bar) &
+$SKETCHYBAR_EXEC --query bar |
   jq -r ".items[]" |
   while read -r item_name; do
-    sketchybar --animate linear 10 --set $item_name $(updated_item_properties $item_name) &
+    $SKETCHYBAR_EXEC --animate linear 10 --set $item_name $(updated_item_properties $item_name) &
   done
 
 
@@ -87,7 +88,3 @@ osascript -e "tell app \"System Events\" to tell appearance preferences to set d
 
 # Reload sketchybar theme
 ~/.config/sketchybar/reload_theme.sh $target &
-
-
-
-

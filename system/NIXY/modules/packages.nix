@@ -75,6 +75,7 @@
     python311Packages.diffusers
     python311Packages.transformers
     python311Packages.accelerate
+    python311Packages.raylib-python-cffi
     # javaPackages.openjfx19
     #inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk22
     jdk23
@@ -96,6 +97,7 @@
     tree-sitter
     nodejs_20
     unstable.nodePackages.vercel
+    raylib
 
     #lspconfig
     fd # find tool
@@ -109,7 +111,9 @@
     # (pkgs.callPackage ./../customDerivations/okular.nix { })
     (pkgs.callPackage ./../customDerivations/recording-indicator-utility.nix { })
     git
-    clang
+    llvmPackages_19.clang-unwrapped
+    llvmPackages_19.llvm
+    llvmPackages_19.bintools
     openssh
     inputs.agenix.packages.${pkgs.system}.agenix # Add agenix CLI tool
   ];

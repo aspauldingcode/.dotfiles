@@ -4,6 +4,7 @@
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
+source "$HOME/.config/sketchybar/source_sketchybar.sh"
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
@@ -34,11 +35,11 @@ TIME=${FLOAT%.*}
 curl -s --max-time 20 "$CURRENT_COVER" -o /tmp/cover.jpg
 
 detail_on() {
-  sketchybar --animate tanh 30 --set spotify_label slider.width=$WIDTH
+  $SKETCHYBAR_EXEC --animate tanh 30 --set spotify_label slider.width=$WIDTH
 }
 
 detail_off() {
-  sketchybar --animate tanh 30 --set spotify_label slider.width=0
+  $SKETCHYBAR_EXEC --animate tanh 30 --set spotify_label slider.width=0
 }
 
 spotify_cover=(
@@ -53,7 +54,7 @@ spotify_cover=(
   background.image.y_offset=10
 )
 
-sketchybar --add item spotify.cover popup.spotify \
+$SKETCHYBAR_EXEC --add item spotify.cover popup.spotify \
   --set spotify.cover "${spotify_cover[@]}"
 
 spotify_title=(
@@ -66,7 +67,7 @@ spotify_title=(
   y_offset=30
 )
 
-sketchybar --add item spotify.title popup.spotify \
+$SKETCHYBAR_EXEC --add item spotify.title popup.spotify \
   --set spotify.title "${spotify_title[@]}"
 
 spotify_artist=(
@@ -79,7 +80,7 @@ spotify_artist=(
   label="$CURRENT_ARTIST"
 )
 
-sketchybar --add item spotify.artist popup.spotify \
+$SKETCHYBAR_EXEC --add item spotify.artist popup.spotify \
   --set spotify.artist "${spotify_artist[@]}"
 
 spotify_album=(
@@ -93,30 +94,30 @@ spotify_album=(
   background.padding_right=235
 )
 
-sketchybar --add item spotify.album popup.spotify \
+$SKETCHYBAR_EXEC --add item spotify.album popup.spotify \
   --set spotify.album "${spotify_album[@]}"
 
-sketchybar --set spotify_label label="$CURRENT_SONG"
+$SKETCHYBAR_EXEC --set spotify_label label="$CURRENT_SONG"
 
 # Handle mouse events
 case "$SENDER" in
   "mouse.entered")
-    sketchybar --set $NAME popup.drawing=on
+    $SKETCHYBAR_EXEC --set $NAME popup.drawing=on
     
     # highlight effect
-    sketchybar --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
     ;;
   "mouse.exited" | "mouse.exited.global")
-    sketchybar --set $NAME popup.drawing=off
+    $SKETCHYBAR_EXEC --set $NAME popup.drawing=off
     
     # unhighlight effect
-    sketchybar --set $NAME icon.highlight=off label.highlight=off
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight=off label.highlight=off
     ;;
   "mouse.clicked")
     # clicked effect
-    sketchybar --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
-    sketchybar --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
-    sketchybar --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
     ;;
   "routine")
     # Update plugin info periodically

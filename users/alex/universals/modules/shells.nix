@@ -16,6 +16,7 @@
       initExtra = ''
         setopt APPEND_HISTORY
         zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+        export EDITOR=nvim
 
         # Kill extra ssh-agents if more than one is running
         if [ "$(pgrep ssh-agent | wc -l)" -gt 1 ] &>/dev/null; then
@@ -45,6 +46,7 @@
         shopt -s histappend
         bind "set completion-ignore-case on"
         export BASH_SILENCE_DEPRECATION_WARNING=1
+        export EDITOR=nvim
 
         # Kill extra ssh-agents if more than one is running
         if [ "$(pgrep ssh-agent | wc -l)" -gt 1 ] &>/dev/null; then
@@ -71,6 +73,7 @@
       interactiveShellInit = ''
         set fish_greeting ""
         set -g fish_completion_ignore_case 1
+        set -gx EDITOR nvim
 
         # Kill extra ssh-agents if more than one is running
         if test (pgrep ssh-agent | wc -l) -gt 1 &>/dev/null
@@ -109,7 +112,9 @@
         source = null;
         text = '''';
       };
-      environmentVariables = { };
+      environmentVariables = {
+        EDITOR = "nvim";
+      };
       extraConfig = ''
         $env.config.show_banner = false
 

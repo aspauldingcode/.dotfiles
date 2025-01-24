@@ -1,12 +1,13 @@
 #!/bin/sh
 
+source "$HOME/.config/sketchybar/source_sketchybar.sh"
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/plugins/detect_arch_and_source_homebrew_packages.sh"
 # The $SELECTED variable is available for space components and indicates if
 # the space invoking this script (with name: $NAME) is currently selected:
 # https://felixkratz.github.io/SketchyBar/config/components#space----associate-mission-control-spaces-with-an-item
 
-sketchybar --set "$NAME" background.drawing="$SELECTED" color=$base0A icon.highlight="$SELECTED" icon.highlight_color=$base0A
+$SKETCHYBAR_EXEC --set "$NAME" background.drawing="$SELECTED" color=$base0A icon.highlight="$SELECTED" icon.highlight_color=$base0A
 
 # set the wallpaper on click for the current space.
 $desktoppr $wallpaper && $desktoppr color 000000
@@ -45,14 +46,14 @@ $desktoppr $wallpaper && $desktoppr color 000000
 
 case "$SENDER" in
   "mouse.entered")
-    sketchybar --set $NAME icon.highlight=on icon.highlight_color=$base07
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight=on icon.highlight_color=$base07
     ;;
   "mouse.exited" | "mouse.exited.global")
-    sketchybar --set $NAME icon.highlight_color=$base0A icon.highlight=$SELECTED 
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base0A icon.highlight=$SELECTED 
     ;;
   "mouse.clicked")
     # clicked effect
-    sketchybar --set $NAME icon.highlight_color=$base0A label.highlight_color=$base0A
-    sketchybar --set $NAME icon.highlight=$SELECTED label.highlight=$SELECTED
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base0A label.highlight_color=$base0A
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight=$SELECTED label.highlight=$SELECTED
     ;;
 esac

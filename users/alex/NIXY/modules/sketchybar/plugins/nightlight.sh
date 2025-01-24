@@ -1,4 +1,4 @@
-#    ~  nightlight --help
+#    ~  nightlight --help
 # nightlight v0.3.0
 #   A CLI for configuring 'Night Shift' on macOS 🌕🌖🌗🌘🌑
 
@@ -27,6 +27,7 @@
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
+source "$HOME/.config/sketchybar/source_sketchybar.sh"
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
@@ -84,11 +85,11 @@ update_icon() {
   esac
 
   # add the icon, percentage, temperature value, and status
-  sketchybar --set nightlight label="$ICON $current_temp_percentage%"
-  sketchybar --set nightlight.popup label="Nightlight Temperature: ${temp_value}K ($status_label)"
+  $SKETCHYBAR_EXEC --set nightlight label="$ICON $current_temp_percentage%"
+  $SKETCHYBAR_EXEC --set nightlight.popup label="Nightlight Temperature: ${temp_value}K ($status_label)"
 }
 
-sketchybar --add item nightlight.popup popup.nightlight \
+$SKETCHYBAR_EXEC --add item nightlight.popup popup.nightlight \
   --set nightlight.popup label="Nightlight Temperature: $current_temp ($status_label)" \
   label.padding_left=10 \
   label.padding_right=10
@@ -107,24 +108,24 @@ case "$SENDER" in
   update_icon
   ;;
 "mouse.entered")
-  sketchybar --set $NAME popup.drawing=on
+  $SKETCHYBAR_EXEC --set $NAME popup.drawing=on
   
   # highlight effect
-  sketchybar --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
+  $SKETCHYBAR_EXEC --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
   ;;
 "mouse.exited" | "mouse.exited.global")
-  sketchybar --set $NAME popup.drawing=off
+  $SKETCHYBAR_EXEC --set $NAME popup.drawing=off
   
   # unhighlight effect
-  sketchybar --set $NAME icon.highlight=off label.highlight=off
+  $SKETCHYBAR_EXEC --set $NAME icon.highlight=off label.highlight=off
   ;;
 "mouse.clicked")
   $nightlight toggle
   
   # clicked effect
-  sketchybar --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
-  sketchybar --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
-  sketchybar --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
+  $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
+  $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
+  $SKETCHYBAR_EXEC --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
   ;;
 "routine")
   # Update nightlight info periodically

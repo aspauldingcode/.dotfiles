@@ -4,6 +4,7 @@
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
+source "$HOME/.config/sketchybar/source_sketchybar.sh"
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
@@ -23,7 +24,7 @@ check_current_window() {
     local current_window_frame=$(/opt/homebrew/bin/yabai -m query --windows --window | jq '.frame')
     local expected_window_frame=$(/opt/homebrew/bin/yabai -m query --displays --display | jq '.frame')
     if [ "$current_window_frame" != "$expected_window_frame" ]; then
-        toggle-instant-fullscreen on
+        $SKETCHYBAR_EXEC toggle-instant-fullscreen on
     fi
 }
 

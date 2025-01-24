@@ -2,6 +2,7 @@
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
+source "$HOME/.config/sketchybar/source_sketchybar.sh"
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
@@ -53,11 +54,11 @@ initialize_popup_items() {
         label.drawing=on
       )
       item_name="datetime.popup.cal_$((i+1))"
-      sketchybar --add item "$item_name" popup.datetime --set "$item_name" "${row[@]}"
+      $SKETCHYBAR_EXEC --add item "$item_name" popup.datetime --set "$item_name" "${row[@]}"
     fi
   done
 
-  sketchybar --set "$item_name" background.padding_right=185
+  $SKETCHYBAR_EXEC --set "$item_name" background.padding_right=185
   echo "initialized" > "$INIT_FLAG_FILE"
 }
 
@@ -79,8 +80,8 @@ fi
 
 # Function to set date and time
 function set_date_and_time {
-  sketchybar --set $NAME label="$(date '+%a, %b %d  %I:%M %p')"
-  sketchybar --set $NAME icon=$DATE
+  $SKETCHYBAR_EXEC --set $NAME label="$(date '+%a, %b %d  %I:%M %p')"
+  $SKETCHYBAR_EXEC --set $NAME icon=$DATE
 }
 
 set_date_and_time # call it first
@@ -89,23 +90,23 @@ set_date_and_time # call it first
 case "$SENDER" in
   "mouse.entered")
     # popup effect
-    sketchybar --set $NAME popup.drawing=on
+    $SKETCHYBAR_EXEC --set $NAME popup.drawing=on
 
     # highlight effect
-    sketchybar --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
     ;;
   "mouse.exited" | "mouse.exited.global")
-    sketchybar --set $NAME popup.drawing=off
+    $SKETCHYBAR_EXEC --set $NAME popup.drawing=off
     
     # unhighlight effect
-    sketchybar --set $NAME icon.highlight=off label.highlight=off
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight=off label.highlight=off
     ;;
   "mouse.clicked")
     open https://calendar.google.com/calendar/u/oldstrumpet321@gmail.com/r/month
     
     # button clicked effect
-    sketchybar --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
-    sketchybar --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
-    sketchybar --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
     ;;
 esac

@@ -3,6 +3,7 @@
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
+source "$HOME/.config/sketchybar/source_sketchybar.sh"
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
@@ -20,7 +21,7 @@ fi
 
 if ! pgrep cava > /dev/null; then
   $cava -p $PLUGIN_DIR/cava.conf | sed -u 's/ //g; s/0/▁/g; s/1/▂/g; s/2/▃/g; s/3/▄/g; s/4/▅/g; s/5/▆/g; s/6/▇/g; s/7/█/g; s/8/█/g' | while read -r line; do
-    sketchybar --set cava label="$line" label.font="Droid Sans Mono for Powerline:Regular:12.0"
+    $SKETCHYBAR_EXEC --set cava label="$line" label.font="Droid Sans Mono for Powerline:Regular:12.0"
   done
 fi
 
@@ -59,7 +60,7 @@ if [[ "$PLAYING_APP" == "Spotify" ]]; then
   )
 
   # Use update command to set the cover popup
-  sketchybar --add item $NAME.cover popup.$NAME --set "${cover_popup[@]}"
+  $SKETCHYBAR_EXEC --add item $NAME.cover popup.$NAME --set "${cover_popup[@]}"
 fi
 
 # Function to update cava popups with now playing information
@@ -76,8 +77,8 @@ update_cava_popups() {
     # Parse the raw info and check for empty strings
     title=$(echo "$raw_info" | grep "kMRMediaRemoteNowPlayingInfoTitle" | sed 's/.*= "\(.*\)";/\1/')
     album=$(echo "$raw_info" | grep "kMRMediaRemoteNowPlayingInfoAlbum" | sed 's/.*= "\(.*\)";/\1/')
-    # Fix artist parsing by removing key/pair format
-    artist=$(echo "$raw_info" | grep "kMRMediaRemoteNowPlayingInfoArtist" | sed 's/.*= "\(.*\)";/\1/' | sed 's/^.*= //g')
+    # Fix artist parsing by removing key/pair format and replacing \U2024 with period
+    artist=$(echo "$raw_info" | grep "kMRMediaRemoteNowPlayingInfoArtist" | sed 's/.*= "\(.*\)";/\1/' | sed 's/^.*= //g' | sed 's/\\U2024/./g')
     
     # Clear variables if they're empty strings
     [ "$album" = '""' ] && album=""
@@ -135,10 +136,10 @@ update_cava_popups() {
   )
 
   # Only add popups for non-empty values
-  [ ! -z "$title" ] && sketchybar --add item $NAME.title popup.$NAME --set "${title_popup[@]}"
-  [ ! -z "$album" ] && sketchybar --add item $NAME.album popup.$NAME --set "${album_popup[@]}"
-  [ ! -z "$artist" ] && sketchybar --add item $NAME.artist popup.$NAME --set "${artist_popup[@]}"
-  [ ! -z "$progress_info" ] && sketchybar --add item $NAME.progress popup.$NAME --set "${progress_popup[@]}"
+  [ ! -z "$title" ] && $SKETCHYBAR_EXEC --add item $NAME.title popup.$NAME --set "${title_popup[@]}"
+  [ ! -z "$album" ] && $SKETCHYBAR_EXEC --add item $NAME.album popup.$NAME --set "${album_popup[@]}"
+  [ ! -z "$artist" ] && $SKETCHYBAR_EXEC --add item $NAME.artist popup.$NAME --set "${artist_popup[@]}"
+  [ ! -z "$progress_info" ] && $SKETCHYBAR_EXEC --add item $NAME.progress popup.$NAME --set "${progress_popup[@]}"
 }
 
 # Update cava popups
@@ -147,21 +148,21 @@ update_cava_popups
 # Handle mouse events for hover status
 case "$SENDER" in
   "mouse.entered")
-    sketchybar --set $NAME popup.drawing=on
+    $SKETCHYBAR_EXEC --set $NAME popup.drawing=on
    
     # highlight effect
-    sketchybar --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
     ;;
   "mouse.exited" | "mouse.exited.global")
-    sketchybar --set $NAME popup.drawing=off
+    $SKETCHYBAR_EXEC --set $NAME popup.drawing=off
     
     # unhighlight effect
-    sketchybar --set $NAME icon.highlight=off label.highlight=off
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight=off label.highlight=off
     ;;
   "mouse.clicked")
     # clicked effect
-    sketchybar --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
-    sketchybar --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
-    sketchybar --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
     ;;
 esac

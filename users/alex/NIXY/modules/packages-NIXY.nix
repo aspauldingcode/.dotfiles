@@ -95,6 +95,7 @@ in
       ps.diffusers
       ps.transformers
       ps.accelerate
+      ps.raylib-python-cffi
       # ps.sklearn-deap
       #ps.pyautogui # broken
       # ps.pep517

@@ -2,6 +2,7 @@
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
+source "$HOME/.config/sketchybar/source_sketchybar.sh"
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
@@ -94,10 +95,10 @@ update_bluetooth() {
     fi
     
     # Update the main bluetooth icon and status
-    sketchybar --set $NAME icon="$GLOBAL_ICON"
+    $SKETCHYBAR_EXEC --set $NAME icon="$GLOBAL_ICON"
 
     # Create/update global status popup item
-    sketchybar --add item "global_status" popup.$NAME \
+    $SKETCHYBAR_EXEC --add item "global_status" popup.$NAME \
         --set "global_status" \
         label="$global_status_text" \
         icon="$GLOBAL_ICON" \
@@ -124,7 +125,7 @@ update_bluetooth() {
             fi
             
             # Create/update popup item for this device
-            sketchybar --add item "$mac" popup.$NAME \
+            $SKETCHYBAR_EXEC --add item "$mac" popup.$NAME \
                 --set "$mac" \
                 label="$name ($mac) - $status" \
                 icon="$device_icon" \
@@ -161,7 +162,7 @@ discover_devices() {
             fi
             
             # Create/update popup item for this discovered device
-            sketchybar --add item "discovered.$mac" popup.$NAME \
+            $SKETCHYBAR_EXEC --add item "discovered.$mac" popup.$NAME \
                 --set "discovered.$mac" \
                 label="$name ($mac) - $status" \
                 icon="$device_icon" \
@@ -180,8 +181,8 @@ update_bluetooth
 # Handle mouse events
 case "$SENDER" in
     "mouse.entered")
-        sketchybar --set $NAME popup.drawing=on
-        sketchybar --set $NAME icon.highlight=on label.highlight=on \
+        $SKETCHYBAR_EXEC --set $NAME popup.drawing=on
+        $SKETCHYBAR_EXEC --set $NAME icon.highlight=on label.highlight=on \
             icon.highlight_color=$base07 label.highlight_color=$base07
         discover_devices
         ;;
@@ -189,17 +190,17 @@ case "$SENDER" in
         # Remove all discovered device items when popup closes
         while IFS= read -r item; do
             if [[ $item == discovered.* ]]; then
-                sketchybar --remove "$item"
+                $SKETCHYBAR_EXEC --remove "$item"
             fi
-        done < <(sketchybar --query bar | $jq -r '.items[]')
+        done < <($SKETCHYBAR_EXEC --query bar | $jq -r '.items[]')
         
-        sketchybar --set $NAME popup.drawing=off
-        sketchybar --set $NAME icon.highlight=off label.highlight=off
+        $SKETCHYBAR_EXEC --set $NAME popup.drawing=off
+        $SKETCHYBAR_EXEC --set $NAME icon.highlight=off label.highlight=off
         ;;
     "mouse.clicked")
-        sketchybar --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
-        sketchybar --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
-        sketchybar --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
+        $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
+        $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
+        $SKETCHYBAR_EXEC --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
         ;;
     "routine")
         update_bluetooth

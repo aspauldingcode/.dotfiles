@@ -2,6 +2,7 @@
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
+source "$HOME/.config/sketchybar/source_sketchybar.sh"
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
@@ -35,7 +36,7 @@ batt() {
   fi
 
   # Use a single update command at the end to avoid multiple calls
-  sketchybar --set $NAME icon="$ICON"
+  $SKETCHYBAR_EXEC --set $NAME icon="$ICON"
 }
 
 # Function to update battery icon and popup
@@ -54,7 +55,7 @@ update_battery() {
   )
 
   # Use a single update command at the end to avoid multiple calls
-  sketchybar --add item $NAME.popup popup.$NAME --set "${battery_popup[@]}"
+  $SKETCHYBAR_EXEC --add item $NAME.popup popup.$NAME --set "${battery_popup[@]}"
 }
 
 # Check if battery information is available
@@ -62,29 +63,29 @@ if pmset -g batt | grep -q "Battery"; then
   update_battery
 else
   # Remove the battery item if no battery is found
-  sketchybar --remove battery
+  $SKETCHYBAR_EXEC --remove battery
   exit 0
 fi
 
 # Handle mouse events
 case "$SENDER" in
   "mouse.entered")
-    sketchybar --set $NAME popup.drawing=on
+    $SKETCHYBAR_EXEC --set $NAME popup.drawing=on
     
     # highlight effect
-    sketchybar --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
     ;;
   "mouse.exited" | "mouse.exited.global")
-    sketchybar --set $NAME popup.drawing=off
+    $SKETCHYBAR_EXEC --set $NAME popup.drawing=off
 
     # unhighlight effect
-    sketchybar --set $NAME icon.highlight=off label.highlight=off
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight=off label.highlight=off
     ;;
   "mouse.clicked")
     # button clicked effect
-    sketchybar --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
-    sketchybar --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
-    sketchybar --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
     ;;
   "routine")
     # Update battery info periodically

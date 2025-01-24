@@ -2,16 +2,17 @@
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
+source "$HOME/.config/sketchybar/source_sketchybar.sh"
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 
 reorder_space_items() {
     # Get all space items and sort them numerically
-    local space_items=$(sketchybar --query bar | $jq -r '.items[] | select(startswith("space."))' | sort -V)
+    local space_items=$($SKETCHYBAR_EXEC --query bar | $jq -r '.items[] | select(startswith("space."))' | sort -V)
 
     # Reorder space items numerically
-    sketchybar --reorder $space_items
+    $SKETCHYBAR_EXEC --reorder $space_items
 }
 
 function update_sketchybar_spaces() {
@@ -26,7 +27,7 @@ function update_sketchybar_spaces() {
         relevant_spaces=($($PLUGIN_DIR/print_spaces_sketchybar.sh $display | tr ' ' '\n' | /usr/bin/sed 's/^_//'))
         relevant_spaces=($(echo "${relevant_spaces[@]}" | tr ' ' '\n' | sort -n))  # Sort spaces numerically
 
-        sketchybar_spaces=($(sketchybar --query bar | $jq -r '.items[] | select(startswith("space."))'))
+        sketchybar_spaces=($($SKETCHYBAR_EXEC --query bar | $jq -r '.items[] | select(startswith("space."))'))
 
         # Create an associative array for space colors
         declare -A space_colors
@@ -43,7 +44,7 @@ function update_sketchybar_spaces() {
             [[ "$label" == "$active_space_label" ]] && color="$base0A"  # Set color to base0A if it's the active space
 
             # Set the properties of the cloned space item
-            sketchybar --set space.${display}.${label} \
+            $SKETCHYBAR_EXEC --set space.${display}.${label} \
                             label="$label" \
                             label.color="$color" \
                             click_script="$yabai -m space --focus _$label" \
@@ -52,7 +53,7 @@ function update_sketchybar_spaces() {
                             drawing=on
                             
             # Clone the existing space item and rename the cloned item
-            sketchybar --clone space.${display}.${label} space after
+            $SKETCHYBAR_EXEC --clone space.${display}.${label} space after
 
             # Remove the original space item from the list of spaces
             sketchybar_spaces=("${sketchybar_spaces[@]/space.${display}.${label}/}")
@@ -64,7 +65,7 @@ function update_sketchybar_spaces() {
         # Remove any remaining stale space items for this display
         for space_id in "${sketchybar_spaces[@]}"; do
             if [[ -n "$space_id" && "$space_id" == space.${display}.* ]]; then
-                sketchybar --remove "$space_id"
+                $SKETCHYBAR_EXEC --remove "$space_id"
             fi
         done
     done

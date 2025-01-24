@@ -21,6 +21,11 @@ let
     export base0F="0xff${colors.base0F}"
     export TRANSPARENT=0x00000000
   '';
+  source_sketchybar = pkgs.writeShellScript "source_sketchybar" ''
+    #!/bin/sh
+    SKETCHYBAR_EXEC=/Users/alex/sketchybar/bin/sketchybar
+    export SKETCHYBAR_EXEC
+  '';
   brightness = pkgs.writeShellScript "brightness" ''
     #!/bin/sh
 
@@ -91,6 +96,7 @@ in
   xdg.configFile."sketchybar/icons.sh".source = ./icons.sh;
   xdg.configFile."sketchybar/colors.sh".source = nixy_colors;
   xdg.configFile."sketchybar/brightness.sh".source = brightness;
+  xdg.configFile."sketchybar/source_sketchybar.sh".source = source_sketchybar;
   xdg.configFile."sketchybar/plugins/detect_arch_and_source_homebrew_packages.sh".source =
     detect_arch_and_source_homebrew_packages;
   xdg.configFile."sketchybar/plugins/sway_spaces.sh".source = ./plugins/sway_spaces.sh;
@@ -116,6 +122,8 @@ in
   xdg.configFile."sketchybar/plugins/open_menubar_items.sh".source = ./plugins/open_menubar_items.sh;
   xdg.configFile."sketchybar/plugins/nightlight.sh".source = ./plugins/nightlight.sh;
   xdg.configFile."sketchybar/plugins/media_control.sh".source = ./plugins/media_control.sh;
+  xdg.configFile."sketchybar/plugins/fastfetch_config.jsonc".source =
+    ./plugins/fastfetch_config.jsonc;
 
   # Specify executable for each file
   xdg.configFile."sketchybar/sketchybarrc".executable = true;
@@ -144,4 +152,6 @@ in
   xdg.configFile."sketchybar/plugins/open_menubar_items.sh".executable = true;
   xdg.configFile."sketchybar/plugins/nightlight.sh".executable = true;
   xdg.configFile."sketchybar/plugins/media_control.sh".executable = true;
+  xdg.configFile."sketchybar/source_sketchybar.sh".executable = true;
+  xdg.configFile."sketchybar/plugins/fastfetch_config.jsonc".executable = true;
 }

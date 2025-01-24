@@ -2,6 +2,7 @@
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
+source "$HOME/.config/sketchybar/source_sketchybar.sh"
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
@@ -10,7 +11,7 @@ PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 CURRENT_WIFI="$(/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I)"
 SSID="$(printf "%s" "$CURRENT_WIFI" | grep -o "SSID: .*" | sed 's/^SSID: //')"
 CURR_TX="$(printf "%s" "$CURRENT_WIFI" | grep -o "lastTxRate: .*" | sed 's/^lastTxRate: //')"
-POPUP_OFF="sketchybar --set wifi.ssid popup.drawing=off && sketchybar --set wifi.speed popup.drawing=off"
+POPUP_OFF="$SKETCHYBAR_EXEC --set wifi.ssid popup.drawing=off && $SKETCHYBAR_EXEC --set wifi.speed popup.drawing=off"
 WIFI_INTERFACE=$(networksetup -listallhardwareports | awk '/Wi-Fi/{getline; print $2}')
 WIFI_POWER=$(networksetup -getairportpower $WIFI_INTERFACE | awk '{print $4}')
 
@@ -32,7 +33,7 @@ ssid=(
   click_script="open /System/Library/PreferencePanes/Network.prefPane/; $POPUP_OFF"
 )
 
-sketchybar --add item wifi.ssid popup.wifi \
+$SKETCHYBAR_EXEC --add item wifi.ssid popup.wifi \
   --set wifi.ssid "${ssid[@]}"
 
 ip=(
@@ -47,7 +48,7 @@ ip=(
   click_script="open /System/Library/PreferencePanes/Network.prefPane/; $POPUP_OFF"
 )
 
-sketchybar --add item wifi.ip popup.wifi \
+$SKETCHYBAR_EXEC --add item wifi.ip popup.wifi \
   --set wifi.ip "${ip[@]}"
 
 speed=(
@@ -63,7 +64,7 @@ speed=(
   script="$PLUGIN_DIR/speed.sh"
 )
 
-sketchybar --add item wifi.speed popup.wifi \
+$SKETCHYBAR_EXEC --add item wifi.speed popup.wifi \
   --set wifi.speed "${speed[@]}"
 
 if [ ! -f /tmp/sketchybar_wifi ]; then
@@ -80,7 +81,7 @@ if [ ! -f /tmp/sketchybar_speed ]; then
       1) LABEL="Loading.." ;;
       2) LABEL="Loading..." ;;
       esac
-      sketchybar --set wifi.speed icon="$LABEL"
+      $SKETCHYBAR_EXEC --set wifi.speed icon="$LABEL"
       sleep 1
       COUNTER=$(((COUNTER + 1) % 3))
     done
@@ -88,46 +89,45 @@ if [ ! -f /tmp/sketchybar_speed ]; then
 fi
 
 if [ "$WIFI_POWER" == "Off" ]; then
-  sketchybar --set $NAME icon=$WIFI_OFF
+  $SKETCHYBAR_EXEC --set $NAME icon=$WIFI_OFF
   exit 0
 fi
 
 SSID_LOWER=$(echo "$SSID" | tr '[:upper:]' '[:lower:]')
 if [[ "$SSID_LOWER" == *iphone* ]]; then
-  sketchybar --set $NAME icon=$HOTSPOT
+  $SKETCHYBAR_EXEC --set $NAME icon=$HOTSPOT
   exit 0
 fi
 
 if [ $CURR_TX = 0 ]; then
-  sketchybar --set $NAME icon=$WIFI_NO_INTERNET
+  $SKETCHYBAR_EXEC --set $NAME icon=$WIFI_NO_INTERNET
   exit 0
 fi
 
-sketchybar --set $NAME icon=$WIFI
+$SKETCHYBAR_EXEC --set $NAME icon=$WIFI
 
 # Handle mouse events
 case "$SENDER" in
   "mouse.entered")
-    sketchybar --set $NAME popup.drawing=on
+    $SKETCHYBAR_EXEC --set $NAME popup.drawing=on
     
     # highlight effect
-    sketchybar --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight=on label.highlight=on icon.highlight_color=$base07 label.highlight_color=$base07
     ;;
   "mouse.exited" | "mouse.exited.global")
-    sketchybar --set $NAME popup.drawing=off
+    $SKETCHYBAR_EXEC --set $NAME popup.drawing=off
     
     # unhighlight effect
-    sketchybar --set $NAME icon.highlight=off label.highlight=off
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight=off label.highlight=off
     ;;
   "mouse.clicked")
     # button clicked effect
-    sketchybar --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
-    sketchybar --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
-    sketchybar --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
+    $SKETCHYBAR_EXEC --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
     ;;
   "routine")
     # Update battery info periodically
     # update_battery
     ;;
 esac
-

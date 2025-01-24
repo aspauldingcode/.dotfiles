@@ -18,7 +18,8 @@ let
       throw "Homebrew Unsupported architecture: ${systemType}";
   jq = "${pkgs.jq}/bin/jq";
   yabai = "${pkgs.yabai}/bin/yabai";
-  sketchybar = "${pkgs.sketchybar}/bin/sketchybar";
+  # sketchybar = "${pkgs.sketchybar}/bin/sketchybar";
+  sketchybar = "/Users/alex/sketchybar/bin/sketchybar";
   borders = "";
   skhd = "${pkgs.skhd}/bin/skhd";
   wallpaper = "/Users/Shared/Wallpaper/wallpaper-nix-colors.png";

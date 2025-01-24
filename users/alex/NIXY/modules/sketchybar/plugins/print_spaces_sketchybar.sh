@@ -2,6 +2,7 @@
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
+source "$HOME/.config/sketchybar/source_sketchybar.sh"
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
@@ -32,4 +33,4 @@ done
 
 # Combine spaces with windows and active spaces on all displays
 print=($(echo "${spaces_with_windows[@]}" "${active_display_spaces[@]}" | tr ' ' '\n' | sort -u | sort -t '_' -k 2n))
-echo "${print[@]}"
+$SKETCHYBAR_EXEC "${print[@]}"

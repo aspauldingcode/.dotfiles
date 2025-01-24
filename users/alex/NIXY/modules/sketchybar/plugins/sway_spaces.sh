@@ -2,6 +2,7 @@
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
+source "$HOME/.config/sketchybar/source_sketchybar.sh"
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
@@ -250,7 +251,7 @@ remove_unimportant_spaces() {
             $yabai -m space "$space_label" --destroy
             echo "Removed unimportant space: $space_label"
             formatted_space_label="${space_label#_}"
-            sketchybar --remove "space.$formatted_space_label"
+            $SKETCHYBAR_EXEC --remove "space.$formatted_space_label"
             echo "Removed unimportant sketchybar space.$formatted_space_label"
         fi
     done
@@ -389,7 +390,7 @@ check_current_active_space_label() {
 
 reorder_space_items() {
     # Get the bar query output
-    bar_output=$(sketchybar --query bar)
+    bar_output=$($SKETCHYBAR_EXEC --query bar)
     
     # Extract the items from the JSON output
     items=$(echo "$bar_output" | $jq -r '.items[]')
@@ -407,7 +408,7 @@ reorder_space_items() {
     unset IFS
     
     # Reorder the space items using sketchybar
-    sketchybar --reorder "${sorted_spaces[@]}"
+    $SKETCHYBAR_EXEC --reorder "${sorted_spaces[@]}"
 }
 
 # echo -e "\nSpaces Information:"

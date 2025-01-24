@@ -2,15 +2,16 @@
 
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
+source "$HOME/.config/sketchybar/source_sketchybar.sh"
 source "$HOME/.config/sketchybar/colors.sh"
 source "$HOME/.config/sketchybar/icons.sh"
 source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 
 SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
-POPUP_TOGGLE_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
+POPUP_TOGGLE_SCRIPT="$SKETCHYBAR_EXEC --set \$NAME popup.drawing=toggle"
 
 #events
-sketchybar --add event window_focus \
+$SKETCHYBAR_EXEC --add event window_focus \
            --add event title_change \
            --add event windows_on_spaces \
            --add event spotify_change $SPOTIFY_EVENT 
@@ -46,9 +47,10 @@ defaults=(
   popup.background.border_color=$base07
   # popup.blur_radius=15
   popup.y_offset=0
+  popup.height=23
 )
 
-sketchybar --default "${defaults[@]}"
+$SKETCHYBAR_EXEC --default "${defaults[@]}"
 
 # space_config=(
 #     ignore_association=on
@@ -178,15 +180,15 @@ apple=(
   popup.align=left
 )
 
-sketchybar --bar "${bar[@]}"
+$SKETCHYBAR_EXEC --bar "${bar[@]}"
 
 ## Adding sketchybar Items:
 # Left Items
-sketchybar --add item apple left \
+$SKETCHYBAR_EXEC --add item apple left \
   --set apple "${apple[@]}" \
   --subscribe apple mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global 
 
-# sketchybar --add space space left \
+# $SKETCHYBAR_EXEC --add space space left \
 #   --set space "${space_config[@]}" \
 #  # --subscribe space space_change space_windows_change front_app_switched display_change
 
@@ -214,17 +216,17 @@ do
     script="$PLUGIN_DIR/space.sh"
     click_script="yabai -m space --focus $sid"
   )
-  sketchybar --add space space."$sid" left --set space."$sid" "${space[@]}" ignore_association=on 
-  sketchybar --subscribe space."$sid" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global 
+  $SKETCHYBAR_EXEC --add space space."$sid" left --set space."$sid" "${space[@]}" ignore_association=on 
+  $SKETCHYBAR_EXEC --subscribe space."$sid" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global 
 done
 
-sketchybar --add item separator_left left \
+$SKETCHYBAR_EXEC --add item separator_left left \
   --set separator_left \
-    icon= \
+    icon= \
     padding_left=8 \
     label.drawing=off
 
-sketchybar --add item front_app left \
+$SKETCHYBAR_EXEC --add item front_app left \
   --set front_app \
     script="$PLUGIN_DIR/front_app.sh" \
     click_script="if [ \"$($yabai -m query --windows --window | $jq -r '.app')\" = \"Alacritty\" ]; then $osascript -e 'tell application \"System Events\" to keystroke \"w\" using {command down}'; else $yabai -m window --close; fi" \
@@ -234,10 +236,10 @@ sketchybar --add item front_app left \
     updates=on \
   --subscribe front_app front_app_switched window_focus windows_on_spaces title_change mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global 
 
-sketchybar --add item active_app left \
+$SKETCHYBAR_EXEC --add item active_app left \
     --set active_app "${active_app[@]}"
 
-sketchybar --add item fullscreen_locker left \
+$SKETCHYBAR_EXEC --add item fullscreen_locker left \
   --set fullscreen_locker \
     updates=on \
     icon.drawing=off \
@@ -245,48 +247,48 @@ sketchybar --add item fullscreen_locker left \
     update_freq=1 \
     script="$PLUGIN_DIR/fullscreen_lock.sh"
 # Center Items
-sketchybar --add item volume center \
+$SKETCHYBAR_EXEC --add item volume center \
   --set volume "${volume[@]}" \
   --subscribe volume volume_change mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global mouse.scrolled
 
-sketchybar --add item backlight center \
+$SKETCHYBAR_EXEC --add item backlight center \
   --set backlight "${backlight[@]}" \
   --subscribe backlight brightness_change mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global mouse.scrolled
 
-sketchybar --add item nightlight center \
+$SKETCHYBAR_EXEC --add item nightlight center \
   --set nightlight "${nightlight[@]}" \
   --subscribe nightlight brightness_change mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global mouse.scrolled
 
-sketchybar --add item datetime center \
+$SKETCHYBAR_EXEC --add item datetime center \
   --set datetime "${datetime[@]}" \
   --subscribe datetime system_woke mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global mouse.scrolled
 
-sketchybar --add item cava center \
+$SKETCHYBAR_EXEC --add item cava center \
   --set cava "${cava[@]}" \
   --subscribe cava volume_change spotify_change mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global 
-sketchybar \
+$SKETCHYBAR_EXEC \
   --add item spotify center \
   --set spotify "${spotify[@]}" \
   --subscribe spotify mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global 
 # Right Items
-sketchybar --add item memory right \
+$SKETCHYBAR_EXEC --add item memory right \
   --set memory "${memory[@]}" \
   --subscribe memory mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global 
-sketchybar --add item cpu right \
+$SKETCHYBAR_EXEC --add item cpu right \
   --set cpu "${cpu[@]}" \
   --subscribe cpu mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global 
-sketchybar  --add item separator_right right \
+$SKETCHYBAR_EXEC  --add item separator_right right \
   --set separator_right "${separator_right[@]}" \
-    icon= \
+    icon= \
     padding_right=0 \
     label.drawing=off 
-sketchybar --add item battery right \
+$SKETCHYBAR_EXEC --add item battery right \
   --set battery "${battery[@]}" \
   --subscribe battery power_source_change system_woke mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global 
-sketchybar --add item bluetooth right \
+$SKETCHYBAR_EXEC --add item bluetooth right \
   --set bluetooth "${bluetooth[@]}" \
   --subscribe bluetooth system_woke mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global 
-sketchybar --add item wifi right \
+$SKETCHYBAR_EXEC --add item wifi right \
   --set wifi "${wifi[@]}" \
   --subscribe wifi system_woke mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global 
 
@@ -310,119 +312,119 @@ alias_style=(
 )
 
 # Add alias items with click actions
-sketchybar --add alias "Control Center,BentoBox" $alias_position
-sketchybar --set "Control Center,BentoBox" "${alias_style[@]}" \
+$SKETCHYBAR_EXEC --add alias "Control Center,BentoBox" $alias_position
+$SKETCHYBAR_EXEC --set "Control Center,BentoBox" "${alias_style[@]}" \
     click_script="$PLUGIN_DIR/open_menubar_items.sh controlcenter" \
     --subscribe "Control Center,BentoBox" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-# sketchybar --add alias "Control Center,Battery" $alias_position
-# sketchybar --set "Control Center,Battery" "${alias_style[@]}" \
+# $SKETCHYBAR_EXEC --add alias "Control Center,Battery" $alias_position
+# $SKETCHYBAR_EXEC --set "Control Center,Battery" "${alias_style[@]}" \
 #     click_script="$PLUGIN_DIR/open_menubar_items.sh battery" \
 #     --subscribe "Control Center,Battery" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-# sketchybar --add alias "Control Center,Bluetooth" $alias_position
-# sketchybar --set "Control Center,Bluetooth" "${alias_style[@]}" \
+# $SKETCHYBAR_EXEC --add alias "Control Center,Bluetooth" $alias_position
+# $SKETCHYBAR_EXEC --set "Control Center,Bluetooth" "${alias_style[@]}" \
 #     click_script="$PLUGIN_DIR/open_menubar_items.sh bluetooth" \
 #     --subscribe "Control Center,Bluetooth" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-# sketchybar --add alias "Control Center,WiFi" $alias_position
-# sketchybar --set "Control Center,WiFi" "${alias_style[@]}" \
+# $SKETCHYBAR_EXEC --add alias "Control Center,WiFi" $alias_position
+# $SKETCHYBAR_EXEC --set "Control Center,WiFi" "${alias_style[@]}" \
 #     click_script="$PLUGIN_DIR/open_menubar_items.sh wifi" \
 #     --subscribe "Control Center,WiFi" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-# sketchybar --add alias "Control Center,UserSwitcher" $alias_position
-# sketchybar --set "Control Center,UserSwitcher" "${alias_style[@]}" \
+# $SKETCHYBAR_EXEC --add alias "Control Center,UserSwitcher" $alias_position
+# $SKETCHYBAR_EXEC --set "Control Center,UserSwitcher" "${alias_style[@]}" \
 #     click_script="$PLUGIN_DIR/open_menubar_items.sh userswitcher" \
 #     --subscribe "Control Center,UserSwitcher" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-sketchybar --add alias "macOS InstantView,Item-0" $alias_position
-sketchybar --set "macOS InstantView,Item-0" "${alias_style[@]}" \
+$SKETCHYBAR_EXEC --add alias "macOS InstantView,Item-0" $alias_position
+$SKETCHYBAR_EXEC --set "macOS InstantView,Item-0" "${alias_style[@]}" \
     click_script="$PLUGIN_DIR/open_menubar_items.sh macosinstantview" \
     --subscribe "macOS InstantView,Item-0" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-sketchybar --add alias "Karabiner-Menu,Item-0" $alias_position
-sketchybar --set "Karabiner-Menu,Item-0" "${alias_style[@]}" \
+$SKETCHYBAR_EXEC --add alias "Karabiner-Menu,Item-0" $alias_position
+$SKETCHYBAR_EXEC --set "Karabiner-Menu,Item-0" "${alias_style[@]}" \
     click_script="$PLUGIN_DIR/open_menubar_items.sh karabiner-menu" \
     --subscribe "Karabiner-Menu,Item-0" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-sketchybar --add alias "Background Music,Item-0" $alias_position
-sketchybar --set "Background Music,Item-0" "${alias_style[@]}" \
+$SKETCHYBAR_EXEC --add alias "Background Music,Item-0" $alias_position
+$SKETCHYBAR_EXEC --set "Background Music,Item-0" "${alias_style[@]}" \
     click_script="$PLUGIN_DIR/open_menubar_items.sh backgroundmusic" \
     --subscribe "Background Music,Item-0" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-sketchybar --add alias "Flameshot,Item-0" $alias_position
-sketchybar --set "Flameshot,Item-0" "${alias_style[@]}" \
+$SKETCHYBAR_EXEC --add alias "Flameshot,Item-0" $alias_position
+$SKETCHYBAR_EXEC --set "Flameshot,Item-0" "${alias_style[@]}" \
     click_script="$PLUGIN_DIR/open_menubar_items.sh flameshot" \
     --subscribe "Flameshot,Item-0" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-sketchybar --add alias "KDE Connect,Item-0" $alias_position
-sketchybar --set "KDE Connect,Item-0" "${alias_style[@]}" \
+$SKETCHYBAR_EXEC --add alias "KDE Connect,Item-0" $alias_position
+$SKETCHYBAR_EXEC --set "KDE Connect,Item-0" "${alias_style[@]}" \
     click_script="$PLUGIN_DIR/open_menubar_items.sh kde-connect" \
     --subscribe "KDE Connect,Item-0" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-sketchybar --add alias "MacForgeHelper,Item-0" $alias_position
-sketchybar --set "MacForgeHelper,Item-0" "${alias_style[@]}" \
+$SKETCHYBAR_EXEC --add alias "MacForgeHelper,Item-0" $alias_position
+$SKETCHYBAR_EXEC --set "MacForgeHelper,Item-0" "${alias_style[@]}" \
     click_script="$PLUGIN_DIR/open_menubar_items.sh macforge-helper" \
     --subscribe "MacForgeHelper,Item-0" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-# sketchybar --add alias "Control Center,Airdrop" $alias_position
-# sketchybar --set "Control Center,Airdrop" "${alias_style[@]}" \
+# $SKETCHYBAR_EXEC --add alias "Control Center,Airdrop" $alias_position
+# $SKETCHYBAR_EXEC --set "Control Center,Airdrop" "${alias_style[@]}" \
 #     click_script="$PLUGIN_DIR/open_menubar_items.sh airdrop" \
 #     --subscribe "Control Center,Airdrop" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-# sketchybar --add alias "Control Center,Clock" $alias_position
-# sketchybar --set "Control Center,Clock" "${alias_style[@]}" \
+# $SKETCHYBAR_EXEC --add alias "Control Center,Clock" $alias_position
+# $SKETCHYBAR_EXEC --set "Control Center,Clock" "${alias_style[@]}" \
 #     click_script="osascript /path/to/click_clock.scpt" \
 #     --subscribe "Control Center,Clock" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-# sketchybar --add alias "Spotlight,Item-0" $alias_position
-# sketchybar --set "Spotlight,Item-0" "${alias_style[@]}" \
+# $SKETCHYBAR_EXEC --add alias "Spotlight,Item-0" $alias_position
+# $SKETCHYBAR_EXEC --set "Spotlight,Item-0" "${alias_style[@]}" \
 #     click_script="osascript /path/to/click_spotlight.scpt" \
 #     --subscribe "Spotlight,Item-0" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-# sketchybar --add alias "AltTab,Item-0" $alias_position
-# sketchybar --set "AltTab,Item-0" "${alias_style[@]}" \
+# $SKETCHYBAR_EXEC --add alias "AltTab,Item-0" $alias_position
+# $SKETCHYBAR_EXEC --set "AltTab,Item-0" "${alias_style[@]}" \
 #     click_script="$PLUGIN_DIR/open_menubar_items.sh alttab" \
 #     --subscribe "AltTab,Item-0" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-# sketchybar --add alias "UnnaturalScrollWheels,Item-0" $alias_position
-# sketchybar --set "UnnaturalScrollWheels,Item-0" "${alias_style[@]}" \
+# $SKETCHYBAR_EXEC --add alias "UnnaturalScrollWheels,Item-0" $alias_position
+# $SKETCHYBAR_EXEC --set "UnnaturalScrollWheels,Item-0" "${alias_style[@]}" \
 #     click_script="$PLUGIN_DIR/open_menubar_items.sh unnaturalscrollwheels" \
 #     --subscribe "UnnaturalScrollWheels,Item-0" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-# sketchybar --add alias "Hidden Bar,hiddenbar_expandcollapse" $alias_position
-# sketchybar --set "Hidden Bar,hiddenbar_expandcollapse" "${alias_style[@]}" \
+# $SKETCHYBAR_EXEC --add alias "Hidden Bar,hiddenbar_expandcollapse" $alias_position
+# $SKETCHYBAR_EXEC --set "Hidden Bar,hiddenbar_expandcollapse" "${alias_style[@]}" \
 #     click_script="osascript /path/to/click_hiddenbar_expandcollapse.scpt" \
 #     --subscribe "Hidden Bar,hiddenbar_expandcollapse" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-# sketchybar --add alias "Control Center,AudioVideoModule" $alias_position
-# sketchybar --set "Control Center,AudioVideoModule" "${alias_style[@]}" \
+# $SKETCHYBAR_EXEC --add alias "Control Center,AudioVideoModule" $alias_position
+# $SKETCHYBAR_EXEC --set "Control Center,AudioVideoModule" "${alias_style[@]}" \
 #     click_script="osascript /path/to/click_audiovideomodule.scpt" \
 #     --subscribe "Control Center,AudioVideoModule" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-# sketchybar --add alias "TextInputMenuAgent,Item-0" $alias_position
-# sketchybar --set "TextInputMenuAgent,Item-0" "${alias_style[@]}" \
+# $SKETCHYBAR_EXEC --add alias "TextInputMenuAgent,Item-0" $alias_position
+# $SKETCHYBAR_EXEC --set "TextInputMenuAgent,Item-0" "${alias_style[@]}" \
 #     click_script="osascript /path/to/click_textinputmenuagent.scpt" \
 #     --subscribe "TextInputMenuAgent,Item-0" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-# sketchybar --add alias "Hidden Bar,hiddenbar_separate" $alias_position
-# sketchybar --set "Hidden Bar,hiddenbar_separate" "${alias_style[@]}" \
+# $SKETCHYBAR_EXEC --add alias "Hidden Bar,hiddenbar_separate" $alias_position
+# $SKETCHYBAR_EXEC --set "Hidden Bar,hiddenbar_separate" "${alias_style[@]}" \
 #     click_script="osascript /path/to/click_hiddenbar_separate.scpt" \
 #     --subscribe "Hidden Bar,hiddenbar_separate" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-# sketchybar --add alias "Hidden Bar,hiddenbar_terminate" $alias_position
-# sketchybar --set "Hidden Bar,hiddenbar_terminate" "${alias_style[@]}" \
+# $SKETCHYBAR_EXEC --add alias "Hidden Bar,hiddenbar_terminate" $alias_position
+# $SKETCHYBAR_EXEC --set "Hidden Bar,hiddenbar_terminate" "${alias_style[@]}" \
 #     click_script="osascript /path/to/click_hiddenbar_terminate.scpt" \
 #     --subscribe "Hidden Bar,hiddenbar_terminate" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-# sketchybar --add item rbracket_padding_left right --set rbracket_padding_left icon.padding_right=4 icon.padding_left=4 icon="" # because it is leftmost of the bracket.
+# $SKETCHYBAR_EXEC --add item rbracket_padding_left right --set rbracket_padding_left icon.padding_right=4 icon.padding_left=4 icon="" # because it is leftmost of the bracket.
 
 # https://felixkratz.github.io/SketchyBar/config/components#item-bracket----group-items-in-eg-colored-sections
-sketchybar --add bracket lbracket apple space '/space\..*/' separator_left front_app left \
+$SKETCHYBAR_EXEC --add bracket lbracket apple space '/space\..*/' separator_left front_app left \
   --set lbracket "${brackets[@]}"
-sketchybar --add bracket cbracket volume backlight nightlight datetime cava spotify center \
+$SKETCHYBAR_EXEC --add bracket cbracket volume backlight nightlight datetime cava spotify center \
   --set cbracket "${brackets[@]}" 
-sketchybar --add bracket rbracket "Control Center,BentoBox" \
+$SKETCHYBAR_EXEC --add bracket rbracket "Control Center,BentoBox" \
   "macOS InstantView,Item-0" "Karabiner-Menu,Item-0" "MacForgeHelper,Item-0" "Background Music,Item-0" "Flameshot,Item-0" \
   "KDE Connect,Item-0" wifi battery bluetooth separator_right memory cpu right \
   --set rbracket "${brackets[@]}"
@@ -435,4 +437,4 @@ if [ -f "$HOME/.config/sketchybar/calendar_init_flag" ]; then
     rm "$HOME/.config/sketchybar/calendar_init_flag" # remove calendar flag at sketchybar launch if it exists
 fi
 
-sketchybar --update
+$SKETCHYBAR_EXEC --update
