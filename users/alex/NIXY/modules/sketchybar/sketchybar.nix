@@ -23,7 +23,8 @@ let
   '';
   source_sketchybar = pkgs.writeShellScript "source_sketchybar" ''
     #!/bin/sh
-    SKETCHYBAR_EXEC=/Users/alex/sketchybar/bin/sketchybar
+    # SKETCHYBAR_EXEC=/Users/alex/sketchybar/bin/sketchybar
+    SKETCHYBAR_EXEC="${pkgs.sketchybar}/bin/sketchybar"
     export SKETCHYBAR_EXEC
   '';
   brightness = pkgs.writeShellScript "brightness" ''
@@ -88,6 +89,7 @@ let
     blueutil="${pkgs.blueutil}/bin/blueutil"
     nowplaying_cli="${pkgs.nowplaying-cli}/bin/nowplaying-cli"
     cava="${pkgs.cava}/bin/cava"
+    flameshot="${pkgs.flameshot}/bin/flameshot"
   '';
 in
 {

@@ -16,6 +16,7 @@
       "FelixKratz/homebrew-formulae" = inputs.homebrew-felixkratz;
       "smudge/homebrew-smudge" = inputs.homebrew-smudge;
       # "gcenx/wine" = inputs.homebrew-gcenx; # FIXME: This is not working on first-install.
+      # "kde-mac/kde" = inputs.homebrew-kde;
     };
   };
 
@@ -50,6 +51,26 @@
       "whalebrew"
       "ddcctl"
       "winetricks"
+      # KDE Framework 6 dependencies
+      # "kde-mac/kde/kf6-kcmutils"
+      # "kde-mac/kde/kf6-knewstuff"
+      # "kde-mac/kde/kf6-kcoreaddons"
+      # "kde-mac/kde/kf6-ki18n"
+      # "kde-mac/kde/kf6-kdbusaddons"
+      # "kde-mac/kde/kf6-kbookmarks"
+      # "kde-mac/kde/kf6-kconfig"
+      # "kde-mac/kde/kf6-kio"
+      # "kde-mac/kde/kf6-kparts"
+      # "kde-mac/kde/kf6-solid"
+      # "kde-mac/kde/kf6-kiconthemes"
+      # "kde-mac/kde/kf6-kcompletion"
+      # "kde-mac/kde/kf6-ktextwidgets"
+      # "kde-mac/kde/kf6-knotifications"
+      # "kde-mac/kde/kf6-kcrash"
+      # "kde-mac/kde/kf6-kwindowsystem"
+      # "kde-mac/kde/kf6-kwidgetsaddons"
+      # "kde-mac/kde/kf6-kcodecs"
+      # "kde-mac/kde/kf6-guiaddons"
     ];
 
     casks = [
@@ -65,7 +86,7 @@
       "cursor" # FIXME: I've created PR for this to be in nixpkgs. https://github.com/NixOS/nixpkgs/pull/371260
       "azure-data-studio"
       "orbstack"
-      "libreoffice"
+      #"libreoffice" # FIXME: breaks sometimes? wth
       "karabiner-elements"
       "Beeper"
       "background-music"

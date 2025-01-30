@@ -15,6 +15,10 @@ in
       # Following line should allow us to avoid a logout/login cycle
       /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
+      # Enable Fast User Switching
+      sudo defaults write /Library/Preferences/.GlobalPreferences MultipleSessionEnabled -bool true
+      defaults write .GlobalPreferences userMenuExtraStyle -int 2 # 0 = Full Name, 1 = Account Name, 2 = Icon
+
       # Disable persistence opening apps at login
       defaults write -g ApplePersistence -bool no
 
@@ -384,6 +388,19 @@ in
         # "com.mac.RecordingIndicatorUtility" = {
         # AcknowledgedSystemOverrideAlert = 1;
         # };
+        "~/Library/Preferences/ByHost/com.apple.controlcenter" = {
+          Bluetooth = 2; # 0 = Off, 1 = Control Center, 2 = Menu Bar, 3 = Both
+          UserSwitcher = 2; # 1 = Control Center, 2 = Menu Bar, 3 = Both, 8 = Hidden
+          WiFi = 2; # 1 = Control Center, 2 = Menu Bar, 3 = Both, 24 = Off
+          AirDrop = 18; # 1 = Control Center, 2 = Menu Bar, 3 = Both, 24 = Off
+          VoiceControl = 8; # 2 = Menu Bar, 8 = Off
+          FocusModes = 2; # 2 = Menu Bar, 8 = Off
+          ScreenMirroring = 18; # Menu Bar, 24 = Off
+          Sound = 18; # Menu Bar, 24 = Off
+          StageManager = 18; # Menu Bar, 24 = Off
+          Display = 18; # Menu Bar, 24 = Off
+          NowPlaying = 18; # Menu Bar, 24 = Off
+        };
       };
       LaunchServices.LSQuarantine = false;
       magicmouse.MouseButtonMode = "TwoButton";

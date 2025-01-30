@@ -95,11 +95,15 @@
       url = "github:gcenx/homebrew-wine";
       flake = false;
     };
+    # homebrew-kde = {
+    #   url = "github:kde-mac/kde";
+    #   flake = false;
+    # };
+
     nix-rosetta-builder = {
       url = "github:cpick/nix-rosetta-builder";
       inputs.nixpkgs.follows = "unstable_nixpkgs";
     };
-
     frida-nix = {
       url = "github:itstarsun/frida-nix";
     };
@@ -133,6 +137,7 @@
       homebrew-smudge,
       homebrew-cask,
       homebrew-gcenx,
+      # homebrew-kde,
       nix-rosetta-builder,
       frida-nix,
     }@inputs:

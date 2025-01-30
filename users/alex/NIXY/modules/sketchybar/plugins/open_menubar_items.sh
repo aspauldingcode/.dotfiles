@@ -5,95 +5,286 @@ source "$HOME/.config/sketchybar/source_sketchybar.sh"
 source "$PLUGIN_DIR/detect_arch_and_source_homebrew_packages.sh"
 
 app_name=$1
+button=${2:-$BUTTON}
+modifier=${3:-$MODIFIER}
 
+# Main case statement
 case $app_name in
     "apple")
-        osascript -e 'tell application "System Events"
-            tell process "Finder"
-                click menu bar item 1 of menu bar 1
-            end tell
-        end tell'
-        ;;
-    "kde-connect")
-        osascript -e 'tell application "System Events" to tell process "KDE Connect"
-            click menu bar item 1 of menu bar 2
-        end tell'
-        ;;
-    "flameshot")
-        osascript -e 'tell application "System Events" to tell process "Flameshot"
-            click menu bar item 1 of menu bar 2
-        end tell'
+        case $button in
+            "left")
+                open -a "System Settings"
+                ;;
+            "right")
+                osascript -e 'tell application "System Events" to tell process "Finder" to click menu bar item 1 of menu bar 1'
+                ;;
+            "other")
+                osascript -e 'display dialog "Button is: '"$button"'"'
+                osascript -e 'display dialog "Modifier is: '"$modifier"'"'
+                ;;
+        esac
         ;;
     "alttab")
-        osascript -e 'tell application "System Events" to tell process "AltTab"
-            click menu bar item 1 of menu bar 2
-        end tell'
+        case $button in
+            "left")
+                open -a AltTab
+                ;;
+            "right")
+                osascript -e 'tell application "System Events" to tell process "AltTab"
+                    click menu bar item 1 of menu bar 2
+                end tell'
+                ;;
+            "other")
+                osascript -e 'display dialog "Button is: '"$button"'"'
+                osascript -e 'display dialog "Modifier is: '"$modifier"'"'
+                ;;
+        esac
         ;;
     "macosinstantview")
-        osascript -e 'tell application "System Events" to tell process "macOS InstantView"
-            click menu bar item 1 of menu bar 2
-        end tell'
+        case $button in
+            "left")
+                open -a macOS\ InstantView
+                ;;
+            "right")
+                osascript -e 'tell application "System Events" to tell process "macOS InstantView"
+                    click menu bar item 1 of menu bar 2
+                end tell'
+                ;;
+            "other")
+                osascript -e 'display dialog "Button is: '"$button"'"'
+                osascript -e 'display dialog "Modifier is: '"$modifier"'"'
+                ;;
+        esac
         ;;
     "unnaturalscrollwheels")
-        osascript -e 'tell application "System Events" to tell process "UnnaturalScrollWheels"
-            click menu bar item 1 of menu bar 2
-        end tell'
+        case $button in
+            "left")
+                open -a UnnaturalScrollWheels
+                ;;
+            "right")
+                osascript -e 'tell application "System Events" to tell process "UnnaturalScrollWheels"
+                    click menu bar item 1 of menu bar 2
+                end tell'
+                ;;
+            "other")
+                osascript -e 'display dialog "Button is: '"$button"'"'
+                osascript -e 'display dialog "Modifier is: '"$modifier"'"'
+                ;;
+        esac
+        ;;
+    "flameshot")
+        case $button in
+            "left")
+                $flameshot gui
+                ;;
+            "right")
+                osascript -e 'tell application "System Events" to tell process "Flameshot"
+                    click menu bar item 1 of menu bar 2
+                end tell'   
+                ;;
+            "other")
+                osascript -e 'display dialog "Button is: '"$button"'"'
+                osascript -e 'display dialog "Modifier is: '"$modifier"'"'
+                ;;
+        esac
         ;;
     "karabiner-menu")
-        osascript -e 'tell application "System Events" to tell process "Karabiner-Menu"
-            click menu bar item 1 of menu bar 1
-        end tell'
+        case $button in
+            "left")
+                open -a Karabiner-EventViewer
+                ;;
+            "right")
+                osascript -e 'tell application "System Events" to tell process "Karabiner-Menu"
+                    click menu bar item 1 of menu bar 1
+                end tell'
+                ;;
+            "other")
+                osascript -e 'display dialog "Button is: '"$button"'"'
+                osascript -e 'display dialog "Modifier is: '"$modifier"'"'
+                ;;
+        esac
         ;;
     "backgroundmusic")
-        osascript -e 'tell application "System Events" to tell process "Background Music"
-            click menu bar item 1 of menu bar 1
-        end tell'
+        case $button in
+            "left")
+                open -a Background\ Music
+                ;;
+            "right")
+                osascript -e 'tell application "System Events" to tell process "Background Music"
+                    click menu bar item 1 of menu bar 1
+                end tell'
+                ;;
+            "other")
+                osascript -e 'display dialog "Button is: '"$button"'"'
+                osascript -e 'display dialog "Modifier is: '"$modifier"'"'
+                ;;
+        esac
         ;;
     "controlcenter")
-        osascript -e 'tell application "System Events" to tell process "ControlCenter"
-            tell menu bar item 2 of menu bar 1
-                click
-            end tell
-        end tell'
+        case $button in
+            "left")
+                open "x-apple.systempreferences:com.apple.ControlCenter-Settings.extension"
+                ;;
+            "right")
+                osascript -e 'tell application "System Events" to tell process "ControlCenter"
+                    tell menu bar item 2 of menu bar 1
+                        click
+                    end tell
+                end tell'
+                ;;
+            "other")
+                osascript -e 'display dialog "Button is: '"$button"'"'
+                osascript -e 'display dialog "Modifier is: '"$modifier"'"'
+                ;;
+        esac
         ;;
-    "macforge-helper")
-        osascript -e 'tell application "System Events" to tell process "MacForgeHelper"
-            tell menu bar item 1 of menu bar 1
-                click
-            end tell
-        end tell'
+    "notificationcenter")
+        case $button in
+            "left")
+                open "x-apple.systempreferences:com.apple.Notifications-Settings.extension"
+                ;;
+            "right")
+                osascript -e '
+                tell application "System Events"
+                    tell process "Control Center"
+                        click menu bar item 1 of menu bar 1
+                    end tell
+                end tell'
+                ;;
+            "other")
+                osascript -e 'display dialog "Button is: '"$button"'"'
+                osascript -e 'display dialog "Modifier is: '"$modifier"'"'
+                ;;
+        esac
         ;;
     "bluetooth")
-        open x-apple.systempreferences:com.apple.preferences.Bluetooth
-        # $blueutil --power toggle # FIXME: this works but popup items in sketchybar aren't clickable.
+        case $button in
+            "left")
+                open x-apple.systempreferences:com.apple.preferences.Bluetooth
+                ;;
+            "right")
+                osascript -e 'tell application "System Events" to tell process "ControlCenter"
+                    tell (first menu bar item of menu bar 1 whose description contains "Bluetooth")
+                        key down option
+                        click
+                        key up option
+                    end tell
+                end tell'
+                
+                # $blueutil --power toggle
+                ;;
+            "other")
+                osascript -e 'display dialog "Button is: '"$button"'"'
+                osascript -e 'display dialog "Modifier is: '"$modifier"'"'
+                ;;
+        esac
         ;;
     "userswitcher")
-        open x-apple.systempreferences:com.apple.preferences.users
+        case $button in
+            "left")
+                open x-apple.systempreferences:com.apple.preferences.users
+                ;;
+            "right")
+                osascript -e '
+                tell application "System Events"
+                    tell application process "Control Center"
+                        tell (first menu bar item of menu bar 1 whose description contains "user")
+                            perform action "AXPress"
+                        end tell
+                    end tell
+                end tell' 
+                ;;
+            "other")
+                osascript -e 'display dialog "Button is: '"$button"'"'
+                osascript -e 'display dialog "Modifier is: '"$modifier"'"'
+                ;;
+        esac
         ;;
     "wifi")
-        open x-apple.systempreferences:com.apple.preference.network
+        case $button in
+            "left")
+                open "x-apple.systempreferences:com.apple.preference.network?Wi-Fi"
+                ;;
+            "right")
+                osascript -e 'tell application "System Events" to tell process "ControlCenter"
+                    tell (first menu bar item of menu bar 1 whose description contains "Wi" and description contains "Fi")
+                        key down option
+                        click
+                        key up option
+                    end tell
+                end tell'
+                ;;
+            "other")
+                osascript -e 'display dialog "Button is: '"$button"'"'
+                osascript -e 'display dialog "Modifier is: '"$modifier"'"'
+                ;;
+        esac
         ;;
     "airdrop")
-        osascript -e 'tell application "System Events" to tell process "Control Center"
-            click (first menu bar item of menu bar 1 whose description contains "AirDrop")
-        end tell'
+        case $button in
+            "left")
+                open x-apple.systempreferences:com.apple.systempreferences
+                ;;
+            "right")
+                osascript -e 'tell application "System Events" to tell process "Control Center"
+                    click (first menu bar item of menu bar 1 whose description contains "AirDrop")
+                end tell'
+                ;;
+            "other")
+                osascript -e 'display dialog "Button is: '"$button"'"'
+                osascript -e 'display dialog "Modifier is: '"$modifier"'"'
+                ;;
+        esac
         ;;
     "battery")
-        open x-apple.systempreferences:com.apple.preference.battery
+        case $button in
+            "left")
+                open x-apple.systempreferences:com.apple.preference.battery
+                ;;
+            "right")
+                pmset -g batt | grep -o "[0-9]*%" | notify-send
+                ;;
+            "other")
+                osascript -e 'display dialog "Button is: '"$button"'"'
+                osascript -e 'display dialog "Modifier is: '"$modifier"'"'
+                ;;
+        esac
         ;;
     "cpu")
-        osascript -e 'tell application "System Events"
-            tell process "Activity Monitor"
-                keystroke "3" using command down
-            end tell
-        end tell'
+        case $button in
+            "left")
+                open x-apple.systempreferences:com.apple.systempreferences
+                ;;
+            "right")
+                osascript -e 'tell application "System Events"
+                    tell process "Activity Monitor"
+                        keystroke "3" using command down
+                    end tell
+                end tell'
+                ;;
+            "other")
+                osascript -e 'display dialog "Button is: '"$button"'"'
+                osascript -e 'display dialog "Modifier is: '"$modifier"'"'
+                ;;
+        esac
         ;;
     "memory")
-        osascript -e 'tell application "System Events"
-            tell process "Activity Monitor"
-                keystroke "2" using command down
-            end tell
-        end tell'
+        case $button in
+            "left")
+                open x-apple.systempreferences:com.apple.systempreferences
+                ;;
+            "right")
+                osascript -e 'tell application "System Events"
+                    tell process "Activity Monitor"
+                        keystroke "2" using command down
+                    end tell
+                end tell'
+                ;;
+            "other")
+                osascript -e 'display dialog "Button is: '"$button"'"'
+                osascript -e 'display dialog "Modifier is: '"$modifier"'"'
+                ;;
+        esac
         ;;
     *)
         echo "Application not found."

@@ -74,20 +74,19 @@ update_cava_popups() {
     album=""
     artist=""
   else
-    # Parse the raw info and check for empty strings
-    title=$(echo "$raw_info" | grep "kMRMediaRemoteNowPlayingInfoTitle" | sed 's/.*= "\(.*\)";/\1/')
-    album=$(echo "$raw_info" | grep "kMRMediaRemoteNowPlayingInfoAlbum" | sed 's/.*= "\(.*\)";/\1/')
-    # Fix artist parsing by removing key/pair format and replacing \U2024 with period
-    artist=$(echo "$raw_info" | grep "kMRMediaRemoteNowPlayingInfoArtist" | sed 's/.*= "\(.*\)";/\1/' | sed 's/^.*= //g' | sed 's/\\U2024/./g')
+    # Parse the raw info and extract only the values after the equals sign
+    title=$(echo "$raw_info" | grep "kMRMediaRemoteNowPlayingInfoTitle" | sed 's/.*= \(.*\);/\1/' | tr -d '"')
+    album=$(echo "$raw_info" | grep "kMRMediaRemoteNowPlayingInfoAlbum" | sed 's/.*= \(.*\);/\1/' | tr -d '"')
+    artist=$(echo "$raw_info" | grep "kMRMediaRemoteNowPlayingInfoArtist" | sed 's/.*= \(.*\);/\1/' | tr -d '"' | sed 's/\\U2024/./g')
     
     # Clear variables if they're empty strings
-    [ "$album" = '""' ] && album=""
-    [ "$title" = '""' ] && title=""
-    [ "$artist" = '""' ] && artist=""
+    [ -z "$title" ] && title=""
+    [ -z "$album" ] && album=""
+    [ -z "$artist" ] && artist=""
     
     # Get duration and elapsed time for progress info
-    duration=$(echo "$raw_info" | grep "kMRMediaRemoteNowPlayingInfoDuration" | sed 's/.*= "\(.*\)";/\1/')
-    elapsed=$(echo "$raw_info" | grep "kMRMediaRemoteNowPlayingInfoElapsedTime" | sed 's/.*= "\(.*\)";/\1/')
+    duration=$(echo "$raw_info" | grep "kMRMediaRemoteNowPlayingInfoDuration" | sed 's/.*= \(.*\);/\1/' | tr -d '"')
+    elapsed=$(echo "$raw_info" | grep "kMRMediaRemoteNowPlayingInfoElapsedTime" | sed 's/.*= \(.*\);/\1/' | tr -d '"')
     
     # Calculate progress percentage
     if [ ! -z "$duration" ] && [ ! -z "$elapsed" ]; then

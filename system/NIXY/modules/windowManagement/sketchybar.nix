@@ -2,8 +2,8 @@
 
 {
   services.sketchybar = {
-    enable = false; # Whether to enable sketchybar.
-    # package = pkgs.sketchybar; # The sketchybar package to use.
+    enable = true; # Whether to enable sketchybar.
+    package = pkgs.sketchybar; # The sketchybar package to use.
     # config = ''
 
     # '';
