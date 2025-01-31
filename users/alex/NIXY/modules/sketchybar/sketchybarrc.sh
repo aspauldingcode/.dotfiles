@@ -107,6 +107,7 @@ bluetooth=(
 
 volume=(
   script="$PLUGIN_DIR/volume.sh"
+  click_script="$PLUGIN_DIR/open_menubar_items.sh volume"
   updates=on
   icon.padding_left=10
   label.padding_right=5
@@ -114,6 +115,7 @@ volume=(
 
 backlight=(
   script="$PLUGIN_DIR/backlight.sh"
+  click_script="$PLUGIN_DIR/open_menubar_items.sh brightness"
   updates=on
   icon.padding_left=5
   label.padding_right=5
@@ -129,7 +131,7 @@ nightlight=(
 cava=(
   update_freq=0
   script="$PLUGIN_DIR/cava.sh"
-  click_script="$PLUGIN_DIR/media_control.sh toggle"
+  click_script="$PLUGIN_DIR/open_menubar_items.sh cava"
   label.drawing=on
   label.font="Hack Nerd Font Mono:Regular:13.0"
   icon.drawing=off
@@ -265,7 +267,7 @@ $SKETCHYBAR_EXEC --add item datetime center \
 
 $SKETCHYBAR_EXEC --add item cava center \
   --set cava "${cava[@]}" \
-  --subscribe cava volume_change spotify_change mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global 
+  --subscribe cava volume_change spotify_change mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global mouse.scrolled
 $SKETCHYBAR_EXEC \
   --add item spotify center \
   --set spotify "${spotify[@]}" \

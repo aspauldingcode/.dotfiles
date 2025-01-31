@@ -8,4 +8,10 @@ case "$1" in
     "toggle")
         $nowplaying_cli togglePlayPause
         ;;
+    "next")
+        $nowplaying_cli next
+        ;;
+    "previous")
+        $nowplaying_cli previous
+        ;;
 esac

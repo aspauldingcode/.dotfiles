@@ -90,7 +90,7 @@ update_cava_popups() {
     
     # Calculate progress percentage
     if [ ! -z "$duration" ] && [ ! -z "$elapsed" ]; then
-      progress=$(echo "scale=2; ($elapsed/$duration) * 100" | bc)
+      progress=$(echo "scale=0; ($elapsed/$duration) * 100" | bc)
       progress_info="Progress: ${progress}%"
     else
       progress_info=""
@@ -141,6 +141,17 @@ update_cava_popups() {
   [ ! -z "$progress_info" ] && $SKETCHYBAR_EXEC --add item $NAME.progress popup.$NAME --set "${progress_popup[@]}"
 }
 
+scroll_script() {
+  case "$1" in
+    -1)
+      $nowplaying_cli previous
+      ;;
+    1)
+      $nowplaying_cli next
+      ;;
+  esac
+}
+
 # Update cava popups
 update_cava_popups
 
@@ -163,5 +174,8 @@ case "$SENDER" in
     $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
     $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07
     $SKETCHYBAR_EXEC --set $NAME icon.highlight=off label.highlight=off popup.drawing=off
+    ;;
+  "mouse.scrolled")
+    scroll_script $SCROLL_DELTA
     ;;
 esac

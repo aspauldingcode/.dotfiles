@@ -1,4 +1,8 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  ...
+}:
 
 let
   desktop_cleaner = pkgs.writeScriptBin "desktop_cleaner" ''
@@ -35,464 +39,127 @@ in
     desktop_cleaner
   ];
 
-  environment.launchAgents = {
-    "org.flameshot.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"?>
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>com.example.flameshot</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>${pkgs.flameshot}/Applications/flameshot.app/Contents/MacOS/flameshot</string>
-            </array>
-            <key>RunAtLoad</key>
-            <true/>
-          </dict>
-        </plist>
-      '';
+  launchd.user.agents = {
+    flameshot = {
+      serviceConfig = {
+        Label = "com.aspauldingcode.flameshot";
+        ProgramArguments = [
+          "${pkgs.flameshot}/Applications/flameshot.app/Contents/MacOS/flameshot"
+        ];
+        RunAtLoad = true;
+      };
     };
 
-    "com.aspauldingcode.toggle-darkmode.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"?>
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>com.user.toggle-darkmode</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>toggle-darkmode</string>
-              <string>${config.colorScheme.variant}</string>
-            </array>
-            <key>RunAtLoad</key>
-            <true/>
-            <key>KeepAlive</key>
-            <false/>
-            <key>StandardOutPath</key>
-            <string>/tmp/toggle-darkmode.log</string>
-            <key>StandardErrorPath</key>
-            <string>/tmp/toggle-darkmode.error.log</string>
-          </dict>
-        </plist>
-      '';
+    toggle-darkmode = {
+      serviceConfig = {
+        Label = "com.aspauldingcode.toggle-darkmode";
+        ProgramArguments = [
+          "toggle-darkmode"
+          "${config.colorScheme.variant}"
+        ];
+        RunAtLoad = true;
+        KeepAlive = false;
+        StandardOutPath = "/tmp/toggle-darkmode.log";
+        StandardErrorPath = "/tmp/toggle-darkmode.error.log";
+      };
     };
 
-    "com.lwouis.alt-tab-macos.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"?>
-        <plist version="1.0">
-          <dict>
-            <key>AssociatedBundleIdentifiers</key>
-            <string>com.lwouis.alt-tab-macos</string>
-            <key>Label</key>
-            <string>com.lwouis.alt-tab-macos</string>
-            <key>LegacyTimers</key>
-            <true/>
-            <key>LimitLoadToSessionType</key>
-            <string>Aqua</string>
-            <key>ProcessType</key>
-            <string>Interactive</string>
-            <key>Program</key>
-            <string>/Applications/AltTab.app/Contents/MacOS/AltTab</string>
-            <key>RunAtLoad</key>
-            <true/>
-          </dict>
-        </plist>
-      '';
+    alt-tab-macos = {
+      serviceConfig = {
+        Label = "com.aspauldingcode.alt-tab-macos";
+        Program = "${pkgs.alt-tab-macos}/Applications/AltTab.app/Contents/MacOS/AltTab";
+        RunAtLoad = true;
+        KeepAlive = true;
+      };
     };
 
-    "org.freedesktop.dbus-session.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"?>
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>org.freedesktop.dbus-session</string>
-
-            <key>ProgramArguments</key>
-            <array>
-              <string>/opt/homebrew/Cellar/dbus/1.14.10/bin/dbus-daemon</string>
-              <string>--nofork</string>
-              <string>--session</string>
-            </array>
-
-            <key>Sockets</key>
-            <dict>
-              <key>unix_domain_listener</key>
-              <dict>
-                <key>SecureSocketWithKey</key>
-                <string>DBUS_LAUNCHD_SESSION_BUS_SOCKET</string>
-              </dict>
-            </dict>
-          </dict>
-        </plist>
-      '';
+    dbus-session = {
+      serviceConfig = {
+        Label = "org.aspauldingcode.dbus-session";
+        ProgramArguments = [
+          "/opt/homebrew/Cellar/dbus/1.14.10/bin/dbus-daemon"
+          "--nofork"
+          "--session"
+        ];
+        Sockets = {
+          unix_domain_listener = {
+            SecureSocketWithKey = "DBUS_LAUNCHD_SESSION_BUS_SOCKET";
+          };
+        };
+      };
     };
 
-    "com.user.desktop-cleaner.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>com.user.desktop-cleaner</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>${desktop_cleaner}/bin/desktop_cleaner</string>
-            </array>
-            <key>RunAtLoad</key>
-            <true/>
-            <key>KeepAlive</key>
-            <true/>
-            <key>StandardOutPath</key>
-            <string>/tmp/desktop_cleaner.log</string>
-            <key>StandardErrorPath</key>
-            <string>/tmp/desktop_cleaner.error.log</string>
-          </dict>
-        </plist>
-      '';
+    desktop-cleaner = {
+      serviceConfig = {
+        Label = "com.aspauldingcode.desktop-cleaner";
+        ProgramArguments = [
+          "${desktop_cleaner}/bin/desktop_cleaner"
+        ];
+        RunAtLoad = true;
+        KeepAlive = true;
+        StandardOutPath = "/tmp/desktop_cleaner.log";
+        StandardErrorPath = "/tmp/desktop_cleaner.error.log";
+      };
     };
 
-    "com.user.fix-wm.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>com.user.fix-wm</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>fix-wm</string>
-            </array>
-            <key>RunAtLoad</key>
-            <true/>
-            <key>KeepAlive</key>
-            <false/>
-            <key>StandardOutPath</key>
-            <string>/tmp/fix-wm.log</string>
-            <key>StandardErrorPath</key>
-            <string>/tmp/fix-wm.error.log</string>
-          </dict>
-        </plist>
-      '';
+    fix-wm = {
+      serviceConfig = {
+        Label = "com.aspauldingcode.fix-wm";
+        ProgramArguments = [
+          "fix-wm"
+        ];
+        RunAtLoad = true;
+        KeepAlive = false;
+        StandardOutPath = "/tmp/fix-wm.log";
+        StandardErrorPath = "/tmp/fix-wm.error.log";
+      };
     };
 
     # disable notification center at login
     notificationcenter = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>com.user.notificationcenter</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>launchctl</string>
-              <string>unload</string>
-              <string>-w</string>
-              <string>/System/Library/LaunchAgents/com.apple.notificationcenterui.plist</string>
-              <string>&&</string>
-              <string>killall</string>
-              <string>NotificationCenter</string>
-            </array>
-            <key>RunAtLoad</key>
-            <true/>
-            <key>KeepAlive</key>
-            <false/>
-            <key>StandardOutPath</key>
-            <string>/tmp/notificationcenter.log</string>
-            <key>StandardErrorPath</key>
-            <string>/tmp/notificationcenter.error.log</string>
-          </dict>
-        </plist>
-      '';
-    };
-  };
-
-  environment.launchDaemons = {
-    "com.macenhance.MacForge.Injector.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-        <dict>
-          <key>Label</key>
-          <string>com.macenhance.MacForge.Injector</string>
-          <key>MachServices</key>
-          <dict>
-            <key>com.macenhance.MacForge.Injector.mach</key>
-            <true/>
-          </dict>
-          <key>Program</key>
-          <string>/Library/PrivilegedHelperTools/com.macenhance.MacForge.Injector</string>
-          <key>ProgramArguments</key>
-          <array>
-            <string>/Library/PrivilegedHelperTools/com.macenhance.MacForge.Injector</string>
-          </array>
-        </dict>
-        </plist>
-      '';
-    };
-
-    "dev.orbstack.OrbStack.privhelper.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-        <dict>
-          <key>AssociatedBundleIdentifiers</key>
-          <array>
-            <string>dev.kdrag0n.MacVirt</string>
-          </array>
-          <key>Label</key>
-          <string>dev.orbstack.OrbStack.privhelper</string>
-          <key>MachServices</key>
-          <dict>
-            <key>dev.orbstack.OrbStack.privhelper</key>
-            <true/>
-          </dict>
-          <key>Program</key>
-          <string>/Library/PrivilegedHelperTools/dev.orbstack.OrbStack.privhelper</string>
-          <key>ProgramArguments</key>
-          <array>
-            <string>/Library/PrivilegedHelperTools/dev.orbstack.OrbStack.privhelper</string>
-          </array>
-        </dict>
-        </plist>
-      '';
-    };
-
-    "com.bearisdriving.BGM.App.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0.dtd"?>
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>com.bearisdriving.BGM.App</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>/Applications/Background Music.app/Contents/MacOS/Background Music</string>
-            </array>
-            <key>RunAtLoad</key>
-            <true/>
-          </dict>
-        </plist>
-      '';
-    };
-
-    "com.smiUsbDisplay.macOSInstantView.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0.dtd"?>
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>com.smiUsbDisplay.macOSInstantView</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>/Applications/macOS InstantView.app/Contents/MacOS/macOS InstantView</string>
-            </array>
-            <key>RunAtLoad</key>
-            <true/>
-          </dict>
-        </plist>
-      '';
-    };
-
-    "com.smiUsbDisplay.macOSInstantView.loginscreen.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-          <dict>
-            <key>Label</key>
-            <string>com.smiUsbDisplay.macOSInstantView.loginscreen</string>
-            <key>LimitLoadToSessionType</key>
-            <string>LoginWindow</string>
-            <key>Program</key>
-            <string>/Applications/macOS InstantView.app/Contents/MacOS/macOS InstantView</string>
-            <key>ProgramArguments</key>
-            <array>
-              <string>/Applications/macOS InstantView.app/Contents/MacOS/macOS InstantView</string>
-              <string>LoginWindow</string>
-            </array>
-            <key>ProcessType</key>
-            <string>Interactive</string>
-            <key>ThrottleInterval</key>
-            <integer>5</integer>
-            <key>Disabled</key>
-            <false/>
-            <key>Umask</key>
-            <integer>0</integer>
-            <key>RunAtLoad</key>
-            <true/>
-            <key>KeepAlive</key>
-            <true/>
-          </dict>
-        </plist>
-      '';
-    };
-
-    "org.xquartz.privileged_startx.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-        <dict>
-          <key>Label</key>
-          <string>org.xquartz.privileged_startx</string>
-          <key>ProgramArguments</key>
-          <array>
-            <string>/opt/X11/libexec/privileged_startx</string>
-            <string>-d</string>
-            <string>/opt/X11/etc/X11/xinit/privileged_startx.d</string>
-          </array>
-          <key>MachServices</key>
-          <dict>
-            <key>org.xquartz.privileged_startx</key>
-            <true/>
-          </dict>
-          <key>TimeOut</key>
-          <integer>120</integer>
-          <key>EnableTransactions</key>
-          <true/>
-        </dict>
-        </plist>
-      '';
-    };
-
-    "com.bearisdriving.BGM.XPCHelper.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <!--
-          Installing/upgrading overwrites this file (/Library/LaunchDaemons/com.bearisdriving.BGM.XPCHelper.plist), so
-          you might not want to edit it directly.
-        -->
-        <plist version="1.0">
-        <dict>
-          <key>Label</key>
-          <string>com.bearisdriving.BGM.XPCHelper</string>
-          <key>ProgramArguments</key>
-          <array>
-            <string>/usr/local/libexec/BGMXPCHelper.xpc/Contents/MacOS/BGMXPCHelper</string>
-          </array>
-          <key>MachServices</key>
-          <dict>
-            <key>com.bearisdriving.BGM.XPCHelper</key>
-            <true/>
-          </dict>
-          <key>ProcessType</key>
-          <string>Adaptive</string>
-          <key>UserName</key>
-          <string>_BGMXPCHelper</string>
-          <key>GroupName</key>
-          <string>_BGMXPCHelper</string>
-        </dict>
-        </plist>
-      '';
-    };
-
-    "com.docker.socket.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-        <dict>
-          <key>KeepAlive</key>
-          <false/>
-          <key>Label</key>
-          <string>com.docker.socket</string>
-          <key>ProcessType</key>
-          <string>Background</string>
-          <key>Program</key>
-          <string>/Library/PrivilegedHelperTools/com.docker.socket</string>
-          <key>ProgramArguments</key>
-          <array>
-            <string>/Library/PrivilegedHelperTools/com.docker.socket</string>
-            <string>/Users/alex/.docker/run/docker.sock</string>
-            <string>/var/run/docker.sock</string>
-          </array>
-          <key>RunAtLoad</key>
-          <true/>
-        </dict>
-        </plist>
-      '';
-    };
-
-    "com.docker.vmnetd.plist" = {
-      enable = true;
-      text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-        <dict>
-          <key>Label</key>
-          <string>com.docker.vmnetd</string>
-          <key>Program</key>
-          <string>/Library/PrivilegedHelperTools/com.docker.vmnetd</string>
-          <key>ProgramArguments</key>
-          <array>
-            <string>/Library/PrivilegedHelperTools/com.docker.vmnetd</string>
-          </array>
-          <key>RunAtLoad</key>
-          <true/>
-          <key>Sockets</key>
-          <dict>
-            <key>Listener</key>
-            <dict>
-              <key>SockPathMode</key>
-              <integer>438</integer>
-              <key>SockPathName</key>
-              <string>/var/run/com.docker.vmnetd.sock</string>
-            </dict>
-          </dict>
-          <key>Version</key>
-          <string>67</string>
-        </dict>
-        </plist>
-      '';
-    };
-  };
-
-  launchd.user.agents.unmenu = {
-    serviceConfig = {
-      Label = "com.unmanbearpig.unmenu";
-      ProgramArguments = [
-        "/Users/alex/Applications/Home Manager Trampolines/unmenu.app/Contents/MacOS/unmenu"
-      ];
-      RunAtLoad = true;
-      KeepAlive = {
-        SuccessfulExit = false;
-        Crashed = true;
+      serviceConfig = {
+        Label = "com.aspauldingcode.notificationcenter";
+        ProgramArguments = [
+          "launchctl"
+          "unload"
+          "-w"
+          "/System/Library/LaunchAgents/com.apple.notificationcenterui.plist"
+          "&&"
+          "killall"
+          "NotificationCenter"
+        ];
+        RunAtLoad = true;
+        KeepAlive = false;
+        StandardOutPath = "/tmp/notificationcenter.log";
+        StandardErrorPath = "/tmp/notificationcenter.error.log";
       };
-      StandardOutPath = "/tmp/unmenu.log";
-      StandardErrorPath = "/tmp/unmenu.error.log";
+    };
+    unnaturalscrollwheels = {
+      serviceConfig = {
+        Label = "com.aspauldingcode.unnaturalscrollwheels";
+        ProgramArguments = [
+          "${pkgs.unnaturalscrollwheels}/Applications/UnnaturalScrollWheels.app/Contents/MacOS/UnnaturalScrollWheels"
+        ];
+        RunAtLoad = true;
+        KeepAlive = true;
+        StandardOutPath = "/tmp/unnaturalscrollwheels.log";
+        StandardErrorPath = "/tmp/unnaturalscrollwheels.error.log";
+      };
+    };
+    unmenu = {
+      serviceConfig = {
+        Label = "com.aspauldingcode.unmenu";
+        ProgramArguments = [
+          "/Users/alex/Applications/Home Manager Trampolines/unmenu.app/Contents/MacOS/unmenu"
+        ];
+        RunAtLoad = true;
+        KeepAlive = {
+          SuccessfulExit = false;
+          Crashed = true;
+        };
+        StandardOutPath = "/tmp/unmenu.log";
+        StandardErrorPath = "/tmp/unmenu.error.log";
+      };
     };
   };
 }

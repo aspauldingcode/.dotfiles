@@ -80,7 +80,6 @@ case "$SENDER" in
   $SKETCHYBAR_EXEC --set backlight icon.highlight=off label.highlight=off
   ;;
 "mouse.clicked")
-  open /System/Library/PreferencePanes/Displays.prefPane
   
   # button clicked effect
   $SKETCHYBAR_EXEC --set backlight icon.highlight_color=$base04 label.highlight_color=$base04

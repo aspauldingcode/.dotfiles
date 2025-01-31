@@ -59,8 +59,6 @@ case "$SENDER" in
     $SKETCHYBAR_EXEC --set $NAME icon.highlight=off label.highlight=off
     ;;
   "mouse.clicked")
-    open /System/Library/PreferencePanes/Sound.prefPane
-
     # clicked effect
     $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base04 label.highlight_color=$base04
     $SKETCHYBAR_EXEC --set $NAME icon.highlight_color=$base07 label.highlight_color=$base07

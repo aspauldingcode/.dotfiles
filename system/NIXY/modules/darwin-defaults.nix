@@ -384,6 +384,7 @@ in
         "com.lwouis.alt-tab-macos.plist" = {
           holdShortcut = "\\U2318";
           nextWindowShortcut = "\\U21e5";
+          startAtLogin = false;
         };
         # "com.mac.RecordingIndicatorUtility" = {
         # AcknowledgedSystemOverrideAlert = 1;

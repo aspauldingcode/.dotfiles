@@ -250,6 +250,54 @@ case $app_name in
                 ;;
         esac
         ;;
+    "volume")
+        case $button in
+            "left")
+                open x-apple.systempreferences:com.apple.preference.sound
+                ;;
+            "right")
+                osascript -e 'tell application "System Events"
+                    tell process "Control Center"
+                        repeat with i from 1 to count of menu bar items of menu bar 1
+                            if description of menu bar item i of menu bar 1 contains "Sound" then
+                                click menu bar item i of menu bar 1
+                                exit repeat
+                            end if
+                        end repeat
+                    end tell
+                end tell'
+                ;;
+        esac
+        ;;
+    "brightness")
+        case $button in
+            "left")
+                open x-apple.systempreferences:com.apple.preference.displays
+                ;;
+            "right")
+               osascript -e 'tell application "System Events"
+                    tell process "Control Center"
+                        set displayItem to first menu bar item of menu bar 1 whose description contains "Display"
+                        click displayItem
+                    end tell
+                end tell'
+                ;;
+        esac
+        ;;
+    "cava")
+        case $button in
+            "left")
+                $nowplaying_cli togglePlayPause
+                ;;
+            "right")
+                osascript -e 'tell application "System Events"
+                    tell process "Control Center"
+                        click (first menu bar item of menu bar 1 whose description contains "Now Playing")
+                    end tell
+                end tell'
+                ;;
+        esac
+        ;;
     "cpu")
         case $button in
             "left")
