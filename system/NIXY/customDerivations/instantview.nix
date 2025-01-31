@@ -3,12 +3,12 @@
 # Create a derivation package for macOS InstantView application
 stdenvNoCC.mkDerivation (self: {
   name = "instantview";
-  version = "V3.21R0001";
+  version = "V3.22R0002";
 
   src = fetchurl {
     name = "instantview";
     url = "https://www.siliconmotion.com/downloads/macOS_InstantView_${self.version}.dmg";
-    hash = "sha256-Fs0PB7/1EceI11qFCiFxIXZChVHtOdfjojZYRwj8Bpc=";
+    hash = "sha256-PdgX9zCrVYtNbuOCYKVo9cegCG/VY7QXetivVsUltbg=";
   };
 
   dontUnpack = true;
@@ -17,7 +17,7 @@ stdenvNoCC.mkDerivation (self: {
 
   installPhase =
     let
-      hdiutil = "/usr/bin/hdiutil";
+      hdiutil = "/usr/bin/hdiutil"; # unfortunately undmg only supports hfs dmg images, not apfs dmg images.
     in
     ''
       dir=$(mktemp -d)
