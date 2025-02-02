@@ -3,6 +3,7 @@
   lib,
   pkgs,
   inputs,
+  user,
   ...
 }:
 
@@ -140,5 +141,11 @@ in
       su - alex -c "${orb} create ubuntu"
     fi
     su - alex -c "${orb} start ubuntu"
+
+
+    echo "Setting profile picture..."
+    sudo dscl . delete /Users/${user} jpegphoto
+    sudo dscl . delete /Users/${user} Picture
+    sudo dscl . create /Users/${user} Picture "${./../../../users/alex/face.heic}"
   '';
 }

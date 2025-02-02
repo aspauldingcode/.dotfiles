@@ -110,7 +110,7 @@ let
       "editor.defaultFormatter" = "esbenp.prettier-vscode"; # could set to something else
     };
     "[nix]" = {
-      #"editor.defaultFormatter" = "jnoortheen.nix-ide";
+      "editor.defaultFormatter" = "jnoortheen.nix-ide";
       # "editor.defaultFormatter" = "B4dM4n.nixpkgs-fmt";
     };
     workbench.colorCustomizations = {
@@ -173,7 +173,9 @@ in
   };
 
   # extensions for vscode:
-  programs.vscode.extensions = [
-    "jnoortheen.nix-ide"
+  programs.vscode.extensions = with pkgs.vscode-extensions; [
+    # bbenoist.nix
+    jnoortheen.nix-ide
+    esbenp.prettier-vscode
   ];
 }
