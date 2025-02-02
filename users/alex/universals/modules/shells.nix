@@ -8,6 +8,11 @@
   home.packages = with pkgs; [
     thefuck
   ];
+  home.file = lib.mkIf pkgs.stdenv.isDarwin {
+    ".hushlogin" = {
+      text = "";
+    };
+  };
 
   programs = {
     zsh = {
@@ -124,7 +129,14 @@
       enableNushellIntegration = true;
 
       settings = {
-        "$schema" = "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json";
+        upgrade = {
+          notice = false;
+          interval = "168h";
+          auto = false;
+          source = "cdn";
+        };
+
+        "$schema" = "https://raw.gith1busercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json";
         blocks = [
           {
             alignment = "left";

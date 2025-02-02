@@ -63,7 +63,11 @@
     home-manager.enable = true;
     ssh = {
       enable = true;
-      addKeysToAgent = "confirm";
+      addKeysToAgent = "yes";
+      extraConfig = ''
+        AddKeysToAgent yes
+        UseKeychain yes
+      '';
 
       matchBlocks = {
         "github.com" = {
