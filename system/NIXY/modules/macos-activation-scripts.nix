@@ -94,19 +94,14 @@ in
     # create the wallpaper directory if it doesn't exist
     mkdir -p /Users/Shared/Wallpaper/
 
-    # recolor the wallpaper only if the wallpaper output file doesn't exist
-    if [ ! -f ${wallpaper_output} ]; then
-      echo "Recoloring Wallpapers to ${config.colorscheme.slug} color scheme..."
-      ${
-        pkgs.python3.withPackages (ps: [
-          ps.pillow
-          ps.numpy
-          ps.tqdm
-        ])
-      }/bin/python3 ${wallpaper_recolor_script} ${wallpaper_input} ${wallpaper_output} ${config.colorScheme.variant} ${palette.base00},${palette.base01},${palette.base02},${palette.base03},${palette.base04},${palette.base05},${palette.base06},${palette.base07},${palette.base08},${palette.base09},${palette.base0A},${palette.base0B},${palette.base0C},${palette.base0D},${palette.base0E},${palette.base0F}
-    else
-      echo "Using existing wallpaper..."
-    fi
+    echo "Recoloring Wallpapers to ${config.colorscheme.slug} color scheme..."
+    ${
+      pkgs.python3.withPackages (ps: [
+        ps.pillow
+        ps.numpy
+        ps.tqdm
+      ])
+    }/bin/python3 ${wallpaper_recolor_script} ${wallpaper_input} ${wallpaper_output} ${config.colorScheme.variant} "#${palette.base00},#${palette.base01},#${palette.base02},#${palette.base03},#${palette.base04},#${palette.base05},#${palette.base06},#${palette.base07},#${palette.base08},#${palette.base09},#${palette.base0A},#${palette.base0B},#${palette.base0C},#${palette.base0D},#${palette.base0E},#${palette.base0F}"
 
     echo "Setting ${config.colorscheme.variant} wallpaper..."
     ${m} wallpaper "${wallpaper_output}"

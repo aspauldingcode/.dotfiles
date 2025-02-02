@@ -1,10 +1,37 @@
+# This script recolors an image using a Base16 color palette with accurate matching for base08 to base0f, and accurate shades matching for base00 to base07.
+# it is inefficient currently. the goal is to make it more efficient, and more accurate. currently, it does not properly handle the shades of the base colors.
+
 from PIL import Image
 import numpy as np
 import sys
+import os
+import colorsys
+from tqdm import tqdm
+
+# Global constants for sRGB to XYZ and LAB conversion
+M_SRGB = np.array([[0.4124564, 0.3575761, 0.1804375],
+                   [0.2126729, 0.7151522, 0.0721750],
+                   [0.0193339, 0.1191920, 0.9503041]], dtype=np.float32)
+WHITE_POINT = np.array([0.95047, 1.00000, 1.08883], dtype=np.float32)
+EPSILON = 0.008856
+KAPPA = 903.3
 
 def parse_palette(palette_str):
-    """Parse a comma-separated string of hex colors into a list."""
-    return palette_str.split(',')
+    """Parse a comma‐separated string of colors and return only valid hex color strings."""
+    tokens = palette_str.split(',')
+    valid_colors = [token.strip() for token in tokens if token.strip().startswith('#') and len(token.strip()) == 7]
+    if not valid_colors:
+        print("Error: No valid hex colors found in the palette!")
+        sys.exit(1)
+    return valid_colors
+
+def parse_shades_palette(palette):
+    """Return the first 8 colors (base00 to base07) as shades."""
+    return palette[:8]
+
+def parse_colors_palette(palette):
+    """Return the last 8 colors (base08 to base0F) as accent colors."""
+    return palette[8:]
 
 if len(sys.argv) < 5:
     print("Usage: python recolor_base16_inputs_efficient.py <input_image_path> <output_image_path> <mode> <palette>")
@@ -16,158 +43,105 @@ output_path = sys.argv[2]
 mode = sys.argv[3].lower()
 palette_str = sys.argv[4]
 
-# Define a Base16 color palette using hexadecimal values from CLI
+# Extract only valid hex colors (ignoring any theme names or invalid entries)
 BASE16_PALETTE = parse_palette(palette_str)
 
 def hex_to_rgb(hex_color):
-    """Convert a hex color to an RGB numpy array."""
+    """Convert a hex color string to an RGB tuple."""
     hex_color = hex_color.lstrip('#')
-    return np.array([int(hex_color[i:i+2], 16) for i in (0, 2, 4)])
+    return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
 
 def rgb_to_hsv(rgb):
-    """Convert RGB to HSV."""
-    rgb = rgb / 255.0
-    maxc = rgb.max(axis=1)
-    minc = rgb.min(axis=1)
-    v = maxc
-    delta = maxc - minc
-    s = np.zeros_like(maxc)
-    mask = maxc != 0
-    s[mask] = delta[mask] / maxc[mask]
-    
-    h = np.zeros_like(maxc)
-    mask_delta = delta != 0
-    idx = (rgb.argmax(axis=1) == 0) & mask_delta
-    h[idx] = ((rgb[idx, 1] - rgb[idx, 2]) / delta[idx]) % 6
-    idx = (rgb.argmax(axis=1) == 1) & mask_delta
-    h[idx] = ((rgb[idx, 2] - rgb[idx, 0]) / delta[idx]) + 2
-    idx = (rgb.argmax(axis=1) == 2) & mask_delta
-    h[idx] = ((rgb[idx, 0] - rgb[idx, 1]) / delta[idx]) + 4
-    h /= 6
-    h = np.mod(h, 1.0)
-    hsv = np.stack([h, s, v], axis=1)
-    return hsv
+    """Convert an RGB tuple (0-255) to an HSV tuple (all in [0,1])."""
+    return colorsys.rgb_to_hsv(*(c / 255.0 for c in rgb))
 
 def hsv_to_rgb(hsv):
-    """Convert HSV to RGB."""
-    h, s, v = hsv[:, 0], hsv[:, 1], hsv[:, 2]
-    i = np.floor(h * 6).astype(int)
-    f = (h * 6) - i
-    p = v * (1 - s)
-    q = v * (1 - f * s)
-    t = v * (1 - (1 - f) * s)
-    
-    i = i % 6
-    conditions = [i == 0, i == 1, i == 2, i == 3, i == 4, i == 5]
-    r = np.select(conditions, [v, q, p, p, t, v])
-    g = np.select(conditions, [t, v, v, q, p, p])
-    b = np.select(conditions, [p, p, t, v, v, q])
-    
-    rgb = np.stack([r, g, b], axis=1)
-    rgb = np.clip(rgb * 255, 0, 255).astype(np.uint8)
-    return rgb
+    """Convert an HSV tuple (with values in [0,1]) to an RGB tuple (0-255)."""
+    return tuple(round(c * 255) for c in colorsys.hsv_to_rgb(*hsv))
 
-def generate_shades(palette_rgb, base_indices, num_shades=10, brightness_factor=0.9):
-    """
-    Generate shades for darker base colors by reducing their brightness.
+def normalize_range_255(val1, val2):
+    """Normalize range for 255 values."""
+    mn, mx = min(val1, val2), max(val1, val2)
+    if mn == mx:
+        mn, mx = max(0, mn - 20), min(255, mx + 20)
+    return mn, mx
 
-    Parameters:
-    - palette_rgb: numpy array of shape (num_colors, 3)
-    - base_indices: list or array of indices representing base00 to base07
-    - num_shades: number of shading steps
-    - brightness_factor: factor by which to reduce brightness at each step
+def normalize_range_unit(val1, val2):
+    """Normalize range for unit values."""
+    mn, mx = min(val1, val2), max(val1, val2)
+    if abs(mx - mn) < 1e-6:
+        mn, mx = max(0.0, val1 - 0.1), min(1.0, val1 + 0.1)
+    return mn, mx
 
-    Returns:
-    - extended_palette: numpy array with original base colors, their shades, and accent colors
-    """
-    hsv = rgb_to_hsv(palette_rgb[base_indices])
-    brightness = hsv[:, 2]
-    dark_colors = hsv[:, 2] < 0.3  # Threshold for darkness
-    shades = []
-    
-    for idx, is_dark in enumerate(dark_colors):
-        if is_dark:
-            for step in range(1, num_shades + 1):
-                factor = brightness_factor ** step
-                new_v = hsv[idx, 2] * factor
-                new_v = np.clip(new_v, 0, 1)
-                shaded_color = np.array([hsv[idx, 0], hsv[idx, 1], new_v])
-                rgb_shaded = hsv_to_rgb(shaded_color.reshape(1, -1))[0]
-                shades.append(rgb_shaded)
-    
-    if shades:
-        shades = np.array(shades)
-        # Combine base shades with original palette
-        extended_palette = np.vstack([palette_rgb, shades])
-    else:
-        extended_palette = palette_rgb
-    return extended_palette
+def generate_shade_gradient(hex_color, num_steps=16):
+    """Generate a linear grayscale gradient with num_steps levels for a given shade color."""
+    base_color = hex_to_rgb(hex_color)
+    intensity = base_color[0]  # For a gray tone, R == G == B
+    dark_val, bright_val = normalize_range_255(intensity, intensity)
+    intensities = np.round(np.linspace(dark_val, bright_val, num_steps)).astype(int)
+    return [(i, i, i) for i in intensities]
+
+def generate_color_gradient(hex_color, num_steps=16):
+    """Generate a linear brightness gradient for a given color."""
+    base_color = hex_to_rgb(hex_color)
+    h, s, v = rgb_to_hsv(base_color)
+    v_dark, v_bright = normalize_range_unit(max(0.0, v - 0.4), min(1.0, v + 0.2))
+    steps = np.linspace(0, 1, num_steps)
+    new_vs = v_dark + steps * (v_bright - v_dark)
+    return [hsv_to_rgb((h, s, new_v)) for new_v in new_vs]
+
+def rgb_to_lab(rgb):
+    """Convert RGB values to CIELAB color space."""
+    rgb = rgb.astype(np.float32) / 255.0
+    mask = rgb > 0.04045
+    rgb_linear = np.where(mask, ((rgb + 0.055) / 1.055) ** 2.4, rgb / 12.92)
+    xyz = np.dot(rgb_linear, M_SRGB.T)
+    xyz /= WHITE_POINT
+    f_xyz = np.where(xyz > EPSILON, np.cbrt(xyz), (KAPPA * xyz + 16) / 116)
+    L = 116 * f_xyz[..., 1] - 16
+    a = 500 * (f_xyz[..., 0] - f_xyz[..., 1])
+    b = 200 * (f_xyz[..., 1] - f_xyz[..., 2])
+    return np.stack([L, a, b], axis=-1)
 
 def recolor_image(input_path, output_path):
-    """Recolor an image using the Base16 color palette with accurate matching for base08 to base0f."""
-    image = Image.open(input_path).convert('RGB')
+    """Recolor an image using an expanded palette."""
+    image = Image.open(input_path).convert("RGB")
     pixels = np.array(image)
     height, width = pixels.shape[:2]
-
-    # Invert colors if mode is light
+    
     if mode == 'light':
         pixels = 255 - pixels
 
-    # Convert palette to RGB array
-    palette_rgb = np.array([hex_to_rgb(color) for color in BASE16_PALETTE])
-    num_base = 8  # base00 to base07
-    num_accent = 8  # base08 to base0f
+    shades_palette = parse_shades_palette(BASE16_PALETTE)
+    colors_palette = parse_colors_palette(BASE16_PALETTE)
 
-    base_palette = palette_rgb[:num_base]
-    accent_palette = palette_rgb[num_base:num_base + num_accent]
-
-    # Generate shades only for base palette
-    palette_with_shades = generate_shades(palette_rgb, base_indices=np.arange(num_base))
+    candidate_colors = np.array(
+        [clr for shade in shades_palette for clr in generate_shade_gradient(shade, num_steps=16)] +
+        [clr for color in colors_palette for clr in generate_color_gradient(color, num_steps=16)]
+    )
     
-    # Reconstruct the full palette: shades + accent colors
-    num_shades = palette_with_shades.shape[0] - num_base
-    full_palette = np.vstack([palette_with_shades, accent_palette])
-
-    # Flatten the image array to shape (num_pixels, 3)
+    candidate_lab = rgb_to_lab(candidate_colors)
+    candidate_lab_sq = np.einsum('ij,ij->i', candidate_lab, candidate_lab)
+    
     pixels_flat = pixels.reshape(-1, 3)
     num_pixels = pixels_flat.shape[0]
-
-    # Compute distances between each pixel and accent palette colors first
-    distances_accent = np.linalg.norm(pixels_flat[:, np.newaxis, :] - accent_palette[np.newaxis, :, :], axis=2)
-    closest_accent = np.argmin(distances_accent, axis=1)
-    min_dist_accent = np.min(distances_accent, axis=1)
-
-    # Define a threshold to accept accent color mapping
-    threshold = 30  # Adjust based on desired strictness
-
-    # Initialize indices with accent mappings where distance is below threshold
-    indices = np.where(min_dist_accent < threshold, closest_accent + palette_with_shades.shape[0], -1)
-
-    # For remaining pixels, map to the rest of the palette (base + shades)
-    mask = indices == -1
-    remaining_pixels = pixels_flat[mask]
-    if remaining_pixels.size > 0:
-        distances_base = np.linalg.norm(remaining_pixels[:, np.newaxis, :] - palette_with_shades[np.newaxis, :, :], axis=2)
-        closest_base = np.argmin(distances_base, axis=1)
-        indices[mask] = closest_base
-
-    # Map pixels to palette colors
-    recolored_pixels_flat = full_palette[indices]
-
-    # Ensure every color in the palette is used at least once
-    used_colors = np.unique(indices)
-    missing_colors = np.setdiff1d(np.arange(full_palette.shape[0]), used_colors)
-    for i, color_idx in enumerate(missing_colors):
-        if i < num_pixels:
-            # Assign the missing color to a random pixel
-            recolored_pixels_flat[i] = full_palette[color_idx]
-
-    # Reshape back to the original image shape
+    recolored_pixels_flat = np.empty_like(pixels_flat)
+    
+    batch_size = 10000  # Adjust batch size as needed.
+    for i in tqdm(range(0, num_pixels, batch_size), desc="Processing Pixels"):
+        batch = pixels_flat[i:i+batch_size]
+        batch_lab = rgb_to_lab(batch)
+        batch_lab_sq = np.einsum('ij,ij->i', batch_lab, batch_lab)
+        dot_prod = np.dot(batch_lab, candidate_lab.T)
+        distances = batch_lab_sq[:, None] + candidate_lab_sq[None, :] - 2 * dot_prod
+        indices = np.argmin(distances, axis=1)
+        recolored_pixels_flat[i:i+batch_size] = candidate_colors[indices]
+    
     recolored_pixels = recolored_pixels_flat.reshape(height, width, 3)
-
-    recolored_image = Image.fromarray(recolored_pixels.astype('uint8'), 'RGB')
-    recolored_image.save(output_path)
+    if os.path.exists(output_path):
+        os.remove(output_path)
+    Image.fromarray(recolored_pixels.astype("uint8"), "RGB").save(output_path)
 
 if __name__ == "__main__":
     recolor_image(input_path, output_path)
-    print("Image recolored using Base16 palette successfully.")
+    print("Image recolored using input palette successfully.")

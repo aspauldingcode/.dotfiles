@@ -7,9 +7,9 @@
     "${pkgs.obsidian}/Applications/Obsidian.app"
     "${pkgs.firefox-bin}/Applications/Firefox.app"
     "${pkgs.brave}/Applications/Brave Browser.app"
-    # "${pkgs.cursor}/Applications/Cursor.app" #FIXME: nixpkgs not merged yet:
     "/System/Applications/Messages.app"
     "/System/Applications/Facetime.app"
+    # "${pkgs.cursor}/Applications/Cursor.app" #FIXME: nixpkgs not merged yet:
     "${pkgs.alacritty}/Applications/Alacritty.app"
   ];
 }

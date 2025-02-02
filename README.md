@@ -2,7 +2,7 @@
 A Universal .dotfiles Configuration with Nix Flakes - over-engineered by Alex Spaulding.
 
 ## How much code?
-👨‍💻 There are 1,560,043 lines of code in this repo. Last updated: Thu Jan 30 18:33:51 PST 2025
+👨‍💻 There are 1,560,409 lines of code in this repo. Last updated: Sat Feb  1 16:17:24 PST 2025
 
 ## Getting Started
 This repo contains my ___nixified___ .dotfiles, which additionally defines the operating system environment for NixOS and Darwin.

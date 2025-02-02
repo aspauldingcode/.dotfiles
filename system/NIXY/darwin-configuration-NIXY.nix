@@ -19,8 +19,8 @@
     # ./modules/wg-quick.nix
     # ./modules/openssh.nix
 
-    ./sa-resources/ammonia.nix
-    ./sa-resources/glow.nix
+    # ./sa-resources/ammonia.nix
+    # ./sa-resources/glow.nix
 
     ./modules/windowManagement/cursorcerer.nix
     ./modules/windowManagement/karabiner.nix

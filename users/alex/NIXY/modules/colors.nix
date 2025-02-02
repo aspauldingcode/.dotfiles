@@ -3,13 +3,14 @@
   pkgs,
   lib,
   nix-colors,
+  std,
   ...
 }:
 
 # generate a color palette from nix-colors (to view all colors in a file!)
 {
   home.file = {
-    "colors.json" =
+    "colors.toml" =
       let
         hexColorBase00 = "${config.colorscheme.colors.base00}";
         hexColorConvertedBase00 = builtins.toString (
@@ -80,28 +81,71 @@
 
       in
       {
-        text = builtins.toJSON {
-          # nix-colors palette information
-          variant = config.colorscheme.variant;
-          slug = config.colorscheme.slug;
+        text = std.serde.toTOML {
 
-          # nix-colors palette as hex values
-          base00 = "#${config.colorscheme.colors.base00}";
-          base01 = "#${config.colorscheme.colors.base01}";
-          base02 = "#${config.colorscheme.colors.base02}";
-          base03 = "#${config.colorscheme.colors.base03}";
-          base04 = "#${config.colorscheme.colors.base04}";
-          base05 = "#${config.colorscheme.colors.base05}";
-          base06 = "#${config.colorscheme.colors.base06}";
-          base07 = "#${config.colorscheme.colors.base07}";
-          base08 = "#${config.colorscheme.colors.base08}";
-          base09 = "#${config.colorscheme.colors.base09}";
-          base0A = "#${config.colorscheme.colors.base0A}";
-          base0B = "#${config.colorscheme.colors.base0B}";
-          base0C = "#${config.colorscheme.colors.base0C}";
-          base0D = "#${config.colorscheme.colors.base0D}";
-          base0E = "#${config.colorscheme.colors.base0E}";
-          base0F = "#${config.colorscheme.colors.base0F}";
+          base16_nix_colors = {
+            # nix-colors palette information
+            variant = config.colorscheme.variant;
+            slug = config.colorscheme.slug;
+
+            # nix-colors palette as hex values
+            base00 = "#${config.colorscheme.colors.base00}";
+            base01 = "#${config.colorscheme.colors.base01}";
+            base02 = "#${config.colorscheme.colors.base02}";
+            base03 = "#${config.colorscheme.colors.base03}";
+            base04 = "#${config.colorscheme.colors.base04}";
+            base05 = "#${config.colorscheme.colors.base05}";
+            base06 = "#${config.colorscheme.colors.base06}";
+            base07 = "#${config.colorscheme.colors.base07}";
+            base08 = "#${config.colorscheme.colors.base08}";
+            base09 = "#${config.colorscheme.colors.base09}";
+            base0A = "#${config.colorscheme.colors.base0A}";
+            base0B = "#${config.colorscheme.colors.base0B}";
+            base0C = "#${config.colorscheme.colors.base0C}";
+            base0D = "#${config.colorscheme.colors.base0D}";
+            base0E = "#${config.colorscheme.colors.base0E}";
+            base0F = "#${config.colorscheme.colors.base0F}";
+          };
+
+          base16_default_colors = {
+            # These colors are default base16 colors:
+            base00 = "#181818";
+            base01 = "#282828";
+            base02 = "#383838";
+            base03 = "#585858";
+            base04 = "#b8b8b8";
+            base05 = "#d8d8d8";
+            base06 = "#e8e8e8";
+            base07 = "#f8f8f8";
+            base08 = "#ff0000";
+            base09 = "#ffa500";
+            base0A = "#ffff00";
+            base0B = "#008000";
+            base0C = "#00ffff";
+            base0D = "#0000ff";
+            base0E = "#ff00ff";
+            base0F = "#a52a2a";
+          };
+
+          # Default base16 color scheme reference:
+          base16_reference = {
+            base00 = "Background (Darkest)";
+            base01 = "Lighter Background (Status bars)";
+            base02 = "Selection Background";
+            base03 = "Comments, Invisibles, Line Highlighting";
+            base04 = "Dark Foreground (Status bars)";
+            base05 = "Default Foreground, Caret, Delimiters";
+            base06 = "Light Foreground";
+            base07 = "Lightest Foreground (Highlights)";
+            base08 = "Red (Errors, Important)";
+            base09 = "Orange (Warnings, Escape Sequences)";
+            base0A = "Yellow (Classes, Constants)";
+            base0B = "Green (Strings, Success)";
+            base0C = "Cyan (Special Cases, Regexp)";
+            base0D = "Blue (Functions, Methods)";
+            base0E = "Magenta (Keywords, Storage)";
+            base0F = "Brown (Deprecated, Special)";
+          };
 
           # AppleHighlightColor example run in terminal:
           # defaults read -g AppleHighlightColor

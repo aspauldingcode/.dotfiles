@@ -109,6 +109,7 @@
     (pkgs.callPackage ./../customDerivations/mousecape.nix { })
     (pkgs.callPackage ./../customDerivations/inputsourceselector.nix { })
     # (pkgs.callPackage ./../customDerivations/okular.nix { })
+    # (pkgs.callPackage ./../customDerivations/ammonia.nix { })
     (pkgs.callPackage ./../customDerivations/recording-indicator-utility.nix { })
     git
     llvmPackages_19.clang-unwrapped
