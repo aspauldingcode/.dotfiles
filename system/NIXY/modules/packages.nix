@@ -46,6 +46,7 @@
     # nightlight
     cmake
     blueutil
+    gh
     cava
     git
     tree

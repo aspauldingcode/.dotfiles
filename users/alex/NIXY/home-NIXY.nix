@@ -64,9 +64,6 @@
     ssh = {
       enable = true;
       addKeysToAgent = "yes";
-      extraConfig = ''
-        AddKeysToAgent yes
-      '';
 
       matchBlocks = {
         "github.com" = {
