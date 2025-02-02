@@ -66,7 +66,6 @@
       addKeysToAgent = "yes";
       extraConfig = ''
         AddKeysToAgent yes
-        UseKeychain yes
       '';
 
       matchBlocks = {
