@@ -11,7 +11,7 @@ let
       throw "Homebrew Unsupported architecture: ${systemType}";
   jq = "${pkgs.jq}/bin/jq";
   yabai = "${pkgs.yabai}/bin/yabai";
-  sketchybar = "${pkgs.sketchybar}/bin/sketchybar";
+  sketchybar = "${pkgs.unstable.sketchybar}/bin/sketchybar";
   borders = "";
   skhd = "${pkgs.skhd}/bin/skhd";
   inherit (config.colorScheme) palette;

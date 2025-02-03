@@ -288,25 +288,27 @@
         notify = {
           enable = true;
           package = pkgs.vimPlugins.nvim-notify;
-          # backgroundColour = "";
-          extraOptions = { };
-          fps = null;
-          level = null;
-          maxHeight = 20;
-          maxWidth = 80;
-          minimumWidth = 20;
-          onClose = null;
-          onOpen = null;
-          render = "wrapped-compact"; # Type: null or one of “default”, “minimal”, “simple”, “compact”, “wrapped-compact” or raw lua code
-          stages = null;
-          timeout = 3500;
-          topDown = true;
-          icons = {
-            debug = "";
-            error = "";
-            info = "";
-            trace = "✎";
-            warn = "";
+          settings = {
+            # backgroundColour = "";
+            extraOptions = { };
+            fps = null;
+            level = null;
+            max_height = 20;
+            max_width = 80;
+            minimum_width = 20;
+            on_close = null;
+            on_open = null;
+            render = "wrapped-compact"; # Type: null or one of “default”, “minimal”, “simple”, “compact”, “wrapped-compact” or raw lua code
+            stages = null;
+            timeout = 3500;
+            top_down = true;
+            icons = {
+              debug = "";
+              error = "";
+              info = "";
+              trace = "✎";
+              warn = "";
+            };
           };
         };
         gitsigns.enable = true;
@@ -617,7 +619,6 @@
             };
           };
         };
-
         web-devicons.enable = true;
         lsp-lines.enable = false; # damn annoyying
         lspkind.enable = true;

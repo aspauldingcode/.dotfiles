@@ -10,7 +10,7 @@ let
     else
       throw "Homebrew Unsupported architecture: ${systemType}";
   yabai = "${pkgs.yabai}/bin/yabai";
-  sketchybar = "${pkgs.sketchybar}/bin/sketchybar";
+  sketchybar = "${pkgs.unstable.sketchybar}/bin/sketchybar";
   borders = "";
   i3-msg = "${homebrewPath}/i3-msg";
   alacritty = "${pkgs.alacritty}/bin/alacritty";

@@ -24,7 +24,7 @@ let
   source_sketchybar = pkgs.writeShellScript "source_sketchybar" ''
     #!/bin/sh
     # SKETCHYBAR_EXEC=/Users/alex/sketchybar/bin/sketchybar
-    SKETCHYBAR_EXEC="${pkgs.sketchybar}/bin/sketchybar"
+    SKETCHYBAR_EXEC="${pkgs.unstable.sketchybar}/bin/sketchybar"
     export SKETCHYBAR_EXEC
   '';
   brightness = pkgs.writeShellScript "brightness" ''
@@ -82,7 +82,6 @@ let
     jq="${pkgs.jq}/bin/jq"
     osascript="/usr/bin/osascript"
     gcal="${pkgs.gcal}/bin/gcal"
-    toggle_sketchybar="${pkgs.sketchybar}/bin/toggle-sketchybar"
     nightlight="''${homebrewPath}/nightlight"
     desktoppr="/usr/local/bin/desktoppr"
     wallpaper="/Users/Shared/Wallpaper/wallpaper-nix-colors.png"
