@@ -15,7 +15,7 @@ if [ -d "$root_dir/.git" ]; then
     current_branch=$(git rev-parse --abbrev-ref HEAD)
     
     # Print results
-    printf "%-80s -> %s lines\n" "$(basename "$root_dir") ($current_branch)" "$lines_in_repo"
+    printf "%s (%s) -> %s lines\n" "$(basename "$root_dir")" "$current_branch" "$lines_in_repo"
     total_lines=$lines_in_repo
 
     # Update README.md with new line count

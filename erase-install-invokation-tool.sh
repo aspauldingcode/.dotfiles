@@ -30,6 +30,7 @@ show_usage() {
     echo "  --help               Show this help message"
     echo ""
     echo "Example: sudo $0 --reinstall"
+    echo "Example: sudo $0 --version=14.4.1 --erase"
 }
 
 # Show usage if no arguments provided
