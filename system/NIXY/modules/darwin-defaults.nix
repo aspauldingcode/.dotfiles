@@ -271,7 +271,7 @@ in
         };
         "com.theron.UnnaturalScrollWheels" = {
           AlternateDetectionMethod = 0;
-          DisableMouseAccel = 0;
+          DisableMouseAccel = 1;
           DisableScrollAccel = 1;
           FirstLaunch = 0;
           InvertHorizonalScroll = 0;

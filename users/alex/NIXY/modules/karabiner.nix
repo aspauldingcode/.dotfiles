@@ -604,36 +604,6 @@
                     ];
                   }
                   {
-                    description = "Replace Alt+Shift+Q with Command+W in Alacritty and com.apple.SystemProfiler";
-                    manipulators = [
-                      {
-                        type = "basic";
-                        from = {
-                          key_code = "q";
-                          modifiers.mandatory = [
-                            "left_option"
-                            "left_shift"
-                          ];
-                        };
-                        to = [
-                          {
-                            key_code = "w";
-                            modifiers = [ "left_command" ];
-                          }
-                        ];
-                        conditions = [
-                          {
-                            type = "frontmost_application_if";
-                            bundle_identifiers = [
-                              "^org\\.alacritty$"
-                              "^com\\.apple\\.SystemProfiler$"
-                            ];
-                          }
-                        ];
-                      }
-                    ];
-                  }
-                  {
                     description = "Swap Command+C/X and Control+C/X in Alacritty";
                     manipulators = [
                       {

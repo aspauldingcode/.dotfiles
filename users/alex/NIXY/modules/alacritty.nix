@@ -20,7 +20,7 @@ in
         blur = false; # use jankyborders with blur instead
         class.instance = "Alacritty";
         class.general = "Alacritty";
-        decorations = "None"; # "Full" | "None" | "Transparent" | "Buttonless"
+        decorations = "Transparent"; # "Full" | "None" | "Transparent" | "Buttonless"
         option_as_alt = "Both";
       };
 

@@ -81,9 +81,9 @@
       "krita"
       "kdenlive"
       "hiddenbar"
+      "heroic"
       "obs"
       "obs-websocket"
-      "cursor" # FIXME: I've created PR for this to be in nixpkgs. https://github.com/NixOS/nixpkgs/pull/371260
       "azure-data-studio"
       "orbstack"
       #"libreoffice" # FIXME: breaks sometimes? wth

@@ -19,6 +19,7 @@
     htop
     prismlauncher
     kitty
+    ghidra
     nixfmt-rfc-style
     luaformatter
     alt-tab-macos
@@ -93,6 +94,7 @@
     jq
     # gittyup
     libusb1
+    beeper-bridge-manager
     darling-dmg
     lolcat
     tree-sitter

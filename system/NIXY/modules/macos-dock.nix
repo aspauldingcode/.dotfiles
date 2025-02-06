@@ -3,7 +3,8 @@
 {
   system.defaults.dock.persistent-apps = [
     "/System/Applications/Launchpad.app"
-    "/Applications/Nix\ Apps/Spotify.app"
+    # "/Applications/Nix\ Apps/Spotify.app"
+    "${config.programs.spicetify.spicedSpotify}/Applications/Spotify.app"
     "${pkgs.obsidian}/Applications/Obsidian.app"
     "${pkgs.firefox-bin}/Applications/Firefox.app"
     "${pkgs.brave}/Applications/Brave Browser.app"
