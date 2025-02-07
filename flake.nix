@@ -42,11 +42,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    agenix = {
-      url = "github:ryantm/agenix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     mac-app-util = {
       url = "github:hraban/mac-app-util";
     };
@@ -107,6 +102,12 @@
     frida-nix = {
       url = "github:itstarsun/frida-nix";
     };
+
+    # Add sops-nix input
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -124,7 +125,6 @@
       nur,
       nix-std,
       nixtheplanet,
-      agenix,
       mac-app-util,
       nixpkgs-firefox-darwin,
       spicetify-nix,
@@ -137,9 +137,9 @@
       homebrew-smudge,
       homebrew-cask,
       homebrew-gcenx,
-      # homebrew-kde,
       nix-rosetta-builder,
       frida-nix,
+      sops-nix,
     }@inputs:
     let
       user = "alex";
@@ -220,7 +220,7 @@
                 backupFileExtension = "backup";
               };
             }
-            agenix.nixosModules.default
+            sops-nix.nixosModules.sops
           ];
         };
         NIXEDUP = nixpkgs.lib.nixosSystem {
@@ -228,7 +228,7 @@
           specialArgs = commonSpecialArgs;
           modules = [
             ./system/NIXEDUP/configuration-NIXEDUP.nix
-            agenix.nixosModules.default
+            sops-nix.nixosModules.sops
           ];
         };
         NIXY2 = nixpkgs.lib.nixosSystem {
@@ -262,7 +262,7 @@
                 backupFileExtension = "backup";
               };
             }
-            agenix.nixosModules.default
+            sops-nix.nixosModules.sops
           ];
         };
       };
@@ -299,13 +299,11 @@
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                # Optionally, use home-manager.extraSpecialArgs to pass
-                # arguments to home.nix
                 extraSpecialArgs = commonExtraSpecialArgs;
                 backupFileExtension = "backup";
                 sharedModules = [
                   mac-app-util.homeManagerModules.default
-                  # spicetify-nix.homeManagerModules.default
+                  sops-nix.homeManagerModules.sops
                 ];
                 users.${user} = {
                   imports = [
@@ -318,7 +316,7 @@
                 };
               };
             }
-            agenix.darwinModules.default
+            sops-nix.darwinModules.sops
             nix-homebrew.darwinModules.nix-homebrew
 
             # An existing Linux builder is needed to initially bootstrap `nix-rosetta-builder`.
@@ -337,5 +335,51 @@
       nixosConfigurations = nixosConfigurations;
       darwinConfigurations = darwinConfigurations;
       # FIXME: add nixvim here so I can build from any device without installing the dotfiles.
+      devShells =
+        nixpkgs.lib.genAttrs
+          [
+            "x86_64-linux"
+            "aarch64-linux"
+            "x86_64-darwin"
+            "aarch64-darwin"
+          ]
+          (
+            system:
+            let
+              pkgs = nixpkgs.legacyPackages.${system};
+              defaultShell = pkgs.mkShell {
+                buildInputs = with pkgs; [
+                  age
+                  ssh-to-age
+                  sops
+                  bat
+                ];
+                shellHook = ''
+                  echo -e "\033[0;34mSOPS setup tools available:\033[0m age-keygen, ssh-to-age, sops"
+                  echo ""
+                  echo -e "\033[0;34mTo check secrets:\033[0m"
+                  echo -e "  Without sudo: \033[0;32mbat /run/secrets/test_secret\033[0m"
+                  echo -e "  With sudo:    \033[0;32msudo bat /run/secrets/test_secret\033[0m"
+                  echo ""
+                  echo -e "\033[0;34mTo view all available secrets:\033[0m"
+                  echo -e "  \033[0;32msudo ls -la /run/secrets/\033[0m"
+                  echo ""
+                  echo -e "\033[0;34mTo edit secrets:\033[0m"
+                  echo -e "\n     \033[0;32msops edit secrets/nixy/secrets.yaml\033[0m"
+                  echo ""
+                  if [ -f ./scripts/setup-sops.sh ]; then
+                    chmod +x ./scripts/setup-sops.sh
+                    ./scripts/setup-sops.sh && exit 0
+                  else
+                    echo "Warning: setup-sops.sh not found"
+                    exit 1
+                  fi
+                '';
+              };
+            in
+            {
+              default = defaultShell;
+            }
+          );
     };
 }

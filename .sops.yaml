@@ -1,0 +1,45 @@
+keys:
+  # Users (keys used for editing secrets)
+  - &admin_alex age1r6x8c0nnnwx8gj6c4c6jcmg48e8j4k88tz20w90dhgw023fysg4sccagxe
+
+  # Hosts (keys used for decryption on each system)
+  - &host_nixstation64 AGE_OR_GPG_KEY_FOR_NIXSTATION64
+  - &host_nixedup AGE_OR_GPG_KEY_FOR_NIXEDUP
+  - &host_nixy2 AGE_OR_GPG_KEY_FOR_NIXY2
+  - &host_nixy age1zuw98x8tqhfw6k30enjnl2gv69t66g83s3fe5t93a7lrftz2vp7srnyrr6
+
+creation_rules:
+  # Global rule for all files
+  - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+    - age:
+      - *admin_alex
+      - *host_nixstation64
+      - *host_nixedup
+      - *host_nixy2
+      - *host_nixy
+
+  # Per-host rules (optional, for host-specific secrets)
+  - path_regex: secrets/nixstation64/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+    - age:
+      - *admin_alex
+      - *host_nixstation64
+
+  - path_regex: secrets/nixedup/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+    - age:
+      - *admin_alex
+      - *host_nixedup
+
+  - path_regex: secrets/nixy2/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+    - age:
+      - *admin_alex
+      - *host_nixy2
+
+  - path_regex: secrets/nixy/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+    - age:
+      - *admin_alex
+      - *host_nixy 

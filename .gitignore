@@ -31,3 +31,14 @@ fifo
 
 # ignore pkg installers
 *.pkg
+
+# SOPS-related files to ignore
+.sops.yaml.bak
+*.age
+.config/sops/age/keys.txt
+/root/.config/sops/age/keys.txt
+/var/lib/sops-nix/key.txt
+
+# SSH private keys
+/etc/ssh/ssh_host_ed25519_key
+~/.ssh/id_ed25519

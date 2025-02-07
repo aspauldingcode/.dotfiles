@@ -119,7 +119,6 @@
     llvmPackages_19.llvm
     llvmPackages_19.bintools
     openssh
-    inputs.agenix.packages.${pkgs.system}.agenix # Add agenix CLI tool
   ];
 
   nixpkgs.config = {

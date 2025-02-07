@@ -53,6 +53,7 @@ in
     ffmpeg
     tigervnc
     gcal
+    sops
     # wireshark
     # nmapsi4
     #ruby

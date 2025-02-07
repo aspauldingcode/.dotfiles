@@ -137,11 +137,11 @@
             };
             javascript = {
               formatter = [ "prettier" ];
-              linter = [ "eslint" ];
+              # linter = [ "eslint" ];
             };
             typescript = {
               formatter = [ "prettier" ];
-              linter = [ "eslint" ];
+              # linter = [ "eslint" ];
             };
             css = {
               formatter = [ "prettier" ];
@@ -210,7 +210,7 @@
             dmd = pkgs.unstable.dmd;
             dotnet_format = pkgs.unstable.dotnet-runtime;
             dprint = pkgs.unstable.dprint;
-            eslint = pkgs.unstable.eslint;
+            # eslint = pkgs.unstable.eslint;
             eslint_d = pkgs.unstable.nodePackages.eslint_d;
             fish = pkgs.unstable.fish;
             fish_indent = pkgs.unstable.fish;
@@ -403,7 +403,7 @@
             };
             eslint = {
               enable = false; # Disable eslint language server
-              package = pkgs.unstable.nodePackages.vscode-langservers-extracted;
+              # package = pkgs.unstable.nodePackages.vscode-langservers-extracted;
             };
             fsautocomplete = {
               enable = false;
@@ -1077,6 +1077,68 @@
             ignore_filetypes = { };
             ignore_buftypes = {
               nofile = true;
+            };
+          };
+        };
+
+        # cursor - like ai for neovim with Avante.nvim
+        avante = {
+          enable = true;
+          autoLoad = true;
+          package = pkgs.vimPlugins.avante-nvim;
+
+          settings = {
+            provider = "openai";
+            auto_suggestions_frequency = "copilot";
+
+            openai = {
+              endpoint = "https://api.openai.com/v1";
+              model = "gpt-4o";
+              timeout = 30000;
+              temperature = 0;
+              max_tokens = 4096;
+            };
+
+            diff = {
+              autojump = true;
+              debug = false;
+              list_opener = "copen";
+            };
+
+            highlights = {
+              diff = {
+                current = "DiffText";
+                incoming = "DiffAdd";
+              };
+              signs = {
+                AvanteInputPromptSign = "Question";
+              };
+            };
+
+            hints.enabled = true;
+
+            mappings = {
+              diff = {
+                next = "]x";
+                prev = "[x";
+                ours = "co";
+                theirs = "ct";
+                both = "cb";
+                none = "c0";
+              };
+              jump = {
+                next = "]]";
+                prev = "[[";
+              };
+            };
+
+            windows = {
+              width = 30;
+              wrap = true;
+              sidebar_header = {
+                rounded = true;
+                align = "center";
+              };
             };
           };
         };
