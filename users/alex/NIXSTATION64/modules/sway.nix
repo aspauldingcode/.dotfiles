@@ -4,10 +4,16 @@
   lib,
   ...
 }:
+
+let 
+  pgrep = "${pkgs.procps}/bin/pgrep";
+  pkill = "${pkgs.coreutils}/bin/pkill";
+in
 {
   imports = [
     ./waybar.nix
   ];
+
 
   wayland.windowManager.sway = {
     enable = true;
@@ -15,7 +21,7 @@
     checkConfig = lib.mkForce false;
     config = rec {
       bars = [
-        { command = "if pgrep -x waybar; then pkill waybar; ${pkgs.waybar}/bin/waybar; fi"; }
+        { command = "if ${pgrep} -x waybar; then ${pkill} waybar; ${pkgs.waybar}/bin/waybar; fi"; }
       ];
       modifier = "Mod4";
       left = "h";

@@ -13,6 +13,8 @@ in
   programs.alacritty = {
     enable = true;
     settings = {
+      general.live_config_reload = true;
+
       window = {
         padding.x = 0;
         # padding.y = 10; # pretty lavat
@@ -146,7 +148,6 @@ in
 
         blink_interval = 750;
       };
-      live_config_reload = true;
 
       selection = {
         save_to_clipboard = true; # copy on selection

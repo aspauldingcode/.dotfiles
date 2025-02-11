@@ -46,8 +46,8 @@
     libsForQt5.qt5.qtgraphicaleffects
     libsForQt5.dolphin
     libsForQt5.qt5ct
-    gnome.sushi
-    gnome.nautilus
+    sushi
+    nautilus
     # libsForQt5.breeze-qt5
     # libsForQt5.breeze-gtk
     # libsForQt5.breeze-icons
@@ -72,7 +72,7 @@
     ranger
     wl-clipboard
     neofetch
-    ueberzugpp # replacement for depricated inline terminal image previewer
+    # uef rzugpp # replacement for depricated inline terminal image previewer
     yazi
     grim
     krita
@@ -92,6 +92,7 @@
     lazygit
     wget
     git
+    nixfmt-rfc-style
     pstree
     zoxide
     dnsmasq
@@ -118,6 +119,64 @@
     virt-manager
     uxplay
 
-    (pkgs.callPackage ./cursor.nix { }) # FIXME: broken atm.
+    # (pkgs.symlinkJoin {
+    #   name = "beeper-wayland";
+    #   paths = [ pkgs.beeper ];
+    #   buildInputs = [ pkgs.makeWrapper pkgs.wmctrl ];
+    #   postBuild = ''
+    #     wrapProgram $out/bin/beeper \
+    #       --set ELECTRON_ARGS "--enable-features=UseOzonePlatform --platform=wayland"
+        
+    #     # Remove window buttons using wmctrl
+    #     postProcess () {
+    #       wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz
+    #       wmctrl -r :ACTIVE: -e 0,0,0,0,0
+    #     }
+        
+    #     # Directly run the application and modify window post-launch
+    #     $out/bin/beeper &
+    #     postProcess
+    #   '';
+    # })
+    
+    # (pkgs.symlinkJoin {
+    #   name = "vscode-wayland";
+    #   paths = [ pkgs.vscode ];
+    #   buildInputs = [ pkgs.makeWrapper pkgs.wmctrl ];
+    #   postBuild = ''
+    #     wrapProgram $out/bin/code \
+    #       --set ELECTRON_ARGS "--enable-features=UseOzonePlatform --platform=wayland"
+        
+    #     # Remove window buttons using wmctrl
+    #     postProcess () {
+    #       wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz
+    #       wmctrl -r :ACTIVE: -e 0,0,0,0,0
+    #     }
+        
+    #     # Directly run the application and modify window post-launch
+    #     $out/bin/code &
+    #     postProcess
+    #   '';
+    # })
+    
+    # (pkgs.symlinkJoin {
+    #   name = "code-cursor-wayland";
+    #   paths = [ pkgs.code-cursor ];
+    #   buildInputs = [ pkgs.makeWrapper pkgs.wmctrl ];
+    #   postBuild = ''
+    #     wrapProgram $out/bin/code-cursor \
+    #       --set ELECTRON_ARGS "--enable-features=UseOzonePlatform --platform=wayland"
+        
+    #     # Remove window buttons using wmctrl
+    #     postProcess () {
+    #       wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz
+    #       wmctrl -r :ACTIVE: -e 0,0,0,0,0
+    #     }
+        
+    #     # Directly run the application and modify window post-launch
+    #     $out/bin/code-cursor &
+    #     postProcess
+    #   '';
+    # })
   ];
 }

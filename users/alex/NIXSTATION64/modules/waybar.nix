@@ -67,7 +67,6 @@ let
     ];
 
     modules-right = [
-      "custom/unread-mail"
       "tray"
       "network"
       "battery"
@@ -87,7 +86,7 @@ let
     "custom/datetime" = {
       interval = 60;
       return-type = "json";
-      format = " {}";
+      format = " {}";
       exec = jsonOutput "menu" {
         text = "$DATETIME"; # date "+%a, %b %d  %I:%M %p
         pre = ''
@@ -136,10 +135,30 @@ let
     };
 
     "custom/brightness" = {
-      format = " {}%";
-      exec = "${wl-gammarelay-rs} watch {bp}";
-      on-scroll-up = "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d +0.02 && busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{print $2}' > /tmp/brightness_state";
-      on-scroll-down = "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d -0.02 && busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{print $2}' > /tmp/brightness_state";
+      format = " {}%";
+      interval = 1;
+      return-type = "json";
+      exec = jsonOutput "brightness" {
+        pre = ''
+          current_brightness=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{printf "%.0f\n", $2 * 100}')
+        '';
+        text = "$current_brightness";
+      };
+      on-scroll-up = ''
+        busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d +0.02
+        busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{printf "%.0f\n", $2 * 100}' > /tmp/brightness_state
+      '';
+      on-scroll-down = ''
+        busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d -0.02
+        busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{
+          if ($2 < 0.1) {
+            system("busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Brightness d 0.1")
+            print "10" > "/tmp/brightness_state"
+          } else {
+            printf "%.0f\n", $2 * 100 > "/tmp/brightness_state"
+          }
+        }'
+      '';
       on-click = "toggle-brightness";
     };
     "custom/nightlight" = {
@@ -154,86 +173,30 @@ let
             status="on"
           fi
           current_temp_percent=$(( 100 - ( (current_temp - 3500) * 100 / (6500 - 3500) ) ))
+          # Ensure percentage stays within 0-100 range
+          if [ "$current_temp_percent" -lt 0 ]; then
+            current_temp_percent=0
+          elif [ "$current_temp_percent" -gt 100 ]; then
+            current_temp_percent=100
+          fi
           current_temp="''${current_temp}K"
         '';
-        text = " $current_temp_percent%";
+        text = " $current_temp_percent%";
         tooltip = "Nightlight Temperature: $current_temp ($status)";
       };
       on-scroll-up = ''
-        statefile="/tmp/temperature_state"
-        max_temp=6500
-        min_temp=3500
-        decrement=400
-        sleep 0.5
-
-        current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
-        new_temp=$((current_temp - decrement))
-        if [ "$new_temp" -lt $min_temp ]; then
-            new_temp=$min_temp
+        current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}')
+        current_percent=$(( 100 - ( (current_temp - 3500) * 100 / (6500 - 3500) ) ))
+        if [ "$current_percent" -lt 100 ]; then
+          busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n -400
         fi
-        if [ "$current_temp" -gt $min_temp ]; then
-            step=20
-            if [ $((current_temp - new_temp)) -lt $step ]; then
-                step=$((current_temp - new_temp))
-            fi
-            for i in $(seq 1 $((decrement / step))); do
-                busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n -$step
-                current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
-                if [ "$current_temp" -le $new_temp ]; then
-                    break
-                fi
-            done
-        fi
-
-        current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
-
-        if [ "$current_temp" -lt $min_temp ]; then
-            current_temp=$min_temp
-            busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q $min_temp
-        elif [ "$current_temp" -gt $max_temp ]; then
-            current_temp=$max_temp
-            busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q $max_temp
-        fi
-
-        echo "$current_temp" > $statefile
       '';
       on-scroll-down = ''
-        statefile="/tmp/temperature_state"
-        max_temp=6500
-        min_temp=3500
-        increment=400
-        sleep 0.5
-
-        current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
-        new_temp=$((current_temp + increment))
-        if [ "$new_temp" -gt $max_temp ]; then
-            new_temp=$max_temp
+        current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}')
+        current_percent=$(( 100 - ( (current_temp - 3500) * 100 / (6500 - 3500) ) ))
+        if [ "$current_percent" -gt 0 ]; then
+          busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n +400
         fi
-        if [ "$current_temp" -lt $max_temp ]; then
-            step=20
-            if [ $((new_temp - current_temp)) -lt $step ]; then
-                step=$((new_temp - current_temp))
-            fi
-            for i in $(seq 1 $((increment / step))); do
-                busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n +$step
-                current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
-                if [ "$current_temp" -ge $new_temp ]; then
-                    break
-                fi
-            done
-        fi
-
-        current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
-
-        if [ "$current_temp" -lt $min_temp ]; then
-            current_temp=$min_temp
-            busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q $min_temp
-        elif [ "$current_temp" -gt $max_temp ]; then
-            current_temp=$max_temp
-            busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q $max_temp
-        fi
-
-        echo "$current_temp" > $statefile
       '';
       on-click = "toggle-nightlight";
     };
@@ -410,32 +373,6 @@ let
     "custom/hostname" = {
       exec = "echo $USER@$HOST";
       on-click = "${systemctl} --user restart waybar";
-    };
-
-    "custom/unread-mail" = {
-      interval = 5;
-      return-type = "json";
-      exec = jsonOutput "unread-mail" {
-        pre = ''
-          count=$(${find} ~/Mail/*/Inbox/new -type f | ${wc} -l)
-          if ${pgrep} mbsync &>/dev/null; then
-          status="syncing"
-          else if [ "$count" == "0" ]; then
-          status="read"
-          else
-          status="unread"
-          fi
-          fi
-        '';
-        text = "$count";
-        alt = "$status";
-      };
-      format = "{icon}  ({})";
-      format-icons = {
-        "read" = "󰇯";
-        "unread" = "󰇮";
-        "syncing" = "󰁪";
-      };
     };
 
     #"custom/gpg-agent" = {
@@ -705,8 +642,7 @@ in
         }
 
         #custom-datetime
-        #spotify,
-        .mail
+        #spotify
         {
           background-color: #${colors.base02};
           border: 0px solid #${colors.base05};

@@ -97,6 +97,7 @@ let
       ];
     };
     window.autoDetectColorScheme = true;
+    "window.menuBarVisibility" = "classic";
     "workbench.colorTheme" = "Visual Studio Light";
     "workbench.preferredDarkColorTheme" = "Visual Studio Dark";
     "workbench.preferredHighContrastColorTheme" = "Default High Contrast";
@@ -232,6 +233,7 @@ let
       ];
     };
     window.autoDetectColorScheme = true;
+    "window.menuBarVisibility" = "classic";
     "workbench.colorTheme" = "Visual Studio Light";
     "workbench.preferredDarkColorTheme" = "Visual Studio Dark";
     "workbench.preferredHighContrastColorTheme" = "Default High Contrast";

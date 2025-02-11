@@ -70,14 +70,13 @@
       #fix-wm
       (pkgs.writeShellScriptBin "fix-wm" ''
         sway reload
-        # Remove the initial states for gaps if the file exists
+
+        # Remove state files if they exist
         [ -f /tmp/gaps_state ] && rm /tmp/gaps_state
-        # Remove the waybar state file if it exists
         [ -f /tmp/waybar_state ] && rm /tmp/waybar_state
         toggle-gaps off && toggle-gaps on
-        # systemctl --user restart pipewire.service
-        # systemctl --user restart pipewire-pulse.service
-        # way-displays --reload
+
+        # Reload displays
         way-displays -g > /dev/null 2>&1
         toggle-nightlight on
         toggle-brightness on
@@ -101,14 +100,19 @@
         #!/bin/bash
 
         wine_version=$(wine --version | sed 's/^wine-//')
+
+        if [ ! -f ~/.wine/system.reg ]; then
+          exit 0
+        fi
+
         system_reg_content=$(head -n 20 ~/.wine/system.reg)
 
         if [[ $system_reg_content == *"#arch=win64"* ]]; then
-        echo "Wine wine-$wine_version win64"
+          echo "Wine wine-$wine_version win64"
         elif [[ $system_reg_content == *"#arch=win32"* ]]; then
-        echo "Wine wine-$wine_version win32"
+          echo "Wine wine-$wine_version win32"
         else
-        echo "Unknown-Architecture"
+          echo "Unknown-Architecture"
         fi
       '')
 
@@ -116,49 +120,45 @@
       (pkgs.writeShellScriptBin "toggle-nightlight" ''
         #!/bin/sh
 
-        statefile="/tmp/temperature_state"
-        statefile_temp=$(tr -d '\0' < $statefile | head -n 1)
-        current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)
-
-        turn_on() {
-            # Turn on, by decreasing the temperature to the one recorded in statefile
-            while [ "$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)" -gt "$statefile_temp" ]; do
-                busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n -50 > /dev/null 2>&1
-            done
-            echo "$statefile_temp" > $statefile
-            echo "Nightlight is now on."
-        }
-
-        turn_off() {
-            # Turn off by setting to default temp 6500 (maximum)
-            while [ "$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature | awk '{print $2}' | tr -d '\0' 2>/dev/null)" -lt 6500 ]; do
-                busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n +50 > /dev/null 2>&1
-            done
-            echo "Nightlight is now off."
-        }
-
-        if [ "$(wc -l < $statefile)" -gt 1 ]; then
-            echo "$statefile_temp" > $statefile
+        # Ensure only one instance is running
+        instance_count=$(pgrep -f wl-gammarelay-rs | wc -l)
+        if [ "$instance_count" -gt 1 ]; then
+          echo "Multiple instances detected, cleaning up..."
+          systemctl --user stop wl-gammarelay
+          killall wl-gammarelay-rs
+          systemctl --user start wl-gammarelay
+          sleep 1
         fi
 
-        if [ "$1" = "on" ]; then
-            if [ "$current_temp" -lt 6500 ]; then
-                echo "Nightlight is already on."
-            else
-                turn_on
-            fi
-        elif [ "$1" = "off" ]; then
-            if [ "$current_temp" -eq 6500 ]; then
-                echo "Nightlight is already off."
-            else
-                turn_off
-            fi
+        # Direct temperature check
+        current_temp=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Temperature 2>/dev/null | awk '{print $2}' || echo "error")
+
+        if [ "$current_temp" = "error" ] || [ -z "$current_temp" ]; then
+          echo "Error: Cannot communicate with wl-gammarelay service"
+          echo "Debug info:"
+          busctl --user list | grep gammarelay
+          busctl --user introspect rs.wl-gammarelay / rs.wl.gammarelay
+          exit 1
+        fi
+
+        toggle_nightlight() {
+          if [ "$current_temp" -eq 6500 ]; then
+            busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q 3500
+            echo "Nightlight turned on (3500K)"
+          else
+            busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q 6500
+            echo "Nightlight turned off (6500K)"
+          fi
+        }
+
+        if [ "$1" = "on" ] && [ "$current_temp" -eq 6500 ]; then
+          toggle_nightlight
+        elif [ "$1" = "off" ] && [ "$current_temp" -ne 6500 ]; then
+          toggle_nightlight
+        elif [ -z "$1" ]; then
+          toggle_nightlight
         else
-            if [ "$current_temp" -lt 6500 ]; then
-                turn_off
-            else
-                turn_on
-            fi
+          echo "Nightlight already in desired state"
         fi
       '')
 
@@ -166,56 +166,62 @@
       (pkgs.writeShellScriptBin "toggle-brightness" ''
         #!/bin/sh
 
-        statefile="/tmp/brightness_state"
-        statefile_brightness=$(tr -d '\0' < $statefile | head -n 1)
-        current_brightness=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{print $2}' | tr -d '\0' 2>/dev/null)
+        BRIGHTNESS_STATE_FILE="/tmp/brightness_state"
+        [ ! -f "$BRIGHTNESS_STATE_FILE" ] && echo "100" > "$BRIGHTNESS_STATE_FILE"
 
-        turn_on() {
-            # Turn on, by decreasing the brightness to the one recorded in statefile
-            while [ $(echo "$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{print $2}' | tr -d '\0' 2>/dev/null) > $statefile_brightness" | bc -l) -eq 1 ]; do
-                busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d -0.02 > /dev/null 2>&1
-            done
-            echo "$statefile_brightness" > $statefile
-            echo "Brightness is now on."
-        }
-
-        turn_off() {
-            # Turn off by setting to maximum brightness (1.0)
-            while [ $(echo "$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness | awk '{print $2}' | tr -d '\0' 2>/dev/null) < 1.0" | bc -l) -eq 1 ]; do
-                busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d +0.02 > /dev/null 2>&1
-            done
-            echo "Brightness is now off."
-        }
-
-        if [ "$(wc -l < $statefile)" -gt 1 ]; then
-            echo "$statefile_brightness" > $statefile
+        # Ensure only one instance is running
+        instance_count=$(pgrep -f wl-gammarelay-rs | wc -l)
+        if [ "$instance_count" -gt 1 ]; then
+          echo "Multiple instances detected, cleaning up..."
+          systemctl --user stop wl-gammarelay
+          killall wl-gammarelay-rs
+          systemctl --user start wl-gammarelay
+          sleep 1
         fi
 
-        case "$1" in
-            on)
-                if [ $(echo "$current_brightness < 1.0" | bc -l) -eq 1 ]; then
-                    echo "Brightness is already on."
-                else
-                    turn_on
-                fi
-                ;;
-            off)
-                if [ $(echo "$current_brightness >= 1.0" | bc -l) -eq 1 ]; then
-                    echo "Brightness is already off."
-                else
-                    echo "$current_brightness" > $statefile
-                    turn_off
-                fi
-                ;;
-            *)
-                if [ $(echo "$current_brightness >= 1.0" | bc -l) -eq 1 ]; then
-                    turn_on
-                else
-                    echo "$current_brightness" > $statefile
-                    turn_off
-                fi
-                ;;
-        esac
+        # Direct brightness check
+        current_brightness=$(busctl --user get-property rs.wl-gammarelay / rs.wl.gammarelay Brightness 2>/dev/null | awk '{print $2}' || echo "error")
+
+        if [ "$current_brightness" = "error" ] || [ -z "$current_brightness" ]; then
+          echo "Error: Cannot communicate with wl-gammarelay service"
+          echo "Debug info:"
+          busctl --user list | grep gammarelay
+          busctl --user introspect rs.wl-gammarelay / rs.wl.gammarelay
+          exit 1
+        fi
+
+        # Convert to integer percentage for easier comparison
+        current_pct=$(echo "$current_brightness * 100" | bc | cut -d. -f1)
+        saved_pct=$(cat "$BRIGHTNESS_STATE_FILE")
+
+        # Ensure saved percentage is never below 10%
+        if [ "$saved_pct" -lt 10 ]; then
+          saved_pct=10
+          echo "$saved_pct" > "$BRIGHTNESS_STATE_FILE"
+        fi
+
+        toggle_brightness() {
+          # If current brightness is 100%, set to saved value (on -> off)
+          if [ "$current_pct" -ge 95 ]; then
+            brightness_decimal=$(echo "scale=2; $saved_pct / 100" | bc)
+            busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Brightness d "$brightness_decimal"
+            echo "Brightness set to $saved_pct%"
+          # If current brightness is not 100%, set to 100% (off -> on)  
+          else
+            busctl --user set-property rs.wl-gammarelay / rs.wl.gammarelay Brightness d 1.0
+            echo "Brightness set to 100%"
+          fi
+        }
+
+        if [ "$1" = "on" ] && [ "$current_pct" -lt 95 ]; then
+          toggle_brightness
+        elif [ "$1" = "off" ] && [ "$current_pct" -ge 95 ]; then
+          toggle_brightness
+        elif [ -z "$1" ]; then
+          toggle_brightness
+        else
+          echo "Brightness already in desired state"
+        fi
       '')
 
       # toggle-waybar
@@ -605,7 +611,7 @@
             exit 0
         else
             echo "Failed to connect to VNC server."
-            echo "To connect to your iPhone's VNC serfor i in {1..10}; do notify-send -i path/to/icon.png "Notification $i" "This is the content of notification $i."; donever, use the following details:"
+            echo "To connect to your iPhone's VNC server, use the following details:"
             echo "iPhone IP: $IPHONE_IP"
             echo "VNC Port: $VNC_PORT"
         fi

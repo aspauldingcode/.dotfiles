@@ -17,9 +17,9 @@
   ];
 
   boot = {
-    kernelPackages = pkgs.linuxPackages-rt_latest;
+    kernelPackages = pkgs.linuxPackages_6_13;
     loader = {
-      timeout = 0;
+      timeout = 3;
       systemd-boot.enable = true; # switch to dinit for mac/linux/bsd?
       efi.canTouchEfiVariables = true;
     };
@@ -59,15 +59,13 @@
         };
       };
     };
-    opengl = {
+    graphics = {
       enable = true;
-      driSupport = true; # This is already enabled by default
-      driSupport32Bit = true; # For 32 bit applications
       extraPackages = with pkgs; [
         rocmPackages.clr.icd
         amdvlk
       ];
-      extraPackages32 = with pkgs; [ driversi686Linux.amdvlk ];
+      # extraPackages32 = with pkgs; [ driversi686Linux.amdvlk ];
     };
     pulseaudio.enable = false;
   };
@@ -116,6 +114,33 @@
     serviceConfig.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
   };
 
+  systemd.user.services.waybar = {
+    description = "Waybar";
+    after = [
+      "network.target"
+      "graphical-session.target"
+    ];
+    partOf = [ "graphical-session.target" ];
+    wantedBy = [ "graphical-session.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.waybar}/bin/waybar";
+      ExecStartPre = "${pkgs.procps}/bin/pkill waybar || true";
+      Restart = "always";
+      Type = "simple";
+    };
+  };
+
+  systemd.user.services.wl-gammarelay = {
+    enable = true;
+    description = "Gamma adjustment service for Wayland";
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.wl-gammarelay-rs}/bin/wl-gammarelay-rs";
+      Restart = "always";
+    };
+  };
+
   i18n = {
     defaultLocale = "en_US.UTF-8";
     extraLocaleSettings = {
@@ -149,8 +174,8 @@
         };
         GTK = {
           application_prefer_dark_theme = true;
-          cursor_theme_name = "Bibata-Modern-Classic";
-          font_name = "JetBrains Mono";
+          cursor_theme_name = lib.mkForce "Bibata-Modern-Classic";
+          font_name = lib.mkForce "JetBrains Mono";
           icon_theme_name = "Adwaita";
           theme_name = "Adwaita";
         };
@@ -187,7 +212,7 @@
 
   environment.systemPackages = with pkgs; [
     jetbrains-mono
-    gnome.adwaita-icon-theme
+    adwaita-icon-theme
     bibata-cursors
   ];
 
@@ -196,12 +221,11 @@
       enable = true; # use Greetd along with ReGreet gtk themer.
       settings = {
         default_session = {
-          # command = "${pkgs.greetd.greetd}/bin/agreety --cmd sway";
-          command = "${pkgs.sway}/bin/sway --config /etc/greetd/sway-config";
+          command = "${pkgs.sway}/bin/sway --config ${./modules/greetd/sway-config}";
           user = "greeter";
         };
       };
-      vt = 1; # signed integer
+      vt = 1;
     };
 
     pipewire = {
@@ -254,29 +278,11 @@
       };
     };
 
-    displayManager = {
-      sddm = {
-        enable = false;
-        wayland.enable = true; # Correctly placed under displayManager
-        theme = "${import ./modules/sddm-themes.nix { inherit pkgs; }}"; # Correctly placed under displayManager
-      };
-    };
-    desktopManager = {
-      plasma6.enable = false;
-    };
-    xserver = {
-      enable = true;
-      videoDrivers = [ "amdgpu" ];
-      desktopManager.xfce = {
-        enable = true;
-        enableScreensaver = false;
-      };
-    };
     xrdp = {
       enable = true;
-      port = 3389; # default 3389
+      port = 3389;
       openFirewall = true;
-      defaultWindowManager = "xfce4-session";
+      defaultWindowManager = "sway";
     };
 
     udisks2.enable = true;

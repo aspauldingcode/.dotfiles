@@ -164,7 +164,7 @@
 
   environment.systemPackages = with pkgs; [
     jetbrains-mono
-    gnome.adwaita-icon-theme
+    adwaita-icon-theme
     bibata-cursors
   ];
 

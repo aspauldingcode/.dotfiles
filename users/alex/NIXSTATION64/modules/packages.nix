@@ -118,6 +118,7 @@
       wineasio
       wineWow64Packages.waylandFull
       winetricks
+      heroic
 
       # Fonts and theming
       corefonts
@@ -158,7 +159,7 @@
         jdks = [
           jdk8
           jdk17
-          jdk19
+          # jdk19
           jdk21
           # Minecraft requires jdk21 SOON!
         ];

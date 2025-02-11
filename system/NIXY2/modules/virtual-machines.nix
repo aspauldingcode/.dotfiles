@@ -20,7 +20,7 @@
     spice-protocol
     win-virtio
     win-spice
-    gnome.adwaita-icon-theme
+    adwaita-icon-theme
   ];
   # enable nested virtualization
   boot.extraModprobeConfig = "options kvm_intel nested=1";
