@@ -5,7 +5,7 @@
   ...
 }:
 
-let 
+let
   pgrep = "${pkgs.procps}/bin/pgrep";
   pkill = "${pkgs.coreutils}/bin/pkill";
 in
@@ -13,7 +13,6 @@ in
   imports = [
     ./waybar.nix
   ];
-
 
   wayland.windowManager.sway = {
     enable = true;

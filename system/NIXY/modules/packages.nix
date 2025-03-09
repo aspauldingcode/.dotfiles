@@ -11,20 +11,14 @@
     alacritty
     ## macosINSTANTView?
     wget
-    #zellij
-    jetbrains.idea-community
-    # teams # FIXMEL failing atm.
     gnumake
     pfetch
     htop
     prismlauncher
-    kitty
-    ghidra
     nixfmt-rfc-style
     luaformatter
     alt-tab-macos
     unnaturalscrollwheels
-    docker
     # xorg.xinit      # FIXME: Broken package darwin
     # xorg.xorgserver # FIXME: Broken package darwin
     yazi
@@ -32,9 +26,8 @@
     libtool
     automake
     autoconf-archive
-    portaudio
+    unstable.tart
     iniparser
-    zenity
     unstable.iproute2mac
     m-cli
     ansible
@@ -47,7 +40,6 @@
     # nightlight
     cmake
     blueutil
-    gh
     cava
     git
     tree
@@ -64,13 +56,11 @@
     ncurses6
     hexedit
     texliveTeTeX
-    ruby_3_3
-    rbenv
-    postman
-    arc-browser
 
     python311Packages.pillow
+    python311Packages.pillow-heif
     python311Packages.tqdm
+    python311Packages.moviepy
     python311Packages.numpy
     python311Packages.torch
     python311Packages.torchvision
@@ -81,26 +71,13 @@
     # javaPackages.openjfx19
     #inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk22
     jdk23
-    #python311
-    oh-my-zsh # zsh shell framework
-    oh-my-fish # fish shell framework
-    #oh-my-git #git learning game
-    dmenu
-    dwm
-    zoom-us
     android-tools
     undmg
-    p7zip
     jq
-    # gittyup
     libusb1
     beeper-bridge-manager
-    darling-dmg
-    lolcat
-    tree-sitter
     nodejs_20
     unstable.nodePackages.vercel
-    raylib
 
     #lspconfig
     fd # find tool
@@ -114,11 +91,9 @@
     # (pkgs.callPackage ./../customDerivations/okular.nix { })
     # (pkgs.callPackage ./../customDerivations/ammonia.nix { })
     (pkgs.callPackage ./../customDerivations/recording-indicator-utility.nix { })
-    git
     llvmPackages_19.clang-unwrapped
     llvmPackages_19.llvm
     llvmPackages_19.bintools
-    openssh
   ];
 
   nixpkgs.config = {
@@ -147,28 +122,12 @@
       "nix-command"
       "flakes"
     ];
+    substituters = [ "https://cache.nixos.org/" ];
+    trusted-public-keys = [
+      "hydra.nixos.org-1:CNHJZBh9K4tP3EKF6FkkgeVYsS3ohTl+oS0Qa8bezVs="
+    ];
+    always-allow-substitutes = true;
   };
 
-  #nix.linux-builder.enable = true;
-  nix.settings.substituters = [ "https://cache.nixos.org/" ];
-  nix.settings.trusted-public-keys = [
-    "hydra.nixos.org-1:CNHJZBh9K4tP3EKF6FkkgeVYsS3ohTl+oS0Qa8bezVs="
-  ];
-  nix.settings.always-allow-substitutes = true;
-
-  # # Enable remote builder for Orb VM
-  # nix.buildMachines = [{
-  #   hostName = "localhost:32222";
-  #   sshUser = "default";
-  #   system = "aarch64-linux";
-  #   maxJobs = 4;
-  #   speedFactor = 2;
-  #   supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
-  #   mandatoryFeatures = [ ];
-  #   protocol = "ssh";
-  #   sshKey = "/Users/alex/.orbstack/ssh/id_ed25519";
-  #   #    ~/.orbstack/ssh  zsh  base64 -b 0 -i id_ed25519.pub
-  #   publicHostKey = "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUQ2a2xMZWRxSEF3eTI3L25pWjhjUW5qMy9DUElwT2tPNTViTzM3OTVmTHIK";
-  # }];
-  # nix.distributedBuilds = true;
+  nix.linux-builder.enable = true;
 }

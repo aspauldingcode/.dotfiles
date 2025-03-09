@@ -20,6 +20,7 @@ let
   yabai = "${pkgs.yabai}/bin/yabai";
   sketchybar = "${pkgs.unstable.sketchybar}/bin/sketchybar";
   borders = "";
+  sharpener = "/usr/local/bin/sharpener";
   skhd = "${pkgs.skhd}/bin/skhd";
   wallpaper = "/Users/Shared/Wallpaper/wallpaper-nix-colors.png";
   m = "${homebrewPath}/m";
@@ -98,6 +99,7 @@ in
 
       # start borders with order above
       ${borders} order=above > /dev/null 2>&1 &
+      ${sharpener} -r 0 > /dev/null 2>&1 &
     '')
 
     # init_alias_items
@@ -340,7 +342,7 @@ in
         else
           ${yabai} -m config external_bar all:50:0 # enables the bar window gap
         fi
-        ${borders} style=round width=2.0 order=above
+        ${sharpener} -r 10 > /dev/null 2>&1 &
         ${sketchybar} --bar corner_radius=10
         ${sketchybar} --bar margin=13
         ${sketchybar} --bar y_offset=13
@@ -357,7 +359,7 @@ in
         else
           ${yabai} -m config external_bar all:40:0
         fi
-        ${borders} style=square order=below width=5.0
+        ${sharpener} -r 0 > /dev/null 2>&1 &
         ${sketchybar} --bar corner_radius=0
         ${sketchybar} --bar margin=0
         ${sketchybar} --bar y_offset=0
@@ -489,13 +491,7 @@ in
           ${yabai} -m query --windows --window | ${jq} -r '."is-topmost"' | grep -q "true"
       }
 
-      fullscreen_state_file="/tmp/fullscreen_state"
       window_id=$(${yabai} -m query --windows --window | ${jq} -r '."id"')
-
-      # Function to check if the current window is in fullscreen mode
-      is_fullscreen() {
-          grep -q "id: $window_id fullscreen: on" "$fullscreen_state_file"
-      }
 
       # Check if the script is provided with an argument
       if [ $# -eq 0 ]; then
@@ -511,51 +507,30 @@ in
 
       # Check the value of the argument
       if [ "$set_arg" = "on" ]; then
-          if is_fullscreen; then
-              echo "Cannot toggle float on: window is in fullscreen mode."
-          elif is_floating; then
+          if is_floating; then
               echo "Window is already floating."
           else
               ${yabai} -m window --toggle float
               ${yabai} -m window --grid 60:60:5:5:50:50
-              ${borders} apply-to=$window_id width=2.0 style=round order=above
-              if ! is_topmost; then
-                  ${yabai} -m window --toggle topmost
-              fi
-              echo "Window is now floating and topmost."
+              ${sharpener} -r 10 > /dev/null 2>&1 &
+              echo "Window is now floating."
           fi
       elif [ "$set_arg" = "off" ]; then
-          if is_fullscreen; then
-              echo "Cannot toggle float off: window is in fullscreen mode."
-          elif ! is_floating; then
+          if ! is_floating; then
               echo "Window is already not floating."
           else
               ${yabai} -m window --toggle float
               gaps_state=$(cat /tmp/gaps_state)
               if [ "$gaps_state" = "on" ]; then
-                  ${borders} apply-to=$window_id width=2.0 style=round order=above
+                  ${sharpener} -r 10 > /dev/null 2>&1 &
               else
-                  ${borders} apply-to=$window_id width=5.0 style=square order=below
-              fi
-              if is_topmost; then
-                  ${yabai} -m window --toggle topmost
+                  ${sharpener} -r 0 > /dev/null 2>&1 &
               fi
               echo "Window is no longer floating."
           fi
       else
           echo "Usage: $0 [on|off]"
           exit 1
-      fi
-
-      # Ensure topmost is on when floating and off when tiling
-      if is_floating; then
-          if ! is_topmost; then
-              ${yabai} -m window --toggle topmost
-          fi
-      else
-          if is_topmost; then
-              ${yabai} -m window --toggle topmost
-          fi
       fi
     '')
 

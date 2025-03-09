@@ -1,25 +1,8 @@
 {
   pkgs,
-  config,
   ...
 }:
 
-let
-  systemType = pkgs.stdenv.hostPlatform.system;
-  homebrewPath =
-    if systemType == "aarch64-darwin" then
-      "/opt/homebrew/bin"
-    else if systemType == "x86_64-darwin" then
-      "/usr/local/bin"
-    else
-      throw "Homebrew Unsupported architecture: ${systemType}";
-  jq = "${pkgs.jq}/bin/jq";
-  yabai = "${homebrewPath}/yabai";
-  sketchybar = "${homebrewPath}/sketchybar";
-  borders = "${homebrewPath}/borders";
-  skhd = "${homebrewPath}/skhd";
-  inherit (config.colorScheme) palette;
-in
 {
   nixpkgs = {
     config = {
@@ -31,50 +14,32 @@ in
   };
 
   home.packages = with pkgs; [
-    # autotiling
-    #ncdu
     calcurse
-    losslesscut-bin
     chatgpt-cli
     cowsay
     cmus
     cmusfm
     bat
-    flameshot
+    pmbootstrap
     newsboat
-    audacity
     pkgconf
-    # ncurses
     nmap
-    neofetch
-    darwin.cctools-port # is it needed tho?
-    tshark
-    termshark
     ffmpeg
-    tigervnc
     gcal
     sops
     # wireshark
     # nmapsi4
     #ruby
-    obs-cmd # remotely start/stop recording using cli and obs-websocket plugin
     obsidian
     libnotify
-    sl
     asciidoctor
     fzf
     lavat
-    libsForQt5.ki18n
     # bonsai #Only available on mac?
-    rustc
     tt
     obsidian
     cargo
-    utm
     mas
-    vscode
-    audacity
-    #yazi to upgrade temporarily with homebrew
     thefuck
     zsh-completions
     zoom-us
@@ -84,11 +49,13 @@ in
       ps.tkinter
       ps.pygame
       ps.pandas
+      ps.moviepy
       ps.termcolor
       ps.plyvel
       ps.opencv4
       ps.tqdm
       ps.pillow
+      ps.pillow-heif
       ps.numpy
       ps.torch
       ps.torchvision

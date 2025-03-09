@@ -30,8 +30,8 @@ let
 in
 {
   services.yabai = {
-    enable = true; # yabai breaks on macOS 14.7.2. fixed on master, but not in release 7.1.5.
-    package = pkgs.unstable.yabai; # 7.1.5
+    enable = true;
+    package = pkgs.unstable.yabai; # 7.1.10
     # To stop the yabai service that's managed by launchd on macOS, you can use one of these commands in the terminal:
     # launchctl unload ~/Library/LaunchAgents/org.nixos.yabai.plist
     # or

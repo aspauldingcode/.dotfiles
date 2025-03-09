@@ -304,6 +304,6 @@ in
   };
 
   home.packages = with pkgs; [
-    unstable.code-cursor
+    #  unstable.code-cursor
   ];
 }

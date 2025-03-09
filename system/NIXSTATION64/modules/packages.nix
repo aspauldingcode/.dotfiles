@@ -126,19 +126,19 @@
     #   postBuild = ''
     #     wrapProgram $out/bin/beeper \
     #       --set ELECTRON_ARGS "--enable-features=UseOzonePlatform --platform=wayland"
-        
+
     #     # Remove window buttons using wmctrl
     #     postProcess () {
     #       wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz
     #       wmctrl -r :ACTIVE: -e 0,0,0,0,0
     #     }
-        
+
     #     # Directly run the application and modify window post-launch
     #     $out/bin/beeper &
     #     postProcess
     #   '';
     # })
-    
+
     # (pkgs.symlinkJoin {
     #   name = "vscode-wayland";
     #   paths = [ pkgs.vscode ];
@@ -146,19 +146,19 @@
     #   postBuild = ''
     #     wrapProgram $out/bin/code \
     #       --set ELECTRON_ARGS "--enable-features=UseOzonePlatform --platform=wayland"
-        
+
     #     # Remove window buttons using wmctrl
     #     postProcess () {
     #       wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz
     #       wmctrl -r :ACTIVE: -e 0,0,0,0,0
     #     }
-        
+
     #     # Directly run the application and modify window post-launch
     #     $out/bin/code &
     #     postProcess
     #   '';
     # })
-    
+
     # (pkgs.symlinkJoin {
     #   name = "code-cursor-wayland";
     #   paths = [ pkgs.code-cursor ];
@@ -166,13 +166,13 @@
     #   postBuild = ''
     #     wrapProgram $out/bin/code-cursor \
     #       --set ELECTRON_ARGS "--enable-features=UseOzonePlatform --platform=wayland"
-        
+
     #     # Remove window buttons using wmctrl
     #     postProcess () {
     #       wmctrl -r :ACTIVE: -b remove,maximized_vert,maximized_horz
     #       wmctrl -r :ACTIVE: -e 0,0,0,0,0
     #     }
-        
+
     #     # Directly run the application and modify window post-launch
     #     $out/bin/code-cursor &
     #     postProcess

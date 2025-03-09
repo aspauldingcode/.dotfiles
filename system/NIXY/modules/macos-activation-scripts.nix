@@ -125,24 +125,6 @@ in
     echo "Setting nvram boot-args preview abi for yabai scripting addition and glow/ammonia..."
     sudo nvram boot-args=-arm64e_preview_abi
 
-    # ===================================================================
-    # OrbStack Machine Configuration
-    # Purpose: Configure OrbStack virtual machines and settings
-    # Action:  Set up OrbStack ssh for linux virtual machines to work on NIXY
-    # ===================================================================
-
-    echo "Setting up OrbStack ssh for remote linux builds to work on NIXY..."
-    if ! su - alex -c "${orb} list | grep -q nixos"; then
-      su - alex -c "${orb} create nixos"
-    fi
-    su - alex -c "${orb} start nixos"
-
-    if ! su - alex -c "${orb} list | grep -q ubuntu"; then
-      su - alex -c "${orb} create ubuntu"
-    fi
-    su - alex -c "${orb} start ubuntu"
-
-
     echo "Setting profile picture..."
     sudo dscl . delete /Users/${user} jpegphoto
     sudo dscl . delete /Users/${user} Picture
