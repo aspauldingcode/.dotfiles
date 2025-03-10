@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  inherit (config.colorScheme) colors;
+  inherit (config.colorScheme) palette;
 in
 {
   home.packages = with pkgs; [
@@ -70,61 +70,61 @@ in
         draw_bold_text_with_bright_colors = false;
 
         primary = {
-          background = "#${colors.base00}";
-          foreground = "#${colors.base05}";
+          background = "#${palette.base00}";
+          foreground = "#${palette.base05}";
         };
 
         cursor = {
-          text = "#${colors.base00}";
-          cursor = "#${colors.base05}";
+          text = "#${palette.base00}";
+          cursor = "#${palette.base05}";
         };
 
         normal = {
-          black = "#${colors.base00}";
-          red = "#${colors.base08}";
-          green = "#${colors.base0B}";
-          yellow = "#${colors.base0A}";
-          blue = "#${colors.base0D}";
-          magenta = "#${colors.base0E}";
-          cyan = "#${colors.base0C}";
-          white = "#${colors.base05}";
+          black = "#${palette.base00}";
+          red = "#${palette.base08}";
+          green = "#${palette.base0B}";
+          yellow = "#${palette.base0A}";
+          blue = "#${palette.base0D}";
+          magenta = "#${palette.base0E}";
+          cyan = "#${palette.base0C}";
+          white = "#${palette.base05}";
         };
 
         bright = {
-          black = "#${colors.base03}";
-          red = "#${colors.base09}";
-          green = "#${colors.base01}";
-          yellow = "#${colors.base02}";
-          blue = "#${colors.base04}";
-          magenta = "#${colors.base06}";
-          cyan = "#${colors.base0F}";
-          white = "#${colors.base07}";
+          black = "#${palette.base03}";
+          red = "#${palette.base09}";
+          green = "#${palette.base01}";
+          yellow = "#${palette.base02}";
+          blue = "#${palette.base04}";
+          magenta = "#${palette.base06}";
+          cyan = "#${palette.base0F}";
+          white = "#${palette.base07}";
         };
 
         indexed_colors = [
           {
             index = 16;
-            color = "#${colors.base09}";
+            color = "#${palette.base09}";
           }
           {
             index = 17;
-            color = "#${colors.base0F}";
+            color = "#${palette.base0F}";
           }
           {
             index = 18;
-            color = "#${colors.base01}";
+            color = "#${palette.base01}";
           }
           {
             index = 19;
-            color = "#${colors.base02}";
+            color = "#${palette.base02}";
           }
           {
             index = 20;
-            color = "#${colors.base04}";
+            color = "#${palette.base04}";
           }
           {
             index = 21;
-            color = "#${colors.base06}";
+            color = "#${palette.base06}";
           }
         ];
       };

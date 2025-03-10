@@ -28,6 +28,7 @@
     ./modules/theme.nix
     ./modules/xcode/xcode.nix # FIXME: use nix-color theme
     ./modules/alacritty.nix
+    ./modules/gowall.nix
     ./modules/kitty.nix
     ./modules/maco.nix
     ./modules/unmenu.nix

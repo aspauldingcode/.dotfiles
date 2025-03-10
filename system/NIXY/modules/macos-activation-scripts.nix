@@ -23,10 +23,15 @@ let
       ./../../../users/alex/extraConfig/wallpapers/nix-colors-wallpaper-darwin.png
     else
       ./../../../users/alex/extraConfig/wallpapers/nix-colors-wallpaper.png;
-  wallpaper_output = "/Users/Shared/Wallpaper/wallpaper-nix-colors.png";
+  wallpaper_output =
+    if pkgs.stdenv.isDarwin then
+      "/var/root/Pictures/gowall/nix-colors-wallpaper-darwin.png"
+    else
+      "/var/root/Pictures/gowall/nix-colors-wallpaper.png";
   wallpaper_recolor_script = ./../../../users/alex/extraConfig/recolor_base16_inputs_efficient.py;
   m = "${pkgs.m-cli}/bin/m";
   orb = "${homebrewPath}/orb";
+  gowall = "${pkgs.unstable.gowall}/bin/gowall";
 in
 {
   system.activationScripts.postActivation.text = ''
@@ -96,13 +101,7 @@ in
     mkdir -p /Users/Shared/Wallpaper/
 
     echo "Recoloring Wallpapers to ${config.colorscheme.slug} color scheme..."
-    ${
-      pkgs.python3.withPackages (ps: [
-        ps.pillow
-        ps.numpy
-        ps.tqdm
-      ])
-    }/bin/python3 ${wallpaper_recolor_script} ${wallpaper_input} ${wallpaper_output} ${config.colorScheme.variant} "#${palette.base00},#${palette.base01},#${palette.base02},#${palette.base03},#${palette.base04},#${palette.base05},#${palette.base06},#${palette.base07},#${palette.base08},#${palette.base09},#${palette.base0A},#${palette.base0B},#${palette.base0C},#${palette.base0D},#${palette.base0E},#${palette.base0F}"
+    ${gowall} convert ${wallpaper_input} -t /etc/gowall/theme.json
 
     echo "Setting ${config.colorscheme.variant} wallpaper..."
     ${m} wallpaper "${wallpaper_output}"

@@ -25,6 +25,7 @@
     pkgconf
     nmap
     ffmpeg
+    unstable.gowall
     gcal
     sops
     # wireshark

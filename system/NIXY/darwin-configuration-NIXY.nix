@@ -18,13 +18,13 @@
     ./modules/spicetify/spicetify.nix
     # ./modules/wg-quick.nix
     ./modules/openssh.nix
+    ./modules/gowall.nix
 
     # ./sa-resources/ammonia.nix
     # ./sa-resources/glow.nix
 
     ./modules/windowManagement/cursorcerer.nix
     ./modules/windowManagement/karabiner.nix
-    ./modules/windowManagement/macforge.nix
     ./modules/windowManagement/yabai.nix
     ./modules/windowManagement/sketchybar.nix
     ./modules/windowManagement/skhd.nix

@@ -1,24 +1,24 @@
 { config, pkgs, ... }:
 
 let
-  inherit (config.colorScheme) colors;
+  inherit (config.colorScheme) palette;
   nixy_colors = pkgs.writeShellScript "nixy-colors" ''
-    export base00="0xff${colors.base00}"
-    export base01="0xff${colors.base01}"
-    export base02="0xE6${colors.base02}"
-    export base03="0xE6${colors.base03}"
-    export base04="0xff${colors.base04}"
-    export base05="0xff${colors.base05}"
-    export base06="0xff${colors.base06}"
-    export base07="0xff${colors.base07}"
-    export base08="0xff${colors.base08}"
-    export base09="0xff${colors.base09}"
-    export base0A="0xff${colors.base0A}"
-    export base0B="0xff${colors.base0B}"
-    export base0C="0xff${colors.base0C}"
-    export base0D="0xE6${colors.base0D}"
-    export base0E="0xff${colors.base0E}"
-    export base0F="0xff${colors.base0F}"
+    export base00="0xff${palette.base00}"
+    export base01="0xff${palette.base01}"
+    export base02="0xE6${palette.base02}"
+    export base03="0xE6${palette.base03}"
+    export base04="0xff${palette.base04}"
+    export base05="0xff${palette.base05}"
+    export base06="0xff${palette.base06}"
+    export base07="0xff${palette.base07}"
+    export base08="0xff${palette.base08}"
+    export base09="0xff${palette.base09}"
+    export base0A="0xff${palette.base0A}"
+    export base0B="0xff${palette.base0B}"
+    export base0C="0xff${palette.base0C}"
+    export base0D="0xE6${palette.base0D}"
+    export base0E="0xff${palette.base0E}"
+    export base0F="0xff${palette.base0F}"
     export TRANSPARENT=0x00000000
   '';
   source_sketchybar = pkgs.writeShellScript "source_sketchybar" ''
