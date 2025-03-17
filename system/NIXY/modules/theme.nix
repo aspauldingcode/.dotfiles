@@ -20,7 +20,7 @@ let
   # - sakura
   # - horizon-light
 
-  scheme = "gruvbox-dark-soft";
+  scheme = "atelier-dune-light";
 in
 # Choose from: https://tinted-theming.github.io/base16-gallery/
 {

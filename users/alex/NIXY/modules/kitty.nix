@@ -55,25 +55,28 @@ in
       window_padding_width = 0;
       hide_window_decorations = "titlebar-only";
       macos_option_as_alt = "yes";
-      macos_titlebar_color = "background";
       allow_remote_control = "yes";
       copy_on_select = "yes"; # Enable copy on select
 
       # Colors
       foreground = "#${palette.base05}";
       background = "#${palette.base00}";
-      background_opacity = "1.0";
-      selection_foreground = "#${palette.base05}";
-      selection_background = "#${palette.base02}";
-      cursor = "#${palette.base02}";
-      active_border_color = "#ffffff";
-      inactive_border_color = "#cccccc";
-      active_tab_foreground = "#000";
-      active_tab_background = "#eee";
-      inactive_tab_foreground = "#444";
-      inactive_tab_background = "#999";
+      selection_background = "#${palette.base05}";
+      selection_foreground = "#${palette.base00}";
+      url_color = "#${palette.base04}";
+      cursor = "#${palette.base05}";
+      cursor_text_color = "#${palette.base00}";
+      active_border_color = "#${palette.base03}";
+      inactive_border_color = "#${palette.base01}";
+      active_tab_background = "#${palette.base00}";
+      active_tab_foreground = "#${palette.base05}";
+      inactive_tab_background = "#${palette.base01}";
+      inactive_tab_foreground = "#${palette.base04}";
+      tab_bar_background = "#${palette.base01}";
+      wayland_titlebar_color = "#${palette.base00}";
+      macos_titlebar_color = "#${palette.base00}";
 
-      # Terminal colors
+      # Normal colors (0-7)
       color0 = "#${palette.base00}";
       color1 = "#${palette.base08}";
       color2 = "#${palette.base0B}";
@@ -82,6 +85,8 @@ in
       color5 = "#${palette.base0E}";
       color6 = "#${palette.base0C}";
       color7 = "#${palette.base05}";
+
+      # Bright colors (8-15)
       color8 = "#${palette.base03}";
       color9 = "#${palette.base08}";
       color10 = "#${palette.base0B}";
@@ -90,6 +95,14 @@ in
       color13 = "#${palette.base0E}";
       color14 = "#${palette.base0C}";
       color15 = "#${palette.base07}";
+
+      # Extended base16 colors (16-21)
+      color16 = "#${palette.base09}";
+      color17 = "#${palette.base0F}";
+      color18 = "#${palette.base01}";
+      color19 = "#${palette.base02}";
+      color20 = "#${palette.base04}";
+      color21 = "#${palette.base06}";
     };
 
     keybindings = {

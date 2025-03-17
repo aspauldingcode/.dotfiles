@@ -31,6 +31,7 @@
     unstable.iproute2mac
     m-cli
     ansible
+    bws
     gtk-mac-integration
     # libiconv
     # choose-gui

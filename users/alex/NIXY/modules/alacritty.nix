@@ -92,12 +92,12 @@ in
 
         bright = {
           black = "#${palette.base03}";
-          red = "#${palette.base09}";
-          green = "#${palette.base01}";
-          yellow = "#${palette.base02}";
-          blue = "#${palette.base04}";
-          magenta = "#${palette.base06}";
-          cyan = "#${palette.base0F}";
+          red = "#${palette.base08}";
+          green = "#${palette.base0B}";
+          yellow = "#${palette.base0A}";
+          blue = "#${palette.base0D}";
+          magenta = "#${palette.base0E}";
+          cyan = "#${palette.base0C}";
           white = "#${palette.base07}";
         };
 
