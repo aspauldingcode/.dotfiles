@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>Author</key>
-	<string>alex</string>
+	<string>aspauldingcode</string>
 	<key>CapeName</key>
 	<string>Bibata-Modern-Ice</string>
 	<key>CapeVersion</key>
@@ -3916,7 +3916,7 @@
 	<key>HiDPI</key>
 	<true/>
 	<key>Identifier</key>
-	<string>com.alex.bibata-modern-ice</string>
+	<string>com.aspauldingcode.bibata-modern-ice</string>
 	<key>MinimumVersion</key>
 	<real>2</real>
 	<key>Version</key>

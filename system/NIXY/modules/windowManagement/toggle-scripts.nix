@@ -3,6 +3,7 @@
   inputs,
   config,
   lib,
+  user,
   ...
 }:
 
@@ -292,10 +293,10 @@ in
     # toggle-yabai
     (pkgs.writeShellScriptBin "toggle-yabai" ''
       if launchctl list | grep -q "org.nixos.yabai"; then
-        launchctl unload $HOME/Library/LaunchAgents/org.nixos.yabai.plist
+        launchctl unload /Users/${user}/Library/LaunchAgents/org.nixos.yabai.plist
         echo "Yabai unloaded"
       else
-        launchctl load $HOME/Library/LaunchAgents/org.nixos.yabai.plist
+        launchctl load /Users/${user}/Library/LaunchAgents/org.nixos.yabai.plist
         echo "Yabai loaded"
       fi
     '')
@@ -776,7 +777,7 @@ in
 
       # List available capes
       echo "Available capes:"
-      CAPE_FILES=($(ls "$HOME/Library/Application Support/Mousecape/capes/"))
+      CAPE_FILES=($(ls "/Users/${user}/Library/Application Support/Mousecape/capes/"))
       for i in "''${!CAPE_FILES[@]}"; do
         echo "$((i+1)). ''${CAPE_FILES[$i]}"
       done
@@ -786,7 +787,7 @@ in
       CAPE_NAME=''${CAPE_FILES[$((CAPE_INDEX-1))]}
 
       # Command to apply the cape
-      "/Applications/Nix Apps/Mousecape.app/Contents/MacOS/mousecloak" --apply "$HOME/Library/Application Support/Mousecape/capes/$CAPE_NAME"
+      "/Applications/Nix Apps/Mousecape.app/Contents/MacOS/mousecloak" --apply "/Users/${user}/Library/Application Support/Mousecape/capes/$CAPE_NAME"
       echo "Applied cape: $CAPE_NAME"
     '')
 
@@ -795,13 +796,13 @@ in
       #!/bin/bash
 
       # Define the two capes
-      CAPE_LIGHT="com.alex.bibata-modern-ice.cape" # for darkmode. label this light
+      CAPE_LIGHT="com.aspauldingcode.bibata-modern-ice.cape" # for darkmode. label this light
       CAPE_DARK="com.aspauldingcode.bibata-modern-classic.cape" # for lightmode. label this dark
 
       # Apply the appropriate cape based on the command line argument or toggle if no argument is provided
       if [ -z "$1" ]; then
         # Read the current cape state
-        CURRENT_CAPE=$(cat "$HOME/Library/Application Support/Mousecape/current_cape.txt")
+        CURRENT_CAPE=$(cat "/Users/${user}/Library/Application Support/Mousecape/current_cape.txt")
         if [ "$CURRENT_CAPE" == "$CAPE_LIGHT" ]; then
           CAPE_NAME=$CAPE_DARK
           echo "Toggling to dark cape for light mode."
@@ -821,11 +822,11 @@ in
       fi
 
       # Command to apply the selected cape
-      "/Applications/Nix Apps/Mousecape.app/Contents/MacOS/mousecloak" --apply "$HOME/Library/Application Support/Mousecape/capes/$CAPE_NAME"
+      "/Applications/Nix Apps/Mousecape.app/Contents/MacOS/mousecloak" --apply "/Users/${user}/Library/Application Support/Mousecape/capes/$CAPE_NAME"
       echo "Applied cape: $CAPE_NAME"
 
       # Save the current cape state
-      echo "$CAPE_NAME" > "$HOME/Library/Application Support/Mousecape/current_cape.txt"
+      echo "$CAPE_NAME" > "/Users/${user}/Library/Application Support/Mousecape/current_cape.txt"
     '')
   ];
 }

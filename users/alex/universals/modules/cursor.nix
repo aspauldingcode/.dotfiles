@@ -4,7 +4,7 @@ let
   base16Settings = {
     "$schema" = "vscode://schemas/color-theme";
     name = "Base16 ${config.colorScheme.name}";
-    type = "dark";
+    type = "${config.colorScheme.variant}";
     colors = {
       foreground = "#${config.colorScheme.palette.base05}";
       disabledForeground = "#${config.colorScheme.palette.base04}";
@@ -1225,7 +1225,7 @@ in
   programs.vscode = {
     enable = true;
     userSettings = {
-      "workbench.colorTheme" = "Default Dark Modern"; # Use a built-in theme as base
+      "workbench.colorTheme" = "Default ${config.colorScheme.variant} Modern"; # Use a built-in theme as base
       "workbench.colorCustomizations" = base16Settings.colors;
       "editor.tokenColorCustomizations" = {
         "textMateRules" = base16Settings.tokenColors;
