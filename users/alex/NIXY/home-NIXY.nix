@@ -16,7 +16,7 @@
     ./../extraConfig/nvim/nixvim.nix
     ./../universals/modules/firefox.nix
     ./../universals/modules/brave-browser.nix
-    ./../universals/modules/cursor.nix # vscode with ai
+    ./../universals/modules/vscode.nix
     ./../universals/modules/discord.nix
     ./../universals/modules/shells.nix
     ./../universals/modules/btop.nix
