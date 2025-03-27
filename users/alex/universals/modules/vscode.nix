@@ -1225,7 +1225,7 @@ in
   programs.vscode = {
     enable = true;
     userSettings = {
-      "workbench.colorTheme" = "Default ${config.colorScheme.variant} Modern"; # Use a built-in theme as base
+      "workbench.colorTheme" = "Default ${config.colorScheme.variant} Modern";
       "workbench.colorCustomizations" = base16Settings.colors;
       "editor.tokenColorCustomizations" = {
         "textMateRules" = base16Settings.tokenColors;

@@ -21,7 +21,8 @@
     ./modules/gowall.nix
 
     # ./sa-resources/ammonia.nix
-    # ./sa-resources/glow.nix
+    # ./sa-resources/glow.nix\
+    ./sa-resources/glow-themes/base16_glow_theme.nix
 
     ./modules/windowManagement/cursorcerer.nix
     ./modules/windowManagement/karabiner.nix
