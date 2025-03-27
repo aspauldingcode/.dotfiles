@@ -20,15 +20,15 @@ let
   inherit (config.colorScheme) palette;
   wallpaper_input =
     if pkgs.stdenv.isDarwin then
-      ./../../../users/alex/extraConfig/wallpapers/nix-colors-wallpaper-darwin.png
+      ./../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper-darwin.png
     else
-      ./../../../users/alex/extraConfig/wallpapers/nix-colors-wallpaper.png;
+      ./../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper.png;
   wallpaper_output =
     if pkgs.stdenv.isDarwin then
       "/var/root/Pictures/gowall/nix-colors-wallpaper-darwin.png"
     else
       "/var/root/Pictures/gowall/nix-colors-wallpaper.png";
-  wallpaper_recolor_script = ./../../../users/alex/extraConfig/recolor_base16_inputs_efficient.py;
+  wallpaper_recolor_script = ./../../../users/${user}/extraConfig/recolor_base16_inputs_efficient.py;
   m = "${pkgs.m-cli}/bin/m";
   orb = "${homebrewPath}/orb";
   gowall = "${pkgs.unstable.gowall}/bin/gowall";
@@ -63,24 +63,24 @@ in
     # ===================================================================
 
     echo -e "\033[33m=== Current enabled input sources ===\033[0m"
-    echo "USER: alex"
-    sudo -u "alex" ${InputSourceSelector}/bin/InputSourceSelector list-enabled
+    echo "USER: ${user}"
+    sudo -u "${user}" ${InputSourceSelector}/bin/InputSourceSelector list-enabled
 
     echo -e "\033[33m\n=== Enabling Unicode Hex Input ===\033[0m"
-    sudo -u "alex" ${InputSourceSelector}/bin/InputSourceSelector enable "com.apple.keylayout.UnicodeHexInput"
+    sudo -u "${user}" ${InputSourceSelector}/bin/InputSourceSelector enable "com.apple.keylayout.UnicodeHexInput"
 
     echo -e "\033[33m\n=== Disabling all other input sources ===\033[0m"
     # Get all enabled input sources and disable them except Unicode Hex Input
-    sudo -u "alex" ${InputSourceSelector}/bin/InputSourceSelector list-enabled | while read -r line; do
+    sudo -u "${user}" ${InputSourceSelector}/bin/InputSourceSelector list-enabled | while read -r line; do
         input_id=$(echo "$line" | cut -d" " -f1)
         if [ "$input_id" != "com.apple.keylayout.UnicodeHexInput" ]; then
             echo -e "\033[33mDisabling: $line\033[0m"
-            sudo -u "alex" ${InputSourceSelector}/bin/InputSourceSelector disable "$input_id"
+            sudo -u "${user}" ${InputSourceSelector}/bin/InputSourceSelector disable "$input_id"
         fi
     done
 
     echo -e "\033[33m\n=== Final enabled input sources ===\033[0m"
-    sudo -u "alex" ${InputSourceSelector}/bin/InputSourceSelector list-enabled
+    sudo -u "${user}" ${InputSourceSelector}/bin/InputSourceSelector list-enabled
 
     # ===================================================================
     # Java Development Kit Symlink
@@ -100,10 +100,10 @@ in
     # create the wallpaper directory if it doesn't exist
     mkdir -p /Users/Shared/Wallpaper/
 
-    echo "Recoloring Wallpapers to ${config.colorscheme.slug} color scheme..."
+    echo "Recoloring Wallpapers to ${config.colorScheme.slug} color scheme..."
     ${gowall} convert ${wallpaper_input} -t /etc/gowall/theme.json
 
-    echo "Setting ${config.colorscheme.variant} wallpaper..."
+    echo "Setting ${config.colorScheme.variant} wallpaper..."
     ${m} wallpaper "${wallpaper_output}"
 
     # ===================================================================
@@ -112,8 +112,8 @@ in
     # Action:  Toggle between dark and light mode
     # ===================================================================
 
-    echo "Setting ${config.colorscheme.variant}mode for the system..."
-    toggle-darkmode ${config.colorscheme.variant}
+    echo "Setting ${config.colorScheme.variant}mode for the system..."
+    toggle-darkmode ${config.colorScheme.variant}
 
     # ===================================================================
     # System Boot Arguments Configuration
@@ -127,6 +127,10 @@ in
     echo "Setting profile picture..."
     sudo dscl . delete /Users/${user} jpegphoto
     sudo dscl . delete /Users/${user} Picture
-    sudo dscl . create /Users/${user} Picture "${./../../../users/alex/face.heic}"
+    sudo dscl . create /Users/${user} Picture "${./../../../users/${user}/face.heic}"
+
+    echo -e "\033[31msetting permissions for ${config.colorScheme.slug}-${config.colorScheme.variant} Glow Theme...\033[0m"
+    sudo chmod -R 777 /Library/GlowThemes/${config.colorScheme.slug}-${config.colorScheme.variant}/
+    sudo chmod -R 777 /Library/GlowThemes/${config.colorScheme.slug}-${config.colorScheme.variant}/settings.plist
   '';
 }
