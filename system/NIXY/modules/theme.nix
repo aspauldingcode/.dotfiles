@@ -1,7 +1,8 @@
 {
   nix-colors,
-  pkgs,
   lib,
+  config,
+  user,
   ...
 }:
 
@@ -30,8 +31,8 @@ in
   # Set the global color scheme to the selected scheme
   colorscheme = nix-colors.colorSchemes.${scheme};
 
-  home-manager.users.alex = {
-    # Set the color scheme for the user 'alex' to the selected scheme
+  home-manager.users.${user} = {
+    # Set the color scheme for the user to the selected scheme
     colorscheme = nix-colors.colorSchemes.${scheme};
 
     specialisation = {

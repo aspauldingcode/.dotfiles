@@ -15,7 +15,6 @@ let
   inherit (nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
 in
 {
-
   home = {
     packages = with pkgs; [
       # note the hiPrio which makes this script more important than others and is usually used in nix to resolve name conflicts

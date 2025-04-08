@@ -10,6 +10,7 @@
     "${pkgs.brave}/Applications/Brave Browser.app"
     "/System/Applications/Messages.app"
     "/System/Applications/Facetime.app"
+    "/Applications/Windows App.app"
     # "${pkgs.cursor}/Applications/Cursor.app" #FIXME: nixpkgs not merged yet:
     "${pkgs.alacritty}/Applications/Alacritty.app"
   ];

@@ -8,6 +8,7 @@
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
   environment.systemPackages = with pkgs; [
+    uutils-coreutils-noprefix
     alacritty
     ## macosINSTANTView?
     wget
@@ -23,6 +24,10 @@
     # xorg.xorgserver # FIXME: Broken package darwin
     yazi
     fftw
+    espeak
+    openconnect
+    gp-saml-gui
+    libreoffice-bin
     libtool
     automake
     autoconf-archive

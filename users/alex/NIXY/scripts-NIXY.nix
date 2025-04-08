@@ -627,6 +627,42 @@ in
         fi
         exit 1
       '')
+
+      # connect to school vms
+      (pkgs.writeShellScriptBin "connect_to_vm" ''
+        #!/bin/bash
+
+        # Ensure an argument is passed (course name)
+        if [ -z "$1" ]; then
+          echo "Usage: $0 <course_name>"
+          echo "Available vms: cybr_101, cscd_240"
+          exit 1
+        fi
+
+        # Define course names and corresponding SSH details
+        course="$1"
+
+        case "$course" in
+          cybr_101)
+            clear
+            echo "be sure to connect to GlobalProtect VPN first."
+            sleep 1
+            clear
+            ssh aspaulding5@10.102.65.39
+            ;;
+          cscd_240)
+            clear
+            echo "be sure to connect to GlobalProtect VPN first."
+            sleep 1
+            clear
+            ssh -i ~/Documents/School/cscd_240/cscd240_3.pem ubuntu@10.219.1.63
+            ;;
+          *)
+            echo "Invalid course name. Please use 'cybr_101' or 'cscd_240'."
+            exit 1
+            ;;
+        esac
+      '')
     ];
   };
 }

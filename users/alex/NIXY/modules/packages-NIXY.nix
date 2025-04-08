@@ -16,14 +16,17 @@
   home.packages = with pkgs; [
     calcurse
     chatgpt-cli
+    jetbrains.idea-community-bin
     cowsay
     cmus
+    nix-search-cli
     cmusfm
     bat
     pmbootstrap
     newsboat
     pkgconf
     nmap
+    # filezilla # no darwin support nixpkgs derivation
     ffmpeg
     unstable.gowall
     gcal

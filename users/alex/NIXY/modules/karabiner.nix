@@ -503,7 +503,7 @@
                     ];
                   }
                   {
-                    description = "Replace Command+H with Command+Y in Chromium-based browsers and Firefox";
+                    description = "Replace Command+H with Command+Y in web browsers";
                     manipulators = [
                       {
                         type = "basic";
@@ -530,6 +530,7 @@
                               "^org.chromium.Chromium$"
                               "^com.microsoft.Edge$"
                               "^com.operasoftware.Opera$"
+                              "^com.apple.Safari$"
                             ];
                           }
                         ];
