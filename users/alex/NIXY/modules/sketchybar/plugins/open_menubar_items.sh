@@ -104,22 +104,6 @@ case $app_name in
                 ;;
         esac
         ;;
-    "backgroundmusic")
-        case $button in
-            "left")
-                open -a Background\ Music
-                ;;
-            "right")
-                osascript -e 'tell application "System Events" to tell process "Background Music"
-                    click menu bar item 1 of menu bar 1
-                end tell'
-                ;;
-            "other")
-                osascript -e 'display dialog "Button is: '"$button"'"'
-                osascript -e 'display dialog "Modifier is: '"$modifier"'"'
-                ;;
-        esac
-        ;;
     "controlcenter")
         case $button in
             "left")

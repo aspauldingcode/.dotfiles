@@ -185,6 +185,16 @@ in
           mods = "Control";
           chars = "\x1b[66;5u";
         }
+        {
+          key = "Enter";
+          mods = "Alt|Shift";
+          action = "SpawnNewInstance";
+        }
+        {
+          key = "Enter";
+          mods = "Alt";
+          action = "CreateNewWindow";
+        }
       ];
     };
   };

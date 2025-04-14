@@ -27,7 +27,7 @@
     ./modules/windowManagement/cursorcerer.nix
     ./modules/windowManagement/karabiner.nix
     ./modules/windowManagement/yabai.nix
-    ./modules/windowManagement/sketchybar.nix
+    #./modules/windowManagement/sketchybar.nix
     ./modules/windowManagement/skhd.nix
     ./modules/windowManagement/toggle-scripts.nix
     ./modules/windowManagement/unmenu.nix

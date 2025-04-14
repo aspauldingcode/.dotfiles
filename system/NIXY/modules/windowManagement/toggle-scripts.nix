@@ -49,7 +49,6 @@ in
       if pgrep sketchybar > /dev/null; then killall sketchybar > /dev/null 2>&1; fi
       if pgrep borders > /dev/null; then killall borders > /dev/null 2>&1; fi
       if pgrep flameshot > /dev/null; then killall flameshot > /dev/null 2>&1; fi
-      if pgrep "Background Music" > /dev/null; then killall "Background Music" > /dev/null 2>&1; fi
       if pgrep "macOS InstantView" > /dev/null; then killall "macOS InstantView" > /dev/null 2>&1; fi
       if pgrep kdeconnectd > /dev/null; then killall kdeconnectd > /dev/null 2>&1; fi
       if pgrep karabiner_grabber > /dev/null; then sudo pkill karabiner_grabber > /dev/null 2>&1; fi
@@ -85,9 +84,6 @@ in
 
       if ! pgrep -x "flameshot" > /dev/null; then
         open -g -a flameshot > /dev/null 2>&1 &
-      fi
-      if ! pgrep -x "Background Music" > /dev/null; then
-        open -g -a "Background Music"
       fi
       if ! pgrep -x "macOS InstantView" > /dev/null; then
         open -g -a "macOS InstantView"

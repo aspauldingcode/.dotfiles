@@ -97,9 +97,6 @@
     # (pkgs.callPackage ./../customDerivations/okular.nix { })
     # (pkgs.callPackage ./../customDerivations/ammonia.nix { })
     (pkgs.callPackage ./../customDerivations/recording-indicator-utility.nix { })
-    llvmPackages_19.clang-unwrapped
-    llvmPackages_19.llvm
-    llvmPackages_19.bintools
   ];
 
   nixpkgs.config = {

@@ -42,8 +42,7 @@ in
       in
       ''
         # Launch shortcuts
-        ${modifier} - return :                ${alacritty} msg create-window || open -na ${alacritty}
-        # ${modifier} - return :                  open -na ${kitty}
+        ${modifier} - return :                open -a ${alacritty}
         ${mod1} + ${mod5} - space :             open -na ${firefox}
         ${mod1} + ${smod} + ${mod5} - space :   open -na ${firefox} --args -private-window
         ${mod4} + ${mod5} - 0x33 :            sudo reboot # using cmd ctrl backspace

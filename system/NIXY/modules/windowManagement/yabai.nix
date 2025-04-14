@@ -30,7 +30,7 @@ let
 in
 {
   services.yabai = {
-    enable = true;
+    enable = false;
     package = pkgs.unstable.yabai; # 7.1.10
     # To stop the yabai service that's managed by launchd on macOS, you can use one of these commands in the terminal:
     # launchctl unload ~/Library/LaunchAgents/org.nixos.yabai.plist
@@ -90,9 +90,6 @@ in
       yabai -m rule --add app='^Karabiner-Elements$' manage=off
       yabai -m rule --add app='MacForge' manage=off
       yabai -m rule --add app='^macOS InstantView$' manage=off
-      yabai -m rule --add app='^Background Music$' manage=off
-      yabai -m rule --add app='^BackgroundMusic$' manage=off
-      yabai -m rule --add app='^Background Music Helper$' manage=off
       yabai -m rule --add app='^Dock$' manage=off
       yabai -m rule --add app='Brave Browser' layer=below
       yabai -m rule --add app='Sketchybar' layer=below

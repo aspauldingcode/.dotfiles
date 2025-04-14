@@ -511,7 +511,6 @@
                           "key_code" = "h";
                           modifiers = {
                             mandatory = [ "left_command" ];
-                            optional = [ "any" ];
                           };
                         };
                         to = [
@@ -1242,7 +1241,7 @@
                       from = {
                         "key_code" = "right_command";
                       };
-                      to = [ { "key_code" = "left_fn"; } ];
+                      to = [ { "apple_vendor_top_case_key_code" = "keyboard_fn"; } ];
                     }
                   ];
                   "treat_as_built_in_keyboard" = false;
