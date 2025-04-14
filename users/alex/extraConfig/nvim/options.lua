@@ -354,16 +354,16 @@ end
 -- o.mouse = 
 
 -- Info notification with fade_in_slide_out animation
-require("notify")("This is an info notification!", "info", {title = "Info Notification", stages = "fade_in_slide_out"})
+-- require("notify")("This is an info notification!", "info", {title = "Info Notification", stages = "fade_in_slide_out"})
 
 -- Warning notification with slide animation
-require("notify")("This is a warning notification!", "warn", {title = "Warning Notification", stages = "slide"})
+-- require("notify")("This is a warning notification!", "warn", {title = "Warning Notification", stages = "slide"})
 
 -- Error notification with fade animation
-require("notify")("This is an error notification!", "error", {title = "Error Notification", stages = "fade"})
+-- require("notify")("This is an error notification!", "error", {title = "Error Notification", stages = "fade"})
 
 -- Debug notification with static animation (doesn't show up?)
-require("notify")("This is a debug notification!", "debug", {title = "Debug Notification", stages = "static"})
+-- require("notify")("This is a debug notification!", "debug", {title = "Debug Notification", stages = "static"})
 
 -- Trace notification with fade_in_slide_out animation (doesn't show up?)
-require("notify")("This is a trace notification!", "trace", {title = "Trace Notification", stages = "fade_in_slide_out"})
+-- require("notify")("This is a trace notification!", "trace", {title = "Trace Notification", stages = "fade_in_slide_out"})

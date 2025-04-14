@@ -10,8 +10,8 @@ let
     minimizeToTray = "on";
     discordBranch = "stable";
     arRPC = "on";
-    splashColor = "#${config.colorScheme.colors.base05}";
-    splashBackground = "#${config.colorScheme.colors.base00}";
+    splashColor = "#${config.colorScheme.palette.base05}";
+    splashBackground = "#${config.colorScheme.palette.base00}";
     # splashLogo = ../../face.png; # FIXME: THIS is NOT working.
     splashTheming = true;
   };
@@ -2851,7 +2851,7 @@ in
         };
         THEME = "Dark"; # not respected?
         DANGEROUS_ENABLE_DEVTOOLS_ONLY_IF_YOU_KNOW_WHAT_YOU_ARE_DOING = true;
-        BACKGROUND_COLOR = "#${config.colorScheme.colors.base00}"; # not respected?
+        BACKGROUND_COLOR = "#${config.colorScheme.palette.base00}"; # not respected?
         OPEN_ON_STARTUP = true; # not respected?
       };
     };

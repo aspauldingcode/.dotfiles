@@ -1,17 +1,17 @@
-{ inputs, ... }:
+{ inputs, user, ... }:
 
 {
   nix-homebrew = {
     enable = true;
-    enableRosetta = true;
-    user = "alex";
-    mutableTaps = false;
+    enableRosetta = false;
+    user = "${user}";
+    mutableTaps = true;
     autoMigrate = false;
     taps = {
       "homebrew/homebrew-core" = inputs.homebrew-core;
       "homebrew/homebrew-cask" = inputs.homebrew-cask;
-      "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
-      "homebrew/homebrew-services" = inputs.homebrew-services;
+      # "homebrew/homebrew-bundle" = inputs.homebrew-bundle; # DEPRECATED
+      # "homebrew/homebrew-services" = inputs.homebrew-services; # DEPRECATED
       "koekeishiya/homebrew-formulae" = inputs.homebrew-koekeishiya;
       "FelixKratz/homebrew-formulae" = inputs.homebrew-felixkratz;
       "smudge/homebrew-smudge" = inputs.homebrew-smudge;
@@ -41,7 +41,6 @@
       # "kdenlive" # I don't have storage space for this
       # "heroic" # I don't have storage space for this
       # "azure-data-studio"
-      #"libreoffice" # FIXME: breaks sometimes? wth
       "karabiner-elements"
       "Beeper"
     ];

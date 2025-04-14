@@ -172,12 +172,12 @@
               linter = [ "golangci_lint" ];
             };
             c = {
-              formatter = [ "clang_format" ];
-              linter = [ "clang_tidy" ];
+              formatter = [ "uncrustify" ]; # one of “astyle”, “clang_format”, “clang_tidy”, “uncrustify”
+              linter = [ "gcc" ]; # one of “clang_format”, “clang_tidy”, “cppcheck”, “cpplint”, “flawfinder”, “gcc”, “alex”, “codespell”, “cspell”, “languagetool”, “proselint”, “redpen”, “textlint”, “vale”, “write_good”
             };
             cpp = {
-              formatter = [ "clang_format" ];
-              linter = [ "clang_tidy" ];
+              formatter = [ "uncrustify" ];
+              linter = [ "gcc" ];
             };
           };
           toolPackages = {
