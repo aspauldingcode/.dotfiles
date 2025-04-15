@@ -54,31 +54,28 @@
         # https://github.com/nix-community/nixvim/tree/main#key-mappings
       ];
       plugins = {
-        #JAVALSP
-        nvim-jdtls = {
-          enable = true;
-          data = "${config.xdg.cacheHome}/jdtls/workspace";
-          configuration = "${config.xdg.cacheHome}/jdtls/config";
-          initOptions = null;
-          rootDir = {
-            __raw = "require('jdtls.setup').find_root({'.git','mvnw','gradlew'})";
-          };
-          settings = null;
-          cmd = [
-            "${pkgs.jdt-language-server}/bin/jdtls"
-            #"-foo" "bar"
-          ];
-        };
-        clangd-extensions.enable = true;
+        clangd-extensions.enable = false;
         lsp-format.enable = true;
         none-ls = {
           enable = true;
           enableLspFormat = true;
+          autoLoad = true;
           sources = {
             formatting = {
               nixfmt = {
                 enable = true;
                 package = pkgs.nixfmt-rfc-style;
+              };
+            };
+            diagnostics.checkstyle = {
+              enable = true;
+              settings = {
+                extra_args = [
+                  "-c"
+                  "${./plugin/checkstyle/google_checks.xml}"
+                  #(builtins.toString ./plugins/checkstyle/google_checks.xml)
+                ];
+                diagnostics_format = "[#{c}] #{m} (#{s})";
               };
             };
           };
@@ -98,7 +95,7 @@
               ];
             };
             nix = {
-              formatter = [ "nixfmt" ];
+              #  formatter = [ "nixfmt" ];
               linter = [ "statix" ];
             };
             java = {
@@ -106,7 +103,7 @@
                 My favorite combination is:
                 google-java-format for auto-formatting (prevent bikeshedding about indentation and the like)
                 checkstyle with google-java-format rules
-                errorprone (prevent common, careless mistakes)
+                error-prone (prevent common, careless mistakes)
                 NullAway (prevent NullPointerExceptions)
                 infer (optionally) to be really safe :)
                 In my opinion, linters should be executable via the command-line. Hence i don't like SonarQube and sonalint.
@@ -342,7 +339,7 @@
               package = pkgs.unstable.ccls;
             };
             clangd = {
-              enable = true;
+              enable = false;
               package = pkgs.unstable.clang-tools;
             };
             clojure_lsp = {
@@ -450,6 +447,28 @@
               enable = false;
               package = pkgs.unstable.java-language-server;
             };
+            jdtls = {
+              enable = true;
+              package = pkgs.jdt-language-server;
+              autostart = true;
+              # rootDir = {
+              #   __raw = "require('jdtls.setup').find_root({'.git','mvnw','gradlew'})";
+              # };
+              # settings = {
+              #   extraOptions = {
+              #     JDTLS_JVM_ARGS = "-javaagent:$HOME/.local/share/java/lombok.jar";
+              #   };
+              # };
+              # cmd = [ "jdtls" ];
+              # onAttach = {
+              #   function = ''
+              #     function(client, bufnr)
+              #       -- Custom on_attach logic
+              #     end
+              #   '';
+              #   override = true;
+              # };
+            };
             jsonls = {
               enable = true;
               package = pkgs.unstable.nodePackages.vscode-langservers-extracted;
@@ -487,7 +506,7 @@
               package = pkgs.unstable.nil;
             };
             nixd = {
-              enable = false;
+              enable = true;
               package = pkgs.unstable.nixd;
             };
             nushell = {

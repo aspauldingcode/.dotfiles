@@ -10,7 +10,6 @@
       # NIXY(aarch64-darwin)
       echo "Rebuilding..."
       cd ~/.dotfiles
-      git add .
       darwin-rebuild switch --show-trace --flake .#NIXY
 
       echo "fetching latest erase-install pkg."

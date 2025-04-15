@@ -24,16 +24,6 @@ in
 
       # Show AirDrop in the sidebar
       defaults write com.apple.sidebarlists systemitems -dict-add ShowAirDrop -bool true
-
-      # remove fn and double tap control shortcuts FIXME: does this even work?
-      defaults delete -g PressFnFunctionKey
-      defaults delete -g PressControlTwice
-      defaults delete com.apple.symbolichotkeys 164 2>/dev/null; \
-      defaults delete -g PressFnFunctionKey
-      defaults delete -g PressControlTwice
-      defaults delete com.apple.HIToolbox AppleDictationAutoEnable
-      defaults delete com.apple.speech.recognition.AppleSpeechRecognition.prefs
-      defaults delete com.apple.HIToolbox AppleGlobalTextInputProperties
     '';
     startup.chime = false; # MUTE STARTUP CHIME!
     keyboard = {

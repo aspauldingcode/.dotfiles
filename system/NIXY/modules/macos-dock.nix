@@ -11,7 +11,7 @@
     "/System/Applications/Messages.app"
     "/System/Applications/Facetime.app"
     "/Applications/Windows App.app"
-    # "${pkgs.cursor}/Applications/Cursor.app" #FIXME: nixpkgs not merged yet:
+    "${pkgs.unstable.code-cursor}/Applications/Cursor.app"
     "${pkgs.alacritty}/Applications/Alacritty.app"
   ];
 }
