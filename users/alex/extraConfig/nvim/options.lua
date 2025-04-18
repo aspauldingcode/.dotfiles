@@ -1,3 +1,5 @@
+-- luacheck: globals vim
+
 local vim = vim
 local o = vim.opt
 local g = vim.g
@@ -22,72 +24,72 @@ o.softtabstop = 4
 o.expandtab = true
 o.signcolumn = 'yes'
 o.wrap = false
--- o.textwidth = 80
--- o.formatoptions = "t"
+o.textwidth = 80
+o.formatoptions = "t"
 
 -- KEYBINDS
 -- How to add ctrl-shift mappings in neovim
 local function map(mode, lhs, rhs, opts)
-    local options = {noremap = true}
+    local options = { noremap = true }
     if opts then options = vim.tbl_extend('force', options, opts) end
     vim.api.nvim_set_keymap(mode, lhs, rhs, options)
-  end
-  
-  -- Control + Shift
-  -- map('n', '<C-S-a>', '<cmd>:cna<cr>')
-  map('n', '<C-S-b>', '<Esc>:NvimTreeToggle<CR>')
-  -- map('n', '<C-S-c>', '<cmd>:cnc<cr>')
-  -- map('n', '<C-S-d>', '<cmd>:cnd<cr>')
-  -- map('n', '<C-S-e>', '<cmd>:cne<cr>')
-  -- map('n', '<C-S-f>', '<cmd>:cnf<cr>')
-  -- map('n', '<C-S-g>', '<cmd>:cng<cr>')
-  -- map('n', '<C-S-h>', '<cmd>:cnh<cr>')
-  -- map('n', '<C-S-i>', '<cmd>:cni<cr>')
-  -- map('n', '<C-S-j>', '<cmd>:cnj<cr>')
-  -- map('n', '<C-S-k>', '<cmd>:cnk<cr>')
-  -- map('n', '<C-S-l>', '<cmd>:cnl<cr>')
-  -- map('n', '<C-S-m>', '<cmd>:cnm<cr>')
-  -- map('n', '<C-S-n>', '<cmd>:cnn<cr>')
-  -- map('n', '<C-S-o>', '<cmd>:cno<cr>')
-  -- map('n', '<C-S-p>', '<cmd>:cnp<cr>')
-  -- map('n', '<C-S-q>', '<cmd>:cnq<cr>')
-  -- map('n', '<C-S-r>', '<cmd>:cnr<cr>')
-  -- map('n', '<C-S-s>', '<cmd>:cns<cr>')
-  -- map('n', '<C-S-t>', '<cmd>:cnt<cr>')
-  -- map('n', '<C-S-u>', '<cmd>:cnu<cr>')
-  -- map('n', '<C-S-v>', '<cmd>:cnv<cr>')
-  -- map('n', '<C-S-w>', '<cmd>:cnw<cr>')
-  -- map('n', '<C-S-x>', '<cmd>:cnx<cr>')
-  -- map('n', '<C-S-y>', '<cmd>:cny<cr>')
-  -- map('n', '<C-S-z>', '<cmd>:cnz<cr>')
-  
-  -- Control
-  -- map('n', '<C-a>', '<cmd>:cna<cr>')
-  map('n', '<C-b>', '<Esc>:NvimTreeToggle<CR>')
-  -- map('n', '<C-c>', '<cmd>:cnc<cr>')
-  -- map('n', '<C-d>', '<cmd>:cnd<cr>')
-  -- map('n', '<C-e>', '<cmd>:cne<cr>')
-  -- map('n', '<C-f>', '<cmd>:cnf<cr>')
-  -- map('n', '<C-g>', '<cmd>:cng<cr>')
-  -- map('n', '<C-h>', '<cmd>:cnh<cr>')
-  -- map('n', '<C-i>', '<cmd>:cni<cr>')
-  -- map('n', '<C-j>', '<cmd>:cnj<cr>')
-  -- map('n', '<C-k>', '<cmd>:cnk<cr>')
-  -- map('n', '<C-l>', '<cmd>:cnl<cr>')
-  -- map('n', '<C-m>', '<cmd>:cnm<cr>')
-  -- map('n', '<C-n>', '<cmd>:cnn<cr>')
-  -- map('n', '<C-o>', '<cmd>:cno<cr>')
-  -- map('n', '<C-p>', '<cmd>:cnp<cr>')
-  -- map('n', '<C-q>', '<cmd>:cnq<cr>')
-  -- map('n', '<C-r>', '<cmd>:cnr<cr>')
-  -- map('n', '<C-s>', '<cmd>:cns<cr>')
-  -- map('n', '<C-t>', '<cmd>:cnt<cr>')
-  -- map('n', '<C-u>', '<cmd>:cnu<cr>')
-  -- map('n', '<C-v>', '<cmd>:cnv<cr>')
-  -- map('n', '<C-w>', '<cmd>:cnw<cr>')
-  -- map('n', '<C-x>', '<cmd>:cnx<cr>')
-  -- map('n', '<C-y>', '<cmd>:cny<cr>')
-  -- map('n', '<C-z>', '<cmd>:cnz<cr>')
+end
+
+-- Control + Shift
+-- map('n', '<C-S-a>', '<cmd>:cna<cr>')
+map('n', '<C-S-b>', '<Esc>:NvimTreeToggle<CR>')
+-- map('n', '<C-S-c>', '<cmd>:cnc<cr>')
+-- map('n', '<C-S-d>', '<cmd>:cnd<cr>')
+-- map('n', '<C-S-e>', '<cmd>:cne<cr>')
+-- map('n', '<C-S-f>', '<cmd>:cnf<cr>')
+-- map('n', '<C-S-g>', '<cmd>:cng<cr>')
+-- map('n', '<C-S-h>', '<cmd>:cnh<cr>')
+-- map('n', '<C-S-i>', '<cmd>:cni<cr>')
+-- map('n', '<C-S-j>', '<cmd>:cnj<cr>')
+-- map('n', '<C-S-k>', '<cmd>:cnk<cr>')
+-- map('n', '<C-S-l>', '<cmd>:cnl<cr>')
+-- map('n', '<C-S-m>', '<cmd>:cnm<cr>')
+-- map('n', '<C-S-n>', '<cmd>:cnn<cr>')
+-- map('n', '<C-S-o>', '<cmd>:cno<cr>')
+-- map('n', '<C-S-p>', '<cmd>:cnp<cr>')
+-- map('n', '<C-S-q>', '<cmd>:cnq<cr>')
+-- map('n', '<C-S-r>', '<cmd>:cnr<cr>')
+-- map('n', '<C-S-s>', '<cmd>:cns<cr>')
+-- map('n', '<C-S-t>', '<cmd>:cnt<cr>')
+-- map('n', '<C-S-u>', '<cmd>:cnu<cr>')
+-- map('n', '<C-S-v>', '<cmd>:cnv<cr>')
+-- map('n', '<C-S-w>', '<cmd>:cnw<cr>')
+-- map('n', '<C-S-x>', '<cmd>:cnx<cr>')
+-- map('n', '<C-S-y>', '<cmd>:cny<cr>')
+-- map('n', '<C-S-z>', '<cmd>:cnz<cr>')
+
+-- Control
+-- map('n', '<C-a>', '<cmd>:cna<cr>')
+map('n', '<C-b>', '<Esc>:NvimTreeToggle<CR>')
+-- map('n', '<C-c>', '<cmd>:cnc<cr>')
+-- map('n', '<C-d>', '<cmd>:cnd<cr>')
+-- map('n', '<C-e>', '<cmd>:cne<cr>')
+-- map('n', '<C-f>', '<cmd>:cnf<cr>')
+-- map('n', '<C-g>', '<cmd>:cng<cr>')
+-- map('n', '<C-h>', '<cmd>:cnh<cr>')
+-- map('n', '<C-i>', '<cmd>:cni<cr>')
+-- map('n', '<C-j>', '<cmd>:cnj<cr>')
+-- map('n', '<C-k>', '<cmd>:cnk<cr>')
+-- map('n', '<C-l>', '<cmd>:cnl<cr>')
+-- map('n', '<C-m>', '<cmd>:cnm<cr>')
+-- map('n', '<C-n>', '<cmd>:cnn<cr>')
+-- map('n', '<C-o>', '<cmd>:cno<cr>')
+-- map('n', '<C-p>', '<cmd>:cnp<cr>')
+-- map('n', '<C-q>', '<cmd>:cnq<cr>')
+-- map('n', '<C-r>', '<cmd>:cnr<cr>')
+-- map('n', '<C-s>', '<cmd>:cns<cr>')
+-- map('n', '<C-t>', '<cmd>:cnt<cr>')
+-- map('n', '<C-u>', '<cmd>:cnu<cr>')
+-- map('n', '<C-v>', '<cmd>:cnv<cr>')
+-- map('n', '<C-w>', '<cmd>:cnw<cr>')
+-- map('n', '<C-x>', '<cmd>:cnx<cr>')
+-- map('n', '<C-y>', '<cmd>:cny<cr>')
+-- map('n', '<C-z>', '<cmd>:cnz<cr>')
 
 -- LSP
 -- Map <Leader>f to run LSP format
@@ -120,7 +122,7 @@ o.number = true
 o.relativenumber = true
 o.termguicolors = true
 o.updatetime = 300
-o.cursorline = true
+o.cursorline = false
 vim.cmd('filetype plugin indent on')
 
 -- Keybinds
@@ -274,7 +276,7 @@ vim.opt.foldenable = false -- Disable folding at startup.
 o.signcolumn = 'yes'
 
 vim.o.foldcolumn = '1' -- '0' is not bad
-vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldlevel = 99   -- Using ufo provider need a large value, feel free to decrease the value
 vim.o.foldlevelstart = 99
 
 -- Using ufo provider need remap zR and zM. If Neovim is 0.6.1, remap yourself
@@ -283,64 +285,65 @@ vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
 
 vim.cmd("highlight FoldColumn guifg=" .. vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID('Comment')), 'fg'))
 
-vim.o.statuscolumn = '%=%l%s%C%{foldlevel(v:lnum) > foldlevel(v:lnum - 1) ? (foldclosed(v:lnum) == -1 ? "▼" : "⏵") : " " }'
+vim.o.statuscolumn =
+'%=%l%s%C%{foldlevel(v:lnum) > foldlevel(v:lnum - 1) ? (foldclosed(v:lnum) == -1 ? "▼" : "⏵") : " " }'
 
 -- Replace the default fold markers with custom arrows
 vim.api.nvim_create_autocmd("VimEnter", {
-  callback = function()
-    local ufo = require('ufo')
-    local orig_render = ufo.renderFoldedLines
+    callback = function()
+        local ufo = require('ufo')
+        local orig_render = ufo.renderFoldedLines
 
-    ufo.renderFoldedLines = function(virtText, lnum, endLnum, width, truncate, ctx)
-      local newVirtText = {}
-      local suffix = ('  %d '):format(endLnum - lnum)
-      local sufWidth = vim.fn.strdisplaywidth(suffix)
-      local targetWidth = width - sufWidth
-      local curWidth = 0
+        ufo.renderFoldedLines = function(virtText, lnum, endLnum, width, truncate, ctx)
+            local newVirtText = {}
+            local suffix = ('  %d '):format(endLnum - lnum)
+            local sufWidth = vim.fn.strdisplaywidth(suffix)
+            local targetWidth = width - sufWidth
+            local curWidth = 0
 
-      for _, chunk in ipairs(virtText) do
-        local chunkText = chunk[1]
-        local chunkWidth = vim.fn.strdisplaywidth(chunkText)
-        if targetWidth > curWidth + chunkWidth then
-          table.insert(newVirtText, chunk)
-        else
-          chunkText = truncate(chunkText, targetWidth - curWidth)
-          local hlGroup = chunk[2]
-          table.insert(newVirtText, {chunkText, hlGroup})
-          chunkWidth = vim.fn.strdisplaywidth(chunkText)
-          if curWidth + chunkWidth < targetWidth then
-            suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
-          end
-          break
+            for _, chunk in ipairs(virtText) do
+                local chunkText = chunk[1]
+                local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+                if targetWidth > curWidth + chunkWidth then
+                    table.insert(newVirtText, chunk)
+                else
+                    chunkText = truncate(chunkText, targetWidth - curWidth)
+                    local hlGroup = chunk[2]
+                    table.insert(newVirtText, { chunkText, hlGroup })
+                    chunkWidth = vim.fn.strdisplaywidth(chunkText)
+                    if curWidth + chunkWidth < targetWidth then
+                        suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
+                    end
+                    break
+                end
+                curWidth = curWidth + chunkWidth
+            end
+
+            local foldSymbol = '⏵ '
+            table.insert(newVirtText, { foldSymbol .. suffix, 'UfoFoldedEllipsis' })
+            return newVirtText
         end
-        curWidth = curWidth + chunkWidth
-      end
 
-      local foldSymbol = '⏵ '
-      table.insert(newVirtText, {foldSymbol .. suffix, 'UfoFoldedEllipsis'})
-      return newVirtText
-    end
-
-    -- Ensure the statuscolumn is updated
-    vim.o.statuscolumn = vim.o.statuscolumn
-  end,
+        -- Ensure the statuscolumn is updated
+        vim.o.statuscolumn = vim.o.statuscolumn
+    end,
 })
 
 -- Ensure Startify is loaded first and open NvimTree and then focus on Startify
 vim.api.nvim_create_autocmd("VimEnter", {
-  pattern = "*",
-  callback = function()
-    if vim.bo.modifiable and vim.fn.argc() == 0 then
-      vim.cmd("Startify")
-      vim.cmd("NvimTreeOpen")
-      -- Wait for NvimTree to be focused, then move focus back to Startify
-      vim.defer_fn(function()
-        if vim.bo.filetype == "NvimTree" then
-          vim.cmd("wincmd p") -- Move focus back to the previous window (Startify)
+    pattern = "*",
+    callback = function()
+        if vim.bo.modifiable and vim.fn.argc() == 0 then
+            vim.cmd("Startify")
+            vim.cmd("NvimTreeOpen")
+            -- Wait for NvimTree to be focused, then move focus back to Startify
+            vim.defer_fn(function()
+                if vim.bo.filetype == "NvimTree" then
+                    vim.cmd("wincmd p") -- Move focus back to the previous window (Startify)
+                end
+            end, 100)                   -- Adjust the delay (in milliseconds) as needed
         end
-      end, 100) -- Adjust the delay (in milliseconds) as needed
     end
-  end
 })
 
 
@@ -351,7 +354,7 @@ if vim.fn.has('macunix') == 1 then
 end
 
 -- remove "how to disable mouse" popup when using mouse right click
--- o.mouse = 
+-- o.mouse =
 
 -- Info notification with fade_in_slide_out animation
 -- require("notify")("This is an info notification!", "info", {title = "Info Notification", stages = "fade_in_slide_out"})

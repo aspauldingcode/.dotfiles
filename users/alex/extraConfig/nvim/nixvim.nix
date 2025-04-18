@@ -53,9 +53,40 @@
       keymaps = [
         # https://github.com/nix-community/nixvim/tree/main#key-mappings
       ];
+      colorschemes.base16 = {
+        enable = true;
+        colorscheme =
+          let
+            inherit (config.colorScheme) palette;
+          in
+          {
+            # use nix-colors
+            base00 = "#${palette.base00}";
+            base01 = "#${palette.base01}";
+            base02 = "#${palette.base02}";
+            base03 = "#${palette.base03}";
+            base04 = "#${palette.base04}";
+            base05 = "#${palette.base05}";
+            base06 = "#${palette.base06}";
+            base07 = "#${palette.base07}";
+            base08 = "#${palette.base08}";
+            base09 = "#${palette.base09}";
+            base0A = "#${palette.base0A}";
+            base0B = "#${palette.base0B}";
+            base0C = "#${palette.base0C}";
+            base0D = "#${palette.base0D}";
+            base0E = "#${palette.base0E}";
+            base0F = "#${palette.base0F}";
+          };
+      };
+
       plugins = {
         clangd-extensions.enable = false;
         lsp-format.enable = true;
+        preview = {
+          enable = true;
+          autoLoad = true;
+        };
         none-ls = {
           enable = true;
           enableLspFormat = true;
@@ -493,13 +524,49 @@
               enable = true;
               package = pkgs.unstable.lua-language-server;
             };
-            marksman = {
+            m68k = {
               enable = false;
+              # package = # NO UPSTREAM PACKAGE
+            };
+            markdown_oxide = {
+              enable = true;
+              package = pkgs.unstable.markdown-oxide;
+            };
+            marksman = {
+              enable = true;
               package = pkgs.unstable.marksman;
+            };
+            matlab_ls = {
+              enable = false;
+              package = pkgs.unstable.matlab-language-server;
+            };
+            mdx_analyzer = {
+              enable = false;
+              # package = # NO UPSTREAM PACKAGE
+            };
+            mesonlsp = {
+              enable = true;
+              package = pkgs.unstable.mesonlsp;
             };
             metals = {
               enable = false;
               package = pkgs.unstable.metals;
+            };
+            millet = {
+              enable = false;
+              # package = # NO UPSTREAM PACKAGE
+            };
+            mint = {
+              enable = false;
+              package = pkgs.unstable.mint;
+            };
+            mlir_lsp_server = {
+              enable = false;
+              package = pkgs.unstable.llvmPackages.mlir;
+            };
+            mlir_pdll_lsp_server = {
+              enable = false;
+              package = pkgs.unstable.llvmPackages.mlir;
             };
             nil_ls = {
               enable = true;
@@ -639,7 +706,7 @@
           };
         };
         web-devicons.enable = true;
-        lsp-lines.enable = false; # damn annoyying
+        lsp-lines.enable = false; # damn annoying
         lspkind.enable = true;
 
         # color previews
@@ -651,7 +718,9 @@
         # treesitter conf
         treesitter = {
           enable = true;
+          nixvimInjections = true;
           settings = {
+            ensure_installed = "all";
             indent = {
               enable = true;
             };
@@ -1131,65 +1200,38 @@
               };
               signs = {
                 AvanteInputPromptSign = "Question";
-              };
-            };
 
-            hints.enabled = true;
-
-            mappings = {
-              diff = {
-                next = "]x";
-                prev = "[x";
-                ours = "co";
-                theirs = "ct";
-                both = "cb";
-                none = "c0";
               };
-              jump = {
-                next = "]]";
-                prev = "[[";
-              };
-            };
 
-            windows = {
-              width = 30;
-              wrap = true;
-              sidebar_header = {
-                rounded = true;
-                align = "center";
+              hints.enabled = true;
+
+              mappings = {
+                diff = {
+                  next = "]x";
+                  prev = "[x";
+                  ours = "co";
+                  theirs = "ct";
+                  both = "cb";
+                  none = "c0";
+                };
+                jump = {
+                  next = "]]";
+                  prev = "[[";
+                };
+              };
+
+              windows = {
+                width = 30;
+                wrap = true;
+                sidebar_header = {
+                  rounded = true;
+                  align = "center";
+                };
               };
             };
           };
         };
       };
-
-      colorschemes.base16 = {
-        enable = true;
-        colorscheme =
-          let
-            inherit (config.colorScheme) palette;
-          in
-          {
-            # use nix-colors
-            base00 = "#${palette.base00}";
-            base01 = "#${palette.base01}";
-            base02 = "#${palette.base02}";
-            base03 = "#${palette.base03}";
-            base04 = "#${palette.base04}";
-            base05 = "#${palette.base05}";
-            base06 = "#${palette.base06}";
-            base07 = "#${palette.base07}";
-            base08 = "#${palette.base08}";
-            base09 = "#${palette.base09}";
-            base0A = "#${palette.base0A}";
-            base0B = "#${palette.base0B}";
-            base0C = "#${palette.base0C}";
-            base0D = "#${palette.base0D}";
-            base0E = "#${palette.base0E}";
-            base0F = "#${palette.base0F}";
-          };
-      };
-
       extraPlugins = with pkgs.vimPlugins; [
         {
           plugin = windows-nvim;

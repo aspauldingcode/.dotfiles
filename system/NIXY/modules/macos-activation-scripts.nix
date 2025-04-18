@@ -29,7 +29,6 @@ let
     else
       "/var/root/Pictures/gowall/nix-colors-wallpaper.png";
   wallpaper_recolor_script = ./../../../users/${user}/extraConfig/recolor_base16_inputs_efficient.py;
-  m = "${pkgs.m-cli}/bin/m";
   orb = "${homebrewPath}/orb";
   gowall = "${pkgs.unstable.gowall}/bin/gowall";
 in
@@ -104,7 +103,7 @@ in
     ${gowall} convert ${wallpaper_input} -t /etc/gowall/theme.json
 
     echo "Setting ${config.colorScheme.variant} wallpaper..."
-    ${m} wallpaper "${wallpaper_output}"
+    wallpaper "${wallpaper_output}"
 
     # ===================================================================
     # macOS Dark/Light Mode Configuration

@@ -3,6 +3,7 @@
   pkgs,
   lib,
   config,
+  user,
   ...
 }:
 
@@ -28,426 +29,427 @@ in
     enable = true;
     package = if pkgs.stdenv.isDarwin then pkgs.firefox-bin else pkgs.firefox;
     profiles = {
-      alex = {
-        userChrome = ''
-          /* Use Nix-Colors theme */
-          #navigator-toolbox {
-            --toolbar-bgcolor: #${palette.base00};
-          }
-
-          /* Customize toolbar icons color */
-          .toolbarbutton-icon {
-            fill: #${palette.base05} !important;
-            fill-opacity: 1 !important;
-          }
-
-          /* Adjust icon color on hover and active states */
-          .toolbarbutton-1:not([disabled]):hover .toolbarbutton-icon,
-          .toolbarbutton-1:not([disabled])[open] .toolbarbutton-icon {
-            fill: #${palette.base0D} !important;
-          }
-
-          /* Hide titlebar buttons and adjust spacing on macOS */
-          @media (-moz-platform: macos) {
-            .titlebar-buttonbox-container,
-            #window-controls { 
-              display: none !important; 
+      ${user} = {
+        userChrome = # CSS
+          ''
+            /* Use Nix-Colors theme */
+            #navigator-toolbox {
+              --toolbar-bgcolor: #${palette.base00};
             }
-            
-            /* Shift tabs to the left by 38px */
+
+            /* Customize toolbar icons color */
+            .toolbarbutton-icon {
+              fill: #${palette.base05} !important;
+              fill-opacity: 1 !important;
+            }
+
+            /* Adjust icon color on hover and active states */
+            .toolbarbutton-1:not([disabled]):hover .toolbarbutton-icon,
+            .toolbarbutton-1:not([disabled])[open] .toolbarbutton-icon {
+              fill: #${palette.base0D} !important;
+            }
+
+            /* Hide titlebar buttons and adjust spacing on macOS */
+            @media (-moz-platform: macos) {
+              .titlebar-buttonbox-container,
+              #window-controls { 
+                display: none !important; 
+              }
+              
+              /* Shift tabs to the left by 38px */
+              #TabsToolbar {
+                padding-left: 0 !important;
+                display: flex !important;
+                margin-left: -38px !important;
+                width: calc(100% + 38px) !important;
+              }
+            }
+
+            /* Permanently hide bookmarks, site info button, three dots menu, and tracking protection shield in urlbar */
+            #star-button-box,
+            #identity-box,
+            #pageActionButton {
+              display: none !important;
+            }
+
+            /* Hide tracking protection icon when window width is less than 1000px */
+            @media (max-width: 800px) {
+              #tracking-protection-icon-container {
+                display: none !important;
+              }
+            }
+
+            /* Hide all addons/extensions buttons from toolbar after 600px */
+            @media (max-width: 600px) {
+              #nav-bar .unified-extensions-item {
+                display: none !important;
+              }
+              /* Adjust padding to prevent empty space */
+              #nav-bar-customization-target {
+                padding-right: 0 !important;
+              }
+            }
+
+            /* Hide the Sidebery icon when window width is 200px or less */
+            @media (max-width: 200px) {
+              #sidebar-button,
+              #_3c078156-979c-498b-8990-85f7987dd929_-browser-action {
+                display: none !important;
+              }
+            }
+
+            /* Remove min-width and min-height constraints */
+            #main-window {
+              min-width: 0 !important;
+              min-height: 0 !important;
+            }
+
+            /* Allow content to resize to any dimensions */
+            #browser {
+              min-width: 0 !important;
+              min-height: 0 !important;
+            }
+
+            /* Ensure toolbars can shrink */
+            #nav-bar,
+            #PersonalToolbar,
             #TabsToolbar {
-              padding-left: 0 !important;
-              display: flex !important;
-              margin-left: -38px !important;
-              width: calc(100% + 38px) !important;
+              min-width: 0 !important;
+              min-height: 0 !important;
             }
-          }
 
-          /* Permanently hide bookmarks, site info button, three dots menu, and tracking protection shield in urlbar */
-          #star-button-box,
-          #identity-box,
-          #pageActionButton {
-            display: none !important;
-          }
-
-          /* Hide tracking protection icon when window width is less than 1000px */
-          @media (max-width: 800px) {
-            #tracking-protection-icon-container {
-              display: none !important;
+            /* Allow searchbar to shrink to 0 */
+            #urlbar-container {
+              min-width: 0 !important;
+              flex-shrink: 1 !important;
+              flex-basis: 0 !important;
             }
-          }
 
-          /* Hide all addons/extensions buttons from toolbar after 600px */
-          @media (max-width: 600px) {
-            #nav-bar .unified-extensions-item {
-              display: none !important;
+            /* Hide pinned addons when window width is 700px or less */
+            @media (max-width: 700px) {
+              #unified-extensions-panel .unified-extensions-item[pinned] {
+                display: none !important;
+              }
             }
-            /* Adjust padding to prevent empty space */
+
+            /* Hide addons panel when window width is 300px or less */
+            @media (max-width: 300px) {
+              #unified-extensions-button {
+                display: none !important;
+              }
+            }
+
+            /* Hide forward/backward arrows when space is limited */
+            @media (max-width: 400px) {
+              #forward-button {
+                display: none !important;
+              }
+            }
+            @media (max-width: 150px) {
+              #back-button {
+                display: none !important;
+              }
+            }
+              
+            /* Hide hamburger menu and refresh button when extremely limited */
+            @media (max-width: 200px) {
+              #PanelUI-button,
+              #reload-button {
+                display: none !important;
+              }
+            }
+
+            /* Allow addons toolbar to be hidden */
             #nav-bar-customization-target {
-              padding-right: 0 !important;
+              min-height: 0 !important;
             }
-          }
 
-          /* Hide the Sidebery icon when window width is 200px or less */
-          @media (max-width: 200px) {
-            #sidebar-button,
-            #_3c078156-979c-498b-8990-85f7987dd929_-browser-action {
+            /* Allow window to shrink to 0 */
+            :root {
+              min-width: 0 !important;
+              min-height: 0 !important;
+            }
+
+            :root {
+              --toolbar-bgcolor: #${palette.base00};
+              --toolbar-color: #${palette.base05};
+              --toolbar-border-color: #${palette.base03};
+
+              /* Adds a gradient outline to selected tab. This is going to need modifications if you use tabs that don't follow Proton styling. */
+
+              .tab-background[selected]{
+                outline: none !important;
+                border: 2px solid transparent !important;
+                box-shadow: none !important;
+                background-clip: padding-box;
+              }
+              .tab-background[selected] > .tab-context-line{ margin: -5px 0 0 !important; }
+              .tabbrowser-tab[selected] > .tab-stack::before{
+                content: "";
+                display: flex;
+                min-height: inherit;
+                border-radius: var(--tab-border-radius);
+                grid-area: 1/1;
+                margin-block: var(--tab-block-margin);
+                /* Edit gradient colors here */
+                /* background: repeat linear-gradient(45deg,#${palette.base03},#${palette.base08},#${palette.base0C},#${palette.base0E},#${palette.base0B},#${palette.base09})!important; */
+                background-color: #${palette.base07} !important;
+              }
+            }
+
+            #navigator-toolbox,
+            #nav-bar,
+            #PersonalToolbar,
+            #toolbar-menubar,
+            #titlebar,
+            #sidebar-box,
+            #sidebar-header,
+            #sidebar {
+              background-color: var(--toolbar-bgcolor) !important;
+              color: var(--toolbar-color) !important;
+              border-color: var(--toolbar-border-color) !important;
+            }
+
+            /* disable tab bars */
+            #TabsToolbar {
               display: none !important;
             }
-          }
 
-          /* Remove min-width and min-height constraints */
-          #main-window {
-            min-width: 0 !important;
-            min-height: 0 !important;
-          }
-
-          /* Allow content to resize to any dimensions */
-          #browser {
-            min-width: 0 !important;
-            min-height: 0 !important;
-          }
-
-          /* Ensure toolbars can shrink */
-          #nav-bar,
-          #PersonalToolbar,
-          #TabsToolbar {
-            min-width: 0 !important;
-            min-height: 0 !important;
-          }
-
-          /* Allow searchbar to shrink to 0 */
-          #urlbar-container {
-            min-width: 0 !important;
-            flex-shrink: 1 !important;
-            flex-basis: 0 !important;
-          }
-
-          /* Hide pinned addons when window width is 700px or less */
-          @media (max-width: 700px) {
-            #unified-extensions-panel .unified-extensions-item[pinned] {
+            /* Hide the "Extension (B...t Startpage)" element */
+            #identity-box {
               display: none !important;
             }
-          }
+            /* Change the background color of the search bar when active */
+            #urlbar-background {
+              background-color: #${palette.base01} !important;
+            }
 
-          /* Hide addons panel when window width is 300px or less */
-          @media (max-width: 300px) {
-            #unified-extensions-button {
+            /* Change the text color of the search bar when active */
+            #urlbar-input {
+              color: #${palette.base05} !important;
+            }
+
+            /* Add a subtle border to the search bar when active */
+            #urlbar[focused="true"] > #urlbar-background {
+              border: 1px solid #${palette.base0D} !important;
+              box-shadow: 0 0 3px #${palette.base0D} !important;
+            }
+
+            /* Add this new rule for the menu panel */
+            #appMenu-popup {
+              --arrowpanel-background: #${palette.base00} !important;
+              --arrowpanel-color: #${palette.base05} !important;
+            }
+
+            /* Change the background color of the customize toolbar page */
+            #customization-container {
+              background-color: #${palette.base00} !important;
+            }
+
+            /* Style for the customize toolbar button */
+            #customization-done-button {
+              background-color: #${palette.base02} !important;
+              color: #${palette.base05} !important;
+              border-color: #${palette.base03} !important;
+            }
+
+            #customization-done-button:hover {
+              background-color: #${palette.base03} !important;
+              border-color: #${palette.base0D} !important;
+            }
+
+            #customization-done-button:active {
+              background-color: #${palette.base04} !important;
+            }
+
+            /* Hide toolbar context menu */
+            #toolbar-context-menu {
               display: none !important;
             }
-          }
 
-          /* Hide forward/backward arrows when space is limited */
-          @media (max-width: 400px) {
-            #forward-button {
-              display: none !important;
+            /* Style the urlbar results popup */
+            /* .urlbarView {
+              background-color: #${palette.base00} !important;
+              color: #${palette.base05} !important;
+            } */
+
+            /* Style individual result items */
+            .urlbarView-row {
+              color: #${palette.base05} !important;
             }
-          }
-          @media (max-width: 150px) {
-            #back-button {
-              display: none !important;
+
+            /* Style the selected result */
+            .urlbarView-row[selected] {
+              background-color: #${palette.base02} !important;
+              color: #${palette.base06} !important;
             }
-          }
-            
-          /* Hide hamburger menu and refresh button when extremely limited */
-          @media (max-width: 200px) {
-            #PanelUI-button,
-            #reload-button {
-              display: none !important;
+
+            /* Style the search engine icon */
+            .urlbarView-type-icon {
+              fill: #${palette.base05} !important;
             }
-          }
 
-          /* Allow addons toolbar to be hidden */
-          #nav-bar-customization-target {
-            min-height: 0 !important;
-          }
-
-          /* Allow window to shrink to 0 */
-          :root {
-            min-width: 0 !important;
-            min-height: 0 !important;
-          }
-
-          :root {
-            --toolbar-bgcolor: #${palette.base00};
-            --toolbar-color: #${palette.base05};
-            --toolbar-border-color: #${palette.base03};
-
-            /* Adds a gradient outline to selected tab. This is going to need modifications if you use tabs that don't follow Proton styling. */
-
-            .tab-background[selected]{
-              outline: none !important;
-              border: 2px solid transparent !important;
-              box-shadow: none !important;
-              background-clip: padding-box;
+            /* Style the "Search with" text */
+            .urlbarView-action {
+              color: #${palette.base04} !important;
             }
-            .tab-background[selected] > .tab-context-line{ margin: -5px 0 0 !important; }
-            .tabbrowser-tab[selected] > .tab-stack::before{
-              content: "";
-              display: flex;
-              min-height: inherit;
-              border-radius: var(--tab-border-radius);
-              grid-area: 1/1;
-              margin-block: var(--tab-block-margin);
-              /* Edit gradient colors here */
-              /* background: repeat linear-gradient(45deg,#${palette.base03},#${palette.base08},#${palette.base0C},#${palette.base0E},#${palette.base0B},#${palette.base09})!important; */
-              background-color: #${palette.base07} !important;
+
+            /* Style the extensions popup background */
+            #unified-extensions-view,
+            .panel-arrowcontent {
+              background-color: #${palette.base00} !important;
             }
-          }
 
-          #navigator-toolbox,
-          #nav-bar,
-          #PersonalToolbar,
-          #toolbar-menubar,
-          #titlebar,
-          #sidebar-box,
-          #sidebar-header,
-          #sidebar {
-            background-color: var(--toolbar-bgcolor) !important;
-            color: var(--toolbar-color) !important;
-            border-color: var(--toolbar-border-color) !important;
-          }
+            /* Style the individual extension items */
+            .unified-extensions-item {
+              background-color: #${palette.base00} !important;
+              color: #${palette.base05} !important;
+            }
 
-          /* disable tab bars */
-          #TabsToolbar {
-            display: none !important;
-          }
+            .unified-extensions-item:hover {
+              background-color: #${palette.base01} !important;
+            }
 
-          /* Hide the "Extension (B...t Startpage)" element */
-          #identity-box {
-            display: none !important;
-          }
-          /* Change the background color of the search bar when active */
-          #urlbar-background {
-            background-color: #${palette.base01} !important;
-          }
+            /* Style the "Manage extensions" button at the bottom */
+            #unified-extensions-manage-extensions {
+              background-color: #${palette.base01} !important;
+              color: #${palette.base05} !important;
+            }
 
-          /* Change the text color of the search bar when active */
-          #urlbar-input {
-            color: #${palette.base05} !important;
-          }
+            #unified-extensions-manage-extensions:hover {
+              background-color: #${palette.base02} !important;
+            }
 
-          /* Add a subtle border to the search bar when active */
-          #urlbar[focused="true"] > #urlbar-background {
-            border: 1px solid #${palette.base0D} !important;
-            box-shadow: 0 0 3px #${palette.base0D} !important;
-          }
+            /* Add this new rule for addon icons */
+            .webextension-browser-action {
+              filter: grayscale(100%) brightness(1.2) contrast(1.2) opacity(0.7) drop-shadow(0 0 0 #${palette.base05}) !important;
+            }
 
-          /* Add this new rule for the menu panel */
-          #appMenu-popup {
-            --arrowpanel-background: #${palette.base00} !important;
-            --arrowpanel-color: #${palette.base05} !important;
-          }
+            /* Style the sidebar title and context menu */
+            #sidebar-header,
+            #sidebar-switcher-target,
+            #viewButton {
+              background-color: #${palette.base00} !important;
+              color: #${palette.base05} !important;
+            }
 
-          /* Change the background color of the customize toolbar page */
-          #customization-container {
-            background-color: #${palette.base00} !important;
-          }
+            #sidebar-switcher-target:hover,
+            #viewButton:hover {
+              background-color: #${palette.base01} !important;
+            }
 
-          /* Style for the customize toolbar button */
-          #customization-done-button {
-            background-color: #${palette.base02} !important;
-            color: #${palette.base05} !important;
-            border-color: #${palette.base03} !important;
-          }
+            /* Style the sidebar context menu */
+            #sidebarMenu-popup {
+              --arrowpanel-background: #${palette.base00} !important;
+              --arrowpanel-color: #${palette.base05} !important;
+              --arrowpanel-border-color: #${palette.base03} !important;
+            }
 
-          #customization-done-button:hover {
-            background-color: #${palette.base03} !important;
-            border-color: #${palette.base0D} !important;
-          }
+            #sidebarMenu-popup menuitem:hover {
+              background-color: #${palette.base01} !important;
+            }
 
-          #customization-done-button:active {
-            background-color: #${palette.base04} !important;
-          }
+            /* Style the sidebar itself */
+            #sidebar-box,
+            #sidebar {
+              background-color: #${palette.base00} !important;
+              color: #${palette.base05} !important;
+            }
 
-          /* Hide toolbar context menu */
-          #toolbar-context-menu {
-            display: none !important;
-          }
+            /* Style for permission prompts */
+            .popup-notification-panel {
+              background-color: #${palette.base01} !important;
+              color: #${palette.base05} !important;
+              border: none !important;
+              border-radius: 8px !important;
+            }
 
-          /* Style the urlbar results popup */
-          /* .urlbarView {
-            background-color: #${palette.base00} !important;
-            color: #${palette.base05} !important;
-          } */
+            .popup-notification-body,
+            .popup-notification-footer,
+            .popup-notification-content,
+            .popup-notification-header {
+              background-color: transparent !important;
+              color: #${palette.base05} !important;
+            }
 
-          /* Style individual result items */
-          .urlbarView-row {
-            color: #${palette.base05} !important;
-          }
+            /* Ensure buttons are visible */
+            .popup-notification-primary-button,
+            .popup-notification-secondary-button {
+              display: inline-block !important;
+            }
 
-          /* Style the selected result */
-          .urlbarView-row[selected] {
-            background-color: #${palette.base02} !important;
-            color: #${palette.base06} !important;
-          }
+            /* Ensure only the notification background is set correctly */
+            .popup-notification-panel *:not(.popup-notification-button):not(.popup-notification-primary-button):not(.popup-notification-secondary-button):not(.popup-notification-button *):not(.popup-notification-primary-button *):not(.popup-notification-secondary-button *):not(.text-link):not(.checkbox-check):not(.checkbox-label) {
+              background-color: #${palette.base00} !important;
+            }
 
-          /* Style the search engine icon */
-          .urlbarView-type-icon {
-            fill: #${palette.base05} !important;
-          }
+            /* Style for both buttons */
+            .popup-notification-button {
+              background-color: #${palette.base02} !important;
+              color: #${palette.base05} !important;
+              border: none !important;
+              border-radius: 4px !important;
+              margin: 4px !important;
+              padding: 6px 12px !important;
+            }
 
-          /* Style the "Search with" text */
-          .urlbarView-action {
-            color: #${palette.base04} !important;
-          }
+            /* Style for the "Allow" (primary) button */
+            .popup-notification-primary-button {
+              background-color: #${palette.base0D} !important;
+              color: #${palette.base00} !important;
+            }
 
-          /* Style the extensions popup background */
-          #unified-extensions-view,
-          .panel-arrowcontent {
-            background-color: #${palette.base00} !important;
-          }
+            .popup-notification-primary-button:hover {
+              background-color: #${palette.base0C} !important;
+            }
 
-          /* Style the individual extension items */
-          .unified-extensions-item {
-            background-color: #${palette.base00} !important;
-            color: #${palette.base05} !important;
-          }
+            /* Style for the "Block" (secondary) button */
+            .popup-notification-secondary-button:hover {
+              background-color: #${palette.base03} !important;
+            }
 
-          .unified-extensions-item:hover {
-            background-color: #${palette.base01} !important;
-          }
+            .checkbox-check {
+              background-color: transparent !important;
+              border: 1px solid #${palette.base04} !important;
+            }
 
-          /* Style the "Manage extensions" button at the bottom */
-          #unified-extensions-manage-extensions {
-            background-color: #${palette.base01} !important;
-            color: #${palette.base05} !important;
-          }
+            .checkbox-label {
+              color: #${palette.base04} !important;
+            }
 
-          #unified-extensions-manage-extensions:hover {
-            background-color: #${palette.base02} !important;
-          }
+            /* Style for the "Learn more" link */
+            .text-link {
+              color: #${palette.base0D} !important;
+            }
 
-          /* Add this new rule for addon icons */
-          .webextension-browser-action {
-            filter: grayscale(100%) brightness(1.2) contrast(1.2) opacity(0.7) drop-shadow(0 0 0 #${palette.base05}) !important;
-          }
+            .text-link:hover {
+              color: #${palette.base0C} !important;
+              text-decoration: none !important;
+            }
 
-          /* Style the sidebar title and context menu */
-          #sidebar-header,
-          #sidebar-switcher-target,
-          #viewButton {
-            background-color: #${palette.base00} !important;
-            color: #${palette.base05} !important;
-          }
+            /* Additional styles to ensure full coverage */
+            .panel-arrowcontent,
+            .panel-arrowbox,
+            .panel-arrow {
+              background-color: #${palette.base00} !important;
+            }
 
-          #sidebar-switcher-target:hover,
-          #viewButton:hover {
-            background-color: #${palette.base01} !important;
-          }
+            /* Style for warning messages */
+            .message-bar,
+            .message-bar-content,
+            .message-bar-button {
+              background-color: #${palette.base00} !important;
+              color: #${palette.base05} !important;
+            }
 
-          /* Style the sidebar context menu */
-          #sidebarMenu-popup {
-            --arrowpanel-background: #${palette.base00} !important;
-            --arrowpanel-color: #${palette.base05} !important;
-            --arrowpanel-border-color: #${palette.base03} !important;
-          }
-
-          #sidebarMenu-popup menuitem:hover {
-            background-color: #${palette.base01} !important;
-          }
-
-          /* Style the sidebar itself */
-          #sidebar-box,
-          #sidebar {
-            background-color: #${palette.base00} !important;
-            color: #${palette.base05} !important;
-          }
-
-          /* Style for permission prompts */
-          .popup-notification-panel {
-            background-color: #${palette.base01} !important;
-            color: #${palette.base05} !important;
-            border: none !important;
-            border-radius: 8px !important;
-          }
-
-          .popup-notification-body,
-          .popup-notification-footer,
-          .popup-notification-content,
-          .popup-notification-header {
-            background-color: transparent !important;
-            color: #${palette.base05} !important;
-          }
-
-          /* Ensure buttons are visible */
-          .popup-notification-primary-button,
-          .popup-notification-secondary-button {
-            display: inline-block !important;
-          }
-
-          /* Ensure only the notification background is set correctly */
-          .popup-notification-panel *:not(.popup-notification-button):not(.popup-notification-primary-button):not(.popup-notification-secondary-button):not(.popup-notification-button *):not(.popup-notification-primary-button *):not(.popup-notification-secondary-button *):not(.text-link):not(.checkbox-check):not(.checkbox-label) {
-            background-color: #${palette.base00} !important;
-          }
-
-          /* Style for both buttons */
-          .popup-notification-button {
-            background-color: #${palette.base02} !important;
-            color: #${palette.base05} !important;
-            border: none !important;
-            border-radius: 4px !important;
-            margin: 4px !important;
-            padding: 6px 12px !important;
-          }
-
-          /* Style for the "Allow" (primary) button */
-          .popup-notification-primary-button {
-            background-color: #${palette.base0D} !important;
-            color: #${palette.base00} !important;
-          }
-
-          .popup-notification-primary-button:hover {
-            background-color: #${palette.base0C} !important;
-          }
-
-          /* Style for the "Block" (secondary) button */
-          .popup-notification-secondary-button:hover {
-            background-color: #${palette.base03} !important;
-          }
-
-          .checkbox-check {
-            background-color: transparent !important;
-            border: 1px solid #${palette.base04} !important;
-          }
-
-          .checkbox-label {
-            color: #${palette.base04} !important;
-          }
-
-          /* Style for the "Learn more" link */
-          .text-link {
-            color: #${palette.base0D} !important;
-          }
-
-          .text-link:hover {
-            color: #${palette.base0C} !important;
-            text-decoration: none !important;
-          }
-
-          /* Additional styles to ensure full coverage */
-          .panel-arrowcontent,
-          .panel-arrowbox,
-          .panel-arrow {
-            background-color: #${palette.base00} !important;
-          }
-
-          /* Style for warning messages */
-          .message-bar,
-          .message-bar-content,
-          .message-bar-button {
-            background-color: #${palette.base00} !important;
-            color: #${palette.base05} !important;
-          }
-
-          /* Ensure any overlays or additional panels are styled */
-          .panel-viewstack,
-          .panel-mainview,
-          .panel-subview {
-            background-color: #${palette.base00} !important;
-            color: #${palette.base05} !important;
-          }
-        '';
+            /* Ensure any overlays or additional panels are styled */
+            .panel-viewstack,
+            .panel-mainview,
+            .panel-subview {
+              background-color: #${palette.base00} !important;
+              color: #${palette.base05} !important;
+            }
+          '';
         userContent = ''
           @-moz-document url("about:newtab") {
             body {
@@ -565,8 +567,12 @@ in
           "app.normandy.first_run" = false;
           "app.shield.optoutstudies.enabled" = false;
           "app.update.channel" = "default";
+          "app.update.enabled" = false;
+          "app.update.auto" = false;
+          "app.update.silent" = false;
+          "app.update.staging.enabled" = false;
           "browser.aboutConfig.showWarning" = false;
-          "browser.bookmarks.showMobileBookmarks" = true;
+          "browser.bookmarks.showMobileBookmarks" = false;
           "browser.toolbars.bookmarks.visibility" = "never";
           "browser.contentblocking.category" = "standard";
           "browser.ctrlTab.recentlyUsedOrder" = false;

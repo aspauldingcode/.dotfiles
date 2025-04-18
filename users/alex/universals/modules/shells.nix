@@ -27,6 +27,8 @@
         export OPENAI_API_KEY="$(cat /run/secrets/openai_api_key 2>/dev/null)" 
         export AZURE_OPENAI_API_KEY="$(cat /run/secrets/azure_openai_api_key 2>/dev/null)"
         export BEDROCK_KEYS="$(cat /run/secrets/bedrock_keys 2>/dev/null)"
+
+        oh-my-posh disable notice
       '';
       shellAliases = {
         # Basic aliases
@@ -51,6 +53,8 @@
         bind "set completion-ignore-case on"
         export BASH_SILENCE_DEPRECATION_WARNING=1
         export EDITOR=nvim
+
+        oh-my-posh disable notice
       '';
       shellAliases = {
         # Basic aliases
@@ -72,6 +76,8 @@
         set fish_greeting ""
         set -g fish_completion_ignore_case 1
         set -gx EDITOR nvim
+
+        oh-my-posh disable notice
       '';
       shellAliases = {
         # Basic aliases
@@ -109,6 +115,8 @@
         $env.config.show_banner = false
 
         def lsdir [path: path = '.'] { ls $path | where type == 'dir' }
+
+        oh-my-posh disable notice
       '';
       extraEnv = '''';
       extraLogin = '''';
