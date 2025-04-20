@@ -36,6 +36,7 @@
     ./modules/packages-NIXY.nix
     ./modules/instantview.nix
     ./modules/karabiner.nix
+    ./modules/wallpaper.nix
     # ./modules/spicetify/spicetify.nix
     ./modules/cava.nix
     ./modules/xinit.nix

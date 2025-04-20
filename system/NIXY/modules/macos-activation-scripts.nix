@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   pkgs,
   inputs,
   user,
@@ -28,8 +27,6 @@ let
       "/var/root/Pictures/gowall/nix-colors-wallpaper-darwin.png"
     else
       "/var/root/Pictures/gowall/nix-colors-wallpaper.png";
-  wallpaper_recolor_script = ./../../../users/${user}/extraConfig/recolor_base16_inputs_efficient.py;
-  orb = "${homebrewPath}/orb";
   gowall = "${pkgs.unstable.gowall}/bin/gowall";
 in
 {

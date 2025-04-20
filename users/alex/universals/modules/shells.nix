@@ -31,12 +31,11 @@
         oh-my-posh disable notice
       '';
       shellAliases = {
-        # Basic aliases
+        l = "ls";
         ll = "ls -l";
         la = "ls -a";
         lsdir = "ls -d */";
 
-        # System control aliases
         reboot = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
         rb = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
         shutdown = if pkgs.stdenv.isDarwin then "sudo shutdown -h now" else "sudo systemctl poweroff";
@@ -57,12 +56,11 @@
         oh-my-posh disable notice
       '';
       shellAliases = {
-        # Basic aliases
+        l = "ls";
         ll = "ls -l";
         la = "ls -a";
         lsdir = "ls -d */";
 
-        # System control aliases
         reboot = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
         rb = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
         shutdown = if pkgs.stdenv.isDarwin then "sudo shutdown -h now" else "sudo systemctl poweroff";
@@ -80,12 +78,11 @@
         oh-my-posh disable notice
       '';
       shellAliases = {
-        # Basic aliases
+        l = "ls";
         ll = "ls -l";
         la = "ls -a";
         lsdir = "ls -d */";
 
-        # System control aliases
         reboot = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
         rb = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
         shutdown = if pkgs.stdenv.isDarwin then "sudo shutdown -h now" else "sudo systemctl poweroff";
@@ -121,11 +118,10 @@
       extraEnv = '''';
       extraLogin = '''';
       shellAliases = {
-        # Basic aliases
+        l = "ls";
         ll = "ls -l";
         la = "ls -a";
 
-        # System control aliases
         reboot = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
         rb = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
         shutdown = if pkgs.stdenv.isDarwin then "sudo shutdown -h now" else "sudo systemctl poweroff";
@@ -155,16 +151,25 @@
             alignment = "left";
             segments = [
               {
-                background = "#${config.colorScheme.palette.base01}";
-                foreground = "#${config.colorScheme.palette.base05}";
+                type = "text";
                 style = "powerline";
-                template = "{{ if .WSL }}WSL at{{ end }} {{.Icon}} ";
-                type = "os";
+                powerline_symbol = "";
+                foreground = "#${config.colorScheme.palette.base0D}";
+                background = "#${config.colorScheme.palette.base00}";
+                template = "";
               }
               {
                 background = "#${config.colorScheme.palette.base0D}";
                 foreground = "#${config.colorScheme.palette.base00}";
                 powerline_symbol = "";
+                style = "powerline";
+                template = "{{ if .WSL }}WSL at{{ end }} {{.Icon}} ";
+                type = "os";
+              }
+              {
+                background = "#${config.colorScheme.palette.base02}";
+                foreground = "#${config.colorScheme.palette.base00}";
+                powerline_symbol = "";
                 properties = {
                   style = "full";
                 };
@@ -181,8 +186,8 @@
                   "{{ if gt .Behind 0 }}#${config.colorScheme.palette.base0E}{{ end }}"
                 ];
                 foreground = "#${config.colorScheme.palette.base00}";
-                leading_diamond = "◀";
-                powerline_symbol = "";
+                leading_diamond = "";
+                powerline_symbol = "";
                 properties = {
                   branch_max_length = 25;
                   fetch_stash_count = true;
@@ -191,14 +196,14 @@
                   branch_identical_icon = "≡";
                 };
                 style = "powerline";
-                template = " {{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} ✎ {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} ✓ {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} ⚑ {{ .StashCount }}{{ end }} ";
+                template = " {{ .HEAD }}{{ if .Working.Changed }}*{{ end }} ";
                 trailing_diamond = "";
                 type = "git";
               }
               {
                 background = "#${config.colorScheme.palette.base0A}";
-                foreground = "#${config.colorScheme.palette.base00}";
-                powerline_symbol = "";
+                foreground = "#${config.colorScheme.palette.base07}";
+                powerline_symbol = "";
                 properties = {
                   fetch_version = true;
                 };
@@ -208,8 +213,8 @@
               }
               {
                 background = "#${config.colorScheme.palette.base0C}";
-                foreground = "#${config.colorScheme.palette.base00}";
-                powerline_symbol = "";
+                foreground = "#${config.colorScheme.palette.base07}";
+                powerline_symbol = "";
                 properties = {
                   fetch_version = true;
                 };
@@ -218,9 +223,9 @@
                 type = "julia";
               }
               {
-                background = "#${config.colorScheme.palette.base09}";
+                background = "#${config.colorScheme.palette.base0B}";
                 foreground = "#${config.colorScheme.palette.base00}";
-                powerline_symbol = "";
+                powerline_symbol = "";
                 properties = {
                   display_mode = "files";
                   fetch_virtual_env = false;
@@ -230,9 +235,9 @@
                 type = "python";
               }
               {
-                background = "#${config.colorScheme.palette.base0E}";
-                foreground = "#${config.colorScheme.palette.base00}";
-                powerline_symbol = "";
+                background = "#${config.colorScheme.palette.base08}";
+                foreground = "#${config.colorScheme.palette.base07}";
+                powerline_symbol = "";
                 properties = {
                   display_mode = "files";
                   fetch_version = true;
@@ -242,9 +247,20 @@
                 type = "ruby";
               }
               {
-                background = "#${config.colorScheme.palette.base0D}";
+                background = "#${config.colorScheme.palette.base0E}";
                 foreground = "#${config.colorScheme.palette.base00}";
-                powerline_symbol = "";
+                powerline_symbol = "";
+                properties = {
+                  fetch_version = true;
+                };
+                style = "powerline";
+                template = " ☕ {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} ";
+                type = "java";
+              }
+              {
+                background = "#${config.colorScheme.palette.base0D}";
+                foreground = "#${config.colorScheme.palette.base07}";
+                powerline_symbol = "";
                 properties = {
                   display_mode = "files";
                   fetch_version = false;
@@ -258,8 +274,8 @@
                   "{{if contains \"default\" .Profile}}#${config.colorScheme.palette.base09}{{end}}"
                   "{{if contains \"jan\" .Profile}}#${config.colorScheme.palette.base0A}{{end}}"
                 ];
-                foreground = "#${config.colorScheme.palette.base00}";
-                powerline_symbol = "";
+                foreground = "#${config.colorScheme.palette.base07}";
+                powerline_symbol = "";
                 properties = {
                   display_default = false;
                 };
@@ -268,17 +284,37 @@
                 type = "aws";
               }
               {
-                background = "#${config.colorScheme.palette.base0C}";
+                type = "command";
+                style = "powerline";
+                powerline_symbol = "";
                 foreground = "#${config.colorScheme.palette.base00}";
-                powerline_symbol = "";
+                background = "#${config.colorScheme.palette.base0F}";
+                properties = {
+                  command = "if ls *.sh > /dev/null 2>&1; then echo '📜'; fi";
+                  cache_timeout = 0;
+                };
+                template = " {{ .Output }} ";
+              }
+              {
+                background = "#${config.colorScheme.palette.base0D}";
+                foreground = "#${config.colorScheme.palette.base00}";
+                powerline_symbol = "";
+                style = "powerline";
+                type = "nix-shell";
+                template = " ❄️ (nix-{{ .Type }})";
+              }
+              {
+                background = "#${config.colorScheme.palette.base01}";
+                foreground = "#${config.colorScheme.palette.base07}";
+                powerline_symbol = "";
                 style = "powerline";
                 template = " 🔧 ";
                 type = "root";
               }
               {
-                background = "#${config.colorScheme.palette.base03}";
+                background = "#${config.colorScheme.palette.base01}";
                 foreground = "#${config.colorScheme.palette.base05}";
-                powerline_symbol = "";
+                powerline_symbol = "";
                 style = "powerline";
                 template = " {{ .Name }} ";
                 type = "shell";

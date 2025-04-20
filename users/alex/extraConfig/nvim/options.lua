@@ -24,8 +24,8 @@ o.softtabstop = 4
 o.expandtab = true
 o.signcolumn = 'yes'
 o.wrap = false
-o.textwidth = 80
-o.formatoptions = "t"
+-- o.textwidth = 80
+-- o.formatoptions = "t"
 
 -- KEYBINDS
 -- How to add ctrl-shift mappings in neovim
