@@ -18,10 +18,9 @@ let
   # - papercolor-dark
   # - zenburn
   # - atelier-dune-light
-  # - sakura
   # - horizon-light
 
-  scheme = "atelier-dune-light";
+  scheme = "gruvbox-dark-soft";
 in
 # Choose from: https://tinted-theming.github.io/base16-gallery/
 {
@@ -40,7 +39,7 @@ in
         configuration = {
           # Override the color scheme with a specific one (katy) for the light-theme specialisation
           # The mkForce function is used to ensure that this value takes precedence over any other definitions
-          colorScheme = lib.mkForce nix-colors.colorSchemes.sakura;
+          colorScheme = lib.mkForce nix-colors.colorSchemes."atelier-dune-light";
         };
       };
     };

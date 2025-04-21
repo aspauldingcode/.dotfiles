@@ -167,7 +167,7 @@
                 type = "os";
               }
               {
-                background = "#${config.colorScheme.palette.base02}";
+                background = "#${config.colorScheme.palette.base03}";
                 foreground = "#${config.colorScheme.palette.base00}";
                 powerline_symbol = "";
                 properties = {

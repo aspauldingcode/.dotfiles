@@ -474,7 +474,7 @@ in
           3
         ];
 
-        quit_title = "{n} task{s} runnning, sure to quit? (y/N)";
+        quit_title = "{n} task{s} running, sure to quit? (y/N)";
         quit_origin = "top-center";
         quit_offset = [
           0
