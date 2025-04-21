@@ -16,7 +16,8 @@
   home.packages = with pkgs; [
     calcurse
     chatgpt-cli
-    jetbrains.idea-community-bin
+    # jetbrains.idea-community-bin
+    unstable.jetbrains.clion
     cowsay
     cmus
     nix-search-cli

@@ -37,9 +37,10 @@ in
     specialisation = {
       light-theme = {
         configuration = {
-          # Override the color scheme with a specific one (katy) for the light-theme specialisation
+          # Override the color scheme with a specific one (atelier-dune-light) for the light-theme specialisation
           # The mkForce function is used to ensure that this value takes precedence over any other definitions
-          colorScheme = lib.mkForce nix-colors.colorSchemes."atelier-dune-light";
+          # Ensure the attribute name matches the one used elsewhere (colorscheme)
+          colorscheme = lib.mkForce nix-colors.colorSchemes."gruvbox-light-soft";
         };
       };
     };

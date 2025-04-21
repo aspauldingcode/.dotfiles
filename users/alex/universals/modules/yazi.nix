@@ -1112,7 +1112,7 @@ in
       };
       manager = {
         cwd = {
-          fg = "cyan";
+          fg = "#${palette.base0C}";
         };
         hovered = {
           reversed = true;
@@ -1121,32 +1121,32 @@ in
           underline = true;
         };
         find_keyword = {
-          fg = "yellow";
+          fg = "#${palette.base0A}";
           bold = true;
           italic = true;
           underline = true;
         };
         find_position = {
-          fg = "magenta";
+          fg = "#${palette.base0E}";
           bg = "reset";
           bold = true;
           italic = true;
         };
         marker_copied = {
-          fg = "lightgreen";
-          bg = "lightgreen";
+          fg = "#${palette.base0B}";
+          bg = "#${palette.base0B}";
         };
         marker_cut = {
-          fg = "lightred";
-          bg = "lightred";
+          fg = "#${palette.base08}";
+          bg = "#${palette.base08}";
         };
         marker_marked = {
-          fg = "lightcyan";
-          bg = "lightcyan";
+          fg = "#${palette.base0C}";
+          bg = "#${palette.base0C}";
         };
         marker_selected = {
-          fg = "lightyellow";
-          bg = "lightyellow";
+          fg = "#${palette.base0A}";
+          bg = "#${palette.base0A}";
         };
         tab_active = {
           reversed = true;
@@ -1154,75 +1154,75 @@ in
         tab_inactive = { };
         tab_width = 1;
         count_copied = {
-          fg = "white";
-          bg = "green";
+          fg = "#${palette.base07}";
+          bg = "#${palette.base0B}";
         };
         count_cut = {
-          fg = "white";
-          bg = "red";
+          fg = "#${palette.base07}";
+          bg = "#${palette.base08}";
         };
         count_selected = {
-          fg = "white";
-          bg = "yellow";
+          fg = "#${palette.base07}";
+          bg = "#${palette.base0A}";
         };
         border_symbol = "│";
         border_style = {
-          fg = "gray";
+          fg = "#${palette.base03}";
         };
         syntect_theme = "";
       };
       status = {
-        separator_open = "";
-        separator_close = "";
+        separator_open = "";
+        separator_close = "";
         separator_style = {
-          fg = "gray";
-          bg = "gray";
+          fg = "#${palette.base03}";
+          bg = "#${palette.base03}";
         };
         mode_normal = {
-          bg = "blue";
+          bg = "#${palette.base0D}";
           bold = true;
         };
         mode_select = {
-          bg = "red";
+          bg = "#${palette.base08}";
           bold = true;
         };
         mode_unset = {
-          bg = "red";
+          bg = "#${palette.base08}";
           bold = true;
         };
         progress_label = {
           bold = true;
         };
         progress_normal = {
-          fg = "blue";
-          bg = "black";
+          fg = "#${palette.base0D}";
+          bg = "#${palette.base00}";
         };
         progress_error = {
-          fg = "red";
-          bg = "black";
+          fg = "#${palette.base08}";
+          bg = "#${palette.base00}";
         };
         permissions_t = {
-          fg = "green";
+          fg = "#${palette.base0B}";
         };
         permissions_r = {
-          fg = "yellow";
+          fg = "#${palette.base0A}";
         };
         permissions_w = {
-          fg = "red";
+          fg = "#${palette.base08}";
         };
         permissions_x = {
-          fg = "cyan";
+          fg = "#${palette.base0C}";
         };
         permissions_s = {
-          fg = "darkgray";
+          fg = "#${palette.base03}";
         };
       };
       select = {
         border = {
-          fg = "blue";
+          fg = "#${palette.base0D}";
         };
         active = {
-          fg = "magenta";
+          fg = "#${palette.base0E}";
           bold = true;
         };
         inactive = { };
@@ -1232,42 +1232,42 @@ in
         icon_info = "\uf05a";
         icon_warn = "\uf071";
         title_error = {
-          fg = "red";
+          fg = "#${palette.base08}";
         };
         title_info = {
-          fg = "green";
+          fg = "#${palette.base0B}";
         };
         title_warn = {
-          fg = "yellow";
+          fg = "#${palette.base0A}";
         };
       };
       tasks = {
         border = {
-          fg = "blue";
+          fg = "#${palette.base0D}";
         };
         hovered = {
-          fg = "magenta";
+          fg = "#${palette.base0E}";
           underline = true;
         };
         title = { };
       };
       which = {
         cand = {
-          fg = "lightcyan";
+          fg = "#${palette.base0C}";
         };
         cols = 3;
         desc = {
-          fg = "lightmagenta";
+          fg = "#${palette.base0E}";
         };
         mask = {
-          bg = "black";
+          bg = "#${palette.base00}";
         };
         rest = {
-          fg = "darkgray";
+          fg = "#${palette.base03}";
         };
         separator = " \uea9c ";
         separator_style = {
-          fg = "darkgray";
+          fg = "#${palette.base03}";
         };
       };
       icon = {
