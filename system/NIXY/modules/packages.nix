@@ -29,6 +29,7 @@
     gp-saml-gui
     libreoffice-bin
     libtool
+    pandoc
     automake
     autoconf-archive
     unstable.tart
@@ -63,17 +64,17 @@
     hexedit
     texliveTeTeX
 
-    python311Packages.pillow
-    python311Packages.pillow-heif
-    python311Packages.tqdm
-    python311Packages.moviepy
-    python311Packages.numpy
-    python311Packages.torch
-    python311Packages.torchvision
-    python311Packages.diffusers
-    python311Packages.transformers
-    python311Packages.accelerate
-    python311Packages.raylib-python-cffi
+    # python311Packages.pillow
+    # python311Packages.pillow-heif
+    # python311Packages.tqdm
+    # python311Packages.moviepy
+    # python311Packages.numpy
+    # python311Packages.torch
+    # python311Packages.torchvision
+    # python311Packages.diffusers
+    # python311Packages.transformers
+    # python311Packages.accelerate
+    # python311Packages.raylib-python-cffi
     # javaPackages.openjfx19
     #inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk22
     jdk23

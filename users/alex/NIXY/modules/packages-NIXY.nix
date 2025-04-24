@@ -23,8 +23,10 @@
     nix-search-cli
     cmusfm
     bat
+    hashcat
     pmbootstrap
     newsboat
+    utm
     pkgconf
     nmap
     # filezilla # no darwin support nixpkgs derivation
@@ -50,33 +52,33 @@
     zoom-us
     unar
     # python39
-    (pkgs.python311.withPackages (ps: [
-      ps.tkinter
-      ps.pygame
-      ps.pandas
-      ps.moviepy
-      ps.termcolor
-      ps.plyvel
-      ps.opencv4
-      ps.tqdm
-      ps.pillow
-      ps.pillow-heif
-      ps.numpy
-      ps.torch
-      ps.torchvision
-      ps.diffusers
-      ps.transformers
-      ps.accelerate
-      ps.raylib-python-cffi
-      # ps.sklearn-deap
-      #ps.pyautogui # broken
-      # ps.pep517
-      ps.biplist
-      # ps.build
-      #ps.i3ipc
-      #ps.matplotlib # broken macos atm?
-      ps.frida
-    ]))
+    # (pkgs.python311.withPackages (ps: [
+    #   ps.tkinter
+    #   ps.pygame
+    #   ps.pandas
+    #   ps.moviepy
+    #   ps.termcolor
+    #   ps.plyvel
+    #   ps.opencv4
+    #   ps.tqdm
+    #   ps.pillow
+    #   ps.pillow-heif
+    #   ps.numpy
+    #   ps.torch
+    #   ps.torchvision
+    #   ps.diffusers
+    #   ps.transformers
+    #   ps.accelerate
+    #   ps.raylib-python-cffi
+    #   # ps.sklearn-deap
+    #   #ps.pyautogui # broken
+    #   # ps.pep517
+    #   ps.biplist
+    #   # ps.build
+    #   #ps.i3ipc
+    #   #ps.matplotlib # broken macos atm?
+    #   ps.frida
+    # ]))
     # Frida packages
     fridaPackages.frida-tools # CLI tools like frida-ps, frida-ls-devices, etc.
   ];

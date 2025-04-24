@@ -346,6 +346,7 @@ in
           "nolisten_tcp" = 0;
           "option_sends_alt" = true;
           "startx_script" = "/opt/X11/bin/startx -- /opt/X11/bin/Xquartz";
+          dpi = 227; # on NIXY, since we have dpi of 227 for m1 macbook air 2020.
         };
         "com.doomlaser.cursorcerer" = {
           autoShow = 1;

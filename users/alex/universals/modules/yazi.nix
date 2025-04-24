@@ -1172,8 +1172,8 @@ in
         syntect_theme = "";
       };
       status = {
-        separator_open = "";
-        separator_close = "";
+        separator_open = "";
+        separator_close = "";
         separator_style = {
           fg = "#${palette.base03}";
           bg = "#${palette.base03}";

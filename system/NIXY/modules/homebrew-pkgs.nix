@@ -31,6 +31,7 @@
       "nightlight"
       "ddcctl"
       "choose-gui"
+      "quartz-wm"
       #"libiconv"
     ];
 
@@ -41,8 +42,10 @@
       # "kdenlive" # I don't have storage space for this
       # "heroic" # I don't have storage space for this
       # "azure-data-studio"
+      "bitwarden"
       "karabiner-elements"
       "Beeper"
+      "xquartz"
     ];
 
     masApps = {

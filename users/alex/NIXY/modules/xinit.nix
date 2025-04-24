@@ -19,6 +19,7 @@
   # };
 
   home.file.Xresources = {
+    enable = false; # FIXME: for now
     target = ".Xresources";
     text =
       let
