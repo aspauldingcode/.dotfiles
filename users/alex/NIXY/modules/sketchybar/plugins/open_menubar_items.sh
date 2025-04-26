@@ -72,22 +72,6 @@ case $app_name in
                 ;;
         esac
         ;;
-    "flameshot")
-        case $button in
-            "left")
-                $flameshot gui
-                ;;
-            "right")
-                osascript -e 'tell application "System Events" to tell process "Flameshot"
-                    click menu bar item 1 of menu bar 2
-                end tell'   
-                ;;
-            "other")
-                osascript -e 'display dialog "Button is: '"$button"'"'
-                osascript -e 'display dialog "Modifier is: '"$modifier"'"'
-                ;;
-        esac
-        ;;
     "karabiner-menu")
         case $button in
             "left")

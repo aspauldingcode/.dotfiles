@@ -1,4 +1,8 @@
-{ inputs, user, ... }:
+{
+  inputs,
+  user,
+  ...
+}:
 
 {
   nix-homebrew = {
@@ -10,12 +14,10 @@
     taps = {
       "homebrew/homebrew-core" = inputs.homebrew-core;
       "homebrew/homebrew-cask" = inputs.homebrew-cask;
-      # "homebrew/homebrew-bundle" = inputs.homebrew-bundle; # DEPRECATED
-      # "homebrew/homebrew-services" = inputs.homebrew-services; # DEPRECATED
       "koekeishiya/homebrew-formulae" = inputs.homebrew-koekeishiya;
       "FelixKratz/homebrew-formulae" = inputs.homebrew-felixkratz;
       "smudge/homebrew-smudge" = inputs.homebrew-smudge;
-      # "kde-mac/kde" = inputs.homebrew-kde;
+      # "kde-mac/kde" = homebrew-kde;
     };
   };
 

@@ -5,7 +5,7 @@ let
 in
 {
   programs.kitty = {
-    enable = true;
+    enable = false;
     package = pkgs.kitty; # Use nixpkgs kitty package
     darwinLaunchOptions = [ ]; # No special launch options needed
     environment = { }; # No extra environment variables needed

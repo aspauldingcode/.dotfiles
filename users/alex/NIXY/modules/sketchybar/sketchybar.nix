@@ -88,7 +88,6 @@ let
     blueutil="${pkgs.blueutil}/bin/blueutil"
     nowplaying_cli="${pkgs.nowplaying-cli}/bin/nowplaying-cli"
     cava="${pkgs.cava}/bin/cava"
-    flameshot="${pkgs.flameshot}/bin/flameshot"
   '';
 in
 {

@@ -10,11 +10,11 @@
   environment.systemPackages = with pkgs; [
     uutils-coreutils-noprefix
     alacritty
-    ## macosINSTANTView?
     wget
     gnumake
     pfetch
     htop
+    unstable.macos-instantview
     prismlauncher
     nixfmt-rfc-style
     luaformatter
@@ -29,7 +29,6 @@
     gp-saml-gui
     libreoffice-bin
     libtool
-    pandoc
     automake
     autoconf-archive
     unstable.tart
@@ -54,42 +53,24 @@
     nowplaying-cli
     ifstat-legacy
     ranger
-    qemu
-    # kdePackages.okular
-    # spotify
-    # xquartz
 
     #darwin.iproute2mac #MUST BE BREW PACKAGE?
     ncurses6
     hexedit
     texliveTeTeX
 
-    # python311Packages.pillow
-    # python311Packages.pillow-heif
-    # python311Packages.tqdm
-    # python311Packages.moviepy
-    # python311Packages.numpy
-    # python311Packages.torch
-    # python311Packages.torchvision
-    # python311Packages.diffusers
-    # python311Packages.transformers
-    # python311Packages.accelerate
-    # python311Packages.raylib-python-cffi
-    # javaPackages.openjfx19
-    #inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk22
     jdk23
     android-tools
     undmg
     jq
     libusb1
-    beeper-bridge-manager
+    # beeper-bridge-manager
     nodejs_20
     unstable.nodePackages.vercel
 
     #lspconfig
     fd # find tool
     ripgrep
-    (pkgs.callPackage ./../customDerivations/instantview.nix { })
     #(pkgs.callPackage ./../customDerivations/macforge.nix { })
     # (pkgs.callPackage ./../customDerivations/cdock.nix { })
     (pkgs.callPackage ./../customDerivations/cursorcerer.nix { })

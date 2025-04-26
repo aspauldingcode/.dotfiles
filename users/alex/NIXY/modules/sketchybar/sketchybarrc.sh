@@ -349,11 +349,6 @@ $SKETCHYBAR_EXEC --set "Karabiner-Menu,Item-0" "${alias_style[@]}" \
     click_script="$PLUGIN_DIR/open_menubar_items.sh karabiner-menu \$BUTTON" \
     --subscribe "Karabiner-Menu,Item-0" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
 
-$SKETCHYBAR_EXEC --add alias "Flameshot,Item-0" $alias_position
-$SKETCHYBAR_EXEC --set "Flameshot,Item-0" "${alias_style[@]}" \
-    click_script="$PLUGIN_DIR/open_menubar_items.sh flameshot \$BUTTON" \
-    --subscribe "Flameshot,Item-0" mouse.clicked mouse.entered mouse.entered.global mouse.exited mouse.exited.global
-
 $SKETCHYBAR_EXEC --add alias "KDE Connect,Item-0" $alias_position
 $SKETCHYBAR_EXEC --set "KDE Connect,Item-0" "${alias_style[@]}" \
     click_script="$PLUGIN_DIR/open_menubar_items.sh kde-connect \$BUTTON" \
@@ -422,7 +417,7 @@ $SKETCHYBAR_EXEC --add bracket lbracket apple space '/space\..*/' separator_left
 $SKETCHYBAR_EXEC --add bracket cbracket volume backlight nightlight datetime cava spotify center \
   --set cbracket "${brackets[@]}" 
 $SKETCHYBAR_EXEC --add bracket rbracket "Control Center,BentoBox" \
-  "macOS InstantView,Item-0" "Karabiner-Menu,Item-0" "Control Center,UserSwitcher" "MacForgeHelper,Item-0" "Flameshot,Item-0" \
+  "macOS InstantView,Item-0" "Karabiner-Menu,Item-0" "Control Center,UserSwitcher" "MacForgeHelper,Item-0" \
   "KDE Connect,Item-0" wifi battery bluetooth separator_right memory cpu right \
   --set rbracket "${brackets[@]}"
 

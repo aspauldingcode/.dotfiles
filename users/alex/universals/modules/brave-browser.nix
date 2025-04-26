@@ -9,12 +9,10 @@
     enable = true;
     package = pkgs.brave;
     commandLineArgs = [
-      # Add any command line arguments here
       "--enable-features=UseOzonePlatform"
       (lib.optionals pkgs.stdenv.isLinux [ "--ozone-platform=wayland" ])
     ];
     dictionaries = [
-      # Add dictionaries packages here if needed
     ];
     extensions = [
       {
@@ -54,9 +52,6 @@
         id = "gkkmiofalnjagdcjheckamobghglpdpm"; # YouTube Windowed FullScreen
       }
       {
-        id = "phmcfcbljjdlomoipaffekhgfnpndbef"; # Hide YouTube Thumbnails
-      }
-      {
         id = "lckanjgmijmafbedllaakclkaicjfmnk"; # ClearURLs
       }
       {
@@ -87,7 +82,7 @@
         id = "lahhiofdgnbcgmemekkmjnpifojdaelb"; # Vercel
       }
       {
-        id = "dlnejlppicbjfcfcedcflplfjajinajd"; # Bonjourr - Minimalist startpage
+        id = "lcbjdhceifofjlpecfpeimnnphbcjgnc"; # xbrowsersync
       }
     ];
   };

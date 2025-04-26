@@ -5,6 +5,8 @@
 }:
 
 let
+in
+/*
   desktop_cleaner = pkgs.writeScriptBin "desktop_cleaner" ''
     #!/bin/bash
 
@@ -33,24 +35,14 @@ let
       sleep 5  # Check every 5 seconds
     done
   '';
-in
+*/
 {
   environment.systemPackages = with pkgs; [
-    desktop_cleaner
+    # desktop_cleaner
   ];
 
   launchd = {
     user.agents = {
-      flameshot = {
-        serviceConfig = {
-          Label = "com.aspauldingcode.flameshot";
-          ProgramArguments = [
-            "${pkgs.flameshot}/Applications/flameshot.app/Contents/MacOS/flameshot"
-          ];
-          RunAtLoad = true;
-        };
-      };
-
       toggle-darkmode = {
         serviceConfig = {
           Label = "com.aspauldingcode.toggle-darkmode";
@@ -90,18 +82,20 @@ in
         };
       };
 
-      desktop-cleaner = {
-        serviceConfig = {
-          Label = "com.aspauldingcode.desktop-cleaner";
-          ProgramArguments = [
-            "${desktop_cleaner}/bin/desktop_cleaner"
-          ];
-          RunAtLoad = true;
-          KeepAlive = true;
-          StandardOutPath = "/tmp/desktop_cleaner.log";
-          StandardErrorPath = "/tmp/desktop_cleaner.error.log";
+      /*
+        desktop-cleaner = {
+          serviceConfig = {
+            Label = "com.aspauldingcode.desktop-cleaner";
+            ProgramArguments = [
+              "${desktop_cleaner}/bin/desktop_cleaner"
+            ];
+            RunAtLoad = true;
+            KeepAlive = true;
+            StandardOutPath = "/tmp/desktop_cleaner.log";
+            StandardErrorPath = "/tmp/desktop_cleaner.error.log";
+          };
         };
-      };
+      */
 
       fix-wm = {
         serviceConfig = {

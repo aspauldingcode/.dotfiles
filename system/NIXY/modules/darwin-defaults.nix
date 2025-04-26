@@ -68,7 +68,13 @@ in
         autoLoginUser = null;
       };
       NSGlobalDomain = {
-        AppleInterfaceStyle = "Dark"; # or null; for normal. ##FIXME: TRIGGER WITH COLORSCHEME!
+        AppleInterfaceStyle =
+          if config.colorScheme.variant == "dark" then
+            "Dark"
+          else if config.colorScheme.variant == "light" then
+            "Light"
+          else
+            "Dark";
         AppleShowAllFiles = true;
         NSScrollAnimationEnabled = false;
         NSAutomaticWindowAnimationsEnabled = false;
@@ -205,19 +211,19 @@ in
           NSColorSimulatedHardwareEnclosureNumber = 4; # hardware color choice
           AppleHighlightColor =
             let
-              hexColor = "${palette.base0D}"; # this should be base0D which is #83a598
+              hexColor = "${palette.base0D}";
               hexColorConverted = builtins.toString (
                 (builtins.map (x: x / 255.0) (nix-colors.lib.conversions.hexToRGB hexColor)) ++ [ "Other" ]
               );
             in
             hexColorConverted;
         };
-        "~/Library/Preferences/com.apple.wallpaper" = {
-          SonomaFirstRunMigrationPerformed = 1;
-          StoreIndexMigrationVersion = 1;
-          # SystemWallpaperURL = "file:///System/Library/Desktop%20Pictures/.wallpapers/Sonoma%20Horizon/Sonoma%20Horizon.mov";
-          SystemWallpaperURL = "file:///Users/Shared/Wallpaper/wallpaper-nix-colors.png";
-        };
+        # "~/Library/Preferences/com.apple.wallpaper" = {
+        #   SonomaFirstRunMigrationPerformed = 1;
+        #   StoreIndexMigrationVersion = 1;
+        #   # SystemWallpaperURL = "file:///System/Library/Desktop%20Pictures/.wallpapers/Sonoma%20Horizon/Sonoma%20Horizon.mov";
+        #   SystemWallpaperURL = "file:///Users/Shared/Wallpaper/wallpaper-nix-colors.png";
+        # };
 
         NSGlobalDomain.TISRomanSwitchState = 1;
         "....X11" = {

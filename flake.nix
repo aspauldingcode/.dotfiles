@@ -62,14 +62,6 @@
       url = "github:homebrew/homebrew-core";
       flake = false;
     };
-    homebrew-bundle = {
-      url = "github:homebrew/homebrew-bundle";
-      flake = false;
-    };
-    homebrew-services = {
-      url = "github:homebrew/homebrew-services";
-      flake = false;
-    };
     homebrew-koekeishiya = {
       url = "github:koekeishiya/homebrew-formulae";
       flake = false;
@@ -86,15 +78,10 @@
       url = "github:homebrew/homebrew-cask";
       flake = false;
     };
-    homebrew-gcenx = {
-      url = "github:gcenx/homebrew-wine";
-      flake = false;
-    };
     # homebrew-kde = {
     #   url = "github:kde-mac/kde";
     #   flake = false;
     # };
-
     nix-rosetta-builder = {
       url = "github:cpick/nix-rosetta-builder";
       inputs.nixpkgs.follows = "unstable_nixpkgs";
@@ -130,13 +117,10 @@
       spicetify-nix,
       nix-homebrew,
       homebrew-core,
-      homebrew-bundle,
-      homebrew-services,
       homebrew-koekeishiya,
       homebrew-felixkratz,
       homebrew-smudge,
       homebrew-cask,
-      homebrew-gcenx,
       nix-rosetta-builder,
       frida-nix,
       sops-nix,

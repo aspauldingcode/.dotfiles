@@ -844,7 +844,6 @@
           autoReloadOnWrite = null;
           disableNetrw = null;
           extraOptions = { };
-          gitPackage = pkgs.git;
           hijackCursor = null;
           hijackNetrw = null;
           hijackUnnamedBufferWhenOpening = null;
@@ -860,6 +859,13 @@
           selectPrompts = null;
           sortBy = null;
           syncRootWithCwd = null;
+          git = {
+            enable = true;
+            ignore = true;
+            showOnDirs = true;
+            showOnOpenDirs = true;
+            timeout = 400;
+          };
         };
 
         # file search/fuzzyfinder

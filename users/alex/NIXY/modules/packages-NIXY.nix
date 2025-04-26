@@ -14,18 +14,18 @@
   };
 
   home.packages = with pkgs; [
-    calcurse
+    # calcurse
     chatgpt-cli
     # jetbrains.idea-community-bin
     unstable.jetbrains.clion
     cowsay
-    cmus
+    # cmus
     nix-search-cli
-    cmusfm
-    bat
+    # cmusfm
+    # bat
     hashcat
     pmbootstrap
-    newsboat
+    # newsboat
     utm
     pkgconf
     nmap
