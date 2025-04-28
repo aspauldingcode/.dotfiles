@@ -12,7 +12,7 @@
       spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.system};
     in
     {
-      enable = true;
+      enable = false; # FIX
       theme = {
         name = "base16";
         src = ./themes/base16;

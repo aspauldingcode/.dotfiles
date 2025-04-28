@@ -659,9 +659,6 @@
               package = pkgs.unstable.taplo;
               autostart = true;
               filetypes = [ "toml" ]; # Include .toml files
-              rootDir = {
-                __raw = "require('lspconfig.util').root_pattern('*.toml', '.git')";
-              }; # IMPORTANT: this is required for taplo LSP to work in non-git repositories
             };
             templ = {
               enable = false;

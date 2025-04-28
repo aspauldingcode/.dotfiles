@@ -65,8 +65,8 @@
     jq
     libusb1
     # beeper-bridge-manager
-    nodejs_20
-    unstable.nodePackages.vercel
+    # nodejs_20 # FIXME: causing severe headaches atm 04/28/25
+    # unstable.nodePackages.vercel
 
     #lspconfig
     fd # find tool

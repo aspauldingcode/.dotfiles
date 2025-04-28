@@ -42,7 +42,6 @@ in
 
     # Fix specific problematic binaries if they exist
     BINARIES=(
-      "${pkgs.spotify}/Applications/Spotify.app/Contents/MacOS/Spotify"
     )
 
     for binary in "''${BINARIES[@]}"; do

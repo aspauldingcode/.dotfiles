@@ -45,7 +45,7 @@
     # bonsai #Only available on mac?
     tt
     obsidian
-    cargo
+    unstable.cargo
     mas
     thefuck
     zsh-completions
