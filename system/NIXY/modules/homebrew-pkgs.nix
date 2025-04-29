@@ -53,6 +53,7 @@
     masApps = {
       "Xcode" = 497799835;
       "Windows App" = 1295203466;
+      "Apple Configurator" = 1037126344;
     };
   };
 

@@ -407,9 +407,9 @@ in
 
       # xvnc-iphone
       (pkgs.writeShellScriptBin "xvnc-iphone" ''
-          #!/bin/sh
+        #!/bin/sh
 
-          echo "yeah not quite."
+        echo "yeah not quite."
       '')
 
       # connect to school vms
