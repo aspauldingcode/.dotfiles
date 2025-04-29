@@ -13,14 +13,14 @@ let
   sketchybar = "${pkgs.unstable.sketchybar}/bin/sketchybar";
   borders = "";
   i3-msg = "${homebrewPath}/i3-msg";
-  alacritty = "${pkgs.alacritty}/bin/alacritty";
+  alacritty = "${pkgs.alacritty}/Applications/Alacritty.app";
   kitty = "${pkgs.kitty}/bin/kitty";
-  firefox = "${homebrewPath}/firefox";
   app_menu = "/Applications/unmenu.app/Contents/MacOS/unmenu";
   jq = "${pkgs.jq}/bin/jq";
   desktoppr = "/usr/local/bin/desktoppr";
   m = "${homebrewPath}/bin/m";
   wallpaper = "/Users/Shared/Wallpaper/wallpaper-nix-colors.png";
+  firefox = "${pkgs.firefox-bin}/Applications/Firefox.app";
 
   inherit (config.colorScheme) palette;
 in

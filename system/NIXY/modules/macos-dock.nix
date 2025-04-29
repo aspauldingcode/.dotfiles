@@ -6,7 +6,7 @@
     # "/Applications/Nix\ Apps/Spotify.app"
     # "${config.programs.spicetify.spicedSpotify}/Applications/Spotify.app"
     "${pkgs.obsidian}/Applications/Obsidian.app"
-    "${pkgs.librewolf}/Applications/Librewolf.app"
+    "${pkgs.firefox-bin}/Applications/Firefox.app"
     "${pkgs.brave}/Applications/Brave Browser.app"
     "/System/Applications/Messages.app"
     "/System/Applications/Facetime.app"

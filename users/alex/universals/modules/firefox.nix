@@ -26,7 +26,7 @@ in
 
   programs.firefox = {
     enable = true;
-    package = if pkgs.stdenv.isDarwin then pkgs.librewolf else pkgs.librewolf;
+    package = if pkgs.stdenv.isDarwin then pkgs.firefox-bin else pkgs.firefox;
     profiles = {
       ${user} = {
         userChrome = # CSS

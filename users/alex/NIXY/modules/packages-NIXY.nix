@@ -41,6 +41,7 @@
     libnotify
     asciidoctor
     fzf
+    tigervnc
     lavat
     # bonsai #Only available on mac?
     tt
