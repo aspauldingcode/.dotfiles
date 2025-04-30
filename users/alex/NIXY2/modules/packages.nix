@@ -6,7 +6,6 @@
       allowUnfree = true;
       permittedInsecurePackages = [
         "electron-19.1.9"
-        "openjdk-19-ga"
       ];
       allowUnfreePredicate = (_: true);
       allowUnsupportedSystem = false;
@@ -45,7 +44,7 @@
 
       # Networking and communication
       android-tools
-      unstable.checkra1n
+      checkra1n
       idevicerestore
       libimobiledevice
       libusb1
@@ -150,10 +149,7 @@
       (prismlauncher.override {
         jdks = [
           jdk8
-          jdk17
-          jdk19
           jdk21
-          # Minecraft requires jdk21 SOON!
         ];
       })
     ];

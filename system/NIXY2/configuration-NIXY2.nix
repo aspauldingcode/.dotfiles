@@ -14,6 +14,7 @@
     ./scripts-NIXY2.nix
     apple-silicon.nixosModules.apple-silicon-support
     ./modules/packages.nix
+    ./temporaryfix.nix # FIXME: remove after success https://github.com/tpwrules/nixos-apple-silicon/issues/276
     #./modules/virtual-machines.nix
     ./modules/theme.nix
     ./modules/kanata.nix
@@ -65,14 +66,10 @@
     };
     opengl = {
       enable = true;
-      driSupport = true; # This is already enabled by default
       extraPackages = with pkgs; [ ];
       extraPackages32 = with pkgs; [ ];
     };
-    pulseaudio.enable = false;
   };
-
-  sound.enable = true;
 
   networking = {
     wireless.iwd = {
@@ -129,8 +126,8 @@
         };
         GTK = {
           application_prefer_dark_theme = true;
-          cursor_theme_name = "Bibata-Modern-Ice";
-          font_name = "JetBrains Mono";
+          cursor_theme_name = lib.mkForce "Bibata-Modern-Ice";
+          font_name = lib.mkForce "JetBrains Mono";
           icon_theme_name = "Adwaita";
           theme_name = "Adwaita";
         };

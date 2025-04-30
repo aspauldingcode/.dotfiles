@@ -26,7 +26,7 @@
 
     apple-silicon = {
       url = "github:tpwrules/nixos-apple-silicon";
-      inputs.nixpkgs.follows = "nixpkgs"; # Follows the stable nixpkgs version
+      inputs.nixpkgs.follows = "unstable_nixpkgs"; # Follows the unstable nixpkgs version
     };
 
     nur = {
@@ -215,7 +215,7 @@
           ];
         };
         NIXY2 = nixpkgs.lib.nixosSystem {
-          pkgs = import nixpkgs {
+          pkgs = import unstable_nixpkgs {
             system = "aarch64-linux";
             config = {
               allowUnfree = true;
