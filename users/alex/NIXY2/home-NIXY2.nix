@@ -3,7 +3,7 @@
 {
   imports = [
     nix-colors.homeManagerModules.default
-    #./../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
+    ./../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
     ./../universals/modules/discord.nix
     ./../universals/modules/firefox.nix
     ./../universals/modules/shells.nix

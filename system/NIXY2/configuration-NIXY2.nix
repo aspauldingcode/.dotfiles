@@ -14,11 +14,17 @@
     ./scripts-NIXY2.nix
     apple-silicon.nixosModules.apple-silicon-support
     ./modules/packages.nix
-    ./temporaryfix.nix # FIXME: remove after success https://github.com/tpwrules/nixos-apple-silicon/issues/276
+    # ./temporaryfix.nix # FIXME: remove after success https://github.com/tpwrules/nixos-apple-silicon/issues/276
     #./modules/virtual-machines.nix
     ./modules/theme.nix
     ./modules/kanata.nix
   ];
+
+  nixpkgs.flake = {
+    setFlakeRegistry = false;
+    setNixPath = false;
+  };
+
 
   boot = {
     kernel.sysctl."net.ipv4.ip_forward" = true;
@@ -111,7 +117,6 @@
   programs = {
     regreet = {
       enable = true;
-      package = pkgs.regreet;
       settings = {
         default_session = {
           command = "${pkgs.sway}/bin/sway --config ${./modules/greetd/sway-config}";
@@ -368,12 +373,8 @@
     powerline-symbols
     jetbrains-mono
     font-awesome_5
-    (nerdfonts.override {
-      fonts = [
-        "NerdFontsSymbolsOnly"
-        "Hack"
-      ];
-    })
+    nerd-fonts.hack
+    nerd-fonts.symbols-only
     dejavu_fonts
   ];
 

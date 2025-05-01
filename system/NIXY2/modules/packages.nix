@@ -35,6 +35,7 @@
     read-edid
     greetd.regreet
     neovim
+    fastfetch
     zellij
     kdePackages.kdeconnect-kde
     universal-android-debloater
@@ -46,8 +47,8 @@
     libsForQt5.qt5.qtgraphicaleffects
     libsForQt5.dolphin
     libsForQt5.qt5ct
-    gnome.sushi
-    gnome.nautilus
+    sushi
+    nautilus
     # libsForQt5.breeze-qt5
     # libsForQt5.breeze-gtk
     # libsForQt5.breeze-icons
@@ -79,7 +80,6 @@
     libreoffice-fresh
     xdg-desktop-portal-wlr
     geoclue2
-    gtkdialog
     pcmanfm
     wofi-emoji
     htop

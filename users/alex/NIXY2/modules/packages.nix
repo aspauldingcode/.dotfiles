@@ -26,7 +26,7 @@
       brightnessctl
       # box64 # not working with 16k pagesize m1 asahi
       gimp
-      unstable.pmbootstrap
+      # unstable.pmbootstrap
       jq
       lsof
       ncdu

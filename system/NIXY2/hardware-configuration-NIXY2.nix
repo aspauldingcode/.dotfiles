@@ -18,7 +18,7 @@
 
   fileSystems."/" = {
     device = "/dev/nvme0n1p5";
-    fsType = "ext4";
+    fsType = "btrfs"; # Shit. I forgot to change from ext4 to btrfs.
   };
 
   swapDevices = [ ];

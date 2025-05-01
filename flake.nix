@@ -214,7 +214,7 @@
             sops-nix.nixosModules.sops
           ];
         };
-        NIXY2 = nixpkgs.lib.nixosSystem {
+        NIXY2 = unstable_nixpkgs.lib.nixosSystem {
           pkgs = import unstable_nixpkgs {
             system = "aarch64-linux";
             config = {
