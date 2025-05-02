@@ -35,6 +35,8 @@
       ripgrep
       socat
       sshfs
+      # trae
+      nix-search
       tigervnc
       usbmuxd
       wget
@@ -56,7 +58,6 @@
 
       # Multimedia and graphics
       blender
-      brave
       cava
       ffmpeg-full
       flameshot

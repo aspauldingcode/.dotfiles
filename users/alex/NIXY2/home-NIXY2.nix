@@ -4,13 +4,13 @@
   imports = [
     nix-colors.homeManagerModules.default
     ./../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
+    ./../universals/modules/alacritty.nix
     ./../universals/modules/discord.nix
     ./../universals/modules/firefox.nix
     ./../universals/modules/shells.nix
     ./../universals/modules/btop.nix
     ./../universals/modules/git.nix
     ./../universals/modules/yazi.nix
-    ./modules/alacritty.nix
     ./modules/mako.nix
     ./modules/bemenu.nix
     ./modules/mimeapps.nix
@@ -23,7 +23,7 @@
   home = {
     username = "alex";
     homeDirectory = "/home/alex";
-    stateVersion = "24.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+    stateVersion = "24.11"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   };
 
   services.ssh-agent.enable = true;

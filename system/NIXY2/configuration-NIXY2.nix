@@ -402,7 +402,7 @@
       enable = true;
       allowReboot = false;
     };
-    stateVersion = "23.05"; # Did you read the comment?
+    stateVersion = "24.11"; # Did you read the comment?
     activationScripts.script.text = ''
       cp /home/alex/.dotfiles/users/alex/face.png /var/lib/AccountsService/icons/alex
       cp /home/alex/.dotfiles/users/susu/face.png /var/lib/AccountsService/icons/susu

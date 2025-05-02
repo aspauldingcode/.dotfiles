@@ -638,7 +638,6 @@
 
         log "Input-remapper service restarted successfully."
       '')
-
     ];
   };
 }
