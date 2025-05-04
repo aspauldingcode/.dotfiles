@@ -1238,6 +1238,6 @@ in
   };
 
   home.packages = with pkgs; [
-    # unstable.code-cursor # leave out for now, needs options to be accesible.
+    unstable.code-cursor # leave out for now, needs options to be accesible.
   ];
 }

@@ -104,7 +104,7 @@
       dns = "dnsmasq";
     };
     firewall = {
-      enable = true;
+      enable = false;
       extraCommands = ''
         # Replace "eth0" with your primary network interface
         iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE

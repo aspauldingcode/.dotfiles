@@ -34,7 +34,7 @@
     ./modules/maco.nix
     ./modules/unmenu.nix
     ./modules/unmenu-configured.nix
-    ./modules/packages-NIXY.nix
+    ./modules/packages.nix
     ./modules/instantview.nix
     ./modules/karabiner.nix
     ./modules/wallpaper.nix

@@ -6,6 +6,7 @@
     ./../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
     ./../universals/modules/alacritty.nix
     ./../universals/modules/discord.nix
+    ./../universals/modules/vscode.nix
     ./../universals/modules/firefox.nix
     ./../universals/modules/shells.nix
     ./../universals/modules/btop.nix

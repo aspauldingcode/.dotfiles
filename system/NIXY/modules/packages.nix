@@ -24,6 +24,7 @@
     # xorg.xorgserver # FIXME: Broken package darwin
     yazi
     fftw
+    code-cursor
     espeak
     openconnect
     gp-saml-gui
