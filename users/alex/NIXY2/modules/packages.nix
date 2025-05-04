@@ -67,51 +67,17 @@
       #obs-studio-plugins.wlrobs # NOT WORKING on aarch64-linux!
       #spotify-unwrapped # NOT AVAILABLE on aarch64-linux!
       sway-contrib.grimshot
-      yt-dlp # youtube-dl fork # MARKED INSECURE!
-      # tartube-yt-dlp # GUI to use yt-dlp. MARKED INSECURE!
 
       # Desktop environment and window management
-      albert
-      autotiling
       bemenu
       clipman
-      eww
-      glpaper
       gnomeExtensions.dark-variant
-      gtk-layer-shell
-      i3status-rust
+      # gtk-layer-shell
       imv
-      lavalauncher
-      lxappearance
-      pcmanfm
-      pinentry-bemenu
-      swaybg
-      swaylock-effects
-      swayr
-      swayrbar
-      wbg
-      wev
       wl-clipboard
       wl-screenrec
-      wlroots
-      wlogout
-      wl-gammactl
-      wlr-randr
-      gammastep
       wl-gammarelay-rs
-      wofi
-      wshowkeys
       wtype
-      wob
-      pamixer
-
-      # Gaming and emulation
-      # android-studio # DOESN'T WORK ON aarch64-linux!
-      element
-      element-desktop
-      #wineasio # NOT WORKING on asahi!
-      # wineWow64Packages.waylandFull # NOT WORKING on aarch64-linux!
-      winetricks
 
       # Fonts and theming
       corefonts
@@ -119,33 +85,12 @@
       sassc
 
       # Miscellaneous
-      #beeper # DOESN'T WORK ON aarch64-linux!
-      lolcat
-      pfetch
-      ruby_3_3
+      # unstable.beeper # DOESN'T WORK ON aarch64-linux!
       sl
       thefuck
       waypipe
       wayvnc
       lavat
-
-      (python311.withPackages (
-        ps: with ps; [
-          toml
-          python-lsp-server
-          pyls-isort
-          flake8
-          evdev
-          pynput
-          pygame
-          matplotlib
-          libei
-          keyboard
-          sympy
-          numpy
-          i3ipc
-        ]
-      ))
 
       (prismlauncher.override {
         jdks = [

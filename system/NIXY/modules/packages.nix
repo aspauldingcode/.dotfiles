@@ -13,7 +13,6 @@
     wget
     gnumake
     pfetch
-    htop
     unstable.macos-instantview
     prismlauncher
     nixfmt-rfc-style
@@ -23,15 +22,8 @@
     # xorg.xinit      # FIXME: Broken package darwin
     # xorg.xorgserver # FIXME: Broken package darwin
     yazi
-    fftw
-    code-cursor
     espeak
     openconnect
-    gp-saml-gui
-    libreoffice-bin
-    libtool
-    automake
-    autoconf-archive
     unstable.tart
     iniparser
     unstable.iproute2mac
