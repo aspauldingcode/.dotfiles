@@ -25,6 +25,7 @@
     ./../universals/modules/okular.nix
     ./../universals/modules/fastfetch.nix
     ./../universals/modules/colima.nix
+    ./../universals/modules/zellij.nix
     ./modules/theme.nix
     ./modules/xcode/xcode.nix # FIXME: use nix-color theme
     ./modules/alacritty.nix
