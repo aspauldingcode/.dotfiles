@@ -35,6 +35,7 @@
         ll = "ls -l";
         la = "ls -a";
         lsdir = "ls -d */";
+        nu = "nu --login";
 
         reboot = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
         rb = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
@@ -60,6 +61,7 @@
         ll = "ls -l";
         la = "ls -a";
         lsdir = "ls -d */";
+        nu = "nu --login";
 
         reboot = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
         rb = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
@@ -82,6 +84,7 @@
         ll = "ls -l";
         la = "ls -a";
         lsdir = "ls -d */";
+        nu = "nu --login";
 
         reboot = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
         rb = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
@@ -121,6 +124,7 @@
         l = "ls";
         ll = "ls -l";
         la = "ls -a";
+        nu = "nu --login";
 
         reboot = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
         rb = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";

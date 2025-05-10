@@ -25,7 +25,6 @@
     setNixPath = false;
   };
 
-
   boot = {
     kernel.sysctl."net.ipv4.ip_forward" = true;
     loader = {
@@ -168,6 +167,7 @@
     jetbrains-mono
     adwaita-icon-theme
     bibata-cursors
+    gtklock-userinfo-module
   ];
 
   services = {
