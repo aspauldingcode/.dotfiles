@@ -12,6 +12,7 @@
     ./../universals/modules/btop.nix
     ./../universals/modules/git.nix
     ./../universals/modules/yazi.nix
+    ./../universals/modules/zellij.nix
     ./modules/mako.nix
     ./modules/bemenu.nix
     ./modules/mimeapps.nix
