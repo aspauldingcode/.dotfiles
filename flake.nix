@@ -128,6 +128,42 @@
       user = "alex";
       inherit (self) inputs;
       std = nix-std.lib;
+
+      # Define sops configuration
+      commonSopsConfig = {
+        sops = {
+          defaultSopsFile = ./secrets.yaml;
+          defaultSopsFormat = "yaml";
+          age = {
+            sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+            keyFile = "/var/lib/sops-nix/key.txt";
+            generateKey = true;
+          };
+          secrets = {
+            test_secret = {
+              owner = user;
+              mode = "0400";
+            };
+            claude_api_key = {
+              owner = user;
+              mode = "0400";
+            };
+            openai_api_key = {
+              owner = user;
+              mode = "0400";
+            };
+            azure_openai_api_key = {
+              owner = user;
+              mode = "0400";
+            };
+            bedrock_keys = {
+              owner = user;
+              mode = "0400";
+            };
+          };
+        };
+      };
+
       # Define common specialArgs for nixosConfigurations and homeConfigurations
       commonSpecialArgs = {
         inherit
@@ -144,24 +180,11 @@
           nixtheplanet
           spicetify-nix
           user
+          commonSopsConfig
           ;
       };
-      commonExtraSpecialArgs = {
-        inherit
-          inputs
-          nix-darwin
-          nixvim
-          flake-parts
-          nix-colors
-          apple-silicon
-          nur
-          self
-          std
-          nixtheplanet
-          spicetify-nix
-          user
-          ;
-      };
+      commonExtraSpecialArgs = commonSpecialArgs;
+
       systems = [
         "x86_64-linux"
         "aarch64-linux"
@@ -309,12 +332,12 @@
             sops-nix.darwinModules.sops
             nix-homebrew.darwinModules.nix-homebrew
 
-            # An existing Linux builder is needed to initially bootstrap `nix-rosetta-builder`.
-            # If one isn't already available: comment out the `nix-rosetta-builder` module below,
-            # uncomment this `linux-builder` module, and run `darwin-rebuild switch`:
+            # An existing Linux builder is needed to initially bootstrap nix-rosetta-builder.
+            # If one isn't already available: comment out the nix-rosetta-builder module below,
+            # uncomment this linux-builder module, and run darwin-rebuild switch:
             { nix.linux-builder.enable = true; }
-            # Then: uncomment `nix-rosetta-builder`, remove `linux-builder`, and `darwin-rebuild switch`
-            # a second time. Subsequently, `nix-rosetta-builder` can rebuild itself.
+            # Then: uncomment nix-rosetta-builder, remove linux-builder, and darwin-rebuild switch
+            # a second time. Subsequently, nix-rosetta-builder can rebuild itself.
             # nix-rosetta-builder.darwinModules.default
           ];
         };
@@ -339,31 +362,10 @@
               pkgs = nixpkgs.legacyPackages.${system};
               defaultShell = pkgs.mkShell {
                 buildInputs = with pkgs; [
-                  age
-                  ssh-to-age
-                  sops
                   bat
                 ];
                 shellHook = ''
-                  echo -e "\033[0;34mSOPS setup tools available:\033[0m age-keygen, ssh-to-age, sops"
-                  echo ""
-                  echo -e "\033[0;34mTo check secrets:\033[0m"
-                  echo -e "  Without sudo: \033[0;32mbat /run/secrets/test_secret\033[0m"
-                  echo -e "  With sudo:    \033[0;32msudo bat /run/secrets/test_secret\033[0m"
-                  echo ""
-                  echo -e "\033[0;34mTo view all available secrets:\033[0m"
-                  echo -e "  \033[0;32msudo ls -la /run/secrets/\033[0m"
-                  echo ""
-                  echo -e "\033[0;34mTo edit secrets:\033[0m"
-                  echo -e "\n     \033[0;32msops edit secrets/nixy/secrets.yaml\033[0m"
-                  echo ""
-                  if [ -f ./scripts/setup-sops.sh ]; then
-                    chmod +x ./scripts/setup-sops.sh
-                    ./scripts/setup-sops.sh && exit 0
-                  else
-                    echo "Warning: setup-sops.sh not found"
-                    exit 1
-                  fi
+                  echo -e "\033[0;34mHow's it going fam?\033[0m"
                 '';
               };
             in

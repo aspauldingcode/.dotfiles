@@ -97,49 +97,4 @@
       };
     };
   };
-
-  sops = {
-    defaultSopsFile = ../../../secrets/nixy/secrets.yaml;
-    defaultSopsFormat = "yaml";
-    age = {
-      keyFile = "/var/lib/sops-nix/key.txt"; # Use same key as system
-      sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-      generateKey = true;
-    };
-    secrets = {
-      test_secret = {
-        mode = "0400";
-      };
-      claude_api_key = {
-        mode = "0400";
-      };
-      openai_api_key = {
-        mode = "0400";
-      };
-      azure_openai_api_key = {
-        mode = "0400";
-      };
-      bedrock_keys = {
-        mode = "0400";
-      };
-    };
-  };
-
-  home.packages = [
-    (pkgs.writeShellScriptBin "test-home-secret" ''
-      #!${pkgs.bashInteractive}/bin/bash
-      if [ -f ${config.sops.secrets.test_secret.path} ]; then
-        echo "Reading test_secret:"
-        echo "Secret name: ${config.sops.secrets.test_secret.name}"
-        echo "Secret path: ${config.sops.secrets.test_secret.path}"
-        echo "Secret key: ${config.sops.secrets.test_secret.key}"
-        echo "Secret format: ${config.sops.secrets.test_secret.format}"
-        echo "Secret mode: ${config.sops.secrets.test_secret.mode}"
-        echo "Secret sopsFile: ${config.sops.secrets.test_secret.sopsFile}"
-      else
-        echo "Error: test_secret file not found at ${config.sops.secrets.test_secret.path}"
-        exit 1
-      fi
-    '')
-  ];
 }
