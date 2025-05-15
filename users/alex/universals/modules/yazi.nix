@@ -387,7 +387,8 @@ in
           3
         ];
 
-        create_title = "Create:";
+        # create_title = "Create:"; FIXME: breaks nixos yazi
+create_title = [ "Create:" " " ];  # Array of two elements: title and optional separator/space
         create_origin = "top-center";
         create_offset = [
           0

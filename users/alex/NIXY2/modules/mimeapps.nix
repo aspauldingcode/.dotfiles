@@ -3,7 +3,7 @@
 # Configure application filetype defaults.
 {
   xdg.mimeApps = {
-    enable = true;
+    # enable = true;
     associations = lib.mkForce {
       added = {
         # applications

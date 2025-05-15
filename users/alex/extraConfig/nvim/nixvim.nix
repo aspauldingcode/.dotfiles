@@ -901,17 +901,106 @@
         # git and revisioning
         # gitgutter.enable = true;
 
-        # statusbar
-        lualine = {
-          enable = true;
-          settings = {
-            sections.lualine_c = [ "lsp_progress" ]; # Install lsp_progress!
-            separators = {
-              left = "";
-              right = "";
+        # lualine statusbar
+        lualine =
+          let
+            inherit (config.colorScheme) palette;
+          in
+          {
+            enable = true;
+            settings = {
+              options = {
+                component_separators = "";
+                section_separators = {
+                  left = "";
+                  right = "";
+                };
+
+                theme = {
+                  normal = {
+                    a = {
+                      fg = "#${palette.base00}";
+                      bg = "#${palette.base0E}";
+                      gui = "bold";
+                    };
+                    b = {
+                      fg = "#${palette.base05}";
+                      bg = "#${palette.base02}";
+                    };
+                    c = {
+                      fg = "#${palette.base05}";
+                      bg = "#${palette.base01}";
+                    };
+                  };
+
+                  insert = {
+                    a = {
+                      fg = "#${palette.base00}";
+                      bg = "#${palette.base0D}";
+                      gui = "bold";
+                    };
+                  };
+
+                  visual = {
+                    a = {
+                      fg = "#${palette.base00}";
+                      bg = "#${palette.base0C}";
+                      gui = "bold";
+                    };
+                  };
+
+                  replace = {
+                    a = {
+                      fg = "#${palette.base00}";
+                      bg = "#${palette.base08}";
+                      gui = "bold";
+                    };
+                  };
+
+                  inactive = {
+                    a = {
+                      fg = "#${palette.base05}";
+                      bg = "#${palette.base00}";
+                      gui = "bold";
+                    };
+                    b = {
+                      fg = "#${palette.base05}";
+                      bg = "#${palette.base00}";
+                    };
+                    c = {
+                      fg = "#${palette.base05}";
+                      bg = "#${palette.base00}";
+                    };
+                  };
+                };
+              };
+
+              sections = {
+                lualine_a = [
+                  {
+                    name = "mode";
+                    separator = {
+                      left = "";
+                    };
+                    right_padding = 2;
+                  }
+                ];
+
+                lualine_c = [ "lsp_progress" ];
+
+                lualine_z = [
+                  {
+                    name = "location";
+                    separator = {
+                      right = "";
+                    };
+                    left_padding = 2;
+                  }
+                ];
+              };
             };
           };
-        };
+
         noice.settings.lsp.progress.enabled = true;
 
         # nvim window tabs!
@@ -1062,7 +1151,7 @@
             markdown_css = "";
             open_ip = "";
             open_to_the_world = 0;
-            page_title = "「Markdown Preview」";
+            page_title = "MarkdownPreview";
             port = "8080";
             refresh_slow = 0;
             theme = "dark";
@@ -1072,7 +1161,7 @@
         # Animation
         # Smooth scrolling animations
         neoscroll = {
-          enable = true;
+          enable = false;
           settings = {
             # All default mappings
             mappings = [
@@ -1279,7 +1368,7 @@
 
         # Behavior Fixes
         vim-autoswap
-        neodev-nvim # FIXME: WTF is neodev-nvim? NEEDED
+        neodev-nvim # FIXME: WTF is neodev-nvim? NEEADED
 
         # Fuzzy Search Tool
         #telescope-fzf-native-nvim # FIXME: How do I use?

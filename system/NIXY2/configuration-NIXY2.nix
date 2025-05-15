@@ -18,6 +18,7 @@
     #./modules/virtual-machines.nix
     ./modules/theme.nix
     ./modules/kanata.nix
+    ./modules/airplay.nix
   ];
 
   nixpkgs.flake = {
@@ -248,17 +249,14 @@
       plasma6.enable = false;
     };
     xserver = {
-      enable = true;
-      desktopManager = {
-        xfce.enable = true;
-      };
+      enable = false;
       windowManager.i3.enable = true;
     };
     xrdp = {
       enable = true;
       port = 3389; # default 3389
       openFirewall = true;
-      defaultWindowManager = "xfce4-session";
+      defaultWindowManager = "i3";
     };
 
     udisks2.enable = true;
