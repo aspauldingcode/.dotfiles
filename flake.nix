@@ -130,7 +130,8 @@
       std = nix-std.lib;
 
       # Define sops configuration
-      commonSopsConfig = {
+      # Common sops configuration shared between NixOS and Home Manager
+      commonSopsConfigBase = {
         sops = {
           defaultSopsFile = ./secrets.yaml;
           defaultSopsFormat = "yaml";
@@ -139,30 +140,48 @@
             keyFile = "/var/lib/sops-nix/key.txt";
             generateKey = true;
           };
-          secrets = {
-            test_secret = {
-              owner = user;
-              mode = "0400";
-            };
-            claude_api_key = {
-              owner = user;
-              mode = "0400";
-            };
-            openai_api_key = {
-              owner = user;
-              mode = "0400";
-            };
-            azure_openai_api_key = {
-              owner = user;
-              mode = "0400";
-            };
-            bedrock_keys = {
-              owner = user;
-              mode = "0400";
-            };
+        };
+      };
+
+      # NixOS-specific sops configuration (with owner and mode)
+      nixosSopsConfig = nixpkgs.lib.recursiveUpdate commonSopsConfigBase {
+        sops.secrets = {
+          test_secret = {
+            owner = user;
+            mode = "0400";
+          };
+          claude_api_key = {
+            owner = user;
+            mode = "0400";
+          };
+          openai_api_key = {
+            owner = user;
+            mode = "0400";
+          };
+          azure_openai_api_key = {
+            owner = user;
+            mode = "0400";
+          };
+          bedrock_keys = {
+            owner = user;
+            mode = "0400";
           };
         };
       };
+
+      # Home Manager-specific sops configuration (without owner and mode)
+      hmSopsConfig = nixpkgs.lib.recursiveUpdate commonSopsConfigBase {
+        sops.secrets = {
+          test_secret = { };
+          claude_api_key = { };
+          openai_api_key = { };
+          azure_openai_api_key = { };
+          bedrock_keys = { };
+        };
+      };
+
+      # For backward compatibility, keep commonSopsConfig pointing to the NixOS version
+      commonSopsConfig = nixosSopsConfig;
 
       # Define common specialArgs for nixosConfigurations and homeConfigurations
       commonSpecialArgs = {
@@ -181,6 +200,8 @@
           spicetify-nix
           user
           commonSopsConfig
+          nixosSopsConfig
+          hmSopsConfig
           ;
       };
       commonExtraSpecialArgs = commonSpecialArgs;
@@ -224,9 +245,15 @@
                 # arguments to home.nix
                 extraSpecialArgs = commonExtraSpecialArgs;
                 backupFileExtension = "backup";
+                sharedModules = [
+                  sops-nix.homeManagerModules.sops
+                  { imports = [ hmSopsConfig ]; }
+                ];
               };
             }
             sops-nix.nixosModules.sops
+            # Add this line to include your sops configuration
+            { imports = [ nixosSopsConfig ]; }
           ];
         };
         NIXEDUP = nixpkgs.lib.nixosSystem {
@@ -235,6 +262,8 @@
           modules = [
             ./system/NIXEDUP/configuration-NIXEDUP.nix
             sops-nix.nixosModules.sops
+            # Add this line to include your sops configuration
+            { imports = [ nixosSopsConfig ]; }
           ];
         };
         NIXY2 = unstable_nixpkgs.lib.nixosSystem {
@@ -266,9 +295,15 @@
                 # arguments to home.nix
                 extraSpecialArgs = commonExtraSpecialArgs;
                 backupFileExtension = "backup";
+                sharedModules = [
+                  sops-nix.homeManagerModules.sops
+                  { imports = [ hmSopsConfig ]; }
+                ];
               };
             }
             sops-nix.nixosModules.sops
+            # Add this line to include your sops configuration
+            { imports = [ nixosSopsConfig ]; }
           ];
         };
       };
@@ -317,6 +352,7 @@
                 sharedModules = [
                   mac-app-util.homeManagerModules.default
                   sops-nix.homeManagerModules.sops
+                  { imports = [ hmSopsConfig ]; }
                 ];
                 users.${user} = {
                   imports = [
@@ -330,6 +366,8 @@
               };
             }
             sops-nix.darwinModules.sops
+            # Add this line to include your sops configuration
+            { imports = [ nixosSopsConfig ]; }
             nix-homebrew.darwinModules.nix-homebrew
 
             # An existing Linux builder is needed to initially bootstrap nix-rosetta-builder.
