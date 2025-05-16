@@ -27,6 +27,7 @@
         export OPENAI_API_KEY="$(cat ${config.sops.secrets.openai_api_key.path} 2>/dev/null)"
         export AZURE_OPENAI_API_KEY="$(cat ${config.sops.secrets.azure_openai_api_key.path} 2>/dev/null)"
         export BEDROCK_KEYS="$(cat ${config.sops.secrets.bedrock_keys.path} 2>/dev/null)"
+        export GH_TOKEN="$(cat ${config.sops.secrets.GH_TOKEN.path} 2>/dev/null)"
 
         oh-my-posh disable notice
       '';

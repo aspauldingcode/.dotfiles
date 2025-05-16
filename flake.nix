@@ -178,6 +178,10 @@
             owner = user;
             mode = "0400";
           };
+          GH_TOKEN = {
+            owner = user;
+            mode = "0400";
+          };
         };
       };
 
@@ -192,6 +196,7 @@
           wifi_bubbles_passwd = { };
           wifi_eduroam_userID = { };
           wifi_eduroam_passwd = { };
+          GH_TOKEN = { };
         };
       };
 

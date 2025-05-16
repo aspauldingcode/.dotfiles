@@ -10,8 +10,6 @@
     # Ensure the directory exists
     system.activationScripts.makeIwdDir = lib.stringAfter [ "var" ] ''
       mkdir -p /var/lib/iwd
-      chown iwd:iwd /var/lib/iwd
-      chmod 700 /var/lib/iwd
     '';
 
     # Install the CA certificate
@@ -47,7 +45,6 @@
       EOF
 
       chmod 600 /var/lib/iwd/eduroam.8021x
-      chown iwd:iwd /var/lib/iwd/eduroam.8021x
     '';
 
     system.activationScripts.writeBubblesPSK = lib.stringAfter [ "var" ] ''
@@ -60,7 +57,6 @@
       EOF
 
       chmod 600 /var/lib/iwd/Bubbles.psk
-      chown iwd:iwd /var/lib/iwd/Bubbles.psk
     '';
   };
 }

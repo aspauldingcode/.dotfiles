@@ -28,6 +28,7 @@
     neovim
     fastfetch
     zellij
+    gh
     kdePackages.kdeconnect-kde
     universal-android-debloater
     clang
