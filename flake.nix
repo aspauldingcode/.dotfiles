@@ -340,6 +340,19 @@
       # Return all the configurations
       nixosConfigurations = nixosConfigurations;
       darwinConfigurations = darwinConfigurations;
+      
+      # Define apps that can be run with 'nix run'
+      apps = eachSystem (pkgs: {
+        default = {
+          type = "app";
+          program = toString (pkgs.writeShellScript "sync-age-key" ''
+            # Make required dependencies available in PATH
+            export PATH="${pkgs.gh}/bin:${pkgs.ncurses}/bin:${pkgs.dialog}/bin:$PATH"
+            exec ${pkgs.bash}/bin/bash ${self}/sops-nix/sync-age-key.sh
+          '');
+        };
+      });
+      
       # FIXME: add nixvim here so I can build from any device without installing the dotfiles.
       devShells =
         nixpkgs.lib.genAttrs

@@ -5,7 +5,27 @@ REPO="aspauldingcode/age-key-store"
 DEST1="/var/lib/sops-nix/key.txt"
 DEST2="$HOME/.config/sops/age/keys.txt"
 
-# Download the file from GitHub
+# Check GitHub auth
+if ! gh auth status &>/dev/null; then
+    dialog --title "GitHub Authentication Required" \
+           --msgbox "You need to run:\n\n    gh auth login\n\nbefore continuing." 10 50
+    clear
+    exit 1
+fi
+
+# Confirm operation
+dialog --title "Deploy Age Key" \
+       --yesno "This will download and deploy the age key.\n\nContinue?" 10 50
+
+response=$?
+clear
+
+if [[ $response -ne 0 ]]; then
+    echo "❌ Operation cancelled by user."
+    exit 1
+fi
+
+# Clone repo and copy key
 gh repo clone "$REPO" /tmp/age-key-store
 cp /tmp/age-key-store/key.txt /tmp/key.txt
 rm -rf /tmp/age-key-store
@@ -21,4 +41,7 @@ cp "$DEST1" "$DEST2"
 sudo chmod 644 "$DEST1"
 chmod 644 "$DEST2"
 
-echo "✅ age key deployed successfully."
+# Show success dialog
+dialog --title "Success" --msgbox "✅ age key deployed successfully." 7 40
+clear
+
