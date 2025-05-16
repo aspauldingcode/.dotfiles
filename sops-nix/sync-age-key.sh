@@ -18,7 +18,6 @@ sudo mv /tmp/key.txt "$DEST1"
 cp "$DEST1" "$DEST2"
 
 # Fix permissions
-sudo chown root:root "$DEST1"
 sudo chmod 644 "$DEST1"
 chmod 644 "$DEST2"
 

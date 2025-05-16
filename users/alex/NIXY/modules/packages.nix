@@ -27,6 +27,9 @@
     pmbootstrap
     # newsboat
     utm
+    sops
+    age
+    gh
     pkgconf
     nmap
     # filezilla # no darwin support nixpkgs derivation
