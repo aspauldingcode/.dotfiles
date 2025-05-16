@@ -5,12 +5,9 @@ REPO="aspauldingcode/age-key-store"
 DEST1="/var/lib/sops-nix/key.txt"
 DEST2="$HOME/.config/sops/age/keys.txt"
 
-# Check GitHub auth
+# Automatically authenticate with GitHub if not already logged in
 if ! gh auth status &>/dev/null; then
-    dialog --title "GitHub Authentication Required" \
-           --msgbox "You need to run:\n\n    gh auth login\n\nbefore continuing." 10 50
-    clear
-    exit 1
+    gh auth login
 fi
 
 # Confirm operation
