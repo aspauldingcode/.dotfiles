@@ -975,29 +975,29 @@
                 };
               };
 
-sections = {
-  lualine_a = [
-    ''
-      {
-        "mode",
-        separator = { left = "" },
-        right_padding = 2
-      }
-    ''
-  ];
+              sections = {
+                lualine_a = [
+                  {
+                    name = "mode";
+                    separator = {
+                      left = "";
+                    };
+                    right_padding = 2;
+                  }
+                ];
 
-  lualine_c = [ "lsp_progress" ];
+                lualine_c = [ "lsp_progress" ];
 
-  lualine_z = [
-    ''
-      {
-        "location",
-        separator = { right = "" },
-        left_padding = 2
-      }
-    ''
-  ];
-};
+                lualine_z = [
+                  {
+                    name = "location";
+                    separator = {
+                      right = "";
+                    };
+                    left_padding = 2;
+                  }
+                ];
+              };
             };
           };
 
