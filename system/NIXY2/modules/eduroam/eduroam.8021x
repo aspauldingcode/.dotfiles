@@ -1,0 +1,11 @@
+[Security]
+EAP-Method=PEAP
+EAP-Identity=your_username@ewu.edu
+EAP-PEAP-CACert=/etc/ssl/certs/ewu-eduroam.pem
+EAP-PEAP-ServerDomainMask=lipfence02v.eastern.ewu.edu
+EAP-PEAP-Phase2-Method=MSCHAPV2
+EAP-PEAP-Phase2-Identity=your_username@ewu.edu
+EAP-PEAP-Phase2-Password=your_password
+
+[Settings]
+AutoConnect=true

@@ -19,6 +19,7 @@
     ./modules/theme.nix
     ./modules/kanata.nix
     ./modules/airplay.nix
+    ./modules/eduroam/eduroam.nix
   ];
 
   nixpkgs.flake = {

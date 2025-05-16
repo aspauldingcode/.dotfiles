@@ -21,6 +21,8 @@
       busybox
       docker
       vscode
+      age
+      sops
       fd
       gcal
       brightnessctl

@@ -34,6 +34,8 @@
     sushi
     sqlite
     nix-search
+    chatgpt-cli
+    kdePackages.kleopatra
     uutils-coreutils
     libusb1
     networkmanagerapplet

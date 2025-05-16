@@ -136,7 +136,7 @@
           defaultSopsFile = ./secrets.yaml;
           defaultSopsFormat = "yaml";
           age = {
-            sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+            # sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
             keyFile = "/var/lib/sops-nix/key.txt";
             generateKey = true;
           };
@@ -166,6 +166,18 @@
             owner = user;
             mode = "0400";
           };
+          wifi_bubbles_passwd = {
+            owner = user;
+            mode = "0400";
+          };
+          wifi_eduroam_userID = {
+            owner = user;
+            mode = "0400";
+          };
+          wifi_eduroam_passwd = {
+            owner = user;
+            mode = "0400";
+          };
         };
       };
 
@@ -177,6 +189,9 @@
           openai_api_key = { };
           azure_openai_api_key = { };
           bedrock_keys = { };
+          wifi_bubbles_passwd = { };
+          wifi_eduroam_userID = { };
+          wifi_eduroam_passwd = { };
         };
       };
 

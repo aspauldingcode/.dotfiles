@@ -23,10 +23,10 @@
         zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
         export EDITOR=nvim
 
-        export ANTHROPIC_API_KEY="$(cat /run/secrets/claude_api_key 2>/dev/null)"
-        export OPENAI_API_KEY="$(cat /run/secrets/openai_api_key 2>/dev/null)" 
-        export AZURE_OPENAI_API_KEY="$(cat /run/secrets/azure_openai_api_key 2>/dev/null)"
-        export BEDROCK_KEYS="$(cat /run/secrets/bedrock_keys 2>/dev/null)"
+        export ANTHROPIC_API_KEY="$(cat ${config.sops.secrets.claude_api_key.path} 2>/dev/null)"
+        export OPENAI_API_KEY="$(cat ${config.sops.secrets.openai_api_key.path} 2>/dev/null)"
+        export AZURE_OPENAI_API_KEY="$(cat ${config.sops.secrets.azure_openai_api_key.path} 2>/dev/null)"
+        export BEDROCK_KEYS="$(cat ${config.sops.secrets.bedrock_keys.path} 2>/dev/null)"
 
         oh-my-posh disable notice
       '';
