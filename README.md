@@ -1,37 +1,28 @@
 # .dotfiles
 A Universal .dotfiles Configuration with Nix Flakes - over-engineered by Alex Spaulding.
 
+<!-- BEGIN CODE STATS -->
 ## How much code?
 👨‍💻 Code Statistics:
 
 | Language | Files | Lines | Code | Comments | Blanks |
-| ---------- | ----- | ----- | ----- | -------- | ------ || CSS | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
-| Language | Files | Lines | Code | Comments | Blanks |
-| ---------- | ----- | ----- | ----- | -------- | ------ || JSON | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
-| Language | Files | Lines | Code | Comments | Blanks |
-| ---------- | ----- | ----- | ----- | -------- | ------ || Lua | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
-| Language | Files | Lines | Code | Comments | Blanks |
-| ---------- | ----- | ----- | ----- | -------- | ------ || Markdown | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
-| Language | Files | Lines | Code | Comments | Blanks |
-| ---------- | ----- | ----- | ----- | -------- | ------ || Nix | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
-| Language | Files | Lines | Code | Comments | Blanks |
-| ---------- | ----- | ----- | ----- | -------- | ------ || Plain Text | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
-| Language | Files | Lines | Code | Comments | Blanks |
-| ---------- | ----- | ----- | ----- | -------- | ------ || Python | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
-| Language | Files | Lines | Code | Comments | Blanks |
-| ---------- | ----- | ----- | ----- | -------- | ------ || Shell | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
-| Language | Files | Lines | Code | Comments | Blanks |
-| ---------- | ----- | ----- | ----- | -------- | ------ || TOML | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
-| Language | Files | Lines | Code | Comments | Blanks |
-| ---------- | ----- | ----- | ----- | -------- | ------ || Total | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
-| Language | Files | Lines | Code | Comments | Blanks |
-| ---------- | ----- | ----- | ----- | -------- | ------ || Vim script | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
-| Language | Files | Lines | Code | Comments | Blanks |
-| ---------- | ----- | ----- | ----- | -------- | ------ || XML | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
-| Language | Files | Lines | Code | Comments | Blanks |
-| ---------- | ----- | ----- | ----- | -------- | ------ || YAML | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
+|----------|-------|-------|------|----------|--------|
+| CSS | 4 | 1882 | 1416 | 124 | 342 |
+| JSON | 1 | 448 | 448 | 0 | 0 |
+| Lua | 12 | 1008 | 796 | 128 | 84 |
+| Markdown | 1 | 23 | 0 | 17 | 6 |
+| Nix | 124 | 27519 | 23382 | 2428 | 1709 |
+| Python | 9 | 2061 | 1743 | 93 | 225 |
+| Shell | 30 | 3236 | 2219 | 504 | 513 |
+| Plain Text | 3 | 753 | 0 | 551 | 202 |
+| TOML | 1 | 56 | 47 | 5 | 4 |
+| Vim script | 1 | 21 | 19 | 0 | 2 |
+| YAML | 3 | 219 | 64 | 111 | 44 |
+| **Total** | 189 | 37226 | 30134 | 3961 | 3131 |
 
-Last updated: Sun May 25 13:00:48 2025
+Last updated: Sun May 25 15:19:49 2025
+<!-- END CODE STATS -->
+
 
 ## Getting Started
 This repo contains my ___nixified___ .dotfiles, which additionally defines the operating system environment for NixOS and Darwin.

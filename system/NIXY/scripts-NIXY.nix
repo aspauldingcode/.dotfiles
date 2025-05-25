@@ -1,52 +1,64 @@
-{
-  pkgs,
-  ...
-}:
+{ pkgs, ... }:
 
 {
   environment.systemPackages = with pkgs; [
-    # Required packages for scripts
     tokei
     jq
 
-    # rebuild
-    (pkgs.writeShellScriptBin "rebuild" ''
-      # NIXY(aarch64-darwin)
+    (writeShellScriptBin "rebuild" ''
       echo "Rebuilding..."
       cd ~/.dotfiles
       darwin-rebuild switch --show-trace --flake .#NIXY
 
-      echo "fetching latest erase-install pkg."
-      ${pkgs.bash}/bin/bash ${../../erase-install-fetcher.sh}
-      echo "Updating readme.md with tokei..."
+      echo "Fetching latest erase-install pkg."
+      ${bash}/bin/bash ${../../erase-install-fetcher.sh}
 
-      # Generate code statistics with tokei and format as markdown table
-      STATS=$(${pkgs.tokei}/bin/tokei --output json .)
+      echo "Updating readme.md with tokei..."
       DATE=$(date)
 
-      # Process tokei output with jq to create markdown table
-      TABLE=$(echo "$STATS" | ${pkgs.jq}/bin/jq -r '
-        "| Language | Files | Lines | Code | Comments | Blanks |\n| ---------- | ----- | ----- | ----- | -------- | ------ |" +
-        (to_entries[] | "| " + .key + " | " + (.value.stats.n_files | tostring) + 
-        " | " + (.value.stats.n_lines | tostring) + 
-        " | " + (.value.stats.code | tostring) + 
-        " | " + (.value.stats.comments | tostring) + 
-        " | " + (.value.stats.blanks | tostring) + " |") +
-        "| **Total** | " + 
-        (reduce .[] as $item (0; . + $item.stats.n_files) | tostring) + " | " +
-        (reduce .[] as $item (0; . + $item.stats.n_lines) | tostring) + " | " +
-        (reduce .[] as $item (0; . + $item.stats.code) | tostring) + " | " +
-        (reduce .[] as $item (0; . + $item.stats.comments) | tostring) + " | " +
-        (reduce .[] as $item (0; . + $item.stats.blanks) | tostring) + " |"
-      ')
+      TOKEI_JSON=$(tokei . --output json | jq '{ CSS, JSON, Lua, Markdown, Nix, Python, Shell, "Plain Text", TOML, "Vim script", YAML }')
 
-      # Update README.md with new table
-      ${pkgs.perl}/bin/perl -i -pe "s/👨‍💻 There are .* lines of code in this repo.*/👨‍💻 Code Statistics:\n\n$TABLE\n\nLast updated: $DATE/" README.md
+      TABLE="<!-- BEGIN CODE STATS -->\n"
+      TABLE+="## How much code?\n"
+      TABLE+="👨‍💻 Code Statistics:\n\n"
+      TABLE+="| Language | Files | Lines | Code | Comments | Blanks |\n"
+      TABLE+="|----------|-------|-------|------|----------|--------|"
+
+      TOTAL_FILES=0
+      TOTAL_CODE=0
+      TOTAL_COMMENTS=0
+      TOTAL_BLANKS=0
+
+      while IFS=$'\t' read -r LANG FILES CODE COMMENTS BLANKS; do
+        LINES=$((CODE + COMMENTS + BLANKS))
+        TABLE+=$'\n'"| $LANG | $FILES | $LINES | $CODE | $COMMENTS | $BLANKS |"
+        TOTAL_FILES=$((TOTAL_FILES + FILES))
+        TOTAL_CODE=$((TOTAL_CODE + CODE))
+        TOTAL_COMMENTS=$((TOTAL_COMMENTS + COMMENTS))
+        TOTAL_BLANKS=$((TOTAL_BLANKS + BLANKS))
+      done < <(echo "$TOKEI_JSON" | jq -r '
+        to_entries[]
+        | select(.key | IN("CSS", "JSON", "Lua", "Markdown", "Nix", "Python", "Shell", "Plain Text", "TOML", "Vim script", "YAML"))
+        | [.key, (.value.reports | length), .value.code, .value.comments, .value.blanks]
+        | @tsv')
+
+      TOTAL_LINES=$((TOTAL_CODE + TOTAL_COMMENTS + TOTAL_BLANKS))
+      TABLE+=$'\n'"| **Total** | $TOTAL_FILES | $TOTAL_LINES | $TOTAL_CODE | $TOTAL_COMMENTS | $TOTAL_BLANKS |"
+      TABLE+=$'\n\n'"Last updated: $DATE"
+      TABLE+=$'\n'"<!-- END CODE STATS -->"
+
+      TMPFILE=$(mktemp)
+      echo -e "$TABLE" > "$TMPFILE"
+
+      perl -0777 -i -pe "
+        my \$table = do { local \$/; open my \$fh, '<', '$TMPFILE' or die \$!; <\$fh> };
+        s|<!-- BEGIN CODE STATS -->.*?<!-- END CODE STATS -->|\$table|s;
+      " README.md
+
+      rm "$TMPFILE"
 
       echo "Formatting all nix files..."
-      ${pkgs.treefmt2}/bin/treefmt ${
-        if pkgs.stdenv.isDarwin then "/Users/alex/.dotfiles" else "/home/alex/.dotfiles"
-      }
+      ${treefmt2}/bin/treefmt ~/.dotfiles
 
       echo "Done."
       date +"%I:%M:%S %p"
