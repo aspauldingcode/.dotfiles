@@ -99,7 +99,7 @@ in
     ${gowall} convert ${wallpaper_input} -t /etc/gowall/theme.json
 
     echo "Setting ${config.colorScheme.variant} wallpaper..."
-    wallpaper "${wallpaper_output}"
+    # wallpaper "''${wallpaper_output}"
 
     # ===================================================================
     # macOS Dark/Light Mode Configuration

@@ -2,7 +2,36 @@
 A Universal .dotfiles Configuration with Nix Flakes - over-engineered by Alex Spaulding.
 
 ## How much code?
-👨‍💻 There are 1,270,207 lines of code in this repo. Last updated: Fri May 16 15:22:44 2025
+👨‍💻 Code Statistics:
+
+| Language | Files | Lines | Code | Comments | Blanks |
+| ---------- | ----- | ----- | ----- | -------- | ------ || CSS | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
+| Language | Files | Lines | Code | Comments | Blanks |
+| ---------- | ----- | ----- | ----- | -------- | ------ || JSON | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
+| Language | Files | Lines | Code | Comments | Blanks |
+| ---------- | ----- | ----- | ----- | -------- | ------ || Lua | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
+| Language | Files | Lines | Code | Comments | Blanks |
+| ---------- | ----- | ----- | ----- | -------- | ------ || Markdown | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
+| Language | Files | Lines | Code | Comments | Blanks |
+| ---------- | ----- | ----- | ----- | -------- | ------ || Nix | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
+| Language | Files | Lines | Code | Comments | Blanks |
+| ---------- | ----- | ----- | ----- | -------- | ------ || Plain Text | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
+| Language | Files | Lines | Code | Comments | Blanks |
+| ---------- | ----- | ----- | ----- | -------- | ------ || Python | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
+| Language | Files | Lines | Code | Comments | Blanks |
+| ---------- | ----- | ----- | ----- | -------- | ------ || Shell | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
+| Language | Files | Lines | Code | Comments | Blanks |
+| ---------- | ----- | ----- | ----- | -------- | ------ || TOML | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
+| Language | Files | Lines | Code | Comments | Blanks |
+| ---------- | ----- | ----- | ----- | -------- | ------ || Total | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
+| Language | Files | Lines | Code | Comments | Blanks |
+| ---------- | ----- | ----- | ----- | -------- | ------ || Vim script | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
+| Language | Files | Lines | Code | Comments | Blanks |
+| ---------- | ----- | ----- | ----- | -------- | ------ || XML | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
+| Language | Files | Lines | Code | Comments | Blanks |
+| ---------- | ----- | ----- | ----- | -------- | ------ || YAML | null | null | null | null | null || **Total** | 0 | 0 | 0 | 0 | 0 |
+
+Last updated: Sun May 25 13:00:48 2025
 
 ## Getting Started
 This repo contains my ___nixified___ .dotfiles, which additionally defines the operating system environment for NixOS and Darwin.
