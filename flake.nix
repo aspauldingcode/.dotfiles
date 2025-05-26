@@ -431,7 +431,16 @@
                 if [ $? -eq 0 ]; then
                   dialog --title "✅ Success" --msgbox "Dotfiles installed successfully." 7 40
                 else
-                  dialog --title "❌ Failed" --msgbox "Dotfiles installation failed. Check logs for details." 7 50
+                  dialog --title "❌ Failed" --yesno "Dotfiles installation failed.
+
+                  Do you want to view the full log?" 10 50
+
+                    response=$?
+                    if [ $response -eq 0 ]; then
+                      dialog --title "📝 Installation Log" --textbox "$log_file" 30 100
+                    else
+                      dialog --title "ℹ️ Skipped Log" --msgbox "You chose not to view the installation log." 6 50
+                    fi
                 fi
               fi
             ''
