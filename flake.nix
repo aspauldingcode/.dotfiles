@@ -425,22 +425,30 @@
                   exit 4
                 fi
 
-                # Step 5: Check for Xcode CLI tools and prompt accordingly
-                if ! xcode-select -p >/dev/null 2>&1; then
+                # Step 5: Ensure Xcode CLI tools are installed before proceeding
+                while ! xcode-select -p >/dev/null 2>&1; do
                   dialog --title "🛠️ Installing Xcode CLI Tools" --msgbox "Xcode Command Line Tools are not installed.
 
                 A system prompt will appear. Click 'Install' to continue.
 
                 After installation finishes, return here and press OK." 15 60
 
-                  xcode-select --install
+                  xcode-select --install 2>/dev/null || true
 
-                  dialog --title "🕒 Please Wait" --msgbox "Wait for the Xcode CLI Tools installation to complete before continuing.
+                  dialog --title "🕒 Still Installing..." --yesno "Have you finished installing the Xcode Command Line Tools?
 
-                You can verify installation finished by clicking OK and running the command again." 10 60
-                else
-                  dialog --title "✅ Xcode CLI Tools" --msgbox "Xcode Command Line Tools are already installed." 7 50
-                fi
+                This is required before continuing.
+
+                Would you like to check again?" 12 60
+
+                  response=$?
+                  if [ "$response" -ne 0 ]; then
+                    dialog --title "❌ Required" --msgbox "You must install the Xcode CLI tools to continue." 7 50
+                  fi
+                done
+
+                dialog --title "✅ Xcode CLI Tools" --msgbox "Xcode Command Line Tools are installed. Continuing..." 7 50
+
 
                 # Step 6: Clone Dotfiles optionally
                 dialog --title "Clone Dotfiles" --yesno "Would you like to clone the aspauldingcode dotfiles repository to ~/.dotfiles?" 10 60
