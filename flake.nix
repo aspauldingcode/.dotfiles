@@ -383,7 +383,7 @@
 
                   Proceeding..." 10 60
 
-                exec ${pkgs.bash}/bin/bash ${self}/sops-nix/sync-age-key.sh
+                ./${self}/sops-nix/sync-age-key.sh
 
                 dialog --title "Install dotfiles?" --yesno "Do you want to install the aspauldingcode .dotfiles configuration?" 10 60
 
@@ -399,7 +399,6 @@
                 else
                   dialog --title "Skipped" --msgbox "Dotfiles installation skipped." 5 40
                 fi
-
               fi
             ''
           );
