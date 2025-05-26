@@ -375,8 +375,7 @@
                   3. Run:
                     csrutil disable
 
-                  4. Then run:
-                    reboot" 20 70
+                  4. Reboot." 20 70
                             exit 3
                           fi
 
