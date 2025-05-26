@@ -426,22 +426,10 @@
                 fi
 
                 # Step 5: Proceed with dotfiles installation
-                dialog --title "Installing dotfiles..." --infobox "Running nix-darwin switch from aspauldingcode/.dotfiles..." 5 50
+                echo "Installing dotfiles..."
+                sleep 3
+
                 nix run github:LnL7/nix-darwin -- switch --show-trace --flake github:aspauldingcode/.dotfiles#NIXY
-                if [ $? -eq 0 ]; then
-                  dialog --title "✅ Success" --msgbox "Dotfiles installed successfully." 7 40
-                else
-                  dialog --title "❌ Failed" --yesno "Dotfiles installation failed.
-
-                  Do you want to view the full log?" 10 50
-
-                    response=$?
-                    if [ $response -eq 0 ]; then
-                      dialog --title "📝 Installation Log" --textbox "$log_file" 30 100
-                    else
-                      dialog --title "ℹ️ Skipped Log" --msgbox "You chose not to view the installation log." 6 50
-                    fi
-                fi
               fi
             ''
           );
