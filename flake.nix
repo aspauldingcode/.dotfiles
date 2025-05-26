@@ -429,7 +429,7 @@
                 echo "Installing dotfiles..."
                 sleep 3
 
-                nix run github:LnL7/nix-darwin -- switch --show-trace --flake github:aspauldingcode/.dotfiles#NIXY
+                sudo nix run github:LnL7/nix-darwin -- switch --show-trace --flake github:aspauldingcode/.dotfiles#NIXY
               fi
             ''
           );
