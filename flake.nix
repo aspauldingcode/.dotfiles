@@ -385,19 +385,53 @@
 
                 ./${self}/sops-nix/sync-age-key.sh
 
+                # Ask the user first if they want to install dotfiles
                 dialog --title "Install dotfiles?" --yesno "Do you want to install the aspauldingcode .dotfiles configuration?" 10 60
 
                 response=$?
-                if [ $response -eq 0 ]; then
-                  dialog --title "Installing..." --infobox "Running nix-darwin switch from aspauldingcode/.dotfiles..." 5 50
-                  nix run github:LnL7/nix-darwin -- switch --show-trace --flake github:aspauldingcode/.dotfiles#NIXY
-                  if [ $? -eq 0 ]; then
-                    dialog --title "✅ Success" --msgbox "Dotfiles installed successfully." 7 40
-                  else
-                    dialog --title "❌ Failed" --msgbox "Dotfiles installation failed. Check logs for details." 7 50
-                  fi
-                else
+                if [ $response -ne 0 ]; then
                   dialog --title "Skipped" --msgbox "Dotfiles installation skipped." 5 40
+                  exit 0
+                fi
+
+                # Step 1: Explain Full Disk Access requirement
+                dialog --title "📂 Terminal Needs Full Disk Access" --msgbox "Before installing, you MUST grant Full Disk Access to Terminal.
+
+                Why? The installer may read sensitive configuration files (like keychains, SSH configs, etc).
+
+                You will now be prompted to grant access and taken to the correct System Settings screen.
+
+                After enabling access, return to this window and press OK." 20 70
+
+                # Step 2: Trigger protected access to prompt the system
+                touch /tmp/fda-check.txt 2>/dev/null
+                cat ~/Library/Application\ Support/com.apple.TCC/TCC.db >/dev/null 2>&1 || true
+
+                # Step 3: Open the Full Disk Access settings pane
+                open "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"
+
+                # Step 4: Confirm access was granted
+                dialog --title "📂 Grant Full Disk Access" --yesno "Once you've enabled Full Disk Access for Terminal, press 'Yes' to continue installation.
+
+                If you're unsure, follow these steps:
+                1. In the opened System Settings pane, find 'Full Disk Access'
+                2. Enable:
+                  /Applications/Utilities/Terminal.app
+                3. Then return here." 15 70
+
+                response=$?
+                if [ $response -ne 0 ]; then
+                  dialog --title "❌ Installation Aborted" --msgbox "You chose not to continue. Full Disk Access is required for installation." 7 60
+                  exit 4
+                fi
+
+                # Step 5: Proceed with dotfiles installation
+                dialog --title "Installing dotfiles..." --infobox "Running nix-darwin switch from aspauldingcode/.dotfiles..." 5 50
+                nix run github:LnL7/nix-darwin -- switch --show-trace --flake github:aspauldingcode/.dotfiles#NIXY
+                if [ $? -eq 0 ]; then
+                  dialog --title "✅ Success" --msgbox "Dotfiles installed successfully." 7 40
+                else
+                  dialog --title "❌ Failed" --msgbox "Dotfiles installation failed. Check logs for details." 7 50
                 fi
               fi
             ''
