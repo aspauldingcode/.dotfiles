@@ -433,7 +433,11 @@
 
                 After installation finishes, return here and press OK." 15 60
 
+                  # Trigger the installer (does nothing if already triggered)
                   xcode-select --install 2>/dev/null || true
+
+                  # Bring the installer window to the front
+                  open -a "Install Command Line Developer Tools" 2>/dev/null || true
 
                   dialog --title "🕒 Still Installing..." --yesno "Have you finished installing the Xcode Command Line Tools?
 
