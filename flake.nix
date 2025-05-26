@@ -365,10 +365,10 @@
           fi
 
           dialog --title "✅ SIP Status" --msgbox "SIP is disabled. Proceeding.\n\n$sip_status" 10 60
-        fi
 
-        # Run the actual sync-age-key logic
-        exec ${pkgs.bash}/bin/bash ${self}/sops-nix/sync-age-key.sh
+          # Run the actual sync-age-key logic
+          exec ${pkgs.bash}/bin/bash ${self}/sops-nix/sync-age-key.sh
+        fi
       ''
     );
   };
