@@ -425,7 +425,45 @@
                   exit 4
                 fi
 
-                # Step 5: Proceed with dotfiles installation
+                # Step 5: Check for Xcode CLI tools and prompt accordingly
+                if ! xcode-select -p >/dev/null 2>&1; then
+                  dialog --title "🛠️ Installing Xcode CLI Tools" --msgbox "Xcode Command Line Tools are not installed.
+
+                A system prompt will appear. Click 'Install' to continue.
+
+                After installation finishes, return here and press OK." 15 60
+
+                  xcode-select --install
+
+                  dialog --title "🕒 Please Wait" --msgbox "Wait for the Xcode CLI Tools installation to complete before continuing.
+
+                You can verify installation finished by clicking OK and running the command again." 10 60
+                else
+                  dialog --title "✅ Xcode CLI Tools" --msgbox "Xcode Command Line Tools are already installed." 7 50
+                fi
+
+                # Step 6: Clone Dotfiles optionally
+                dialog --title "Clone Dotfiles" --yesno "Would you like to clone the aspauldingcode dotfiles repository to ~/.dotfiles?" 10 60
+
+                response=$?
+                if [ $response -eq 0 ]; then
+                  dialog --title "📥 Cloning..." --infobox "Cloning dotfiles into ~/.dotfiles..." 5 50
+                  sleep 1
+                  git clone git@github.com:aspauldingcode/.dotfiles.git ~/.dotfiles/
+                  
+                  if [ $? -eq 0 ]; then
+                    dialog --title "✅ Success" --msgbox "Dotfiles cloned successfully to ~/.dotfiles." 6 50
+                  else
+                    dialog --title "❌ Failed" --msgbox "Failed to clone the dotfiles repository.
+
+                Make sure your SSH key is set up and you have access to the repo." 10 60
+                  fi
+                else
+                  dialog --title "Skipped" --msgbox "Skipping dotfiles clone." 6 40
+                fi
+
+
+                # Step 7: Proceed with dotfiles installation
                 echo "Installing dotfiles..."
                 sleep 3
 
