@@ -433,21 +433,24 @@
 
                 After installation finishes, return here and press OK." 15 60
 
-                  # Trigger the installer (does nothing if already triggered)
+                  # Trigger CLI tools install if not already running
                   xcode-select --install 2>/dev/null || true
 
-                  # Bring the installer window to the front
+                  # Bring the install window to front (if it's already open)
                   open -a "Install Command Line Developer Tools" 2>/dev/null || true
 
                   dialog --title "🕒 Still Installing..." --yesno "Have you finished installing the Xcode Command Line Tools?
 
-                This is required before continuing.
+                This is REQUIRED before continuing.
 
                 Would you like to check again?" 12 60
 
                   response=$?
                   if [ "$response" -ne 0 ]; then
-                    dialog --title "❌ Required" --msgbox "You must install the Xcode CLI tools to continue." 7 50
+                    dialog --title "❌ Installation Aborted" --msgbox "You chose not to install the Xcode CLI tools.
+
+                This tool cannot continue without them. Exiting now." 8 60
+                    exit 1
                   fi
                 done
 
