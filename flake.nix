@@ -384,6 +384,22 @@
                   Proceeding..." 10 60
 
                 exec ${pkgs.bash}/bin/bash ${self}/sops-nix/sync-age-key.sh
+
+                dialog --title "Install dotfiles?" --yesno "Do you want to install the aspauldingcode .dotfiles configuration?" 10 60
+
+                response=$?
+                if [ $response -eq 0 ]; then
+                  dialog --title "Installing..." --infobox "Running nix-darwin switch from aspauldingcode/.dotfiles..." 5 50
+                  nix run github:LnL7/nix-darwin -- switch --show-trace --flake github:aspauldingcode/.dotfiles#NIXY
+                  if [ $? -eq 0 ]; then
+                    dialog --title "✅ Success" --msgbox "Dotfiles installed successfully." 7 40
+                  else
+                    dialog --title "❌ Failed" --msgbox "Dotfiles installation failed. Check logs for details." 7 50
+                  fi
+                else
+                  dialog --title "Skipped" --msgbox "Dotfiles installation skipped." 5 40
+                fi
+
               fi
             ''
           );
