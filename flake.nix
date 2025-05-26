@@ -343,43 +343,83 @@
 
       # Define apps that can be run with 'nix run'
       apps = eachSystem (pkgs: {
-        default = {
-          type = "app";
-          program = toString (
-            pkgs.writeShellScript "sync-age-key" ''
-              # Make required dependencies available in PATH
-              export PATH="${pkgs.gh}/bin:${pkgs.ncurses}/bin:${pkgs.dialog}/bin:$PATH"
-              exec ${pkgs.bash}/bin/bash ${self}/sops-nix/sync-age-key.sh
-            ''
-          );
-        };
-      });
+  default = {
+    type = "app";
+    program = toString (
+      pkgs.writeShellScript "sync-age-key" ''
+        # Make required dependencies available in PATH
+        export PATH="${pkgs.gh}/bin:${pkgs.ncurses}/bin:${pkgs.dialog}/bin:$PATH"
+
+        # SIP check for macOS
+        if [[ "$(uname)" == "Darwin" ]]; then
+          sip_status=$(${pkgs.bash}/bin/bash -c "csrutil status" 2>/dev/null)
+
+          if [[ -z "$sip_status" ]]; then
+            dialog --title "SIP Check" --msgbox "Unable to determine SIP status. 'csrutil' might not be available." 8 60
+            exit 2
+          fi
+
+          if echo "$sip_status" | grep -q "enabled"; then
+            dialog --title "❌ SIP is Enabled" --msgbox "System Integrity Protection (SIP) is enabled.\n\nThis tool may not function correctly.\n\n$sip_status" 12 60
+            exit 3
+          fi
+
+          dialog --title "✅ SIP Status" --msgbox "SIP is disabled. Proceeding.\n\n$sip_status" 10 60
+        fi
+
+        # Run the actual sync-age-key logic
+        exec ${pkgs.bash}/bin/bash ${self}/sops-nix/sync-age-key.sh
+      ''
+    );
+  };
+});
+
 
       # FIXME: add nixvim here so I can build from any device without installing the dotfiles.
       devShells =
-        nixpkgs.lib.genAttrs
-          [
-            "x86_64-linux"
-            "aarch64-linux"
-            "x86_64-darwin"
-            "aarch64-darwin"
-          ]
-          (
-            system:
-            let
-              pkgs = nixpkgs.legacyPackages.${system};
-              defaultShell = pkgs.mkShell {
-                buildInputs = with pkgs; [
-                  bat
-                ];
-                shellHook = ''
-                  echo -e "\033[0;34mHow's it going fam?\033[0m"
-                '';
-              };
-            in
-            {
-              default = defaultShell;
-            }
-          );
+  nixpkgs.lib.genAttrs
+    [
+      "x86_64-linux"
+      "aarch64-linux"
+      "x86_64-darwin"
+      "aarch64-darwin"
+    ]
+    (
+      system:
+      let
+        pkgs = nixpkgs.legacyPackages.${system};
+        isDarwin = pkgs.stdenv.isDarwin;
+
+        defaultShell = pkgs.mkShell {
+          buildInputs = with pkgs; [
+            bat
+          ] ++ (if isDarwin then [ dialog ncurses ] else []);
+
+          shellHook = ''
+            echo -e "\033[0;34mHow's it going fam?\033[0m"
+
+            # Only check SIP on macOS
+            if [[ "$(uname)" == "Darwin" ]]; then
+              sip_status=$(csrutil status 2>/dev/null)
+
+              if [[ -z "$sip_status" ]]; then
+                dialog --title "SIP Status" --msgbox "Unable to determine SIP status.\nThe 'csrutil' tool may not be available." 8 60
+                exit 2
+              fi
+
+              if echo "$sip_status" | grep -q "enabled"; then
+                dialog --title "❌ SIP is Enabled" --msgbox "System Integrity Protection (SIP) is enabled.\n\nThis environment may not work as expected.\n\n$sip_status" 12 60
+                exit 3
+              fi
+
+              dialog --title "✅ SIP Status" --msgbox "SIP is disabled. Good to go.\n\n$sip_status" 10 60
+            fi
+          '';
+        };
+      in
+      {
+        default = defaultShell;
+      }
+    );
     };
 }
