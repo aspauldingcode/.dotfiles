@@ -347,7 +347,7 @@
           type = "app";
           program = toString (
             pkgs.writeShellScript "sync-age-key" ''
-              export PATH="${pkgs.gh}/bin:${pkgs.ncurses}/bin:${pkgs.dialog}/bin:$PATH"
+              export PATH="${pkgs.git}/bin:${pkgs.gh}/bin:${pkgs.ncurses}/bin:${pkgs.dialog}/bin:$PATH"
 
               if [[ "$(uname)" == "Darwin" ]]; then
                 sip_status=$(${pkgs.bash}/bin/bash -c "csrutil status" 2>/dev/null)
