@@ -393,9 +393,6 @@ in
           nextWindowShortcut = "\\U21e5";
           startAtLogin = false;
         };
-        # "com.mac.RecordingIndicatorUtility" = {
-        # AcknowledgedSystemOverrideAlert = 1;
-        # };
         "~/Library/Preferences/ByHost/com.apple.controlcenter" = {
           Bluetooth = 2; # 0 = Off, 1 = Control Center, 2 = Menu Bar, 3 = Both
           UserSwitcher = 2; # 1 = Control Center, 2 = Menu Bar, 3 = Both, 8 = Hidden
