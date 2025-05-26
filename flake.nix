@@ -433,31 +433,31 @@
 
                 After installation finishes, return here and press OK." 15 60
 
-                  # Trigger CLI tools install if not already running
+                  # Trigger the installer (harmless if already open)
                   xcode-select --install 2>/dev/null || true
 
-                  # Bring the install window to front (if it's already open)
+                  # Bring the installer window to the front
                   open -a "Install Command Line Developer Tools" 2>/dev/null || true
 
                   dialog --title "🕒 Still Installing..." --yesno "Have you finished installing the Xcode Command Line Tools?
 
-                This is REQUIRED before continuing.
+                This is required before continuing.
 
                 Would you like to check again?" 12 60
 
                   response=$?
                   if [ "$response" -ne 0 ]; then
-                    dialog --title "❌ Installation Aborted" --msgbox "You chose not to install the Xcode CLI tools.
-
-                This tool cannot continue without them. Exiting now." 8 60
-                    exit 1
+                    dialog --title "❌ Required" --msgbox "You must install the Xcode CLI tools to continue." 7 50
                   fi
                 done
 
+                # Confirm success
                 dialog --title "✅ Xcode CLI Tools" --msgbox "Xcode Command Line Tools are installed. Continuing..." 7 50
 
+                # Step 6: Accept Xcode license (required for many tools to run)
+                sudo xcodebuild -license accept
 
-                # Step 6: Clone Dotfiles optionally
+                # Step 7: Clone Dotfiles optionally
                 dialog --title "Clone Dotfiles" --yesno "Would you like to clone the aspauldingcode dotfiles repository to ~/.dotfiles?" 10 60
 
                 response=$?
@@ -478,7 +478,7 @@
                 fi
 
 
-                # Step 7: Proceed with dotfiles installation
+                # Step 8: Proceed with dotfiles installation
                 echo "Installing dotfiles..."
                 sleep 3
 
