@@ -71,7 +71,6 @@
     (pkgs.callPackage ./../customDerivations/inputsourceselector.nix { })
     # (pkgs.callPackage ./../customDerivations/okular.nix { })
     # (pkgs.callPackage ./../customDerivations/ammonia.nix { })
-    (pkgs.callPackage ./../customDerivations/recording-indicator-utility.nix { })
   ];
 
   nixpkgs.config = {
