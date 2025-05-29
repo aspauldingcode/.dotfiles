@@ -376,13 +376,13 @@
                     csrutil disable
 
                   4. Reboot." 20 70
-                            exit 3
-                          fi
+                  exit 3
+                fi
 
-                          dialog --title "✅ SIP Status" --msgbox "$sip_status
+                dialog --title "✅ SIP Status" --infobox "$sip_status
 
                   Proceeding..." 10 60
-
+                sleep 3
                 ${toString ./.}/sops-nix/sync-age-key.sh
 
                 # Ask the user first if they want to install dotfiles
