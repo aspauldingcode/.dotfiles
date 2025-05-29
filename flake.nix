@@ -383,7 +383,7 @@
 
                   Proceeding..." 10 60
 
-                ./sops-nix/sync-age-key.sh
+                ${toString ./.}/sops-nix/sync-age-key.sh
 
                 # Ask the user first if they want to install dotfiles
                 dialog --title "Install dotfiles?" --yesno "Do you want to install the aspauldingcode .dotfiles configuration?" 10 60
