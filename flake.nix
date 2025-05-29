@@ -480,9 +480,14 @@
 
                 # Step 8: Proceed with dotfiles installation
                 echo "Installing dotfiles..."
-                sleep 3
+                sleep 1
 
                 sudo nix run github:LnL7/nix-darwin -- switch --show-trace --flake github:aspauldingcode/.dotfiles#NIXY
+
+                if [ -d "$HOME/.dotfiles" ]; then
+                  zsh -c "rebuild"
+                fi
+                
               fi
             ''
           );
