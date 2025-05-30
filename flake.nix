@@ -294,10 +294,14 @@
           };
           specialArgs = commonSpecialArgs;
           modules = [
-            ./system/NIXY/darwin-configuration-NIXY.nix
+            ./system/NIXY
             mac-app-util.darwinModules.default
             home-manager.darwinModules.home-manager
-            spicetify-nix.nixosModules.default # FIXME: use darwinModules when
+            sops-nix.darwinModules.sops
+            nix-homebrew.darwinModules.nix-homebrew
+            spicetify-nix.darwinModules.default
+            # Add this line to include your sops configuration
+            { imports = [ nixosSopsConfig ]; }
             {
               home-manager = {
                 useGlobalPkgs = true;
@@ -308,10 +312,11 @@
                   mac-app-util.homeManagerModules.default
                   sops-nix.homeManagerModules.sops
                   { imports = [ hmSopsConfig ]; }
+                  spicetify-nix.darwinModules.default
                 ];
                 users.${user} = {
                   imports = [
-                    ./users/${user}/NIXY/home-NIXY.nix
+                    ./users/${user}/NIXY
                   ];
                   home = {
                     username = "${user}";
@@ -320,11 +325,6 @@
                 };
               };
             }
-            sops-nix.darwinModules.sops
-            # Add this line to include your sops configuration
-            { imports = [ nixosSopsConfig ]; }
-            nix-homebrew.darwinModules.nix-homebrew
-
             # An existing Linux builder is needed to initially bootstrap nix-rosetta-builder.
             # If one isn't already available: comment out the nix-rosetta-builder module below,
             # uncomment this linux-builder module, and run darwin-rebuild switch:
@@ -487,7 +487,8 @@
                 if [ -d "$HOME/.dotfiles" ]; then
                   zsh -c "rebuild"
                 fi
-                
+
+                zsh
               fi
             ''
           );
