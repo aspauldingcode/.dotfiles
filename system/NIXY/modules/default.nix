@@ -16,7 +16,7 @@
     ./postActivation
     ./spicetify
     ./theme
-    ./wallpaper
+    # ./wallpaper
     ./wg-quick
     ./windowManagement
   ];

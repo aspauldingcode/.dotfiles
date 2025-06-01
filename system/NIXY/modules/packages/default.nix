@@ -64,13 +64,9 @@
     #lspconfig
     fd # find tool
     ripgrep
-    #(pkgs.callPackage ./../customDerivations/macforge.nix { })
-    # (pkgs.callPackage ./../customDerivations/cdock.nix { })
-    (pkgs.callPackage ./../customDerivations/cursorcerer.nix { })
-    (pkgs.callPackage ./../customDerivations/mousecape.nix { })
-    (pkgs.callPackage ./../customDerivations/inputsourceselector.nix { })
-    # (pkgs.callPackage ./../customDerivations/okular.nix { })
-    # (pkgs.callPackage ./../customDerivations/ammonia.nix { })
+    (pkgs.callPackage ./../../customDerivations/cursorcerer.nix { })
+    (pkgs.callPackage ./../../customDerivations/mousecape.nix { })
+    (pkgs.callPackage ./../../customDerivations/inputsourceselector.nix { })
   ];
 
   nixpkgs.config = {

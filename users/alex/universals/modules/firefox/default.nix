@@ -452,7 +452,7 @@ in
         userContent = ''
           @-moz-document url("about:newtab") {
             body {
-              background-image: url("${./../../extraConfig/wallpapers/sweden.png}") !important;
+              background-image: url("${./../../../extraConfig/wallpapers/sweden.png}") !important;
               background-size: cover !important;
               background-position: center !important;
             }

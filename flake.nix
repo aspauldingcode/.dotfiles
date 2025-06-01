@@ -312,7 +312,7 @@
                   mac-app-util.homeManagerModules.default
                   sops-nix.homeManagerModules.sops
                   { imports = [ hmSopsConfig ]; }
-                  spicetify-nix.darwinModules.default
+                  spicetify-nix.homeManagerModules.default
                 ];
                 users.${user} = {
                   imports = [
