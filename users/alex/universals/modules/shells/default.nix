@@ -7,6 +7,7 @@
 {
   home.packages = with pkgs; [
     thefuck
+    eza
   ];
   home.file = lib.mkIf pkgs.stdenv.isDarwin {
     ".hushlogin" = {
@@ -32,9 +33,10 @@
         oh-my-posh disable notice
       '';
       shellAliases = {
-        l = "ls";
-        ll = "ls -l";
-        la = "ls -a";
+        l = "eza --icons --group-directories-first";
+        ls = "eza --icons --group-directories-first";
+        ll = "eza --icons --group-directories-first -al";
+        la = "eza --icons --group-directories-first -a";
         lsdir = "ls -d */";
         nu = "nu --login";
 
@@ -58,9 +60,10 @@
         oh-my-posh disable notice
       '';
       shellAliases = {
-        l = "ls";
-        ll = "ls -l";
-        la = "ls -a";
+        l = "eza --icons --group-directories-first";
+        ls = "eza --icons --group-directories-first";
+        ll = "eza --icons --group-directories-first -al";
+        la = "eza --icons --group-directories-first -a";
         lsdir = "ls -d */";
         nu = "nu --login";
 
@@ -81,9 +84,10 @@
         oh-my-posh disable notice
       '';
       shellAliases = {
-        l = "ls";
-        ll = "ls -l";
-        la = "ls -a";
+        l = "eza --icons --group-directories-first";
+        ls = "eza --icons --group-directories-first";
+        ll = "eza --icons --group-directories-first -al";
+        la = "eza --icons --group-directories-first -a";
         lsdir = "ls -d */";
         nu = "nu --login";
 
