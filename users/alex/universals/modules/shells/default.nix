@@ -8,7 +8,9 @@
   home.packages = with pkgs; [
     thefuck
     eza
+    powershell # FIXME: make it available upstream in nix options as programs.powershell.enable?
   ];
+
   home.file = lib.mkIf pkgs.stdenv.isDarwin {
     ".hushlogin" = {
       text = "";
@@ -37,6 +39,7 @@
         ls = "eza --icons --group-directories-first";
         ll = "eza --icons --group-directories-first -al";
         la = "eza --icons --group-directories-first -a";
+        tree = "eza --icons --tree";
         lsdir = "ls -d */";
         nu = "nu --login";
 
@@ -64,6 +67,7 @@
         ls = "eza --icons --group-directories-first";
         ll = "eza --icons --group-directories-first -al";
         la = "eza --icons --group-directories-first -a";
+        tree = "eza --icons --tree";
         lsdir = "ls -d */";
         nu = "nu --login";
 
@@ -88,6 +92,7 @@
         ls = "eza --icons --group-directories-first";
         ll = "eza --icons --group-directories-first -al";
         la = "eza --icons --group-directories-first -a";
+        tree = "eza --icons --tree";
         lsdir = "ls -d */";
         nu = "nu --login";
 
@@ -129,6 +134,7 @@
         l = "ls";
         ll = "ls -l";
         la = "ls -a";
+        tree = "ls **/*";
         nu = "nu --login";
 
         reboot = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
