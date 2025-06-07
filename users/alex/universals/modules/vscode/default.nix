@@ -1210,20 +1210,11 @@ let
     ];
   };
 
-  cursorSettings = builtins.toJSON base16Settings;
 in
 {
-  home.file.cursorSettings = {
-    target =
-      if pkgs.stdenv.isDarwin then
-        "Library/Application Support/Cursor/User/settings.json"
-      else
-        ".config/Cursor/User/settings.json";
-    text = cursorSettings;
-  };
-
   programs.vscode = {
     enable = true;
+    package = pkgs.unstable.code-cursor;
     userSettings = {
       "workbench.colorTheme" = "Default ${config.colorScheme.variant} Modern";
       "workbench.colorCustomizations" = base16Settings.colors;
@@ -1236,8 +1227,4 @@ in
       esbenp.prettier-vscode
     ];
   };
-
-  home.packages = with pkgs; [
-    unstable.code-cursor # leave out for now, needs options to be accesible.
-  ];
 }

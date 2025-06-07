@@ -26,6 +26,7 @@
     openconnect
     unstable.tart
     iniparser
+    bat
     unstable.iproute2mac
     m-cli
     ansible
