@@ -13,7 +13,6 @@
   imports = [
     nix-colors.homeManagerModules.default
     ./scripts-NIXY.nix
-    ./../extraConfig/nvim/nixvim.nix
     ./../universals/modules
 
     ./modules

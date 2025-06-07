@@ -12,6 +12,7 @@
     ./fastfetch
     ./firefox
     ./git
+    ./nvim
     ./okular
     ./shells
     ./vscode
