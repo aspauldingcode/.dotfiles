@@ -52,6 +52,7 @@
 
       perl -0777 -i -pe "
         my \$table = do { local \$/; open my \$fh, '<', '$TMPFILE' or die \$!; <\$fh> };
+        \$table =~ s/\n+\z//;  # Remove trailing newlines
         s|<!-- BEGIN CODE STATS -->.*?<!-- END CODE STATS -->|\$table|s;
       " README.md
 
