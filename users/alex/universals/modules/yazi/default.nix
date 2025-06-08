@@ -15,7 +15,7 @@ in
     settings = {
       "$schema" = "https://yazi-rs.github.io/schemas/yazi.json";
 
-      manager = {
+      mgr = {
         ratio = [
           1
           4
@@ -386,7 +386,10 @@ in
           50
           3
         ];
-        create_title = "Create:";
+        create_title = [
+          "Create file:"
+          "Create directory:"
+        ];
         create_origin = "top-center";
         create_offset = [
           0
@@ -511,7 +514,7 @@ in
       # If you encounter any issues, please make an issue at https://github.com/yazi-rs/schemas.
       "$schema" = "https://yazi-rs.github.io/schemas/keymap.json";
 
-      manager = {
+      mgr = {
         keymap = [
           {
             on = "<Esc>";
