@@ -1,9 +1,9 @@
 { config, pkgs, ... }:
 
 {
-  system.activationScripts = {
-    postUserActivation.text = ''
-      # Activation scripts go here
-    '';
-  };
+  # system.activationScripts = {
+  #   postActivation.text = ''
+  #     # Activation scripts go here
+  #   '';
+  # };
 }

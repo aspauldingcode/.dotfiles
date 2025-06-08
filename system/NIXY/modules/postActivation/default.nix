@@ -108,7 +108,7 @@ in
     # ===================================================================
 
     echo "Setting ${config.colorScheme.variant}mode for the system..."
-    toggle-darkmode ${config.colorScheme.variant}
+    # toggle-darkmode ${config.colorScheme.variant}
 
     # ===================================================================
     # System Boot Arguments Configuration
@@ -124,8 +124,13 @@ in
     sudo dscl . delete /Users/${user} Picture
     sudo dscl . create /Users/${user} Picture "${./../../../../users/${user}/face.heic}"
 
-    echo -e "\033[31msetting permissions for ${config.colorScheme.slug}-${config.colorScheme.variant} Glow Theme...\033[0m"
+    echo "Setting permissions for ${config.colorScheme.slug}-${config.colorScheme.variant} Glow Theme..."
     sudo chmod -R 777 /Library/GlowThemes/${config.colorScheme.slug}-${config.colorScheme.variant}/
     sudo chmod -R 777 /Library/GlowThemes/${config.colorScheme.slug}-${config.colorScheme.variant}/settings.plist
+
+    echo "Setting Xcode for xcode-select..."
+    sudo xcode-select -s /Applications/Xcode.app
+    sudo xcodebuild -license accept
+    xcodebuild -runFirstLaunch
   '';
 }

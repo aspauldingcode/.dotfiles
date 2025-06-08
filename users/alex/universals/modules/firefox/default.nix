@@ -26,7 +26,7 @@ in
 
   programs.firefox = {
     enable = true;
-    package = if pkgs.stdenv.isDarwin then pkgs.firefox-bin else pkgs.firefox;
+    package = pkgs.firefox;
     profiles = {
       ${user} = {
         userChrome = # CSS
@@ -459,7 +459,7 @@ in
           }
         '';
         bookmarks = { };
-        extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+        extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
           # youtube fixup
           enhancer-for-youtube
           sponsorblock

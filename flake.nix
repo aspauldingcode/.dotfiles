@@ -2,16 +2,17 @@
   description = "Universal Flake by Alex - macOS and NixOS";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11"; # Set to the desired stable version
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05"; # Set to the desired stable version
     unstable_nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable"; # Use nixos-specific branch
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
+      url = "github:nix-community/home-manager/release-25.05";
+      # url = "path:///Users/alex/home-manager";
       inputs.nixpkgs.follows = "nixpkgs"; # Ensure home-manager follows the stable nixpkgs version
     };
     nix-colors.url = "github:misterio77/nix-colors";
 
     nix-darwin = {
-      url = "github:lnl7/nix-darwin/nix-darwin-24.11"; # Match nixpkgs version
+      url = "github:lnl7/nix-darwin/nix-darwin-25.05"; # Match nixpkgs version
       inputs.nixpkgs.follows = "nixpkgs"; # Follows the stable nixpkgs version
     };
 
@@ -44,10 +45,6 @@
 
     mac-app-util = {
       url = "github:hraban/mac-app-util";
-    };
-
-    nixpkgs-firefox-darwin = {
-      url = "github:bandithedoge/nixpkgs-firefox-darwin";
     };
 
     spicetify-nix = {
@@ -112,7 +109,6 @@
       nix-std,
       nixtheplanet,
       mac-app-util,
-      nixpkgs-firefox-darwin,
       spicetify-nix,
       nix-homebrew,
       homebrew-core,
@@ -196,8 +192,6 @@
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 users.${user} = import ./users/${user}/NIXSTATION64/home-NIXSTATION64.nix;
-                # Optionally, use home-manager.extraSpecialArgs to pass
-                # arguments to home.nix
                 extraSpecialArgs = commonExtraSpecialArgs;
                 backupFileExtension = "backup";
                 sharedModules = [
@@ -207,7 +201,6 @@
               };
             }
             sops-nix.nixosModules.sops
-            # Add this line to include your sops configuration
             { imports = [ nixosSopsConfig ]; }
           ];
         };
@@ -246,8 +239,6 @@
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 users.${user} = import ./users/${user}/NIXY2/home-NIXY2.nix;
-                # Optionally, use home-manager.extraSpecialArgs to pass
-                # arguments to home.nix
                 extraSpecialArgs = commonExtraSpecialArgs;
                 backupFileExtension = "backup";
                 sharedModules = [
@@ -257,7 +248,6 @@
               };
             }
             sops-nix.nixosModules.sops
-            # Add this line to include your sops configuration
             { imports = [ nixosSopsConfig ]; }
           ];
         };
@@ -276,7 +266,6 @@
             };
             overlays = [
               inputs.nur.overlays.default
-              inputs.nixpkgs-firefox-darwin.overlay
               inputs.frida-nix.overlays.default
               (final: _prev: {
                 unstable = import unstable_nixpkgs {
@@ -300,7 +289,6 @@
             sops-nix.darwinModules.sops
             nix-homebrew.darwinModules.nix-homebrew
             spicetify-nix.darwinModules.default
-            # Add this line to include your sops configuration
             { imports = [ nixosSopsConfig ]; }
             {
               home-manager = {

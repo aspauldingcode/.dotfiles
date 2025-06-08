@@ -1215,16 +1215,19 @@ in
   programs.vscode = {
     enable = true;
     package = pkgs.unstable.code-cursor;
-    userSettings = {
-      "workbench.colorTheme" = "Default ${config.colorScheme.variant} Modern";
-      "workbench.colorCustomizations" = base16Settings.colors;
-      "editor.tokenColorCustomizations" = {
-        "textMateRules" = base16Settings.tokenColors;
+
+    profiles.default = {
+      userSettings = {
+        "workbench.colorTheme" = "Default ${config.colorScheme.variant} Modern";
+        "workbench.colorCustomizations" = base16Settings.colors;
+        "editor.tokenColorCustomizations" = {
+          "textMateRules" = base16Settings.tokenColors;
+        };
       };
+      extensions = with pkgs.vscode-extensions; [
+        jnoortheen.nix-ide
+        esbenp.prettier-vscode
+      ];
     };
-    extensions = with pkgs.vscode-extensions; [
-      jnoortheen.nix-ide
-      esbenp.prettier-vscode
-    ];
   };
 }

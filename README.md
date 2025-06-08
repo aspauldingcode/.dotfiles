@@ -11,16 +11,16 @@ A Universal .dotfiles Configuration with Nix Flakes - over-engineered by Alex Sp
 | JSON | 1 | 448 | 448 | 0 | 0 |
 | Lua | 12 | 1008 | 796 | 128 | 84 |
 | Markdown | 1 | 34 | 0 | 28 | 6 |
-| Nix | 121 | 24817 | 20715 | 2396 | 1706 |
+| Nix | 121 | 24834 | 20530 | 2597 | 1707 |
 | Python | 9 | 2061 | 1743 | 93 | 225 |
 | Shell | 6 | 154 | 102 | 25 | 27 |
 | Plain Text | 2 | 562 | 0 | 371 | 191 |
 | TOML | 1 | 56 | 47 | 5 | 4 |
-| Vim script | 1 | 21 | 19 | 0 | 2 |
+| Vim script | 0 | 0 |  |  |  |
 | YAML | 3 | 219 | 64 | 111 | 44 |
-| **Total** | 161 | 31262 | 25350 | 3281 | 2631 |
+| **Total** | 160 | 31258 | 25146 | 3482 | 2630 |
 
-Last updated: Sat Jun  7 15:03:05 2025
+Last updated: Sun Jun  8 14:21:19 PDT 2025
 <!-- END CODE STATS -->
 
 ## Getting Started

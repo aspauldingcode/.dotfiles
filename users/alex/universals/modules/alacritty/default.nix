@@ -32,15 +32,15 @@ in
 
       font = {
         normal = {
-          family = "Hack Nerd Font Mono";
+          family = "JetBrainsMono Nerd Font Mono";
           style = "Regular";
         };
         bold = {
-          family = "Hack Nerd Font Mono";
+          family = "JetBrainsMono Nerd Font Mono";
           style = "Bold";
         };
         italic = {
-          family = "Hack Nerd Font Mono";
+          family = "JetBrainsMono Nerd Font Mono";
           style = "Italic";
         };
         size = fontSize;

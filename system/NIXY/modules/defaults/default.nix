@@ -6,12 +6,14 @@
   ...
 }:
 
+# To avoid confusion, default.nix is for importing this only.
+# Defaults is a macOS configuration tool for setting configuration of .plist files.
 let
   inherit (config.colorScheme) palette;
 in
 {
   system = {
-    activationScripts.postUserActivation.text = ''
+    activationScripts.postActivation.text = ''
       # Following line should allow us to avoid a logout/login cycle
       /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
@@ -204,221 +206,221 @@ in
           "com.apple.trackpad.forceClick" = 1;
         };
       };
-      CustomUserPreferences = {
-        NSGlobalDomain = {
-          NSColorSimulateHardwareAccent = true; # hardware accent colors M1 iMacs
-          # 3 is yellow, 4 is green, 5 is blue, 6 is red, 7 is purple, 8 is orange
-          NSColorSimulatedHardwareEnclosureNumber = 4; # hardware color choice
-          AppleHighlightColor =
-            let
-              hexColor = "${palette.base0D}";
-              hexColorConverted = builtins.toString (
-                (builtins.map (x: x / 255.0) (nix-colors.lib.conversions.hexToRGB hexColor)) ++ [ "Other" ]
-              );
-            in
-            hexColorConverted;
-        };
-        # "~/Library/Preferences/com.apple.wallpaper" = {
-        #   SonomaFirstRunMigrationPerformed = 1;
-        #   StoreIndexMigrationVersion = 1;
-        #   # SystemWallpaperURL = "file:///System/Library/Desktop%20Pictures/.wallpapers/Sonoma%20Horizon/Sonoma%20Horizon.mov";
-        #   SystemWallpaperURL = "file:///Users/Shared/Wallpaper/wallpaper-nix-colors.png";
-        # };
+      # CustomUserPreferences = {
+      #   NSGlobalDomain = {
+      #     NSColorSimulateHardwareAccent = true; # hardware accent colors M1 iMacs
+      #     # 3 is yellow, 4 is green, 5 is blue, 6 is red, 7 is purple, 8 is orange
+      #     NSColorSimulatedHardwareEnclosureNumber = 4; # hardware color choice
+      #     AppleHighlightColor =
+      #       let
+      #         hexColor = "${palette.base0D}";
+      #         hexColorConverted = builtins.toString (
+      #           (builtins.map (x: x / 255.0) (nix-colors.lib.conversions.hexToRGB hexColor)) ++ [ "Other" ]
+      #         );
+      #       in
+      #       hexColorConverted;
+      #   };
+      #   # "~/Library/Preferences/com.apple.wallpaper" = {
+      #   #   SonomaFirstRunMigrationPerformed = 1;
+      #   #   StoreIndexMigrationVersion = 1;
+      #   #   # SystemWallpaperURL = "file:///System/Library/Desktop%20Pictures/.wallpapers/Sonoma%20Horizon/Sonoma%20Horizon.mov";
+      #   #   SystemWallpaperURL = "file:///Users/Shared/Wallpaper/wallpaper-nix-colors.png";
+      #   # };
 
-        NSGlobalDomain.TISRomanSwitchState = 1;
-        "....X11" = {
-          enable_fake_buttons = 1;
-          fullscreen_hotkeys = 1;
-          fullscreen_menu = true;
-          no_quit_alert = true;
-          no_auth = true;
-          nolisten_tcp = false;
-          enable_system_beep = false;
-          enable_key_equivalents = false;
-          sync_keymap = true;
-          sync_pasteboard = true;
-          sync_pasteboard_to_clipboard = true;
-          sync_pasteboard_to_primary = true;
-          sync_clipboard_to_pasteboard = true;
-          sync_primary_on_select = true;
-          enable_test_extensions = false;
-          scroll_in_device_direction = false;
-        };
-        "com.spotify.client" = {
-          AutoStartSettingIsHidden = 2; # startup mode: hidden = 1, on = 0, disabled = 2
-          NSFullScreenMenuItemEverywhere = 0;
-          NSIsFullScreen = 0;
-          "NSWindow Frame com.spotify.client.mainwindow" = "371 -178 800 600 0 0 1440 900 ";
-          "run_mode" = "clean_quit";
-        };
-        "com.macenhance.MacForge" = {
-          MF_AMFIShowWarning = 1;
-          MSAppCenter310AnalyticsUserDefaultsMigratedKey = 1;
-          MSAppCenter310AppCenterUserDefaultsMigratedKey = 1;
-          MSAppCenter310CrashesUserDefaultsMigratedKey = 1;
-          SUAutomaticallyUpdate = 1;
-          SUEnableAutomaticChecks = 0;
-          SUSendProfileInfo = 0;
-          SUSkippedVersion = 5977;
-          SUUpdateRelaunchingMarker = 0;
-          moveToApplicationsFolderAlertSuppress = 1;
-          updateCount = "";
-        };
-        "com.macenhance.MacForgeHelper" = {
-          "NSStatusItem Preferred Position Item-0" = 359;
-          SIMBLApplicationIdentifierBlacklist = [
-            "org.w0lf.mySIMBL"
-            "org.w0lf.cDock-GUI"
-            "org.w0lf.cDockHelper"
-            "com.macenhance.MacForge"
-            "com.macenhance.MacForgeHelper"
-            "com.macenhance.purchaseValidationApp"
-          ];
-        };
-        "com.theron.UnnaturalScrollWheels" = {
-          AlternateDetectionMethod = 0;
-          DisableMouseAccel = 1;
-          DisableScrollAccel = 1;
-          FirstLaunch = 0;
-          InvertHorizonalScroll = 0;
-          InvertHorizontalScroll = 0;
-          InvertVerticalScroll = 1;
-          LaunchAtLogin = 1;
-          "NSStatusItem Preferred Position Item-0" = 255;
-          OriginalAccel = 524288;
-          ScrollLines = 3;
-          ShowMenuBarIcon = 1;
-        };
-        "com.apple.AppleMultitouchTrackpad" = {
-          ActuateDetents = 1;
-          ActuationStrength = 0;
-          Clicking = 0;
-          DragLock = 0;
-          Dragging = 1;
-          FirstClickThreshold = 1;
-          ForceSuppressed = 1;
-          SecondClickThreshold = 1;
-          TrackpadCornerSecondaryClick = 0;
-          TrackpadFiveFingerPinchGesture = 0;
-          TrackpadFourFingerHorizSwipeGesture = 0;
-          TrackpadFourFingerPinchGesture = 0;
-          TrackpadFourFingerVertSwipeGesture = 0;
-          TrackpadHandResting = 1;
-          TrackpadHorizScroll = 1;
-          TrackpadMomentumScroll = 1;
-          TrackpadPinch = 1;
-          TrackpadRightClick = 1;
-          TrackpadRotate = 1;
-          TrackpadScroll = 1;
-          TrackpadThreeFingerDrag = 0;
-          TrackpadThreeFingerHorizSwipeGesture = 0;
-          TrackpadThreeFingerTapGesture = 0;
-          TrackpadThreeFingerVertSwipeGesture = 0; # 0 to disable mission control swipe
-          TrackpadTwoFingerDoubleTapGesture = 1;
-          TrackpadTwoFingerFromRightEdgeSwipeGesture = 0;
-          USBMouseStopsTrackpad = 0;
-          UserPreferences = 1;
-        };
-        "dev.kdrag0n.MacVirt" = {
-          SUHasLaunchedBefore = 1;
-          SUSendProfileInfo = 1;
-          admin_dismissCount = 0;
-          docker_migrationDismissed = 1;
-          drm_lastState = ''{"entitlementTier":0,"entitlementType":0}'';
-          global_showMenubarExtra = 1;
-          onboardingCompleted = 1;
-          selectedTab = "machines";
-          tips_containerDomainsShow = 0;
-          tips_containerFilesShow = 0;
-          tips_imageMountsShow = 0;
-          tips_menubarBgShown2 = 1;
-        };
-        "org.xquartz.X11" = {
-          "app_to_run" = "/opt/X11/bin/xterm";
-          "apps_menu" = [
-            "Terminal"
-            "xterm"
-            ""
-            "dmenu"
-            "dmenu_run"
-            ""
-          ];
-          "cache_fonts" = 1;
-          depth = 24;
-          "done_xinit_check" = 1;
-          "enable_iglx" = 1;
-          "login_shell" = "/bin/sh";
-          "no_auth" = 0;
-          "nolisten_tcp" = 0;
-          "option_sends_alt" = true;
-          "startx_script" = "/opt/X11/bin/startx -- /opt/X11/bin/Xquartz";
-          dpi = 227; # on NIXY, since we have dpi of 227 for m1 macbook air 2020.
-        };
-        "com.doomlaser.cursorcerer" = {
-          autoShow = 1;
-          idleHide = "8.0";
-          toggleCursorHotKey = {
-            keyCode = 40;
-            modifiers = 6144;
-          };
-        };
-        "com.dwarvesv.minimalbar" = {
-          "NSStatusItem Preferred Position hiddenbar_expandcollapse" = 78;
-          "NSStatusItem Preferred Position hiddenbar_separate" = 110;
-          "NSStatusItem Preferred Position hiddenbar_terminate" = 146;
-          alwaysHiddenSectionEnabled = 1;
-          areSeparatorsHidden = 0;
-          globalKey = {
-            length = 144;
-          };
-          isAutoHide = 0;
-          isAutoStart = 0;
-          isShowPreferences = 0;
-          numberOfSecondForAutoHide = 10;
-          useFullStatusBarOnExpandEnabled = 0;
-        };
-        "com.bearisdriving.BGM.App" = {
-          SelectedMusicPlayerID = "EC2A907F-8515-4687-9570-1BF63176E6D8";
-          StatusBarIcon = 0;
-        };
-        "com.apple.audio.AudioMIDISetup" = {
-          "audioDevice.selected" = "BGMDevice"; # select BGM for Cava to work.
-        };
-        "com.apple.desktopservices" = {
-          DSDontWriteNetworkStores = true;
-          DSDontWriteUSBStores = true;
-        };
-        "com.lwouis.alt-tab-macos.plist" = {
-          holdShortcut = "\\U2318";
-          nextWindowShortcut = "\\U21e5";
-          startAtLogin = false;
-        };
-        "~/Library/Preferences/ByHost/com.apple.controlcenter" = {
-          Bluetooth = 2; # 0 = Off, 1 = Control Center, 2 = Menu Bar, 3 = Both
-          UserSwitcher = 2; # 1 = Control Center, 2 = Menu Bar, 3 = Both, 8 = Hidden
-          WiFi = 2; # 1 = Control Center, 2 = Menu Bar, 3 = Both, 24 = Off
-          AirDrop = 18; # 1 = Control Center, 2 = Menu Bar, 3 = Both, 24 = Off
-          VoiceControl = 8; # 2 = Menu Bar, 8 = Off
-          FocusModes = 2; # 2 = Menu Bar, 8 = Off
-          ScreenMirroring = 18; # Menu Bar, 24 = Off
-          Sound = 18; # Menu Bar, 24 = Off
-          StageManager = 18; # Menu Bar, 24 = Off
-          Display = 18; # Menu Bar, 24 = Off
-          NowPlaying = 18; # Menu Bar, 24 = Off
-        };
-      };
-      LaunchServices.LSQuarantine = false;
-      magicmouse.MouseButtonMode = "TwoButton";
-      screencapture = {
-        disable-shadow = true;
-        location = "~/Desktop/Screenshots";
-        type = "png";
-      };
-      screensaver.askForPassword = true;
-      smb = {
-        NetBIOSName = "${config.networking.hostName}";
-        ServerDescription = null;
-      };
+      #   NSGlobalDomain.TISRomanSwitchState = 1;
+      #   "....X11" = {
+      #     enable_fake_buttons = 1;
+      #     fullscreen_hotkeys = 1;
+      #     fullscreen_menu = true;
+      #     no_quit_alert = true;
+      #     no_auth = true;
+      #     nolisten_tcp = false;
+      #     enable_system_beep = false;
+      #     enable_key_equivalents = false;
+      #     sync_keymap = true;
+      #     sync_pasteboard = true;
+      #     sync_pasteboard_to_clipboard = true;
+      #     sync_pasteboard_to_primary = true;
+      #     sync_clipboard_to_pasteboard = true;
+      #     sync_primary_on_select = true;
+      #     enable_test_extensions = false;
+      #     scroll_in_device_direction = false;
+      #   };
+      #   "com.spotify.client" = {
+      #     AutoStartSettingIsHidden = 2; # startup mode: hidden = 1, on = 0, disabled = 2
+      #     NSFullScreenMenuItemEverywhere = 0;
+      #     NSIsFullScreen = 0;
+      #     "NSWindow Frame com.spotify.client.mainwindow" = "371 -178 800 600 0 0 1440 900 ";
+      #     "run_mode" = "clean_quit";
+      #   };
+      #   "com.macenhance.MacForge" = {
+      #     MF_AMFIShowWarning = 1;
+      #     MSAppCenter310AnalyticsUserDefaultsMigratedKey = 1;
+      #     MSAppCenter310AppCenterUserDefaultsMigratedKey = 1;
+      #     MSAppCenter310CrashesUserDefaultsMigratedKey = 1;
+      #     SUAutomaticallyUpdate = 1;
+      #     SUEnableAutomaticChecks = 0;
+      #     SUSendProfileInfo = 0;
+      #     SUSkippedVersion = 5977;
+      #     SUUpdateRelaunchingMarker = 0;
+      #     moveToApplicationsFolderAlertSuppress = 1;
+      #     updateCount = "";
+      #   };
+      #   "com.macenhance.MacForgeHelper" = {
+      #     "NSStatusItem Preferred Position Item-0" = 359;
+      #     SIMBLApplicationIdentifierBlacklist = [
+      #       "org.w0lf.mySIMBL"
+      #       "org.w0lf.cDock-GUI"
+      #       "org.w0lf.cDockHelper"
+      #       "com.macenhance.MacForge"
+      #       "com.macenhance.MacForgeHelper"
+      #       "com.macenhance.purchaseValidationApp"
+      #     ];
+      #   };
+      #   "com.theron.UnnaturalScrollWheels" = {
+      #     AlternateDetectionMethod = 0;
+      #     DisableMouseAccel = 1;
+      #     DisableScrollAccel = 1;
+      #     FirstLaunch = 0;
+      #     InvertHorizonalScroll = 0;
+      #     InvertHorizontalScroll = 0;
+      #     InvertVerticalScroll = 1;
+      #     LaunchAtLogin = 1;
+      #     "NSStatusItem Preferred Position Item-0" = 255;
+      #     OriginalAccel = 524288;
+      #     ScrollLines = 3;
+      #     ShowMenuBarIcon = 1;
+      #   };
+      #   "com.apple.AppleMultitouchTrackpad" = {
+      #     ActuateDetents = 1;
+      #     ActuationStrength = 0;
+      #     Clicking = 0;
+      #     DragLock = 0;
+      #     Dragging = 1;
+      #     FirstClickThreshold = 1;
+      #     ForceSuppressed = 1;
+      #     SecondClickThreshold = 1;
+      #     TrackpadCornerSecondaryClick = 0;
+      #     TrackpadFiveFingerPinchGesture = 0;
+      #     TrackpadFourFingerHorizSwipeGesture = 0;
+      #     TrackpadFourFingerPinchGesture = 0;
+      #     TrackpadFourFingerVertSwipeGesture = 0;
+      #     TrackpadHandResting = 1;
+      #     TrackpadHorizScroll = 1;
+      #     TrackpadMomentumScroll = 1;
+      #     TrackpadPinch = 1;
+      #     TrackpadRightClick = 1;
+      #     TrackpadRotate = 1;
+      #     TrackpadScroll = 1;
+      #     TrackpadThreeFingerDrag = 0;
+      #     TrackpadThreeFingerHorizSwipeGesture = 0;
+      #     TrackpadThreeFingerTapGesture = 0;
+      #     TrackpadThreeFingerVertSwipeGesture = 0; # 0 to disable mission control swipe
+      #     TrackpadTwoFingerDoubleTapGesture = 1;
+      #     TrackpadTwoFingerFromRightEdgeSwipeGesture = 0;
+      #     USBMouseStopsTrackpad = 0;
+      #     UserPreferences = 1;
+      #   };
+      #   "dev.kdrag0n.MacVirt" = {
+      #     SUHasLaunchedBefore = 1;
+      #     SUSendProfileInfo = 1;
+      #     admin_dismissCount = 0;
+      #     docker_migrationDismissed = 1;
+      #     drm_lastState = ''{"entitlementTier":0,"entitlementType":0}'';
+      #     global_showMenubarExtra = 1;
+      #     onboardingCompleted = 1;
+      #     selectedTab = "machines";
+      #     tips_containerDomainsShow = 0;
+      #     tips_containerFilesShow = 0;
+      #     tips_imageMountsShow = 0;
+      #     tips_menubarBgShown2 = 1;
+      #   };
+      #   "org.xquartz.X11" = {
+      #     "app_to_run" = "/opt/X11/bin/xterm";
+      #     "apps_menu" = [
+      #       "Terminal"
+      #       "xterm"
+      #       ""
+      #       "dmenu"
+      #       "dmenu_run"
+      #       ""
+      #     ];
+      #     "cache_fonts" = 1;
+      #     depth = 24;
+      #     "done_xinit_check" = 1;
+      #     "enable_iglx" = 1;
+      #     "login_shell" = "/bin/sh";
+      #     "no_auth" = 0;
+      #     "nolisten_tcp" = 0;
+      #     "option_sends_alt" = true;
+      #     "startx_script" = "/opt/X11/bin/startx -- /opt/X11/bin/Xquartz";
+      #     dpi = 227; # on NIXY, since we have dpi of 227 for m1 macbook air 2020.
+      #   };
+      #   "com.doomlaser.cursorcerer" = {
+      #     autoShow = 1;
+      #     idleHide = "8.0";
+      #     toggleCursorHotKey = {
+      #       keyCode = 40;
+      #       modifiers = 6144;
+      #     };
+      #   };
+      #   "com.dwarvesv.minimalbar" = {
+      #     "NSStatusItem Preferred Position hiddenbar_expandcollapse" = 78;
+      #     "NSStatusItem Preferred Position hiddenbar_separate" = 110;
+      #     "NSStatusItem Preferred Position hiddenbar_terminate" = 146;
+      #     alwaysHiddenSectionEnabled = 1;
+      #     areSeparatorsHidden = 0;
+      #     globalKey = {
+      #       length = 144;
+      #     };
+      #     isAutoHide = 0;
+      #     isAutoStart = 0;
+      #     isShowPreferences = 0;
+      #     numberOfSecondForAutoHide = 10;
+      #     useFullStatusBarOnExpandEnabled = 0;
+      #   };
+      #   "com.bearisdriving.BGM.App" = {
+      #     SelectedMusicPlayerID = "EC2A907F-8515-4687-9570-1BF63176E6D8";
+      #     StatusBarIcon = 0;
+      #   };
+      #   "com.apple.audio.AudioMIDISetup" = {
+      #     "audioDevice.selected" = "BGMDevice"; # select BGM for Cava to work.
+      #   };
+      #   "com.apple.desktopservices" = {
+      #     DSDontWriteNetworkStores = true;
+      #     DSDontWriteUSBStores = true;
+      #   };
+      #   "com.lwouis.alt-tab-macos.plist" = {
+      #     holdShortcut = "\\U2318";
+      #     nextWindowShortcut = "\\U21e5";
+      #     startAtLogin = false;
+      #   };
+      #   "~/Library/Preferences/ByHost/com.apple.controlcenter" = {
+      #     Bluetooth = 2; # 0 = Off, 1 = Control Center, 2 = Menu Bar, 3 = Both
+      #     UserSwitcher = 2; # 1 = Control Center, 2 = Menu Bar, 3 = Both, 8 = Hidden
+      #     WiFi = 2; # 1 = Control Center, 2 = Menu Bar, 3 = Both, 24 = Off
+      #     AirDrop = 18; # 1 = Control Center, 2 = Menu Bar, 3 = Both, 24 = Off
+      #     VoiceControl = 8; # 2 = Menu Bar, 8 = Off
+      #     FocusModes = 2; # 2 = Menu Bar, 8 = Off
+      #     ScreenMirroring = 18; # Menu Bar, 24 = Off
+      #     Sound = 18; # Menu Bar, 24 = Off
+      #     StageManager = 18; # Menu Bar, 24 = Off
+      #     Display = 18; # Menu Bar, 24 = Off
+      #     NowPlaying = 18; # Menu Bar, 24 = Off
+      #   };
+      # };
+      #   LaunchServices.LSQuarantine = false;
+      #   magicmouse.MouseButtonMode = "TwoButton";
+      #   screencapture = {
+      #     disable-shadow = true;
+      #     location = "~/Desktop/Screenshots";
+      #     type = "png";
+      #   };
+      #   screensaver.askForPassword = true;
+      #   smb = {
+      #     NetBIOSName = "${config.networking.hostName}";
+      #     ServerDescription = null;
+      #   };
     };
   };
 }

@@ -1,5 +1,6 @@
 {
   pkgs,
+  user,
   ...
 }:
 ### System Configuration.nix for Darwin
@@ -11,7 +12,6 @@
     ./modules/windowManagement
     # ./modules/nix-the-planet.nix
   ];
-  # programs.okular.enable = true;
 
   fonts = {
     packages = with pkgs; [
@@ -19,20 +19,12 @@
       powerline-fonts
       powerline-symbols
       font-awesome_5
-      jetbrains-mono
-      # (pkgs.callPackage ./apple-fonts.nix {})
-      (nerdfonts.override {
-        fonts = [
-          "NerdFontsSymbolsOnly"
-          "Hack"
-        ];
-      })
+      nerd-fonts.jetbrains-mono
     ];
   };
   # system.build = builtins.exec "echo 'hello, world.'";
   # Auto upgrade nix package and the daemon service.
   services = {
-    nix-daemon.enable = true;
     tailscale.enable = true;
   };
   networking = {
@@ -64,9 +56,11 @@
     fish.enable = true;
   };
 
-  users.users.alex = {
+  users.users.${user} = {
     shell = pkgs.bashInteractive;
   };
+
+  system.primaryUser = user; # FIXME: Deprication on way. Remove this.
 
   nix = {
     # optimise.automatic = true;

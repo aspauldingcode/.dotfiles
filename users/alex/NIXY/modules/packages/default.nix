@@ -4,15 +4,6 @@
 }:
 
 {
-  nixpkgs = {
-    config = {
-      allowUnfree = true;
-      #allowUnfreePredicate = (_: true);
-      allowUnsupportedSystem = false;
-      allowBroken = false;
-    };
-  };
-
   home.packages = with pkgs; [
     # calcurse
     chatgpt-cli
@@ -24,7 +15,7 @@
     # cmusfm
     # bat
     hashcat
-    pmbootstrap
+    # pmbootstrap # FIXME: breaks?
     # newsboat
     utm
     sops
@@ -44,7 +35,7 @@
     libnotify
     asciidoctor
     fzf
-    tigervnc
+    # tigervnc
     lavat
     # bonsai #Only available on mac?
     tt

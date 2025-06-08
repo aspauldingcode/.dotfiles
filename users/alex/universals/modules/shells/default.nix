@@ -21,7 +21,7 @@
     zsh = {
       enable = true;
       enableCompletion = true;
-      initExtra = ''
+      initContent = ''
         setopt APPEND_HISTORY
         zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
         export EDITOR=nvim

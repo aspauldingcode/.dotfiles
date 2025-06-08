@@ -8,7 +8,7 @@
     (writeShellScriptBin "rebuild" ''
       echo "Rebuilding..."
       cd ~/.dotfiles
-      darwin-rebuild switch --show-trace --flake .#NIXY
+      sudo darwin-rebuild switch --show-trace --flake .#NIXY
 
       echo "Fetching latest erase-install pkg."
       ${bash}/bin/bash ${../../erase-install-fetcher.sh}

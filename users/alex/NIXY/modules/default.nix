@@ -4,7 +4,6 @@
 
 {
   imports = [
-    ./alacritty
     ./cava
     ./colors
     ./gowall

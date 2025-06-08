@@ -1,18 +1,6 @@
 { pkgs, ... }:
 
 {
-  nixpkgs = {
-    config = {
-      allowUnfree = true;
-      permittedInsecurePackages = [
-        "electron-19.1.9"
-      ];
-      allowUnfreePredicate = (_: true);
-      allowUnsupportedSystem = false;
-      allowBroken = false;
-    };
-  };
-
   home = {
     packages = with pkgs; [
       # System utilities

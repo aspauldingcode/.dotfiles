@@ -1,19 +1,6 @@
 { pkgs, ... }:
 
 {
-  nixpkgs = {
-    config = {
-      allowUnfree = true;
-      permittedInsecurePackages = [
-        "electron-19.1.9"
-        "openjdk-19-ga"
-      ];
-      allowUnfreePredicate = (_: true);
-      allowUnsupportedSystem = false;
-      allowBroken = false;
-    };
-  };
-
   home = {
     packages = with pkgs; [
       # Development tools
