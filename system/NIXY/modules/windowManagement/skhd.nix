@@ -26,7 +26,7 @@ let
 in
 {
   services.skhd = {
-    enable = true;
+    # enable = true;
     package = pkgs.skhd;
     skhdConfig =
       let

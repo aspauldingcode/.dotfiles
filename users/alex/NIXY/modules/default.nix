@@ -6,6 +6,8 @@
   imports = [
     ./cava
     ./colors
+    ./defaults
+    ./launch-agents
     ./gowall
     ./i3
     ./instantview

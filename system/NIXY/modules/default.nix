@@ -6,10 +6,9 @@
 {
   imports = [
     ./defaults
-    ./dock
     ./gowall
-    ./launch-agents
-    # ./launch-daemons
+    # ./launch-agents
+    ./launch-daemons
     # ./nix-the-planet
     ./openssh
     ./packages

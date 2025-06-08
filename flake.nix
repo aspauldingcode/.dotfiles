@@ -6,7 +6,6 @@
     unstable_nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable"; # Use nixos-specific branch
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05";
-      # url = "path:///Users/alex/home-manager";
       inputs.nixpkgs.follows = "nixpkgs"; # Ensure home-manager follows the stable nixpkgs version
     };
     nix-colors.url = "github:misterio77/nix-colors";

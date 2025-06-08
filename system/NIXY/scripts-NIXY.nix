@@ -59,7 +59,7 @@
       rm "$TMPFILE"
 
       echo "Formatting all nix files..."
-      ${treefmt2}/bin/treefmt ~/.dotfiles
+      ${treefmt}/bin/treefmt ~/.dotfiles
 
       echo "Done."
       date +"%I:%M:%S %p"

@@ -60,7 +60,7 @@
     shell = pkgs.bashInteractive;
   };
 
-  system.primaryUser = user; # FIXME: Deprication on way. Remove this.
+  # system.primaryUser = user; # FIXME: Deprication on way. Remove this.
 
   nix = {
     # optimise.automatic = true;
