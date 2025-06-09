@@ -103,5 +103,5 @@
     always-allow-substitutes = true;
   };
 
-  nix.linux-builder.enable = true;
+  # nix.linux-builder.enable = true;
 }

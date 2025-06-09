@@ -80,32 +80,32 @@
     # nix.buildMachines.*.supportedFeatures = [ "kvm" "big-parallel" ];
     # nix.buildMachines.*.systems = [ "x86_64-linux" "aarch64-linux" ];
 
-    gc = {
-      automatic = true;
-      interval.Hour = 23; # Automaitcally collect garbage each day
-      options = "--delete-older-than 30d --delete-old-generations 10";
-    };
-    settings = {
-      download-buffer-size = 500000000; # 500 MB
-      # FIXME: add cahcix.nixos.org so I don't have to rebuild home-manager all the time
-      # substituters = [
-      #   "https://cache.nixos.org/"
-      # ];
-      # trusted-public-keys = [
-      #   "hydra.nixos.org-1:CNHJZBh9K4tP3EKF6FkkgeVYsS3ohTl+oS0Qa8bezVs="
-      # ]; # By default, only the key for cache.nixos.org is included
-      # trusted-substituters = [
-      #   "https://hydra.nixos.org/"
-      # ];
-      trusted-users = [
-        "root"
-        "@admin" # anyone in the wheel group
-      ];
-    };
-    extraOptions = ''
-      extra-platforms = aarch64-darwin x86_64-darwin
-      experimental-features = nix-command flakes
-    '';
+    #gc = {
+    #  automatic = true;
+    #  interval.Hour = 23; # Automaitcally collect garbage each day
+    #  options = "--delete-older-than 30d --delete-old-generations 10";
+    #};
+    #settings = {
+    #  download-buffer-size = 500000000; # 500 MB
+    # FIXME: add cahcix.nixos.org so I don't have to rebuild home-manager all the time
+    # substituters = [
+    #   "https://cache.nixos.org/"
+    # ];
+    # trusted-public-keys = [
+    #   "hydra.nixos.org-1:CNHJZBh9K4tP3EKF6FkkgeVYsS3ohTl+oS0Qa8bezVs="
+    # ]; # By default, only the key for cache.nixos.org is included
+    # trusted-substituters = [
+    #   "https://hydra.nixos.org/"
+    # ];
+    #  trusted-users = [
+    #    "root"
+    #    "@admin" # anyone in the wheel group
+    #  ];
+    #};
+    #extraOptions = ''
+    #  extra-platforms = aarch64-darwin x86_64-darwin
+    #  experimental-features = nix-command flakes
+    #'';
   };
 
   nixpkgs = {
