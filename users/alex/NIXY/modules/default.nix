@@ -17,6 +17,7 @@
     ./packages
     ./qutebrowser
     ./spicetify
+    ./terminal
     ./theme
     ./unmenu
     ./wallpaper
