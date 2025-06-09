@@ -112,5 +112,20 @@
         StandardErrorPath = "/tmp/unmenu.error.log";
       };
     };
+
+    alacritty = {
+      enable = true;
+      config = {
+        Label = "com.aspauldingcode.alacritty";
+        ProgramArguments = [
+          "open"
+          "-a"
+          "Alacritty"
+        ];
+        RunAtLoad = true;
+        StandardOutPath = "/tmp/alacritty.log";
+        StandardErrorPath = "/tmp/alacritty.error.log";
+      };
+    };
   };
 }

@@ -28,6 +28,163 @@
                 };
                 rules = [
                   {
+                    description = "System controls and application launchers";
+                    manipulators = [
+                      # Launch Alacritty
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "return_or_enter";
+                          modifiers = {
+                            mandatory = [ "left_alt" ];
+                          };
+                        };
+                        to = [
+                          {
+                            shell_command = "open -a Alacritty";
+                          }
+                        ];
+                      }
+                      # Launch Firefox
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "spacebar";
+                          modifiers = {
+                            mandatory = [
+                              "left_alt"
+                              "left_control"
+                            ];
+                          };
+                        };
+                        to = [
+                          {
+                            shell_command = "open -na Firefox";
+                          }
+                        ];
+                      }
+                      # Launch Firefox Private Window
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "spacebar";
+                          modifiers = {
+                            mandatory = [
+                              "left_alt"
+                              "left_control"
+                              "left_shift"
+                            ];
+                          };
+                        };
+                        to = [
+                          {
+                            shell_command = "open -na Firefox --args -private-window";
+                          }
+                        ];
+                      }
+                      # System reboot
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "delete_or_backspace";
+                          modifiers = {
+                            mandatory = [
+                              "left_command"
+                              "left_control"
+                            ];
+                          };
+                        };
+                        to = [
+                          {
+                            shell_command = "sudo reboot";
+                          }
+                        ];
+                      }
+                      # System shutdown
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "delete_or_backspace";
+                          modifiers = {
+                            mandatory = [
+                              "left_command"
+                              "left_control"
+                              "left_shift"
+                            ];
+                          };
+                        };
+                        to = [
+                          {
+                            shell_command = "sudo shutdown -h now";
+                          }
+                        ];
+                      }
+                      # Toggle sketchybar
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "m";
+                          modifiers = {
+                            mandatory = [ "left_alt" ];
+                          };
+                        };
+                        to = [
+                          {
+                            shell_command = "sketchybar --toggle";
+                          }
+                        ];
+                      }
+                      # Toggle menubar
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "m";
+                          modifiers = {
+                            mandatory = [
+                              "left_alt"
+                              "left_shift"
+                            ];
+                          };
+                        };
+                        to = [
+                          {
+                            shell_command = "defaults write -g _HIHideMenuBar -bool true; killall SystemUIServer";
+                          }
+                        ];
+                      }
+                      # Toggle dock
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "spacebar";
+                          modifiers = {
+                            mandatory = [ "left_alt" ];
+                          };
+                        };
+                        to = [
+                          {
+                            shell_command = "defaults write com.apple.dock autohide -bool true; killall Dock";
+                          }
+                        ];
+                      }
+                      # Toggle dark mode
+                      {
+                        type = "basic";
+                        from = {
+                          key_code = "p";
+                          modifiers = {
+                            mandatory = [ "left_alt" ];
+                          };
+                        };
+                        to = [
+                          {
+                            shell_command = "osascript -e 'tell application \"System Events\" to tell appearance preferences to set dark mode to not dark mode'";
+                          }
+                        ];
+                      }
+                    ];
+                  }
+                  {
                     description = "Swap Control+C/X, Command+C/X, Control+Shift+C/X, and Command+Shift+C/X in Tiger VNC Viewer";
                     manipulators = [
                       {
@@ -475,28 +632,6 @@
                           {
                             "key_code" = "w";
                             modifiers = [ "left_command" ];
-                          }
-                        ];
-                      }
-                    ];
-                  }
-                  {
-                    description = "Open Firefox with Alt+Ctrl+Space";
-                    manipulators = [
-                      {
-                        type = "basic";
-                        from = {
-                          key_code = "spacebar";
-                          modifiers = {
-                            mandatory = [
-                              "left_option"
-                              "left_control"
-                            ];
-                          };
-                        };
-                        to = [
-                          {
-                            shell_command = "open -na Firefox";
                           }
                         ];
                       }
