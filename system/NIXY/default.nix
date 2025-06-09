@@ -63,6 +63,7 @@
   # system.primaryUser = user; # FIXME: Deprication on way. Remove this.
 
   nix = {
+    enable = false; # Switching to determinate nix!
     # optimise.automatic = true;
     # https://nixos.wiki/wiki/Distributed_build
     # distributedBuilds = false; # set true after configuration
