@@ -22,6 +22,10 @@ in
         FontAntialias = 0;
         ShowWindowSettingsNameInTitle = 0;
         shellExitAction = 2;
+        # Font = {
+        #   length = 259;
+        #   bytes = "0x62706c69 73743030 d4010203 04050607 ... 00000000 000000c7";
+        # };
       };
     };
   };
