@@ -1,10 +1,9 @@
-{
-  fetchurl,
-  pkgs,
-  lib,
-  config,
-  user,
-  ...
+{ fetchurl
+, pkgs
+, lib
+, config
+, user
+, ...
 }:
 
 let
@@ -556,10 +555,10 @@ in
           "extensions.webcompat.enable_shims" = true;
           "extensions.webcompat.perform_injections" = true;
           "extensions.webcompat.perform_ua_overrides" = true;
-          "font.default.x-western" = "JetBrains Mono";
-          "font.name.serif.x-western" = "JetBrains Mono";
-          "font.name.sans-serif.x-western" = "JetBrains Mono";
-          "font.name.monospace.x-western" = "JetBrains Mono";
+          "font.default.x-western" = "JetBrainsMono Nerd Font Mono";
+          "font.name.serif.x-western" = "JetBrainsMono Nerd Font Mono";
+          "font.name.sans-serif.x-western" = "JetBrainsMono Nerd Font Mono";
+          "font.name.monospace.x-western" = "JetBrainsMono Nerd Font Mono";
           "font.size.variable.x-western" = 16;
           "font.size.fixed.x-western" = 13;
           "browser.display.use_document_fonts" = 0;
@@ -800,19 +799,19 @@ in
       SearchEngines = {
         Add = [
           {
-            Name = "SearXNG";
-            URLTemplate = "http://searx3aolosaf3urwnhpynlhuokqsgz47si4pzz5hvb7uuzyjncl2tid.onion/search?q={searchTerms}";
+            Name = "Google";
+            URLTemplate = "https://www.google.com/search?q={searchTerms}";
             Method = "GET";
-            IconURL = "http://searx3aolosaf3urwnhpynlhuokqsgz47si4pzz5hvb7uuzyjncl2tid.onion/favicon.ico";
-            Description = "SearX instance ran by tiekoetter.com as onion-service";
+            IconURL = "https://www.google.com/favicon.ico";
+            Description = "Google Search";
           }
         ];
-        Default = "SearXNG";
+        Default = "Google";
         PreventInstalls = true;
         Remove = [
           "Amazon.com"
           "Bing"
-          "Google"
+          "SearXNG"
         ];
       };
       SearchSuggestEnabled = false;

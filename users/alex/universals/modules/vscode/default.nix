@@ -1223,10 +1223,62 @@ in
         "editor.tokenColorCustomizations" = {
           "textMateRules" = base16Settings.tokenColors;
         };
+        # Common editor settings
+        "editor.formatOnSave" = true;
+        "editor.defaultFormatter" = "esbenp.prettier-vscode";
+        # Nix IDE settings
+        "nix.enable" = true;
+        "nix.serverPath" = "nixd";
+        "nix.formatterPath" = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt";
+        "nix.serverSettings" = {
+          "nixd" = {
+            "formatting" = {
+              "command" = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt";
+            };
+            "options" = {
+              "enable" = true;
+            };
+          };
+        };
+        # Nix linting settings
+        "nix.linting.enable" = true;
+        "nix.linting.statix.enable" = true;
+        "nix.linting.statix.command" = "statix";
+        "nix.linting.statix.args" = [
+          "check"
+          "--stdin"
+          "--format=errfmt"
+        ];
+        # Prettier settings
+        "prettier.singleQuote" = false;
+        "prettier.trailingComma" = "all";
+        "prettier.semi" = true;
+        "prettier.printWidth" = 80;
+        "prettier.tabWidth" = 2;
+        "prettier.useTabs" = false;
+        "prettier.bracketSpacing" = true;
+        "prettier.arrowParens" = "always";
+        "prettier.endOfLine" = "lf";
+        "prettier.proseWrap" = "always";
+        "prettier.htmlWhitespaceSensitivity" = "css";
+        "prettier.embeddedLanguageFormatting" = "auto";
+        "prettier.singleAttributePerLine" = true;
+        # Language-specific formatter overrides
+        "[nix]" = {
+          "editor.defaultFormatter" = "jnoortheen.nix-ide";
+        };
+        "[swift]" = {
+          "editor.defaultFormatter" = "sswg.swift-lang";
+          "editor.codeActionsOnSave" = {
+            "source.fixAll" = true;
+            "source.organizeImports" = true;
+          };
+        };
       };
       extensions = with pkgs.vscode-extensions; [
         jnoortheen.nix-ide
         esbenp.prettier-vscode
+        sswg.swift-lang
       ];
     };
   };
