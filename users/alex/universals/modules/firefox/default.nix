@@ -1,9 +1,10 @@
-{ fetchurl
-, pkgs
-, lib
-, config
-, user
-, ...
+{
+  fetchurl,
+  pkgs,
+  lib,
+  config,
+  user,
+  ...
 }:
 
 let

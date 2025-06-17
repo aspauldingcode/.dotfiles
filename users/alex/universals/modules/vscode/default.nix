@@ -1219,7 +1219,15 @@ in
     profiles.default = {
       userSettings = {
         "workbench.colorTheme" = "Default ${config.colorScheme.variant} Modern";
-        "workbench.colorCustomizations" = base16Settings.colors;
+        "workbench.colorCustomizations" = base16Settings.colors // {
+          "editorIndentGuide.activeBackground1" = "#${config.colorScheme.palette.base0A}";
+          "editorIndentGuide.background1" = "#${config.colorScheme.palette.base03}";
+          "minimap.selectionOccurrenceHighlight" = "#${config.colorScheme.palette.base03}";
+          "widget.shadow" = "#${config.colorScheme.palette.base00}";
+          "editor.lineHighlightBackground" = "#${config.colorScheme.palette.base01}";
+          "editor.lineHighlightBorder" = "#${config.colorScheme.palette.base01}";
+          "editor.selectionBackground" = "#${config.colorScheme.palette.base02}";
+        };
         "editor.tokenColorCustomizations" = {
           "textMateRules" = base16Settings.tokenColors;
         };
