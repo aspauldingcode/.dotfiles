@@ -1271,6 +1271,11 @@ in
         "prettier.htmlWhitespaceSensitivity" = "css";
         "prettier.embeddedLanguageFormatting" = "auto";
         "prettier.singleAttributePerLine" = true;
+        # Terminal settings
+        "terminal.integrated.automationProfile.osx" = { };
+        "terminal.integrated.defaultProfile.osx" = "zsh";
+        "terminal.integrated.shellIntegration.enabled" = false;
+        "terminal.integrated.defaultProfile.linux" = "zsh";
         # Language-specific formatter overrides
         "[nix]" = {
           "editor.defaultFormatter" = "jnoortheen.nix-ide";
