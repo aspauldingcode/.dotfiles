@@ -1366,18 +1366,19 @@
                   "mouse_swap_wheels" = false;
                   "mouse_swap_xy" = false;
                   "simple_modifications" = [
-                    {
-                      from = {
-                        "apple_vendor_top_case_key_code" = "keyboard_fn";
-                      };
-                      to = [ { "key_code" = "left_command"; } ];
-                    }
-                    {
-                      from = {
-                        "key_code" = "right_command";
-                      };
-                      to = [ { "apple_vendor_top_case_key_code" = "keyboard_fn"; } ];
-                    }
+                    # Fn key remapping (commented out to keep Fn as Fn)
+                    # {
+                    #   from = {
+                    #     "apple_vendor_top_case_key_code" = "keyboard_fn";
+                    #   };
+                    #   to = [ { "key_code" = "left_command"; } ];
+                    # }
+                    # {
+                    #   from = {
+                    #     "key_code" = "right_command";
+                    #   };
+                    #   to = [ { "apple_vendor_top_case_key_code" = "keyboard_fn"; } ];
+                    # }
                   ];
                   "treat_as_built_in_keyboard" = false;
                 }

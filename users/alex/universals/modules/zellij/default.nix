@@ -14,14 +14,17 @@ in
       extraConfig = ''
         def start_zellij [] {
           if 'ZELLIJ' not-in ($env | columns) {
-            if 'ZELLIJ_AUTO_ATTACH' in ($env | columns) and $env.ZELLIJ_AUTO_ATTACH == 'true' {
-              zellij attach -c
-            } else {
-              zellij
-            }
+            # Only start zellij if we're in an SSH session
+            if ('SSH_CLIENT' in ($env | columns)) or ('SSH_TTY' in ($env | columns)) or ('SSH_CONNECTION' in ($env | columns)) {
+              if 'ZELLIJ_AUTO_ATTACH' in ($env | columns) and $env.ZELLIJ_AUTO_ATTACH == 'true' {
+                zellij attach -c
+              } else {
+                zellij
+              }
 
-            if 'ZELLIJ_AUTO_EXIT' in ($env | columns) and $env.ZELLIJ_AUTO_EXIT == 'true' {
-              exit
+              if 'ZELLIJ_AUTO_EXIT' in ($env | columns) and $env.ZELLIJ_AUTO_EXIT == 'true' {
+                exit
+              }
             }
           }
         }
@@ -33,9 +36,9 @@ in
     };
     programs.zellij = {
       enable = true;
-      enableBashIntegration = true;
-      enableFishIntegration = true;
-      enableZshIntegration = true;
+      enableBashIntegration = false;
+      enableFishIntegration = false;
+      enableZshIntegration = false;
       settings = {
         theme = "custom";
         themes = {

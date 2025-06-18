@@ -1282,6 +1282,13 @@ in
             "source.organizeImports" = true;
           };
         };
+        # Font settings
+        "editor.fontFamily" = "'JetBrainsMono Nerd Font Mono', 'JetBrains Mono', monospace";
+        "editor.fontSize" = 14;
+        "editor.fontLigatures" = true;
+        "editor.fontWeight" = "normal";
+        "editor.letterSpacing" = 0.5;
+        "editor.lineHeight" = 1.5;
       };
       extensions = with pkgs.vscode-extensions; [
         jnoortheen.nix-ide
