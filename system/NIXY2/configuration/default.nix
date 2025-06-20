@@ -106,7 +106,7 @@
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.sway}/bin/sway --config ${../modules/greetd/sway-config}";
+          command = "${pkgs.swayfx}/bin/sway --config ${../modules/greetd/sway-config}";
           user = "greeter";
         };
         background = {
@@ -140,7 +140,6 @@
     };
     sway = {
       enable = true;
-      package = pkgs.swayfx;
     };
     light.enable = true;
     fish.enable = false;
