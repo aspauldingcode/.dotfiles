@@ -3,7 +3,7 @@
 {
   imports = [
     nix-colors.homeManagerModules.default
-    ../universals/modules
+    ../../universals/modules
     ../scripts
     ../modules
   ];
