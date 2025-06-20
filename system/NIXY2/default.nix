@@ -10,9 +10,9 @@
 
 {
   imports = [
+    apple-silicon.nixosModules.apple-silicon-support
     ./hardware-configuration
     ./scripts
-    apple-silicon.nixosModules.apple-silicon-support
     ./modules
     # ./temporaryfix # FIXME: remove after success https://github.com/tpwrules/nixos-apple-silicon/issues/276
     ./configuration

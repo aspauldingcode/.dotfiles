@@ -1,16 +1,9 @@
-{ nix-colors, ... }:
+{ user, ... }:
 
 {
-  imports = [
-    nix-colors.homeManagerModules.default
-    ../../universals/modules
-    ../scripts
-    ../modules
-  ];
-
   home = {
-    username = "alex";
-    homeDirectory = "/home/alex";
+    username = user;
+    homeDirectory = "/home/${user}";
     stateVersion = "24.11"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   };
 

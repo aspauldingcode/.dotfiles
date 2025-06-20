@@ -332,6 +332,7 @@
       apps = eachSystem (pkgs: {
         default = {
           type = "app";
+          meta.description = "System configuration installer [TUI] - sets up dotfiles, and all prerequisites";
           program = toString (
             pkgs.writeShellScript "sync-age-key" ''
               export PATH="${pkgs.git}/bin:${pkgs.gh}/bin:${pkgs.ncurses}/bin:${pkgs.dialog}/bin:${pkgs.darwin.cctools}/bin:$PATH"
@@ -515,6 +516,7 @@
 
                 shellHook = ''
                   echo -e "\033[0;34mHow's it going fam?\033[0m"
+                  echo "This devshell will eventually be nixvim config."
                 '';
               };
             in

@@ -9,19 +9,6 @@
 }:
 
 {
-  imports = [
-    ../hardware-configuration
-    ../scripts
-    apple-silicon.nixosModules.apple-silicon-support
-    ../modules/packages
-    # ../temporaryfix # FIXME: remove after success https://github.com/tpwrules/nixos-apple-silicon/issues/276
-    #../modules/virtual-machines
-    ../modules/theme
-    ../modules/kanata
-    ../modules/airplay
-    ../modules/eduroam
-  ];
-
   nixpkgs.flake = {
     setFlakeRegistry = false;
     setNixPath = false;

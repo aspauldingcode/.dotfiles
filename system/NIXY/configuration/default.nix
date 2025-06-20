@@ -5,14 +5,6 @@
 }:
 ### System Configuration.nix for Darwin
 {
-  imports = [
-    ../scripts
-    ../modules
-
-    ../modules/windowManagement
-    # ./modules/nix-the-planet.nix
-  ];
-
   fonts = {
     packages = with pkgs; [
       dejavu_fonts

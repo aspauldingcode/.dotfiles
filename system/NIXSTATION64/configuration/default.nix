@@ -8,15 +8,6 @@
 }:
 
 {
-  imports = [
-    ../hardware-configuration
-    ../modules/packages
-    ../modules/theme
-    ../modules/virtual-machines
-    ../modules/greetd
-    ../scripts
-  ];
-
   boot = {
     kernelPackages = pkgs.linuxPackages_6_13;
     loader = {

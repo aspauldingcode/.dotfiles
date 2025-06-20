@@ -1,6 +1,5 @@
 {
   lib,
-  nix-colors,
   config,
   pkgs,
   ...
@@ -10,14 +9,6 @@
 #   android-sdk = pkgs.android_sdk; # Replace with the actual Android SDK package name
 # in
 {
-  imports = [
-    nix-colors.homeManagerModules.default
-    ../scripts
-    ../../universals/modules
-
-    ../modules
-  ];
-
   home = {
     stateVersion = "24.11"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
     shellAliases = {

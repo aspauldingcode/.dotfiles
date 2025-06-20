@@ -1,34 +1,106 @@
 # .dotfiles
-A Universal .dotfiles Configuration with Nix Flakes - over-engineered by Alex Spaulding.
+
+A Universal .dotfiles Configuration with Nix Flakes - over-engineered by Alex
+Spaulding.
 
 <!-- BEGIN CODE STATS -->
 ## How much code?
 👨‍💻 Code Statistics:
 
-| Language | Files | Lines | Code | Comments | Blanks |
-|----------|-------|-------|------|----------|--------|
+_Total LOC (including blanks, comments): **30009**_
+
+<details>
+<summary>🔍 Click to expand code stats.</summary>
+
+| Language   | Files | Lines | Code  | Comments | Blanks |
+|------------|-------|-------|-------|----------|--------|
 | CSS | 3 | 1867 | 1416 | 110 | 341 |
 | JSON | 1 | 448 | 448 | 0 | 0 |
 | Lua | 12 | 1008 | 796 | 128 | 84 |
-| Markdown | 1 | 34 | 0 | 28 | 6 |
-| Nix | 128 | 23565 | 19793 | 2134 | 1638 |
+| Markdown | 1 | 100 | 0 | 71 | 29 |
+| Nix | 128 | 23534 | 19768 | 2134 | 1632 |
 | Python | 9 | 2061 | 1743 | 93 | 225 |
 | Shell | 6 | 154 | 102 | 25 | 27 |
 | Plain Text | 2 | 562 | 0 | 371 | 191 |
 | TOML | 1 | 56 | 47 | 5 | 4 |
 | Vim script | 0 | 0 |  |  |  |
 | YAML | 3 | 219 | 64 | 111 | 44 |
-| **Total** | 166 | 29974 | 24409 | 3005 | 2560 |
+| **Total**  | 166 | 30009 | 24384 | 3048 | 2577 |
 
-Last updated: Thu Jun 19 21:22:21 PDT 2025
+</details>
+
+Last updated: Fri Jun 20 07:13:44 PDT 2025
 <!-- END CODE STATS -->
 
+## 📦 Flake Configuration Overview
+
+### 🖥️ System Configurations
+
+- **NIXY** (macOS/Darwin - aarch64): Main macOS development machine
+- **NIXY2** (NixOS - aarch64): Asahi Linux on NIXY M1 MBA (dual-boot)
+- **NIXSTATION64** (NixOS - x86_64): Desktop Linux workstation
+- **NIXEDUP** (NixOS - aarch64): Mobile NixOS (experimental)
+
+### 🚀 Quick Start App
+
+Run the system installer with:
+
+```bash
+nix run github:aspauldingcode/.dotfiles
+```
+
+_System configuration installer [TUI] - sets up dotfiles, and all prerequisites_
+
+### 📋 Available Flake Outputs
+
+```bash
+# View all available outputs
+nix flake show github:aspauldingcode/.dotfiles
+
+# Build configurations after installing
+rebuild
+
+# Enter development shell
+nix develop
+```
+
+### 🔧 Key Features
+
+- **Universal Configuration**: Works across macOS (Darwin) and NixOS
+- **Sops-nix Integration**: Encrypted secrets management
+- **Home Manager**: User environment management
+- **Nix-Colors**: System-wide theming with Nix-Colors variables
+- **Custom Overlays**: NUR, unstable packages, and custom derivations
+- **Development Shells**: Pre-configured development environments
+- **Modular Design**: Organized system and user configurations
+
+### 📁 Structure
+
+```
+.dotfiles/
+├── flake.nix           # Main flake configuration
+├── system/             # System-level configurations
+│   ├── NIXY/          # macOS configuration
+│   ├── NIXSTATION64/  # x86_64 NixOS config
+│   ├── NIXEDUP/       # aarch64 NixOS config
+│   └── NIXY2/         # Secondary aarch64 NixOS config
+├── users/             # User-specific configurations
+│   └── alex/          # User configurations per system
+├── sops-nix/          # Encrypted secrets
+└── README.md          # This file
+```
+
 ## Getting Started
-This repo contains my ___nixified___ .dotfiles, which additionally defines the operating system environment for NixOS and Darwin.
-__Note:__ this repo is currently not designed to be installed for other interested users.
+
+This repo contains my **_nixified_** .dotfiles, which additionally defines the
+operating system environment for NixOS and Darwin. **Note:** this repo is
+currently not designed to be installed for other interested users.
 
 ### FRESH INSTALL
-Please [read the Notes](https://github.com/aspauldingcode/.dotfiles/issues/158) for info on what to do for a fresh install.
+
+Please [read the Notes](https://github.com/aspauldingcode/.dotfiles/issues/158)
+for info on what to do for a fresh install.
 
 # I'm being productive, I swear!
+
 ![macOS-NIXY](./macOS-NIXY.png)
