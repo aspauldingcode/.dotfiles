@@ -9,7 +9,6 @@
 
 {
   programs = {
-    darling.enable = false; # install darling with setuid wrapper. ONLY AVAILABLE ON x86 FOR NOW!
     thunar = {
       enable = true;
       plugins = with pkgs.xfce; [

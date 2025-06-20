@@ -10,8 +10,7 @@
     package = pkgs.brave;
     commandLineArgs = [
       "--enable-features=UseOzonePlatform"
-      (lib.optionals pkgs.stdenv.isLinux [ "--ozone-platform=wayland" ])
-    ];
+    ] ++ lib.optionals pkgs.stdenv.isLinux [ "--ozone-platform=wayland" ];
     dictionaries = [
     ];
     extensions = [

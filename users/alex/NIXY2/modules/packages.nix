@@ -12,6 +12,7 @@
       age
       sops
       fd
+      fex
       gcal
       brightnessctl
       # box64 # not working with 16k pagesize m1 asahi
@@ -25,7 +26,6 @@
       ripgrep
       socat
       sshfs
-      # trae
       nix-search
       tigervnc
       usbmuxd
@@ -39,20 +39,20 @@
       checkra1n
       idevicerestore
       libimobiledevice
-      libusb1
-      libusbmuxd
-      obsidian
-      cmake
-      rofi-wayland-unwrapped
-      #zoom-us # NOT WORKING on aarch64-linux!
-
-      # Multimedia and graphics
-      blender
-      cava
-      ffmpeg-full
-      flameshot
-      kdePackages.kdenlive
-      obs-studio
+      # libusb1
+      # libusbmuxd
+      # obsidian
+      # cmake
+      # rofi-wayland-unwrapped
+      # #zoom-us # NOT WORKING on aarch64-linux!
+      #
+      # # Multimedia and graphics
+      # blender
+      # cava
+      # ffmpeg-full
+      # flameshot
+      # kdePackages.kdenlive
+      # obs-studio
       obs-studio-plugins.obs-vkcapture
       #obs-studio-plugins.wlrobs # NOT WORKING on aarch64-linux!
       #spotify-unwrapped # NOT AVAILABLE on aarch64-linux!
@@ -61,7 +61,6 @@
       # Desktop environment and window management
       bemenu
       clipman
-      gnomeExtensions.dark-variant
       # gtk-layer-shell
       imv
       wl-clipboard
@@ -77,7 +76,6 @@
       # Miscellaneous
       # unstable.beeper # DOESN'T WORK ON aarch64-linux!
       sl
-      thefuck
       waypipe
       wayvnc
       lavat

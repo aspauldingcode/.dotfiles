@@ -3,16 +3,7 @@
 {
   imports = [
     nix-colors.homeManagerModules.default
-    ./../extraConfig/nvim/nixvim.nix # Universal nixvim.nix
-    ./../universals/modules/alacritty.nix
-    ./../universals/modules/discord.nix
-    ./../universals/modules/vscode.nix
-    ./../universals/modules/firefox.nix
-    ./../universals/modules/shells.nix
-    ./../universals/modules/btop.nix
-    ./../universals/modules/git.nix
-    ./../universals/modules/yazi.nix
-    ./../universals/modules/zellij.nix
+    ../universals/modules
     ./modules/mako.nix
     ./modules/bemenu.nix
     ./modules/mimeapps.nix

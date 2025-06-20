@@ -19,7 +19,6 @@ let
   playerctl = "${pkgs.playerctl}/bin/playerctl";
   playerctld = "${pkgs.playerctl}/bin/playerctld";
   pavucontrol = "${pkgs.pavucontrol}/bin/pavucontrol";
-  darling = "${pkgs.darling}/bin/darling";
   wl-gammarelay-rs = "${pkgs.wl-gammarelay-rs}/bin/wl-gammarelay-rs";
 
   jsonOutput =
@@ -397,12 +396,10 @@ let
           OS="$(${cat} /etc/os-release | ${grep} PRETTY_NAME | ${cut} -d '"' -f2)"
           Kernel="$(uname -s -r -m)"
           Wine="$(wine-version)"'';
-        # Darling="$(${darling} shell uname -s -r -m) (Darling)"
         tooltip = ''
           $OS
           $Kernel
           $Wine'';
-        # $Darling
       };
     };
 

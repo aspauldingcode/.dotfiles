@@ -389,20 +389,20 @@
     };
   };
 
-  nixpkgs = {
-    config = {
-      allowUnfree = true;
-      permittedInsecurePackages = [ "electron-19.1.9" ];
-    };
-    overlays = [
-      inputs.nur.overlays.default
-      (final: _prev: {
-        unstable = import inputs.unstable_nixpkgs {
-          inherit (final) system config;
-        };
-      })
-    ];
-  };
+  # nixpkgs = {
+  #   config = {
+  #     allowUnfree = true;
+  #     permittedInsecurePackages = [ "electron-19.1.9" ];
+  #   };
+  #   overlays = [
+  #     inputs.nur.overlays.default
+  #     (final: _prev: {
+  #       unstable = import inputs.unstable_nixpkgs {
+  #         inherit (final) system config;
+  #       };
+  #     })
+  #   ];
+  # };
 
   virtualisation = {
     docker.enable = true;

@@ -6,7 +6,6 @@
 }:
 {
   home.packages = with pkgs; [
-    thefuck
     eza
     powershell # FIXME: make it available upstream in nix options as programs.powershell.enable?
   ];
