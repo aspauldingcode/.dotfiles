@@ -14,53 +14,35 @@ Properties. For general CSS information, see the MDN web docs.
 
 /* Add your custom styles below this line */
 
-/* Gruvbox-themed styling for the greeter */
+/* Example: Style the main window */
 window {
   background-color: rgba(40, 40, 40, 0.95);
   border-radius: 10px;
 }
 
-/* Style buttons with gruvbox colors */
+/* Example: Style buttons */
 button {
   background-color: #3c3836;
   color: #ebdbb2;
   border: 1px solid #665c54;
   border-radius: 5px;
   padding: 8px 16px;
-  font-family: "JetBrains Mono";
 }
 
 button:hover {
   background-color: #504945;
 }
 
-button:active {
-  background-color: #665c54;
-}
-
-/* Style text entries */
+/* Example: Style text entries */
 entry {
   background-color: #3c3836;
   color: #ebdbb2;
   border: 1px solid #665c54;
   border-radius: 5px;
   padding: 8px;
-  font-family: "JetBrains Mono";
 }
 
-entry:focus {
-  border-color: #d79921;
-}
-
-/* Style labels */
+/* Example: Style labels */
 label {
   color: #ebdbb2;
-  font-family: "JetBrains Mono";
-}
-
-/* Style the greeting message */
-.greeting {
-  color: #d79921;
-  font-weight: bold;
-  font-family: "JetBrains Mono";
 }

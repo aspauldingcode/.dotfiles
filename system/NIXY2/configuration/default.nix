@@ -1,11 +1,10 @@
-{
-  inputs,
-  lib,
-  config,
-  pkgs,
-  mobile-nixos,
-  apple-silicon,
-  ...
+{ inputs
+, lib
+, config
+, pkgs
+, mobile-nixos
+, apple-silicon
+, ...
 }:
 
 {
@@ -103,42 +102,7 @@
   };
 
   programs = {
-    regreet = {
-      enable = true;
-      settings = {
-        default_session = {
-          command = "${pkgs.sway}/bin/sway --config ${../modules/greetd/sway-config}";
-          user = "greeter";
-        };
-        background = {
-          path = "${../../../users/alex/extraConfig/wallpapers/gruvbox-nix.png}";
-          fit = "Fill";
-        };
-        env = {
-          ENV_VARIABLE = "value";
-        };
-        GTK = {
-          application_prefer_dark_theme = true;
-          cursor_theme_name = lib.mkForce "Bibata-Modern-Ice";
-          font_name = lib.mkForce "JetBrains Mono";
-          icon_theme_name = "Adwaita";
-          theme_name = "Adwaita";
-        };
-        commands = {
-          reboot = [
-            "systemctl"
-            "reboot"
-          ];
-          poweroff = [
-            "systemctl"
-            "poweroff"
-          ];
-        };
-        appearance = {
-          greeting_msg = "Welcome back!";
-        };
-      };
-    };
+    # regreet configuration is now handled in modules/greetd/default.nix
     light.enable = true;
     fish.enable = false;
     zsh.enable = true;

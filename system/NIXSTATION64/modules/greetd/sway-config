@@ -1,0 +1,24 @@
+exec "regreet; swaymsg exit"
+include /etc/sway/config.d/*
+
+# Set background for all outputs
+output * bg ~/.dotfiles/users/alex/extraConfig/wallpapers/gruvbox-nix.png fill
+
+# NIXSTATION64 specific output configuration
+# Adjust these based on your actual monitor setup
+# You can get monitor names with: swaymsg -t get_outputs
+
+# Example configurations - uncomment and adjust as needed:
+# output "DP-1" {
+#   pos 0,0
+#   res 1920x1080
+# }
+
+# output "HDMI-A-1" {
+#   pos 1920,0
+#   res 1920x1080
+# }
+
+# Disable specific outputs if needed
+# output 'DP-2' disable
+# output 'DP-3' disable 
