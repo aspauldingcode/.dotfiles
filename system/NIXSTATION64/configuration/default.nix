@@ -325,6 +325,16 @@
       defaultShared = true;
     };
     blueman.enable = true;
+
+    # Enable kmscon to replace default TTYs with support for TrueType fonts
+    kmscon = {
+      enable = true;
+      extraConfig = ''
+        font-name=JetBrains Mono Nerd Font Mono
+        font-size=14
+        font-dpi=192
+      '';
+    };
   };
 
   xdg.portal = {
@@ -434,9 +444,20 @@
       cp /home/alex/.dotfiles/users/susu/face.png /var/lib/AccountsService/icons/susu
 
       # adds way-displays configuration
-      cd ${../../system/NIXSTATION64/modules/way-displays}
+      cd ${../modules/way-displays}
       find . -type d -exec mkdir -p /etc/way-displays/{} \;
-      find . -type f -exec ln -sf ${../../system/NIXSTATION64/modules/way-displays}/{} /etc/way-displays/{} \;
+      find . -type f -exec ln -sf ${../modules/way-displays}/{} /etc/way-displays/{} \;
     '';
   };
+
+  # Console configuration for TTY
+  console = {
+    earlySetup = true;
+    font = "ter-132n";
+    packages = with pkgs; [ terminus_font ];
+    keyMap = "us";
+  };
+
+  # Keep a fallback traditional TTY (tty1) for emergencies
+  systemd.services."getty@tty1".enable = true;
 }

@@ -410,4 +410,25 @@
       find . -type f -exec ln -sf ${../modules/way-displays}/{} /etc/way-displays/{} \;
     '';
   };
+
+  # Console configuration for TTY
+  console = {
+    earlySetup = true;
+    font = "ter-132n";
+    packages = with pkgs; [ terminus_font ];
+    keyMap = "us";
+  };
+
+  # Enable kmscon to replace default TTYs with support for TrueType fonts
+  services.kmscon = {
+    enable = true;
+    extraConfig = ''
+      font-name=JetBrains Mono Nerd Font Mono
+      font-size=14
+      font-dpi=192
+    '';
+  };
+
+  # Keep a fallback traditional TTY (tty1) for emergencies
+  systemd.services."getty@tty1".enable = true;
 }

@@ -1,6 +1,13 @@
-{ user, ... }:
+{ user, nix-colors, ... }:
 
 {
+  imports = [
+    nix-colors.homeManagerModules.default
+    ../../universals/modules
+    ../scripts
+    ../modules
+  ];
+
   home = {
     username = user;
     homeDirectory = "/home/${user}";
