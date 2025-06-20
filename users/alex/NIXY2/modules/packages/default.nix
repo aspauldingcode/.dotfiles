@@ -36,9 +36,9 @@
 
       # Networking and communication
       android-tools
-      checkra1n
-      idevicerestore
-      libimobiledevice
+      # checkra1n
+      # idevicerestore
+      # libimobiledevice
       # libusb1
       # libusbmuxd
       # obsidian
