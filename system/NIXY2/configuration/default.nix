@@ -1,11 +1,10 @@
-{
-  inputs,
-  lib,
-  config,
-  pkgs,
-  mobile-nixos,
-  apple-silicon,
-  ...
+{ inputs
+, lib
+, config
+, pkgs
+, mobile-nixos
+, apple-silicon
+, ...
 }:
 
 {
@@ -124,7 +123,7 @@
           user = "greeter";
         };
         background = {
-          path = "${../../users/alex/extraConfig/wallpapers/gruvbox-nix.png}";
+          path = "${../../../users/alex/extraConfig/wallpapers/gruvbox-nix.png}";
           fit = "Fill";
         };
         env = {
@@ -159,10 +158,6 @@
     adb.enable = true; # Enable Android De-Bugging.
     gnome-disks.enable = true; # GNOME Disks daemon, UDisks2 GUI
     xwayland.enable = false;
-    sway = {
-      enable = true;
-      package = pkgs.swayfx;
-    };
   };
 
   environment.systemPackages = with pkgs; [
@@ -173,18 +168,6 @@
   ];
 
   services = {
-    greetd = {
-      enable = true; # use Greetd along with ReGreet gtk themer.
-      settings = {
-        default_session = {
-          # command = "${pkgs.greetd.greetd}/bin/agreety --cmd sway";
-          command = "${pkgs.sway}/bin/sway --config ${../modules/greetd/sway-config}";
-          user = "greeter";
-        };
-      };
-      vt = 1; # signed integer
-    };
-
     input-remapper = {
       enable = true;
     };
@@ -422,9 +405,9 @@
       cp /home/alex/.dotfiles/users/susu/face.png /var/lib/AccountsService/icons/susu
 
       # adds way-displays configuration
-      cd ${../../system/NIXY2/modules/way-displays}
+      cd ${../modules/way-displays}
       find . -type d -exec mkdir -p /etc/way-displays/{} \;
-      find . -type f -exec ln -sf ${../../system/NIXY2/modules/way-displays}/{} /etc/way-displays/{} \;
+      find . -type f -exec ln -sf ${../modules/way-displays}/{} /etc/way-displays/{} \;
     '';
   };
 }
