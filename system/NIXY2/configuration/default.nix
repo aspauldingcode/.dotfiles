@@ -10,16 +10,16 @@
 
 {
   imports = [
-    ./hardware-configuration-NIXY2.nix
-    ./scripts-NIXY2.nix
+    ../hardware-configuration
+    ../scripts
     apple-silicon.nixosModules.apple-silicon-support
-    ./modules/packages.nix
-    # ./temporaryfix.nix # FIXME: remove after success https://github.com/tpwrules/nixos-apple-silicon/issues/276
-    #./modules/virtual-machines.nix
-    ./modules/theme.nix
-    ./modules/kanata.nix
-    ./modules/airplay.nix
-    ./modules/eduroam/eduroam.nix
+    ../modules/packages
+    # ../temporaryfix # FIXME: remove after success https://github.com/tpwrules/nixos-apple-silicon/issues/276
+    #../modules/virtual-machines
+    ../modules/theme
+    ../modules/kanata
+    ../modules/airplay
+    ../modules/eduroam
   ];
 
   nixpkgs.flake = {
@@ -57,7 +57,7 @@
   hardware = {
     asahi = {
       extractPeripheralFirmware = true;
-      peripheralFirmwareDirectory = ./firmware-NIXY2;
+      peripheralFirmwareDirectory = ../firmware-NIXY2;
       useExperimentalGPUDriver = true;
     };
 
@@ -120,7 +120,7 @@
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.sway}/bin/sway --config ${./modules/greetd/sway-config}";
+          command = "${pkgs.sway}/bin/sway --config ${../modules/greetd/sway-config}";
           user = "greeter";
         };
         background = {
@@ -178,7 +178,7 @@
       settings = {
         default_session = {
           # command = "${pkgs.greetd.greetd}/bin/agreety --cmd sway";
-          command = "${pkgs.sway}/bin/sway --config ${../../system/NIXY2/modules/greetd/sway-config}";
+          command = "${pkgs.sway}/bin/sway --config ${../modules/greetd/sway-config}";
           user = "greeter";
         };
       };

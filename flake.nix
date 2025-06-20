@@ -184,7 +184,7 @@
           };
           specialArgs = commonSpecialArgs; # // { extraPkgs = [ mobile-nixos ]; };
           modules = [
-            ./system/NIXSTATION64/configuration-NIXSTATION64.nix
+            ./system/NIXSTATION64
             home-manager.nixosModules.home-manager
             {
               home-manager = {
@@ -231,7 +231,7 @@
           };
           specialArgs = commonSpecialArgs; # // { extraPkgs = [ mobile-nixos ]; };
           modules = [
-            ./system/NIXY2/configuration-NIXY2.nix
+            ./system/NIXY2
             home-manager.nixosModules.home-manager
             {
               home-manager = {

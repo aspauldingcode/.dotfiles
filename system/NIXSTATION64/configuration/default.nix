@@ -9,11 +9,11 @@
 
 {
   imports = [
-    ./hardware-configuration-NIXSTATION64.nix
-    ./modules/packages.nix
-    ./modules/theme.nix
-    ./modules/virtual-machines.nix
-    ./scripts-NIXSTATION64.nix
+    ../hardware-configuration
+    ../modules/packages
+    ../modules/theme
+    ../modules/virtual-machines
+    ../scripts
   ];
 
   boot = {
@@ -162,7 +162,7 @@
       package = pkgs.regreet;
       settings = {
         default_session = {
-          command = "${pkgs.sway}/bin/sway --config ${./modules/greetd/sway-config}";
+          command = "${pkgs.sway}/bin/sway --config ${../modules/greetd/sway-config}";
           user = "greeter";
         };
         background = {
