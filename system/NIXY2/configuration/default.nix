@@ -102,7 +102,46 @@
   };
 
   programs = {
-    # regreet configuration is now handled in modules/greetd/default.nix
+    regreet = {
+      enable = true;
+      settings = {
+        default_session = {
+          command = "${pkgs.sway}/bin/sway --config ${../modules/greetd/sway-config}";
+          user = "greeter";
+        };
+        background = {
+          path = "${../../../users/alex/extraConfig/wallpapers/gruvbox-nix.png}";
+          fit = "Fill";
+        };
+        env = {
+          ENV_VARIABLE = "value";
+        };
+        GTK = {
+          application_prefer_dark_theme = true;
+          cursor_theme_name = lib.mkForce "Bibata-Modern-Ice";
+          font_name = lib.mkForce "JetBrains Mono";
+          icon_theme_name = "Adwaita";
+          theme_name = "Adwaita";
+        };
+        commands = {
+          reboot = [
+            "systemctl"
+            "reboot"
+          ];
+          poweroff = [
+            "systemctl"
+            "poweroff"
+          ];
+        };
+        appearance = {
+          greeting_msg = "Welcome back!";
+        };
+      };
+    };
+    sway = {
+      enable = true;
+      package = pkgs.swayfx;
+    };
     light.enable = true;
     fish.enable = false;
     zsh.enable = true;
@@ -120,6 +159,18 @@
   ];
 
   services = {
+    greetd = {
+      enable = true; # use Greetd along with ReGreet gtk themer.
+      settings = {
+        default_session = {
+          # command = "${pkgs.greetd.greetd}/bin/agreety --cmd sway";
+          command = "${pkgs.sway}/bin/sway --config ${../modules/greetd/sway-config}";
+          user = "greeter";
+        };
+      };
+      vt = 1; # signed integer
+    };
+
     input-remapper = {
       enable = true;
     };

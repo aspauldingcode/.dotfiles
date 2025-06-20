@@ -6,7 +6,7 @@
   imports = [
     ./airplay
     ./eduroam
-    ./greetd
+    # ./greetd  # Commented out - greetd configuration moved back to main config
     ./kanata
     ./packages
     ./sway-configuration

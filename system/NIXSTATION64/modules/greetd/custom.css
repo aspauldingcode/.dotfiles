@@ -13,36 +13,3 @@ Properties. For general CSS information, see the MDN web docs.
 */
 
 /* Add your custom styles below this line */
-
-/* Example: Style the main window */
-window {
-  background-color: rgba(40, 40, 40, 0.95);
-  border-radius: 10px;
-}
-
-/* Example: Style buttons */
-button {
-  background-color: #3c3836;
-  color: #ebdbb2;
-  border: 1px solid #665c54;
-  border-radius: 5px;
-  padding: 8px 16px;
-}
-
-button:hover {
-  background-color: #504945;
-}
-
-/* Example: Style text entries */
-entry {
-  background-color: #3c3836;
-  color: #ebdbb2;
-  border: 1px solid #665c54;
-  border-radius: 5px;
-  padding: 8px;
-}
-
-/* Example: Style labels */
-label {
-  color: #ebdbb2;
-}
