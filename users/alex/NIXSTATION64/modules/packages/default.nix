@@ -42,7 +42,7 @@
       # Networking and communication
       android-tools
       unstable.checkra1n
-      idevicerestore
+      # idevicerestore  # Commented out due to libirecovery udev rules issue
       libimobiledevice
       libusb1
       libusbmuxd

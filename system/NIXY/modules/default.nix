@@ -1,6 +1,5 @@
-{
-  pkgs,
-  ...
+{ pkgs
+, ...
 }:
 
 {
@@ -16,7 +15,7 @@
     ./spicetify
     ./theme
     # ./wallpaper
-    ./wg-quick
+    # ./wg-quick  # Commented out due to missing private key files
     ./windowManagement
   ];
 }

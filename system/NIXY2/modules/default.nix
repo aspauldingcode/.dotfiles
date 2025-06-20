@@ -1,6 +1,5 @@
-{
-  pkgs,
-  ...
+{ pkgs
+, ...
 }:
 
 {
@@ -14,6 +13,6 @@
     ./theme
     ./virtual-machines
     ./way-displays
-    ./wg-quick
+    # ./wg-quick  # Commented out due to missing private key files
   ];
 }
