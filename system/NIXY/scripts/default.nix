@@ -11,7 +11,7 @@
       sudo darwin-rebuild switch --show-trace --flake .#NIXY
 
       echo "Fetching latest erase-install pkg."
-      ${bash}/bin/bash ${../../erase-install-fetcher.sh}
+      ${bash}/bin/bash ${../../../erase-install-fetcher.sh}
 
       echo "Updating readme.md with tokei..."
       DATE=$(date)

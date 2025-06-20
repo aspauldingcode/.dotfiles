@@ -190,7 +190,7 @@
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                users.${user} = import ./users/${user}/NIXSTATION64/home-NIXSTATION64.nix;
+                users.${user} = import ./users/${user}/NIXSTATION64;
                 extraSpecialArgs = commonExtraSpecialArgs;
                 backupFileExtension = "backup";
                 sharedModules = [
@@ -237,7 +237,7 @@
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                users.${user} = import ./users/${user}/NIXY2/home-NIXY2.nix;
+                users.${user} = import ./users/${user}/NIXY2;
                 extraSpecialArgs = commonExtraSpecialArgs;
                 backupFileExtension = "backup";
                 sharedModules = [

@@ -1,8 +1,9 @@
 # Configure wayland front-end Environment.
-{ config
-, pkgs
-, lib
-, ...
+{
+  config,
+  pkgs,
+  lib,
+  ...
 }:
 
 let

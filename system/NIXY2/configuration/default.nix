@@ -1,10 +1,11 @@
-{ inputs
-, lib
-, config
-, pkgs
-, mobile-nixos
-, apple-silicon
-, ...
+{
+  inputs,
+  lib,
+  config,
+  pkgs,
+  mobile-nixos,
+  apple-silicon,
+  ...
 }:
 
 {
@@ -351,13 +352,11 @@
   };
 
   fonts.packages = with pkgs; [
+    dejavu_fonts
     powerline-fonts
     powerline-symbols
-    jetbrains-mono
     font-awesome_5
-    nerd-fonts.hack
-    nerd-fonts.symbols-only
-    dejavu_fonts
+    nerd-fonts.jetbrains-mono
   ];
 
   nix = {

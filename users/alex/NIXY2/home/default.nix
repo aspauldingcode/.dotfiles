@@ -4,13 +4,8 @@
   imports = [
     nix-colors.homeManagerModules.default
     ../universals/modules
-    ./modules/mako.nix
-    ./modules/bemenu.nix
-    ./modules/mimeapps.nix
-    ./modules/packages.nix
-    ./modules/sway.nix
-    ./modules/theme.nix # theme of system.
-    ./scripts-NIXY2.nix
+    ../scripts
+    ../modules
   ];
 
   home = {

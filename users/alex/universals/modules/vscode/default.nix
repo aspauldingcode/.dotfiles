@@ -1214,7 +1214,8 @@ in
 {
   programs.vscode = {
     enable = true;
-    package = pkgs.unstable.code-cursor;
+    # package = pkgs.unstable.code-cursor;
+    package = pkgs.code-cursor; # stable?
 
     profiles.default = {
       userSettings = {

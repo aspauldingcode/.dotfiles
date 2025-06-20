@@ -5,10 +5,12 @@
 
 {
   imports = [
-    ./greetd
+    ./bemenu
+    ./mako
+    ./mimeapps
     ./packages
+    ./sway
     ./theme
-    ./virtual-machines
-    ./way-displays
+    ./waybar
   ];
 }

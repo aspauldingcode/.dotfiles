@@ -13,6 +13,7 @@
     ../modules/packages
     ../modules/theme
     ../modules/virtual-machines
+    ../modules/greetd
     ../scripts
   ];
 
@@ -114,22 +115,6 @@
     serviceConfig.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
   };
 
-  systemd.user.services.waybar = {
-    description = "Waybar";
-    after = [
-      "network.target"
-      "graphical-session.target"
-    ];
-    partOf = [ "graphical-session.target" ];
-    wantedBy = [ "graphical-session.target" ];
-    serviceConfig = {
-      ExecStart = "${pkgs.waybar}/bin/waybar";
-      ExecStartPre = "${pkgs.procps}/bin/pkill waybar || true";
-      Restart = "always";
-      Type = "simple";
-    };
-  };
-
   systemd.user.services.wl-gammarelay = {
     enable = true;
     description = "Gamma adjustment service for Wayland";
@@ -157,42 +142,10 @@
   };
 
   programs = {
-    regreet = {
+    sway = {
       enable = true;
-      package = pkgs.regreet;
-      settings = {
-        default_session = {
-          command = "${pkgs.sway}/bin/sway --config ${../modules/greetd/sway-config}";
-          user = "greeter";
-        };
-        background = {
-          path = "${../../users/alex/extraConfig/wallpapers/gruvbox-nix.png}";
-          fit = "Fill";
-        };
-        env = {
-          ENV_VARIABLE = "value";
-        };
-        GTK = {
-          application_prefer_dark_theme = true;
-          cursor_theme_name = lib.mkForce "Bibata-Modern-Classic";
-          font_name = lib.mkForce "JetBrains Mono";
-          icon_theme_name = "Adwaita";
-          theme_name = "Adwaita";
-        };
-        commands = {
-          reboot = [
-            "systemctl"
-            "reboot"
-          ];
-          poweroff = [
-            "systemctl"
-            "poweroff"
-          ];
-        };
-        appearance = {
-          greeting_msg = "Welcome back!";
-        };
-      };
+      wrapperFeatures.gtk = true;
+      package = pkgs.swayfx;
     };
     fish.enable = false;
     zsh.enable = true;
@@ -200,10 +153,6 @@
     adb.enable = true; # Enable Android De-Bugging.
     gnome-disks.enable = true; # GNOME Disks daemon, UDisks2 GUI
     xwayland.enable = false;
-    sway = {
-      enable = true;
-      package = pkgs.swayfx;
-    };
     kdeconnect = {
       enable = true;
       package = pkgs.plasma5Packages.kdeconnect-kde;
@@ -214,20 +163,22 @@
     jetbrains-mono
     adwaita-icon-theme
     bibata-cursors
+    alacritty # gpu accelerated terminal
+    wayland
+    xdg-utils # for opening default programs when clicking links
+    glib # gsettings
+    dracula-theme # gtk theme
+    swaylock
+    swayidle
+    grim # screenshot functionality
+    slurp # screenshot functionality
+    wl-clipboard # wl-copy and wl-paste for copy/paste from stdin / stdout
+    bemenu # wayland clone of dmenu
+    mako # notification system developed by swaywm maintainer
+    wdisplays # tool to configure displays
   ];
 
   services = {
-    greetd = {
-      enable = true; # use Greetd along with ReGreet gtk themer.
-      settings = {
-        default_session = {
-          command = "${pkgs.sway}/bin/sway --config ${./modules/greetd/sway-config}";
-          user = "greeter";
-        };
-      };
-      vt = 1;
-    };
-
     pipewire = {
       enable = true;
       alsa = {
@@ -277,6 +228,14 @@
         };
       };
     };
+
+    # xdg-desktop-portal works by exposing a series of D-Bus interfaces
+    # known as portals under a well-known name
+    # (org.freedesktop.portal.Desktop) and object path
+    # (/org/freedesktop/portal/desktop).
+    # The portal interfaces include APIs for file access, opening URIs,
+    # printing and others.
+    dbus.enable = true;
 
     xrdp = {
       enable = true;
@@ -328,6 +287,13 @@
       defaultShared = true;
     };
     blueman.enable = true;
+  };
+
+  xdg.portal = {
+    enable = true;
+    wlr.enable = true;
+    # gtk portal needed to make gtk apps happy
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 
   security = {
@@ -393,17 +359,11 @@
   };
 
   fonts.packages = with pkgs; [
+    dejavu_fonts
     powerline-fonts
     powerline-symbols
-    jetbrains-mono
     font-awesome_5
-    (nerdfonts.override {
-      fonts = [
-        "NerdFontsSymbolsOnly"
-        "Hack"
-      ];
-    })
-    dejavu_fonts
+    nerd-fonts.jetbrains-mono
   ];
 
   nix = {
@@ -416,21 +376,6 @@
         "flakes"
       ]; # Enable experimental features.
     };
-  };
-
-  nixpkgs = {
-    config = {
-      allowUnfree = true;
-      permittedInsecurePackages = [ "electron-19.1.9" ];
-    };
-    overlays = [
-      inputs.nur.overlays.default
-      (final: _prev: {
-        unstable = import inputs.unstable_nixpkgs {
-          inherit (final) system config;
-        };
-      })
-    ];
   };
 
   virtualisation = {

@@ -11,7 +11,7 @@ let
 in
 {
   imports = [
-    ./waybar.nix
+    # ./waybar.nix
   ];
 
   wayland.windowManager.sway = {
@@ -19,9 +19,7 @@ in
     package = null;
     checkConfig = lib.mkForce false;
     config = rec {
-      bars = [
-        { command = "if ${pgrep} -x waybar; then ${pkill} waybar; ${pkgs.waybar}/bin/waybar; fi"; }
-      ];
+      bars = [ ];
       modifier = "Mod4";
       left = "h";
       down = "j";
@@ -205,7 +203,7 @@ in
         # "${modifier}+Shift+${up}" = ''mark --add "_swap", focus up,    swap container with mark "_swap", focus up,    unmark "_swap"'';
         # "${modifier}+Shift+${right}" = ''mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"'';
         # "${modifier}+Shift+Left" = ''mark --add "_swap", focus left,  swap container with mark "_swap", focus left,  unmark "_swap"'';
-        # "${modifier}+Shift+Down" = ''mark --add "_swap", focus down,  swap container with mark "_swap", focus down,  unmark "_swap"'';
+        # "${modifier}+Shift+Down" = ''mark --add "_swap", focus down,  swap container with mark "_swap", focus down, unmark "_swap"'';
         # "${modifier}+Shift+Up" = ''mark --add "_swap", focus up,    swap container with mark "_swap", focus up,    unmark "_swap"'';
         # "${modifier}+Shift+Right" = ''mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"'';
 

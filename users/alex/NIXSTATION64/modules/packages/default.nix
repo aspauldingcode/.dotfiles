@@ -72,7 +72,6 @@
       clipman
       eww
       glpaper
-      gnomeExtensions.dark-variant
       gtk-layer-shell
       i3status-rust
       imv

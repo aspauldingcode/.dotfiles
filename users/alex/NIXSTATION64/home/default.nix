@@ -3,15 +3,9 @@
 {
   imports = [
     nix-colors.homeManagerModules.default
-    ./../universals/modules
-    ./modules/alacritty.nix
-    ./modules/mako.nix
-    ./modules/mimeapps.nix
-    ./modules/packages.nix
-    ./modules/sway.nix
-    ./modules/swayr.nix
-    ./modules/theme.nix # theme of system.
-    ./scripts-NIXSTATION64.nix
+    ../../universals/modules
+    ../scripts
+    ../modules
   ];
 
   home = {
