@@ -23,7 +23,7 @@ let
       "textLink.activeForeground" = "#${config.colorScheme.palette.base0C}";
       "textLink.foreground" = "#${config.colorScheme.palette.base0D}";
       "textPreformat.foreground" = "#${config.colorScheme.palette.base0D}";
-      "textSeparator.foreground" = "#f0f";
+      "textSeparator.foreground" = "#${config.colorScheme.palette.base0F}";
       "toolbar.hoverBackground" = "#${config.colorScheme.palette.base02}";
       "toolbar.activeBackground" = "#${config.colorScheme.palette.base03}";
       "button.background" = "#${config.colorScheme.palette.base0D}";
@@ -387,7 +387,7 @@ let
       "symbolIcon.arrayForeground" = "#${config.colorScheme.palette.base05}";
       "symbolIcon.booleanForeground" = "#${config.colorScheme.palette.base09}";
       "symbolIcon.classForeground" = "#${config.colorScheme.palette.base0A}";
-      "symbolIcon.colorForeground" = "#f0f";
+      "symbolIcon.colorForeground" = "#${config.colorScheme.palette.base0C}";
       "symbolIcon.constantForeground" = "#${config.colorScheme.palette.base09}";
       "symbolIcon.constructorForeground" = "#${config.colorScheme.palette.base0D}";
       "symbolIcon.enumeratorForeground" = "#${config.colorScheme.palette.base09}";
@@ -398,24 +398,24 @@ let
       "symbolIcon.folderForeground" = "#${config.colorScheme.palette.base05}";
       "symbolIcon.functionForeground" = "#${config.colorScheme.palette.base0D}";
       "symbolIcon.interfaceForeground" = "#${config.colorScheme.palette.base0D}";
-      "symbolIcon.keyForeground" = "#f0f";
+      "symbolIcon.keyForeground" = "#${config.colorScheme.palette.base0E}";
       "symbolIcon.keywordForeground" = "#${config.colorScheme.palette.base0E}";
       "symbolIcon.methodForeground" = "#${config.colorScheme.palette.base0D}";
       "symbolIcon.moduleForeground" = "#${config.colorScheme.palette.base05}";
       "symbolIcon.namespaceForeground" = "#${config.colorScheme.palette.base05}";
       "symbolIcon.nullForeground" = "#${config.colorScheme.palette.base0F}";
       "symbolIcon.numberForeground" = "#${config.colorScheme.palette.base09}";
-      "symbolIcon.objectForeground" = "#f0f";
-      "symbolIcon.operatorForeground" = "#f0f";
-      "symbolIcon.packageForeground" = "#f0f";
+      "symbolIcon.objectForeground" = "#${config.colorScheme.palette.base0A}";
+      "symbolIcon.operatorForeground" = "#${config.colorScheme.palette.base0C}";
+      "symbolIcon.packageForeground" = "#${config.colorScheme.palette.base0B}";
       "symbolIcon.propertyForeground" = "#${config.colorScheme.palette.base05}";
-      "symbolIcon.referenceForeground" = "#f0f";
+      "symbolIcon.referenceForeground" = "#${config.colorScheme.palette.base0D}";
       "symbolIcon.snippetForeground" = "#${config.colorScheme.palette.base05}";
       "symbolIcon.stringForeground" = "#${config.colorScheme.palette.base0B}";
       "symbolIcon.structForeground" = "#${config.colorScheme.palette.base0A}";
       "symbolIcon.textForeground" = "#${config.colorScheme.palette.base05}";
-      "symbolIcon.typeParameterForeground" = "#f0f";
-      "symbolIcon.unitForeground" = "#f0f";
+      "symbolIcon.typeParameterForeground" = "#${config.colorScheme.palette.base0C}";
+      "symbolIcon.unitForeground" = "#${config.colorScheme.palette.base09}";
       "symbolIcon.variableForeground" = "#${config.colorScheme.palette.base08}";
       "debugIcon.breakpointForeground" = "#${config.colorScheme.palette.base08}";
       "debugIcon.breakpointDisabledForeground" = "#${config.colorScheme.palette.base04}";
@@ -977,7 +977,7 @@ let
       {
         name = "JSON Key - Level 8";
         scope = [
-          "source.json meta.structure.dictionary.json meta.structure.dictionary.value.json meta.structure.dictionary.json meta.structure.dictionary.value.json meta.structure.dictionary.json meta.structure.dictionary.value.json meta.structure.dictionary.json meta.structure.dictionary.value.json meta.structure.dictionary.json meta.structure.dictionary.value.json meta.structure.dictionary.json meta.structure.dictionary.value.json meta.structure.dictionary.json meta.structure.dictionary.value.json meta.structure.dictionary.json meta.structure.dictionary.value.json meta.structure.dictionary.json support.type.property-name.json"
+          "source.json meta.structure.dictionary.json meta.structure.dictionary.value.json meta.structure.dictionary.json meta.structure.dictionary.value.json meta.structure.dictionary.json meta.structure.dictionary.value.json meta.structure.dictionary.json meta.structure.dictionary.value.json meta.structure.dictionary.json meta.structure.dictionary.value.json meta.structure.dictionary.json meta.structure.dictionary.value.json meta.structure.dictionary.json meta.structure.dictionary.value.json meta.structure.dictionary.json support.type.property-name.json"
         ];
         settings = {
           foreground = "#${config.colorScheme.palette.base0D}";
@@ -1238,72 +1238,460 @@ in
         };
         # Common editor settings
         "editor.formatOnSave" = true;
+        "editor.formatOnType" = true;
+        "editor.formatOnPaste" = true;
         "editor.defaultFormatter" = "esbenp.prettier-vscode";
+        "editor.codeActionsOnSave" = {
+          "source.addMissingImports" = "explicit";
+          "source.fixAll" = "explicit";
+          "source.organizeImports" = "explicit";
+          "source.removeUnusedImports" = "explicit";
+        };
+        "editor.autoIndent" = "full";
+        "editor.tabSize" = 2;
+        "editor.insertSpaces" = true;
+        "editor.detectIndentation" = true;
+        "editor.wordWrap" = "wordWrapColumn";
+        "editor.wordWrapColumn" = 120;
+        "editor.rulers" = [
+          80
+          120
+        ];
+        "editor.minimap.enabled" = false;
+        "editor.fontSize" = 14;
+        "editor.fontFamily" = "'JetBrainsMono Nerd Font Mono'";
+        "editor.fontLigatures" = true;
+        "editor.cursorBlinking" = "expand";
+        "editor.cursorSmoothCaretAnimation" = "on";
+        "editor.renderWhitespace" = "boundary";
+        "editor.showUnused" = true;
+        "editor.bracketPairColorization.enabled" = false;
+        "editor.guides.bracketPairs" = "active";
+        "editor.inlayHints.enabled" = "on";
+        "editor.snippetSuggestions" = "inline";
+
+        # Files and workspace settings
+        "files.autoSave" = "onFocusChange";
+        "files.trimTrailingWhitespace" = true;
+        "files.insertFinalNewline" = true;
+        "files.trimFinalNewlines" = true;
+        "files.exclude" = {
+          "**/.DS_Store" = true;
+          "**/.git" = true;
+          "**/node_modules" = true;
+          "**/target" = true;
+          "**/.next" = true;
+          "**/dist" = true;
+          "**/build" = true;
+        };
+        "search.exclude" = {
+          "**/node_modules" = true;
+          "**/target" = true;
+          "**/.next" = true;
+          "**/dist" = true;
+          "**/build" = true;
+        };
+        "explorer.compactFolders" = false;
+
+        # Terminal settings
+        "terminal.integrated.fontSize" = 13;
+        "terminal.integrated.fontFamily" = "'JetBrainsMono Nerd Font Mono'";
+        "terminal.integrated.cursorBlinking" = true;
+        "terminal.integrated.cursorStyle" = "line";
+        "terminal.integrated.scrollback" = 10000;
+        "terminal.integrated.shell.osx" = "/etc/profiles/per-user/alex/bin/zsh";
+        "terminal.integrated.defaultProfile.osx" = "zsh";
+
+        # Git settings
+        "git.autofetch" = true;
+        "git.confirmSync" = false;
+        "git.enableSmartCommit" = true;
+        "git.autofetchPeriod" = 180;
+
         # Nix IDE settings
         "nix.enable" = true;
         "nix.serverPath" = "nixd";
-        "nix.formatterPath" = "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
+        "nix.formatterPath" = "nixfmt";
         "nix.serverSettings" = {
           "nixd" = {
             "formatting" = {
-              "command" = "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
-            };
-            "options" = {
-              "enable" = true;
+              "command" = "nixfmt";
             };
           };
         };
-        # Nix linting settings
-        "nix.linting.enable" = true;
-        "nix.linting.statix.enable" = true;
-        "nix.linting.statix.command" = "statix";
-        "nix.linting.statix.args" = [
-          "check"
-          "--stdin"
-          "--format=errfmt"
+
+        # Swift language settings
+        "swift.path" = "/usr/bin/swift";
+        "swift.sourcekit-lsp.serverPath" = "/usr/bin/sourcekit-lsp";
+        "swift.sourcekit-lsp.toolchainPath" =
+          "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain";
+
+        # Rust analyzer settings
+        "rust-analyzer.enable" = true;
+        "rust-analyzer.server.path" = "rust-analyzer";
+        "rust-analyzer.checkOnSave.command" = "clippy";
+        "rust-analyzer.checkOnSave.extraArgs" = [ "--all-targets" ];
+        "rust-analyzer.cargo.buildScripts.enable" = true;
+        "rust-analyzer.cargo.features" = "all";
+        "rust-analyzer.inlayHints.enable" = true;
+        "rust-analyzer.inlayHints.parameterHints.enable" = true;
+        "rust-analyzer.inlayHints.typeHints.enable" = true;
+        "rust-analyzer.inlayHints.chainingHints.enable" = true;
+        "rust-analyzer.lens.enable" = true;
+        "rust-analyzer.lens.run.enable" = true;
+        "rust-analyzer.lens.debug.enable" = true;
+        "rust-analyzer.completion.addCallArgumentSnippets" = true;
+        "rust-analyzer.completion.addCallParenthesis" = true;
+        "rust-analyzer.assist.importGranularity" = "module";
+        "rust-analyzer.assist.importPrefix" = "by_self";
+
+        # Python settings
+        "python.defaultInterpreterPath" = "python3";
+        "python.formatting.provider" = "black";
+        "python.formatting.blackArgs" = [ "--line-length=88" ];
+        "python.linting.enabled" = true;
+        "python.linting.pylintEnabled" = true;
+        "python.linting.flake8Enabled" = false;
+        "python.linting.mypyEnabled" = true;
+        "python.linting.lintOnSave" = true;
+        "python.sortImports.args" = [ "--profile=black" ];
+        "python.analysis.autoImportCompletions" = true;
+        "python.analysis.typeCheckingMode" = "basic";
+        "python.analysis.autoSearchPaths" = true;
+        "python.analysis.diagnosticMode" = "workspace";
+
+        # TypeScript/JavaScript settings
+        "typescript.updateImportsOnFileMove.enabled" = "always";
+        "typescript.preferences.importModuleSpecifier" = "non-relative";
+        "typescript.suggest.autoImports" = true;
+        "typescript.suggest.completeFunctionCalls" = true;
+        "typescript.preferences.quoteStyle" = "double";
+        "typescript.format.enable" = true;
+        "typescript.format.insertSpaceAfterCommaDelimiter" = true;
+        "typescript.format.insertSpaceAfterSemicolonInForStatements" = true;
+        "typescript.format.insertSpaceBeforeAndAfterBinaryOperators" = true;
+        "typescript.inlayHints.parameterNames.enabled" = "literals";
+        "typescript.inlayHints.parameterTypes.enabled" = true;
+        "typescript.inlayHints.variableTypes.enabled" = true;
+        "typescript.inlayHints.propertyDeclarationTypes.enabled" = true;
+        "typescript.inlayHints.functionLikeReturnTypes.enabled" = true;
+        "typescript.referencesCodeLens.enabled" = true;
+        "typescript.implementationsCodeLens.enabled" = true;
+
+        "javascript.updateImportsOnFileMove.enabled" = "always";
+        "javascript.suggest.autoImports" = true;
+        "javascript.suggest.completeFunctionCalls" = true;
+        "javascript.preferences.quoteStyle" = "double";
+        "javascript.format.enable" = true;
+        "javascript.inlayHints.parameterNames.enabled" = "literals";
+        "javascript.inlayHints.parameterTypes.enabled" = true;
+        "javascript.inlayHints.variableTypes.enabled" = true;
+        "javascript.inlayHints.propertyDeclarationTypes.enabled" = true;
+        "javascript.inlayHints.functionLikeReturnTypes.enabled" = true;
+        "javascript.referencesCodeLens.enabled" = true;
+        "javascript.suggestionActions.enabled" = true;
+        "javascript.updateImportsOnPaste.enabled" = true;
+
+        # C/C++ settings
+        "C_Cpp.default.cppStandard" = "c++20";
+        "C_Cpp.default.cStandard" = "c17";
+        "C_Cpp.default.intelliSenseMode" = "clang-x64";
+        "C_Cpp.clang_format_style" = "{ BasedOnStyle: LLVM, IndentWidth: 2, ColumnLimit: 120 }";
+        "C_Cpp.formatting" = "clangFormat";
+        "C_Cpp.autocomplete" = "default";
+        "C_Cpp.errorSquiggles" = "enabled";
+        "C_Cpp.inlayHints.parameterNames.enabled" = true;
+        "C_Cpp.inlayHints.referenceOperator.enabled" = true;
+        "C_Cpp.enhancedColorization" = "enabled";
+
+        # Makefile settings
+        "makefile.configureOnOpen" = true;
+        "makefile.extensionOutputFolder" = "./.vscode";
+        "makefile.launchConfigurations" = [
+          {
+            "cwd" = "/path/to/make/directory";
+            "binaryPath" = "/path/to/binary";
+            "binaryArgs" = [ ];
+          }
         ];
+
+        # HTML settings
+        "html.format.indentInnerHtml" = true;
+        "html.format.wrapLineLength" = 120;
+        "html.format.wrapAttributes" = "auto";
+        "html.autoClosingTags" = true;
+        "html.mirrorCursorOnMatchingTag" = true;
+
+        # CSS settings
+        "css.validate" = true;
+        "css.lint.unknownAtRules" = "ignore";
+        "scss.validate" = true;
+        "less.validate" = true;
+
+        # JSON settings
+        "json.format.enable" = true;
+        "json.maxItemsComputed" = 5000;
+
+        # Markdown settings
+        "markdown.preview.fontSize" = 14;
+        "markdown.preview.lineHeight" = 1.6;
+        "markdown.preview.fontFamily" =
+          "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        "markdown.extension.toc.levels" = "1..6";
+        "markdown.extension.preview.autoShowPreviewToSide" = true;
+        "markdown.extension.math.enabled" = true;
+
+        # Emmet settings
+        "emmet.includeLanguages" = {
+          "javascript" = "javascriptreact";
+          "typescript" = "typescriptreact";
+        };
+        "emmet.triggerExpansionOnTab" = true;
+        "emmet.showExpandedAbbreviation" = "always";
+
+        # ESLint settings
+        "eslint.enable" = true;
+        "eslint.format.enable" = true;
+        "eslint.lintTask.enable" = true;
+        "eslint.codeAction.showDocumentation" = {
+          "enable" = true;
+        };
+        "eslint.codeActionsOnSave.mode" = "all";
+        "eslint.validate" = [
+          "javascript"
+          "javascriptreact"
+          "typescript"
+          "typescriptreact"
+        ];
+
         # Prettier settings
-        "prettier.singleQuote" = false;
-        "prettier.trailingComma" = "all";
+        "prettier.enable" = true;
         "prettier.semi" = true;
-        "prettier.printWidth" = 80;
+        "prettier.singleQuote" = false;
         "prettier.tabWidth" = 2;
         "prettier.useTabs" = false;
+        "prettier.printWidth" = 120;
+        "prettier.trailingComma" = "es5";
         "prettier.bracketSpacing" = true;
-        "prettier.arrowParens" = "always";
-        "prettier.endOfLine" = "lf";
-        "prettier.proseWrap" = "always";
-        "prettier.htmlWhitespaceSensitivity" = "css";
-        "prettier.embeddedLanguageFormatting" = "auto";
-        "prettier.singleAttributePerLine" = true;
-        # Terminal settings
-        "terminal.integrated.automationProfile.osx" = { };
-        "terminal.integrated.defaultProfile.osx" = "zsh";
-        "terminal.integrated.shellIntegration.enabled" = false;
-        "terminal.integrated.defaultProfile.linux" = "zsh";
+        "prettier.arrowParens" = "avoid";
+
         # Language-specific formatter overrides
-        "[nix]" = {
-          "editor.defaultFormatter" = "jnoortheen.nix-ide";
+        "[javascript]" = {
+          "editor.defaultFormatter" = "esbenp.prettier-vscode";
+          "editor.formatOnSave" = true;
         };
-        "[swift]" = {
-          "editor.defaultFormatter" = "sswg.swift-lang";
+        "[typescript]" = {
+          "editor.defaultFormatter" = "esbenp.prettier-vscode";
+          "editor.formatOnSave" = true;
+        };
+        "[javascriptreact]" = {
+          "editor.defaultFormatter" = "esbenp.prettier-vscode";
+          "editor.formatOnSave" = true;
+        };
+        "[typescriptreact]" = {
+          "editor.defaultFormatter" = "esbenp.prettier-vscode";
+          "editor.formatOnSave" = true;
+        };
+        "[json]" = {
+          "editor.defaultFormatter" = "esbenp.prettier-vscode";
+          "editor.formatOnSave" = true;
+        };
+        "[jsonc]" = {
+          "editor.defaultFormatter" = "esbenp.prettier-vscode";
+          "editor.formatOnSave" = true;
+        };
+        "[html]" = {
+          "editor.defaultFormatter" = "esbenp.prettier-vscode";
+          "editor.formatOnSave" = true;
+        };
+        "[css]" = {
+          "editor.defaultFormatter" = "esbenp.prettier-vscode";
+          "editor.formatOnSave" = true;
+        };
+        "[scss]" = {
+          "editor.defaultFormatter" = "esbenp.prettier-vscode";
+          "editor.formatOnSave" = true;
+        };
+        "[less]" = {
+          "editor.defaultFormatter" = "esbenp.prettier-vscode";
+          "editor.formatOnSave" = true;
+        };
+        "[markdown]" = {
+          "editor.defaultFormatter" = "yzhang.markdown-all-in-one";
+          "editor.formatOnSave" = true;
+          "editor.wordWrap" = "on";
+        };
+        "[rust]" = {
+          "editor.defaultFormatter" = "rust-lang.rust-analyzer";
+          "editor.formatOnSave" = true;
+        };
+        "[python]" = {
+          "editor.defaultFormatter" = "ms-python.black-formatter";
+          "editor.formatOnSave" = true;
           "editor.codeActionsOnSave" = {
-            "source.fixAll" = true;
-            "source.organizeImports" = true;
+            "source.organizeImports" = "explicit";
           };
         };
-        # Font settings
-        "editor.fontFamily" = "'JetBrainsMono Nerd Font Mono', 'JetBrains Mono', monospace";
-        "editor.fontSize" = 14;
-        "editor.fontLigatures" = true;
-        "editor.fontWeight" = "normal";
-        "editor.letterSpacing" = 0.5;
-        "editor.lineHeight" = 1.5;
+        "[c]" = {
+          "editor.defaultFormatter" = "ms-vscode.cpptools";
+          "editor.formatOnSave" = true;
+        };
+        "[cpp]" = {
+          "editor.defaultFormatter" = "ms-vscode.cpptools";
+          "editor.formatOnSave" = true;
+        };
+        "[swift]" = {
+          "editor.defaultFormatter" = "swiftlang.swift-vscode";
+          "editor.formatOnSave" = true;
+        };
+        "[nix]" = {
+          "editor.defaultFormatter" = "jnoortheen.nix-ide";
+          "editor.formatOnSave" = true;
+        };
+        "[makefile]" = {
+          "editor.insertSpaces" = false;
+          "editor.detectIndentation" = false;
+        };
+
+        # Workbench settings
+        "workbench.startupEditor" = "newUntitledFile";
+        "workbench.editor.enablePreview" = false;
+        "workbench.editor.enablePreviewFromQuickOpen" = false;
+        "workbench.editor.closeOnFileDelete" = true;
+        "workbench.editor.highlightModifiedTabs" = true;
+        "workbench.editor.limit.enabled" = true;
+        "workbench.editor.limit.value" = 10;
+        "workbench.iconTheme" = "material-icon-theme";
+        "workbench.tree.indent" = 20;
+        "workbench.tree.renderIndentGuides" = "always";
+
+        # Debug settings
+        "debug.allowBreakpointsEverywhere" = true;
+        "debug.inlineValues" = "auto";
+        "debug.showInStatusBar" = "always";
+        "debug.terminal.clearBeforeReusing" = true;
+
+        # Extension-specific settings
+        "gitlens.codeLens.enabled" = true;
+        "gitlens.currentLine.enabled" = false;
+        "gitlens.blame.format" = "";
+        "gitlens.blame.heatmap.enabled" = false;
+        "gitlens.blame.highlight.enabled" = false;
+        "gitlens.currentLine.format" = "";
+        "gitlens.statusBar.format" = "";
+        "gitlens.hovers.enabled" = true;
+        "gitlens.statusBar.enabled" = false;
+
+        "todo-tree.general.tags" = [
+          "BUG"
+          "HACK"
+          "FIXME"
+          "TODO"
+          "XXX"
+          "[ ]"
+          "[x]"
+        ];
+        "todo-tree.highlights.enabled" = true;
+
+        "errorLens.enabled" = true;
+        "errorLens.enabledDiagnosticLevels" = [
+          "error"
+          "warning"
+          "info"
+        ];
+        "errorLens.fontSize" = "12";
+
+        "bracketPairColorizer.depreciation-notice" = false;
+
+        # Performance settings
+        "extensions.autoUpdate" = false;
+        "extensions.autoCheckUpdates" = false;
+        "telemetry.telemetryLevel" = "off";
+        "update.mode" = "none";
+        "workbench.settings.enableNaturalLanguageSearch" = false;
       };
       extensions = with pkgs.vscode-extensions; [
+        # AI/ML & Copilot
+        github.copilot
+        github.copilot-chat
+
+        # Language Support - Swift & Native Development
+        sswg.swift-lang # Swift language support (original extension, still works)
+        vadimcn.vscode-lldb # LLDB debugger for Swift, Rust, C/C++
+
+        # Language Support - Python
+        ms-python.python
+        ms-python.debugpy
+        ms-python.black-formatter
+        ms-python.pylint
+        ms-python.isort
+
+        # Language Support - Rust
+        rust-lang.rust-analyzer
+        tamasfe.even-better-toml
+
+        # Language Support - C/C++/Objective-C
+        ms-vscode.cpptools
+        ms-vscode.cpptools-extension-pack
+        ms-vscode.cmake-tools
+        ms-vscode.makefile-tools
+
+        # Language Support - Nix
+        bbenoist.nix
         jnoortheen.nix-ide
+
+        # Language Support - TypeScript/JavaScript/Web
+        vue.vscode-typescript-vue-plugin # TypeScript support for Vue
+        bradlc.vscode-tailwindcss
         esbenp.prettier-vscode
-        sswg.swift-lang
+        dbaeumer.vscode-eslint
+
+        # Language Support - JSON
+        zainchen.json # JSON language support
+
+        # Language Support - Markdown & Documentation
+        yzhang.markdown-all-in-one
+        davidanson.vscode-markdownlint
+        bierner.markdown-mermaid
+        asciidoctor.asciidoctor-vscode
+
+        # Themes & UI
+        ms-vscode.hexeditor
+        ms-vscode.live-server
+        vscode-icons-team.vscode-icons
+
+        # Git & Version Control
+        eamodio.gitlens
+        mhutchie.git-graph
+
+        # Web Development & Frameworks
+        ecmel.vscode-html-css # HTML/CSS support
+        bradgashler.htmltagwrap # HTML tag wrapping
+        formulahendry.auto-rename-tag
+        formulahendry.auto-close-tag
+        christian-kohler.path-intellisense
+        christian-kohler.npm-intellisense
+
+        # Testing & Debugging
+        ms-vscode.test-adapter-converter
+        hbenl.vscode-test-explorer
+
+        # Productivity & Utilities
+        ms-vscode.powershell
+        streetsidesoftware.code-spell-checker
+        gruntfuggly.todo-tree
+        alefragnani.bookmarks
+
+        # Docker & Containers
+        ms-azuretools.vscode-docker
+        ms-vscode-remote.remote-containers
+
+        # REST API & Testing
+        humao.rest-client
+
+        # Color & Styling
+        naumovs.color-highlight
+
       ];
     };
   };
