@@ -1,4 +1,8 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  ...
+}:
 
 let
   base16Settings = {
@@ -1238,11 +1242,11 @@ in
         # Nix IDE settings
         "nix.enable" = true;
         "nix.serverPath" = "nixd";
-        "nix.formatterPath" = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt";
+        "nix.formatterPath" = "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
         "nix.serverSettings" = {
           "nixd" = {
             "formatting" = {
-              "command" = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt";
+              "command" = "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
             };
             "options" = {
               "enable" = true;

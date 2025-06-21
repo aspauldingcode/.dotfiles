@@ -15,6 +15,10 @@
         cd ~/.dotfiles
         sudo nixos-rebuild switch --show-trace --impure --flake .#NIXY2 
         #home-manager switch --flake .#alex@NIXY2
+
+        echo "Updating README with code statistics..."
+        update-readme
+
         echo "Done. Running 'fix-wm'..."
         fix-wm
         echo "Completed."

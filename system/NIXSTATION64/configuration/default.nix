@@ -1,9 +1,10 @@
-{ inputs
-, lib
-, config
-, pkgs
-, mobile-nixos
-, ...
+{
+  inputs,
+  lib,
+  config,
+  pkgs,
+  mobile-nixos,
+  ...
 }:
 
 {

@@ -1,9 +1,10 @@
 # Configure included packages for NixOS.
 
-{ lib
-, pkgs
-, nixpkgs
-, ...
+{
+  lib,
+  pkgs,
+  nixpkgs,
+  ...
 }:
 
 {

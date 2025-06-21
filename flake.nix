@@ -185,6 +185,7 @@
           specialArgs = commonSpecialArgs; # // { extraPkgs = [ mobile-nixos ]; };
           modules = [
             ./system/NIXSTATION64
+            ./shared/tokei-readme.nix
             home-manager.nixosModules.home-manager
             {
               home-manager = {
@@ -208,6 +209,7 @@
           specialArgs = commonSpecialArgs;
           modules = [
             ./system/NIXEDUP/configuration-NIXEDUP.nix
+            ./shared/tokei-readme.nix
             sops-nix.nixosModules.sops
             # Add this line to include your sops configuration
             { imports = [ nixosSopsConfig ]; }
@@ -232,6 +234,7 @@
           specialArgs = commonSpecialArgs; # // { extraPkgs = [ mobile-nixos ]; };
           modules = [
             ./system/NIXY2
+            ./shared/tokei-readme.nix
             home-manager.nixosModules.home-manager
             {
               home-manager = {
@@ -283,6 +286,7 @@
           specialArgs = commonSpecialArgs;
           modules = [
             ./system/NIXY
+            ./shared/tokei-readme.nix
             mac-app-util.darwinModules.default
             home-manager.darwinModules.home-manager
             sops-nix.darwinModules.sops

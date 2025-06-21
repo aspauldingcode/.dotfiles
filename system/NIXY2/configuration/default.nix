@@ -1,10 +1,11 @@
-{ inputs
-, lib
-, config
-, pkgs
-, mobile-nixos
-, apple-silicon
-, ...
+{
+  inputs,
+  lib,
+  config,
+  pkgs,
+  mobile-nixos,
+  apple-silicon,
+  ...
 }:
 
 {
