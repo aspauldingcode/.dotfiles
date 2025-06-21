@@ -12,15 +12,8 @@ pkgs.stdenv.mkDerivation {
   };
 
   buildInputs = [
-    pkgs.darwin.apple_sdk.frameworks.Carbon
-    pkgs.darwin.apple_sdk.frameworks.Foundation
+    pkgs.apple-sdk_11
   ];
-
-  nativeBuildInputs = [
-    pkgs.darwin.apple_sdk.frameworks.CoreServices
-  ];
-
-  NIX_CFLAGS_COMPILE = "-I${pkgs.darwin.apple_sdk.frameworks.Carbon}/Library/Frameworks/Carbon.framework/Headers";
 
   buildPhase = ''
     $CC -o InputSourceSelector -Wall InputSourceSelector.m \

@@ -25,6 +25,8 @@
         zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
         export EDITOR=nvim
 
+        export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
+
         export ANTHROPIC_API_KEY="$(cat ${config.sops.secrets.claude_api_key.path} 2>/dev/null)"
         export OPENAI_API_KEY="$(cat ${config.sops.secrets.openai_api_key.path} 2>/dev/null)"
         export AZURE_OPENAI_API_KEY="$(cat ${config.sops.secrets.azure_openai_api_key.path} 2>/dev/null)"
@@ -59,6 +61,14 @@
         export BASH_SILENCE_DEPRECATION_WARNING=1
         export EDITOR=nvim
 
+        export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
+
+        export ANTHROPIC_API_KEY="$(cat ${config.sops.secrets.claude_api_key.path} 2>/dev/null)"
+        export OPENAI_API_KEY="$(cat ${config.sops.secrets.openai_api_key.path} 2>/dev/null)"
+        export AZURE_OPENAI_API_KEY="$(cat ${config.sops.secrets.azure_openai_api_key.path} 2>/dev/null)"
+        export BEDROCK_KEYS="$(cat ${config.sops.secrets.bedrock_keys.path} 2>/dev/null)"
+        export GH_TOKEN="$(cat ${config.sops.secrets.GH_TOKEN.path} 2>/dev/null)"
+
         oh-my-posh disable notice
       '';
       shellAliases = {
@@ -83,6 +93,14 @@
         set fish_greeting ""
         set -g fish_completion_ignore_case 1
         set -gx EDITOR nvim
+
+        set -gx SOPS_AGE_KEY_FILE "$HOME/.config/sops/age/keys.txt"
+
+        set -gx ANTHROPIC_API_KEY (cat ${config.sops.secrets.claude_api_key.path} 2>/dev/null)
+        set -gx OPENAI_API_KEY (cat ${config.sops.secrets.openai_api_key.path} 2>/dev/null)
+        set -gx AZURE_OPENAI_API_KEY (cat ${config.sops.secrets.azure_openai_api_key.path} 2>/dev/null)
+        set -gx BEDROCK_KEYS (cat ${config.sops.secrets.bedrock_keys.path} 2>/dev/null)
+        set -gx GH_TOKEN (cat ${config.sops.secrets.GH_TOKEN.path} 2>/dev/null)
 
         oh-my-posh disable notice
       '';
@@ -119,11 +137,19 @@
       };
       environmentVariables = {
         EDITOR = "nvim";
+        SOPS_AGE_KEY_FILE = "$HOME/.config/sops/age/keys.txt";
       };
       extraConfig = ''
         $env.config.show_banner = false
 
         def lsdir [path: path = '.'] { ls $path | where type == 'dir' }
+
+        $env.ANTHROPIC_API_KEY = (open ${config.sops.secrets.claude_api_key.path} | complete | get stdout | str trim)
+        $env.OPENAI_API_KEY = (open ${config.sops.secrets.openai_api_key.path} | complete | get stdout | str trim)
+        $env.AZURE_OPENAI_API_KEY = (open ${config.sops.secrets.azure_openai_api_key.path} | complete | get stdout | str trim)
+        $env.BEDROCK_KEYS = (open ${config.sops.secrets.bedrock_keys.path} | complete | get stdout | str trim)
+        $env.GH_TOKEN = (open ${config.sops.secrets.GH_TOKEN.path} | complete | get stdout | str trim)
+        $env.SOPS_AGE_KEY_FILE = ($env.HOME | path join ".config" "sops" "age" "keys.txt")
 
         oh-my-posh disable notice
       '';
