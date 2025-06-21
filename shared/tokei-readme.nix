@@ -18,6 +18,7 @@
       # Start building the new format
       TABLE="<!-- BEGIN CODE STATS -->\n"
       TABLE+="## How much code?\n"
+      TABLE+="\n"
       TABLE+="👨‍💻 Code Statistics:\n\n"
 
       TOTAL_FILES=0

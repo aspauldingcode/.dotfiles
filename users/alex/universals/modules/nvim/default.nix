@@ -200,8 +200,8 @@
               linter = [ "golangci_lint" ];
             };
             c = {
-              formatter = [ "uncrustify" ]; # one of “astyle”, “clang_format”, “clang_tidy”, “uncrustify”
-              linter = [ "gcc" ]; # one of “clang_format”, “clang_tidy”, “cppcheck”, “cpplint”, “flawfinder”, “gcc”, “alex”, “codespell”, “cspell”, “languagetool”, “proselint”, “redpen”, “textlint”, “vale”, “write_good”
+              formatter = [ "uncrustify" ]; # one of "astyle", "clang_format", "clang_tidy", "uncrustify"
+              linter = [ "gcc" ]; # one of "clang_format", "clang_tidy", "cppcheck", "cpplint", "flawfinder", "gcc", "alex", "codespell", "cspell", "languagetool", "proselint", "redpen", "textlint", "vale", "write_good"
             };
             cpp = {
               formatter = [ "uncrustify" ];
@@ -326,7 +326,7 @@
             minimum_width = 20;
             on_close = null;
             on_open = null;
-            render = "wrapped-compact"; # Type: null or one of “default”, “minimal”, “simple”, “compact”, “wrapped-compact” or raw lua code
+            render = "wrapped-compact"; # Type: null or one of "default", "minimal", "simple", "compact", "wrapped-compact" or raw lua code
             stages = null;
             timeout = 3500;
             top_down = true;
@@ -717,7 +717,6 @@
           enable = true;
           nixvimInjections = true;
           settings = {
-            ensure_installed = "all";
             indent = {
               enable = true;
             };
@@ -1162,104 +1161,17 @@
         # Smooth scrolling animations
         neoscroll = {
           enable = false;
-          settings = {
-            # All default mappings
-            mappings = [
-              "<C-u>" # Half page up
-              "<C-d>" # Half page down
-              "<C-b>" # Page up
-              "<C-f>" # Page down
-              "<C-y>" # Line up
-              "<C-e>" # Line down
-              "zt" # Current line to top
-              "zz" # Current line to middle
-              "zb" # Current line to bottom
-            ];
-            # Hide cursor while scrolling for better experience
-            hide_cursor = true;
-            # Stop at EOF when scrolling down
-            stop_eof = true;
-            # Don't maintain scrolloff distance during scroll
-            respect_scrolloff = false;
-            # The cursor will keep scrolling even if window can't scroll further
-            cursor_scrolls_alone = true;
-            # Use quadratic easing for smooth acceleration/deceleration
-            easing = "quadratic";
-            # No performance mode optimizations
-            performance_mode = false;
-            # No custom hooks
-            pre_hook = null;
-            post_hook = null;
-            # Global duration multiplier
-            duration_multiplier = 1.0;
-            # Ignore these events while scrolling
-            ignored_events = [
-              "WinScrolled"
-              "CursorMoved"
-            ];
-          };
         };
 
         # nvim-mini cursor animations.
         mini = {
           enable = true;
           modules = {
-            animate = {
-              cursor = {
-                enable = true;
-                timing = {
-                  __raw = "require('mini.animate').gen_timing.linear({ duration = 100, unit = 'total' })";
-                };
-              };
-              scroll = {
-                enable = true;
-                timing = {
-                  __raw = "require('mini.animate').gen_timing.linear({ duration = 150, unit = 'total' })";
-                };
-              };
-              resize = {
-                enable = true;
-                timing = {
-                  __raw = "require('mini.animate').gen_timing.linear({ duration = 100, unit = 'total' })";
-                };
-              };
-              open = {
-                enable = true;
-                timing = {
-                  __raw = "require('mini.animate').gen_timing.linear({ duration = 100, unit = 'total' })";
-                };
-              };
-              close = {
-                enable = true;
-                timing = {
-                  __raw = "require('mini.animate').gen_timing.linear({ duration = 100, unit = 'total' })";
-                };
-              };
-            };
+            # Removed animate module
           };
         };
 
-        # nvim-specs #FIXME: Learn more - idfk how to use.
-        specs = {
-          enable = true;
-          settings = {
-            show_jumps = true;
-            min_jump = 30;
-            popup = {
-              delay_ms = 0; # delay before popup displays
-              inc_ms = 10; # time increments used for fade/resize effects
-              blend = 10; # starting blend, between 0-100 (fully transparent), see :h winblend
-              width = 10;
-              winhl = "PMenu";
-              fader = "require('specs').linear_fader";
-              resizer = "require('specs').shrink_resizer";
-            };
-            ignore_filetypes = { };
-            ignore_buftypes = {
-              nofile = true;
-            };
-          };
-        };
+        # nvim-specs - removed entirely
 
         # cursor - like ai for neovim with Avante.nvim
         avante = {
@@ -1328,22 +1240,6 @@
         {
           plugin = windows-nvim;
           config = toLuaFile ./plugin/windows-nvim.lua;
-        }
-        {
-          plugin = animation-nvim;
-          # config = toLuaFile ./plugin/animation-nvim.lua;
-        }
-        {
-          plugin = middleclass;
-          # config = toLuaFile ./plugin/middleclass.lua;
-        }
-        #{
-        #  plugin = nvim-scrollbar;
-        #  config = toLuaFile ./plugin/scrollbar.lua;
-        #}
-        {
-          plugin = nvim-scrollview;
-          config = toLuaFile ./plugin/scrollview.lua;
         }
 
         # FIXME: y u no worky? >:(

@@ -125,9 +125,9 @@ let
       "editorLineNumber.foreground" = "#${config.colorScheme.palette.base03}";
       "editorLineNumber.activeForeground" = "#${config.colorScheme.palette.base04}";
       "editorCursor.foreground" = "#${config.colorScheme.palette.base05}";
-      "editor.selectionBackground" = "#${config.colorScheme.palette.base02}";
-      "editor.inactiveSelectionBackground" = "#${config.colorScheme.palette.base02}";
-      "editor.selectionHighlightBackground" = "#${config.colorScheme.palette.base01}";
+      "editor.selectionBackground" = "#${config.colorScheme.palette.base02}80";
+      "editor.inactiveSelectionBackground" = "#${config.colorScheme.palette.base02}40";
+      "editor.selectionHighlightBackground" = "#${config.colorScheme.palette.base01}80";
       "editor.wordHighlightBackground" = "#${config.colorScheme.palette.base02}6f";
       "editor.wordHighlightStrongBackground" = "#${config.colorScheme.palette.base03}6f";
       "editor.findMatchBackground" = "#${config.colorScheme.palette.base0A}6f";
@@ -139,8 +139,8 @@ let
       "editorLink.activeForeground" = "#${config.colorScheme.palette.base0D}";
       "editor.rangeHighlightBackground" = "#${config.colorScheme.palette.base01}6f";
       "editorWhitespace.foreground" = "#${config.colorScheme.palette.base03}";
-      "editorIndentGuide.background" = "#${config.colorScheme.palette.base03}";
-      "editorIndentGuide.activeBackground" = "#${config.colorScheme.palette.base04}";
+      "editorIndentGuide.background1" = "#${config.colorScheme.palette.base03}";
+      "editorIndentGuide.activeBackground1" = "#${config.colorScheme.palette.base04}";
       "editorInlayHint.background" = "#${config.colorScheme.palette.base01}";
       "editorInlayHint.foreground" = "#${config.colorScheme.palette.base05}";
       "editorInlayHint.typeBackground" = "#${config.colorScheme.palette.base01}";
@@ -159,18 +159,18 @@ let
       "editorBracketHighlight.foreground5" = "#${config.colorScheme.palette.base0D}";
       "editorBracketHighlight.foreground6" = "#${config.colorScheme.palette.base0E}";
       "editorBracketHighlight.unexpectedBracket.foreground" = "#${config.colorScheme.palette.base0F}";
-      "editorOverviewRuler.findMatchForeground" = "#${config.colorScheme.palette.base0A}6f";
-      "editorOverviewRuler.rangeHighlightForeground" = "#${config.colorScheme.palette.base03}6f";
-      "editorOverviewRuler.selectionHighlightForeground" = "#${config.colorScheme.palette.base02}6f";
-      "editorOverviewRuler.wordHighlightForeground" = "#${config.colorScheme.palette.base07}6f";
-      "editorOverviewRuler.wordHighlightStrongForeground" = "#${config.colorScheme.palette.base0D}6f";
+      "editorOverviewRuler.findMatchForeground" = "#${config.colorScheme.palette.base0A}40";
+      "editorOverviewRuler.rangeHighlightForeground" = "#${config.colorScheme.palette.base03}40";
+      "editorOverviewRuler.selectionHighlightForeground" = "#${config.colorScheme.palette.base02}40";
+      "editorOverviewRuler.wordHighlightForeground" = "#${config.colorScheme.palette.base07}40";
+      "editorOverviewRuler.wordHighlightStrongForeground" = "#${config.colorScheme.palette.base0D}40";
       "editorOverviewRuler.modifiedForeground" = "#${config.colorScheme.palette.base0E}";
       "editorOverviewRuler.addedForeground" = "#${config.colorScheme.palette.base0B}";
       "editorOverviewRuler.deletedForeground" = "#${config.colorScheme.palette.base08}";
       "editorOverviewRuler.errorForeground" = "#${config.colorScheme.palette.base08}";
       "editorOverviewRuler.warningForeground" = "#${config.colorScheme.palette.base0A}";
       "editorOverviewRuler.infoForeground" = "#${config.colorScheme.palette.base0C}";
-      "editorOverviewRuler.bracketMatchForeground" = "#${config.colorScheme.palette.base06}";
+      "editorOverviewRuler.bracketMatchForeground" = "#${config.colorScheme.palette.base06}40";
       "editorError.foreground" = "#${config.colorScheme.palette.base08}";
       "editorWarning.foreground" = "#${config.colorScheme.palette.base0A}";
       "editorInfo.foreground" = "#${config.colorScheme.palette.base0C}";
@@ -1137,7 +1137,7 @@ let
           "markup.raw.block.fenced.markdown"
         ];
         settings = {
-          foreground = "#00000050";
+          foreground = "#${config.colorScheme.palette.base03}";
         };
       }
       {
@@ -1146,7 +1146,7 @@ let
           "punctuation.definition.fenced.markdown"
         ];
         settings = {
-          foreground = "#00000050";
+          foreground = "#${config.colorScheme.palette.base03}";
         };
       }
       {
@@ -1223,15 +1223,15 @@ in
 
     profiles.default = {
       userSettings = {
-        "workbench.colorTheme" = "Default ${config.colorScheme.variant} Modern";
+        "workbench.colorTheme" = "Default ${
+          if config.colorScheme.variant == "light" then "Light" else "Dark"
+        } Modern";
         "workbench.colorCustomizations" = base16Settings.colors // {
-          "editorIndentGuide.activeBackground1" = "#${config.colorScheme.palette.base0A}";
-          "editorIndentGuide.background1" = "#${config.colorScheme.palette.base03}";
-          "minimap.selectionOccurrenceHighlight" = "#${config.colorScheme.palette.base03}";
-          "widget.shadow" = "#${config.colorScheme.palette.base00}";
-          "editor.lineHighlightBackground" = "#${config.colorScheme.palette.base01}";
-          "editor.lineHighlightBorder" = "#${config.colorScheme.palette.base01}";
-          "editor.selectionBackground" = "#${config.colorScheme.palette.base02}";
+          "minimap.selectionOccurrenceHighlight" = "#${config.colorScheme.palette.base03}40";
+          "widget.shadow" = "#${config.colorScheme.palette.base00}40";
+          "editor.lineHighlightBackground" = "#${config.colorScheme.palette.base01}40";
+          "editor.lineHighlightBorder" = "#${config.colorScheme.palette.base01}40";
+          "editor.selectionBackground" = "#${config.colorScheme.palette.base02}80";
         };
         "editor.tokenColorCustomizations" = {
           "textMateRules" = base16Settings.tokenColors;
@@ -1301,6 +1301,7 @@ in
         "terminal.integrated.scrollback" = 10000;
         "terminal.integrated.shell.osx" = "/etc/profiles/per-user/alex/bin/zsh";
         "terminal.integrated.defaultProfile.osx" = "zsh";
+        "terminal.integrated.automationProfile.osx" = null;
 
         # Git settings
         "git.autofetch" = true;
@@ -1420,7 +1421,7 @@ in
         "html.format.wrapLineLength" = 120;
         "html.format.wrapAttributes" = "auto";
         "html.autoClosingTags" = true;
-        "html.mirrorCursorOnMatchingTag" = true;
+        "editor.linkedEditing" = true;
 
         # CSS settings
         "css.validate" = true;
@@ -1541,7 +1542,6 @@ in
           "editor.formatOnSave" = true;
         };
         "[swift]" = {
-          "editor.defaultFormatter" = "swiftlang.swift-vscode";
           "editor.formatOnSave" = true;
         };
         "[nix]" = {
@@ -1609,12 +1609,14 @@ in
         "telemetry.telemetryLevel" = "off";
         "update.mode" = "none";
         "workbench.settings.enableNaturalLanguageSearch" = false;
+
+        # Explicitly disable rainbow/indent colorization
+        "indentRainbow.colors" = [ ];
+        "indentRainbow.enabled" = false;
+        "editor.guides.indentGuides" = false;
+        "editor.renderIndentGuides" = false;
       };
       extensions = with pkgs.vscode-extensions; [
-        # AI/ML & Copilot
-        github.copilot
-        github.copilot-chat
-
         # Language Support - Swift & Native Development
         sswg.swift-lang # Swift language support (original extension, still works)
         vadimcn.vscode-lldb # LLDB debugger for Swift, Rust, C/C++
@@ -1630,15 +1632,14 @@ in
         rust-lang.rust-analyzer
         tamasfe.even-better-toml
 
-        # Language Support - C/C++/Objective-C
-        ms-vscode.cpptools
-        ms-vscode.cpptools-extension-pack
-        ms-vscode.cmake-tools
+        # Language Support - Makefile
         ms-vscode.makefile-tools
 
         # Language Support - Nix
-        bbenoist.nix
         jnoortheen.nix-ide
+
+        # Language Support - C/C++
+        ms-vscode.cpptools # C/C++ extension for proper formatting
 
         # Language Support - TypeScript/JavaScript/Web
         vue.vscode-typescript-vue-plugin # TypeScript support for Vue
@@ -1656,6 +1657,7 @@ in
         asciidoctor.asciidoctor-vscode
 
         # Themes & UI
+        pkief.material-icon-theme
         ms-vscode.hexeditor
         ms-vscode.live-server
         vscode-icons-team.vscode-icons
@@ -1684,14 +1686,9 @@ in
 
         # Docker & Containers
         ms-azuretools.vscode-docker
-        ms-vscode-remote.remote-containers
 
         # REST API & Testing
         humao.rest-client
-
-        # Color & Styling
-        naumovs.color-highlight
-
       ];
     };
   };
