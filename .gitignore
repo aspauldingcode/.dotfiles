@@ -26,6 +26,9 @@
 /vendor/
 /.venv/
 
+# Nix build outputs
+./result/
+
 # ignore unsupported files
 fifo
 
