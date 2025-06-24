@@ -118,11 +118,12 @@
       config = {
         Label = "com.aspauldingcode.alacritty";
         ProgramArguments = [
-          "open"
+          "/usr/bin/open"
           "-a"
           "Alacritty"
         ];
         RunAtLoad = true;
+        LaunchOnlyOnce = true;
         StandardOutPath = "/tmp/alacritty.log";
         StandardErrorPath = "/tmp/alacritty.error.log";
       };

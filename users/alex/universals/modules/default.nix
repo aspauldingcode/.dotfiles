@@ -14,6 +14,7 @@
     ./git
     ./nvim
     ./okular
+    ./print
     ./shells
     ./vscode
     ./yazi

@@ -17,8 +17,8 @@
     ./completion.nix
     ./git.nix
     ./telescope.nix
-    # ./avante.nix
-    # ./markdown.nix
+    ./avante.nix
+    ./markdown.nix
     # ./extras.nix
   ];
 

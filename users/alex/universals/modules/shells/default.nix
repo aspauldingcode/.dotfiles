@@ -144,11 +144,11 @@
 
         def lsdir [path: path = '.'] { ls $path | where type == 'dir' }
 
-        $env.ANTHROPIC_API_KEY = (open ${config.sops.secrets.claude_api_key.path} | complete | get stdout | str trim)
-        $env.OPENAI_API_KEY = (open ${config.sops.secrets.openai_api_key.path} | complete | get stdout | str trim)
-        $env.AZURE_OPENAI_API_KEY = (open ${config.sops.secrets.azure_openai_api_key.path} | complete | get stdout | str trim)
-        $env.BEDROCK_KEYS = (open ${config.sops.secrets.bedrock_keys.path} | complete | get stdout | str trim)
-        $env.GH_TOKEN = (open ${config.sops.secrets.GH_TOKEN.path} | complete | get stdout | str trim)
+        $env.ANTHROPIC_API_KEY = (open ${config.sops.secrets.claude_api_key.path} | str trim)
+        $env.OPENAI_API_KEY = (open ${config.sops.secrets.openai_api_key.path} | str trim)
+        $env.AZURE_OPENAI_API_KEY = (open ${config.sops.secrets.azure_openai_api_key.path} | str trim)
+        $env.BEDROCK_KEYS = (open ${config.sops.secrets.bedrock_keys.path} | str trim)
+        $env.GH_TOKEN = (open ${config.sops.secrets.GH_TOKEN.path} | str trim)
         $env.SOPS_AGE_KEY_FILE = ($env.HOME | path join ".config" "sops" "age" "keys.txt")
 
         oh-my-posh disable notice

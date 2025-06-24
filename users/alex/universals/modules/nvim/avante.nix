@@ -5,19 +5,24 @@
     # AI cursor assistance with Avante.nvim
     avante = {
       enable = true;
-      autoLoad = true;
       package = pkgs.vimPlugins.avante-nvim;
 
       settings = {
         provider = "openai";
-        auto_suggestions_frequency = "copilot";
+        auto_suggestions = false;
 
-        openai = {
-          endpoint = "https://api.openai.com/v1";
-          model = "gpt-4o";
-          timeout = 30000;
-          temperature = 0;
-          max_tokens = 4096;
+        providers = {
+          openai = {
+            endpoint = "https://api.openai.com/v1";
+            model = "gpt-4o";
+            timeout = 30000;
+            context_window = 128000;
+            extra_request_body = {
+              temperature = 0.75;
+              max_completion_tokens = 16384;
+              reasoning_effort = "medium";
+            };
+          };
         };
 
         diff = {
@@ -34,34 +39,79 @@
           signs = {
             AvanteInputPromptSign = "Question";
           };
+        };
 
-          hints.enabled = true;
+        hints = {
+          enabled = true;
+        };
 
-          mappings = {
-            diff = {
-              next = "]x";
-              prev = "[x";
-              ours = "co";
-              theirs = "ct";
-              both = "cb";
-              none = "c0";
-            };
-            jump = {
-              next = "]]";
-              prev = "[[";
-            };
+        mappings = {
+          diff = {
+            ours = "co";
+            theirs = "ct";
+            all_theirs = "ca";
+            both = "cb";
+            cursor = "cc";
+            next = "]x";
+            prev = "[x";
           };
+          suggestion = {
+            accept = "<M-l>";
+            next = "<M-]>";
+            prev = "<M-[>";
+            dismiss = "<C-]>";
+          };
+          jump = {
+            next = "]]";
+            prev = "[[";
+          };
+          submit = {
+            normal = "<CR>";
+            insert = "<C-s>";
+          };
+          cancel = {
+            normal = "<C-c>";
+            insert = "<C-c>";
+          };
+        };
 
-          windows = {
-            width = 30;
-            wrap = true;
-            sidebar_header = {
-              rounded = true;
-              align = "center";
-            };
+        windows = {
+          width = 30;
+          wrap = true;
+          sidebar_header = {
+            rounded = true;
+            align = "center";
           };
         };
       };
     };
   };
+
+  # Add keymaps for Avante.nvim
+  programs.nixvim.keymaps = [
+    {
+      mode = "n";
+      key = "<leader>aa";
+      action = "<cmd>AvanteAsk<CR>";
+      options.desc = "Ask Avante a question";
+    }
+    {
+      mode = "n";
+      key = "<leader>ac";
+      action = "<cmd>AvanteChat<CR>";
+      options.desc = "Open Avante chat";
+    }
+    {
+      mode = "n";
+      key = "<leader>ad";
+      action = "<cmd>AvanteDiff<CR>";
+      options.desc = "Show Avante diff";
+    }
+    {
+      mode = "n";
+      key = "<leader>as";
+      action = "<cmd>AvanteStatus<CR>";
+      options.desc = "Show Avante status";
+    }
+  ];
 }
