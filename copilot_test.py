@@ -19,7 +19,6 @@ def quicksort(arr: List[int]) -> List[int]:
     # Type here for Copilot suggesasffastions
 
 
-
 # Test 3: Data processing function
 def process_data(data: List[Dict]) -> List[Dict]:
     # Copilot should suggest data processing logic

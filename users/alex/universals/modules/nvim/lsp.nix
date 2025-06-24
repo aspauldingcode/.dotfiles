@@ -424,8 +424,56 @@
           package = pkgs.unstable.swiProlog;
         };
         pylsp = {
-          enable = false;
+          enable = true;
           package = pkgs.unstable.python3Packages.python-lsp-server;
+          settings = {
+            pylsp = {
+              plugins = {
+                # Disable conflicting plugins since we use black for formatting
+                autopep8 = {
+                  enabled = false;
+                };
+                yapf = {
+                  enabled = false;
+                };
+                # Enable useful plugins
+                pycodestyle = {
+                  enabled = true;
+                };
+                pyflakes = {
+                  enabled = true;
+                };
+                pylint = {
+                  enabled = false;
+                }; # Can be resource intensive
+                rope_completion = {
+                  enabled = true;
+                };
+                jedi_completion = {
+                  enabled = true;
+                };
+                jedi_hover = {
+                  enabled = true;
+                };
+                jedi_references = {
+                  enabled = true;
+                };
+                jedi_signature_help = {
+                  enabled = true;
+                };
+                jedi_symbols = {
+                  enabled = true;
+                };
+                # Enable black formatting through pylsp
+                black = {
+                  enabled = true;
+                };
+                isort = {
+                  enabled = true;
+                };
+              };
+            };
+          };
         };
         pylyzer = {
           enable = false;
@@ -443,8 +491,11 @@
           package = pkgs.unstable.rnix-lsp;
         };
         ruff_lsp = {
-          enable = false;
-          package = pkgs.unstable.ruff-lsp;
+          enable = false; # Disable for now, using pylsp instead
+          # package = pkgs.unstable.ruff-lsp;  # Package not available
+          # settings = {
+          #   args = [ "--ignore=E501" ]; # Ignore line too long
+          # };
         };
         rust_analyzer = {
           enable = true;

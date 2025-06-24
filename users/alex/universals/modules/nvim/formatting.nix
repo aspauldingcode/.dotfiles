@@ -233,6 +233,11 @@
       callback = {
         __raw = ''
           function()
+            -- Skip if we're in insert mode (user is still typing)
+            if vim.api.nvim_get_mode().mode == 'i' then
+              return
+            end
+
             -- Only format if LSP is attached and supports formatting
             local clients = vim.lsp.get_clients({ bufnr = 0 })
             for _, client in ipairs(clients) do

@@ -279,7 +279,19 @@
                 __raw = ''
                   {
                     function()
-                      return require('lsp-status').status()
+                      -- Check if we have a global LSP progress indicator
+                      if _G.lsp_progress_message then
+                        local spinners = { "⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷" }
+                        local ms = vim.loop.hrtime() / 1000000
+                        local frame = math.floor(ms / 120) % #spinners
+                        local spinner = spinners[frame + 1]
+                        return spinner .. " " .. _G.lsp_progress_message
+                      end
+                      return ""
+                    end,
+                    color = { fg = "#${palette.base0D}" },  -- Blue color for LSP status
+                    cond = function()
+                      return _G.lsp_progress_message ~= nil and _G.lsp_progress_message ~= ""
                     end,
                   }
                 '';
@@ -294,15 +306,86 @@
                 __raw = ''
                   {
                     function()
-                      -- Check actual Copilot authentication status
-                      local copilot_ok, copilot = pcall(require, 'copilot.client')
-                      if copilot_ok and copilot then
-                        -- Check if Copilot is authenticated and running
-                        if copilot.is_disabled and not copilot.is_disabled() then
-                          return "󰄬"  -- Checkmark icon when authenticated
+                      return "LSP"
+                    end,
+                    color = function()
+                      local clients = vim.lsp.get_clients({ bufnr = 0 })
+                      if next(clients) == nil then
+                        return { bg = "#${palette.base03}", fg = "#${palette.base05}", gui = "bold" }  -- Dark gray background when no LSP
+                      else
+                        return { bg = "#${palette.base0B}", fg = "#${palette.base00}", gui = "bold" }  -- Green background when LSP active
+                      end
+                    end,
+                    on_click = function()
+                      local clients = vim.lsp.get_clients({ bufnr = 0 })
+                      local lines = {}
+
+                      if next(clients) == nil then
+                        table.insert(lines, "No LSP clients attached to this buffer")
+                        table.insert(lines, "")
+                        table.insert(lines, "Filetype: " .. vim.bo.filetype)
+                      else
+                        table.insert(lines, "Active LSP clients for this buffer:")
+                        table.insert(lines, "")
+                        for _, client in pairs(clients) do
+                          table.insert(lines, "• " .. client.name .. " (ID: " .. client.id .. ")")
+                          if client.server_capabilities then
+                            local caps = {}
+                            if client.server_capabilities.documentFormattingProvider then
+                              table.insert(caps, "formatting")
+                            end
+                            if client.server_capabilities.hoverProvider then
+                              table.insert(caps, "hover")
+                            end
+                            if client.server_capabilities.completionProvider then
+                              table.insert(caps, "completion")
+                            end
+                            if client.server_capabilities.definitionProvider then
+                              table.insert(caps, "go-to-def")
+                            end
+                            if #caps > 0 then
+                              table.insert(lines, "  Capabilities: " .. table.concat(caps, ", "))
+                            end
+                          end
+                          table.insert(lines, "")
                         end
                       end
-                      return "󰅖"  -- X icon when not authenticated
+
+                      -- Create popup buffer
+                      local buf = vim.api.nvim_create_buf(false, true)
+                      vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+                      vim.api.nvim_buf_set_option(buf, 'modifiable', false)
+                      vim.api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
+
+                      -- Calculate popup size
+                      local width = 60
+                      local height = math.min(#lines + 2, 15)
+
+                      -- Open popup
+                      local win = vim.api.nvim_open_win(buf, true, {
+                        relative = 'editor',
+                        width = width,
+                        height = height,
+                        col = (vim.o.columns - width) / 2,
+                        row = (vim.o.lines - height) / 2,
+                        style = 'minimal',
+                        border = 'rounded',
+                        title = ' LSP Status ',
+                        title_pos = 'center'
+                      })
+
+                      -- Set popup keymaps
+                      vim.api.nvim_buf_set_keymap(buf, 'n', 'q', '<cmd>close<cr>', { noremap = true, silent = true })
+                      vim.api.nvim_buf_set_keymap(buf, 'n', '<Esc>', '<cmd>close<cr>', { noremap = true, silent = true })
+                    end,
+                  }
+                '';
+              }
+              {
+                __raw = ''
+                  {
+                    function()
+                      return "Copilot"
                     end,
                     color = function()
                       -- Check Copilot authentication status for color
@@ -669,13 +752,73 @@
       end
     })
 
-    -- Listen for lsp-status events and refresh lualine
+    -- Initialize global LSP progress tracking
+    _G.lsp_progress_message = nil
+
+    -- Helper function to sanitize progress messages
+    local function sanitize_message(msg)
+      if not msg then return "" end
+      -- Replace problematic characters that cause Vim syntax errors
+      return msg:gsub("[<>%%]", function(char)
+        if char == "<" then return "‹"
+        elseif char == ">" then return "›"
+        elseif char == "%" then return "%%"
+        end
+        return char
+      end)
+    end
+
+    -- Listen for LSP progress events and refresh lualine
     vim.api.nvim_create_augroup("lualine_augroup", { clear = true })
-    vim.api.nvim_create_autocmd("User", {
+
+    -- Handle LSP progress events
+    vim.api.nvim_create_autocmd("LspProgress", {
       group = "lualine_augroup",
-      pattern = "LspStatusUpdate",
+      callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if not client then
+          return
+        end
+
+        local value = args.data.params.value
+        if value.kind == "begin" then
+          local title = sanitize_message(value.title or "Working...")
+          _G.lsp_progress_message = client.name .. ": " .. title
+        elseif value.kind == "report" then
+          local message = sanitize_message(value.message or value.title or "Working...")
+          if value.percentage then
+            _G.lsp_progress_message = client.name .. ": " .. message .. " (" .. value.percentage .. "%%)"
+          else
+            _G.lsp_progress_message = client.name .. ": " .. message
+          end
+        elseif value.kind == "end" then
+          _G.lsp_progress_message = nil
+        end
+
+        -- Use vim.schedule to avoid issues with lualine refresh
+        vim.schedule(function()
+          require("lualine").refresh()
+        end)
+      end,
+    })
+
+    -- Also refresh on LSP attach/detach
+    vim.api.nvim_create_autocmd("LspAttach", {
+      group = "lualine_augroup",
       callback = function()
-        require("lualine").refresh()
+        vim.schedule(function()
+          require("lualine").refresh()
+        end)
+      end,
+    })
+
+    vim.api.nvim_create_autocmd("LspDetach", {
+      group = "lualine_augroup",
+      callback = function()
+        _G.lsp_progress_message = nil
+        vim.schedule(function()
+          require("lualine").refresh()
+        end)
       end,
     })
   '';

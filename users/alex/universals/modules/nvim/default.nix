@@ -63,6 +63,12 @@
         # Note: foldmethod and foldexpr are handled by origami's useLspFoldsWithTreesitterFallback
       };
 
+      globals = {
+        # Leader keys must be set before any keymaps
+        mapleader = " ";
+        maplocalleader = " ";
+      };
+
       extraConfigLua = ''
         -- Print a little welcome message when nvim is opened!
         -- print("Hello world!")

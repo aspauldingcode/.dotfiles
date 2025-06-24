@@ -12,9 +12,9 @@ local g = vim.g
 g.loaded_netrw = 1
 g.loaded_netrwPlugin = 1
 
--- Leader keys
-g.mapleader = ' '
-g.maplocalleader = ' '
+-- Leader keys are now handled by NixVim globals section
+-- g.mapleader = ' '
+-- g.maplocalleader = ' '
 
 -- UI settings
 o.showcmd = true
@@ -121,9 +121,6 @@ map('x', '<Tab>', '>gv')
 map('v', '<Tab>', '>gv')
 map('x', '<S-Tab>', '<gv')
 map('v', '<S-Tab>', '<gv')
-
--- LSP formatting
-map('n', '<Leader>f', '<cmd>lua vim.lsp.buf.format()<CR>')
 
 -- LSP lines toggle
 map('', '<Leader>l', ':lua require("lsp_lines").toggle()<CR>', { desc = 'Toggle lsp_lines' })

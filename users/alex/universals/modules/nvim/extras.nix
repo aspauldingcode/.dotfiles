@@ -5,37 +5,6 @@
     # Smooth scrolling (disabled - you wanted animations removed)
     neoscroll.enable = false;
 
-    # LSP status for statusline
-    lsp-status = {
-      enable = true;
-      settings = {
-        kind_labels = { };
-        current_function = true;
-        show_filename = true;
-        diagnostics = true;
-        indicator_separator = " ";
-        component_separator = " ";
-        indicator_errors = "E";
-        indicator_warnings = "W";
-        indicator_info = "I";
-        indicator_hint = "H";
-        indicator_ok = "Ok";
-        spinner_frames = [
-          "⣾"
-          "⣽"
-          "⣻"
-          "⢿"
-          "⡿"
-          "⣟"
-          "⣯"
-          "⣷"
-        ];
-        status_symbol = " 🇻";
-        select_symbol = null;
-        update_interval = 100;
-      };
-    };
-
     # Enhanced text objects and motions
     # targets.enable = true; # Not available as nixvim plugin option
     vim-surround.enable = true; # Surround text objects with quotes, brackets, etc.
