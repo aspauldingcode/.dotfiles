@@ -142,12 +142,9 @@
         -- Apply the comprehensive protection
         setup_lsp_sync_protection()
 
-        -- Enable diagnostic virtual text
+        -- Enable diagnostic configuration
         vim.diagnostic.config({
-          virtual_text = {
-            source = "always",  -- Show source of diagnostic
-            prefix = "●",       -- Prefix for virtual text
-          },
+          virtual_text = false,  -- Disable inline diagnostic text
           float = {
             source = "always",  -- Show source in floating window
             border = "rounded",

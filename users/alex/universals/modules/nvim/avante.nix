@@ -5,7 +5,7 @@
     # AI cursor assistance with Avante.nvim
     avante = {
       enable = true;
-      package = pkgs.vimPlugins.avante-nvim;
+      package = pkgs.unstable.vimPlugins.avante-nvim;
 
       settings = {
         provider = "openai";
@@ -79,7 +79,7 @@
           width = 30;
           wrap = true;
           sidebar_header = {
-            rounded = true;
+            rounded = false;
             align = "center";
           };
         };

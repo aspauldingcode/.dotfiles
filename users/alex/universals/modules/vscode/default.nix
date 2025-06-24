@@ -1615,6 +1615,8 @@ in
         "indentRainbow.enabled" = false;
         "editor.guides.indentGuides" = false;
         "editor.renderIndentGuides" = false;
+
+        "editor.showFoldingControls" = "always";
       };
       extensions = with pkgs.vscode-extensions; [
         # Language Support - Swift & Native Development

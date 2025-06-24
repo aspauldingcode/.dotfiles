@@ -46,7 +46,7 @@
           "<cr>" = "jump";
           "<2-leftmouse>" = "jump";
           "<c-s>" = "jump_split";
-          "<c-v>" = "jump_vsplit";
+          "<c-t>" = "jump_vsplit";
           "}" = "next";
           "]]" = "next";
           "{" = "prev";
@@ -166,7 +166,7 @@
               normal = {
                 a = {
                   fg = "#${palette.base00}";
-                  bg = "#${palette.base0E}";
+                  bg = "#${palette.base0D}"; # Blue for normal mode
                   gui = "bold";
                 };
                 b = {
@@ -182,40 +182,80 @@
               insert = {
                 a = {
                   fg = "#${palette.base00}";
-                  bg = "#${palette.base0D}";
+                  bg = "#${palette.base0B}"; # Green for insert mode
                   gui = "bold";
+                };
+                b = {
+                  fg = "#${palette.base05}";
+                  bg = "#${palette.base02}";
+                };
+                c = {
+                  fg = "#${palette.base05}";
+                  bg = "#${palette.base01}";
                 };
               };
 
               visual = {
                 a = {
                   fg = "#${palette.base00}";
-                  bg = "#${palette.base0C}";
+                  bg = "#${palette.base0E}"; # Purple for all visual modes
                   gui = "bold";
+                };
+                b = {
+                  fg = "#${palette.base05}";
+                  bg = "#${palette.base02}";
+                };
+                c = {
+                  fg = "#${palette.base05}";
+                  bg = "#${palette.base01}";
                 };
               };
 
               replace = {
                 a = {
                   fg = "#${palette.base00}";
-                  bg = "#${palette.base08}";
+                  bg = "#${palette.base08}"; # Red for replace mode
                   gui = "bold";
+                };
+                b = {
+                  fg = "#${palette.base05}";
+                  bg = "#${palette.base02}";
+                };
+                c = {
+                  fg = "#${palette.base05}";
+                  bg = "#${palette.base01}";
+                };
+              };
+
+              command = {
+                a = {
+                  fg = "#${palette.base00}";
+                  bg = "#${palette.base04}"; # Gray for command mode
+                  gui = "bold";
+                };
+                b = {
+                  fg = "#${palette.base05}";
+                  bg = "#${palette.base02}";
+                };
+                c = {
+                  fg = "#${palette.base05}";
+                  bg = "#${palette.base01}";
                 };
               };
 
               inactive = {
                 a = {
-                  fg = "#${palette.base05}";
-                  bg = "#${palette.base00}";
+                  fg = "#${palette.base04}";
+                  bg = "#${palette.base01}";
                   gui = "bold";
                 };
                 b = {
-                  fg = "#${palette.base05}";
-                  bg = "#${palette.base00}";
+                  fg = "#${palette.base04}";
+                  bg = "#${palette.base01}";
                 };
                 c = {
-                  fg = "#${palette.base05}";
-                  bg = "#${palette.base00}";
+                  fg = "#${palette.base04}";
+                  bg = "#${palette.base01}";
                 };
               };
             };
@@ -234,7 +274,17 @@
               }
             ];
 
-            lualine_c = [ "lsp_progress" ];
+            lualine_c = [
+              {
+                __raw = ''
+                  {
+                    function()
+                      return require('lsp-status').status()
+                    end,
+                  }
+                '';
+              }
+            ];
 
             lualine_x = [
               "encoding"
@@ -294,11 +344,6 @@
       settings = {
         # Custom segments with fold icons after line numbers
         segments = [
-          # Signs column (git, diagnostics, etc.)
-          {
-            text = [ "%s" ];
-            click = "v:lua.ScSa";
-          }
           # Line numbers
           {
             text = [
@@ -315,7 +360,12 @@
             ];
             click = "v:lua.ScLa";
           }
-          # Beautiful fold column with classic arrows (after line numbers)
+          # Git signs and diagnostics (between line numbers and fold icons)
+          {
+            text = [ "%s" ];
+            click = "v:lua.ScSa";
+          }
+          # Beautiful fold column with modern icons (after git signs)
           {
             text = [
               {
@@ -331,15 +381,10 @@
                     -- Only show icon on the first line of a fold
                     if foldlevel > vim.fn.foldlevel(args.lnum - 1) then
                       if foldclosed == -1 then
-                        return "▼" -- classic open fold icon (down arrow)
+                        return "" -- bigger open fold icon
                       else
-                        return "▶" -- classic closed fold icon (right arrow)
+                        return "" -- bigger closed fold icon
                       end
-                    end
-
-                    -- Show fold continuation line for open folds
-                    if foldclosed == -1 and foldlevel > 0 then
-                      return "│" -- vertical line for fold continuation
                     end
 
                     return " "
@@ -354,6 +399,33 @@
 
         # Custom click handlers for proper fold toggling
         clickhandlers = {
+          Diagnostic = {
+            __raw = ''
+              function(args)
+                local line = args.mousepos.line
+                local diagnostics = vim.diagnostic.get(0, { lnum = line - 1 })
+
+                if #diagnostics > 0 then
+                  vim.diagnostic.open_float({
+                    bufnr = 0,
+                    pos = line - 1,
+                    scope = "line",
+                    border = "rounded",
+                    source = "always",
+                    prefix = function(diagnostic, i, total)
+                      local icons = {
+                        [vim.diagnostic.severity.ERROR] = "󰅚",
+                        [vim.diagnostic.severity.WARN] = "󰀪",
+                        [vim.diagnostic.severity.HINT] = "󰌶",
+                        [vim.diagnostic.severity.INFO] = "",
+                      }
+                      return string.format("%s ", icons[diagnostic.severity] or "")
+                    end,
+                  })
+                end
+              end
+            '';
+          };
           FoldClose = {
             __raw = ''
               function(args)
@@ -542,8 +614,13 @@
         scope = {
           enabled = true;
           char = null;
-          highlight = null;
+          highlight = [
+            "IndentBlanklineScope1"
+            "IndentBlanklineScope2"
+            "IndentBlanklineScope3"
+          ];
           show_exact_scope = true;
+          show_start = true;
         };
         whitespace = {
           highlight = null;
@@ -564,6 +641,57 @@
       modules = {
         # No animate module - removed earlier
       };
+    };
+  };
+
+  programs.nixvim.extraConfigLua = ''
+    vim.api.nvim_set_hl(0, "FoldColumn", { fg = "#${config.colorScheme.palette.base07}" })
+
+    -- Enhanced diagnostic display on hover/click
+    vim.api.nvim_create_autocmd("CursorHold", {
+      callback = function()
+        local opts = {
+          focusable = false,
+          close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+          border = "rounded",
+          source = "always",
+          prefix = function(diagnostic, i, total)
+            local icons = {
+              [vim.diagnostic.severity.ERROR] = "󰅚",
+              [vim.diagnostic.severity.WARN] = "󰀪",
+              [vim.diagnostic.severity.HINT] = "󰌶",
+              [vim.diagnostic.severity.INFO] = "",
+            }
+            return string.format("%s ", icons[diagnostic.severity] or "")
+          end,
+        }
+        vim.diagnostic.open_float(nil, opts)
+      end
+    })
+
+    -- Listen for lsp-status events and refresh lualine
+    vim.api.nvim_create_augroup("lualine_augroup", { clear = true })
+    vim.api.nvim_create_autocmd("User", {
+      group = "lualine_augroup",
+      pattern = "LspStatusUpdate",
+      callback = function()
+        require("lualine").refresh()
+      end,
+    })
+  '';
+
+  programs.nixvim.highlight = {
+    FoldColumn = {
+      fg = "#${config.colorScheme.palette.base07}";
+    };
+    IndentBlanklineScope1 = {
+      fg = "#${config.colorScheme.palette.base0D}";
+    };
+    IndentBlanklineScope2 = {
+      fg = "#${config.colorScheme.palette.base0A}";
+    };
+    IndentBlanklineScope3 = {
+      fg = "#${config.colorScheme.palette.base0B}";
     };
   };
 }

@@ -11,11 +11,14 @@ from typing import List, Dict, Optional
 def fibonacci(n: int) -> int:
     """Calculate the nth Fibonacci number"""
     # Start typing here and Copilot should suggest the implementation
+    if n <=
 
 # Test 2: Common algorithm pattern
 def quicksort(arr: List[int]) -> List[int]:
     """Implement quicksort algorithm"""
-    # Type here for Copilot suggestions
+    # Type here for Copilot suggesasffastions
+
+
 
 # Test 3: Data processing function
 def process_data(data: List[Dict]) -> List[Dict]:

@@ -4,16 +4,27 @@ local vim = vim
 local o = vim.opt
 local g = vim.g
 
--- disable netrw at the very start of your init.lua
+-- ============================================================================
+-- BASIC SETTINGS
+-- ============================================================================
+
+-- Disable netrw at the very start
 g.loaded_netrw = 1
 g.loaded_netrwPlugin = 1
 
+-- Leader keys
 g.mapleader = ' '
 g.maplocalleader = ' '
-o.showcmd = true
 
--- set clipboard to use system clipboard
-o.clipboard = 'unnamedplus'
+-- UI settings
+o.showcmd = true
+o.number = true
+o.relativenumber = true
+o.termguicolors = true
+o.updatetime = 300
+o.cursorline = false
+o.mouse = "a"
+o.signcolumn = 'yes'
 
 -- Indentation
 o.smartindent = true
@@ -22,126 +33,50 @@ o.tabstop = 4
 o.shiftwidth = 4
 o.softtabstop = 4
 o.expandtab = true
-o.signcolumn = 'yes'
-o.wrap = false
--- o.textwidth = 80
--- o.formatoptions = "t"
 
--- KEYBINDS
--- How to add ctrl-shift mappings in neovim
+-- Text display
+o.wrap = false
+o.listchars = 'nbsp:␣,eol:↲,tab:»\\ ,extends:›,precedes:‹,trail:•'
+o.showbreak = '↳ '
+
+-- Search and completion
+o.smartcase = true
+o.incsearch = true
+
+-- Misc improvements
+o.ttimeoutlen = 5
+o.compatible = false
+o.autoread = true
+o.hidden = true
+o.shortmess = "atI"
+
+-- Clipboard (commented out to restore vim motions)
+-- o.clipboard = 'unnamedplus'
+
+-- ============================================================================
+-- FOLDING CONFIGURATION
+-- ============================================================================
+
+-- Clean fold configuration for nvim-origami
+vim.opt.foldtext = "v:lua.get_foldtext()"
+vim.opt.foldenable = true
+vim.o.foldcolumn = '0' -- Disable built-in fold column (statuscol handles it)
+vim.o.foldlevel = 99
+vim.o.foldlevelstart = 99
+
+-- ============================================================================
+-- KEYBINDING HELPER FUNCTIONS
+-- ============================================================================
+
 local function map(mode, lhs, rhs, opts)
-    local options = { noremap = true }
-    if opts then options = vim.tbl_extend('force', options, opts) end
+    local options = { noremap = true, silent = true }
+    if opts then
+        options = vim.tbl_extend('force', options, opts)
+    end
     vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
 
--- Control + Shift
--- map('n', '<C-S-a>', '<cmd>:cna<cr>')
-map('n', '<C-S-b>', '<Esc>:NvimTreeToggle<CR>')
--- map('n', '<C-S-c>', '<cmd>:cnc<cr>')
--- map('n', '<C-S-d>', '<cmd>:cnd<cr>')
--- map('n', '<C-S-e>', '<cmd>:cne<cr>')
--- map('n', '<C-S-f>', '<cmd>:cnf<cr>')
--- map('n', '<C-S-g>', '<cmd>:cng<cr>')
--- map('n', '<C-S-h>', '<cmd>:cnh<cr>')
--- map('n', '<C-S-i>', '<cmd>:cni<cr>')
--- map('n', '<C-S-j>', '<cmd>:cnj<cr>')
--- map('n', '<C-S-k>', '<cmd>:cnk<cr>')
--- map('n', '<C-S-l>', '<cmd>:cnl<cr>')
--- map('n', '<C-S-m>', '<cmd>:cnm<cr>')
--- map('n', '<C-S-n>', '<cmd>:cnn<cr>')
--- map('n', '<C-S-o>', '<cmd>:cno<cr>')
--- map('n', '<C-S-p>', '<cmd>:cnp<cr>')
--- map('n', '<C-S-q>', '<cmd>:cnq<cr>')
--- map('n', '<C-S-r>', '<cmd>:cnr<cr>')
--- map('n', '<C-S-s>', '<cmd>:cns<cr>')
--- map('n', '<C-S-t>', '<cmd>:cnt<cr>')
--- map('n', '<C-S-u>', '<cmd>:cnu<cr>')
--- map('n', '<C-S-v>', '<cmd>:cnv<cr>')
--- map('n', '<C-S-w>', '<cmd>:cnw<cr>')
--- map('n', '<C-S-x>', '<cmd>:cnx<cr>')
--- map('n', '<C-S-y>', '<cmd>:cny<cr>')
--- map('n', '<C-S-z>', '<cmd>:cnz<cr>')
-
--- Control
--- map('n', '<C-a>', '<cmd>:cna<cr>')
-map('n', '<C-b>', '<Esc>:NvimTreeToggle<CR>')
--- map('n', '<C-c>', '<cmd>:cnc<cr>')
--- map('n', '<C-d>', '<cmd>:cnd<cr>')
--- map('n', '<C-e>', '<cmd>:cne<cr>')
--- map('n', '<C-f>', '<cmd>:cnf<cr>')
--- map('n', '<C-g>', '<cmd>:cng<cr>')
--- map('n', '<C-h>', '<cmd>:cnh<cr>')
--- map('n', '<C-i>', '<cmd>:cni<cr>')
--- map('n', '<C-j>', '<cmd>:cnj<cr>')
--- map('n', '<C-k>', '<cmd>:cnk<cr>')
--- map('n', '<C-l>', '<cmd>:cnl<cr>')
--- map('n', '<C-m>', '<cmd>:cnm<cr>')
--- map('n', '<C-n>', '<cmd>:cnn<cr>')
--- map('n', '<C-o>', '<cmd>:cno<cr>')
--- map('n', '<C-p>', '<cmd>:cnp<cr>')
--- map('n', '<C-q>', '<cmd>:cnq<cr>')
--- map('n', '<C-r>', '<cmd>:cnr<cr>')
--- map('n', '<C-s>', '<cmd>:cns<cr>')
--- map('n', '<C-t>', '<cmd>:cnt<cr>')
--- map('n', '<C-u>', '<cmd>:cnu<cr>')
--- map('n', '<C-v>', '<cmd>:cnv<cr>')
--- map('n', '<C-w>', '<cmd>:cnw<cr>')
--- map('n', '<C-x>', '<cmd>:cnx<cr>')
--- map('n', '<C-y>', '<cmd>:cny<cr>')
--- map('n', '<C-z>', '<cmd>:cnz<cr>')
-
--- LSP
--- Map <Leader>f to run LSP format
-vim.api.nvim_set_keymap('n', '<Leader>f', '<cmd>lua vim.lsp.buf.format()<CR>',
-    { noremap = true, silent = true })
-
--- Set the keymap
-vim.api.nvim_set_keymap('', '<Leader>l', ':lua require("lsp_lines").toggle()<CR>',
-    { noremap = true, silent = true, desc = 'Toggle lsp_lines' })
-
--- Set listchars
-vim.o.listchars = 'nbsp:␣,eol:↲,tab:»\\ ,extends:›,precedes:‹,trail:•'
-
--- Set showbreak
-vim.o.showbreak = '↳ '
-
--- Disable number column in visual mode
-vim.api.nvim_exec([[
-  augroup my_visuallistchars
-    autocmd!
-    autocmd CursorMoved * if mode() =~# "[vV\<C-v>]" | set list | else | set nolist | endif
-  augroup END
-]], false)
-
--- Use mouse
-o.mouse = "a"
-
--- UI settings
-o.number = true
-o.relativenumber = true
-o.termguicolors = true
-o.updatetime = 300
-o.cursorline = false
-vim.cmd('filetype plugin indent on')
-
--- Keybinds
-local function map(mode, combo, mapping, opts)
-    local options = { noremap = true }
-    if opts then
-        options = vim.tbl_extend('force', options, opts)
-    end
-    vim.api.nvim_set_keymap(mode, combo, mapping, options)
-end
 local is_mac = vim.loop.os_uname().sysname == "Darwin"
-
-local function map(mode, combo, mapping, opts)
-    local options = { noremap = true }
-    if opts then
-        options = vim.tbl_extend('force', options, opts)
-    end
-    vim.api.nvim_set_keymap(mode, combo, mapping, options)
-end
 
 local function map_with_cmd_key(mode, combo, mapping, opts)
     if is_mac then
@@ -150,20 +85,63 @@ local function map_with_cmd_key(mode, combo, mapping, opts)
     map(mode, combo, mapping, opts)
 end
 
--- Option 1: Use vim.keymap.set instead of the custom function
--- vim.keymap.set('n', '<C-b>', '<Esc>:NvimTreeToggle<CR>', { noremap = true, silent = true })
--- vim.keymap.set('n', '<D-b>', '<Esc>:NvimTreeToggle<CR>', { noremap = true, silent = true })
-map_with_cmd_key('n', '<C-d>', ':Telescope find_files <CR>', { noremap = true })
-map_with_cmd_key('n', '<C-f>', ':Telescope live_grep <CR>', { noremap = true })
-map_with_cmd_key('i', '<C-l>', '<Esc>:left <CR>', { noremap = true })   -- align text left
-map_with_cmd_key('i', '<C-e>', '<Esc>:center <CR>', { noremap = true }) -- center text
-map_with_cmd_key('i', '<C-r>', '<Esc>:right <CR>', { noremap = true })  -- align text right
-map_with_cmd_key('n', '<C-l>', ':left <CR>', { noremap = true })        -- align text left
-map_with_cmd_key('n', '<C-e>', ':center <CR>', { noremap = true })      -- center text
-map_with_cmd_key('n', '<C-r>', ':right <CR>', { noremap = true })       -- align text right
-map_with_cmd_key('n', '<C-S-Z>', ':redo <CR>', { noremap = true })
-map_with_cmd_key('n', '<C-y>', ':redo <CR>', { noremap = true })
-map_with_cmd_key('n', '<C-z>', ':undo <CR>', { noremap = true })
+-- ============================================================================
+-- KEYBINDINGS
+-- ============================================================================
+
+-- File operations
+map_with_cmd_key('n', '<C-d>', ':Telescope find_files <CR>')
+map_with_cmd_key('n', '<C-f>', ':Telescope live_grep <CR>')
+
+-- Text alignment
+map_with_cmd_key('i', '<C-l>', '<Esc>:left <CR>')   -- align text left
+map_with_cmd_key('i', '<C-e>', '<Esc>:center <CR>') -- center text
+map_with_cmd_key('i', '<C-r>', '<Esc>:right <CR>')  -- align text right
+map_with_cmd_key('n', '<C-l>', ':left <CR>')        -- align text left
+map_with_cmd_key('n', '<C-e>', ':center <CR>')      -- center text
+map_with_cmd_key('n', '<C-r>', ':right <CR>')       -- align text right
+
+-- Undo/Redo
+map_with_cmd_key('n', '<C-z>', ':undo <CR>')
+map_with_cmd_key('n', '<C-y>', ':redo <CR>')
+map_with_cmd_key('n', '<C-S-Z>', ':redo <CR>')
+
+-- File tree
+map('n', '<C-b>', '<Esc>:NvimTreeToggle<CR>')
+map('n', '<C-S-b>', '<Esc>:NvimTreeToggle<CR>')
+
+-- Select All
+map('n', '<C-a>', '<Esc>:normal! ggVG<CR>')
+map('v', '<C-a>', '<Esc>:normal! ggVG<CR>')
+map('x', '<C-a>', '<Esc>:normal! ggVG<CR>')
+map('i', '<C-a>', '<Esc>:normal! ggVG<CR>')
+
+-- Indentation in visual mode
+map('x', '<Tab>', '>gv')
+map('v', '<Tab>', '>gv')
+map('x', '<S-Tab>', '<gv')
+map('v', '<S-Tab>', '<gv')
+
+-- LSP formatting
+map('n', '<Leader>f', '<cmd>lua vim.lsp.buf.format()<CR>')
+
+-- LSP lines toggle
+map('', '<Leader>l', ':lua require("lsp_lines").toggle()<CR>', { desc = 'Toggle lsp_lines' })
+
+-- Line wrapping toggle
+map('n', '<Leader>w', ':lua ToggleWrap()<CR>')
+
+-- ============================================================================
+-- AUTOCMDS AND FUNCTIONS
+-- ============================================================================
+
+-- Show listchars in visual mode
+vim.api.nvim_exec([[
+  augroup my_visuallistchars
+    autocmd!
+    autocmd CursorMoved * if mode() =~# "[vV\<C-v>]" | set list | else | set nolist | endif
+  augroup END
+]], false)
 
 -- Enable line wrapping at whitespace
 vim.api.nvim_win_set_option(0, 'wrap', true)
@@ -171,11 +149,9 @@ vim.api.nvim_win_set_option(0, 'linebreak', true)
 vim.api.nvim_win_set_option(0, 'breakindent', true)
 vim.api.nvim_win_set_option(0, 'showbreak', ' ')
 
--- Toggle line wrapping
+-- Toggle line wrapping function
 function ToggleWrap()
     local wrap_state = vim.wo.wrap
-    local linebreak_state = vim.wo.linebreak
-
     if wrap_state then
         vim.wo.wrap = false
         vim.wo.linebreak = false
@@ -189,46 +165,6 @@ function ToggleWrap()
     end
 end
 
--- Set a key mapping for toggling line wrapping
-vim.api.nvim_set_keymap('n', '<Leader>w', [[:lua ToggleWrap()<CR>]], { noremap = true, silent = true })
-
--- Select All! (in normal, visual, or visual line mode)
-vim.api.nvim_set_keymap('n', '<C-a>', '<Esc>:normal! ggVG<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', '<C-a>', '<Esc>:normal! ggVG<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('x', '<C-a>', '<Esc>:normal! ggVG<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('i', '<C-a>', '<Esc>:normal! ggVG<CR>', { noremap = true, silent = true })
--- ggVG selects all content. gg moves to first line. V starts visual mode. G jumps to last line thereby selecting from first to last line.
-
--- Copy/Paste (in normal, visual, or visual line mode)
-vim.api.nvim_set_keymap('n', '<C-c>', '"+y', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', '<C-c>', '"+y', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('x', '<C-c>', '"+y', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('i', '<C-c>', '<Esc>"+y', { noremap = true, silent = true })
-
-vim.api.nvim_set_keymap('n', '<C-v>', '"+p', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', '<C-v>', '"+p', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('x', '<C-v>', '"+p', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('i', '<C-v>', '<Esc>"+p', { noremap = true, silent = true })
-
--- Copy/Paste (in normal, visual, or visual line mode)
-vim.api.nvim_set_keymap('n', '<D-c>', '"+y', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', '<D-c>', '"+y', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('x', '<D-c>', '"+y', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('i', '<D-c>', '<Esc>"+y', { noremap = true, silent = true })
-
-vim.api.nvim_set_keymap('n', '<D-v>', '"+p', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', '<D-v>', '"+p', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('x', '<D-v>', '"+p', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('i', '<D-v>', '<Esc>"+p', { noremap = true, silent = true })
-
--- Indent selected text right with Tab
-vim.api.nvim_set_keymap('x', '<Tab>', [[>gv]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', '<Tab>', [[>gv]], { noremap = true, silent = true })
-
--- Indent selected text left with Shift + Tab
-vim.api.nvim_set_keymap('x', '<S-Tab>', [[<gv]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', '<S-Tab>', [[<gv]], { noremap = true, silent = true })
-
 -- Word Processor Mode
 local wordProcessorModeActive = false
 
@@ -241,90 +177,55 @@ function ToggleWordProcessorMode()
         vim.bo.spelllang = ''
         vim.bo.expandtab = true
         wordProcessorModeActive = false
+        print("Word Processor Mode disabled")
     else
         vim.bo.formatoptions = 't1'
         vim.bo.textwidth = 80
-        vim.api.nvim_set_keymap('n', 'j', 'gj', { noremap = true, silent = true })
-        vim.api.nvim_set_keymap('n', 'k', 'gk', { noremap = true, silent = true })
         vim.bo.smartindent = true
         vim.wo.spell = true
         vim.bo.spelllang = 'en_us'
         vim.bo.expandtab = false
-        -- Set custom status line hint
         vim.wo.statusline = 'WordProcessorMode: Press z= for spellcheck suggestions'
         wordProcessorModeActive = true
+        print("Word Processor Mode enabled")
     end
 end
 
+-- Commands
 vim.cmd('command! -nargs=0 WP lua ToggleWordProcessorMode()')
 vim.cmd([[command! -nargs=0 -bar W :]])
 
--- Misc Improvements
-o.smartcase = true
-o.ttimeoutlen = 5
-o.compatible = false
-o.autoread = true
-o.incsearch = true
-o.hidden = true
-o.shortmess = "atI"
+-- ============================================================================
+-- STARTUP BEHAVIOR
+-- ============================================================================
 
--- Clean fold configuration for nvim-origami
--- Note: foldmethod and foldexpr are handled by origami's useLspFoldsWithTreesitterFallback
-vim.opt.foldtext = "v:lua.get_foldtext()"
-vim.opt.foldenable = true -- Enable folding
-
-o.signcolumn = 'yes'
-
--- Fold configuration compatible with origami and statuscol
-vim.o.foldcolumn = '0' -- Disable built-in fold column (statuscol handles it)
-vim.o.foldlevel = 99   -- High fold level for origami
-vim.o.foldlevelstart = 99
-
--- Remove the custom statuscolumn since statuscol handles this
--- vim.o.statuscolumn = -- Let statuscol handle this
-
-vim.cmd("highlight FoldColumn guifg=" .. vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID('Comment')), 'fg'))
-
--- Remove the ufo-specific fold rendering code since we're using origami now
--- The fold rendering is handled by origami's foldtext configuration
-
--- Ensure Startify is loaded first and open NvimTree and then focus on Startify
+-- Ensure Startify loads first, then open NvimTree
 vim.api.nvim_create_autocmd("VimEnter", {
     pattern = "*",
     callback = function()
         if vim.bo.modifiable and vim.fn.argc() == 0 then
             vim.cmd("Startify")
             vim.cmd("NvimTreeOpen")
-            -- Wait for NvimTree to be focused, then move focus back to Startify
+            -- Focus back on Startify after NvimTree opens
             vim.defer_fn(function()
                 if vim.bo.filetype == "NvimTree" then
-                    vim.cmd("wincmd p") -- Move focus back to the previous window (Startify)
+                    vim.cmd("wincmd p")
                 end
-            end, 100)                   -- Adjust the delay (in milliseconds) as needed
+            end, 100)
         end
     end
 })
 
--- FIXME: Not even working!? :(
--- enable syntax highlighting for nix files with vim-nix on macOS!
+-- ============================================================================
+-- HIGHLIGHTS
+-- ============================================================================
+
+vim.cmd("highlight FoldColumn guifg=" .. vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID('Comment')), 'fg'))
+
+-- Enable filetype detection
+vim.cmd('filetype plugin indent on')
+
+-- Enable syntax highlighting on macOS
 if vim.fn.has('macunix') == 1 then
     vim.cmd("syntax on")
 end
-
--- remove "how to disable mouse" popup when using mouse right click
--- o.mouse =
-
--- Info notification with fade_in_slide_out animation
--- require("notify")("This is an info notification!", "info", {title = "Info Notification", stages = "fade_in_slide_out"})
-
--- Warning notification with slide animation
--- require("notify")("This is a warning notification!", "warn", {title = "Warning Notification", stages = "slide"})
-
--- Error notification with fade animation
--- require("notify")("This is an error notification!", "error", {title = "Error Notification", stages = "fade"})
-
--- Debug notification with static animation (doesn't show up?)
--- require("notify")("This is a debug notification!", "debug", {title = "Debug Notification", stages = "static"})
-
--- Trace notification with fade_in_slide_out animation (doesn't show up?)
--- require("notify")("This is a trace notification!", "trace", {title = "Trace Notification", stages = "fade_in_slide_out"})
