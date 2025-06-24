@@ -55,6 +55,12 @@
         relativenumber = true; # Show relative line numbers
         shiftwidth = 4; # Tab width should be 4
         termguicolors = true;
+        # Folding options for nvim-origami (let origami handle foldmethod/foldexpr)
+        foldcolumn = "0"; # Disable built-in fold column (statuscol handles it)
+        foldlevel = 99; # High fold level for origami
+        foldlevelstart = 99; # Start with all folds open
+        foldenable = true; # Enable folding
+        # Note: foldmethod and foldexpr are handled by origami's useLspFoldsWithTreesitterFallback
       };
 
       extraConfigLua = ''
@@ -63,6 +69,19 @@
 
         -- All my configuration options for nvim:
         ${builtins.readFile ./options.lua}
+
+        -- Clean fillchars for statuscol fold handling
+        vim.opt.fillchars = {
+          fold = " ",
+          foldopen = " ",
+          foldclose = " ",
+          foldsep = " ",
+          diff = "╱",
+          eob = " ",
+        }
+
+        -- Let origami handle fold method and expressions
+        -- No manual fold configuration needed
       '';
 
       keymaps = [
@@ -182,6 +201,38 @@
           key = "<C-j>";
           action = "<cmd>lua require('luasnip').jump(-1)<CR>";
           options.desc = "Jump to previous snippet placeholder";
+        }
+
+        # Origami fold management keymaps
+        {
+          mode = "n";
+          key = "<leader>zr";
+          action = "zR";
+          options.desc = "Open all folds";
+        }
+        {
+          mode = "n";
+          key = "<leader>zm";
+          action = "zM";
+          options.desc = "Close all folds";
+        }
+        {
+          mode = "n";
+          key = "<leader>zh";
+          action = "zc";
+          options.desc = "Close fold under cursor";
+        }
+        {
+          mode = "n";
+          key = "<leader>zl";
+          action = "zo";
+          options.desc = "Open fold under cursor";
+        }
+        {
+          mode = "n";
+          key = "<leader>za";
+          action = "za";
+          options.desc = "Toggle fold under cursor";
         }
       ];
 

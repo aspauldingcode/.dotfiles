@@ -268,66 +268,25 @@ o.incsearch = true
 o.hidden = true
 o.shortmess = "atI"
 
+-- Clean fold configuration for nvim-origami
+-- Note: foldmethod and foldexpr are handled by origami's useLspFoldsWithTreesitterFallback
 vim.opt.foldtext = "v:lua.get_foldtext()"
-vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-vim.opt.foldmethod = "expr"
-vim.opt.foldenable = false -- Disable folding at startup.
+vim.opt.foldenable = true -- Enable folding
 
 o.signcolumn = 'yes'
 
-vim.o.foldcolumn = '1' -- '0' is not bad
-vim.o.foldlevel = 99   -- Using ufo provider need a large value, feel free to decrease the value
+-- Fold configuration compatible with origami and statuscol
+vim.o.foldcolumn = '0' -- Disable built-in fold column (statuscol handles it)
+vim.o.foldlevel = 99   -- High fold level for origami
 vim.o.foldlevelstart = 99
 
--- Using ufo provider need remap zR and zM. If Neovim is 0.6.1, remap yourself
-vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
-vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
+-- Remove the custom statuscolumn since statuscol handles this
+-- vim.o.statuscolumn = -- Let statuscol handle this
 
 vim.cmd("highlight FoldColumn guifg=" .. vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID('Comment')), 'fg'))
 
-vim.o.statuscolumn =
-'%=%l%s%C%{foldlevel(v:lnum) > foldlevel(v:lnum - 1) ? (foldclosed(v:lnum) == -1 ? "▼" : "⏵") : " " }'
-
--- Replace the default fold markers with custom arrows
-vim.api.nvim_create_autocmd("VimEnter", {
-    callback = function()
-        local ufo = require('ufo')
-        local orig_render = ufo.renderFoldedLines
-
-        ufo.renderFoldedLines = function(virtText, lnum, endLnum, width, truncate, ctx)
-            local newVirtText = {}
-            local suffix = ('  %d '):format(endLnum - lnum)
-            local sufWidth = vim.fn.strdisplaywidth(suffix)
-            local targetWidth = width - sufWidth
-            local curWidth = 0
-
-            for _, chunk in ipairs(virtText) do
-                local chunkText = chunk[1]
-                local chunkWidth = vim.fn.strdisplaywidth(chunkText)
-                if targetWidth > curWidth + chunkWidth then
-                    table.insert(newVirtText, chunk)
-                else
-                    chunkText = truncate(chunkText, targetWidth - curWidth)
-                    local hlGroup = chunk[2]
-                    table.insert(newVirtText, { chunkText, hlGroup })
-                    chunkWidth = vim.fn.strdisplaywidth(chunkText)
-                    if curWidth + chunkWidth < targetWidth then
-                        suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
-                    end
-                    break
-                end
-                curWidth = curWidth + chunkWidth
-            end
-
-            local foldSymbol = '⏵ '
-            table.insert(newVirtText, { foldSymbol .. suffix, 'UfoFoldedEllipsis' })
-            return newVirtText
-        end
-
-        -- Ensure the statuscolumn is updated
-        vim.o.statuscolumn = vim.o.statuscolumn
-    end,
-})
+-- Remove the ufo-specific fold rendering code since we're using origami now
+-- The fold rendering is handled by origami's foldtext configuration
 
 -- Ensure Startify is loaded first and open NvimTree and then focus on Startify
 vim.api.nvim_create_autocmd("VimEnter", {
@@ -345,7 +304,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
         end
     end
 })
-
 
 -- FIXME: Not even working!? :(
 -- enable syntax highlighting for nix files with vim-nix on macOS!

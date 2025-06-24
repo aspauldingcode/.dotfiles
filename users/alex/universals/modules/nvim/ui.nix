@@ -288,53 +288,107 @@
         };
       };
 
-    # Status column
+    # Status column with beautiful fold icons
     statuscol = {
       enable = true;
       settings = {
+        # Custom segments with fold icons after line numbers
         segments = [
+          # Signs column (git, diagnostics, etc.)
           {
             text = [ "%s" ];
             click = "v:lua.ScSa";
           }
-          {
-            text = [ { __raw = "function(args) return require('statuscol.builtin').lnumfunc(args) end"; } ];
-            click = "v:lua.ScLa";
-          }
+          # Line numbers
           {
             text = [
-              " "
-              { __raw = "require('statuscol.builtin').foldfunc"; }
+              {
+                __raw = "require('statuscol.builtin').lnumfunc";
+              }
               " "
             ];
             condition = [
-              { __raw = "require('statuscol.builtin').not_empty"; }
               true
-              { __raw = "require('statuscol.builtin').not_empty"; }
+              {
+                __raw = "require('statuscol.builtin').not_empty";
+              }
+            ];
+            click = "v:lua.ScLa";
+          }
+          # Beautiful fold column with classic arrows (after line numbers)
+          {
+            text = [
+              {
+                __raw = ''
+                  function(args)
+                    local foldclosed = vim.fn.foldclosed(args.lnum)
+                    local foldlevel = vim.fn.foldlevel(args.lnum)
+
+                    if foldlevel == 0 then
+                      return " "
+                    end
+
+                    -- Only show icon on the first line of a fold
+                    if foldlevel > vim.fn.foldlevel(args.lnum - 1) then
+                      if foldclosed == -1 then
+                        return "▼" -- classic open fold icon (down arrow)
+                      else
+                        return "▶" -- classic closed fold icon (right arrow)
+                      end
+                    end
+
+                    -- Show fold continuation line for open folds
+                    if foldclosed == -1 and foldlevel > 0 then
+                      return "│" -- vertical line for fold continuation
+                    end
+
+                    return " "
+                  end
+                '';
+              }
             ];
             click = "v:lua.ScFa";
+            hl = "FoldColumn";
           }
         ];
-        clickmod = "c";
+
+        # Custom click handlers for proper fold toggling
         clickhandlers = {
-          Lnum = "require('statuscol.builtin').lnum_click";
-          FoldClose = "require('statuscol.builtin').foldclose_click";
-          FoldOpen = "require('statuscol.builtin').foldopen_click";
-          FoldOther = "require('statuscol.builtin').foldother_click";
-          DapBreakpointRejected = "require('statuscol.builtin').toggle_breakpoint";
-          DapBreakpoint = "require('statuscol.builtin').toggle_breakpoint";
-          DapBreakpointCondition = "require('statuscol.builtin').toggle_breakpoint";
-          DiagnosticSignError = "require('statuscol.builtin').diagnostic_click";
-          DiagnosticSignHint = "require('statuscol.builtin').diagnostic_click";
-          DiagnosticSignInfo = "require('statuscol.builtin').diagnostic_click";
-          DiagnosticSignWarn = "require('statuscol.builtin').diagnostic_click";
-          GitSignsTopdelete = "require('statuscol.builtin').gitsigns_click";
-          GitSignsUntracked = "require('statuscol.builtin').gitsigns_click";
-          GitSignsAdd = "require('statuscol.builtin').gitsigns_click";
-          GitSignsChange = "require('statuscol.builtin').gitsigns_click";
-          GitSignsChangedelete = "require('statuscol.builtin').gitsigns_click";
-          GitSignsDelete = "require('statuscol.builtin').gitsigns_click";
-          gitsigns_extmark_signs_ = "require('statuscol.builtin').gitsigns_click";
+          FoldClose = {
+            __raw = ''
+              function(args)
+                local lnum = args.mousepos.line
+                if vim.fn.foldclosed(lnum) ~= -1 then
+                  vim.cmd(lnum .. "foldopen")
+                end
+              end
+            '';
+          };
+          FoldOpen = {
+            __raw = ''
+              function(args)
+                local lnum = args.mousepos.line
+                if vim.fn.foldclosed(lnum) == -1 then
+                  vim.cmd(lnum .. "foldclose")
+                end
+              end
+            '';
+          };
+          FoldOther = {
+            __raw = ''
+              function(args)
+                local lnum = args.mousepos.line
+                -- Toggle fold regardless of current state
+                if vim.fn.foldlevel(lnum) > 0 then
+                  if vim.fn.foldclosed(lnum) == -1 then
+                    vim.cmd(lnum .. "foldclose")
+                  else
+                    vim.cmd(lnum .. "foldopen")
+                  end
+                end
+              end
+            '';
+          };
         };
       };
     };
@@ -419,46 +473,38 @@
     colorizer.enable = true; # color previews
     noice.settings.lsp.progress.enabled = true;
 
-    # Folding
-    nvim-ufo = {
+    # Origami - Enhanced fold management (replaces nvim-ufo)
+    origami = {
       enable = true;
-      package = pkgs.unstable.vimPlugins.nvim-ufo;
       settings = {
-        enable_get_fold_virt_text = true;
-        close_fold_kinds_for_ft = {
-          imports = true;
-          comment = true;
+        # Use LSP for folding with treesitter as fallback (v2.0+ default)
+        useLspFoldsWithTreesitterFallback = true;
+        # Pause folds while searching
+        pauseFoldsOnSearch = true;
+        # Enhanced fold text with decorations
+        foldtext = {
+          enabled = true;
+          padding = 3;
+          lineCount = {
+            template = "%d lines";
+            hlgroup = "Comment";
+          };
+          diagnosticsCount = true;
+          gitsignsCount = true;
         };
-        fold_virt_text_handler = ''
-          function(virtText, lnum, endLnum, width, truncate)
-            local newVirtText = {}
-            local suffix = ('  %d '):format(endLnum - lnum)
-            local sufWidth = vim.fn.strdisplaywidth(suffix)
-            local targetWidth = width - sufWidth
-            local curWidth = 0
-            for _, chunk in ipairs(virtText) do
-              local chunkText = chunk[1]
-              local chunkWidth = vim.fn.strdisplaywidth(chunkText)
-              if targetWidth > curWidth + chunkWidth then
-                table.insert(newVirtText, chunk)
-              else
-                chunkText = truncate(chunkText, targetWidth - curWidth)
-                local hlGroup = chunk[2]
-                table.insert(newVirtText, {chunkText, hlGroup})
-                chunkWidth = vim.fn.strdisplaywidth(chunkText)
-                if curWidth + chunkWidth < targetWidth then
-                  suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
-                end
-                break
-              end
-              curWidth = curWidth + chunkWidth
-            end
-            table.insert(newVirtText, {suffix, 'MoreMsg'})
-            return newVirtText
-          end
-        '';
-        open_fold_hl_timeout = 300;
-        provider_selector = "function(bufnr, filetype, buftype) return {'treesitter', 'indent'} end";
+        # Auto-fold comments and imports
+        autoFold = {
+          enabled = true;
+          kinds = [
+            "comment"
+            "imports"
+          ];
+        };
+        # Disable built-in fold keymaps (we set up custom ones)
+        foldKeymaps = {
+          setup = false;
+          hOnlyOpensOnFirstColumn = false;
+        };
       };
     };
 

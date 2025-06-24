@@ -31,7 +31,7 @@
       remapCapsLockToEscape = false;
       nonUS.remapTilde = false;
       swapLeftCommandAndLeftAlt = false;
-      swapLeftCtrlAndFn = false;
+      swapLeftCtrlAndFn = true;
     };
     defaults = {
       alf = {

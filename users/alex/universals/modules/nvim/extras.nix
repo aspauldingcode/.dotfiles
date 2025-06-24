@@ -416,14 +416,13 @@
     }
   ];
 
-  # Global vim options for folding
+  # Global vim options for folding (compatible with origami and statuscol)
   programs.nixvim.opts = {
-    # Enable fold column to show clickable fold indicators
-    foldcolumn = "1";
+    # Disable built-in fold column (statuscol handles it)
+    foldcolumn = "0";
     foldlevel = 99;
     foldlevelstart = 99;
     foldenable = true;
-    # Set fold method to be handled by nvim-ufo
-    foldmethod = "manual";
+    # Note: foldmethod and foldexpr are handled by origami's useLspFoldsWithTreesitterFallback
   };
 }

@@ -60,8 +60,8 @@
 
     "com.apple.dock" = {
       autohide = true;
-      autohide-delay = 1000.0;
-      autohide-time-modifier = 0.0;
+      # autohide-delay = 1000.0;
+      # autohide-time-modifier = 0.0;
       expose-animation-duration = 0.1;
       orientation = "bottom";
       show-recents = false;
@@ -70,7 +70,7 @@
       wvous-br-corner = 1;
       wvous-tl-corner = 1;
       wvous-tr-corner = 1;
-      show-process-indicators = false;
+      show-process-indicators = true;
       tilesize = 40;
       persistent-apps = [
         "/System/Applications/Launchpad.app"
