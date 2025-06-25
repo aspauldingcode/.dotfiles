@@ -491,7 +491,9 @@ in
       mode = "n";
       key = osKeymap;
       action = "<cmd>lua print_to_pdf()<CR>";
-      options.desc = "Print current file to PDF";
+      options = {
+        desc = "Print current file to PDF";
+      };
     }
   ];
 }

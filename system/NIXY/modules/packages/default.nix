@@ -72,6 +72,12 @@
 
   nixpkgs.config = {
     allowUnfree = true;
+    allowUnsupportedSystemPredicate =
+      pkg:
+      builtins.elem (pkgs.lib.getName pkg) [
+        "swiftformat"
+        "sourcekit-lsp"
+      ];
     extra-platforms = [
       "aarch64-linux"
       "x86_64-linux"

@@ -2,140 +2,6 @@
 
 {
   programs.nixvim.plugins = {
-    # AI Completion plugins
-    # copilot-vim = {
-    #   enable = true;
-    #   settings = {
-    #     no_tab_map = true;
-    #     assume_mapped = true;
-    #     tab_fallback = "";
-    #     filetypes = {
-    #       "*" = false;
-    #       python = true;
-    #       javascript = true;
-    #       typescript = true;
-    #       javascriptreact = true;
-    #       typescriptreact = true;
-    #       lua = true;
-    #       rust = true;
-    #       go = true;
-    #       java = true;
-    #       c = true;
-    #       cpp = true;
-    #       nix = true;
-    #       yaml = true;
-    #       json = true;
-    #       html = true;
-    #       css = true;
-    #       scss = true;
-    #       markdown = true;
-    #       vim = true;
-    #       sh = true;
-    #     };
-    #   };
-    # };
-
-    copilot-lua = {
-      package = pkgs.unstable.vimPlugins.copilot-lua;
-      enable = true;
-      settings = {
-        suggestion = {
-          enabled = false;
-        };
-        panel = {
-          enabled = false;
-        };
-        server_opts_overrides = {
-          settings = {
-            advanced = {
-              listCount = 10;
-              inlineSuggestCount = 3;
-            };
-          };
-        };
-      };
-    };
-    copilot-cmp = {
-      enable = true;
-      settings = {
-        event = [
-          "InsertEnter"
-          "LspAttach"
-        ];
-        fix_pairs = true;
-      };
-    };
-
-    # AI Chat functionality - temporarily disabled to isolate build issue
-    # copilot-chat = {
-    #   enable = true;
-    #   settings = {
-    #     question_header = "## User ";
-    #     answer_header = "## Copilot ";
-    #     error_header = "## Error ";
-    #     separator = "───";
-    #     show_folds = true;
-    #     show_help = true;
-    #     auto_follow_cursor = true;
-    #     auto_insert_mode = false;
-    #     clear_chat_on_new_prompt = false;
-    #     context = "buffer";
-    #     history_path = {
-    #       __raw = "vim.fn.stdpath('data') .. '/copilotchat_history'";
-    #     };
-    #     callback = null;
-    #     selection = {
-    #       __raw = "require('CopilotChat.select').buffer";
-    #     };
-    #     prompts = {
-    #       Explain = {
-    #         prompt = "/COPILOT_EXPLAIN Write an explanation for the active selection as paragraphs of text.";
-    #       };
-    #       Review = {
-    #         prompt = "/COPILOT_REVIEW Review the selected code.";
-    #         callback = {
-    #           __raw = "function(response, source) end";
-    #         };
-    #       };
-    #       Fix = {
-    #         prompt = "/COPILOT_GENERATE There is a problem in this code. Rewrite the code to show it with the bug fixed.";
-    #       };
-    #       Optimize = {
-    #         prompt = "/COPILOT_GENERATE Optimize the selected code to improve performance and readability.";
-    #       };
-    #       Docs = {
-    #         prompt = "/COPILOT_GENERATE Please add documentation comment for the selection.";
-    #       };
-    #       Tests = {
-    #         prompt = "/COPILOT_GENERATE Please generate tests for my code.";
-    #       };
-    #       FixDiagnostic = {
-    #         prompt = "Please assist with the following diagnostic issue in file:";
-    #         selection = {
-    #           __raw = "require('CopilotChat.select').diagnostics";
-    #         };
-    #       };
-    #       Commit = {
-    #         prompt = "Write commit message for the change with commitizen convention. Make sure the title has maximum 50 characters and message is wrapped at 72 characters. Wrap the whole message in code block with language gitcommit.";
-    #         selection = {
-    #           __raw = "function(source) return require('CopilotChat.select').gitdiff(source, true) end";
-    #         };
-    #       };
-    #     };
-    #   };
-    # };
-
-    # # copilot-lua.enable = true; # Disabled to avoid conflict with copilot-vim
-    # # copilot-cmp.enable = true; # Temporarily disabled - might auto-enable copilot-lua
-
-    # # Alternative AI completion (uncomment if you prefer Codeium over Copilot)
-    # # codeium-nvim = {
-    # #   enable = true;
-    # #   settings = {
-    # #     enable_chat = true;
-    # #   };
-    # # };
-
     # Essential completion sources only
     cmp-nvim-lsp.enable = true;
     cmp-buffer.enable = true;
@@ -189,18 +55,60 @@
 
       settings = {
         sources = [
-          { name = "copilot"; }
-          { name = "nvim_lsp"; }
-          { name = "luasnip"; }
-          { name = "buffer"; }
-          { name = "path"; }
+          {
+            name = "nvim_lsp";
+            priority = 1000;
+            max_item_count = 20;
+          }
+          {
+            name = "cmp_ai";
+            priority = 800;
+            max_item_count = 10;
+          }
+          {
+            name = "luasnip";
+            priority = 750;
+            max_item_count = 5;
+          }
+          {
+            name = "buffer";
+            priority = 500;
+            keyword_length = 3;
+            max_item_count = 5;
+          }
+          {
+            name = "path";
+            priority = 300;
+            max_item_count = 5;
+          }
         ];
+
+        completion = {
+          autocomplete = [
+            {
+              __raw = "require('cmp.types').cmp.TriggerEvent.TextChanged";
+            }
+          ];
+          completeopt = "menu,menuone,noselect";
+        };
 
         mapping = {
           "<C-n>" = {
             __raw = "cmp.mapping.select_next_item()";
           };
           "<C-p>" = {
+            __raw = "cmp.mapping.select_prev_item()";
+          };
+          "<C-j>" = {
+            __raw = "cmp.mapping.select_next_item()";
+          };
+          "<C-k>" = {
+            __raw = "cmp.mapping.select_prev_item()";
+          };
+          "<Down>" = {
+            __raw = "cmp.mapping.select_next_item()";
+          };
+          "<Up>" = {
             __raw = "cmp.mapping.select_prev_item()";
           };
           "<C-Space>" = {
@@ -220,7 +128,7 @@
               cmp.mapping(function(fallback)
                 local luasnip = require('luasnip')
                 if cmp.visible() then
-                  cmp.select_next_item()
+                  cmp.confirm({ select = true })
                 elseif luasnip.expandable() then
                   luasnip.expand()
                 elseif luasnip.expand_or_jumpable() then
@@ -250,6 +158,15 @@
         experimental = {
           ghost_text = true;
         };
+
+        window = {
+          completion = {
+            __raw = "cmp.config.window.bordered()";
+          };
+          documentation = {
+            __raw = "cmp.config.window.bordered()";
+          };
+        };
       };
     };
 
@@ -268,7 +185,62 @@
     lspkind = {
       enable = true;
       symbolMap = {
-        Copilot = "";
+        # Removed Copilot symbol - LSP-AI integrates through nvim_lsp
+        Text = "󰉿";
+        Method = "󰆧";
+        Function = "󰊕";
+        Constructor = "";
+        Field = "󰜢";
+        Variable = "󰀫";
+        Class = "󰠱";
+        Interface = "";
+        Module = "";
+        Property = "󰜢";
+        Unit = "󰑭";
+        Value = "󰎠";
+        Enum = "";
+        Keyword = "󰌋";
+        Snippet = "";
+        Color = "";
+        File = "󰈙";
+        Reference = "";
+        Folder = "󰉋";
+        EnumMember = "";
+        Constant = "";
+        Struct = "󰙅";
+        Event = "";
+        Operator = "󰆕";
+        TypeParameter = "";
+        AI = "󰧑"; # AI completion symbol
+      };
+    };
+
+    # AI completion source for nvim-cmp
+    cmp-ai = {
+      enable = true;
+      settings = {
+        provider = "OpenAI";
+        provider_options = {
+          model = "gpt-4o-mini";
+        };
+        max_lines = 100;
+        notify = true;
+        notify_callback = ''
+          function(msg)
+            print("AI: " .. msg)
+          end
+        '';
+        run_on_every_keystroke = false;
+        ignored_file_types = {
+          # Disable for certain file types where AI completion isn't useful
+          help = true;
+          gitcommit = true;
+          gitrebase = true;
+          hgcommit = true;
+          svn = true;
+          cvs = true;
+          ".git" = true;
+        };
       };
     };
   };
@@ -283,24 +255,28 @@
 
   # Keymaps for AI completion
   programs.nixvim.keymaps = [
-    # Snippet navigation
+    # Snippet navigation - using different keys to avoid conflict with completion
     {
       mode = [
         "i"
         "s"
       ];
-      key = "<C-k>";
+      key = "<C-l>"; # Changed from <C-k> to avoid conflict
       action = "<cmd>lua require('luasnip').expand_or_jump()<CR>";
-      options.desc = "Expand or jump to next snippet placeholder";
+      options = {
+        desc = "Expand or jump to next snippet placeholder";
+      };
     }
     {
       mode = [
         "i"
         "s"
       ];
-      key = "<C-j>";
+      key = "<C-h>"; # Changed from <C-j> to avoid conflict
       action = "<cmd>lua require('luasnip').jump(-1)<CR>";
-      options.desc = "Jump to previous snippet placeholder";
+      options = {
+        desc = "Jump to previous snippet placeholder";
+      };
     }
   ];
 }

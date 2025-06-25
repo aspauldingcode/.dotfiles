@@ -352,25 +352,33 @@
       mode = "n";
       key = "<leader>S";
       action = "<cmd>lua require('spectre').toggle()<CR>";
-      options.desc = "Toggle Spectre";
+      options = {
+        desc = "Toggle Spectre";
+      };
     }
     {
       mode = "n";
       key = "<leader>sw";
       action = "<cmd>lua require('spectre').open_visual({select_word=true})<CR>";
-      options.desc = "Search current word";
+      options = {
+        desc = "Search current word";
+      };
     }
     {
       mode = "v";
       key = "<leader>sw";
       action = "<esc><cmd>lua require('spectre').open_visual()<CR>";
-      options.desc = "Search current word";
+      options = {
+        desc = "Search current word";
+      };
     }
     {
       mode = "n";
       key = "<leader>sp";
       action = "<cmd>lua require('spectre').open_file_search({select_word=true})<CR>";
-      options.desc = "Search on current file";
+      options = {
+        desc = "Search on current file";
+      };
     }
 
     # Undotree
@@ -378,7 +386,9 @@
       mode = "n";
       key = "<leader>u";
       action = "<cmd>UndotreeToggle<CR>";
-      options.desc = "Toggle undo tree";
+      options = {
+        desc = "Toggle undo tree";
+      };
     }
 
     # Zen mode
@@ -386,7 +396,9 @@
       mode = "n";
       key = "<leader>zz";
       action = "<cmd>ZenMode<CR>";
-      options.desc = "Toggle Zen Mode";
+      options = {
+        desc = "Toggle Zen Mode";
+      };
     }
 
     # Terminal
@@ -394,19 +406,25 @@
       mode = "n";
       key = "<leader>tf";
       action = "<cmd>ToggleTerm direction=float<CR>";
-      options.desc = "Toggle floating terminal";
+      options = {
+        desc = "Toggle floating terminal";
+      };
     }
     {
       mode = "n";
       key = "<leader>th";
       action = "<cmd>ToggleTerm direction=horizontal<CR>";
-      options.desc = "Toggle horizontal terminal";
+      options = {
+        desc = "Toggle horizontal terminal";
+      };
     }
     {
       mode = "n";
       key = "<leader>tv";
       action = "<cmd>ToggleTerm direction=vertical size=80<CR>";
-      options.desc = "Toggle vertical terminal";
+      options = {
+        desc = "Toggle vertical terminal";
+      };
     }
   ];
 

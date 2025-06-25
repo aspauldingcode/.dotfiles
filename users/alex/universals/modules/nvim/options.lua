@@ -122,9 +122,6 @@ map('v', '<Tab>', '>gv')
 map('x', '<S-Tab>', '<gv')
 map('v', '<S-Tab>', '<gv')
 
--- LSP lines toggle
-map('', '<Leader>l', ':lua require("lsp_lines").toggle()<CR>', { desc = 'Toggle lsp_lines' })
-
 -- Line wrapping toggle
 map('n', '<Leader>w', ':lua ToggleWrap()<CR>')
 

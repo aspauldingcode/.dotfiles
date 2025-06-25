@@ -82,6 +82,8 @@
             rounded = false;
             align = "center";
           };
+          border = "single";
+          winblend = 0;
         };
       };
     };
@@ -93,25 +95,33 @@
       mode = "n";
       key = "<leader>aa";
       action = "<cmd>AvanteAsk<CR>";
-      options.desc = "Ask Avante a question";
+      options = {
+        desc = "Ask Avante a question";
+      };
     }
     {
       mode = "n";
       key = "<leader>ac";
       action = "<cmd>AvanteChat<CR>";
-      options.desc = "Open Avante chat";
+      options = {
+        desc = "Open Avante chat";
+      };
     }
     {
       mode = "n";
       key = "<leader>ad";
       action = "<cmd>AvanteDiff<CR>";
-      options.desc = "Show Avante diff";
+      options = {
+        desc = "Show Avante diff";
+      };
     }
     {
       mode = "n";
       key = "<leader>as";
       action = "<cmd>AvanteStatus<CR>";
-      options.desc = "Show Avante status";
+      options = {
+        desc = "Show Avante status";
+      };
     }
   ];
 }

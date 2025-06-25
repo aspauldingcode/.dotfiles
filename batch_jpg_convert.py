@@ -13,7 +13,7 @@ pillow_heif.register_heif_opener()
 
 def is_video(file_path):
     mime_type, _ = mimetypes.guess_type(file_path)
-    if mime_type and mime_type.startswith('video'):
+         if mime_type and mime_type.startswith('video'):
         return True
     # Check common video extensions as fallback
     video_extensions = {'.mp4', '.mov', '.avi', '.mkv', '.wmv', '.flv', '.webm'}
@@ -25,6 +25,8 @@ def is_image(file_path):
         return True
     except:
         return False
+
+    try 
 
 def convert_video_to_mp4(input_path, output_path):
     try:

@@ -7,436 +7,103 @@
 
       # Configure diagnostic display
       onAttach = ''
-        -- Comprehensive LSP sync error prevention for Neovim 0.11.2
-        -- This addresses multiple known sync issues including nil prev_line, line_ending, and other race conditions
-        local function setup_lsp_sync_protection()
-          -- Protect the main LSP module functions
-          local lsp_ok, lsp = pcall(require, 'vim.lsp')
-          if not lsp_ok then return end
+        -- Set up buffer-local keymaps
+        local bufnr = vim.api.nvim_get_current_buf()
 
-          -- Override the main LSP on_lines handler that causes most sync issues
-          if lsp._changetracking and lsp._changetracking.send_changes then
-            local original_send_changes = lsp._changetracking.send_changes
-            lsp._changetracking.send_changes = function(client, bufnr, changes, offset_encoding)
-              -- Validate all inputs before proceeding
-              if not client or not bufnr or not vim.api.nvim_buf_is_valid(bufnr) then
-                return
-              end
+        -- LSP navigation
+        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { buffer = bufnr, desc = 'Go to definition' })
+        vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { buffer = bufnr, desc = 'Go to declaration' })
+        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { buffer = bufnr, desc = 'Go to implementation' })
+        vim.keymap.set('n', 'gr', vim.lsp.buf.references, { buffer = bufnr, desc = 'Find references' })
+        vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = bufnr, desc = 'Hover documentation' })
+        vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, { buffer = bufnr, desc = 'Signature help' })
 
-              local ok, result = pcall(original_send_changes, client, bufnr, changes, offset_encoding)
-              if not ok then
-                -- Silent error logging to avoid UI disruption
-                vim.api.nvim_err_writeln("LSP sync error (non-fatal): " .. tostring(result))
-              end
-              return result
+        -- LSP actions
+        vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, { buffer = bufnr, desc = 'Rename symbol' })
+        vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, { buffer = bufnr, desc = 'Code actions' })
+        vim.keymap.set('v', '<leader>ca', vim.lsp.buf.code_action, { buffer = bufnr, desc = 'Code actions' })
+
+        -- Formatting
+        vim.keymap.set('n', '<leader>lf', function()
+          vim.lsp.buf.format({ async = true })
+        end, { buffer = bufnr, desc = 'Format buffer' })
+
+        -- LSP info
+        vim.keymap.set('n', '<leader>ls', function()
+          local clients = vim.lsp.get_clients({ bufnr = bufnr })
+          if #clients == 0 then
+            print('No LSP clients attached')
+          else
+            local client_names = {}
+            for _, client in ipairs(clients) do
+              table.insert(client_names, client.name)
             end
+            print('LSP clients: ' .. table.concat(client_names, ', '))
           end
+        end, { buffer = bufnr, desc = 'LSP status' })
 
-          -- Protect incremental_changes function that triggers most sync errors
-          if lsp.incremental_changes then
-            local original_incremental_changes = lsp.incremental_changes
-            lsp.incremental_changes = function(bufnr, changedtick, firstline, lastline, new_lastline, old_byte_size)
-              -- Validate buffer state
-              if not bufnr or not vim.api.nvim_buf_is_valid(bufnr) then
-                return {}
-              end
+        -- Avante AI chat keymap
+        vim.keymap.set('n', '<leader>ac', '<cmd>AvanteChat<cr>', { buffer = bufnr, desc = 'Open Avante AI chat' })
 
-              local ok, result = pcall(original_incremental_changes, bufnr, changedtick, firstline, lastline, new_lastline, old_byte_size)
-              if not ok then
-                vim.api.nvim_err_writeln("LSP incremental changes error (non-fatal): " .. tostring(result))
-                return {}
-              end
-              return result or {}
-            end
+        -- LSP-AI specific keymaps
+        vim.keymap.set('n', '<leader>ag', function()
+          -- Trigger AI completion via cmp-ai
+          local cmp = require('cmp')
+          if cmp.visible() then
+            cmp.close()
           end
+          cmp.complete({
+            config = {
+              sources = {
+                { name = 'cmp_ai' }
+              }
+            }
+          })
+        end, { buffer = bufnr, desc = 'Trigger AI completion' })
 
-          -- Protect the sync module at a lower level
-          local sync_ok, sync = pcall(require, 'vim.lsp.sync')
-          if sync_ok and sync then
-            -- Wrap compute_diff to handle nil line issues
-            if sync.compute_diff then
-              local original_compute_diff = sync.compute_diff
-              sync.compute_diff = function(prev_lines, curr_lines, start_line_idx, end_line_idx, offset_encoding)
-                -- Comprehensive input validation
-                if not prev_lines or not curr_lines then
-                  return {}
-                end
-
-                -- Check for nil lines in arrays
-                local function validate_lines(lines)
-                  if type(lines) ~= 'table' then return false end
-                  for i, line in ipairs(lines) do
-                    if line == nil then
-                      return false
-                    end
-                  end
-                  return true
-                end
-
-                if not validate_lines(prev_lines) or not validate_lines(curr_lines) then
-                  return {}
-                end
-
-                local ok, result = pcall(original_compute_diff, prev_lines, curr_lines, start_line_idx, end_line_idx, offset_encoding)
-                if not ok then
-                  vim.api.nvim_err_writeln("LSP compute_diff error (non-fatal): " .. tostring(result))
-                  return {}
-                end
-                return result or {}
-              end
-            end
-
-            -- Wrap apply_text_edits to handle line_ending issues
-            if sync.apply_text_edits then
-              local original_apply_text_edits = sync.apply_text_edits
-              sync.apply_text_edits = function(text_edits, bufnr, offset_encoding)
-                if not bufnr or not vim.api.nvim_buf_is_valid(bufnr) or not text_edits then
-                  return
-                end
-
-                local ok, result = pcall(original_apply_text_edits, text_edits, bufnr, offset_encoding)
-                if not ok then
-                  vim.api.nvim_err_writeln("LSP apply_text_edits error (non-fatal): " .. tostring(result))
-                end
-                return result
-              end
-            end
+        vim.keymap.set('n', '<leader>at', function()
+          -- Check if cmp-ai is available
+          local has_cmp_ai, cmp_ai = pcall(require, 'cmp_ai')
+          if has_cmp_ai then
+            print('cmp-ai is active and ready')
+          else
+            print('cmp-ai is not available')
           end
+        end, { buffer = bufnr, desc = 'AI completion status' })
 
-          -- Protect changetracking module initialization
-          local changetracking_ok, changetracking = pcall(require, 'vim.lsp._changetracking')
-          if changetracking_ok and changetracking then
-            if changetracking.init then
-              local original_init = changetracking.init
-              changetracking.init = function(client, bufnr)
-                -- Validate buffer before initializing change tracking
-                if not bufnr or not vim.api.nvim_buf_is_valid(bufnr) then
-                  return
-                end
-
-                local ok, result = pcall(original_init, client, bufnr)
-                if not ok then
-                  vim.api.nvim_err_writeln("LSP changetracking init error (non-fatal): " .. tostring(result))
-                end
-                return result
-              end
-            end
+        vim.keymap.set('n', '<leader>as', function()
+          -- Check API key and cmp-ai status
+          local api_key = os.getenv("OPENAI_API_KEY")
+          if api_key then
+            print('OpenAI API key is set - cmp-ai ready')
+          else
+            print('OpenAI API key not set - export OPENAI_API_KEY')
           end
-
-          -- Set up a global error handler for any remaining LSP sync issues
-          local original_on_error = vim.lsp.handlers['window/logMessage'] or function() end
-          vim.lsp.handlers['window/logMessage'] = function(err, result, ctx, config)
-            -- Filter out sync-related error spam
-            if result and result.message and type(result.message) == 'string' then
-              local msg = result.message:lower()
-              if msg:match('sync') or msg:match('prev_line') or msg:match('line_ending') or msg:match('nil value') then
-                -- Log silently instead of showing to user
-                vim.api.nvim_err_writeln("LSP sync message (filtered): " .. result.message)
-                return
-              end
-            end
-            return original_on_error(err, result, ctx, config)
-          end
-        end
-
-        -- Apply the comprehensive protection
-        setup_lsp_sync_protection()
-
-        -- Enable diagnostic configuration
-        vim.diagnostic.config({
-          virtual_text = false,  -- Disable inline diagnostic text
-          float = {
-            source = "always",  -- Show source in floating window
-            border = "rounded",
-          },
-          signs = {
-            text = {
-              [vim.diagnostic.severity.ERROR] = "󰅚",
-              [vim.diagnostic.severity.WARN] = "󰀪",
-              [vim.diagnostic.severity.HINT] = "󰌶",
-              [vim.diagnostic.severity.INFO] = "",
-            },
-          },
-          underline = true,     -- Underline diagnostic text
-          update_in_insert = false, -- Don't update diagnostics in insert mode
-          severity_sort = true, -- Sort diagnostics by severity
-        })
+        end, { buffer = bufnr, desc = 'AI setup check' })
       '';
 
       servers = {
-        # https://nix-community.github.io/nixvim/plugins/lsp/
-        ansiblels = {
-          enable = true;
-          package = pkgs.unstable.ansible-language-server;
-        };
-        astro = {
-          enable = false;
-          package = pkgs.unstable.astro-language-server;
-        };
-        bashls = {
-          enable = true;
-          package = pkgs.unstable.bash-language-server;
-        };
-        beancount = {
-          enable = false;
-          package = pkgs.unstable.beancount-language-server;
-        };
-        biome = {
-          enable = false;
-          package = pkgs.unstable.biome;
-        };
-        ccls = {
-          # C/C++/Objective-C language server
-          enable = true;
-          package = pkgs.unstable.ccls;
-        };
-        clangd = {
-          enable = true;
-          package = pkgs.unstable.clang-tools;
-        };
-        clojure_lsp = {
-          enable = false;
-          package = pkgs.unstable.clojure-lsp;
-        };
-        cmake = {
-          enable = true;
-          package = pkgs.unstable.cmake-language-server;
-        };
-        csharp_ls = {
-          enable = false;
-          package = pkgs.unstable.csharp-ls; # NOT AVAILABLE on DARWIN
-        };
-        cssls = {
-          enable = true;
-          package = pkgs.unstable.nodePackages.vscode-langservers-extracted; # CSS language server
-        };
-        dagger = {
-          enable = false;
-          package = pkgs.unstable.dagger;
-        };
-        dartls = {
-          enable = false;
-          package = pkgs.unstable.dart;
-        };
-        denols = {
-          enable = false;
-          package = pkgs.unstable.deno;
-        };
-        dhall_lsp_server = {
-          enable = false;
-          package = pkgs.unstable.dhall-lsp-server;
-        };
-        digestif = {
-          enable = false;
-          package = pkgs.unstable.texlivePackages.digestif;
-        };
-        dockerls = {
-          enable = true;
-          package = pkgs.unstable.dockerfile-language-server-nodejs;
-        };
-        efm = {
-          enable = true;
-          package = pkgs.unstable.efm-langserver;
-        };
-        elixirls = {
-          enable = false;
-          package = pkgs.unstable.elixir-ls;
-        };
-        elmls = {
-          enable = false;
-          package = pkgs.unstable.elmPackages.elm-language-server;
-        };
-        emmet_ls = {
-          enable = false;
-          package = pkgs.unstable.emmet-ls;
-        };
-        eslint = {
-          enable = true; # Disable eslint language server
-          # package = pkgs.unstable.nodePackages.vscode-langservers-extracted;
-        };
-        fsautocomplete = {
-          enable = false;
-          package = pkgs.unstable.fsautocomplete; # DOESN'T COMPILE ON DARWIN
-        };
-        futhark_lsp = {
-          enable = false;
-          package = pkgs.unstable.futhark;
-        };
-        gdscript = {
-          enable = false;
-          package = pkgs.unstable.godot;
-        };
-        gleam = {
-          enable = false;
-          package = pkgs.unstable.gleam;
-        };
-        gopls = {
-          enable = true;
-          package = pkgs.unstable.gopls;
-        };
-        graphql = {
-          enable = false;
-          package = pkgs.unstable.nodePackages.graphql-language-service-cli;
-        };
-        hls = {
-          enable = false;
-          package = pkgs.unstable.haskell-language-server;
-        };
-        html = {
-          enable = true;
-          package = pkgs.unstable.nodePackages.vscode-langservers-extracted;
-        };
-        htmx = {
-          enable = true;
-          package = pkgs.unstable.htmx-lsp;
-        };
-        intelephense = {
-          enable = false;
-          package = pkgs.unstable.nodePackages.intelephense;
-        };
-        java_language_server = {
-          # USING JDTLS instead!
-          enable = false;
-          package = pkgs.unstable.java-language-server;
-        };
-        jdtls = {
-          enable = true;
-          package = pkgs.jdt-language-server;
-          autostart = true;
-        };
-        jsonls = {
-          enable = true;
-          package = pkgs.unstable.nodePackages.vscode-langservers-extracted;
-        };
-        julials = {
-          enable = false;
-          package = pkgs.unstable.julia-bin;
-        };
-        kotlin_language_server = {
-          enable = false;
-          package = pkgs.unstable.kotlin-language-server;
-        };
-        leanls = {
-          enable = false;
-          package = pkgs.unstable.lean4;
-        };
-        ltex = {
-          enable = false;
-          package = pkgs.unstable.ltex-ls;
-        };
-        lua_ls = {
-          enable = true;
-          package = pkgs.unstable.lua-language-server;
-        };
-        m68k = {
-          enable = false;
-          # package = # NO UPSTREAM PACKAGE
-        };
-        markdown_oxide = {
-          enable = true;
-          package = pkgs.unstable.markdown-oxide;
-        };
-        marksman = {
-          enable = true;
-          package = pkgs.unstable.marksman;
-        };
-        matlab_ls = {
-          enable = false;
-          package = pkgs.unstable.matlab-language-server;
-        };
-        mdx_analyzer = {
-          enable = false;
-          # package = # NO UPSTREAM PACKAGE
-        };
-        mesonlsp = {
-          enable = true;
-          package = pkgs.unstable.mesonlsp;
-        };
-        metals = {
-          enable = false;
-          package = pkgs.unstable.metals;
-        };
-        millet = {
-          enable = false;
-          # package = # NO UPSTREAM PACKAGE
-        };
-        mint = {
-          enable = false;
-          package = pkgs.unstable.mint;
-        };
-        mlir_lsp_server = {
-          enable = false;
-          package = pkgs.unstable.llvmPackages.mlir;
-        };
-        mlir_pdll_lsp_server = {
-          enable = false;
-          package = pkgs.unstable.llvmPackages.mlir;
-        };
-        nil_ls = {
-          enable = true;
-          package = pkgs.unstable.nil;
-          settings = {
-            "nil" = {
-              nix = {
-                maxMemoryMB = 2560;
-                flake = {
-                  autoArchive = true;
-                  autoEvalInputs = true;
-                };
-              };
-            };
-          };
-        };
-        nixd = {
-          enable = true;
-          package = pkgs.unstable.nixd;
-        };
-        nushell = {
-          enable = false;
-          package = pkgs.unstable.nushell;
-        };
-        ols = {
-          enable = false;
-          package = pkgs.unstable.ols; # FAILED
-        };
-        omnisharp = {
-          enable = false;
-          package = pkgs.unstable.omnisharp-roslyn;
-        };
-        perlpls = {
-          enable = false;
-          package = pkgs.unstable.perl534Packages.PLS;
-        };
-        pest_ls = {
-          enable = false;
-          package = pkgs.unstable.pest-language-server;
-        };
-        phpactor = {
-          enable = false;
-          package = pkgs.unstable.phpactor;
-        };
-        prismals = {
-          enable = false;
-          package = pkgs.unstable.nodePackages."@prisma/language-server";
-        };
-        prolog_ls = {
-          enable = false;
-          package = pkgs.unstable.swiProlog;
-        };
+        # Python
         pylsp = {
           enable = true;
-          package = pkgs.unstable.python3Packages.python-lsp-server;
           settings = {
             pylsp = {
               plugins = {
-                # Disable conflicting plugins since we use black for formatting
-                autopep8 = {
+                # Disable pylsp's built-in formatters - use efmls-configs instead
+                black = {
+                  enabled = false;
+                };
+                isort = {
                   enabled = false;
                 };
                 yapf = {
                   enabled = false;
                 };
-                # Enable useful plugins
+                autopep8 = {
+                  enabled = false;
+                };
+
+                # Keep linting and other features
                 pycodestyle = {
                   enabled = true;
                 };
@@ -445,7 +112,10 @@
                 };
                 pylint = {
                   enabled = false;
-                }; # Can be resource intensive
+                };
+                mccabe = {
+                  enabled = true;
+                };
                 rope_completion = {
                   enabled = true;
                 };
@@ -464,121 +134,177 @@
                 jedi_symbols = {
                   enabled = true;
                 };
-                # Enable black formatting through pylsp
-                black = {
-                  enabled = true;
-                };
-                isort = {
-                  enabled = true;
-                };
               };
             };
           };
         };
-        pylyzer = {
-          enable = false;
-          package = pkgs.unstable.pylyzer;
-        };
-        pyright = {
-          #lsp - pyright
-          #linter - flake8
-          #formatter - black
-          enable = true;
-          package = pkgs.unstable.pyright;
-        };
-        rnix = {
-          enable = false; # using nil_ls instead!
-          package = pkgs.unstable.rnix-lsp;
-        };
-        ruff_lsp = {
-          enable = false; # Disable for now, using pylsp instead
-          # package = pkgs.unstable.ruff-lsp;  # Package not available
-          # settings = {
-          #   args = [ "--ignore=E501" ]; # Ignore line too long
-          # };
-        };
-        rust_analyzer = {
-          enable = true;
-          package = pkgs.unstable.rust-analyzer;
-          installCargo = false;
-          installRustc = false;
-        };
-        solargraph = {
-          enable = false;
-          package = pkgs.unstable.solargraph;
-        };
-        sourcekit = {
-          # Swift and C-based languages
-          enable = false; # requires compilation of swift? NO THANKS!
-          # package = pkgs.unstable.sourcekit-lsp; # FAILED TO COMPILE ON NIXOS
-        };
-        svelte = {
-          enable = false;
-          package = pkgs.unstable.nodePackages.svelte-language-server;
-        };
-        tailwindcss = {
-          enable = true;
-          package = pkgs.unstable.nodePackages."@tailwindcss/language-server";
-        };
-        taplo = {
-          enable = true; # for TOML
-          package = pkgs.unstable.taplo;
-          autostart = true;
-          filetypes = [ "toml" ]; # Include .toml files
-        };
-        templ = {
-          enable = false;
-          package = pkgs.unstable.templ;
-        };
-        terraformls = {
-          enable = false;
-          package = pkgs.unstable.terraform-ls;
-        };
-        texlab = {
-          enable = true;
-          package = pkgs.unstable.texlab;
-        };
+
+        # JavaScript/TypeScript
         ts_ls = {
           enable = true;
-          package = pkgs.unstable.nodePackages.typescript-language-server;
         };
-        typst_lsp = {
-          enable = false;
-          package = pkgs.unstable.typst-lsp;
-        };
-        vls = {
-          enable = false;
-          package = pkgs.unstable.vls;
-        };
-        volar = {
-          enable = false;
-          package = pkgs.unstable.nodePackages."@volar/vue-language-server";
-        };
-        vuels = {
-          enable = false;
-          package = pkgs.unstable.nodePackages.vue-language-server;
-        };
-        yamlls = {
+        eslint = {
           enable = true;
-          package = pkgs.unstable.yaml-language-server;
         };
-        zls = {
-          enable = false;
-          package = pkgs.unstable.zls;
+
+        # Lua
+        lua_ls = {
+          enable = true;
+          settings = {
+            Lua = {
+              runtime = {
+                version = "LuaJIT";
+              };
+              diagnostics = {
+                globals = [ "vim" ];
+              };
+              workspace = {
+                library = [ "\${3rd}/luv/library" ];
+                checkThirdParty = false;
+              };
+              telemetry = {
+                enable = false;
+              };
+            };
+          };
+        };
+
+        # Nix
+        nixd = {
+          enable = true;
+          settings = {
+            nixpkgs = {
+              expr = "import <nixpkgs> { }";
+            };
+            formatting = {
+              command = [ "nixpkgs-fmt" ];
+            };
+          };
         };
       };
     };
 
-    # LSP related plugins
-    lsp-format.enable = true;
-    lsp-lines = {
+    # LSP signature help
+    lsp-signature = {
       enable = true;
-      # Configuration will use defaults since currentLine option is deprecated
+      settings = {
+        bind = true;
+        floating_window = true;
+        floating_window_above_cur_line = true;
+        floating_window_off_x = 1;
+        floating_window_off_y = 0;
+        close_timeout = 4000;
+        fix_pos = false;
+        hint_enable = true;
+        hint_prefix = "🐼 ";
+        hi_parameter = "LspSignatureActiveParameter";
+        handler_opts = {
+          border = "rounded";
+        };
+        always_trigger = false;
+        auto_close_after = null;
+        extra_trigger_chars = [
+          "("
+          ","
+        ];
+        zindex = 200;
+        padding = "";
+        shadow_blend = 36;
+        shadow_guibg = "Black";
+        timer_interval = 200;
+        toggle_key = null;
+        select_signature_key = null;
+        move_cursor_key = null;
+      };
     };
 
-    # lspkind is configured in completion.nix to avoid duplication
-
-    # Note: Mason plugins are not available in nixvim
-    # We manage LSP servers directly through nixpkgs (see servers section above)
+    # Formatting via efm
+    efmls-configs = {
+      enable = true;
+      setup = {
+        python = {
+          formatter = "black";
+          linter = "flake8";
+        };
+        javascript = {
+          formatter = "prettier";
+        };
+        typescript = {
+          formatter = "prettier";
+        };
+        lua = {
+          formatter = "stylua";
+        };
+        nix = {
+          formatter = "nixfmt";
+          linter = "statix";
+        };
+      };
+    };
   };
+
+  # Configure diagnostic signs
+  programs.nixvim.diagnostic = {
+    settings = {
+      signs = {
+        text = {
+          error = "";
+          warn = "";
+          hint = "";
+          info = "";
+        };
+      };
+      virtual_text = false; # Disable virtual text since we show info on hover
+      float = {
+        focusable = false;
+        style = "minimal";
+        border = "rounded";
+        source = "always";
+        header = "";
+        prefix = "";
+      };
+      severity_sort = true;
+      update_in_insert = false;
+    };
+  };
+
+  # Enhanced diagnostic sign configuration to ensure icons show properly
+  programs.nixvim.extraConfigLua = ''
+    -- Configure diagnostic signs with proper icons
+    local signs = {
+      Error = "",  -- nf-fa-times_circle
+      Warn = "",   -- nf-fa-exclamation_triangle
+      Hint = "",   -- nf-fa-question_circle
+      Info = "",   -- nf-fa-info_circle
+    }
+
+    for type, icon in pairs(signs) do
+      local hl = "DiagnosticSign" .. type
+      vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+    end
+
+    -- Also ensure the diagnostic configuration uses the right signs
+    vim.diagnostic.config({
+      signs = {
+        text = {
+          [vim.diagnostic.severity.ERROR] = "",
+          [vim.diagnostic.severity.WARN] = "",
+          [vim.diagnostic.severity.HINT] = "",
+          [vim.diagnostic.severity.INFO] = "",
+        }
+      },
+      virtual_text = false,
+      update_in_insert = false,
+      underline = true,
+      severity_sort = true,
+      float = {
+        focusable = false,
+        style = "minimal",
+        border = "rounded",
+        source = "always",
+        header = "",
+        prefix = "",
+      },
+    })
+  '';
 }

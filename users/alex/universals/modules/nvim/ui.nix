@@ -310,12 +310,23 @@
                     end,
                     color = function()
                       local clients = vim.lsp.get_clients({ bufnr = 0 })
-                      if next(clients) == nil then
-                        return { bg = "#${palette.base03}", fg = "#${palette.base05}", gui = "bold" }  -- Dark gray background when no LSP
+                      local has_traditional_lsp = false
+
+                      -- Check for non-LSP-AI clients
+                      for _, client in ipairs(clients) do
+                        if client.name ~= "lsp_ai" then
+                          has_traditional_lsp = true
+                          break
+                        end
+                      end
+
+                      if has_traditional_lsp then
+                        return { bg = "#${palette.base02}", fg = "#${palette.base0B}", gui = "bold" }  -- Dark gray bg, green fg when LSP active
                       else
-                        return { bg = "#${palette.base0B}", fg = "#${palette.base00}", gui = "bold" }  -- Green background when LSP active
+                        return { bg = "#${palette.base02}", fg = "#${palette.base08}", gui = "bold" }  -- Dark gray bg, red fg when no LSP
                       end
                     end,
+                    separator = { left = "", right = "" },
                     on_click = function()
                       local clients = vim.lsp.get_clients({ bufnr = 0 })
                       local lines = {}
@@ -324,30 +335,44 @@
                         table.insert(lines, "No LSP clients attached to this buffer")
                         table.insert(lines, "")
                         table.insert(lines, "Filetype: " .. vim.bo.filetype)
+                        table.insert(lines, "")
+                        table.insert(lines, "Available LSP servers for this filetype:")
+                        table.insert(lines, "• Check your lsp.nix configuration")
+                        table.insert(lines, "• Ensure LSP servers are installed")
+                        table.insert(lines, "• Try :LspStart or :LspRestart")
                       else
                         table.insert(lines, "Active LSP clients for this buffer:")
                         table.insert(lines, "")
                         for _, client in pairs(clients) do
-                          table.insert(lines, "• " .. client.name .. " (ID: " .. client.id .. ")")
-                          if client.server_capabilities then
-                            local caps = {}
-                            if client.server_capabilities.documentFormattingProvider then
-                              table.insert(caps, "formatting")
+                          -- Skip LSP-AI from this list (it has its own status)
+                          if client.name ~= "lsp_ai" then
+                            table.insert(lines, "• " .. client.name .. " (ID: " .. client.id .. ")")
+                            if client.server_capabilities then
+                              local caps = {}
+                              if client.server_capabilities.documentFormattingProvider then
+                                table.insert(caps, "formatting")
+                              end
+                              if client.server_capabilities.hoverProvider then
+                                table.insert(caps, "hover")
+                              end
+                              if client.server_capabilities.completionProvider then
+                                table.insert(caps, "completion")
+                              end
+                              if client.server_capabilities.definitionProvider then
+                                table.insert(caps, "go-to-def")
+                              end
+                              if #caps > 0 then
+                                table.insert(lines, "  Capabilities: " .. table.concat(caps, ", "))
+                              end
                             end
-                            if client.server_capabilities.hoverProvider then
-                              table.insert(caps, "hover")
-                            end
-                            if client.server_capabilities.completionProvider then
-                              table.insert(caps, "completion")
-                            end
-                            if client.server_capabilities.definitionProvider then
-                              table.insert(caps, "go-to-def")
-                            end
-                            if #caps > 0 then
-                              table.insert(lines, "  Capabilities: " .. table.concat(caps, ", "))
-                            end
+                            table.insert(lines, "")
                           end
-                          table.insert(lines, "")
+                        end
+
+                        -- If no non-LSP-AI clients, show appropriate message
+                        if #lines == 2 then -- Only header lines
+                          table.insert(lines, "No traditional LSP clients attached")
+                          table.insert(lines, "(LSP-AI is handled separately)")
                         end
                       end
 
@@ -385,21 +410,90 @@
                 __raw = ''
                   {
                     function()
-                      return "Copilot"
+                      return "󰧑"  -- AI stars nerd font icon
                     end,
                     color = function()
-                      -- Check Copilot authentication status for color
-                      local copilot_ok, copilot = pcall(require, 'copilot.client')
-                      if copilot_ok and copilot then
-                        -- Check if Copilot is authenticated and enabled
-                        if copilot.is_disabled and not copilot.is_disabled() then
-                          return { bg = "#${palette.base0B}", fg = "#${palette.base00}", gui = "bold" }  -- Green background
-                        end
+                      -- Check if cmp-ai is available and API key is set
+                      local has_cmp_ai = pcall(require, 'cmp_ai')
+                      local api_key = os.getenv("OPENAI_API_KEY")
+
+                      if has_cmp_ai and api_key then
+                        return { bg = "#${palette.base01}", fg = "#${palette.base05}", gui = "bold" }  -- Darker gray bg, white fg when ready
+                      else
+                        return { bg = "#${palette.base01}", fg = "#${palette.base03}", gui = "bold" }  -- Darker gray bg, dark fg when not ready
                       end
-                      return { bg = "#${palette.base08}", fg = "#${palette.base00}", gui = "bold" }  -- Red background
                     end,
+                    separator = { left = "", right = "" },
                     on_click = function()
-                      vim.cmd("Copilot status")
+                      local has_cmp_ai = pcall(require, 'cmp_ai')
+                      local api_key = os.getenv("OPENAI_API_KEY")
+
+                      local lines = {}
+                      if has_cmp_ai and api_key then
+                        table.insert(lines, "AI Completion: ✓ Ready")
+                        table.insert(lines, "Provider: cmp-ai")
+                        table.insert(lines, "")
+                        table.insert(lines, "Configuration:")
+                        table.insert(lines, "• Backend: OpenAI GPT-4o-mini")
+                        table.insert(lines, "• Max Lines: 100")
+                        table.insert(lines, "• API Key: ✓ Set")
+                        table.insert(lines, "• Run on Keystroke: Disabled")
+                        table.insert(lines, "")
+                        table.insert(lines, "Available keybindings:")
+                        table.insert(lines, "• <leader>ag - Trigger AI completion")
+                        table.insert(lines, "• <leader>ac - Open AI chat (Avante)")
+                        table.insert(lines, "• <leader>at - Check AI status")
+                        table.insert(lines, "• <leader>as - Check AI setup")
+                        table.insert(lines, "• <C-Space> - Manual completion")
+                        table.insert(lines, "")
+                        table.insert(lines, "Integration:")
+                        table.insert(lines, "• Works directly with nvim-cmp")
+                        table.insert(lines, "• Priority: 800 (after LSP)")
+                        table.insert(lines, "• Max items: 10")
+                      else
+                        table.insert(lines, "AI Completion: ✗ Not Ready")
+                        table.insert(lines, "")
+                        table.insert(lines, "Issues:")
+                        if not has_cmp_ai then
+                          table.insert(lines, "• cmp-ai plugin not loaded")
+                        end
+                        if not api_key then
+                          table.insert(lines, "• OpenAI API key not set")
+                          table.insert(lines, "  Export OPENAI_API_KEY environment variable")
+                        end
+                        table.insert(lines, "")
+                        table.insert(lines, "Setup:")
+                        table.insert(lines, "• Provider: OpenAI GPT-4o-mini")
+                        table.insert(lines, "• Requires: OPENAI_API_KEY environment variable")
+                        table.insert(lines, "• Integration: nvim-cmp source")
+                      end
+
+                      -- Create popup buffer
+                      local buf = vim.api.nvim_create_buf(false, true)
+                      vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+                      vim.api.nvim_buf_set_option(buf, 'modifiable', false)
+                      vim.api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
+
+                      -- Calculate popup size
+                      local width = 55
+                      local height = math.min(#lines + 2, 18)
+
+                      -- Open popup
+                      local win = vim.api.nvim_open_win(buf, true, {
+                        relative = 'editor',
+                        width = width,
+                        height = height,
+                        col = (vim.o.columns - width) / 2,
+                        row = (vim.o.lines - height) / 2,
+                        style = 'minimal',
+                        border = 'rounded',
+                        title = ' AI Completion Status ',
+                        title_pos = 'center'
+                      })
+
+                      -- Set popup keymaps
+                      vim.api.nvim_buf_set_keymap(buf, 'n', 'q', '<cmd>close<cr>', { noremap = true, silent = true })
+                      vim.api.nvim_buf_set_keymap(buf, 'n', '<Esc>', '<cmd>close<cr>', { noremap = true, silent = true })
                     end,
                   }
                 '';
