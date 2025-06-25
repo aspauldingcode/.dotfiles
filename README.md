@@ -8,7 +8,7 @@ Spaulding.
 
 👨‍💻 Code Statistics:
 
-_Total LOC (including blanks, comments): **32136**_
+_Total LOC (including blanks, comments): **31950**_
 
 <details>
 <summary>🔍 Click to expand code stats.</summary>
@@ -18,19 +18,19 @@ _Total LOC (including blanks, comments): **32136**_
 | CSS | 4 | 1882 | 1416 | 124 | 342 |
 | JSON | 1 | 448 | 448 | 0 | 0 |
 | Lua | 1 | 225 | 138 | 50 | 37 |
-| Markdown | 2 | 174 | 0 | 127 | 47 |
-| Nix | 140 | 26349 | 21728 | 2791 | 1830 |
-| Python | 10 | 2067 | 1748 | 93 | 226 |
+| Markdown | 1 | 98 | 0 | 71 | 27 |
+| Nix | 140 | 26240 | 21750 | 2665 | 1825 |
+| Python | 10 | 2066 | 1747 | 93 | 226 |
 | Shell | 6 | 154 | 102 | 25 | 27 |
 | Plain Text | 2 | 562 | 0 | 371 | 191 |
 | TOML | 1 | 56 | 47 | 5 | 4 |
 | Vim script | 0 | 0 |  |  |  |
 | YAML | 3 | 219 | 64 | 111 | 44 |
-| **Total**  | 170 | 32136 | 25691 | 3697 | 2748 |
+| **Total**  | 169 | 31950 | 25712 | 3515 | 2723 |
 
 </details>
 
-Last updated: Tue Jun 24 21:22:17 PDT 2025
+Last updated: Tue Jun 24 22:10:58 PDT 2025
 <!-- END CODE STATS -->
 
 ## 📦 Flake Configuration Overview

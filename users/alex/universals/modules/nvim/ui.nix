@@ -434,7 +434,7 @@
                         table.insert(lines, "Provider: cmp-ai")
                         table.insert(lines, "")
                         table.insert(lines, "Configuration:")
-                        table.insert(lines, "• Backend: OpenAI GPT-4o-mini")
+                        table.insert(lines, "• Backend: OpenAI GPT-4o")
                         table.insert(lines, "• Max Lines: 100")
                         table.insert(lines, "• API Key: ✓ Set")
                         table.insert(lines, "• Run on Keystroke: Disabled")
@@ -463,7 +463,7 @@
                         end
                         table.insert(lines, "")
                         table.insert(lines, "Setup:")
-                        table.insert(lines, "• Provider: OpenAI GPT-4o-mini")
+                        table.insert(lines, "• Provider: OpenAI GPT-4o")
                         table.insert(lines, "• Requires: OPENAI_API_KEY environment variable")
                         table.insert(lines, "• Integration: nvim-cmp source")
                       end

@@ -153,6 +153,21 @@
               end, { 'i', 's' })
             '';
           };
+          # Dedicated AI completion trigger
+          "<C-x>" = {
+            __raw = ''
+              cmp.mapping(
+                cmp.mapping.complete({
+                  config = {
+                    sources = cmp.config.sources({
+                      { name = 'cmp_ai' },
+                    }),
+                  },
+                }),
+                { 'i' }
+              )
+            '';
+          };
         };
 
         experimental = {
@@ -219,27 +234,22 @@
     cmp-ai = {
       enable = true;
       settings = {
+        max_lines = 1000;
         provider = "OpenAI";
         provider_options = {
-          model = "gpt-4o-mini";
+          model = "gpt-4";
         };
-        max_lines = 100;
         notify = true;
         notify_callback = ''
           function(msg)
-            print("AI: " .. msg)
+            vim.notify(msg)
           end
         '';
-        run_on_every_keystroke = false;
+        run_on_every_keystroke = true;
         ignored_file_types = {
-          # Disable for certain file types where AI completion isn't useful
-          help = true;
-          gitcommit = true;
-          gitrebase = true;
-          hgcommit = true;
-          svn = true;
-          cvs = true;
-          ".git" = true;
+          # default is not to ignore
+          # uncomment to ignore in lua:
+          # lua = true
         };
       };
     };
@@ -253,7 +263,7 @@
     cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
   '';
 
-  # Keymaps for AI completion
+  # Keymaps for AI completion and snippets
   programs.nixvim.keymaps = [
     # Snippet navigation - using different keys to avoid conflict with completion
     {
