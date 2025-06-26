@@ -8,7 +8,7 @@ Spaulding.
 
 👨‍💻 Code Statistics:
 
-_Total LOC (including blanks, comments): **31950**_
+_Total LOC (including blanks, comments): **31274**_
 
 <details>
 <summary>🔍 Click to expand code stats.</summary>
@@ -18,19 +18,19 @@ _Total LOC (including blanks, comments): **31950**_
 | CSS | 4 | 1882 | 1416 | 124 | 342 |
 | JSON | 1 | 448 | 448 | 0 | 0 |
 | Lua | 1 | 225 | 138 | 50 | 37 |
-| Markdown | 1 | 98 | 0 | 71 | 27 |
-| Nix | 140 | 26240 | 21750 | 2665 | 1825 |
+| Markdown | 1 | 100 | 0 | 73 | 27 |
+| Nix | 141 | 25562 | 21225 | 2592 | 1745 |
 | Python | 10 | 2066 | 1747 | 93 | 226 |
 | Shell | 6 | 154 | 102 | 25 | 27 |
 | Plain Text | 2 | 562 | 0 | 371 | 191 |
 | TOML | 1 | 56 | 47 | 5 | 4 |
 | Vim script | 0 | 0 |  |  |  |
 | YAML | 3 | 219 | 64 | 111 | 44 |
-| **Total**  | 169 | 31950 | 25712 | 3515 | 2723 |
+| **Total**  | 170 | 31274 | 25187 | 3444 | 2643 |
 
 </details>
 
-Last updated: Tue Jun 24 22:10:58 PDT 2025
+Last updated: Thu Jun 26 10:50:36 PDT 2025
 <!-- END CODE STATS -->
 
 ## 📦 Flake Configuration Overview
@@ -88,6 +88,8 @@ nix develop
 ├── users/             # User-specific configurations
 │   └── alex/          # User configurations per system
 ├── sops-nix/          # Encrypted secrets
+├── shared/            # Shared modules across all systems
+│   └── scripts/       # Shared scripts (tokei, toggle-scripts, etc.)
 └── README.md          # This file
 ```
 
@@ -102,6 +104,6 @@ currently not designed to be installed for other interested users.
 Please [read the Notes](https://github.com/aspauldingcode/.dotfiles/issues/158)
 for info on what to do for a fresh install.
 
-# I'm being productive, I swear!
+# I'm being productive, I swear
 
 ![macOS-NIXY](./macOS-NIXY.png)

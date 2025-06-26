@@ -185,7 +185,7 @@
           specialArgs = commonSpecialArgs; # // { extraPkgs = [ mobile-nixos ]; };
           modules = [
             ./system/NIXSTATION64
-            ./shared/tokei-readme.nix
+            ./shared/scripts
             home-manager.nixosModules.home-manager
             {
               home-manager = {
@@ -209,9 +209,8 @@
           specialArgs = commonSpecialArgs;
           modules = [
             ./system/NIXEDUP/configuration-NIXEDUP.nix
-            ./shared/tokei-readme.nix
+            ./shared/scripts
             sops-nix.nixosModules.sops
-            # Add this line to include your sops configuration
             { imports = [ nixosSopsConfig ]; }
           ];
         };
@@ -234,7 +233,7 @@
           specialArgs = commonSpecialArgs; # // { extraPkgs = [ mobile-nixos ]; };
           modules = [
             ./system/NIXY2
-            ./shared/tokei-readme.nix
+            ./shared/scripts
             home-manager.nixosModules.home-manager
             {
               home-manager = {
@@ -286,7 +285,7 @@
           specialArgs = commonSpecialArgs;
           modules = [
             ./system/NIXY
-            ./shared/tokei-readme.nix
+            ./shared/scripts
             mac-app-util.darwinModules.default
             home-manager.darwinModules.home-manager
             sops-nix.darwinModules.sops
@@ -457,7 +456,7 @@
                   dialog --title "📥 Cloning..." --infobox "Cloning dotfiles into ~/.dotfiles..." 5 50
                   sleep 1
                   git clone git@github.com:aspauldingcode/.dotfiles.git ~/.dotfiles/
-                  
+
                   if [ $? -eq 0 ]; then
                     dialog --title "✅ Success" --msgbox "Dotfiles cloned successfully to ~/.dotfiles." 6 50
                   else

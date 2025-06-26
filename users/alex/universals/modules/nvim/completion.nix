@@ -233,11 +233,12 @@
     # AI completion source for nvim-cmp
     cmp-ai = {
       enable = true;
+      package = pkgs.unstable.vimPlugins.cmp-ai;
       settings = {
         max_lines = 1000;
         provider = "OpenAI";
         provider_options = {
-          model = "gpt-4";
+          model = "gpt-4o";
         };
         notify = true;
         notify_callback = ''
@@ -246,11 +247,7 @@
           end
         '';
         run_on_every_keystroke = true;
-        ignored_file_types = {
-          # default is not to ignore
-          # uncomment to ignore in lua:
-          # lua = true
-        };
+        ignored_file_types = { };
       };
     };
   };
