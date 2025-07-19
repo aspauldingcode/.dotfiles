@@ -1,5 +1,8 @@
-{ pkgs, lib, ... }:
-
+{
+  pkgs,
+  lib,
+  ...
+}:
 let
   # Helper function to determine OS-specific keymap
   osKeymap = if pkgs.stdenv.isDarwin then "<D-p>" else "<C-p>";
@@ -412,7 +415,6 @@ let
     # Run main function with all arguments
     main "$@"
   '';
-
 in
 {
   # Add required packages for printing functionality

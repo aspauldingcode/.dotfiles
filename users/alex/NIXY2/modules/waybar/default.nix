@@ -1,5 +1,8 @@
-{ config, pkgs, ... }:
-
+{
+  config,
+  pkgs,
+  ...
+}:
 let
   # Dependencies
   cat = "${pkgs.coreutils}/bin/cat";
@@ -91,7 +94,7 @@ let
         text = "$DATETIME"; # date "+%a, %b %d  %I:%M %p
         pre = ''
           CAL="$(gcal | awk '{printf "%-21s\n", $0}' | sed -e 's|<|\[|g' -e 's|>|\]|g' -e '/^$/d' | sed -e '1d;$!s/\]$/&/;$!s/$/ /' -e '$!N;s/\n$//')"
-          DATETIME=$(date "+%a, %b %d  %I:%M %p") 
+          DATETIME=$(date "+%a, %b %d  %I:%M %p")
         '';
         tooltip = "$CAL";
       };
@@ -653,7 +656,7 @@ in
           padding-right: 8px;
         }
 
-        #custom-datetime    
+        #custom-datetime
         #memory {
           /* margin-top: 0px; */
           /* margin-bottom: 0px; */
@@ -694,7 +697,7 @@ in
           padding-left: 4px;
           padding-right: 4px;
           font-size: 9pt;
-          font-family: 'JetBrains Mono', Regular;      
+          font-family: 'JetBrains Mono', Regular;
         }
 
         #custom-datetime
@@ -719,7 +722,7 @@ in
 
         #cpu {
           background-color: #${colors.base00};
-          border-radius: 30px; 
+          border-radius: 30px;
           padding-left: 16px;
           padding-right: 16px;
           font-size: 9pt;

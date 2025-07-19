@@ -1,5 +1,4 @@
 { ... }:
-
 # nix-configured karabiner config allows for commenting!
 # Karabiner is a powerful tool for customizing keyboard shortcuts and behaviors. I treasure it.
 {
@@ -8,6 +7,7 @@
     target = ".config/karabiner/karabiner.json";
     text =
       builtins.toJSON # json
+
         {
           global = {
             "ask_for_confirmation_before_quitting" = false;

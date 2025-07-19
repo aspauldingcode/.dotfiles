@@ -4,7 +4,6 @@
   nix-colors,
   ...
 }:
-
 {
   programs.fastfetch = {
     enable = true;

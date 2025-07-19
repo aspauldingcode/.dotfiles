@@ -5,7 +5,6 @@
   inputs,
   ...
 }:
-
 # my universal neovim configuration with Nix Syntax using NixVim!
 {
   imports = [
@@ -40,8 +39,12 @@
     in
     {
       enable = true;
+      # Use unstable packages for nixvim to ensure all packages are available
       nixpkgs.pkgs = pkgs.unstable;
-      enableMan = true; # enable man pages for nixvim options.
+      # Temporarily disabled due to air-formatter issue in man page generation
+      # The man page generation tries to reference pkgs.air-formatter which doesn't exist in stable
+      # TODO: Re-enable when nixvim fixes the package reference or when air-formatter is in stable
+      enableMan = false; # enable man pages for nixvim options.
 
       opts = {
         number = true; # Show line numbers

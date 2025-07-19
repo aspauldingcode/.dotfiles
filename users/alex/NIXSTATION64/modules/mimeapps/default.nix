@@ -1,5 +1,4 @@
 { lib, ... }:
-
 # Configure application filetype defaults.
 {
   xdg.mimeApps = {
@@ -143,10 +142,8 @@
     };
   };
 }
-
 # xdg-mime returns Thunar.desktop but xdg-open opens nautilus?
 # xdg-mime uses mimeapps.list to determine the default application to use.
-
 /*
   Current config:
   [Added Associations]

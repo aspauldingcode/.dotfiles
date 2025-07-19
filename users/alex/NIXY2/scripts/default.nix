@@ -1,5 +1,4 @@
 { pkgs, ... }:
-
 {
   home = {
     packages = with pkgs; [
@@ -16,7 +15,7 @@
         do
             output_file="$output_directory/Screenshot $(date '+%Y-%m-%d at %I.%M.%S %p') $output_name.png"
             grim -o $output_name "$output_file"
-        done      
+        done
       '')
       #maximize (FIXME maximize sway windows to window size rather than fullscreen)
       (pkgs.writeShellScriptBin "maximize" ''
@@ -247,7 +246,7 @@
                 ensure_waybar_running
                 echo "on" > "$WAYBAR_STATE_FILE"
                 echo "Waybar is now enabled."
-                
+
                 # Handle gaps
                 if [ "$(cat "$GAPS_STATE_FILE")" = "off" ]; then
                     echo "Gaps are off, toggling to gapless bar."
@@ -308,7 +307,7 @@
             swaymsg -q gaps inner all set 10 > /dev/null 2>&1
             swaymsg -q gaps outer all set -2 > /dev/null 2>&1
             swaymsg -q corner radius all set 8 > /dev/null 2>&1
-            
+
             # Check if waybar is running, if so, send SIGUSR1 to it.
             if pgrep -x "waybar" > /dev/null; then
                 pkill -SIGUSR1 '^waybar$'
@@ -371,7 +370,7 @@
             adb -s $device_serial shell date $new_date
             adb -s $device_serial shell date
             adb -s $device_serial shell opkg update && opkg upgrade # update watch.
-            adb -s $device_serial shell opkg install ssh bash-completion neofetch 
+            adb -s $device_serial shell opkg install ssh bash-completion neofetch
         else
             echo "Device $device_serial (Oppo Watch BelugaXL) is not connected or unauthorized."
             exit 1

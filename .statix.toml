@@ -1,0 +1,36 @@
+# Statix configuration for Nix code linting
+[report]
+# Show all diagnostics
+verbose = true
+
+# Include all files
+all = true
+
+# Exclude patterns
+exclude = [
+    "result",
+    ".git",
+    "*.png",
+    "*.jpg",
+    "*.lock",
+    "flake.lock",
+    "*.sh",
+    "*.py",
+    "*.js",
+    "*.md",
+    "*.txt",
+    "*.yaml",
+    "*.yml",
+    "*.json"
+]
+
+# Lint rules to enable
+[lint]
+# Enable all available lints
+all = true
+
+# Specific lints to disable (if needed)
+# disabled = [
+#     "legacy_let_in",
+#     "manual_inherit_from"
+# ]

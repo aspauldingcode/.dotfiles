@@ -7,19 +7,19 @@ DEST2="$HOME/.config/sops/age/keys.txt"
 
 # Automatically authenticate with GitHub if not already logged in
 if ! gh auth status &>/dev/null; then
-    gh auth login
+  gh auth login
 fi
 
 # Confirm operation
 dialog --title "Deploy Age Key" \
-       --yesno "This will download and deploy the age key.\n\nContinue?" 10 50
+  --yesno "This will download and deploy the age key.\n\nContinue?" 10 50
 
 response=$?
 clear
 
 if [[ $response -ne 0 ]]; then
-    echo "❌ Operation cancelled by user."
-    exit 1
+  echo "❌ Operation cancelled by user."
+  exit 1
 fi
 
 # Clone repo and copy key
@@ -41,4 +41,3 @@ chmod 644 "$DEST2"
 # Show success dialog
 dialog --title "Success" --msgbox "✅ age key deployed successfully." 7 40
 clear
-

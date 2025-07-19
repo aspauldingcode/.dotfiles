@@ -3,7 +3,6 @@
   pkgs,
   ...
 }:
-
 {
   launchd.agents = {
     toggle-darkmode = {

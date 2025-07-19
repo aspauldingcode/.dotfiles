@@ -1,5 +1,4 @@
 { pkgs, ... }:
-
 {
   programs.nixvim.plugins = {
     # AI cursor assistance with Avante.nvim

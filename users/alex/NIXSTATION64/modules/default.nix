@@ -1,16 +1,11 @@
-{
-  pkgs,
-  ...
-}:
-
+{ pkgs, ... }:
 {
   imports = [
-    ./bemenu
-    ./mako
+    ./fuzzel
     ./mimeapps
+    ./niri
     ./packages
     ./sway
-    ./swayr
     ./theme
     ./waybar
   ];

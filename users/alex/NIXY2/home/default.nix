@@ -1,5 +1,8 @@
-{ user, nix-colors, ... }:
-
+{
+  user,
+  nix-colors,
+  ...
+}:
 {
   imports = [
     nix-colors.homeManagerModules.default
@@ -31,7 +34,8 @@
   home.file.kwalletrc = {
     #executable = true;
     target = ".config/kwalletrc";
-    text = # ini
+    text =
+      # ini
       ''
         [Wallet]
         Enabled=false

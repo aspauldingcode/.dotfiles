@@ -1,5 +1,4 @@
 { pkgs, ... }:
-
 {
   home = {
     packages = with pkgs; [
@@ -12,7 +11,6 @@
       age
       sops
       fd
-      fex
       gcal
       brightnessctl
       # box64 # not working with 16k pagesize m1 asahi

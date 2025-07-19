@@ -4,7 +4,6 @@
   pkgs,
   ...
 }:
-
 let
   vesktopSettings = {
     minimizeToTray = "on";
@@ -399,7 +398,7 @@ let
         --control-brand-foreground: #${palette.base0A};
         --mention-foreground: #${palette.base06};
         --mention-background: rgba(${palette.base04}, 0.3);
-        --background-mentioned: rgba(${palette.base0A}, 0.1); 
+        --background-mentioned: rgba(${palette.base0A}, 0.1);
         --background-mentioned-hover: rgba(${palette.base0A}, 0.2);
         --background-message-hover: rgba(${palette.base03}, 0.25);
         --background-message-highlight: rgba(${palette.base03}, 0.4);
@@ -408,7 +407,7 @@ let
         --channel-text-area-placeholder: #${palette.base07};
 
         /* message input bar */
-        --channeltextarea-background: #${palette.base00}; 
+        --channeltextarea-background: #${palette.base00};
 
         --textbox-markdown-syntax: #${palette.base03};
         --deprecated-card-bg: #${palette.base00};
@@ -2868,4 +2867,5 @@ in
       text = gruvboxTheme;
     };
   };
-} # bottom of page!
+}
+# bottom of page!

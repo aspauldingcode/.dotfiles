@@ -1,5 +1,4 @@
 { pkgs, ... }:
-
 # i3 configuration for NIXY macOS on xQuartz.app!
 {
   xdg.configFile.i3 = {
@@ -7,7 +6,7 @@
     target = "i3/config";
     text = ''
        #if using bindcode instead of bindsym:
-       #code 63 is command. 
+       #code 63 is command.
        #code 64 is shift.
        #code 67 is control.
        #code 57 is space.
@@ -71,7 +70,7 @@
        # # Run a window compositor (for effects like transparency or full VSync)
        # exec_always --no-startup-id $wm_setting_app_compositor
 
-       # ### Workspaces ### 
+       # ### Workspaces ###
        # NOTE: Might need to use yabai for this! Using macOS by the way.
        set $ws1  "1"
        set $ws2  "2"
@@ -126,8 +125,8 @@
        bindsym $mod+Ctrl+Down workspace next
        bindsym $mod+Ctrl+Up workspace prev
        bindsym $mod+Ctrl+Right workspace next
-       
-       # # Move focused container to workspace n            
+
+       # # Move focused container to workspace n
        bindsym $mod+$smod+1 move container to workspace $ws1, workspace number $ws1, exec "yabai -m window --space _1; yabai -m space --focus _1"
        bindsym $mod+$smod+2 move container to workspace $ws2, workspace number $ws2, exec "yabai -m window --space _2; yabai -m space --focus _2"
        bindsym $mod+$smod+3 move container to workspace $ws3, workspace number $ws3, exec "yabai -m window --space _3; yabai -m space --focus _3"

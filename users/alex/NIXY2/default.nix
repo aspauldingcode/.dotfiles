@@ -6,7 +6,6 @@
   user,
   ...
 }:
-
 {
   imports = [
     nix-colors.homeManagerModules.default

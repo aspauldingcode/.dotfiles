@@ -4,13 +4,11 @@
   pkgs,
   ...
 }:
-
 # Configure GTK, QT themes, color schemes.. USE NIXOS MODULE
 #let
 #  theme = "gruvbox-dark-soft";
 #  # Choose from: https://nix-community.github.io/nixvim/colorschemes/base16/index.html#colorschemesbase16colorscheme
 #in
-
 let
   inherit (nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
 in

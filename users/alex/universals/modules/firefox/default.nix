@@ -6,7 +6,6 @@
   user,
   ...
 }:
-
 let
   inherit (lib) mkForce;
   inherit (config.colorscheme) palette;
@@ -25,11 +24,12 @@ in
       { };
 
   programs.firefox = {
-    enable = true;
+    enable = if pkgs.stdenv.isDarwin && pkgs.stdenv.isAarch64 then false else true;
     package = pkgs.firefox;
     profiles = {
       ${user} = {
-        userChrome = # CSS
+        userChrome =
+          # CSS
           ''
             /* Use Nix-Colors theme */
             #navigator-toolbox {
@@ -51,10 +51,10 @@ in
             /* Hide titlebar buttons and adjust spacing on macOS */
             @media (-moz-platform: macos) {
               .titlebar-buttonbox-container,
-              #window-controls { 
-                display: none !important; 
+              #window-controls {
+                display: none !important;
               }
-              
+
               /* Shift tabs to the left by 38px */
               #TabsToolbar {
                 padding-left: 0 !important;
@@ -149,7 +149,7 @@ in
                 display: none !important;
               }
             }
-              
+
             /* Hide hamburger menu and refresh button when extremely limited */
             @media (max-width: 200px) {
               #PanelUI-button,
@@ -459,7 +459,7 @@ in
           }
         '';
         bookmarks = { };
-        extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
+        extensions = with pkgs.nur.repos.rycee.firefox-addons; [
           # youtube fixup
           enhancer-for-youtube
           sponsorblock

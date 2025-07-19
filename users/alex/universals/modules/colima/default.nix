@@ -1,5 +1,8 @@
-{ pkgs, config, ... }:
-
+{
+  pkgs,
+  config,
+  ...
+}:
 # Colima allows containers on macOS and Linux using:
 /*
   Docker (with optional Kubernetes)

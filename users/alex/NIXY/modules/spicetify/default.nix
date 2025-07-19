@@ -5,7 +5,6 @@
   inputs,
   ...
 }:
-
 {
   programs.spicetify =
     let

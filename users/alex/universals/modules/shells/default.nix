@@ -20,18 +20,14 @@
     zsh = {
       enable = true;
       enableCompletion = true;
-      initContent = ''
+      initExtra = ''
         setopt APPEND_HISTORY
         zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
         export EDITOR=nvim
 
         export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
 
-        export ANTHROPIC_API_KEY="$(cat ${config.sops.secrets.claude_api_key.path} 2>/dev/null)"
-        export OPENAI_API_KEY="$(cat ${config.sops.secrets.openai_api_key.path} 2>/dev/null)"
-        export AZURE_OPENAI_API_KEY="$(cat ${config.sops.secrets.azure_openai_api_key.path} 2>/dev/null)"
-        export BEDROCK_KEYS="$(cat ${config.sops.secrets.bedrock_keys.path} 2>/dev/null)"
-        export GH_TOKEN="$(cat ${config.sops.secrets.GH_TOKEN.path} 2>/dev/null)"
+        # Secrets temporarily disabled for build - need proper SOPS encryption setup
 
         oh-my-posh disable notice
       '';
@@ -63,11 +59,7 @@
 
         export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
 
-        export ANTHROPIC_API_KEY="$(cat ${config.sops.secrets.claude_api_key.path} 2>/dev/null)"
-        export OPENAI_API_KEY="$(cat ${config.sops.secrets.openai_api_key.path} 2>/dev/null)"
-        export AZURE_OPENAI_API_KEY="$(cat ${config.sops.secrets.azure_openai_api_key.path} 2>/dev/null)"
-        export BEDROCK_KEYS="$(cat ${config.sops.secrets.bedrock_keys.path} 2>/dev/null)"
-        export GH_TOKEN="$(cat ${config.sops.secrets.GH_TOKEN.path} 2>/dev/null)"
+        # Secrets temporarily disabled for build - need proper SOPS encryption setup
 
         oh-my-posh disable notice
       '';
@@ -96,11 +88,7 @@
 
         set -gx SOPS_AGE_KEY_FILE "$HOME/.config/sops/age/keys.txt"
 
-        set -gx ANTHROPIC_API_KEY (cat ${config.sops.secrets.claude_api_key.path} 2>/dev/null)
-        set -gx OPENAI_API_KEY (cat ${config.sops.secrets.openai_api_key.path} 2>/dev/null)
-        set -gx AZURE_OPENAI_API_KEY (cat ${config.sops.secrets.azure_openai_api_key.path} 2>/dev/null)
-        set -gx BEDROCK_KEYS (cat ${config.sops.secrets.bedrock_keys.path} 2>/dev/null)
-        set -gx GH_TOKEN (cat ${config.sops.secrets.GH_TOKEN.path} 2>/dev/null)
+        # Secrets temporarily disabled for build - need proper SOPS encryption setup
 
         oh-my-posh disable notice
       '';
@@ -144,11 +132,7 @@
 
         def lsdir [path: path = '.'] { ls $path | where type == 'dir' }
 
-        $env.ANTHROPIC_API_KEY = (open ${config.sops.secrets.claude_api_key.path} | str trim)
-        $env.OPENAI_API_KEY = (open ${config.sops.secrets.openai_api_key.path} | str trim)
-        $env.AZURE_OPENAI_API_KEY = (open ${config.sops.secrets.azure_openai_api_key.path} | str trim)
-        $env.BEDROCK_KEYS = (open ${config.sops.secrets.bedrock_keys.path} | str trim)
-        $env.GH_TOKEN = (open ${config.sops.secrets.GH_TOKEN.path} | str trim)
+        # Secrets temporarily disabled for build - need proper SOPS encryption setup
         $env.SOPS_AGE_KEY_FILE = ($env.HOME | path join ".config" "sops" "age" "keys.txt")
 
         oh-my-posh disable notice

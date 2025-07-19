@@ -1,5 +1,4 @@
 { pkgs, ... }:
-
 {
   programs.nixvim.plugins = {
     # Enable lsp-format for none-ls integration

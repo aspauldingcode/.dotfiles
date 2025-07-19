@@ -5,7 +5,6 @@
   nix-colors,
   ...
 }:
-
 {
   targets.darwin.defaults = {
     "NSGlobalDomain" = {
@@ -72,18 +71,28 @@
       wvous-tr-corner = 1;
       show-process-indicators = true;
       tilesize = 40;
-      persistent-apps = [
-        "/System/Applications/Launchpad.app"
-        # "/Applications/Nix\ Apps/Spotify.app"
-        # "${config.programs.spicetify.spicedSpotify}/Applications/Spotify.app"
-        "${pkgs.obsidian}/Applications/Obsidian.app"
-        "${pkgs.firefox-bin}/Applications/Firefox.app"
-        "${pkgs.brave}/Applications/Brave Browser.app"
-        "/System/Applications/Messages.app"
-        "/System/Applications/Facetime.app"
-        "/Applications/Windows App.app"
-        "${pkgs.alacritty}/Applications/Alacritty.app"
-      ];
+      persistent-apps =
+        [
+          "/System/Applications/Launchpad.app"
+          # "/Applications/Nix\ Apps/Spotify.app"
+          # "${config.programs.spicetify.spicedSpotify}/Applications/Spotify.app"
+          "${pkgs.obsidian}/Applications/Obsidian.app"
+        ]
+        ++ (
+          if pkgs.stdenv.isDarwin && pkgs.stdenv.isAarch64 then
+            [ ]
+          else
+            [
+              "${pkgs.firefox-bin}/Applications/Firefox.app"
+            ]
+        )
+        ++ [
+          "${pkgs.brave}/Applications/Brave Browser.app"
+          "/System/Applications/Messages.app"
+          "/System/Applications/Facetime.app"
+          "/Applications/Windows App.app"
+          "${pkgs.alacritty}/Applications/Alacritty.app"
+        ];
     };
 
     "com.apple.menuextra.clock" = {

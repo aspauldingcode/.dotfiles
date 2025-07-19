@@ -4,7 +4,6 @@
   pkgs,
   ...
 }:
-
 let
   scheme = "gruvbox-dark-soft";
 in

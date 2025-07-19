@@ -4,7 +4,6 @@
   pkgs,
   ...
 }:
-
 {
   imports = [
     ./modules/NIXSTATION64/packages-NIXSTATION64.nix
@@ -41,5 +40,4 @@
     # Nicely reload system units when changing configs
     systemd.user.startServices = "sd-switch"; # TODO: UPDATE IF USING DIFFERENT BOOTLOADER!
   };
-
 }

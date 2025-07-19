@@ -1,8 +1,6 @@
 { config, ... }:
-
 # configure btop, and give btop a nix-colors enabled theme.
 {
-
   programs.btop = {
     enable = true;
     settings = {
@@ -161,7 +159,7 @@
         # Mem/Disk used meter
         theme[used_start]="#${palette.base08}" # make darker?
         theme[used_mid]=""
-        theme[used_end]="#${palette.base08}" 
+        theme[used_end]="#${palette.base08}"
 
         # Download graph colors
         theme[download_start]="#${palette.base0E}"

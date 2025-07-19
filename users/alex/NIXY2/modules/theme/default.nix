@@ -4,7 +4,6 @@
   pkgs,
   ...
 }:
-
 let
   inherit (nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
 in
@@ -36,5 +35,4 @@ in
     enable = true;
     platformTheme.name = "gtk";
   };
-
 }

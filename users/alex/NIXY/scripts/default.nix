@@ -1,5 +1,8 @@
-{ config, pkgs, ... }:
-
+{
+  config,
+  pkgs,
+  ...
+}:
 let
   systemType = pkgs.stdenv.hostPlatform.system;
   homebrewPath =
@@ -19,7 +22,6 @@ in
 {
   home = {
     packages = with pkgs; [
-
       #json2nix converter
       #(pkgs.writeScriptBin "json2nix" ''
       #  ${pkgs.python3}/bin/python ${
@@ -36,7 +38,7 @@ in
           count=1
           # Specify the output file path
           output_file=~/.dotfiles/users/alex/NIXY/sketchybar/cal-output.txt
-          
+
         # Delimiter to replace spaces
         delimiter="⌇"
 
@@ -222,7 +224,7 @@ in
         sketchybar_hidden_status=$(${sketchybar} --query bar | ${jq} -r '.hidden')
         if [ "$sketchybar_hidden_status" = "on" ]; then
             sketchybar_state="off"
-        elif [ "$sketchybar_hidden_status" = "off" ]; then 
+        elif [ "$sketchybar_hidden_status" = "off" ]; then
             sketchybar_state="on"
         fi
 

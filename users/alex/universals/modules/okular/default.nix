@@ -4,7 +4,6 @@
   pkgs,
   ...
 }:
-
 # theme okular!
 let
   inherit (config.colorScheme) palette;

@@ -1,5 +1,4 @@
 { pkgs, ... }:
-
 {
   programs.nixvim.plugins = {
     # Smooth scrolling (disabled - you wanted animations removed)

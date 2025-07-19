@@ -1,5 +1,4 @@
 { pkgs, ... }:
-
 {
   programs.nixvim.plugins = {
     # Note-taking

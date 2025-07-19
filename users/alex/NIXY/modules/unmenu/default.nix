@@ -5,7 +5,6 @@
   std,
   ...
 }:
-
 let
   cfg = config.programs.unmenu;
   unmenu = pkgs.stdenv.mkDerivation rec {

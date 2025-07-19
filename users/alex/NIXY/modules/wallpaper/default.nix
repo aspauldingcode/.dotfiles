@@ -3,7 +3,6 @@
   user,
   ...
 }:
-
 let
   wallpaper_input =
     if pkgs.stdenv.isDarwin then
@@ -25,5 +24,4 @@ in
   '';
 
   # "wallpaper": "${wallpaper_output}"
-
 }

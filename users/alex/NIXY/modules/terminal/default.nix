@@ -5,7 +5,6 @@
   nix-colors,
   ...
 }:
-
 let
   name = "${config.colorScheme.slug}";
   inherit (config.colorScheme) palette;

@@ -4,7 +4,6 @@
   pkgs,
   ...
 }:
-
 # NIXY-specific packages
 {
   imports = [
@@ -12,6 +11,5 @@
   ];
   home.packages = with pkgs; [
     # magnet?
-
   ];
 }

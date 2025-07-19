@@ -4,7 +4,6 @@
   pkgs,
   ...
 }:
-
 {
   programs.unmenu = {
     enable = true;

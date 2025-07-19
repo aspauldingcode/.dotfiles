@@ -1,5 +1,4 @@
 { nix-colors, ... }:
-
 {
   home = {
     username = "alex";
@@ -24,7 +23,8 @@
   home.file.kwalletrc = {
     #executable = true;
     target = ".config/kwalletrc";
-    text = # ini
+    text =
+      # ini
       ''
         [Wallet]
         Enabled=false

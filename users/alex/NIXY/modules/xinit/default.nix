@@ -1,5 +1,8 @@
-{ osConfig, config, ... }:
-
+{
+  osConfig,
+  config,
+  ...
+}:
 # Configure ~/.xinitrc file! changes for x11App and i3 WM, Dmenu...
 {
   home.file.xinitrc = {

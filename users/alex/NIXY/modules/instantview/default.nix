@@ -4,7 +4,6 @@
   lib,
   ...
 }:
-
 {
   home.file = {
     "InstantView.plist" = {

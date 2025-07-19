@@ -338,16 +338,7 @@
   },
   "font": {
     "size": "12.1",
-    "availWeights": [
-      "200",
-      "300",
-      "400",
-      "500",
-      "600",
-      "700",
-      "800",
-      "900"
-    ],
+    "availWeights": ["200", "300", "400", "500", "600", "700", "800", "900"],
     "family": "dejavu sans mono",
     "url": "",
     "weight": "400"
@@ -356,22 +347,10 @@
     "layouts": {
       "double": {
         "grid": [
-          [
-            "main",
-            "time"
-          ],
-          [
-            "searchbar",
-            "searchbar"
-          ],
-          [
-            "quicklinks",
-            "notes"
-          ],
-          [
-            "quotes",
-            "quotes"
-          ]
+          ["main", "time"],
+          ["searchbar", "searchbar"],
+          ["quicklinks", "notes"],
+          ["quotes", "quotes"]
         ],
         "items": {
           "time": {
@@ -401,20 +380,7 @@
         }
       },
       "single": {
-        "grid": [
-          [
-            "time"
-          ],
-          [
-            "quicklinks"
-          ],
-          [
-            "main"
-          ],
-          [
-            "quotes"
-          ]
-        ],
+        "grid": [["time"], ["quicklinks"], ["main"], ["quotes"]],
         "items": {
           "quicklinks": {
             "box": "center baseline",
@@ -424,21 +390,9 @@
       },
       "triple": {
         "grid": [
-          [
-            ".",
-            "time",
-            "."
-          ],
-          [
-            ".",
-            "main",
-            "."
-          ],
-          [
-            ".",
-            "quicklinks",
-            "."
-          ]
+          [".", "time", "."],
+          [".", "main", "."],
+          [".", "quicklinks", "."]
         ],
         "items": {}
       }

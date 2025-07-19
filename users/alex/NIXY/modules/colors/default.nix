@@ -3,10 +3,8 @@
   pkgs,
   lib,
   nix-colors,
-  std,
   ...
 }:
-
 # generate a color palette from nix-colors (to view all colors in a file!)
 {
   home.file = {
@@ -76,13 +74,10 @@
         hexColorConvertedBase0F = builtins.toString (
           (builtins.map (x: x / 255.0) (nix-colors.lib.conversions.hexToRGB hexColorBase0F)) ++ [ "Other" ]
         );
-
-        # convert image to nix-colors:
-
       in
+      # convert image to nix-colors:
       {
-        text = std.serde.toTOML {
-
+        text = builtins.toJSON {
           base16_nix_colors = {
             # nix-colors palette information
             variant = config.colorscheme.variant;

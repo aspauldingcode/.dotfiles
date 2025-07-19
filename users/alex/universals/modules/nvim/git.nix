@@ -1,5 +1,8 @@
-{ pkgs, config, ... }:
-
+{
+  pkgs,
+  config,
+  ...
+}:
 {
   programs.nixvim.plugins = {
     # Git integration

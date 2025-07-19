@@ -1,5 +1,8 @@
-{ config, pkgs, ... }:
-
+{
+  config,
+  pkgs,
+  ...
+}:
 let
   inherit (config.colorScheme) palette;
   fontSize = if pkgs.stdenv.isDarwin then 12.5 else 9.0;
