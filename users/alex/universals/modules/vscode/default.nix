@@ -1216,8 +1216,6 @@ in
 {
   programs.vscode = {
     enable = true;
-    # package = pkgs.unstable.code-cursor
-    # package = pkgs.code-cursor; # Temporarily disabled - not available for aarch64-darwin
     package = pkgs.vscode;
 
     userSettings = {

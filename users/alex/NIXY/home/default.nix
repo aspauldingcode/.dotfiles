@@ -4,9 +4,6 @@
   pkgs,
   ...
 }:
-# let
-#   android-sdk = pkgs.android_sdk; # Replace with the actual Android SDK package name
-# in
 {
   home = {
     stateVersion = "24.11"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion

@@ -212,11 +212,116 @@ jobs:
           # Test if packages can be evaluated
           nix eval .#packages.x86_64-linux --apply builtins.attrNames || echo "No custom packages found"
 
+  # Code statistics and README update
+  update-code-stats:
+    name: Update Code Statistics
+    runs-on: ubuntu-latest
+    needs: [code-quality]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Nix with caching
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          version: v0.25.0
+
+      - name: Setup Magic Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Update README with code statistics
+        run: |
+          echo "📊 Updating README.md with code statistics..."
+          
+          # Generate code statistics using tokei
+          DATE=$(date)
+          TOKEI_JSON=$(nix run nixpkgs#tokei -- . --output json | nix run nixpkgs#jq -- '{ CSS, JSON, Lua, Markdown, Nix, Python, Shell, "Plain Text", TOML, "Vim script", YAML }')
+
+          # Start building the new format
+          TABLE="<!-- BEGIN CODE STATS -->\n"
+          TABLE+="## How much code?\n"
+          TABLE+="\n"
+          TABLE+="👨‍💻 Code Statistics:\n\n"
+
+          TOTAL_FILES=0
+          TOTAL_CODE=0
+          TOTAL_COMMENTS=0
+          TOTAL_BLANKS=0
+
+          # Build detailed table content for the expandable section
+          DETAIL_TABLE="| Language   | Files | Lines | Code  | Comments | Blanks |\n"
+          DETAIL_TABLE+="|------------|-------|-------|-------|----------|--------|\n"
+
+          while IFS=$'\t' read -r LANG FILES CODE COMMENTS BLANKS; do
+            LINES=$((CODE + COMMENTS + BLANKS))
+            DETAIL_TABLE+="| $LANG | $FILES | $LINES | $CODE | $COMMENTS | $BLANKS |\n"
+            TOTAL_FILES=$((TOTAL_FILES + FILES))
+            TOTAL_CODE=$((TOTAL_CODE + CODE))
+            TOTAL_COMMENTS=$((TOTAL_COMMENTS + COMMENTS))
+            TOTAL_BLANKS=$((TOTAL_BLANKS + BLANKS))
+          done < <(echo "$TOKEI_JSON" | nix run nixpkgs#jq -- -r '
+            to_entries[]
+            | select(.key | IN("CSS", "JSON", "Lua", "Markdown", "Nix", "Python", "Shell", "Plain Text", "TOML", "Vim script", "YAML"))
+            | [.key, (.value.reports | length), .value.code, .value.comments, .value.blanks]
+            | @tsv')
+
+          TOTAL_LINES=$((TOTAL_CODE + TOTAL_COMMENTS + TOTAL_BLANKS))
+          DETAIL_TABLE+="| **Total**  | $TOTAL_FILES | $TOTAL_LINES | $TOTAL_CODE | $TOTAL_COMMENTS | $TOTAL_BLANKS |\n"
+
+          # Add the preview format with total LOC at top and expandable section
+          TABLE+="_Total LOC (including blanks, comments): **$TOTAL_LINES**_\n\n"
+          TABLE+="<details>\n"
+          TABLE+="<summary>🔍 Click to expand code stats.</summary>\n\n"
+          TABLE+="$DETAIL_TABLE\n"
+          TABLE+="</details>\n\n"
+          TABLE+="Last updated: $DATE\n"
+          TABLE+="<!-- END CODE STATS -->"
+
+          TMPFILE=$(mktemp)
+          echo -e "$TABLE" > "$TMPFILE"
+
+          # Update README.md with new statistics
+          nix run nixpkgs#perl -- -0777 -i -pe "
+            my \$table = do { local \$/; open my \$fh, '<', '$TMPFILE' or die \$!; <\$fh> };
+            \$table =~ s/\n+\z//;  # Remove trailing newlines
+            s|<!-- BEGIN CODE STATS -->.*?<!-- END CODE STATS -->|\$table|s;
+          " README.md
+
+          rm "$TMPFILE"
+
+          echo "✅ README.md updated with latest code statistics"
+          echo "📈 Total lines of code: $TOTAL_LINES"
+
+      - name: Format updated files
+        run: |
+          echo "🎨 Formatting updated files..."
+          nix fmt
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          if git diff --quiet; then
+            echo "📊 No changes to commit - code statistics are up to date"
+          else
+            git add README.md
+            git commit -m "📊 Update code statistics [skip ci]"
+            git push
+            echo "✅ Code statistics updated and pushed to repository"
+          fi
+
   # Performance and resource usage testing
   performance-test:
     name: Performance & Resource Testing
     runs-on: ubuntu-latest
-    needs: [test-configurations]
+    needs: [test-configurations, test-packages]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

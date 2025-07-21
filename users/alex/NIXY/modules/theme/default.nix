@@ -5,10 +5,6 @@
   ...
 }:
 # Configure GTK, QT themes, color schemes.. USE NIXOS MODULE
-#let
-#  theme = "gruvbox-dark-soft";
-#  # Choose from: https://nix-community.github.io/nixvim/colorschemes/base16/index.html#colorschemesbase16colorscheme
-#in
 let
   inherit (nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
 in
@@ -34,43 +30,14 @@ in
     ];
   };
 
-  # colorScheme = nix-colors.colorSchemes.gruvbox-dark-soft;
-
-  #home.pointerCursor = {
-  #    name = "Bibata-Modern-Ice";
-  #    package = pkgs.bibata-cursors;
-  #};
-
   gtk = {
     enable = true;
-    #cursorTheme = {
-    #  name = "Bibata-Modern-Ice";
-    #  package = pkgs.bibata-cursors;
-    #};
-    # theme = {
-    # name = "gruvbox gtk theme";
-    # package = pkgs.gruvbox-gtk-theme;
-    # name = "${config.colorScheme.slug}";
-    # package = gtkThemeFromScheme {scheme = config.colorScheme;};
-    # name = "WhiteSur-GTK-Theme";
-    # package = pkgs.whitesur-gtk-theme;
-    # };
-    #iconTheme = {
-    #name = "WhiteSur-GTK-Icons";
-    #package = pkgs.whitesur-icon-theme;
-    #name = "Gruvbox-Dark-gtk";
-    #package = pkgs.gruvbox-dark-gtk;
-    #name = "breeze";
-    #package = ;
-    #};
   };
   qt = {
     enable = false;
     platformTheme = "gtk";
     # name of gtk theme
     style = {
-      # name = "${config.colorScheme.slug}";
-      # package = gtkThemeFromScheme { scheme = config.colorScheme; };
     };
   };
 }

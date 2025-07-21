@@ -3,9 +3,6 @@
 final: prev: {
   # Custom package modifications can go here
 
-  # Example: Add custom packages or modify existing ones
-  # customPackage = prev.callPackage ./custom-package.nix { };
-
   # Fix for air-formatter - make it available in stable pkgs by pulling from unstable
   # This ensures compatibility with nixvim and other tools that expect it in pkgs
   air-formatter =

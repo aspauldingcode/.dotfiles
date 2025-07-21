@@ -144,22 +144,6 @@
 
           # AppleHighlightColor example run in terminal:
           # defaults read -g AppleHighlightColor
-          # base00_converted = hexColorConvertedBase00;
-          # base01_converted = hexColorConvertedBase01;
-          # base02_converted = hexColorConvertedBase02;
-          # base03_converted = hexColorConvertedBase03;
-          # base04_converted = hexColorConvertedBase04;
-          # base05_converted = hexColorConvertedBase05;
-          # base06_converted = hexColorConvertedBase06;
-          # base07_converted = hexColorConvertedBase07;
-          # base08_converted = hexColorConvertedBase08;
-          # base09_converted = hexColorConvertedBase09;
-          # base0A_converted = hexColorConvertedBase0A;
-          # base0B_converted = hexColorConvertedBase0B;
-          # base0C_converted = hexColorConvertedBase0C;
-          # base0D_converted = hexColorConvertedBase0D;
-          # base0E_converted = hexColorConvertedBase0E;
-          # base0F_converted = hexColorConvertedBase0F;
         };
       };
   };

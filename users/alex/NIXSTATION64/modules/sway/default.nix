@@ -74,51 +74,16 @@ in
           "${modifier}+f" = "exec maximize"; # custom script for zoom-fullscreen NOTWORKING?
           "${modifier}+Shift+f" = "fullscreen toggle";
           "${modifier}+Return" = "exec ${terminal}";
-          # "${modifier}+Alt+Space" = "exec brave";
-          # "${modifier}+Shift+Alt+Space" = "exec brave --incognito";
           "${modifier}+Alt+Space" = "exec firefox";
           "${modifier}+Shift+Alt+Space" = "exec firefox -private-window";
           "${modifier}+Shift+q" = "kill";
           "${modifier}+q" = "exec wtype -M ctrl -P w -m ctrl -p w";
           "${modifier}+a" = "exec show-all-windows";
           "${modifier}+d" = "exec ${menu}";
-          # "${modifier}+m" = "" # toggle-global-menubar
           "${modifier}+m" = "exec toggle-waybar";
-          # "${modifier}+Space" = "" # toggle nwg-dock
 
-          # "${modifier}+m" = "exec docker start -ai 8b83fcdf83af"; # MacOS VM
           "Control+Alt+Delete" = "exec sudo systemctl reboot";
           "Control+Shift+Alt+Delete" = "exec sudo systemctl poweroff";
-          # implement window switcher based on wofi
-          #"${modifier}+Tab" = "exec ${wofiWindowJump}";
-          # power menu
-          #"${modifier}+Insert" = "exec ${wofiPower}";
-          # clipboard history
-          #"${modifier}+v" = "exec ${pkgs.clipman}/bin/clipman pick --tool wofi";
-          # Output pressed keycode using xev:
-          # nix-shell -p xorg.xev --run "xev | grep -A2 --line-buffered '^KeyRelease' | sed -n '/keycode /s/^.*keycode \([0-9]*\).* (.*, \(.*\)).*$/\1 \2/p'"
-          # fn+F1    c:121   XF86AudioMute
-          #"XF86AudioMute" = ''exec ${pamixer} --toggle-mute && ( ${pamixer} --get-mute && ${mywob} 0 ) || ${mywob} $(${pamixer} --get-volume)'';
-          # fn+F2    c:122   XF86AudioLowerVolume
-          #"XF86AudioLowerVolume" = ''exec ${pamixer} --allow-boost --unmute --decrease 2 && ${mywob} $(${pamixer} --get-volume)'';
-          # fn+F3    c:123   XF86AudioRaiseVolume
-          #"XF86AudioRaiseVolume" = ''exec ${pamixer} --allow-boost --unmute --increase 2 && ${mywob} $(${pamixer} --get-volume)'';
-          # fn+F4    c:198   XF86AudioMicMute
-          #"XF86AudioMicMute" = ''exec ${pamixer} --default-source --toggle-mute && ( ${pamixer} --default-source --get-mute && ${mywob} 0 ) || ${mywob} $(${pamixer} --default-source --get-volume)'';
-          # fn+F5    c:232   XF86MonBrightnessDown
-          # "--locked XF86MonBrightnessDown" = ''exec ${mywob} $(${brightnessctl} set 5%- | ${sed} -En 's/.*\(([0-9]+)%\).*/#\1/p')'';
-          ## fn+F6    c:233   XF86MonBrightnessUp
-          # "--locked XF86MonBrightnessUp" = ''exec ${mywob} $(${brightnessctl} set +5% | ${sed} -En 's/.*\(([0-9]+)%\).*/\1/p')'';
-          # fn+F7    c:235   XF86Display
-          ## fn+F8    c:246   XF86WLAN
-          ## fn+F9    c:179   XF86Tools
-          ## fn+F10   c:225   XF86Search
-          ## fn+F11   c:128   XF86LaunchA
-          ## fn+F12   c:152   XF86Explorer
-          #"XF86Calculator" = "exec ${pkgs.gnome.gnome-calculator}/bin/gnome-calculator";
-          # "XF86???Lock" = "";
-          #"XF86HomePage" = "exec ${pkgs.firefox-wayland}/bin/firefox";
-          # "XF86???FOLDER" = "";
 
           # Screenshot
           "Alt+Shift+3" = "exec screenshot"; # All visible outputs
@@ -137,18 +102,6 @@ in
 
           "${modifier}+Control+Shift+r" = "exec swaymsg output '*' disable && swaymsg output '*' enable";
 
-          # "XF86AudioPrev" = "exec ${pkgs.playerctl}/bin/playerctl -s previous";
-          # "XF86AudioNext" = "exec ${pkgs.playerctl}/bin/playerctl -s next";
-          # "XF86AudioPlay" = "exec ${pkgs.playerctl}/bin/playerctl -s play-pause";
-          # "XF86AudioStop" = "exec ${pkgs.playerctl}/bin/playerctl -s stop";
-          # "Control+XF86AudioPrev" = "exec ${pkgs.playerctl}/bin/playerctl -s position 30-";
-          # "Control+XF86AudioNext" = "exec ${pkgs.playerctl}/bin/playerctl -s position 30+";
-          # "Control+XF86AudioPlay" = "exec ${pkgs.playerctl}/bin/playerctl -s stop";
-
-          #"${modifier}+l" = "exec ${locksway}";
-
-          #"${modifier}+Shift+minus" = "exec ${outputScale} -.1";
-          #"${modifier}+Shift+equal" = "exec ${outputScale} +.1";
           "${modifier}+Shift+Ctrl+minus" = "move scratchpad"; # Change to control alt down
           "${modifier}+Shift+Ctrl+equal" = "scratchpad show"; # change to control alt up
 
@@ -183,12 +136,7 @@ in
           "${modifier}+Shift+m" = "exec ${pkgs.swayr}/bin/swayr move-focused-to-workspace";
           "${modifier}+Shift+s" = "exec ${pkgs.swayr}/bin/swayr swap-focused-with";
 
-          #FIXME: Try NOT to swap a floating window?
           # Move windows (swap if tiled, move 20px if floating
-          # "${modifier}+Shift+${left}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus left, swap container with mark "_swap", focus left, unmark "_swap"; [floating con_id="__focused__"] move left 20px'';
-          # "${modifier}+Shift+${down}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus down, swap container with mark "_swap", focus down, unmark "_swap"; [floating con_id="__focused__"] move down 20px'';
-          # "${modifier}+Shift+${up}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus up, swap container with mark "_swap", focus up, unmark "_swap"; [floating con_id="__focused__"] move up 20px'';
-          # "${modifier}+Shift+${right}" = ''[tiling con_id="__focused__"] mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"; [floating con_id="__focused__"] move right 20px'';
           "${modifier}+Shift+Left" =
             ''mark --add "_swap", focus left, swap container with mark "_swap", focus left, unmark "_swap"; [floating con_id="__focused__"] move left 20px'';
           "${modifier}+Shift+Down" =
@@ -198,15 +146,7 @@ in
           "${modifier}+Shift+Right" =
             ''mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"; [floating con_id="__focused__"] move right 20px'';
 
-          # Swap positions of the current window with the one on $direction
-          # "${modifier}+Shift+${left}" = ''mark --add "_swap", focus left,  swap container with mark "_swap", focus left,  unmark "_swap"'';
-          # "${modifier}+Shift+${down}" = ''mark --add "_swap", focus down,  swap container with mark "_swap", focus down,  unmark "_swap"'';
-          # "${modifier}+Shift+${up}" = ''mark --add "_swap", focus up,    swap container with mark "_swap", focus up,    unmark "_swap"'';
-          # "${modifier}+Shift+${right}" = ''mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"'';
-          # "${modifier}+Shift+Left" = ''mark --add "_swap", focus left,  swap container with mark "_swap", focus left,  unmark "_swap"'';
-          # "${modifier}+Shift+Down" = ''mark --add "_swap", focus down,  swap container with mark "_swap", focus down, unmark "_swap"'';
-          # "${modifier}+Shift+Up" = ''mark --add "_swap", focus up,    swap container with mark "_swap", focus up,    unmark "_swap"'';
-          # "${modifier}+Shift+Right" = ''mark --add "_swap", focus right, swap container with mark "_swap", focus right, unmark "_swap"'';
+
 
           # Navigate to next/prev workspace
           "${modifier}+Ctrl+${left}" = "workspace prev";
@@ -218,15 +158,7 @@ in
           "${modifier}+Ctrl+Up" = "workspace prev";
           "${modifier}+Ctrl+Right" = "workspace next";
 
-          #FIXME: (CHOOSE BETTER BINDS) Move window to next/prev workspace and follow focus
-          # "Ctrl+Shift+${left}" = "move container to workspace prev, workspace prev";
-          # "Ctrl+Shift+${down}" = "move container to workspace next, workspace next";
-          # "Ctrl+Shift+${up}" = "move container to workspace prev, workspace prev";
-          # "Ctrl+Shift+${right}" = "move container to workspace next, workspace next";
-          # "Ctrl+Shift+Left" = "move container to workspace prev, workspace prev";
-          # "Ctrl+Shift+Down" = "move container to workspace next, workspace next";
-          # "Ctrl+Shift+Up" = "move container to workspace prev, workspace prev";
-          # "Ctrl+Shift+Right" = "move container to workspace next, workspace next";
+
 
           # Move focus to workspace n
           "${modifier}+1" = "workspace number 1";
@@ -292,8 +224,6 @@ in
 
             # You can get the names of your inputs by running: swaymsg -t get_inputs
             # Read `man 5 sway-input` for more information about this section.
-            # Launch the network manager widget!
-            # exec nm-applet
             exec --no-startup-id 'nm-applet --indicator'
 
             # Launch the bluetooth applet
@@ -329,38 +259,6 @@ in
             for_window [shell="xdg_shell"] border pixel 2
             for_window [shell="xwayland"] border pixel 2
 
-            # Window background blur
-            # blur on #FIXME: TURN ON! Floating window loses its borders...
-            # blur_xray on
-            # blur_passes 2
-            # blur_radius 2
-
-            # for_window [tiling] shadows off
-            # for_window [floating] shadows on
-            # shadows_on_csd disable
-            # shadow_blur_radius 30
-            # shadow_color #000000ff
-
-            # Enable background blur for Waybar-Square
-            # layer_effects "waybar" blur enable; corner_radius 0; blur_ignore_transparent enable
-
-            # Enable background blur for Waybar-Round
-            # layer_effects "waybar" blur enable; corner_radius 10; blur_ignore_transparent enable
-
-            # Enable background blur for waybar tooltips
-            # FIXME
-
-            # Enable background blur for Mako notifications
-            # layer_effects "notifications" blur enable; corner_radius 10
-
-            # Enable background blur for GTK-based layer shell applications
-            # layer_effects "gtk-layer-shell" blur enable; corner_radius 10
-
-            # inactive window fade amount. 0.0 = no dimming, 1.0 = fully dimmed
-            #default_dim_inactive .3
-            #dim_inactive_colors.unfocused "#000000"
-            #dim_inactive_colors.urgent "#900000"
-
             # FIXME:Prevent floating windows from being swapped with tiled ones, regardless of display
             for_window [floating] sticky enable
             for_window [floating] focus_on_window_activation focus
@@ -389,9 +287,6 @@ in
             for_window [app_id="zoom" title="zoom"] floating enable
             for_window [app_id="zoom" title="Zoom Meeting"] floating disable
             for_window [app_id="zoom" title="Zoom - Free Account"] floating disable
-
-            # run fix-wm once.
-            # exec fix-wm
         '';
     };
   };

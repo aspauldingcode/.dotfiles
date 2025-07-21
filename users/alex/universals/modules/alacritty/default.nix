@@ -55,17 +55,7 @@ in
           x = 0;
           y = 0;
         };
-        # use_thin_strokes = true;  # Enable this to make the fonts thinner
       };
-
-      # dpi = {
-      #   x = 96;  # Adjust according to your screen's DPI, common values are 96, 110, 120
-      #   y = 96;
-      # };
-
-      # Enable hinting and antialiasing
-      # hinting = "slight";  # Options: none, slight, medium, full
-      # antialiasing = "subpixel";  # Options: none, grayscale, subpixel
 
       # Becomes either 'dark' or 'light', based on your colors! (in qutebrowser)
       #webppage.preferred_color_scheme = "${kind}";

@@ -11,7 +11,6 @@ let
     arRPC = "on";
     splashColor = "#${config.colorScheme.palette.base05}";
     splashBackground = "#${config.colorScheme.palette.base00}";
-    # splashLogo = ../../face.png; # FIXME: THIS is NOT working.
     splashTheming = true;
   };
 

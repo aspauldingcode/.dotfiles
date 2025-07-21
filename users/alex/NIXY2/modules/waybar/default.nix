@@ -14,7 +14,7 @@ let
   tail = "${pkgs.coreutils}/bin/tail";
   wc = "${pkgs.coreutils}/bin/wc";
   xargs = "${pkgs.findutils}/bin/xargs";
-  # wlsunset = "${pkgs.wlsunset}/bin/wlsunset";
+  wlsunset = "${pkgs.wlsunset}/bin/wlsunset";
 
   jq = "${pkgs.jq}/bin/jq";
   systemctl = "${pkgs.systemd}/bin/systemctl";
@@ -57,15 +57,7 @@ let
     modules-center = [
       "pulseaudio"
       "custom/backlight"
-      # "custom/brightness"
-      # "custom/nightlight"
-      # "custom/gamma"
       "custom/datetime"
-      #"custom/gpg-agent"
-      # "custom/spotify"
-      # "cava" # CRASHES at the moment. Waybar v0.10.3
-      # "custom/currentplayer"
-      # "custom/player"
     ];
 
     modules-right = [
@@ -73,9 +65,6 @@ let
       "tray"
       "network"
       "battery"
-      # "custom/tailscale-ping"
-      # TODO: currently broken for some reason
-      #"custom/hostname"
       "custom/seperator-right"
       "cpu"
       "memory"
@@ -102,10 +91,8 @@ let
     };
 
     cava = {
-      # cava_config = "$XDG_CONFIG_HOME/cava/config";
       framerate = 30;
       autosens = 1;
-      # sensitivity = 100; # It's recommended to be omitted when autosens = 1
       bars = 10; # number of bars
       lower_cutoff_freq = 50;
       higher_cutoff_freq = 10000;
@@ -123,7 +110,7 @@ let
       noise_reduction = 0.77;
       input_delay = 2;
       format-icons = [
-        "▁"
+        " "
         "▂"
         "▃"
         "▄"
@@ -334,59 +321,24 @@ let
     };
 
     "custom/backlight" = {
-      format = " {}%";
+      format = " {}%";
       exec = "light -G | awk '{ print int($1) }'";
       interval = 10;
       on-scroll-up = "brightnessctl set +10%";
       on-scroll-down = "brightnessctl set 10%-";
     };
 
-    # "custom/spotify" = {
-    #   interval = 1;
-    #   return-type = "json";
-    #   exec = "~/.config/waybar/scripts/spotify.sh";
-    #   exec-if = "pgrep spotify";
-    #   escape = true;
-    # };
-
-    # "custom/tailscale-ping" = {
-    #   interval = 10;
-    #   return-type = "json";
-    #   exec =
-    #     let
-    #       inherit (builtins) concatStringsSep attrNames;
-    #       hosts = attrNames outputs.nixosConfigurations;
-    #       homeMachine = "merope";
-    #       remoteMachine = "alcyone";
-    #     in
-    #     jsonOutput "tailscale-ping" {
-    #       # Build variables for each host
-    #       pre = ''
-    #         set -o pipefail
-    #         ${concatStringsSep "\n" (map (host: ''
-    #           ping_${host}="$(${timeout} 2 ${ping} -c 1 -q ${host} 2>/dev/null | ${tail} -1 | ${cut} -d '/' -f5 | ${cut} -d '.' -f1)ms" || ping_${host}="Disconnected"
-    #         '') hosts)}
-    #       '';
-    #       # Access a remote machine's and a home machine's ping
-    #       text = "  $ping_${remoteMachine} /  $ping_${homeMachine}";
-    #       # Show pings from all machines
-    #       tooltip = concatStringsSep "\n" (map (host: "${host}: $ping_${host}") hosts);
-    #     };
-    #   format = "{}";
-    #   on-click = "";
-    # };
-
     "custom/seperator-left" = {
       return-type = "json";
       exec = jsonOutput "seperator-left" {
-        text = "";
+        text = "";
         # tooltip = ''$(${cat} /etc/os-release | ${grep} PRETTY_NAME | ${cut} -d '"' -f2)'';
       };
     };
     "custom/seperator-right" = {
       return-type = "json";
       exec = jsonOutput "seperator-right" {
-        text = "";
+        text = "";
         # tooltip = ''$(${cat} /etc/os-release | ${grep} PRETTY_NAME | ${cut} -d '"' -f2)'';
       };
     };
