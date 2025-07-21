@@ -410,11 +410,18 @@ jobs:
     steps:
       - name: Report pipeline status
         run: |
-          if [ "${{ needs.deployment-check.result }}" = "success" ]; then
+          DEPLOYMENT_RESULT="${{ needs.deployment-check.result }}"
+          
+          if [ "$DEPLOYMENT_RESULT" = "success" ]; then
             echo "✅ Production CI/CD pipeline completed successfully!"
             echo "🚀 Configurations are ready for deployment"
+          elif [ "$DEPLOYMENT_RESULT" = "skipped" ]; then
+            echo "⚠️  Deployment check was skipped (not on main branch)"
+            echo "✅ CI/CD pipeline completed successfully for feature branch"
+            echo "🔍 Deployment readiness will be checked when merged to main"
           else
             echo "❌ Production CI/CD pipeline failed"
             echo "🔍 Check the logs for details"
+            echo "📊 Deployment check result: $DEPLOYMENT_RESULT"
             exit 1
           fi
