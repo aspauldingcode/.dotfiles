@@ -83,7 +83,7 @@ in
     # ===================================================================
 
     # symlink (zulu) jdk23 to /Library/Java/JavaVirtualMachines/ # NEEDED for macOS!!
-    ln -sf "${inputs.nixpkgs.legacyPackages.aarch64-darwin.jdk23}/zulu-23.jdk" "/Library/Java/JavaVirtualMachines/"
+    ln -sf "${inputs.nixpkgs.legacyPackages.${systemType}.jdk23}/zulu-23.jdk" "/Library/Java/JavaVirtualMachines/"
 
     # ===================================================================
     # macOS Wallpaper Configuration
