@@ -24,7 +24,8 @@ cd ~/.dotfiles
 pwd  # Should show /Users/alex/.dotfiles
 
 # Or specify the flake path explicitly
-nix build ~/.dotfiles#darwinConfigurations.NIXY.system
+nix build ~/.dotfiles#darwinConfigurations.NIXY.system  # Apple Silicon
+nix build ~/.dotfiles#darwinConfigurations.NIXI.system  # Intel
 ```
 
 #### Error: "experimental feature 'flakes' is disabled"
@@ -33,7 +34,8 @@ nix build ~/.dotfiles#darwinConfigurations.NIXY.system
 echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 
 # Or use temporary flag
-nix --experimental-features "nix-command flakes" build .#darwinConfigurations.NIXY.system
+nix --experimental-features "nix-command flakes" build .#darwinConfigurations.NIXY.system  # Apple Silicon
+nix --experimental-features "nix-command flakes" build .#darwinConfigurations.NIXI.system  # Intel
 ```
 
 #### Error: "attribute 'darwinConfigurations' missing"
@@ -98,7 +100,8 @@ find ~/.dotfiles/secrets -type d -exec chmod 755 {} \;
 # Add Terminal.app or your terminal emulator
 
 # Or use sudo for system operations
-sudo darwin-rebuild switch --flake .#NIXY
+sudo darwin-rebuild switch --flake .#NIXY  # Apple Silicon
+sudo darwin-rebuild switch --flake .#NIXI  # Intel
 ```
 
 ## Build Problems

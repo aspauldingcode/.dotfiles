@@ -47,6 +47,7 @@ Last updated: Mon Jul 21 09:15:18 2025
 | System | Architecture | Hostname | Status |
 |--------|-------------|----------|---------|
 | macOS | aarch64-darwin | NIXY | ✅ Active |
+| macOS | x86_64-darwin | NIXI | ✅ Active |
 | NixOS Desktop | x86_64-linux | NIXSTATION64 | ✅ Active |
 | NixOS ARM | aarch64-linux | NIXY2 | ✅ Active |
 | Mobile NixOS | aarch64-linux | NIXEDUP (OnePlus 6T) | 🧪 Experimental |
@@ -131,6 +132,7 @@ nix build .#nixosConfigurations.NIXEDUP.config.system.build.toplevel
 
 # Darwin systems
 nix build .#darwinConfigurations.NIXY.system
+nix build .#darwinConfigurations.NIXI.system
 
 # Home Manager configurations
 nix build .#homeConfigurations.alex.activationPackage
@@ -146,6 +148,7 @@ sudo nixos-rebuild switch --flake .#NIXEDUP
 
 # Darwin (run on macOS)
 darwin-rebuild switch --flake .#NIXY
+darwin-rebuild switch --flake .#NIXI
 
 # Home Manager (run as user)
 home-manager switch --flake .#alex

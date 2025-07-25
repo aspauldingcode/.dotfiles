@@ -33,6 +33,7 @@ declare -A TEST_SUITES=(
 
 declare -A SYSTEMS=(
     ["NIXY"]="aarch64-darwin"
+    ["NIXI"]="x86_64-darwin"
     ["NIXSTATION64"]="x86_64-linux"
     ["NIXY2"]="aarch64-linux"
     ["NIXEDUP"]="aarch64-linux"
@@ -137,6 +138,7 @@ EXAMPLES:
     $0                     # Run all tests
     $0 syntax              # Run only syntax tests
     $0 build --system NIXY # Test building NIXY only
+    $0 build --system NIXI # Test building NIXI only
     $0 all --verbose       # Run all tests with verbose output
 
 OPTIONS:
@@ -242,9 +244,13 @@ test_build() {
     done
     
     # Test home configurations
-    run_test "build-home-alex" \
+    run_test "build-home-alex-NIXY" \
         "nix build .#homeConfigurations.alex-NIXY.activationPackage --no-link" \
-        "Build alex home configuration"
+        "Build alex-NIXY home configuration"
+    
+    run_test "build-home-alex-NIXI" \
+        "nix build .#homeConfigurations.alex-NIXI.activationPackage --no-link" \
+        "Build alex-NIXI home configuration"
     
     # Test development shells
     run_test "build-devshell" \

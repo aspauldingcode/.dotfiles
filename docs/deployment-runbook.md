@@ -54,6 +54,29 @@ system_profiler SPSoftwareDataType
 nix-env --list-generations
 ```
 
+#### NIXI (Intel macOS)
+```bash
+# 1. Backup current configuration
+sudo cp -r /etc/nix /etc/nix.backup.$(date +%Y%m%d-%H%M%S)
+
+# 2. Clone/update repository
+cd ~/.dotfiles
+git pull origin main
+
+# 3. Validate configuration
+./scripts/flake-check.sh --current-system
+
+# 4. Build configuration
+nix build .#darwinConfigurations.NIXI.system
+
+# 5. Apply configuration
+sudo ./result/sw/bin/darwin-rebuild switch --flake .#NIXI
+
+# 6. Verify system health
+system_profiler SPSoftwareDataType
+nix-env --list-generations
+```
+
 #### Rollback Procedure (macOS)
 ```bash
 # List available generations

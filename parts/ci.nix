@@ -18,6 +18,7 @@
         nix build .#nixosConfigurations.NIXSTATION64.config.system.build.toplevel --dry-run
         nix build .#nixosConfigurations.NIXY2.config.system.build.toplevel --dry-run
         nix build .#darwinConfigurations.NIXY.system --dry-run
+        nix build .#darwinConfigurations.NIXI.system --dry-run
         
         echo "All CI checks passed!"
       '';
@@ -36,6 +37,9 @@
             ;;
           "NIXY")
             darwin-rebuild switch --flake .#NIXY
+            ;;
+          "NIXI")
+            darwin-rebuild switch --flake .#NIXI
             ;;
           *)
             echo "Unknown hostname: $(hostname)"

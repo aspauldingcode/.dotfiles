@@ -127,6 +127,7 @@ jobs:
           - { name: "NIXY2", type: "nixos", arch: "aarch64-linux" }
           - { name: "NIXEDUP", type: "nixos", arch: "aarch64-linux" }
           - { name: "NIXY", type: "darwin", arch: "aarch64-darwin" }
+          - { name: "NIXI", type: "darwin", arch: "x86_64-darwin" }
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -378,6 +379,7 @@ jobs:
           - ✅ NIXY2 (aarch64-linux) 
           - ✅ NIXEDUP (aarch64-linux, mobile)
           - ✅ NIXY (aarch64-darwin)
+          - ✅ NIXI (x86_64-darwin)
           
           ## Security Status
           - ✅ Secret scanning passed
@@ -415,7 +417,9 @@ jobs:
           if [ "$DEPLOYMENT_RESULT" = "success" ]; then
             echo "✅ Production CI/CD pipeline completed successfully!"
             echo "🚀 Configurations are ready for deployment"
-          elif [ "$DEPLOYMENT_RESULT" = "skipped" ]; then
+          elif [ "$DEPLOY
+          
+          MENT_RESULT" = "skipped" ]; then
             echo "⚠️  Deployment check was skipped (not on main branch)"
             echo "✅ CI/CD pipeline completed successfully for feature branch"
             echo "🔍 Deployment readiness will be checked when merged to main"

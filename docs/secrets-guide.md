@@ -40,7 +40,8 @@ secrets/
 │   ├── alex.yaml      # User alex's personal secrets
 │   └── susu.yaml      # User susu's personal secrets
 └── systems/            # System-specific secrets
-    ├── NIXY.yaml      # macOS system secrets
+    ├── NIXY.yaml      # macOS system secrets (Apple Silicon)
+    ├── NIXI.yaml      # macOS system secrets (Intel)
     ├── NIXSTATION64.yaml  # Linux workstation secrets
     ├── NIXY2.yaml     # ARM Linux secrets
     └── NIXEDUP.yaml   # Mobile device secrets
@@ -212,6 +213,9 @@ monitoring:
 # Create secrets for NIXY system
 ./scripts/secrets-manager.sh create-system NIXY
 
+# Create secrets for NIXI system  
+./scripts/secrets-manager.sh create-system NIXI
+
 # Create secrets for NIXSTATION64
 ./scripts/secrets-manager.sh create-system NIXSTATION64
 ```
@@ -227,6 +231,7 @@ monitoring:
 
 # Edit system secrets
 ./scripts/secrets-manager.sh edit systems NIXY.yaml
+./scripts/secrets-manager.sh edit systems NIXI.yaml
 
 # Edit with specific editor
 EDITOR=vim ./scripts/secrets-manager.sh edit production secrets.yaml

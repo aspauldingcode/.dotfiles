@@ -12,6 +12,7 @@
     # Darwin hosts
     darwin = {
       NIXY = ./darwin/NIXY;
+      NIXI = ./darwin/NIXI;
     };
 
     # Shared configuration

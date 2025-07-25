@@ -14,7 +14,8 @@ secrets/
 ├── staging/
 │   └── secrets.yaml            # Staging environment secrets
 ├── systems/
-│   ├── NIXY.yaml               # System-specific secrets for NIXY
+│   ├── NIXY.yaml               # System-specific secrets for NIXY (Apple Silicon)
+│   ├── NIXI.yaml               # System-specific secrets for NIXI (Intel)
 │   ├── NIXY2.yaml              # System-specific secrets for NIXY2 (if needed)
 │   └── NIXSTATION64.yaml       # System-specific secrets for NIXSTATION64 (if needed)
 └── users/
@@ -189,6 +190,7 @@ sops secrets/users/alex.yaml
 
 # For system-specific secrets
 sops secrets/systems/NIXY.yaml
+sops secrets/systems/NIXI.yaml
 ```
 
 ### Key Management

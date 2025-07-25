@@ -94,7 +94,8 @@ This document provides a comprehensive overview of the current state of our Nix 
 
 | System | Status | Architecture | Type | Notes |
 |--------|--------|--------------|------|-------|
-| NIXY | ✅ Active | x86_64 | macOS Darwin | Primary development system |
+| NIXY | ✅ Active | aarch64 | macOS Darwin | Primary development system (Apple Silicon) |
+| NIXI | ✅ Active | x86_64 | macOS Darwin | Intel development system |
 | NIXSTATION64 | ✅ Active | x86_64 | NixOS | Linux workstation |
 | NIXY2 | ✅ Active | aarch64 | ARM Linux | ARM development system |
 | NIXEDUP | 🚧 Planned | aarch64 | Mobile | Mobile device configuration |
@@ -104,7 +105,7 @@ This document provides a comprehensive overview of the current state of our Nix 
 | User | Status | Systems | Home Manager | Notes |
 |------|--------|---------|--------------|-------|
 | alex | ✅ Complete | All | ✅ Configured | Primary user |
-| susu | ✅ Complete | NIXY, NIXY2 | ✅ Configured | Secondary user |
+| susu | ✅ Complete | NIXY, NIXI, NIXY2 | ✅ Configured | Secondary user |
 
 ### Environment Status
 

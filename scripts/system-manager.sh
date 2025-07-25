@@ -21,6 +21,7 @@ NC='\033[0m' # No Color
 # System configurations
 declare -A SYSTEMS=(
     ["NIXY"]="aarch64-darwin"
+    ["NIXI"]="x86_64-darwin"
     ["NIXSTATION64"]="x86_64-linux"
     ["NIXY2"]="aarch64-linux"
     ["NIXEDUP"]="aarch64-linux"
@@ -28,6 +29,7 @@ declare -A SYSTEMS=(
 
 declare -A SYSTEM_TYPES=(
     ["NIXY"]="darwin"
+    ["NIXI"]="darwin"
     ["NIXSTATION64"]="nixos"
     ["NIXY2"]="nixos"
     ["NIXEDUP"]="mobile-nixos"
@@ -86,6 +88,7 @@ COMMANDS:
 
 SYSTEMS:
     NIXY                    Apple Silicon macOS (aarch64-darwin)
+    NIXI                    Intel macOS (x86_64-darwin)
     NIXSTATION64            x86_64 Linux Desktop (x86_64-linux)
     NIXY2                   ARM64 Linux VM (aarch64-linux)
     NIXEDUP                 Mobile NixOS OnePlus 6T (aarch64-linux)
