@@ -16,17 +16,17 @@ let
     else
       throw "Homebrew Unsupported architecture: ${systemType}";
   inherit (config.colorScheme) palette;
-  # wallpaper_input =
-  #   if pkgs.stdenv.isDarwin then
-  #     ./../../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper-darwin.png
-  #   else
-  #     ./../../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper.png;
-  # wallpaper_output =
-  #   if pkgs.stdenv.isDarwin then
-  #     "/var/root/Pictures/gowall/nix-colors-wallpaper-darwin.png"
-  #   else
-  #     "/var/root/Pictures/gowall/nix-colors-wallpaper.png";
-  # gowall = "${pkgs.unstable.gowall}/bin/gowall";
+  wallpaper_input =
+    if pkgs.stdenv.isDarwin then
+      ./../../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper-darwin.png
+    else
+      ./../../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper.png;
+  wallpaper_output =
+    if pkgs.stdenv.isDarwin then
+      "/var/root/Pictures/gowall/nix-colors-wallpaper-darwin.png"
+    else
+      "/var/root/Pictures/gowall/nix-colors-wallpaper.png";
+  gowall = "${pkgs.unstable.gowall}/bin/gowall";
 in
 {
   system.activationScripts.postActivation.text = ''
@@ -94,11 +94,11 @@ in
     # create the wallpaper directory if it doesn't exist
     # mkdir -p /Users/Shared/Wallpaper/
 
-    # echo "Recoloring Wallpapers to ${config.colorScheme.slug} color scheme..."
-     # gowall convert wallpaper_input -t /etc/gowall/theme.json
+    # echo "Recoloring Wallpapers to ''${config.colorScheme.slug} color scheme..."
+     # ''${gowall} convert ''${wallpaper_input} -t /etc/gowall/theme.json
 
-    # echo "Setting ${config.colorScheme.variant} wallpaper..."
-     # wallpaper "wallpaper_output"
+     # echo "Setting ''${config.colorScheme.variant} wallpaper..."
+     # wallpaper "''${wallpaper_output}"
 
     # ===================================================================
     # macOS Dark/Light Mode Configuration
