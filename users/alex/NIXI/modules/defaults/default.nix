@@ -79,7 +79,7 @@
           "${pkgs.obsidian}/Applications/Obsidian.app"
         ]
         ++ (
-          if pkgs.stdenv.isDarwin && pkgs.stdenv.isAarch64 then
+          if pkgs.stdenv.isDarwin then
             [ ]
           else
             [
