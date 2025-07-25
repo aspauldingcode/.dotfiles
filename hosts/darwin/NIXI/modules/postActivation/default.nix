@@ -95,10 +95,10 @@ in
     # mkdir -p /Users/Shared/Wallpaper/
 
     # echo "Recoloring Wallpapers to ${config.colorScheme.slug} color scheme..."
-    # ${gowall} convert ${wallpaper_input} -t /etc/gowall/theme.json
+     # gowall convert wallpaper_input -t /etc/gowall/theme.json
 
     # echo "Setting ${config.colorScheme.variant} wallpaper..."
-    # wallpaper "''${wallpaper_output}"
+     # wallpaper "wallpaper_output"
 
     # ===================================================================
     # macOS Dark/Light Mode Configuration
