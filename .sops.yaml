@@ -17,7 +17,7 @@ keys:
   
   # System host keys (for system-specific secrets) - REPLACE WITH ACTUAL HOST KEYS
   - &host_nixy age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2      # Placeholder: use NIXY host key
-  - &host_nixi age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2      # Placeholder: use NIXI host key
+  - &host_nixi age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2      # NIXI host key
   - &host_nixy2 age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2     # Placeholder: use NIXY2 host key
   - &host_nixstation64 age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2  # Placeholder: use NIXSTATION64 host key
   

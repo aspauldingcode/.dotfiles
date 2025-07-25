@@ -1531,7 +1531,7 @@ in
       };
       "[c]" = {
         "editor.defaultFormatter" =
-          if pkgs.stdenv.isDarwin && pkgs.stdenv.isAarch64 then
+          if pkgs.stdenv.isDarwin then
             "jnoortheen.nix-ide"
           else
             "ms-vscode.cpptools";
@@ -1539,7 +1539,7 @@ in
       };
       "[cpp]" = {
         "editor.defaultFormatter" =
-          if pkgs.stdenv.isDarwin && pkgs.stdenv.isAarch64 then
+          if pkgs.stdenv.isDarwin then
             "jnoortheen.nix-ide"
           else
             "ms-vscode.cpptools";
@@ -1646,7 +1646,7 @@ in
         jnoortheen.nix-ide
 
         # Language Support - C/C++
-        # Note: ms-vscode.cpptools doesn't support aarch64-darwin
+        # Note: ms-vscode.cpptools doesn't support Darwin platforms
       ]
       ++ (
         if pkgs.stdenv.isLinux && pkgs.stdenv.isAarch64 then
@@ -1657,7 +1657,7 @@ in
           ]
       )
       ++ (
-        if pkgs.stdenv.isDarwin && pkgs.stdenv.isAarch64 then
+        if pkgs.stdenv.isDarwin then
           [ ]
         else
           [

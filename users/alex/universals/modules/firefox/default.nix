@@ -24,8 +24,8 @@ in
       { };
 
   programs.firefox = {
-    enable = if pkgs.stdenv.isDarwin && pkgs.stdenv.isAarch64 then false else true;
-    package = pkgs.firefox;
+    enable = true;
+    package = if pkgs.stdenv.isDarwin then pkgs.firefox-bin else pkgs.firefox;
     profiles = {
       ${user} = {
         userChrome =
