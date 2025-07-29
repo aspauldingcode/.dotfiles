@@ -6,9 +6,9 @@
 let
   wallpaper_input =
     if pkgs.stdenv.isDarwin then
-      ./../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper-darwin.png
+      ../../../extraConfig/wallpapers/nix-colors-wallpaper-darwin.png
     else
-      ./../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper.png;
+      ../../../extraConfig/wallpapers/nix-colors-wallpaper.png;
   wallpaper_output =
     if pkgs.stdenv.isDarwin then
       "/var/root/Pictures/gowall/nix-colors-wallpaper-darwin.png"

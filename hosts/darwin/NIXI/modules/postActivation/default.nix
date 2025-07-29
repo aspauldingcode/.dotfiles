@@ -18,9 +18,9 @@ let
   inherit (config.colorScheme) palette;
   wallpaper_input =
     if pkgs.stdenv.isDarwin then
-      ./../../../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper-darwin.png
+      ../../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper-darwin.png
     else
-      ./../../../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper.png;
+      ../../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper.png;
   wallpaper_output =
     if pkgs.stdenv.isDarwin then
       "/var/root/Pictures/gowall/nix-colors-wallpaper-darwin.png"
@@ -121,7 +121,7 @@ in
     echo "Setting profile picture..."
     sudo dscl . delete /Users/${user} jpegphoto
     sudo dscl . delete /Users/${user} Picture
-    sudo dscl . create /Users/${user} Picture "${./../../../../../users/${user}/face.heic}"
+    sudo dscl . create /Users/${user} Picture "${../../../../users/${user}/face.heic}"
 
     echo "Setting permissions for ${config.colorScheme.slug}-${config.colorScheme.variant} Glow Theme..."
     sudo chmod -R 777 /Library/GlowThemes/${config.colorScheme.slug}-${config.colorScheme.variant}/

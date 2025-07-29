@@ -25,7 +25,7 @@ in
 
   programs.firefox = {
     enable = true;
-    package = if pkgs.stdenv.isDarwin then pkgs.firefox-bin else pkgs.firefox;
+    package = pkgs.firefox;
     profiles = {
       ${user} = {
         userChrome =
@@ -452,7 +452,7 @@ in
         userContent = ''
           @-moz-document url("about:newtab") {
             body {
-              background-image: url("${./../../../extraConfig/wallpapers/sweden.png}") !important;
+              background-image: url("${../../../extraConfig/wallpapers/sweden.png}") !important;
               background-size: cover !important;
               background-position: center !important;
             }
