@@ -542,6 +542,23 @@
         "type": "github"
       }
     },
+    "nixible": {
+      "locked": {
+        "dir": "lib",
+        "lastModified": 1753728077,
+        "narHash": "sha256-MEj4TBnuRgfq+BwRRqZ4KAgEtVQMHgO1sq2vsWscf+s=",
+        "owner": "TECHNOFAB",
+        "repo": "nixible",
+        "rev": "ba08a453ea26e16e6205e22a38070976cc6f3283",
+        "type": "gitlab"
+      },
+      "original": {
+        "dir": "lib",
+        "owner": "TECHNOFAB",
+        "repo": "nixible",
+        "type": "gitlab"
+      }
+    },
     "nixlib": {
       "locked": {
         "lastModified": 1736643958,
@@ -798,6 +815,7 @@
         "nix-homebrew": "nix-homebrew",
         "nix-rosetta-builder": "nix-rosetta-builder",
         "nix-std": "nix-std",
+        "nixible": "nixible",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixtheplanet": "nixtheplanet",

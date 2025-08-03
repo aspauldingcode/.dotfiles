@@ -23,6 +23,11 @@
         nix flake show
       '';
 
+      # Nixible CLI for 8AMPS iPhone configuration
+      "8AMPS" = 
+        let nixible_lib = inputs.nixible.lib { inherit pkgs; lib = pkgs.lib; };
+        in nixible_lib.mkNixibleCli ../playbooks/remote-device-setup.nix;
+
       # Dialog-based secrets manager for sops-nix
       secrets-manager = pkgs.callPackage ../packages/secrets-manager.nix {};
 

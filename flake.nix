@@ -103,6 +103,12 @@
       url = "github:cpick/nix-rosetta-builder";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+  
+    # Ansible automation with Nix
+    nixible = {
+      url = "gitlab:TECHNOFAB/nixible?dir=lib";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {flake-parts, ...}:
