@@ -1,7 +1,7 @@
-{ pkgs, ... }:
+{pkgs, ...}:
 # WireGuard VPN setup to access my homeserver from school.
 {
-  environment.systemPackages = with pkgs; [ wireguard-tools ];
+  environment.systemPackages = with pkgs; [wireguard-tools];
   # TIP! Use:
   #wg genkey | tee privatekey | wg pubkey > publickey
   #to generate a key.

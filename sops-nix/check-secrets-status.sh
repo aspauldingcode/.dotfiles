@@ -10,59 +10,59 @@ echo
 # Check if all secret files are encrypted
 echo "📁 Secret Files Status:"
 for file in secrets/development/secrets.yaml secrets/production/secrets.yaml secrets/staging/secrets.yaml secrets/systems/NIXY.yaml secrets/users/alex.yaml; do
-    if [[ -f "$file" ]]; then
-        if sops --decrypt "$file" >/dev/null 2>&1; then
-            echo "  ✅ $file - Encrypted and decryptable"
-        else
-            echo "  ❌ $file - Cannot decrypt"
-        fi
+  if [[ -f $file ]]; then
+    if sops --decrypt "$file" >/dev/null 2>&1; then
+      echo "  ✅ $file - Encrypted and decryptable"
     else
-        echo "  ⚠️  $file - File not found"
+      echo "  ❌ $file - Cannot decrypt"
     fi
+  else
+    echo "  ⚠️  $file - File not found"
+  fi
 done
 
 echo
 echo "🔑 Age Key Status:"
 if [[ -f ~/.config/sops/age/keys.txt ]]; then
-    echo "  ✅ Age key file exists"
-    key_perms=$(stat -f "%A" ~/.config/sops/age/keys.txt)
-    if [[ "$key_perms" == "600" ]]; then
-        echo "  ✅ Correct permissions (600)"
-    else
-        echo "  ⚠️  Permissions: $key_perms (should be 600)"
-    fi
-    
-    # Extract public key
-    if command -v age-keygen >/dev/null 2>&1; then
-        public_key=$(age-keygen -y ~/.config/sops/age/keys.txt 2>/dev/null)
-        echo "  🔑 Public key: $public_key"
-    fi
+  echo "  ✅ Age key file exists"
+  key_perms=$(stat -f "%A" ~/.config/sops/age/keys.txt)
+  if [[ $key_perms == "600" ]]; then
+    echo "  ✅ Correct permissions (600)"
+  else
+    echo "  ⚠️  Permissions: $key_perms (should be 600)"
+  fi
+
+  # Extract public key
+  if command -v age-keygen >/dev/null 2>&1; then
+    public_key=$(age-keygen -y ~/.config/sops/age/keys.txt 2>/dev/null)
+    echo "  🔑 Public key: $public_key"
+  fi
 else
-    echo "  ❌ Age key file not found"
+  echo "  ❌ Age key file not found"
 fi
 
 echo
 echo "⚙️  Configuration Status:"
 if [[ -f .sops.yaml ]]; then
-    echo "  ✅ .sops.yaml configuration exists"
-    if sops --config .sops.yaml --encrypt /dev/null >/dev/null 2>&1; then
-        echo "  ✅ SOPS configuration is valid"
-    else
-        echo "  ❌ SOPS configuration has errors"
-    fi
+  echo "  ✅ .sops.yaml configuration exists"
+  if sops --config .sops.yaml --encrypt /dev/null >/dev/null 2>&1; then
+    echo "  ✅ SOPS configuration is valid"
+  else
+    echo "  ❌ SOPS configuration has errors"
+  fi
 else
-    echo "  ❌ .sops.yaml not found"
+  echo "  ❌ .sops.yaml not found"
 fi
 
 if [[ -f sopsConfig.nix ]]; then
-    echo "  ✅ sopsConfig.nix exists"
-    if nix-instantiate --eval --expr 'import ./sopsConfig.nix { environment = "development"; }' >/dev/null 2>&1; then
-        echo "  ✅ sopsConfig.nix syntax is valid"
-    else
-        echo "  ❌ sopsConfig.nix has syntax errors"
-    fi
+  echo "  ✅ sopsConfig.nix exists"
+  if nix-instantiate --eval --expr 'import ./sopsConfig.nix { environment = "development"; }' >/dev/null 2>&1; then
+    echo "  ✅ sopsConfig.nix syntax is valid"
+  else
+    echo "  ❌ sopsConfig.nix has syntax errors"
+  fi
 else
-    echo "  ❌ sopsConfig.nix not found"
+  echo "  ❌ sopsConfig.nix not found"
 fi
 
 echo

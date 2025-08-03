@@ -1,6 +1,11 @@
 # Mobile Profile - Mobile device optimizations
-{ inputs, lib, config, pkgs, ... }:
 {
+  inputs,
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
   # Mobile-specific configuration
   imports = [
     # Add mobile-specific modules here

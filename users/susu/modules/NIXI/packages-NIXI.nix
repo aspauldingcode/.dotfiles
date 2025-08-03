@@ -1,16 +1,6 @@
-{
-  lib,
-  config,
-  pkgs,
-  ...
-}:
-# NIXI-specific packages (Intel Mac)
-{
-  imports = [
-    ../packages-UNIVERSAL.nix
-  ];
+{pkgs, ...}: {
+  # NIXI-specific packages (Intel Mac)
   home.packages = with pkgs; [
-    # Intel Mac specific packages can go here
-    # Avoid packages that don't support x86_64-darwin
+   
   ];
 }

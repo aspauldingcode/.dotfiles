@@ -38,16 +38,17 @@ Development Environment
 ### Deployment Types
 
 1. **System Deployment**: Full system configuration updates
-2. **User Deployment**: Home Manager configuration updates
-3. **Service Deployment**: Individual service updates
-4. **Secret Deployment**: Encrypted secrets management
-5. **Emergency Deployment**: Critical security updates
+1. **User Deployment**: Home Manager configuration updates
+1. **Service Deployment**: Individual service updates
+1. **Secret Deployment**: Encrypted secrets management
+1. **Emergency Deployment**: Critical security updates
 
 ## Environment Management
 
 ### Environment Configuration
 
 #### Production Environment
+
 ```bash
 # Set production environment
 export NIX_FLAKE_ENV="production"
@@ -60,6 +61,7 @@ export NIX_SUBSTITUTERS="https://cache.nixos.org https://production.cachix.org"
 ```
 
 #### Staging Environment
+
 ```bash
 # Set staging environment
 export NIX_FLAKE_ENV="staging"
@@ -71,6 +73,7 @@ export NIX_MAX_JOBS=2
 ```
 
 #### Development Environment
+
 ```bash
 # Set development environment
 export NIX_FLAKE_ENV="development"
@@ -103,31 +106,34 @@ export NIX_FAST_BUILD=true
 ### Pre-Deployment Checklist
 
 1. **Code Review and Approval**:
+
    ```bash
    # Ensure all changes are reviewed
    git log --oneline origin/main..HEAD
-   
+
    # Check for required approvals
    gh pr view --json reviewDecision
    ```
 
-2. **Testing Validation**:
+1. **Testing Validation**:
+
    ```bash
    # Run comprehensive tests
    ./scripts/test-framework.sh --environment production
-   
+
    # Validate secrets
    ./scripts/secrets-manager.sh validate --environment production
-   
+
    # Security scan
    ./scripts/test-framework.sh --suite security
    ```
 
-3. **Backup Current State**:
+1. **Backup Current State**:
+
    ```bash
    # Backup current configuration
    ./scripts/system-manager.sh backup NIXY
-   
+
    # Backup secrets
    ./scripts/secrets-manager.sh backup --environment production
    ```
@@ -135,6 +141,7 @@ export NIX_FAST_BUILD=true
 ### Production Deployment Process
 
 #### Step 1: Prepare Deployment
+
 ```bash
 # Set production environment
 export NIX_FLAKE_ENV="production"
@@ -148,6 +155,7 @@ nix flake update
 ```
 
 #### Step 2: Deploy to Production Systems
+
 ```bash
 # Deploy to primary system
 ./scripts/system-manager.sh deploy production NIXY
@@ -158,6 +166,7 @@ nix flake update
 ```
 
 #### Step 3: Verify Deployment
+
 ```bash
 # Health check all systems
 ./scripts/system-manager.sh health-check NIXY
@@ -169,6 +178,7 @@ nix flake update
 ```
 
 #### Step 4: Post-Deployment Tasks
+
 ```bash
 # Update monitoring
 ./scripts/system-manager.sh update-monitoring
@@ -650,6 +660,6 @@ curl -X POST -H 'Content-Type: application/json' \
     "$METRICS_ENDPOINT"
 ```
 
----
+______________________________________________________________________
 
 This deployment guide provides comprehensive coverage of deployment strategies and operational procedures. Customize the scripts and processes according to your specific infrastructure and requirements.

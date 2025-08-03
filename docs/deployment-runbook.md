@@ -7,31 +7,35 @@ This runbook provides step-by-step procedures for deploying and managing the pro
 ## 📋 Pre-Deployment Checklist
 
 ### Security Verification
-- [ ] All SOPS keys are properly rotated for production
-- [ ] Secrets are encrypted and validated
-- [ ] Security scanning has passed in CI/CD
-- [ ] No hardcoded credentials in configurations
-- [ ] Firewall rules are configured appropriately
+
+- \[ \] All SOPS keys are properly rotated for production
+- \[ \] Secrets are encrypted and validated
+- \[ \] Security scanning has passed in CI/CD
+- \[ \] No hardcoded credentials in configurations
+- \[ \] Firewall rules are configured appropriately
 
 ### Configuration Validation
-- [ ] All configurations pass `nix flake check`
-- [ ] Cross-platform builds are tested
-- [ ] Development shells are functional
-- [ ] Custom packages build successfully
-- [ ] Performance benchmarks are within acceptable limits
+
+- \[ \] All configurations pass `nix flake check`
+- \[ \] Cross-platform builds are tested
+- \[ \] Development shells are functional
+- \[ \] Custom packages build successfully
+- \[ \] Performance benchmarks are within acceptable limits
 
 ### Infrastructure Readiness
-- [ ] Target hardware is available and accessible
-- [ ] Network connectivity is established
-- [ ] Backup systems are in place
-- [ ] Monitoring systems are configured
-- [ ] Rollback procedures are tested
+
+- \[ \] Target hardware is available and accessible
+- \[ \] Network connectivity is established
+- \[ \] Backup systems are in place
+- \[ \] Monitoring systems are configured
+- \[ \] Rollback procedures are tested
 
 ## 🎯 Deployment Procedures
 
 ### 1. macOS Systems (Darwin)
 
 #### NIXY (Apple Silicon macOS)
+
 ```bash
 # 1. Backup current configuration
 sudo cp -r /etc/nix /etc/nix.backup.$(date +%Y%m%d-%H%M%S)
@@ -55,6 +59,7 @@ nix-env --list-generations
 ```
 
 #### NIXI (Intel macOS)
+
 ```bash
 # 1. Backup current configuration
 sudo cp -r /etc/nix /etc/nix.backup.$(date +%Y%m%d-%H%M%S)
@@ -70,7 +75,7 @@ git pull origin main
 nix build .#darwinConfigurations.NIXI.system
 
 # 5. Apply configuration
-sudo ./result/sw/bin/darwin-rebuild switch --flake .#NIXI
+darwin-rebuild switch --flake .#NIXI
 
 # 6. Verify system health
 system_profiler SPSoftwareDataType
@@ -78,6 +83,7 @@ nix-env --list-generations
 ```
 
 #### Rollback Procedure (macOS)
+
 ```bash
 # List available generations
 sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
@@ -90,6 +96,7 @@ sudo /nix/var/nix/profiles/system/activate
 ### 2. NixOS Systems
 
 #### NIXSTATION64 (x86_64 Linux Desktop)
+
 ```bash
 # 1. Backup current configuration
 sudo cp /etc/nixos/configuration.nix /etc/nixos/configuration.nix.backup.$(date +%Y%m%d-%H%M%S)
@@ -116,6 +123,7 @@ journalctl -xe --no-pager -n 50
 ```
 
 #### NIXY2 (ARM64 Linux VM)
+
 ```bash
 # 1. Ensure VM is running and accessible
 ssh admin@nixy2-vm
@@ -137,6 +145,7 @@ df -h
 ```
 
 #### NIXEDUP (Mobile NixOS - OnePlus 6T)
+
 ```bash
 # 1. Prepare mobile device
 # Ensure device is in fastboot mode
@@ -162,6 +171,7 @@ systemctl status chatty
 ### 3. Home Manager Configurations
 
 #### Standalone Home Manager Deployment
+
 ```bash
 # 1. Update repository
 cd ~/.dotfiles
@@ -184,6 +194,7 @@ which nvim
 ### Common Issues and Solutions
 
 #### 1. Build Failures
+
 ```bash
 # Clear Nix cache
 nix-collect-garbage -d
@@ -194,6 +205,7 @@ nix build --verbose --show-trace .#nixosConfigurations.SYSTEM_NAME.config.system
 ```
 
 #### 2. SOPS Decryption Failures
+
 ```bash
 # Verify SOPS key
 sops --decrypt secrets/example.yaml
@@ -206,6 +218,7 @@ age-keygen -o ~/.config/sops/age/keys.txt
 ```
 
 #### 3. Cross-Platform Build Issues
+
 ```bash
 # Use our custom flake check script
 ./scripts/flake-check.sh --current-system
@@ -215,6 +228,7 @@ nix build --system $(nix eval --impure --raw --expr 'builtins.currentSystem') .#
 ```
 
 #### 4. Network Connectivity Issues (Mobile)
+
 ```bash
 # Check NetworkManager status
 nmcli device status
@@ -225,6 +239,7 @@ sudo systemctl restart NetworkManager
 ```
 
 #### 5. Performance Issues
+
 ```bash
 # Check system resources
 htop
@@ -238,6 +253,7 @@ nix store optimise
 ## 📊 Health Checks
 
 ### System Health Verification
+
 ```bash
 #!/bin/bash
 # health-check.sh
@@ -280,6 +296,7 @@ echo "✅ Health check completed"
 ```
 
 ### Performance Monitoring
+
 ```bash
 #!/bin/bash
 # performance-monitor.sh
@@ -305,6 +322,7 @@ echo "📊 Performance monitoring completed"
 ## 🔄 Backup and Recovery
 
 ### Configuration Backup
+
 ```bash
 #!/bin/bash
 # backup-config.sh
@@ -326,6 +344,7 @@ echo "✅ Configuration backed up to $BACKUP_DIR"
 ```
 
 ### System Recovery
+
 ```bash
 #!/bin/bash
 # recovery.sh
@@ -352,6 +371,7 @@ reboot
 ## 📈 Monitoring and Alerting
 
 ### Key Metrics to Monitor
+
 - System uptime and availability
 - Disk usage (/nix partition)
 - Memory consumption
@@ -361,6 +381,7 @@ reboot
 - Security update status
 
 ### Alerting Thresholds
+
 - Disk usage > 85%
 - Memory usage > 90%
 - Service downtime > 5 minutes
@@ -370,6 +391,7 @@ reboot
 ## 🔐 Security Procedures
 
 ### SOPS Key Rotation
+
 ```bash
 #!/bin/bash
 # rotate-sops-keys.sh
@@ -397,6 +419,7 @@ echo "✅ SOPS key rotation completed"
 ```
 
 ### Security Audit
+
 ```bash
 #!/bin/bash
 # security-audit.sh
@@ -422,12 +445,14 @@ echo "🔒 Security audit completed"
 ## 📞 Emergency Contacts and Escalation
 
 ### Emergency Procedures
+
 1. **System Down**: Use recovery media to boot and rollback
-2. **Security Breach**: Immediately rotate all SOPS keys and secrets
-3. **Data Loss**: Restore from latest backup and verify integrity
-4. **Network Issues**: Check physical connections and restart NetworkManager
+1. **Security Breach**: Immediately rotate all SOPS keys and secrets
+1. **Data Loss**: Restore from latest backup and verify integrity
+1. **Network Issues**: Check physical connections and restart NetworkManager
 
 ### Escalation Matrix
+
 - **Level 1**: Configuration issues, minor service disruptions
 - **Level 2**: System boot failures, major service outages
 - **Level 3**: Security incidents, data corruption, hardware failures
@@ -440,7 +465,7 @@ echo "🔒 Security audit completed"
 - [SOPS Documentation](https://github.com/mozilla/sops)
 - [Mobile NixOS Documentation](https://mobile.nixos.org/)
 
----
+______________________________________________________________________
 
 **Last Updated**: $(date)
 **Version**: 1.0

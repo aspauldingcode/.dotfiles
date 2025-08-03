@@ -58,24 +58,27 @@ secrets/
 ### Initial Setup
 
 1. **Install Required Tools**:
+
    ```bash
    # Install age
    nix-env -iA nixpkgs.age
-   
+
    # Install SOPS
    nix-env -iA nixpkgs.sops
    ```
 
-2. **Generate Age Key**:
+1. **Generate Age Key**:
+
    ```bash
    mkdir -p ~/.config/sops/age
    age-keygen -o ~/.config/sops/age/keys.txt
-   
+
    # Display public key for configuration
    age-keygen -y ~/.config/sops/age/keys.txt
    ```
 
-3. **Initialize Secrets Management**:
+1. **Initialize Secrets Management**:
+
    ```bash
    ./scripts/secrets-manager.sh init
    ```
@@ -188,6 +191,7 @@ monitoring:
 ### Creating Secrets
 
 #### Create Environment-Specific Secrets
+
 ```bash
 # Create production secrets
 ./scripts/secrets-manager.sh create production api-keys
@@ -200,6 +204,7 @@ monitoring:
 ```
 
 #### Create User-Specific Secrets
+
 ```bash
 # Create secrets for user alex
 ./scripts/secrets-manager.sh create-user alex
@@ -209,6 +214,7 @@ monitoring:
 ```
 
 #### Create System-Specific Secrets
+
 ```bash
 # Create secrets for NIXY system
 ./scripts/secrets-manager.sh create-system NIXY
@@ -253,6 +259,7 @@ EDITOR=vim ./scripts/secrets-manager.sh edit production secrets.yaml
 ### Key Management
 
 #### Rotate Age Keys
+
 ```bash
 # Backup current keys
 ./scripts/secrets-manager.sh backup
@@ -265,6 +272,7 @@ EDITOR=vim ./scripts/secrets-manager.sh edit production secrets.yaml
 ```
 
 #### Add New Recipients
+
 ```bash
 # Add new age public key to .sops.yaml
 ./scripts/secrets-manager.sh add-recipient age1234567890abcdef...
@@ -386,17 +394,20 @@ in
 ### Key Management
 
 1. **Regular Key Rotation**:
+
    ```bash
    # Rotate keys monthly
    ./scripts/secrets-manager.sh rotate-keys
    ```
 
-2. **Secure Key Storage**:
+1. **Secure Key Storage**:
+
    - Store age keys in `~/.config/sops/age/keys.txt`
    - Set proper file permissions: `chmod 600 ~/.config/sops/age/keys.txt`
    - Backup keys securely (encrypted external storage)
 
-3. **Multiple Recipients**:
+1. **Multiple Recipients**:
+
    - Use multiple age keys for redundancy
    - Include team members' keys for shared secrets
    - Use PGP keys for additional security layer
@@ -404,20 +415,23 @@ in
 ### Secret Organization
 
 1. **Environment Separation**:
+
    - Never use production secrets in development
    - Use different keys for different environments
    - Implement proper access controls
 
-2. **Principle of Least Privilege**:
+1. **Principle of Least Privilege**:
+
    - Give users access only to secrets they need
    - Use system-specific secrets for system-level access
    - Separate user secrets from system secrets
 
-3. **Regular Auditing**:
+1. **Regular Auditing**:
+
    ```bash
    # Weekly security audit
    ./scripts/secrets-manager.sh audit
-   
+
    # Check for exposed secrets
    ./scripts/secrets-manager.sh scan-history
    ```
@@ -425,12 +439,14 @@ in
 ### Git Security
 
 1. **Pre-commit Hooks**:
+
    ```bash
    # Install pre-commit hook
    ./scripts/secrets-manager.sh install-hooks
    ```
 
-2. **Regular Scanning**:
+1. **Regular Scanning**:
+
    ```bash
    # Scan for accidentally committed secrets
    git log --all --full-history --grep='password\|secret\|key\|token'
@@ -479,20 +495,22 @@ sops --decrypt secrets/production/secrets.yaml
 #### Lost Age Key
 
 1. **If you have backup**:
+
    ```bash
    # Restore from backup
    cp /path/to/backup/keys.txt ~/.config/sops/age/keys.txt
    chmod 600 ~/.config/sops/age/keys.txt
    ```
 
-2. **If no backup available**:
+1. **If no backup available**:
+
    ```bash
    # Generate new key
    age-keygen -o ~/.config/sops/age/keys.txt
-   
+
    # Update .sops.yaml with new public key
    age-keygen -y ~/.config/sops/age/keys.txt
-   
+
    # Re-encrypt all secrets (requires access to plaintext)
    ./scripts/secrets-manager.sh re-encrypt-all
    ```
@@ -579,6 +597,6 @@ creation_rules:
 ./scripts/secrets-manager.sh security-check
 ```
 
----
+______________________________________________________________________
 
 This guide provides comprehensive coverage of secrets management in our Nix flake configuration. For additional help, consult the troubleshooting section or run `./scripts/secrets-manager.sh --help` for command-specific guidance.

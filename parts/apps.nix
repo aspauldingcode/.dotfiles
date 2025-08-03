@@ -1,7 +1,13 @@
 # Apps Module - Flake applications
-{ inputs, ... }:
-{
-  perSystem = { config, self', inputs', pkgs, system, ... }: {
+{inputs, ...}: {
+  perSystem = {
+    config,
+    self',
+    inputs',
+    pkgs,
+    system,
+    ...
+  }: {
     apps = {
       # Default app - system info
       default = {

@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   # enable dconf (System Management Tool)
   programs.dconf.enable = true;
 
@@ -38,7 +37,8 @@
             (pkgs.OVMFFull.override {
               secureBoot = true;
               tpmSupport = true;
-            }).fd
+            })
+            .fd
           ];
         };
       };

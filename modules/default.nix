@@ -1,6 +1,5 @@
 # Modules Index - Centralized module management
-{ inputs, ... }:
-{
+{inputs, ...}: {
   flake.modules = {
     # NixOS modules
     nixos = {
@@ -8,7 +7,7 @@
       default = ./nixos/default.nix;
     };
 
-    # Darwin modules  
+    # Darwin modules
     darwin = {
       # macOS-specific modules
       default = ./darwin/default.nix;

@@ -1,6 +1,5 @@
 # Hosts Index - Centralized host configuration management
-{ inputs, ... }:
-{
+{inputs, ...}: {
   flake.hosts = {
     # NixOS hosts
     nixos = {

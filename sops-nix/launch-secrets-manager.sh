@@ -18,9 +18,9 @@ echo -e "${BLUE}🔐 Launching Nix Secrets Manager...${NC}"
 
 # Check if we're in a Nix environment
 if ! command -v nix >/dev/null 2>&1; then
-    echo -e "${RED}❌ Nix not found in PATH${NC}"
-    echo "Please ensure Nix is installed and available"
-    exit 1
+  echo -e "${RED}❌ Nix not found in PATH${NC}"
+  echo "Please ensure Nix is installed and available"
+  exit 1
 fi
 
 # Set the dotfiles directory
@@ -29,16 +29,16 @@ export DOTFILES_DIR="$SCRIPT_DIR"
 # Build and run the secrets manager
 echo -e "${GREEN}📦 Building secrets manager...${NC}"
 if nix build "$SCRIPT_DIR#secrets-manager" --no-link --print-out-paths >/dev/null 2>&1; then
-    echo -e "${GREEN}✅ Build successful, launching UI...${NC}"
-    echo
-    nix run "$SCRIPT_DIR#secrets-manager"
+  echo -e "${GREEN}✅ Build successful, launching UI...${NC}"
+  echo
+  nix run "$SCRIPT_DIR#secrets-manager"
 else
-    echo -e "${RED}❌ Build failed${NC}"
-    echo "Trying to run with nix-shell fallback..."
-    echo
-    
-    # Fallback: use nix-shell with required dependencies
-    nix-shell -p dialog sops age yq-go jq --run "
+  echo -e "${RED}❌ Build failed${NC}"
+  echo "Trying to run with nix-shell fallback..."
+  echo
+
+  # Fallback: use nix-shell with required dependencies
+  nix-shell -p dialog sops age yq-go jq --run "
         export DOTFILES_DIR='$SCRIPT_DIR'
         if [[ -f '$SCRIPT_DIR/secrets-manager.sh' ]]; then
             '$SCRIPT_DIR/secrets-manager.sh'

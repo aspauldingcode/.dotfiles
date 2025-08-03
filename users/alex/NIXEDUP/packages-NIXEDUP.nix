@@ -3,8 +3,7 @@
   config,
   pkgs,
   ...
-}:
-{
+}: {
   imports = [
     ../packages-UNIVERSAL.nix
   ];

@@ -197,7 +197,7 @@ in {
 
   home.packages = with pkgs; [
     swaybg
-    polkit_gnome  # Polkit authentication agent
+    polkit_gnome # Polkit authentication agent
     xwayland-satellite
   ];
 }

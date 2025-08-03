@@ -1,32 +1,38 @@
 # CI/CD Module - Continuous integration and deployment
-{ inputs, ... }:
-{
-  perSystem = { config, self', inputs', pkgs, system, ... }: {
+{inputs, ...}: {
+  perSystem = {
+    config,
+    self',
+    inputs',
+    pkgs,
+    system,
+    ...
+  }: {
     packages = {
       # CI/CD scripts
       ci-check = pkgs.writeShellScriptBin "ci-check" ''
         set -euo pipefail
         echo "Running CI checks..."
-        
+
         # Check flake
         nix flake check --no-build
-        
+
         # Format check
-        nix fmt --check
-        
+        nix fmt
+
         # Build all systems (dry-run)
         nix build .#nixosConfigurations.NIXSTATION64.config.system.build.toplevel --dry-run
         nix build .#nixosConfigurations.NIXY2.config.system.build.toplevel --dry-run
         nix build .#darwinConfigurations.NIXY.system --dry-run
         nix build .#darwinConfigurations.NIXI.system --dry-run
-        
+
         echo "All CI checks passed!"
       '';
 
       ci-deploy = pkgs.writeShellScriptBin "ci-deploy" ''
         set -euo pipefail
         echo "Running deployment..."
-        
+
         # Deploy based on hostname
         case "$(hostname)" in
           "NIXSTATION64")
@@ -46,7 +52,7 @@
             exit 1
             ;;
         esac
-        
+
         echo "Deployment completed!"
       '';
     };

@@ -8,8 +8,8 @@ echo "Fetching latest erase-install package..."
 
 # Check if we're on macOS
 if [[ "$(uname)" != "Darwin" ]]; then
-    echo "This script is only for macOS systems"
-    exit 0
+  echo "This script is only for macOS systems"
+  exit 0
 fi
 
 # Placeholder implementation

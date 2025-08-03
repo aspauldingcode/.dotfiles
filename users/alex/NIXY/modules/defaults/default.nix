@@ -4,22 +4,23 @@
   pkgs,
   nix-colors,
   ...
-}:
-{
+}: {
   targets.darwin.defaults = {
     "NSGlobalDomain" = {
       NSColorSimulateHardwareAccent = true;
       NSColorSimulatedHardwareEnclosureNumber = 4;
-      AppleHighlightColor =
-        let
-          hexColor = "${config.colorScheme.palette.base0D}";
-          hexColorConverted = builtins.toString (
-            (builtins.map (x: x / 255.0) (nix-colors.lib.conversions.hexToRGB hexColor)) ++ [ "Other" ]
-          );
-        in
+      AppleHighlightColor = let
+        hexColor = "${config.colorScheme.palette.base0D}";
+        hexColorConverted = builtins.toString (
+          (builtins.map (x: x / 255.0) (nix-colors.lib.conversions.hexToRGB hexColor)) ++ ["Other"]
+        );
+      in
         hexColorConverted;
       TISRomanSwitchState = 1;
-      AppleInterfaceStyle = if config.colorScheme.variant == "dark" then "Dark" else "Light";
+      AppleInterfaceStyle =
+        if config.colorScheme.variant == "dark"
+        then "Dark"
+        else "Light";
       AppleShowAllFiles = true;
       NSScrollAnimationEnabled = false;
       NSAutomaticWindowAnimationsEnabled = false;
@@ -79,12 +80,11 @@
           "${pkgs.obsidian}/Applications/Obsidian.app"
         ]
         ++ (
-          if pkgs.stdenv.isDarwin && pkgs.stdenv.isAarch64 then
-            [ ]
-          else
-            [
-              "${pkgs.firefox-bin}/Applications/Firefox.app"
-            ]
+          if pkgs.stdenv.isDarwin && pkgs.stdenv.isAarch64
+          then []
+          else [
+            "${pkgs.firefox-bin}/Applications/Firefox.app"
+          ]
         )
         ++ [
           "${pkgs.brave}/Applications/Brave Browser.app"

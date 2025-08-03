@@ -29,10 +29,10 @@ SOPS-nix is the **de facto standard** for secrets management in Nix deployments.
 ### Why SOPS-nix is Production Standard
 
 1. **Native Nix Integration**: Seamless integration with NixOS/Darwin configurations
-2. **Declarative Configuration**: Secrets defined alongside system configuration
-3. **Git-Friendly**: Encrypted secrets can be safely committed to version control
-4. **No External Dependencies**: No need for external secret management services in production
-5. **Strong Community Support**: Widely adopted in the Nix ecosystem
+1. **Declarative Configuration**: Secrets defined alongside system configuration
+1. **Git-Friendly**: Encrypted secrets can be safely committed to version control
+1. **No External Dependencies**: No need for external secret management services in production
+1. **Strong Community Support**: Widely adopted in the Nix ecosystem
 
 ### Our Implementation Architecture
 
@@ -185,27 +185,31 @@ EDITOR=nano nix-shell -p sops --run "sops secrets/production/secrets.yaml"
 Access is determined by **cryptographic keys**, not file permissions:
 
 1. **Encryption**: Each secret file is encrypted with specific age/PGP keys
-2. **Decryption**: Only holders of the corresponding private keys can decrypt
-3. **Key Groups**: Multiple keys can be specified for redundancy and team access
+1. **Decryption**: Only holders of the corresponding private keys can decrypt
+1. **Key Groups**: Multiple keys can be specified for redundancy and team access
 
 ### Key Types in Our Setup
 
 #### Admin Keys
+
 - **alex**: Full access to all environments and systems
 - **susu**: Full access to all environments and systems
 
 #### Environment-Specific Keys
+
 - **Production Team**: Access to production secrets only
 - **Staging Team**: Access to staging secrets only
 - **Development Team**: Access to development secrets only
 
 #### System-Specific Keys
+
 - **NIXY**: macOS system secrets
 - **NIXSTATION64**: Linux workstation secrets
 - **NIXY2**: ARM Linux system secrets
 - **NIXEDUP**: Mobile device secrets
 
 #### User-Specific Keys
+
 - **alex**: Personal secrets (API keys, personal configs)
 - **susu**: Personal secrets (API keys, personal configs)
 
@@ -267,17 +271,19 @@ Based on our current `.sops.yaml` configuration:
 To add a new user with specific access:
 
 1. **Generate their age key**:
+
    ```bash
    # User generates their own key
    age-keygen -o ~/.config/sops/age/keys.txt
    age-keygen -y ~/.config/sops/age/keys.txt  # Share public key
    ```
 
-2. **Add to .sops.yaml**:
+1. **Add to .sops.yaml**:
+
    ```yaml
    keys:
      - &new_user_dev age1newuserkey...
-   
+
    creation_rules:
      - path_regex: secrets/development/.*\.yaml$
        key_groups:
@@ -287,7 +293,8 @@ To add a new user with specific access:
            - *new_user_dev  # Add here
    ```
 
-3. **Re-encrypt affected files**:
+1. **Re-encrypt affected files**:
+
    ```bash
    nix-shell -p sops --run "sops updatekeys secrets/development/secrets.yaml"
    ```
@@ -419,20 +426,23 @@ nix-shell -p sops --run "sops updatekeys secrets/development/secrets.yaml"
 ### Security Best Practices
 
 1. **Key Management**:
+
    - Store age keys securely (`~/.config/sops/age/keys.txt`)
    - Set proper permissions (600)
    - Backup keys securely (encrypted external storage)
 
-2. **Environment Separation**:
+1. **Environment Separation**:
+
    - Never use production secrets in development
    - Use different keys for different environments
    - Implement proper access controls
 
-3. **Regular Auditing**:
+1. **Regular Auditing**:
+
    ```bash
    # Check who has access to what
    ./scripts/secrets-manager.sh audit
-   
+
    # Validate all secrets can be decrypted
    ./scripts/secrets-manager.sh validate
    ```
@@ -440,18 +450,21 @@ nix-shell -p sops --run "sops updatekeys secrets/development/secrets.yaml"
 ### Operational Best Practices
 
 1. **Key Rotation**:
+
    ```bash
    # Rotate keys regularly (monthly/quarterly)
    ./scripts/secrets-manager.sh rotate-keys
    ```
 
-2. **Team Onboarding**:
+1. **Team Onboarding**:
+
    - Generate age key for new team member
    - Add to appropriate creation rules
    - Re-encrypt relevant secrets
    - Document access levels
 
-3. **Monitoring**:
+1. **Monitoring**:
+
    - Monitor secret access patterns
    - Alert on unauthorized access attempts
    - Regular security audits
@@ -459,20 +472,23 @@ nix-shell -p sops --run "sops updatekeys secrets/development/secrets.yaml"
 ### Development Best Practices
 
 1. **Local Development**:
+
    - Use development environment secrets
    - Never commit plaintext secrets
    - Use `.env` files for local overrides (gitignored)
 
-2. **CI/CD Integration**:
+1. **CI/CD Integration**:
+
    - Secrets are automatically available in `/run/secrets/`
    - No manual secret injection needed
    - Atomic deployments with secret updates
 
-3. **Testing**:
+1. **Testing**:
+
    - Use test-specific secrets for CI
    - Mock external services in tests
    - Validate secret availability in deployment tests
 
----
+______________________________________________________________________
 
 This implementation guide provides comprehensive coverage of SOPS-nix usage in our production environment. For additional help, consult the [main secrets guide](secrets-guide.md) or run `./scripts/secrets-manager.sh --help`.

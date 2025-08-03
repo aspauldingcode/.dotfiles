@@ -3,8 +3,7 @@
   lib,
   pkgs,
   ...
-}:
-{
+}: {
   config = lib.mkIf pkgs.stdenv.isLinux {
     programs.waybar = {
       enable = true;

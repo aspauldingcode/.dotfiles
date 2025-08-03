@@ -2,11 +2,9 @@
 # once my nix-darwin PR is merged, then
 # system.file."Library/Application Support/exampleapp/config".source = <drv>;
 # https://github.com/LnL7/nix-darwin/pull/1205
-{ config, ... }:
-let
+{config, ...}: let
   inherit (config.colorScheme) palette;
-in
-{
+in {
   system.file."Library/Application Support/macwmfx/config" = {
     force = true; # overwrite the file
     text = builtins.toJSON {

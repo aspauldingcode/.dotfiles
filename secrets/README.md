@@ -30,17 +30,20 @@ sops-nix/
 ## 🔐 Security Features
 
 ### Environment Separation
+
 - **Production**: Full production secrets with strict access controls
 - **Staging**: Uses production secrets for consistency
 - **Development**: Subset of production + development-specific secrets
 - **Legacy**: Backward compatibility for existing setups
 
 ### Access Control
+
 - **Key Groups**: Organized by role (admin, team members, systems)
 - **Granular Permissions**: Different access levels per environment
 - **Multi-Key Support**: Age and PGP keys for redundancy
 
 ### Security Hardening
+
 - ✅ Validation of secret files on activation
 - ✅ Proper file permissions (0400 for secrets, 0444 for certificates)
 - ✅ Multiple SSH key fallbacks
@@ -112,6 +115,7 @@ in {
 ## 🔑 Secret Categories
 
 ### API Keys and External Services
+
 - `anthropic_api_key` - Anthropic Claude API key
 - `openai_api_key` - OpenAI API key
 - `azure_openai_api_key` - Azure OpenAI API key
@@ -119,6 +123,7 @@ in {
 - `gitlab_token` - GitLab access token
 
 ### Cloud Infrastructure
+
 - `aws_access_key_id` - AWS access key
 - `aws_secret_access_key` - AWS secret key
 - `aws_session_token` - AWS session token
@@ -128,6 +133,7 @@ in {
 - `digitalocean_token` - DigitalOcean API token
 
 ### Database and Storage
+
 - `database_url` - Primary database connection string
 - `database_password` - Database password
 - `redis_url` - Redis connection string
@@ -135,6 +141,7 @@ in {
 - `s3_bucket_key` - S3 bucket access key
 
 ### Monitoring and Observability
+
 - `datadog_api_key` - Datadog API key
 - `newrelic_license_key` - New Relic license key
 - `sentry_dsn` - Sentry DSN
@@ -142,6 +149,7 @@ in {
 - `grafana_api_key` - Grafana API key
 
 ### Security and Certificates
+
 - `backup_encryption_key` - Backup encryption key
 - `disaster_recovery_key` - Disaster recovery key
 - `tls_private_key` - TLS private key (root owned)
@@ -150,12 +158,14 @@ in {
 - `gpg_private_key` - GPG private key
 
 ### Application Secrets
+
 - `jwt_secret` - JWT signing secret
 - `session_secret` - Session encryption secret
 - `encryption_key` - Application encryption key
 - `webhook_secret` - Webhook validation secret
 
 ### Third-party Integrations
+
 - `stripe_secret_key` - Stripe secret key
 - `paypal_client_secret` - PayPal client secret
 - `twilio_auth_token` - Twilio authentication token
@@ -163,6 +173,7 @@ in {
 - `slack_webhook_url` - Slack webhook URL
 
 ### Development-specific Secrets
+
 - `test_user_password` - Test user password
 - `test_api_key` - Test API key
 - `local_ssl_cert` - Local SSL certificate
@@ -221,22 +232,25 @@ nix eval --json .#nixosConfigurations.NIXY.config.sops.secrets --apply builtins.
 ### From Legacy Setup
 
 1. **Backup existing secrets**:
+
    ```bash
    cp sops-nix/secrets.yaml sops-nix/secrets.yaml.backup
    ```
 
-2. **Migrate secrets to new structure**:
+1. **Migrate secrets to new structure**:
+
    ```bash
    # Copy relevant secrets to appropriate environment files
    sops secrets/development/secrets.yaml
    # Add your secrets here
    ```
 
-3. **Update configurations**:
+1. **Update configurations**:
+
    ```nix
    # Change from:
    sops.defaultSopsFile = ../sops-nix/secrets.yaml;
-   
+
    # To:
    imports = [ (import ../sops-nix/sopsConfig.nix {
      inherit nixpkgs;
@@ -249,11 +263,13 @@ nix eval --json .#nixosConfigurations.NIXY.config.sops.secrets --apply builtins.
 ### Adding New Environments
 
 1. **Create environment directory**:
+
    ```bash
    mkdir -p secrets/testing
    ```
 
-2. **Add to sopsConfig.nix**:
+1. **Add to sopsConfig.nix**:
+
    ```nix
    validEnvironments = ["production" "staging" "development" "testing" "legacy"];
    secretFiles = {
@@ -262,7 +278,8 @@ nix eval --json .#nixosConfigurations.NIXY.config.sops.secrets --apply builtins.
    };
    ```
 
-3. **Update .sops.yaml**:
+1. **Update .sops.yaml**:
+
    ```yaml
    creation_rules:
      - path_regex: secrets/testing/.*\.yaml$
@@ -275,6 +292,7 @@ nix eval --json .#nixosConfigurations.NIXY.config.sops.secrets --apply builtins.
 ## 🚨 Best Practices
 
 ### Security
+
 - ✅ Never commit unencrypted secrets
 - ✅ Use different keys for different environments
 - ✅ Regularly rotate keys and secrets
@@ -283,6 +301,7 @@ nix eval --json .#nixosConfigurations.NIXY.config.sops.secrets --apply builtins.
 - ✅ Use system-specific secrets for sensitive data
 
 ### Organization
+
 - ✅ Group secrets by category and environment
 - ✅ Use descriptive secret names
 - ✅ Document secret purposes and usage
@@ -290,6 +309,7 @@ nix eval --json .#nixosConfigurations.NIXY.config.sops.secrets --apply builtins.
 - ✅ Use consistent naming conventions
 
 ### Deployment
+
 - ✅ Test secret access in staging before production
 - ✅ Use environment-specific configurations
 - ✅ Implement proper error handling
@@ -301,32 +321,40 @@ nix eval --json .#nixosConfigurations.NIXY.config.sops.secrets --apply builtins.
 ### Common Issues
 
 1. **Secret not found**:
+
    ```
    Error: Secret 'my_secret' not found in environment 'production'
    ```
+
    - Check if secret exists in the environment's secrets file
    - Verify secret name spelling
    - Ensure environment is correctly set
 
-2. **Permission denied**:
+1. **Permission denied**:
+
    ```
    Error: Permission denied accessing /run/secrets/my_secret
    ```
+
    - Check file ownership and permissions
    - Verify user has access to the secret
    - Check if secret is properly decrypted
 
-3. **Invalid environment**:
+1. **Invalid environment**:
+
    ```
    Error: Invalid environment 'prod'. Must be one of: production, staging, development, legacy
    ```
+
    - Use exact environment names from validEnvironments
    - Check spelling and case sensitivity
 
-4. **Key not found**:
+1. **Key not found**:
+
    ```
    Error: no key found for decryption
    ```
+
    - Verify age key is properly configured
    - Check SSH host keys exist
    - Ensure .sops.yaml has correct key references
@@ -355,7 +383,7 @@ in {
 When adding new secrets:
 
 1. Add to appropriate environment in `sopsConfig.nix`
-2. Update this documentation
-3. Add encryption rules to `.sops.yaml`
-4. Test in development environment first
-5. Document the secret's purpose and usage
+1. Update this documentation
+1. Add encryption rules to `.sops.yaml`
+1. Test in development environment first
+1. Document the secret's purpose and usage

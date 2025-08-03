@@ -39,6 +39,7 @@ nix-env -iA nixpkgs.sops
 Our flake provides several development shells for different purposes:
 
 #### Default Development Shell
+
 ```bash
 # Enter the default development shell
 nix develop
@@ -49,6 +50,7 @@ direnv allow
 ```
 
 #### Specialized Development Shells
+
 ```bash
 # Rust development
 nix develop .#rust
@@ -81,26 +83,29 @@ Each development shell includes:
 ### Quick Start Development
 
 1. **Clone and Setup**:
+
    ```bash
    git clone <repository-url> ~/.dotfiles
    cd ~/.dotfiles
    nix develop
    ```
 
-2. **Initialize Development Environment**:
+1. **Initialize Development Environment**:
+
    ```bash
    # Run initial setup
    ./scripts/flake-check.sh --init
-   
+
    # Install Git hooks
    ./scripts/secrets-manager.sh install-hooks
    ```
 
-3. **Validate Configuration**:
+1. **Validate Configuration**:
+
    ```bash
    # Quick validation
    ./scripts/flake-check.sh
-   
+
    # Comprehensive testing
    ./scripts/test-framework.sh
    ```
@@ -110,31 +115,34 @@ Each development shell includes:
 #### Configuration Changes
 
 1. **Edit Configuration Files**:
+
    ```bash
    # Edit system configuration
    $EDITOR systems/darwin/NIXY.nix
-   
+
    # Edit user configuration
    $EDITOR users/alex/home.nix
-   
+
    # Edit module
    $EDITOR modules/darwin/homebrew.nix
    ```
 
-2. **Validate Changes**:
+1. **Validate Changes**:
+
    ```bash
    # Check syntax
    ./scripts/flake-check.sh --syntax-only
-   
+
    # Test build
    ./scripts/flake-check.sh --build-only
    ```
 
-3. **Test Locally**:
+1. **Test Locally**:
+
    ```bash
    # Test Darwin configuration
    darwin-rebuild check --flake .#NIXY
-   
+
    # Test Home Manager configuration
    home-manager build --flake .#alex@NIXY
    ```
@@ -142,27 +150,31 @@ Each development shell includes:
 #### Adding New Systems
 
 1. **Create System Configuration**:
+
    ```bash
    # Copy template
    cp systems/darwin/template.nix systems/darwin/NEWSYSTEM.nix
-   
+
    # Edit configuration
    $EDITOR systems/darwin/NEWSYSTEM.nix
    ```
 
-2. **Update Flake Outputs**:
+1. **Update Flake Outputs**:
+
    ```bash
    # Add to flake.nix
    $EDITOR flake.nix
    ```
 
-3. **Create System Secrets**:
+1. **Create System Secrets**:
+
    ```bash
    # Create system-specific secrets
    ./scripts/secrets-manager.sh create-system NEWSYSTEM
    ```
 
-4. **Test New System**:
+1. **Test New System**:
+
    ```bash
    # Test build
    nix build .#darwinConfigurations.NEWSYSTEM.system
@@ -171,21 +183,24 @@ Each development shell includes:
 #### Adding New Users
 
 1. **Create User Configuration**:
+
    ```bash
    # Copy template
    cp users/template.nix users/newuser.nix
-   
+
    # Edit configuration
    $EDITOR users/newuser.nix
    ```
 
-2. **Create User Secrets**:
+1. **Create User Secrets**:
+
    ```bash
    # Create user-specific secrets
    ./scripts/secrets-manager.sh create-user newuser
    ```
 
-3. **Update System Configuration**:
+1. **Update System Configuration**:
+
    ```bash
    # Add user to system
    $EDITOR systems/darwin/SYSTEM.nix
@@ -196,22 +211,25 @@ Each development shell includes:
 #### Working with Secrets
 
 1. **Create Development Secrets**:
+
    ```bash
    # Create development environment secrets
    ./scripts/secrets-manager.sh create development test-secrets
    ```
 
-2. **Edit Secrets Safely**:
+1. **Edit Secrets Safely**:
+
    ```bash
    # Edit with SOPS
    ./scripts/secrets-manager.sh edit development secrets.yaml
    ```
 
-3. **Test Secret Integration**:
+1. **Test Secret Integration**:
+
    ```bash
    # Validate secrets configuration
    ./scripts/secrets-manager.sh validate
-   
+
    # Test decryption
    ./scripts/secrets-manager.sh decrypt development secrets.yaml
    ```
@@ -262,36 +280,42 @@ database:
 ### Test Categories
 
 #### Syntax Tests
+
 - Nix syntax validation
 - YAML syntax validation
 - JSON schema validation
 - Shell script validation
 
 #### Build Tests
+
 - Darwin configuration builds
 - NixOS configuration builds
 - Home Manager configuration builds
 - Development shell builds
 
 #### Secrets Tests
+
 - SOPS configuration validation
 - Age key validation
 - Secret file encryption/decryption
 - Secret integration tests
 
 #### Security Tests
+
 - Secret scanning
 - Permission validation
 - Vulnerability scanning
 - Access control tests
 
 #### Performance Tests
+
 - Build time measurement
 - Memory usage analysis
 - Startup time testing
 - Resource utilization
 
 #### Integration Tests
+
 - End-to-end system tests
 - Multi-user scenarios
 - Cross-platform compatibility
@@ -376,32 +400,37 @@ git commit --no-verify
 ### Contribution Workflow
 
 1. **Fork and Clone**:
+
    ```bash
    git clone <your-fork-url>
    cd .dotfiles
    ```
 
-2. **Create Feature Branch**:
+1. **Create Feature Branch**:
+
    ```bash
    git checkout -b feature/new-feature
    ```
 
-3. **Make Changes**:
+1. **Make Changes**:
+
    ```bash
    # Edit files
    $EDITOR file.nix
-   
+
    # Test changes
    ./scripts/flake-check.sh
    ```
 
-4. **Commit Changes**:
+1. **Commit Changes**:
+
    ```bash
    git add .
    git commit -m "feat: add new feature"
    ```
 
-5. **Push and Create PR**:
+1. **Push and Create PR**:
+
    ```bash
    git push origin feature/new-feature
    # Create pull request on GitHub
@@ -420,6 +449,7 @@ Follow conventional commits:
 ```
 
 Types:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -429,6 +459,7 @@ Types:
 - `chore`: Maintenance tasks
 
 Examples:
+
 ```
 feat(darwin): add homebrew module
 fix(secrets): resolve decryption issue
@@ -458,12 +489,13 @@ docs(readme): update installation guide
 #### Creating New Modules
 
 1. **Module Structure**:
+
    ```nix
    # modules/category/module-name.nix
    { config, lib, pkgs, ... }:
-   
+
    with lib;
-   
+
    let
      cfg = config.modules.category.module-name;
    in
@@ -484,7 +516,8 @@ docs(readme): update installation guide
    }
    ```
 
-2. **Module Documentation**:
+1. **Module Documentation**:
+
    ```nix
    # Add to module
    meta = {
@@ -493,7 +526,8 @@ docs(readme): update installation guide
    };
    ```
 
-3. **Module Tests**:
+1. **Module Tests**:
+
    ```nix
    # tests/module-name-test.nix
    import ./make-test-python.nix ({ pkgs, ... }: {
@@ -589,24 +623,27 @@ launchctl list | grep nix
 #### Optimization Techniques
 
 1. **Use Binary Caches**:
+
    ```nix
    # nix.conf
    substituters = https://cache.nixos.org https://nix-community.cachix.org
    trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
    ```
 
-2. **Parallel Builds**:
+1. **Parallel Builds**:
+
    ```nix
    # nix.conf
    max-jobs = auto
    cores = 0
    ```
 
-3. **Build Optimization**:
+1. **Build Optimization**:
+
    ```bash
    # Use --fast for development
    darwin-rebuild switch --flake .#NIXY --fast
-   
+
    # Skip unnecessary rebuilds
    darwin-rebuild switch --flake .#NIXY --option eval-cache true
    ```
@@ -725,6 +762,6 @@ act -s GITHUB_TOKEN=your-token
 ./scripts/system-manager.sh rollback NIXY
 ```
 
----
+______________________________________________________________________
 
 This development guide provides comprehensive coverage of development workflows, testing, and contribution guidelines. For specific issues, consult the debugging section or create an issue in the repository.

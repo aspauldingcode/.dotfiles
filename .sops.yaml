@@ -5,28 +5,21 @@
 keys:
   # Admin keys (full access) - using actual user key
   - &admin_alex age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2
-  
   # Production keys (for production environment) - REPLACE WITH ACTUAL PRODUCTION KEYS
-  - &prod_key_1 age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2  # Placeholder: use actual prod key
-  
+  - &prod_key_1 age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2 # Placeholder: use actual prod key
   # Staging keys (for staging environment) - REPLACE WITH ACTUAL STAGING KEYS
-  - &staging_key age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2  # Placeholder: use actual staging key
-  
+  - &staging_key age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2 # Placeholder: use actual staging key
   # Development keys (for development environment) - using admin key for now
   - &dev_key age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2
-  
   # System host keys (for system-specific secrets) - REPLACE WITH ACTUAL HOST KEYS
-  - &host_nixy age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2      # Placeholder: use NIXY host key
-  - &host_nixi age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2      # NIXI host key
-  - &host_nixy2 age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2     # Placeholder: use NIXY2 host key
-  - &host_nixstation64 age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2  # Placeholder: use NIXSTATION64 host key
-  
+  - &host_nixy age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2 # Placeholder: use NIXY host key
+  - &host_nixi age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2 # NIXI host key
+  - &host_nixy2 age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2 # Placeholder: use NIXY2 host key
+  - &host_nixstation64 age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2 # Placeholder: use NIXSTATION64 host key
   # Team member keys (for shared access) - REPLACE WITH ACTUAL TEAM MEMBER KEYS
-  - &team_member_1 age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2  # Placeholder: use actual team member key
-  
+  - &team_member_1 age1hcsxwhtcgdk2sknhk5eyug5thvuqsf0k9ytagd6ce6tzv3flfd3qz5tgk2 # Placeholder: use actual team member key
   # PGP keys (optional, for additional security) - REPLACE WITH ACTUAL PGP KEY
-  - &pgp_admin_alex 85D77543B72E3B138C7E5A66E6B055B42F4589EC  # Placeholder: use actual PGP key
-
+  - &pgp_admin_alex 85D77543B72E3B138C7E5A66E6B055B42F4589EC # Placeholder: use actual PGP key
 creation_rules:
   # Production secrets - highest security, multiple keys for redundancy
   - path_regex: secrets/production/.*\.yaml$
@@ -34,7 +27,6 @@ creation_rules:
       - age:
           - *admin_alex
           - *prod_key_1
-    
   # Staging secrets - medium security
   - path_regex: secrets/staging/.*\.yaml$
     key_groups:
@@ -42,7 +34,6 @@ creation_rules:
           - *admin_alex
           - *staging_key
           - *team_member_1
-    
   # Development secrets - accessible by development team
   - path_regex: secrets/development/.*\.yaml$
     key_groups:
@@ -50,56 +41,47 @@ creation_rules:
           - *admin_alex
           - *dev_key
           - *team_member_1
-    
   # User-specific secrets - accessible by user and admin
   - path_regex: secrets/users/alex\.yaml$
     key_groups:
       - age:
           - *admin_alex
-    
   - path_regex: secrets/users/.*\.yaml$
     key_groups:
       - age:
           - *admin_alex
           - *team_member_1
-    
   # System-specific secrets - accessible by system host keys and admin
   - path_regex: secrets/systems/NIXY\.yaml$
     key_groups:
       - age:
           - *admin_alex
           - *host_nixy
-    
   - path_regex: secrets/systems/NIXI\.yaml$
     key_groups:
       - age:
           - *admin_alex
           - *host_nixi
-    
   - path_regex: secrets/systems/NIXY2\.yaml$
     key_groups:
       - age:
           - *admin_alex
           - *host_nixy2
-    
   - path_regex: secrets/systems/NIXSTATION64\.yaml$
     key_groups:
       - age:
           - *admin_alex
           - *host_nixstation64
-    
   - path_regex: secrets/systems/.*\.yaml$
     key_groups:
       - age:
           - *admin_alex
-    
   # Legacy compatibility - current secrets.yaml (development level access)
   - path_regex: sops-nix/secrets\.yaml$
     key_groups:
       - age:
           - *admin_alex
           - *team_member_1
-
 # Global configuration following security best practices
 encrypted_regex: '^(password|passwd|secret|key|token|api_key|private_key|cert|certificate|credential|auth|bearer|oauth|jwt|session|cookie|hash|salt|nonce|seed)$'
 mac_only_encrypted: false

@@ -20,23 +20,26 @@ Welcome to our Nix flake configuration project! This document outlines how to co
 
 Before contributing, ensure you have:
 
-1. **Nix with Flakes**: 
+1. **Nix with Flakes**:
+
    ```bash
    curl -L https://nixos.org/nix/install | sh
    echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
    ```
 
-2. **Git Configuration**:
+1. **Git Configuration**:
+
    ```bash
    git config --global user.name "Your Name"
    git config --global user.email "your.email@example.com"
    ```
 
-3. **Development Tools**:
+1. **Development Tools**:
+
    ```bash
    # Enter development shell
    nix develop
-   
+
    # Install pre-commit hooks
    ./scripts/secrets-manager.sh install-hooks
    ```
@@ -44,19 +47,23 @@ Before contributing, ensure you have:
 ### Fork and Clone
 
 1. **Fork the Repository**:
+
    - Click "Fork" on the GitHub repository page
    - Clone your fork locally:
+
    ```bash
    git clone https://github.com/YOUR_USERNAME/dotfiles.git ~/.dotfiles
    cd ~/.dotfiles
    ```
 
-2. **Add Upstream Remote**:
+1. **Add Upstream Remote**:
+
    ```bash
    git remote add upstream https://github.com/ORIGINAL_OWNER/dotfiles.git
    ```
 
-3. **Verify Setup**:
+1. **Verify Setup**:
+
    ```bash
    ./scripts/flake-check.sh
    ```
@@ -148,18 +155,21 @@ BREAKING CHANGE: Module imports now require explicit path specification"
 ### Code Review Process
 
 1. **Self-Review**:
+
    - Run all tests: `./scripts/test-framework.sh`
    - Check formatting: `nix fmt`
    - Validate syntax: `./scripts/flake-check.sh --syntax-only`
    - Review your own changes
 
-2. **Create Pull Request**:
+1. **Create Pull Request**:
+
    - Use descriptive title and description
    - Link related issues
    - Add screenshots for UI changes
    - Request specific reviewers if needed
 
-3. **Address Feedback**:
+1. **Address Feedback**:
+
    - Respond to review comments
    - Make requested changes
    - Push updates to the same branch
@@ -169,6 +179,7 @@ BREAKING CHANGE: Module imports now require explicit path specification"
 ### Nix Code Style
 
 #### Formatting
+
 ```nix
 # Use nixpkgs-fmt (automatic with `nix fmt`)
 { config, lib, pkgs, ... }:
@@ -198,13 +209,14 @@ in
 #### Best Practices
 
 1. **Use `with lib` sparingly**:
+
    ```nix
    # Good
    { lib, ... }:
    {
      options.example = lib.mkOption { ... };
    }
-   
+
    # Avoid
    { lib, ... }:
    with lib;
@@ -213,23 +225,25 @@ in
    }
    ```
 
-2. **Prefer explicit imports**:
+1. **Prefer explicit imports**:
+
    ```nix
    # Good
    { config, lib, pkgs, ... }:
-   
+
    # Avoid
    { ... }@args:
    ```
 
-3. **Use descriptive variable names**:
+1. **Use descriptive variable names**:
+
    ```nix
    # Good
    let
      homeDirectory = config.users.users.${username}.home;
      configFile = "${homeDirectory}/.config/app/config.json";
    in
-   
+
    # Avoid
    let
      hd = config.users.users.${username}.home;
@@ -402,10 +416,10 @@ fi
 ### Test Categories
 
 1. **Syntax Tests**: Validate Nix and shell syntax
-2. **Build Tests**: Ensure configurations build successfully
-3. **Integration Tests**: Test module interactions
-4. **Security Tests**: Validate security configurations
-5. **Performance Tests**: Check build and runtime performance
+1. **Build Tests**: Ensure configurations build successfully
+1. **Integration Tests**: Test module interactions
+1. **Security Tests**: Validate security configurations
+1. **Performance Tests**: Check build and runtime performance
 
 ### Running Tests
 
@@ -507,16 +521,16 @@ docs/
 ### Writing Guidelines
 
 1. **Use Clear Headings**: Structure with H1-H6 headers
-2. **Include Code Examples**: Show practical usage
-3. **Add Table of Contents**: For longer documents
-4. **Use Consistent Formatting**: Follow existing style
-5. **Include Screenshots**: For UI-related changes
+1. **Include Code Examples**: Show practical usage
+1. **Add Table of Contents**: For longer documents
+1. **Use Consistent Formatting**: Follow existing style
+1. **Include Screenshots**: For UI-related changes
 
 ### Module Documentation
 
 Each module should include:
 
-```markdown
+````markdown
 # Module Name
 
 Brief description of what the module does.
@@ -542,12 +556,13 @@ Brief description of what the module does.
     package = pkgs.custom-package;
   };
 }
-```
+````
 
 ## Troubleshooting
 
 Common issues and solutions.
-```
+
+````
 
 ## Pull Request Process
 
@@ -559,14 +574,16 @@ Common issues and solutions.
    git pull upstream main
    git checkout your-feature-branch
    git rebase main
-   ```
+````
 
 2. **Run tests**:
+
    ```bash
    ./scripts/test-framework.sh
    ```
 
-3. **Update documentation**:
+1. **Update documentation**:
+
    - Update relevant docs
    - Add changelog entry if needed
 
@@ -597,9 +614,9 @@ Brief description of changes.
 ### Review Process
 
 1. **Automated Checks**: CI/CD pipeline runs tests
-2. **Code Review**: Maintainers review changes
-3. **Approval**: At least one approval required
-4. **Merge**: Squash and merge to main
+1. **Code Review**: Maintainers review changes
+1. **Approval**: At least one approval required
+1. **Merge**: Squash and merge to main
 
 ## Issue Reporting
 
@@ -657,25 +674,25 @@ Any other relevant information.
 ### Security Guidelines
 
 1. **Never commit secrets**: Use SOPS for all sensitive data
-2. **Review dependencies**: Check for known vulnerabilities
-3. **Use secure defaults**: Enable security features by default
-4. **Validate inputs**: Sanitize user inputs in scripts
-5. **Follow principle of least privilege**: Minimal permissions
+1. **Review dependencies**: Check for known vulnerabilities
+1. **Use secure defaults**: Enable security features by default
+1. **Validate inputs**: Sanitize user inputs in scripts
+1. **Follow principle of least privilege**: Minimal permissions
 
 ### Security Review Process
 
 1. **Automated scanning**: Security tests run on all PRs
-2. **Manual review**: Security-sensitive changes get extra review
-3. **Dependency updates**: Regular updates for security patches
+1. **Manual review**: Security-sensitive changes get extra review
+1. **Dependency updates**: Regular updates for security patches
 
 ### Reporting Security Issues
 
 For security vulnerabilities:
 
 1. **Do not create public issues**
-2. **Email security@company.com** with details
-3. **Include proof of concept** if applicable
-4. **Allow time for fix** before disclosure
+1. **Email security@company.com** with details
+1. **Include proof of concept** if applicable
+1. **Allow time for fix** before disclosure
 
 ## Community Guidelines
 
@@ -684,9 +701,9 @@ For security vulnerabilities:
 We follow the [Contributor Covenant](https://www.contributor-covenant.org/):
 
 1. **Be respectful**: Treat everyone with respect
-2. **Be inclusive**: Welcome diverse perspectives
-3. **Be constructive**: Provide helpful feedback
-4. **Be patient**: Help newcomers learn
+1. **Be inclusive**: Welcome diverse perspectives
+1. **Be constructive**: Provide helpful feedback
+1. **Be patient**: Help newcomers learn
 
 ### Communication Channels
 
@@ -703,6 +720,6 @@ Contributors are recognized through:
 - **Changelog mentions**: Significant contributions noted
 - **Maintainer status**: Active contributors may become maintainers
 
----
+______________________________________________________________________
 
 Thank you for contributing to our Nix flake configuration! Your contributions help make this project better for everyone.

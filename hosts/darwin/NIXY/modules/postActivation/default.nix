@@ -4,31 +4,26 @@
   inputs,
   user,
   ...
-}:
-let
-  InputSourceSelector = pkgs.callPackage ../../customDerivations/inputsourceselector.nix { };
+}: let
+  InputSourceSelector = pkgs.callPackage ../../customDerivations/inputsourceselector.nix {};
   systemType = pkgs.stdenv.hostPlatform.system;
   homebrewPath =
-    if systemType == "aarch64-darwin" then
-      "/opt/homebrew/bin"
-    else if systemType == "x86_64-darwin" then
-      "/usr/local/bin"
-    else
-      throw "Homebrew Unsupported architecture: ${systemType}";
+    if systemType == "aarch64-darwin"
+    then "/opt/homebrew/bin"
+    else if systemType == "x86_64-darwin"
+    then "/usr/local/bin"
+    else throw "Homebrew Unsupported architecture: ${systemType}";
   inherit (config.colorScheme) palette;
-  wallpaper_input =
-    if pkgs.stdenv.isDarwin then
-      ../../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper-darwin.png
-    else
-      ../../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper.png;
-  wallpaper_output =
-    if pkgs.stdenv.isDarwin then
-      "/var/root/Pictures/gowall/nix-colors-wallpaper-darwin.png"
-    else
-      "/var/root/Pictures/gowall/nix-colors-wallpaper.png";
-  gowall = "${pkgs.unstable.gowall}/bin/gowall";
-in
-{
+  # wallpaper_input =
+  #   if pkgs.stdenv.isDarwin
+  #   then ../../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper-darwin.png
+  #   else ../../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper.png;
+  # wallpaper_output =
+  #   if pkgs.stdenv.isDarwin
+  #   then "/var/root/Pictures/gowall/nix-colors-wallpaper-darwin.png"
+  #   else "/var/root/Pictures/gowall/nix-colors-wallpaper.png";
+  # gowall = "${pkgs.unstable.gowall}/bin/gowall";
+in {
   system.activationScripts.postActivation.text = ''
 
     # ===================================================================
@@ -92,13 +87,13 @@ in
     # ===================================================================
 
     # create the wallpaper directory if it doesn't exist
-    mkdir -p /Users/Shared/Wallpaper/
+    # mkdir -p /Users/Shared/Wallpaper/
 
-    echo "Recoloring Wallpapers to ${config.colorScheme.slug} color scheme..."
-    ${gowall} convert ${wallpaper_input} -t /etc/gowall/theme.json
+    # echo "Recoloring Wallpapers to color scheme..."
+    # gowall convert wallpaper_input -t /etc/gowall/theme.json
 
-    echo "Setting ${config.colorScheme.variant} wallpaper..."
-    # wallpaper "''${wallpaper_output}"
+    # echo "Setting wallpaper..."
+    # wallpaper "wallpaper_output"
 
     # ===================================================================
     # macOS Dark/Light Mode Configuration
@@ -121,7 +116,7 @@ in
     echo "Setting profile picture..."
     sudo dscl . delete /Users/${user} jpegphoto
     sudo dscl . delete /Users/${user} Picture
-    sudo dscl . create /Users/${user} Picture "${./../../../../users/${user}/face.heic}"
+    sudo dscl . create /Users/${user} Picture "${../../../../../users/${user}/face.heic}"
 
     echo "Setting permissions for ${config.colorScheme.slug}-${config.colorScheme.variant} Glow Theme..."
     sudo chmod -R 777 /Library/GlowThemes/${config.colorScheme.slug}-${config.colorScheme.variant}/

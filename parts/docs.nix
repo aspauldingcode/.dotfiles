@@ -1,13 +1,19 @@
 # Documentation Module - Flake documentation
-{ inputs, ... }:
-{
-  perSystem = { config, self', inputs', pkgs, system, ... }: {
+{inputs, ...}: {
+  perSystem = {
+    config,
+    self',
+    inputs',
+    pkgs,
+    system,
+    ...
+  }: {
     packages = {
       # Documentation package
       docs = pkgs.stdenv.mkDerivation {
         name = "dotfiles-docs";
         src = ../docs;
-        buildInputs = with pkgs; [ mdbook ];
+        buildInputs = with pkgs; [mdbook];
         buildPhase = ''
           mdbook build
         '';

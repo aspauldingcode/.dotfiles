@@ -4,8 +4,7 @@
   pkgs,
   std,
   ...
-}:
-let
+}: let
   cfg = config.programs.unmenu;
   unmenu = pkgs.stdenv.mkDerivation rec {
     pname = "unmenu";
@@ -16,7 +15,7 @@ let
       sha256 = "sha256-c4fe1g9XBTXR6KtJn5njy28q4SyUM/r5hGV3Nd1ztdY=";
     };
 
-    nativeBuildInputs = [ pkgs.unzip ];
+    nativeBuildInputs = [pkgs.unzip];
 
     installPhase = ''
       mkdir -p $out/Applications
@@ -35,11 +34,10 @@ let
       homepage = "https://github.com/unmanbearpig/unmenu";
       platforms = platforms.darwin;
       license = licenses.mit;
-      maintainers = with maintainers; [ unmanbearpig ];
+      maintainers = with maintainers; [unmanbearpig];
     };
   };
-in
-{
+in {
   options.programs.unmenu = {
     enable = lib.mkEnableOption "unmenu";
 
@@ -250,13 +248,13 @@ in
           };
         };
       };
-      default = { };
+      default = {};
       description = "Unmenu settings";
     };
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ unmenu ];
+    home.packages = [unmenu];
     home.file.".config/unmenu/config.toml" = {
       force = true;
       text = std.serde.toTOML cfg.settings;

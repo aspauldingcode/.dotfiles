@@ -1,16 +1,15 @@
 # Common Modules - Shared configuration across all systems
-{ inputs, ... }:
-{
+{inputs, ...}: {
   flake.commonModules = {
     # Base modules for all NixOS systems
     nixos = [
       ../shared/scripts
       inputs.home-manager.nixosModules.home-manager
       inputs.sops-nix.nixosModules.sops
-      { imports = [ inputs.self.sopsConfigs.nixosSopsConfig ]; }
+      {imports = [inputs.self.sopsConfigs.nixosSopsConfig];}
       {
         # Use centralized overlays
-        nixpkgs.overlays = [ inputs.self.overlays.default ];
+        nixpkgs.overlays = [inputs.self.overlays.default];
         nixpkgs.config = {
           allowUnfree = true;
           permittedInsecurePackages = [
@@ -32,7 +31,7 @@
       inputs.spicetify-nix.darwinModules.default
       {
         # Use centralized overlays
-        nixpkgs.overlays = [ inputs.self.overlays.default ];
+        nixpkgs.overlays = [inputs.self.overlays.default];
         nixpkgs.config = {
           allowUnfree = true;
           allowBroken = true;
@@ -87,9 +86,9 @@
       backupFileExtension = "backup";
       sharedModules = [
         inputs.sops-nix.homeManagerModules.sops
-        { imports = [ inputs.self.sopsConfigs.hmSopsConfig ]; }
+        {imports = [inputs.self.sopsConfigs.hmSopsConfig];}
         # Disable version check to prevent warnings
-        { home.enableNixpkgsReleaseCheck = false; }
+        {home.enableNixpkgsReleaseCheck = false;}
       ];
       extraSpecialArgs = {
         inherit inputs;

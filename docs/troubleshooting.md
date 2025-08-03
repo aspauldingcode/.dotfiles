@@ -18,6 +18,7 @@ This guide covers common issues and their solutions when working with our Nix fl
 ### Nix Flake Evaluation Errors
 
 #### Error: "flake.nix not found"
+
 ```bash
 # Solution: Ensure you're in the correct directory
 cd ~/.dotfiles
@@ -29,6 +30,7 @@ nix build ~/.dotfiles#darwinConfigurations.NIXI.system  # Intel
 ```
 
 #### Error: "experimental feature 'flakes' is disabled"
+
 ```bash
 # Solution: Enable flakes in Nix configuration
 echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
@@ -39,6 +41,7 @@ nix --experimental-features "nix-command flakes" build .#darwinConfigurations.NI
 ```
 
 #### Error: "attribute 'darwinConfigurations' missing"
+
 ```bash
 # Check flake outputs
 nix flake show
@@ -53,6 +56,7 @@ nix eval --show-trace .#darwinConfigurations
 ### Git and Version Control Issues
 
 #### Error: "fatal: not a git repository"
+
 ```bash
 # Initialize git repository
 git init
@@ -62,6 +66,7 @@ git checkout main
 ```
 
 #### Error: "Your branch is behind 'origin/main'"
+
 ```bash
 # Update local repository
 git fetch origin
@@ -72,6 +77,7 @@ git pull origin main
 ```
 
 #### Error: "merge conflict in flake.lock"
+
 ```bash
 # Update flake inputs
 nix flake update
@@ -84,6 +90,7 @@ git commit -m "chore: update flake inputs"
 ### Permission Issues
 
 #### Error: "Permission denied" when accessing secrets
+
 ```bash
 # Fix age key permissions
 chmod 600 ~/.config/sops/age/keys.txt
@@ -94,6 +101,7 @@ find ~/.dotfiles/secrets -type d -exec chmod 755 {} \;
 ```
 
 #### Error: "Operation not permitted" on macOS
+
 ```bash
 # Grant Full Disk Access to Terminal
 # System Preferences > Security & Privacy > Privacy > Full Disk Access
@@ -109,6 +117,7 @@ sudo darwin-rebuild switch --flake .#NIXI  # Intel
 ### Darwin Configuration Build Failures
 
 #### Error: "builder for '/nix/store/...' failed"
+
 ```bash
 # Check build logs
 nix log .#darwinConfigurations.NIXY.system
@@ -121,6 +130,7 @@ nix build --no-substitute .#darwinConfigurations.NIXY.system
 ```
 
 #### Error: "infinite recursion encountered"
+
 ```bash
 # Check for circular imports
 nix eval --show-trace .#darwinConfigurations.NIXY.config
@@ -133,6 +143,7 @@ nix eval --show-trace .#darwinConfigurations.NIXY.config.modules.darwin.homebrew
 ```
 
 #### Error: "package 'xyz' not found"
+
 ```bash
 # Search for package
 nix search nixpkgs xyz
@@ -147,6 +158,7 @@ nix flake update nixpkgs
 ### Home Manager Build Failures
 
 #### Error: "collision between files"
+
 ```bash
 # Check conflicting files
 home-manager build --flake .#alex@NIXY 2>&1 | grep collision
@@ -161,6 +173,7 @@ programs.git.enable = false;
 ```
 
 #### Error: "home-manager not found"
+
 ```bash
 # Install home-manager
 nix profile install nixpkgs#home-manager
@@ -172,6 +185,7 @@ nix run home-manager/master -- switch --flake .#alex@NIXY
 ### Development Shell Issues
 
 #### Error: "shell hook failed"
+
 ```bash
 # Check shell hook syntax
 nix develop --command bash -c 'echo "Shell loaded successfully"'
@@ -184,6 +198,7 @@ nix develop .#minimal
 ```
 
 #### Error: "command not found in development shell"
+
 ```bash
 # Check available packages
 nix develop --command which <command>
@@ -205,6 +220,7 @@ devShells.default = pkgs.mkShell {
 ### SOPS Decryption Failures
 
 #### Error: "no key could decrypt the data"
+
 ```bash
 # Check age key exists
 test -f ~/.config/sops/age/keys.txt && echo "Key found" || echo "Key missing"
@@ -220,6 +236,7 @@ sops --decrypt secrets/development/secrets.yaml
 ```
 
 #### Error: "age key not found"
+
 ```bash
 # Generate new age key
 mkdir -p ~/.config/sops/age
@@ -233,6 +250,7 @@ age-keygen -y ~/.config/sops/age/keys.txt
 ```
 
 #### Error: "failed to decrypt sops data key"
+
 ```bash
 # Check if you're listed as recipient
 sops --decrypt --extract '["sops"]["age"]' secrets/development/secrets.yaml
@@ -247,6 +265,7 @@ sops --decrypt --extract '["sops"]["age"]' secrets/development/secrets.yaml
 ### Secrets Integration Issues
 
 #### Error: "sops secret not found"
+
 ```bash
 # Check secret exists in file
 sops --decrypt secrets/development/secrets.yaml | grep secret-name
@@ -259,6 +278,7 @@ sudo cat /run/secrets/secret-name
 ```
 
 #### Error: "secret file permissions incorrect"
+
 ```bash
 # Check current permissions
 ls -la /run/secrets/
@@ -276,6 +296,7 @@ sops.secrets.secret-name = {
 ### macOS (Darwin) Issues
 
 #### Error: "xcode-select: command line tools not installed"
+
 ```bash
 # Install Xcode command line tools
 xcode-select --install
@@ -286,6 +307,7 @@ sudo xcodebuild -license accept
 ```
 
 #### Error: "System Integrity Protection (SIP) blocking operation"
+
 ```bash
 # Check SIP status
 csrutil status
@@ -299,6 +321,7 @@ csrutil status
 ```
 
 #### Error: "Homebrew not found"
+
 ```bash
 # Install Homebrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -311,6 +334,7 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 ### NixOS Issues
 
 #### Error: "systemd service failed to start"
+
 ```bash
 # Check service status
 systemctl status service-name
@@ -323,6 +347,7 @@ sudo systemctl restart service-name
 ```
 
 #### Error: "boot loader installation failed"
+
 ```bash
 # Check boot loader configuration
 sudo nixos-rebuild switch --show-trace
@@ -337,6 +362,7 @@ efibootmgr -v
 ### Multi-User Issues
 
 #### Error: "user not found in configuration"
+
 ```bash
 # Check user definition
 nix eval .#darwinConfigurations.NIXY.config.users.users.alex
@@ -352,6 +378,7 @@ users.users.alex = {
 ```
 
 #### Error: "home directory permissions incorrect"
+
 ```bash
 # Fix home directory ownership
 sudo chown -R alex:staff /Users/alex
@@ -366,6 +393,7 @@ sudo chown -R alex:staff ~/.local
 ### Slow Build Times
 
 #### Diagnosis
+
 ```bash
 # Measure build time
 time nix build .#darwinConfigurations.NIXY.system
@@ -378,6 +406,7 @@ nix build --option log-lines 100 .#darwinConfigurations.NIXY.system
 ```
 
 #### Solutions
+
 ```bash
 # Use binary cache
 nix.settings.substituters = [
@@ -396,6 +425,7 @@ nix build --option eval-cache true .#darwinConfigurations.NIXY.system
 ### High Memory Usage
 
 #### Diagnosis
+
 ```bash
 # Monitor memory during build
 nix build .#darwinConfigurations.NIXY.system &
@@ -406,6 +436,7 @@ ps aux | grep nix-daemon
 ```
 
 #### Solutions
+
 ```bash
 # Limit memory usage
 nix.settings.max-silent-time = 3600;
@@ -419,6 +450,7 @@ sudo launchctl load /Library/LaunchDaemons/org.nixos.nix-daemon.plist
 ### Disk Space Issues
 
 #### Diagnosis
+
 ```bash
 # Check Nix store size
 du -sh /nix/store
@@ -431,6 +463,7 @@ nix-store --gc --print-roots | wc -l
 ```
 
 #### Solutions
+
 ```bash
 # Run garbage collection
 nix-collect-garbage -d
@@ -447,6 +480,7 @@ nix-store --optimize
 ### System Recovery
 
 #### Rollback to Previous Generation
+
 ```bash
 # List available generations
 sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
@@ -459,6 +493,7 @@ darwin-rebuild --rollback
 ```
 
 #### Boot from Recovery
+
 ```bash
 # macOS Recovery Mode
 # Hold Cmd+R during boot
@@ -471,6 +506,7 @@ darwin-rebuild --rollback
 ### Configuration Recovery
 
 #### Restore from Git
+
 ```bash
 # Reset to last known good state
 git log --oneline -10
@@ -482,6 +518,7 @@ git reset --hard <good-commit>
 ```
 
 #### Backup and Restore
+
 ```bash
 # Create configuration backup
 tar -czf dotfiles-backup-$(date +%Y%m%d).tar.gz ~/.dotfiles
@@ -494,6 +531,7 @@ tar -xzf dotfiles-backup-<date>.tar.gz
 ### Secrets Recovery
 
 #### Restore Age Keys
+
 ```bash
 # From backup
 cp /path/to/backup/keys.txt ~/.config/sops/age/keys.txt
@@ -505,6 +543,7 @@ age-keygen -o ~/.config/sops/age/keys.txt
 ```
 
 #### Re-encrypt Secrets
+
 ```bash
 # Update .sops.yaml with new key
 age-keygen -y ~/.config/sops/age/keys.txt
@@ -516,6 +555,7 @@ age-keygen -y ~/.config/sops/age/keys.txt
 ## Diagnostic Tools
 
 ### System Information
+
 ```bash
 # System details
 ./scripts/system-manager.sh status NIXY
@@ -532,6 +572,7 @@ system_profiler SPHardwareDataType
 ```
 
 ### Configuration Validation
+
 ```bash
 # Quick validation
 ./scripts/flake-check.sh
@@ -545,6 +586,7 @@ system_profiler SPHardwareDataType
 ```
 
 ### Log Analysis
+
 ```bash
 # System logs (macOS)
 log show --predicate 'process == "nix-daemon"' --last 1h
@@ -557,6 +599,7 @@ journalctl --user -u home-manager-alex.service
 ```
 
 ### Network Diagnostics
+
 ```bash
 # Test binary cache connectivity
 curl -I https://cache.nixos.org
@@ -573,20 +616,23 @@ nix-prefetch-url https://cache.nixos.org/nix-cache-info
 ### Self-Help Resources
 
 1. **Check Documentation**:
+
    - Read relevant sections in `docs/`
    - Check module documentation
    - Review example configurations
 
-2. **Search Issues**:
+1. **Search Issues**:
+
    - Search GitHub issues in repository
    - Check NixOS/nixpkgs issues
    - Look for similar problems online
 
-3. **Use Diagnostic Tools**:
+1. **Use Diagnostic Tools**:
+
    ```bash
    # Run comprehensive diagnostics
    ./scripts/test-framework.sh --verbose
-   
+
    # Generate debug report
    ./scripts/system-manager.sh debug-report NIXY
    ```
@@ -594,16 +640,19 @@ nix-prefetch-url https://cache.nixos.org/nix-cache-info
 ### Community Support
 
 1. **NixOS Community**:
+
    - NixOS Discourse: https://discourse.nixos.org
    - NixOS Reddit: https://reddit.com/r/NixOS
    - Matrix/IRC channels
 
-2. **GitHub Issues**:
+1. **GitHub Issues**:
+
    - Create detailed issue reports
    - Include system information
    - Provide reproduction steps
 
-3. **Documentation Contributions**:
+1. **Documentation Contributions**:
+
    - Improve documentation
    - Add troubleshooting entries
    - Share solutions
@@ -635,9 +684,9 @@ env | grep -E "(NIX_|HOME|USER|PATH)"
 For critical production issues:
 
 1. **System Administrator**: Contact your system admin
-2. **Team Lead**: Escalate to team leadership
-3. **On-call Engineer**: Use established on-call procedures
+1. **Team Lead**: Escalate to team leadership
+1. **On-call Engineer**: Use established on-call procedures
 
----
+______________________________________________________________________
 
 This troubleshooting guide covers the most common issues you'll encounter. Keep it updated with new problems and solutions as they arise.

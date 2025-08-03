@@ -13,33 +13,35 @@ A comprehensive, production-ready Nix configuration using `flake-parts` for mana
 - 🛠️ **Developer Experience**: Rich development shells and tools
 
 <!-- BEGIN CODE STATS -->
+
 ## How much code?
 
 👨‍💻 Code Statistics:
 
-_Total LOC (including blanks, comments): **38783**_
+_Total LOC (including blanks, comments): **54873**_
 
 <details>
 <summary>🔍 Click to expand code stats.</summary>
 
 | Language   | Files | Lines | Code  | Comments | Blanks |
 |------------|-------|-------|-------|----------|--------|
-| CSS | 4 | 1882 | 1416 | 124 | 342 |
+| CSS | 8 | 5586 | 4248 | 316 | 1022 |
 | JSON | 1 | 402 | 402 | 0 | 0 |
 | Lua | 1 | 225 | 138 | 50 | 37 |
-| Markdown | 13 | 3440 | 0 | 2469 | 971 |
-| Nix | 177 | 26819 | 22469 | 2491 | 1859 |
+| Markdown | 13 | 3448 | 0 | 2476 | 972 |
+| Nix | 286 | 39118 | 33000 | 3635 | 2483 |
 | Python | 5 | 1617 | 1407 | 61 | 149 |
-| Shell | 14 | 3893 | 2892 | 355 | 646 |
+| Shell | 17 | 3936 | 2915 | 365 | 656 |
 | Plain Text | 1 | 1 | 0 | 1 | 0 |
 | TOML | 1 | 56 | 47 | 5 | 4 |
 | Vim script | 0 | 0 |  |  |  |
-| YAML | 8 | 448 | 274 | 154 | 20 |
-| **Total**  | 225 | 38783 | 29045 | 5710 | 4028 |
+| YAML | 9 | 484 | 304 | 160 | 20 |
+| **Total**  | 342 | 54873 | 42461 | 7069 | 5343 |
 
 </details>
 
-Last updated: Mon Jul 21 09:15:18 2025
+Last updated: Fri Aug  1 11:55:02 PDT 2025
+
 <!-- END CODE STATS -->
 
 ## 🖥️ Supported Systems
@@ -215,11 +217,13 @@ nix run .#ci-deploy
 ### Adding a New Host
 
 1. **Create host directory**:
+
    ```bash
    mkdir -p hosts/{nixos,darwin}/hostname
    ```
 
-2. **Create configuration**:
+1. **Create configuration**:
+
    ```nix
    # hosts/nixos/hostname/default.nix
    { config, lib, pkgs, ... }: {
@@ -233,7 +237,8 @@ nix run .#ci-deploy
    }
    ```
 
-3. **Add to flake configuration**:
+1. **Add to flake configuration**:
+
    ```nix
    # parts/nixos-configurations.nix
    hostname = inputs.nixpkgs.lib.nixosSystem {
@@ -244,11 +249,13 @@ nix run .#ci-deploy
 ### Adding a New Module
 
 1. **Create module**:
+
    ```bash
    mkdir -p modules/{nixos,darwin,home-manager}/module-name
    ```
 
-2. **Implement module**:
+1. **Implement module**:
+
    ```nix
    # modules/nixos/module-name/default.nix
    { config, lib, pkgs, ... }: {
@@ -262,7 +269,8 @@ nix run .#ci-deploy
    }
    ```
 
-3. **Import in default.nix**:
+1. **Import in default.nix**:
+
    ```nix
    # modules/nixos/default.nix
    {
@@ -276,11 +284,13 @@ nix run .#ci-deploy
 ### Adding a New Profile
 
 1. **Create profile directory**:
+
    ```bash
    mkdir -p profiles/profile-name
    ```
 
-2. **Define profile**:
+1. **Define profile**:
+
    ```nix
    # profiles/profile-name/default.nix
    { config, lib, pkgs, ... }: {
@@ -292,7 +302,8 @@ nix run .#ci-deploy
    }
    ```
 
-3. **Import in profiles**:
+1. **Import in profiles**:
+
    ```nix
    # profiles/default.nix
    {
@@ -493,12 +504,12 @@ We welcome contributions! Please see our [Contributing Guidelines](docs/contribu
 ### Quick Contribution Workflow
 
 1. **Fork and clone** the repository
-2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
-3. **Make changes** and test thoroughly
-4. **Format code**: `nix fmt`
-5. **Run checks**: `nix flake check`
-6. **Commit changes**: Follow conventional commit format
-7. **Push and create** a pull request
+1. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+1. **Make changes** and test thoroughly
+1. **Format code**: `nix fmt`
+1. **Run checks**: `nix flake check`
+1. **Commit changes**: Follow conventional commit format
+1. **Push and create** a pull request
 
 ## 📄 License
 
@@ -513,6 +524,6 @@ This configuration is available under the **MIT License**. See [LICENSE](LICENSE
 - [SOPS](https://github.com/mozilla/sops) - Secrets management
 - [Mobile NixOS](https://mobile.nixos.org/) - NixOS for mobile devices
 
----
+______________________________________________________________________
 
 **Made with ❤️ and Nix** | [Report Issues](https://github.com/yourusername/dotfiles/issues) | [Discussions](https://github.com/yourusername/dotfiles/discussions)

@@ -3,11 +3,9 @@
   config,
   pkgs,
   ...
-}:
-let
-  inherit (nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
-in
-{
+}: let
+  inherit (nix-colors.lib-contrib {inherit pkgs;}) gtkThemeFromScheme;
+in {
   home.pointerCursor = {
     name = "Bibata-Modern-Ice";
     package = pkgs.bibata-cursors;
@@ -21,7 +19,7 @@ in
     };
     theme = {
       name = "${config.colorScheme.slug}";
-      package = gtkThemeFromScheme { scheme = config.colorScheme; };
+      package = gtkThemeFromScheme {scheme = config.colorScheme;};
     };
     gtk3.extraConfig = {
       gtk-decoration-layout = "appmenu:none";

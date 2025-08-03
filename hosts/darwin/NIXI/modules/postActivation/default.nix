@@ -4,31 +4,26 @@
   inputs,
   user,
   ...
-}:
-let
-  InputSourceSelector = pkgs.callPackage ../../customDerivations/inputsourceselector.nix { };
+}: let
+  InputSourceSelector = pkgs.callPackage ../../customDerivations/inputsourceselector.nix {};
   systemType = pkgs.stdenv.hostPlatform.system;
   homebrewPath =
-    if systemType == "aarch64-darwin" then
-      "/opt/homebrew/bin"
-    else if systemType == "x86_64-darwin" then
-      "/usr/local/bin"
-    else
-      throw "Homebrew Unsupported architecture: ${systemType}";
+    if systemType == "aarch64-darwin"
+    then "/opt/homebrew/bin"
+    else if systemType == "x86_64-darwin"
+    then "/usr/local/bin"
+    else throw "Homebrew Unsupported architecture: ${systemType}";
   inherit (config.colorScheme) palette;
-  wallpaper_input =
-    if pkgs.stdenv.isDarwin then
-      ../../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper-darwin.png
-    else
-      ../../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper.png;
-  wallpaper_output =
-    if pkgs.stdenv.isDarwin then
-      "/var/root/Pictures/gowall/nix-colors-wallpaper-darwin.png"
-    else
-      "/var/root/Pictures/gowall/nix-colors-wallpaper.png";
-  gowall = "${pkgs.unstable.gowall}/bin/gowall";
-in
-{
+  # wallpaper_input =
+  #   if pkgs.stdenv.isDarwin
+  #   then ../../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper-darwin.png
+  #   else ../../../../users/${user}/extraConfig/wallpapers/nix-colors-wallpaper.png;
+  # wallpaper_output =
+  #   if pkgs.stdenv.isDarwin
+  #   then "/var/root/Pictures/gowall/nix-colors-wallpaper-darwin.png"
+  #   else "/var/root/Pictures/gowall/nix-colors-wallpaper.png";
+  # gowall = "${pkgs.unstable.gowall}/bin/gowall";
+in {
   system.activationScripts.postActivation.text = ''
 
     # ===================================================================
@@ -83,7 +78,9 @@ in
     # ===================================================================
 
     # symlink (zulu) jdk23 to /Library/Java/JavaVirtualMachines/ # NEEDED for macOS!!
-    ln -sf "${inputs.nixpkgs.legacyPackages.${systemType}.jdk23}/zulu-23.jdk" "/Library/Java/JavaVirtualMachines/"
+    ln -sf "${
+      inputs.nixpkgs.legacyPackages.${systemType}.jdk23
+    }/zulu-23.jdk" "/Library/Java/JavaVirtualMachines/"
 
     # ===================================================================
     # macOS Wallpaper Configuration
@@ -94,11 +91,11 @@ in
     # create the wallpaper directory if it doesn't exist
     # mkdir -p /Users/Shared/Wallpaper/
 
-    # echo "Recoloring Wallpapers to ''${config.colorScheme.slug} color scheme..."
-     # ''${gowall} convert ''${wallpaper_input} -t /etc/gowall/theme.json
+    # echo "Recoloring Wallpapers to color scheme..."
+    # gowall convert wallpaper_input -t /etc/gowall/theme.json
 
-     # echo "Setting ''${config.colorScheme.variant} wallpaper..."
-     # wallpaper "''${wallpaper_output}"
+    # echo "Setting wallpaper..."
+    # wallpaper "wallpaper_output"
 
     # ===================================================================
     # macOS Dark/Light Mode Configuration

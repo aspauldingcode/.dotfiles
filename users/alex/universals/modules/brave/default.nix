@@ -3,14 +3,14 @@
   lib,
   pkgs,
   ...
-}:
-{
+}: {
   programs.chromium = {
     enable = true;
     package = pkgs.brave;
-    commandLineArgs = [
+    commandLineArgs = lib.optionals pkgs.stdenv.isLinux [
       "--enable-features=UseOzonePlatform"
-    ] ++ lib.optionals pkgs.stdenv.isLinux [ "--ozone-platform=wayland" ];
+      "--ozone-platform=wayland"
+    ];
     dictionaries = [
     ];
     extensions = [

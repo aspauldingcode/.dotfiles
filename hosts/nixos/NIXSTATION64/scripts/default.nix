@@ -3,8 +3,7 @@
   lib,
   pkgs,
   ...
-}:
-{
+}: {
   environment.systemPackages = with pkgs; [
     #rebuild #sudo nixos-rebuild switch --show-trace --option eval-cache false --flake .#NIXSTATION64
     (pkgs.writeShellScriptBin "rebuild" ''

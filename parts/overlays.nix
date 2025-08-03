@@ -1,13 +1,12 @@
 # Overlays Module - Centralized overlay management
-{ inputs, ... }:
-{
+{inputs, ...}: {
   # Define overlays at the flake level for reuse across all systems
   flake.overlays = {
     # Main overlay combining all custom overlays
     default = inputs.nixpkgs.lib.composeManyExtensions [
       # Community overlays
       inputs.nur.overlays.default
-      
+
       # Unstable packages overlay
       (final: _prev: {
         unstable = import inputs.nixpkgs-unstable {
@@ -15,14 +14,18 @@
           config = final.config;
         };
       })
-      
+
       # Custom overlays
-      (import ../overlays { inherit inputs; })
+      (import ../overlays {inherit inputs;})
     ];
   };
 
   # Configure nixpkgs consistently across all systems
-  perSystem = { pkgs, system, ... }: {
+  perSystem = {
+    pkgs,
+    system,
+    ...
+  }: {
     _module.args.pkgs = import inputs.nixpkgs {
       inherit system;
       config = {
@@ -48,7 +51,7 @@
             "1password-cli"
           ];
       };
-      overlays = [ inputs.self.overlays.default ];
+      overlays = [inputs.self.overlays.default];
     };
   };
 }

@@ -1,6 +1,5 @@
 # Home Manager Configurations Module
-{ inputs, ... }:
-{
+{inputs, ...}: {
   # Standalone Home Manager configurations (optional)
   flake.homeConfigurations = {
     # Standalone configuration for systems without NixOS/nix-darwin
@@ -15,6 +14,9 @@
             "olm-3.2.16"
           ];
         };
+        overlays = [
+          inputs.self.overlays.default
+        ];
       };
       extraSpecialArgs = {
         inherit inputs;

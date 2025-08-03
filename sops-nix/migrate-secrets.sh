@@ -20,122 +20,122 @@ BACKUP_DIR="${DOTFILES_DIR}/secrets-backup-$(date +%Y%m%d-%H%M%S)"
 
 # Helper functions
 log_info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
+  echo -e "${BLUE}[INFO]${NC} $1"
 }
 
 log_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
+  echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
 log_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
+  echo -e "${YELLOW}[WARNING]${NC} $1"
 }
 
 log_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
+  echo -e "${RED}[ERROR]${NC} $1"
 }
 
 check_dependencies() {
-    log_info "Checking dependencies..."
-    
-    local missing_deps=()
-    
-    if ! command -v sops &> /dev/null; then
-        missing_deps+=("sops")
-    fi
-    
-    if ! command -v age &> /dev/null; then
-        missing_deps+=("age")
-    fi
-    
-    if ! command -v age-keygen &> /dev/null; then
-        missing_deps+=("age-keygen")
-    fi
-    
-    if [ ${#missing_deps[@]} -ne 0 ]; then
-        log_error "Missing dependencies: ${missing_deps[*]}"
-        log_info "Please install missing dependencies and try again."
-        log_info "On NixOS: nix-shell -p sops age"
-        log_info "On macOS: brew install sops age"
-        exit 1
-    fi
-    
-    log_success "All dependencies found"
+  log_info "Checking dependencies..."
+
+  local missing_deps=()
+
+  if ! command -v sops &>/dev/null; then
+    missing_deps+=("sops")
+  fi
+
+  if ! command -v age &>/dev/null; then
+    missing_deps+=("age")
+  fi
+
+  if ! command -v age-keygen &>/dev/null; then
+    missing_deps+=("age-keygen")
+  fi
+
+  if [ ${#missing_deps[@]} -ne 0 ]; then
+    log_error "Missing dependencies: ${missing_deps[*]}"
+    log_info "Please install missing dependencies and try again."
+    log_info "On NixOS: nix-shell -p sops age"
+    log_info "On macOS: brew install sops age"
+    exit 1
+  fi
+
+  log_success "All dependencies found"
 }
 
 backup_existing_secrets() {
-    log_info "Creating backup of existing secrets..."
-    
-    mkdir -p "$BACKUP_DIR"
-    
-    if [ -f "${SOPS_DIR}/secrets.yaml" ]; then
-        cp "${SOPS_DIR}/secrets.yaml" "${BACKUP_DIR}/legacy-secrets.yaml"
-        log_success "Backed up legacy secrets to ${BACKUP_DIR}/legacy-secrets.yaml"
-    fi
-    
-    if [ -f "${SOPS_DIR}/.sops.yaml" ]; then
-        cp "${SOPS_DIR}/.sops.yaml" "${BACKUP_DIR}/legacy-sops.yaml"
-        log_success "Backed up legacy .sops.yaml to ${BACKUP_DIR}/legacy-sops.yaml"
-    fi
-    
-    if [ -d "$SECRETS_DIR" ]; then
-        cp -r "$SECRETS_DIR" "${BACKUP_DIR}/secrets"
-        log_success "Backed up existing secrets directory to ${BACKUP_DIR}/secrets"
-    fi
+  log_info "Creating backup of existing secrets..."
+
+  mkdir -p "$BACKUP_DIR"
+
+  if [ -f "${SOPS_DIR}/secrets.yaml" ]; then
+    cp "${SOPS_DIR}/secrets.yaml" "${BACKUP_DIR}/legacy-secrets.yaml"
+    log_success "Backed up legacy secrets to ${BACKUP_DIR}/legacy-secrets.yaml"
+  fi
+
+  if [ -f "${SOPS_DIR}/.sops.yaml" ]; then
+    cp "${SOPS_DIR}/.sops.yaml" "${BACKUP_DIR}/legacy-sops.yaml"
+    log_success "Backed up legacy .sops.yaml to ${BACKUP_DIR}/legacy-sops.yaml"
+  fi
+
+  if [ -d "$SECRETS_DIR" ]; then
+    cp -r "$SECRETS_DIR" "${BACKUP_DIR}/secrets"
+    log_success "Backed up existing secrets directory to ${BACKUP_DIR}/secrets"
+  fi
 }
 
 setup_age_keys() {
-    log_info "Setting up age keys..."
-    
-    local age_dir="${HOME}/.config/sops/age"
-    local age_key_file="${age_dir}/keys.txt"
-    
-    mkdir -p "$age_dir"
-    
-    if [ ! -f "$age_key_file" ]; then
-        log_info "Generating new age key..."
-        age-keygen -o "$age_key_file"
-        chmod 600 "$age_key_file"
-        log_success "Generated new age key at $age_key_file"
-    else
-        log_info "Age key already exists at $age_key_file"
-    fi
-    
-    # Extract public key
-    local public_key
-    public_key=$(age-keygen -y "$age_key_file")
-    log_info "Your age public key: $public_key"
-    
-    # Save public key for reference
-    echo "$public_key" > "${age_dir}/public_key.txt"
-    log_success "Public key saved to ${age_dir}/public_key.txt"
-    
-    echo "$public_key"
+  log_info "Setting up age keys..."
+
+  local age_dir="${HOME}/.config/sops/age"
+  local age_key_file="${age_dir}/keys.txt"
+
+  mkdir -p "$age_dir"
+
+  if [ ! -f "$age_key_file" ]; then
+    log_info "Generating new age key..."
+    age-keygen -o "$age_key_file"
+    chmod 600 "$age_key_file"
+    log_success "Generated new age key at $age_key_file"
+  else
+    log_info "Age key already exists at $age_key_file"
+  fi
+
+  # Extract public key
+  local public_key
+  public_key=$(age-keygen -y "$age_key_file")
+  log_info "Your age public key: $public_key"
+
+  # Save public key for reference
+  echo "$public_key" >"${age_dir}/public_key.txt"
+  log_success "Public key saved to ${age_dir}/public_key.txt"
+
+  echo "$public_key"
 }
 
 create_directory_structure() {
-    log_info "Creating directory structure..."
-    
-    local dirs=(
-        "$SECRETS_DIR"
-        "$SECRETS_DIR/development"
-        "$SECRETS_DIR/production"
-        "$SECRETS_DIR/staging"
-        "$SECRETS_DIR/systems"
-        "$SECRETS_DIR/users"
-    )
-    
-    for dir in "${dirs[@]}"; do
-        mkdir -p "$dir"
-        log_success "Created directory: $dir"
-    done
+  log_info "Creating directory structure..."
+
+  local dirs=(
+    "$SECRETS_DIR"
+    "$SECRETS_DIR/development"
+    "$SECRETS_DIR/production"
+    "$SECRETS_DIR/staging"
+    "$SECRETS_DIR/systems"
+    "$SECRETS_DIR/users"
+  )
+
+  for dir in "${dirs[@]}"; do
+    mkdir -p "$dir"
+    log_success "Created directory: $dir"
+  done
 }
 
 create_template_secrets() {
-    log_info "Creating template secret files..."
-    
-    # Development secrets template
-    cat > "${SECRETS_DIR}/development/secrets.yaml" << 'EOF'
+  log_info "Creating template secret files..."
+
+  # Development secrets template
+  cat >"${SECRETS_DIR}/development/secrets.yaml" <<'EOF'
 # Development Environment Secrets
 # These secrets are used for local development and testing
 
@@ -171,8 +171,8 @@ local_ssl_key: |
   -----END PRIVATE KEY-----
 EOF
 
-    # Production secrets template
-    cat > "${SECRETS_DIR}/production/secrets.yaml" << 'EOF'
+  # Production secrets template
+  cat >"${SECRETS_DIR}/production/secrets.yaml" <<'EOF'
 # Production Environment Secrets
 # These secrets are used in production environments
 
@@ -252,13 +252,13 @@ tls_certificate: |
   -----END CERTIFICATE-----
 EOF
 
-    # Staging secrets (copy of production template)
-    cp "${SECRETS_DIR}/production/secrets.yaml" "${SECRETS_DIR}/staging/secrets.yaml"
-    sed -i.bak 's/PROD_/STAGING_/g; s/prod-/staging-/g' "${SECRETS_DIR}/staging/secrets.yaml"
-    rm "${SECRETS_DIR}/staging/secrets.yaml.bak"
+  # Staging secrets (copy of production template)
+  cp "${SECRETS_DIR}/production/secrets.yaml" "${SECRETS_DIR}/staging/secrets.yaml"
+  sed -i.bak 's/PROD_/STAGING_/g; s/prod-/staging-/g' "${SECRETS_DIR}/staging/secrets.yaml"
+  rm "${SECRETS_DIR}/staging/secrets.yaml.bak"
 
-    # User-specific secrets template
-    cat > "${SECRETS_DIR}/users/alex.yaml" << 'EOF'
+  # User-specific secrets template
+  cat >"${SECRETS_DIR}/users/alex.yaml" <<'EOF'
 # User-specific secrets for alex
 # Personal credentials and user-specific configurations
 
@@ -303,8 +303,8 @@ personal_vpn_config: |
   AllowedIPs = 0.0.0.0/0
 EOF
 
-    # System-specific secrets template
-    cat > "${SECRETS_DIR}/systems/NIXY.yaml" << 'EOF'
+  # System-specific secrets template
+  cat >"${SECRETS_DIR}/systems/NIXY.yaml" <<'EOF'
 # System-specific secrets for NIXY
 # Hardware and system-specific configurations
 
@@ -339,28 +339,28 @@ system_monitoring_token: CHANGE_ME_MONITORING_TOKEN
 log_aggregation_key: CHANGE_ME_LOG_KEY
 EOF
 
-    log_success "Created template secret files"
-    log_warning "Remember to replace all CHANGE_ME placeholders with actual values!"
+  log_success "Created template secret files"
+  log_warning "Remember to replace all CHANGE_ME placeholders with actual values!"
 }
 
 migrate_legacy_secrets() {
-    log_info "Checking for legacy secrets to migrate..."
-    
-    local legacy_file="${SOPS_DIR}/secrets.yaml"
-    
-    if [ ! -f "$legacy_file" ]; then
-        log_info "No legacy secrets file found, skipping migration"
-        return
-    fi
-    
-    log_info "Found legacy secrets file, attempting to decrypt and migrate..."
-    
-    # Try to decrypt legacy secrets
-    if sops --decrypt "$legacy_file" > /dev/null 2>&1; then
-        log_info "Successfully decrypted legacy secrets"
-        
-        # Create a migration helper script
-        cat > "${BACKUP_DIR}/migrate_secrets.sh" << 'EOF'
+  log_info "Checking for legacy secrets to migrate..."
+
+  local legacy_file="${SOPS_DIR}/secrets.yaml"
+
+  if [ ! -f "$legacy_file" ]; then
+    log_info "No legacy secrets file found, skipping migration"
+    return
+  fi
+
+  log_info "Found legacy secrets file, attempting to decrypt and migrate..."
+
+  # Try to decrypt legacy secrets
+  if sops --decrypt "$legacy_file" >/dev/null 2>&1; then
+    log_info "Successfully decrypted legacy secrets"
+
+    # Create a migration helper script
+    cat >"${BACKUP_DIR}/migrate_secrets.sh" <<'EOF'
 #!/bin/bash
 # Helper script to migrate specific secrets from legacy file
 # Usage: ./migrate_secrets.sh
@@ -381,60 +381,60 @@ echo "- Production: ../secrets/production/secrets.yaml"
 echo "- User-specific: ../secrets/users/alex.yaml"
 echo "- System-specific: ../secrets/systems/NIXY.yaml"
 EOF
-        
-        chmod +x "${BACKUP_DIR}/migrate_secrets.sh"
-        log_success "Created migration helper script at ${BACKUP_DIR}/migrate_secrets.sh"
-        
-    else
-        log_warning "Could not decrypt legacy secrets file"
-        log_info "You may need to set up your age keys first"
-    fi
+
+    chmod +x "${BACKUP_DIR}/migrate_secrets.sh"
+    log_success "Created migration helper script at ${BACKUP_DIR}/migrate_secrets.sh"
+
+  else
+    log_warning "Could not decrypt legacy secrets file"
+    log_info "You may need to set up your age keys first"
+  fi
 }
 
 update_sops_yaml() {
-    log_info "Updating .sops.yaml configuration..."
-    
-    local public_key="$1"
-    
-    # The .sops.yaml should already be updated by the previous step
-    # This function validates it exists and has the correct structure
-    
-    if [ ! -f "${DOTFILES_DIR}/.sops.yaml" ]; then
-        log_error ".sops.yaml not found! Please ensure it was created in the previous step."
-        return 1
-    fi
-    
-    log_success ".sops.yaml configuration is ready"
-    log_info "Remember to update the age keys in .sops.yaml with your public key: $public_key"
+  log_info "Updating .sops.yaml configuration..."
+
+  local public_key="$1"
+
+  # The .sops.yaml should already be updated by the previous step
+  # This function validates it exists and has the correct structure
+
+  if [ ! -f "${DOTFILES_DIR}/.sops.yaml" ]; then
+    log_error ".sops.yaml not found! Please ensure it was created in the previous step."
+    return 1
+  fi
+
+  log_success ".sops.yaml configuration is ready"
+  log_info "Remember to update the age keys in .sops.yaml with your public key: $public_key"
 }
 
 encrypt_template_files() {
-    log_info "Encrypting template secret files..."
-    
-    local files=(
-        "${SECRETS_DIR}/development/secrets.yaml"
-        "${SECRETS_DIR}/production/secrets.yaml"
-        "${SECRETS_DIR}/staging/secrets.yaml"
-        "${SECRETS_DIR}/users/alex.yaml"
-        "${SECRETS_DIR}/systems/NIXY.yaml"
-    )
-    
-    for file in "${files[@]}"; do
-        if [ -f "$file" ]; then
-            log_info "Encrypting $file..."
-            if sops --encrypt --in-place "$file"; then
-                log_success "Encrypted $file"
-            else
-                log_error "Failed to encrypt $file"
-            fi
-        fi
-    done
+  log_info "Encrypting template secret files..."
+
+  local files=(
+    "${SECRETS_DIR}/development/secrets.yaml"
+    "${SECRETS_DIR}/production/secrets.yaml"
+    "${SECRETS_DIR}/staging/secrets.yaml"
+    "${SECRETS_DIR}/users/alex.yaml"
+    "${SECRETS_DIR}/systems/NIXY.yaml"
+  )
+
+  for file in "${files[@]}"; do
+    if [ -f "$file" ]; then
+      log_info "Encrypting $file..."
+      if sops --encrypt --in-place "$file"; then
+        log_success "Encrypted $file"
+      else
+        log_error "Failed to encrypt $file"
+      fi
+    fi
+  done
 }
 
 create_usage_examples() {
-    log_info "Creating usage examples..."
-    
-    cat > "${SECRETS_DIR}/examples.nix" << 'EOF'
+  log_info "Creating usage examples..."
+
+  cat >"${SECRETS_DIR}/examples.nix" <<'EOF'
 # Usage examples for the new sops-nix configuration
 
 { config, pkgs, ... }:
@@ -528,62 +528,62 @@ in {
   };
 }
 EOF
-    
-    log_success "Created usage examples at ${SECRETS_DIR}/examples.nix"
+
+  log_success "Created usage examples at ${SECRETS_DIR}/examples.nix"
 }
 
 print_next_steps() {
-    log_success "Migration completed successfully!"
-    echo ""
-    log_info "Next steps:"
-    echo "1. Review and update secret values in the template files:"
-    echo "   - ${SECRETS_DIR}/development/secrets.yaml"
-    echo "   - ${SECRETS_DIR}/production/secrets.yaml"
-    echo "   - ${SECRETS_DIR}/users/alex.yaml"
-    echo "   - ${SECRETS_DIR}/systems/NIXY.yaml"
-    echo ""
-    echo "2. Update your NixOS/Home Manager configurations to use the new structure:"
-    echo "   - See examples in ${SECRETS_DIR}/examples.nix"
-    echo "   - Replace old sops imports with new sopsConfig imports"
-    echo ""
-    echo "3. Update .sops.yaml with your actual age public keys"
-    echo ""
-    echo "4. Test the configuration:"
-    echo "   - nix build .#nixosConfigurations.NIXY.config.system.build.toplevel"
-    echo "   - home-manager switch"
-    echo ""
-    echo "5. If migration from legacy secrets is needed:"
-    echo "   - Run ${BACKUP_DIR}/migrate_secrets.sh"
-    echo "   - Manually copy relevant secrets to new files"
-    echo ""
-    log_info "Backup created at: $BACKUP_DIR"
-    log_info "Documentation available at: ${SECRETS_DIR}/README.md"
+  log_success "Migration completed successfully!"
+  echo ""
+  log_info "Next steps:"
+  echo "1. Review and update secret values in the template files:"
+  echo "   - ${SECRETS_DIR}/development/secrets.yaml"
+  echo "   - ${SECRETS_DIR}/production/secrets.yaml"
+  echo "   - ${SECRETS_DIR}/users/alex.yaml"
+  echo "   - ${SECRETS_DIR}/systems/NIXY.yaml"
+  echo ""
+  echo "2. Update your NixOS/Home Manager configurations to use the new structure:"
+  echo "   - See examples in ${SECRETS_DIR}/examples.nix"
+  echo "   - Replace old sops imports with new sopsConfig imports"
+  echo ""
+  echo "3. Update .sops.yaml with your actual age public keys"
+  echo ""
+  echo "4. Test the configuration:"
+  echo "   - nix build .#nixosConfigurations.NIXY.config.system.build.toplevel"
+  echo "   - home-manager switch"
+  echo ""
+  echo "5. If migration from legacy secrets is needed:"
+  echo "   - Run ${BACKUP_DIR}/migrate_secrets.sh"
+  echo "   - Manually copy relevant secrets to new files"
+  echo ""
+  log_info "Backup created at: $BACKUP_DIR"
+  log_info "Documentation available at: ${SECRETS_DIR}/README.md"
 }
 
 main() {
-    log_info "Starting sops-nix migration to production-ready setup..."
-    echo ""
-    
-    check_dependencies
-    backup_existing_secrets
-    
-    local public_key
-    public_key=$(setup_age_keys)
-    
-    create_directory_structure
-    create_template_secrets
-    migrate_legacy_secrets
-    update_sops_yaml "$public_key"
-    create_usage_examples
-    
-    # Only encrypt if we have a working sops setup
-    if command -v sops &> /dev/null && [ -f "${DOTFILES_DIR}/.sops.yaml" ]; then
-        encrypt_template_files
-    else
-        log_warning "Skipping encryption - please encrypt files manually after setting up .sops.yaml"
-    fi
-    
-    print_next_steps
+  log_info "Starting sops-nix migration to production-ready setup..."
+  echo ""
+
+  check_dependencies
+  backup_existing_secrets
+
+  local public_key
+  public_key=$(setup_age_keys)
+
+  create_directory_structure
+  create_template_secrets
+  migrate_legacy_secrets
+  update_sops_yaml "$public_key"
+  create_usage_examples
+
+  # Only encrypt if we have a working sops setup
+  if command -v sops &>/dev/null && [ -f "${DOTFILES_DIR}/.sops.yaml" ]; then
+    encrypt_template_files
+  else
+    log_warning "Skipping encryption - please encrypt files manually after setting up .sops.yaml"
+  fi
+
+  print_next_steps
 }
 
 # Run main function

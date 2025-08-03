@@ -1,5 +1,4 @@
 # Library Functions Module - Expose helper functions through flake-parts
-{ inputs, ... }:
-{
-  flake.lib = import ../lib { inherit inputs; };
+{inputs, ...}: {
+  flake.lib = import ../lib {inherit inputs;};
 }

@@ -16,14 +16,13 @@
   gawk,
   bash,
 }:
-
 stdenv.mkDerivation rec {
   pname = "sops-secrets-manager";
   version = "1.0.0";
 
   src = ./.;
 
-  nativeBuildInputs = [ makeWrapper ];
+  nativeBuildInputs = [makeWrapper];
 
   buildInputs = [
     dialog
@@ -81,12 +80,12 @@ stdenv.mkDerivation rec {
             dialog --title "Error" --msgbox "Secrets directory not found: $SECRETS_DIR\n\nPlease run from your dotfiles directory or set DOTFILES_DIR environment variable." 10 60
             exit 1
         fi
-        
+
         if [[ ! -f "$SOPS_CONFIG" ]]; then
             dialog --title "Error" --msgbox "SOPS configuration not found: $SOPS_CONFIG\n\nPlease ensure .sops.yaml exists in your dotfiles directory." 10 60
             exit 1
         fi
-        
+
         local age_key_file="''${HOME}/.config/sops/age/keys.txt"
         if [[ ! -f "$age_key_file" ]]; then
             dialog --title "Error" --msgbox "Age key file not found: $age_key_file\n\nPlease generate age keys first:\nmkdir -p ~/.config/sops/age\nage-keygen -o ~/.config/sops/age/keys.txt" 12 70
@@ -110,7 +109,7 @@ stdenv.mkDerivation rec {
         local env="$1"
         local file="$2"
         local file_path="$SECRETS_DIR/$env/$file.yaml"
-        
+
         if [[ -f "$file_path" ]] && sops -d "$file_path" >/dev/null 2>&1; then
             sops -d "$file_path" | yq eval 'keys | .[]' - 2>/dev/null || true
         fi
@@ -121,16 +120,16 @@ stdenv.mkDerivation rec {
         local title="$1"
         local envs=($(get_environments))
         local menu_items=()
-        
+
         for env in "''${envs[@]}"; do
             menu_items+=("$env" "")
         done
-        
+
         if [[ ''${#menu_items[@]} -eq 0 ]]; then
             dialog --title "Error" --msgbox "No environments found in $SECRETS_DIR" 8 50
             return 1
         fi
-        
+
         dialog --title "$title" --menu "Select environment:" $DIALOG_HEIGHT $DIALOG_WIDTH 10 "''${menu_items[@]}" 2>"$TEMP_DIR/env"
         cat "$TEMP_DIR/env"
     }
@@ -141,16 +140,16 @@ stdenv.mkDerivation rec {
         local title="$2"
         local files=($(get_secret_files "$env"))
         local menu_items=()
-        
+
         for file in "''${files[@]}"; do
             menu_items+=("$file" "")
         done
-        
+
         if [[ ''${#menu_items[@]} -eq 0 ]]; then
             dialog --title "Error" --msgbox "No secret files found in $env environment" 8 50
             return 1
         fi
-        
+
         dialog --title "$title" --menu "Select secret file:" $DIALOG_HEIGHT $DIALOG_WIDTH 10 "''${menu_items[@]}" 2>"$TEMP_DIR/file"
         cat "$TEMP_DIR/file"
     }
@@ -162,16 +161,16 @@ stdenv.mkDerivation rec {
         local title="$3"
         local keys=($(get_secret_keys "$env" "$file"))
         local menu_items=()
-        
+
         for key in "''${keys[@]}"; do
             menu_items+=("$key" "")
         done
-        
+
         if [[ ''${#menu_items[@]} -eq 0 ]]; then
             dialog --title "Info" --msgbox "No secrets found in $env/$file.yaml\n\nFile may be empty or encrypted with different keys." 10 60
             return 1
         fi
-        
+
         dialog --title "$title" --menu "Select secret key:" $DIALOG_HEIGHT $DIALOG_WIDTH 10 "''${menu_items[@]}" 2>"$TEMP_DIR/key"
         cat "$TEMP_DIR/key"
     }
@@ -182,7 +181,7 @@ stdenv.mkDerivation rec {
         echo "SECRETS OVERVIEW" > "$output"
         echo "================" >> "$output"
         echo "" >> "$output"
-        
+
         for env in $(get_environments); do
             echo "📁 $env/" >> "$output"
             for file in $(get_secret_files "$env"); do
@@ -193,43 +192,43 @@ stdenv.mkDerivation rec {
             done
             echo "" >> "$output"
         done
-        
+
         dialog --title "All Secrets" --textbox "$output" $DIALOG_HEIGHT $DIALOG_WIDTH
     }
 
     # Add or update secret
     add_secret() {
         local env file key value
-        
+
         env=$(select_environment "Add Secret - Select Environment") || return
         file=$(select_secret_file "$env" "Add Secret - Select File") || return
-        
+
         dialog --title "Add Secret" --inputbox "Enter secret key name:" 10 50 2>"$TEMP_DIR/key" || return
         key=$(cat "$TEMP_DIR/key")
-        
+
         if [[ -z "$key" ]]; then
             dialog --title "Error" --msgbox "Secret key cannot be empty" 8 40
             return
         fi
-        
+
         dialog --title "Add Secret" --passwordbox "Enter secret value for '$key':" 10 50 2>"$TEMP_DIR/value" || return
         value=$(cat "$TEMP_DIR/value")
-        
+
         if [[ -z "$value" ]]; then
             dialog --title "Error" --msgbox "Secret value cannot be empty" 8 40
             return
         fi
-        
+
         # Update the secret file
         local file_path="$SECRETS_DIR/$env/$file.yaml"
         local temp_file="$TEMP_DIR/secret_update.yaml"
-        
+
         if sops -d "$file_path" > "$temp_file" 2>/dev/null; then
             yq eval ".$key = \"$value\"" -i "$temp_file"
         else
             echo "$key: \"$value\"" > "$temp_file"
         fi
-        
+
         if sops -e "$temp_file" > "$file_path"; then
             log_action "ADD: $env/$file/$key"
             dialog --title "Success" --msgbox "Secret '$key' added successfully to $env/$file.yaml" 8 60
@@ -241,13 +240,13 @@ stdenv.mkDerivation rec {
     # View secret
     view_secret() {
         local env file key value
-        
+
         env=$(select_environment "View Secret - Select Environment") || return
         file=$(select_secret_file "$env" "View Secret - Select File") || return
         key=$(select_secret_key "$env" "$file" "View Secret - Select Key") || return
-        
+
         local file_path="$SECRETS_DIR/$env/$file.yaml"
-        
+
         if value=$(sops -d "$file_path" | yq eval ".$key" - 2>/dev/null); then
             log_action "VIEW: $env/$file/$key"
             dialog --title "Secret Value" --msgbox "Environment: $env\nFile: $file.yaml\nKey: $key\n\nValue: $value" 12 60
@@ -259,16 +258,16 @@ stdenv.mkDerivation rec {
     # Remove secret
     remove_secret() {
         local env file key
-        
+
         env=$(select_environment "Remove Secret - Select Environment") || return
         file=$(select_secret_file "$env" "Remove Secret - Select File") || return
         key=$(select_secret_key "$env" "$file" "Remove Secret - Select Key") || return
-        
+
         dialog --title "Confirm Removal" --yesno "Are you sure you want to remove:\n\nEnvironment: $env\nFile: $file.yaml\nKey: $key\n\nThis action cannot be undone!" 12 60 || return
-        
+
         local file_path="$SECRETS_DIR/$env/$file.yaml"
         local temp_file="$TEMP_DIR/secret_remove.yaml"
-        
+
         if sops -d "$file_path" > "$temp_file" 2>/dev/null; then
             yq eval "del(.$key)" -i "$temp_file"
             if sops -e "$temp_file" > "$file_path"; then
@@ -303,7 +302,7 @@ stdenv.mkDerivation rec {
                 "5" "📜 View audit log" \
                 "6" "❌ Exit" \
                 2>&1 >/dev/tty) || exit 0
-            
+
             case "$choice" in
                 1) list_secrets ;;
                 2) add_secret ;;
@@ -343,7 +342,7 @@ stdenv.mkDerivation rec {
     '';
     homepage = "https://github.com/alex/.dotfiles";
     license = licenses.mit;
-    maintainers = [ "alex" ];
+    maintainers = ["alex"];
     platforms = platforms.unix;
   };
 }

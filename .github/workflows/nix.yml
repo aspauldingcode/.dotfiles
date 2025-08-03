@@ -1,5 +1,4 @@
 name: Production Nix CI/CD Pipeline
-
 on:
   push:
     branches: [main, develop]
@@ -18,14 +17,12 @@ on:
         options:
           - staging
           - production
-
 env:
   NIX_CONFIG: |
     experimental-features = nix-command flakes
     accept-flake-config = true
     max-jobs = auto
     cores = 0
-
 jobs:
   # Security and compliance scanning
   security-scan:
@@ -39,21 +36,17 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Setup Nix with caching
         uses: DeterminateSystems/nix-installer-action@main
         with:
           version: v0.25.0
-
       - name: Setup Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@main
-
       - name: Run security audit
         run: |
           echo "🔍 Running security audit..."
           # Check for known vulnerabilities in dependencies
           nix run nixpkgs#vulnix -- --system x86_64-linux || true
-          
       - name: Scan for secrets
         uses: trufflesecurity/trufflehog@main
         with:
@@ -61,7 +54,6 @@ jobs:
           base: main
           head: HEAD
           extra_args: --debug --only-verified
-
       - name: SOPS validation
         run: |
           echo "🔐 Validating SOPS encrypted files..."
@@ -71,7 +63,6 @@ jobs:
               nix run nixpkgs#sops -- --decrypt "$file" > /dev/null || echo "⚠️  Cannot decrypt $file (expected in CI)"
             fi
           done
-
   # Code quality and formatting
   code-quality:
     name: Code Quality & Formatting
@@ -79,41 +70,33 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Setup Nix with caching
         uses: DeterminateSystems/nix-installer-action@main
         with:
           version: v0.25.0
-
       - name: Setup Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@main
-
       - name: Check flake structure
         run: |
           echo "📋 Validating flake structure..."
           nix flake show --json > flake-structure.json
           cat flake-structure.json | jq '.'
-
       - name: Run formatter checks
         run: |
           echo "🎨 Checking code formatting..."
           nix fmt -- --check .
-
       - name: Run statix (Nix linter)
         run: |
           echo "🔍 Running Nix static analysis..."
           nix run nixpkgs#statix -- check .
-
       - name: Run deadnix (dead code detection)
         run: |
           echo "🧹 Checking for dead Nix code..."
           nix run nixpkgs#deadnix -- --fail .
-
       - name: Validate flake inputs
         run: |
           echo "📦 Validating flake inputs..."
           nix flake metadata --json | jq '.locks.nodes | to_entries[] | select(.value.locked) | "\(.key): \(.value.locked.rev // .value.locked.ref)"'
-
   # Multi-architecture configuration testing
   test-configurations:
     name: Test Configurations
@@ -123,44 +106,22 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { name: "NIXSTATION64", type: "nixos", arch: "x86_64-linux" }
-          - { name: "NIXY2", type: "nixos", arch: "aarch64-linux" }
-          - { name: "NIXEDUP", type: "nixos", arch: "aarch64-linux" }
-          - { name: "NIXY", type: "darwin", arch: "aarch64-darwin" }
-          - { name: "NIXI", type: "darwin", arch: "x86_64-darwin" }
+          - {name: "NIXSTATION64", type: "nixos", arch: "x86_64-linux"}
+          - {name: "NIXY2", type: "nixos", arch: "aarch64-linux"}
+          - {name: "NIXEDUP", type: "nixos", arch: "aarch64-linux"}
+          - {name: "NIXY", type: "darwin", arch: "aarch64-darwin"}
+          - {name: "NIXI", type: "darwin", arch: "x86_64-darwin"}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Setup Nix with caching
         uses: DeterminateSystems/nix-installer-action@main
         with:
           version: v0.25.0
-
       - name: Setup Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@main
-
       - name: Test ${{ matrix.config.name }} configuration
-        run: |
-          echo "🧪 Testing ${{ matrix.config.name }} (${{ matrix.config.type }}) configuration..."
-          
-          if [ "${{ matrix.config.type }}" = "nixos" ]; then
-            # Test NixOS configuration evaluation
-            nix eval .#nixosConfigurations.${{ matrix.config.name }}.config.system.build.toplevel.outPath --raw
-            
-            # Test if configuration can be built (dry-run for cross-platform)
-            if [ "${{ matrix.config.arch }}" = "x86_64-linux" ]; then
-              nix build .#nixosConfigurations.${{ matrix.config.name }}.config.system.build.toplevel --no-link --dry-run
-            else
-              echo "⚠️  Cross-platform build test for ${{ matrix.config.arch }} (dry-run only)"
-              nix build .#nixosConfigurations.${{ matrix.config.name }}.config.system.build.toplevel --no-link --dry-run || true
-            fi
-          elif [ "${{ matrix.config.type }}" = "darwin" ]; then
-            # Test Darwin configuration evaluation
-            nix eval .#darwinConfigurations.${{ matrix.config.name }}.system.outPath --raw || true
-            echo "⚠️  Darwin configuration test completed (cross-platform limitations)"
-          fi
-
+        run: "echo \"🧪 Testing ${{ matrix.config.name }} (${{ matrix.config.type }}) configuration...\"\n\nif [ \"${{ matrix.config.type }}\" = \"nixos\" ]; then\n  # Test NixOS configuration evaluation\n  nix eval .#nixosConfigurations.${{ matrix.config.name }}.config.system.build.toplevel.outPath --raw\n  \n  # Test if configuration can be built (dry-run for cross-platform)\n  if [ \"${{ matrix.config.arch }}\" = \"x86_64-linux\" ]; then\n    nix build .#nixosConfigurations.${{ matrix.config.name }}.config.system.build.toplevel --no-link --dry-run\n  else\n    echo \"⚠️  Cross-platform build test for ${{ matrix.config.arch }} (dry-run only)\"\n    nix build .#nixosConfigurations.${{ matrix.config.name }}.config.system.build.toplevel --no-link --dry-run || true\n  fi\nelif [ \"${{ matrix.config.type }}\" = \"darwin\" ]; then\n  # Test Darwin configuration evaluation\n  nix eval .#darwinConfigurations.${{ matrix.config.name }}.system.outPath --raw || true\n  echo \"⚠️  Darwin configuration test completed (cross-platform limitations)\"\nfi\n"
   # Development environment testing
   test-devshells:
     name: Test Development Shells
@@ -172,15 +133,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Setup Nix with caching
         uses: DeterminateSystems/nix-installer-action@main
         with:
           version: v0.25.0
-
       - name: Setup Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@main
-
       - name: Test development shell for ${{ matrix.system }}
         run: |
           echo "🛠️  Testing development shell for ${{ matrix.system }}..."
@@ -189,7 +147,6 @@ jobs:
           else
             nix build .#devShells.${{ matrix.system }}.default --no-link --dry-run || true
           fi
-
   # Package testing
   test-packages:
     name: Test Custom Packages
@@ -198,21 +155,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Setup Nix with caching
         uses: DeterminateSystems/nix-installer-action@main
         with:
           version: v0.25.0
-
       - name: Setup Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@main
-
       - name: Test custom packages
         run: |
           echo "📦 Testing custom packages..."
           # Test if packages can be evaluated
           nix eval .#packages.x86_64-linux --apply builtins.attrNames || echo "No custom packages found"
-
   # Code statistics and README update
   update-code-stats:
     name: Update Code Statistics
@@ -227,19 +180,16 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-
       - name: Setup Nix with caching
         uses: DeterminateSystems/nix-installer-action@main
         with:
           version: v0.25.0
-
       - name: Setup Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@main
-
       - name: Update README with code statistics
         run: |
           echo "📊 Updating README.md with code statistics..."
-          
+
           # Generate code statistics using tokei
           DATE=$(date)
           TOKEI_JSON=$(nix run nixpkgs#tokei -- . --output json | nix run nixpkgs#jq -- '{ CSS, JSON, Lua, Markdown, Nix, Python, Shell, "Plain Text", TOML, "Vim script", YAML }')
@@ -298,17 +248,15 @@ jobs:
 
           echo "✅ README.md updated with latest code statistics"
           echo "📈 Total lines of code: $TOTAL_LINES"
-
       - name: Format updated files
         run: |
           echo "🎨 Formatting updated files..."
           nix fmt
-
       - name: Commit and push changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          
+
           if git diff --quiet; then
             echo "📊 No changes to commit - code statistics are up to date"
           else
@@ -317,7 +265,6 @@ jobs:
             git push
             echo "✅ Code statistics updated and pushed to repository"
           fi
-
   # Performance and resource usage testing
   performance-test:
     name: Performance & Resource Testing
@@ -326,24 +273,20 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Setup Nix with caching
         uses: DeterminateSystems/nix-installer-action@main
         with:
           version: v0.25.0
-
       - name: Setup Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@main
-
       - name: Measure build performance
         run: |
           echo "⚡ Measuring build performance..."
           time nix eval .#nixosConfigurations.NIXSTATION64.config.system.build.toplevel.outPath --raw
-          
+
           echo "📊 Flake evaluation metrics:"
           nix eval .#nixosConfigurations --apply "builtins.attrNames" --json | jq length
           nix eval .#darwinConfigurations --apply "builtins.attrNames" --json | jq length
-
   # Deployment readiness check
   deployment-check:
     name: Deployment Readiness
@@ -353,47 +296,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Setup Nix with caching
         uses: DeterminateSystems/nix-installer-action@main
         with:
           version: v0.25.0
-
       - name: Setup Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@main
-
       - name: Generate deployment artifacts
-        run: |
-          echo "🚀 Generating deployment artifacts..."
-          
-          # Create deployment summary
-          cat > deployment-summary.md << EOF
-          # Deployment Summary
-          
-          **Commit:** \`${{ github.sha }}\`
-          **Branch:** \`${{ github.ref_name }}\`
-          **Timestamp:** \`$(date -u)\`
-          
-          ## Configurations Tested
-          - ✅ NIXSTATION64 (x86_64-linux)
-          - ✅ NIXY2 (aarch64-linux) 
-          - ✅ NIXEDUP (aarch64-linux, mobile)
-          - ✅ NIXY (aarch64-darwin)
-          - ✅ NIXI (x86_64-darwin)
-          
-          ## Security Status
-          - ✅ Secret scanning passed
-          - ✅ SOPS validation completed
-          - ✅ Vulnerability scan completed
-          
-          ## Quality Checks
-          - ✅ Code formatting validated
-          - ✅ Static analysis passed
-          - ✅ Dead code detection passed
-          EOF
-          
-          cat deployment-summary.md
-
+        run: "echo \"🚀 Generating deployment artifacts...\"\n\n# Create deployment summary\ncat > deployment-summary.md << EOF\n# Deployment Summary\n\n**Commit:** \\`${{ github.sha }}\\`\n**Branch:** \\`${{ github.ref_name }}\\`\n**Timestamp:** \\`$(date -u)\\`\n\n## Configurations Tested\n- ✅ NIXSTATION64 (x86_64-linux)\n- ✅ NIXY2 (aarch64-linux) \n- ✅ NIXEDUP (aarch64-linux, mobile)\n- ✅ NIXY (aarch64-darwin)\n- ✅ NIXI (x86_64-darwin)\n\n## Security Status\n- ✅ Secret scanning passed\n- ✅ SOPS validation completed\n- ✅ Vulnerability scan completed\n\n## Quality Checks\n- ✅ Code formatting validated\n- ✅ Static analysis passed\n- ✅ Dead code detection passed\nEOF\n\ncat deployment-summary.md\n"
       - name: Upload deployment artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -402,7 +312,6 @@ jobs:
             deployment-summary.md
             flake-structure.json
           retention-days: 30
-
   # Notification and reporting
   notify-completion:
     name: Notify Completion
@@ -413,12 +322,12 @@ jobs:
       - name: Report pipeline status
         run: |
           DEPLOYMENT_RESULT="${{ needs.deployment-check.result }}"
-          
+
           if [ "$DEPLOYMENT_RESULT" = "success" ]; then
             echo "✅ Production CI/CD pipeline completed successfully!"
             echo "🚀 Configurations are ready for deployment"
           elif [ "$DEPLOY
-          
+
           MENT_RESULT" = "skipped" ]; then
             echo "⚠️  Deployment check was skipped (not on main branch)"
             echo "✅ CI/CD pipeline completed successfully for feature branch"
