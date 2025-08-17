@@ -13,35 +13,33 @@ A comprehensive, production-ready Nix configuration using `flake-parts` for mana
 - 🛠️ **Developer Experience**: Rich development shells and tools
 
 <!-- BEGIN CODE STATS -->
-
 ## How much code?
 
 👨‍💻 Code Statistics:
 
-_Total LOC (including blanks, comments): **54873**_
+_Total LOC (including blanks, comments): **46947**_
 
 <details>
 <summary>🔍 Click to expand code stats.</summary>
 
 | Language   | Files | Lines | Code  | Comments | Blanks |
 |------------|-------|-------|-------|----------|--------|
-| CSS | 8 | 5586 | 4248 | 316 | 1022 |
+| CSS | 6 | 3734 | 2832 | 220 | 682 |
 | JSON | 1 | 402 | 402 | 0 | 0 |
 | Lua | 1 | 225 | 138 | 50 | 37 |
-| Markdown | 13 | 3448 | 0 | 2476 | 972 |
-| Nix | 286 | 39118 | 33000 | 3635 | 2483 |
+| Markdown | 14 | 3872 | 0 | 2562 | 1310 |
+| Nix | 232 | 32496 | 27072 | 3198 | 2226 |
 | Python | 5 | 1617 | 1407 | 61 | 149 |
-| Shell | 17 | 3936 | 2915 | 365 | 656 |
+| Shell | 18 | 4060 | 2988 | 390 | 682 |
 | Plain Text | 1 | 1 | 0 | 1 | 0 |
 | TOML | 1 | 56 | 47 | 5 | 4 |
 | Vim script | 0 | 0 |  |  |  |
 | YAML | 9 | 484 | 304 | 160 | 20 |
-| **Total**  | 342 | 54873 | 42461 | 7069 | 5343 |
+| **Total**  | 288 | 46947 | 35190 | 6647 | 5110 |
 
 </details>
 
-Last updated: Fri Aug  1 11:55:02 PDT 2025
-
+Last updated: Sun Aug 17 12:35:45 PDT 2025
 <!-- END CODE STATS -->
 
 ## 🖥️ Supported Systems

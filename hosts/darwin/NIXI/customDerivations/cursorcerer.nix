@@ -15,7 +15,7 @@ stdenv.mkDerivation {
     sha256 = "sha256-JzlxiWAEX+AcVe1AyUiufmRjCx/fmzWwbHqB+UVWJJc="; # Replace with actual sha256 hash of the zip file
   };
 
-  nativeBuildInputs = [unzip];
+  nativeBuildInputs = [ unzip ];
 
   unpackPhase = ''
     mkdir -p $out/temp

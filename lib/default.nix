@@ -1,98 +1,101 @@
 # Enhanced shared library functions for the flake
-{inputs}: let
+{ inputs }:
+let
   inherit (inputs.nixpkgs) lib;
 
   # Helper function to create package sets for different systems
-  mkPkgs = {
-    system,
-    channel ? inputs.nixpkgs,
-    overlays ? [],
-    config ? {},
-  }:
+  mkPkgs =
+    {
+      system,
+      channel ? inputs.nixpkgs,
+      overlays ? [ ],
+      config ? { },
+    }:
     import channel {
       inherit system;
-      config =
-        {
-          allowUnfree = true;
-          allowBroken = true;
-          permittedInsecurePackages = [
-            "electron-19.1.9"
-            "electron-33.4.11"
-            "olm-3.2.16"
-          ];
-        }
-        // config;
+      config = {
+        allowUnfree = true;
+        allowBroken = true;
+        permittedInsecurePackages = [
+          "electron-19.1.9"
+          "electron-33.4.11"
+          "olm-3.2.16"
+        ];
+      }
+      // config;
       overlays = overlays;
     };
 
   # Helper function to create common special arguments
-  mkSpecialArgs = {
-    user ? "alex",
-    extraArgs ? {},
-  }:
+  mkSpecialArgs =
+    {
+      user ? "alex",
+      extraArgs ? { },
+    }:
     {
       inherit inputs user;
     }
     // extraArgs;
 
   # Helper function to create Home Manager configuration
-  mkHomeManagerConfig = {
-    user,
-    extraSpecialArgs ? {},
-    sharedModules ? [],
-    backupFileExtension ? "backup",
-  }: {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    extraSpecialArgs = extraSpecialArgs;
-    backupFileExtension = backupFileExtension;
-    sharedModules = sharedModules;
-  };
+  mkHomeManagerConfig =
+    {
+      user,
+      extraSpecialArgs ? { },
+      sharedModules ? [ ],
+      backupFileExtension ? "backup",
+    }:
+    {
+      useGlobalPkgs = true;
+      useUserPackages = true;
+      extraSpecialArgs = extraSpecialArgs;
+      backupFileExtension = backupFileExtension;
+      sharedModules = sharedModules;
+    };
 
   # Helper function to create NixOS system configuration
-  mkNixOSSystem = {
-    system,
-    modules,
-    specialArgs ? {},
-    pkgs ? null,
-  }: let
-    systemPkgs =
-      if pkgs != null
-      then pkgs
-      else mkPkgs {inherit system;};
-  in
+  mkNixOSSystem =
+    {
+      system,
+      modules,
+      specialArgs ? { },
+      pkgs ? null,
+    }:
+    let
+      systemPkgs = if pkgs != null then pkgs else mkPkgs { inherit system; };
+    in
     lib.nixosSystem {
       inherit system modules;
-      specialArgs = mkSpecialArgs {} // specialArgs;
+      specialArgs = mkSpecialArgs { } // specialArgs;
       pkgs = systemPkgs;
     };
 
   # Helper function to create Darwin system configuration
-  mkDarwinSystem = {
-    system,
-    modules,
-    specialArgs ? {},
-    pkgs ? null,
-  }: let
-    systemPkgs =
-      if pkgs != null
-      then pkgs
-      else mkPkgs {inherit system;};
-  in
+  mkDarwinSystem =
+    {
+      system,
+      modules,
+      specialArgs ? { },
+      pkgs ? null,
+    }:
+    let
+      systemPkgs = if pkgs != null then pkgs else mkPkgs { inherit system; };
+    in
     inputs.nix-darwin.lib.darwinSystem {
       inherit system modules;
-      specialArgs = mkSpecialArgs {} // specialArgs;
+      specialArgs = mkSpecialArgs { } // specialArgs;
       pkgs = systemPkgs;
     };
 
   # Helper function to create development shell
-  mkDevShell = {
-    pkgs,
-    name ? "dev-shell",
-    buildInputs ? [],
-    shellHook ? "",
-    env ? {},
-  }:
+  mkDevShell =
+    {
+      pkgs,
+      name ? "dev-shell",
+      buildInputs ? [ ],
+      shellHook ? "",
+      env ? { },
+    }:
     pkgs.mkShell (
       {
         inherit name buildInputs shellHook;
@@ -101,45 +104,46 @@
     );
 
   # Mobile NixOS helper functions
-  mkMobileSystem = {
-    device,
-    modules ? [],
-    specialArgs ? {},
-    user ? "alex",
-  }:
+  mkMobileSystem =
+    {
+      device,
+      modules ? [ ],
+      specialArgs ? { },
+      user ? "alex",
+    }:
     mkNixOSSystem {
       system = "aarch64-linux";
-      modules =
-        [
-          (import "${inputs.mobile-nixos}/lib/configuration.nix" {inherit device;})
-        ]
-        ++ modules;
-      specialArgs =
-        specialArgs
-        // {
-          inherit user;
-        };
+      modules = [
+        (import "${inputs.mobile-nixos}/lib/configuration.nix" { inherit device; })
+      ]
+      ++ modules;
+      specialArgs = specialArgs // {
+        inherit user;
+      };
     };
 
   # Validation helpers
-  validateFlake = flake: let
-    requiredOutputs = [
-      "nixosConfigurations"
-      "darwinConfigurations"
-      "devShells"
-    ];
-    hasOutput = output: builtins.hasAttr output flake;
-    missingOutputs = builtins.filter (output: !(hasOutput output)) requiredOutputs;
-  in
-    if missingOutputs == []
-    then {
-      valid = true;
-      errors = [];
-    }
-    else {
-      valid = false;
-      errors = ["Missing outputs: ${builtins.toString missingOutputs}"];
-    };
+  validateFlake =
+    flake:
+    let
+      requiredOutputs = [
+        "nixosConfigurations"
+        "darwinConfigurations"
+        "devShells"
+      ];
+      hasOutput = output: builtins.hasAttr output flake;
+      missingOutputs = builtins.filter (output: !(hasOutput output)) requiredOutputs;
+    in
+    if missingOutputs == [ ] then
+      {
+        valid = true;
+        errors = [ ];
+      }
+    else
+      {
+        valid = false;
+        errors = [ "Missing outputs: ${builtins.toString missingOutputs}" ];
+      };
 
   # System detection helpers
   isDarwin = system: lib.hasSuffix "-darwin" system;
@@ -190,7 +194,8 @@
       };
     };
   };
-in {
+in
+{
   inherit
     mkPkgs
     mkSpecialArgs

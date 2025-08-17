@@ -3,10 +3,12 @@
   nix-colors,
   pkgs,
   ...
-}: let
+}:
+let
   scheme = "gruvbox-dark-soft";
-in {
-  imports = [nix-colors.homeManagerModules.default];
+in
+{
+  imports = [ nix-colors.homeManagerModules.default ];
   colorscheme = nix-colors.colorSchemes.${scheme};
 
   home.pointerCursor = {

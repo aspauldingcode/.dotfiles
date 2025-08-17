@@ -6,7 +6,8 @@
   mobile-nixos,
   user,
   ...
-}: {
+}:
+{
   imports = [
     # Use the enhanced phoneputer integration
     ./phoneputer-integration.nix

@@ -3,9 +3,11 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (config.colorScheme) palette;
-in {
+in
+{
   home.file.".config/gowall/config.yml" = {
     enable = true;
     text = ''

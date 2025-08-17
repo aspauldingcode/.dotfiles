@@ -2,7 +2,8 @@
   pkgs,
   lib,
   ...
-}: {
+}:
+{
   config = lib.mkIf pkgs.stdenv.isLinux {
     home = {
       packages = with pkgs; [
@@ -120,29 +121,28 @@
         pfetch
         ruby_3_3
         sl
-        thefuck
+        pay-respects # replacement for thefuck which was removed
         waypipe
         wayvnc
         lavat
         tt
 
         (python311.withPackages (
-          ps:
-            with ps; [
-              toml
-              python-lsp-server
-              pyls-isort
-              flake8
-              evdev
-              pynput
-              pygame
-              matplotlib
-              libei
-              keyboard
-              sympy
-              numpy
-              i3ipc
-            ]
+          ps: with ps; [
+            toml
+            python-lsp-server
+            pyls-isort
+            flake8
+            evdev
+            pynput
+            pygame
+            matplotlib
+            libei
+            keyboard
+            sympy
+            numpy
+            i3ipc
+          ]
         ))
 
         (prismlauncher.override {

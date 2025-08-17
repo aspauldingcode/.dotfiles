@@ -1,15 +1,17 @@
 # Common Modules - Shared configuration across all systems
-{inputs, ...}: {
+{ inputs, ... }:
+{
   flake.commonModules = {
     # Base modules for all NixOS systems
     nixos = [
       ../shared/scripts
+      inputs.self.modules.theme-toggle
       inputs.home-manager.nixosModules.home-manager
       inputs.sops-nix.nixosModules.sops
-      {imports = [inputs.self.sopsConfigs.nixosSopsConfig];}
+      { imports = [ inputs.self.sopsConfigs.nixosSopsConfig ]; }
       {
         # Use centralized overlays
-        nixpkgs.overlays = [inputs.self.overlays.default];
+        nixpkgs.overlays = [ inputs.self.overlays.default ];
         nixpkgs.config = {
           allowUnfree = true;
           permittedInsecurePackages = [
@@ -24,6 +26,7 @@
     # Base modules for all Darwin systems
     darwin = [
       ../shared/scripts
+      inputs.self.modules.theme-toggle
       inputs.mac-app-util.darwinModules.default
       inputs.home-manager.darwinModules.home-manager
       inputs.sops-nix.darwinModules.sops
@@ -31,7 +34,7 @@
       inputs.spicetify-nix.darwinModules.default
       {
         # Use centralized overlays
-        nixpkgs.overlays = [inputs.self.overlays.default];
+        nixpkgs.overlays = [ inputs.self.overlays.default ];
         nixpkgs.config = {
           allowUnfree = true;
           allowBroken = true;
@@ -41,7 +44,8 @@
             "olm-3.2.16"
           ];
           # Security: only allow specific unfree packages
-          allowUnfreePredicate = pkg:
+          allowUnfreePredicate =
+            pkg:
             builtins.elem (inputs.nixpkgs.lib.getName pkg) [
               "vscode"
               "discord"
@@ -86,9 +90,9 @@
       backupFileExtension = "backup";
       sharedModules = [
         inputs.sops-nix.homeManagerModules.sops
-        {imports = [inputs.self.sopsConfigs.hmSopsConfig];}
+        { imports = [ inputs.self.sopsConfigs.hmSopsConfig ]; }
         # Disable version check to prevent warnings
-        {home.enableNixpkgsReleaseCheck = false;}
+        { home.enableNixpkgsReleaseCheck = false; }
       ];
       extraSpecialArgs = {
         inherit inputs;

@@ -1,5 +1,6 @@
 # Home Manager Configurations Module
-{inputs, ...}: {
+{ inputs, ... }:
+{
   # Standalone Home Manager configurations (optional)
   flake.homeConfigurations = {
     # Standalone configuration for systems without NixOS/nix-darwin

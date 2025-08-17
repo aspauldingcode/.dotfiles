@@ -22,7 +22,7 @@ stdenv.mkDerivation rec {
 
   src = ./.;
 
-  nativeBuildInputs = [makeWrapper];
+  nativeBuildInputs = [ makeWrapper ];
 
   buildInputs = [
     dialog
@@ -342,7 +342,7 @@ stdenv.mkDerivation rec {
     '';
     homepage = "https://github.com/alex/.dotfiles";
     license = licenses.mit;
-    maintainers = ["alex"];
+    maintainers = [ "alex" ];
     platforms = platforms.unix;
   };
 }

@@ -6,7 +6,8 @@
   mobile-nixos,
   apple-silicon,
   ...
-}: {
+}:
+{
   imports = [
     ./hardware-configuration
     ./scripts

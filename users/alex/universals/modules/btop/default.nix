@@ -1,4 +1,4 @@
-{config, ...}:
+{ config, ... }:
 # configure btop, and give btop a nix-colors enabled theme.
 {
   programs.btop = {
@@ -75,9 +75,10 @@
   home.file.btop = {
     #executable = true;
     target = ".config/btop/themes/nix-colors.theme";
-    text = let
-      inherit (config.colorScheme) palette;
-    in
+    text =
+      let
+        inherit (config.colorScheme) palette;
+      in
       # python
       ''
         # Colors should be in 6 or 2 character hexadecimal or single spaced rgb decimal: "#RRGGBB", "#BW" or "0-255 0-255 0-255"

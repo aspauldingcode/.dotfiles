@@ -1,6 +1,8 @@
-{config, ...}: let
+{ config, ... }:
+let
   inherit (config.colorScheme) palette;
-in {
+in
+{
   programs.qutebrowser = {
     enable = false;
     settings.colors = {

@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   programs.nixvim.plugins = {
     # Smooth scrolling (disabled - you wanted animations removed)
     neoscroll.enable = false;
@@ -134,7 +135,7 @@
         default = {
           find = {
             cmd = "rg";
-            options = ["ignore-case"];
+            options = [ "ignore-case" ];
           };
           replace = {
             cmd = "sed";
@@ -222,7 +223,7 @@
         size = 20;
         open_mapping = "[[<c-\\>]]";
         hide_numbers = true;
-        shade_filetypes = [];
+        shade_filetypes = [ ];
         shade_terminals = true;
         shading_factor = 2;
         start_in_insert = true;
@@ -263,8 +264,8 @@
           "package.json"
           "flake.nix"
         ];
-        ignore_lsp = [];
-        exclude_dirs = [];
+        ignore_lsp = [ ];
+        exclude_dirs = [ ];
         show_hidden = false;
         silent_chdir = true;
         scope_chdir = "global";
@@ -332,7 +333,7 @@
           "table"
           "if_statement"
         ];
-        exclude = [];
+        exclude = [ ];
       };
     };
   };

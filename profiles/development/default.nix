@@ -5,7 +5,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   # Development-specific configuration
   imports = [
     # Add development-specific modules here

@@ -5,9 +5,9 @@
 }:
 # Colima allows containers on macOS and Linux using:
 /*
-Docker (with optional Kubernetes)
-Containerd (with optional Kubernetes)
-Incus (containers and virtual machines)
+  Docker (with optional Kubernetes)
+  Containerd (with optional Kubernetes)
+  Incus (containers and virtual machines)
 */
 {
   home.packages = with pkgs; [

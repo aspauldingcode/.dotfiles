@@ -3,7 +3,8 @@
   pkgs,
   lib,
   ...
-}: {
+}:
+{
   home.packages = with pkgs; [
     eza
     powershell # FIXME: make it available upstream in nix options as programs.powershell.enable?
@@ -19,7 +20,7 @@
     zsh = {
       enable = true;
       enableCompletion = true;
-      initExtra = ''
+      initContent = ''
         setopt APPEND_HISTORY
         zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
         export EDITOR=nvim
@@ -39,22 +40,10 @@
         lsdir = "ls -d */";
         nu = "nu --login";
 
-        reboot =
-          if pkgs.stdenv.isDarwin
-          then "sudo reboot now"
-          else "sudo systemctl reboot";
-        rb =
-          if pkgs.stdenv.isDarwin
-          then "sudo reboot now"
-          else "sudo systemctl reboot";
-        shutdown =
-          if pkgs.stdenv.isDarwin
-          then "sudo shutdown -h now"
-          else "sudo systemctl poweroff";
-        sd =
-          if pkgs.stdenv.isDarwin
-          then "sudo shutdown -h now"
-          else "sudo systemctl poweroff";
+        reboot = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
+        rb = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
+        shutdown = if pkgs.stdenv.isDarwin then "sudo shutdown -h now" else "sudo systemctl poweroff";
+        sd = if pkgs.stdenv.isDarwin then "sudo shutdown -h now" else "sudo systemctl poweroff";
       };
     };
 
@@ -83,22 +72,10 @@
         lsdir = "ls -d */";
         nu = "nu --login";
 
-        reboot =
-          if pkgs.stdenv.isDarwin
-          then "sudo reboot now"
-          else "sudo systemctl reboot";
-        rb =
-          if pkgs.stdenv.isDarwin
-          then "sudo reboot now"
-          else "sudo systemctl reboot";
-        shutdown =
-          if pkgs.stdenv.isDarwin
-          then "sudo shutdown -h now"
-          else "sudo systemctl poweroff";
-        sd =
-          if pkgs.stdenv.isDarwin
-          then "sudo shutdown -h now"
-          else "sudo systemctl poweroff";
+        reboot = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
+        rb = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
+        shutdown = if pkgs.stdenv.isDarwin then "sudo shutdown -h now" else "sudo systemctl poweroff";
+        sd = if pkgs.stdenv.isDarwin then "sudo shutdown -h now" else "sudo systemctl poweroff";
       };
     };
 
@@ -124,22 +101,10 @@
         lsdir = "ls -d */";
         nu = "nu --login";
 
-        reboot =
-          if pkgs.stdenv.isDarwin
-          then "sudo reboot now"
-          else "sudo systemctl reboot";
-        rb =
-          if pkgs.stdenv.isDarwin
-          then "sudo reboot now"
-          else "sudo systemctl reboot";
-        shutdown =
-          if pkgs.stdenv.isDarwin
-          then "sudo shutdown -h now"
-          else "sudo systemctl poweroff";
-        sd =
-          if pkgs.stdenv.isDarwin
-          then "sudo shutdown -h now"
-          else "sudo systemctl poweroff";
+        reboot = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
+        rb = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
+        shutdown = if pkgs.stdenv.isDarwin then "sudo shutdown -h now" else "sudo systemctl poweroff";
+        sd = if pkgs.stdenv.isDarwin then "sudo shutdown -h now" else "sudo systemctl poweroff";
       };
     };
 
@@ -181,22 +146,10 @@
         tree = "ls **/*";
         nu = "nu --login";
 
-        reboot =
-          if pkgs.stdenv.isDarwin
-          then "sudo reboot now"
-          else "sudo systemctl reboot";
-        rb =
-          if pkgs.stdenv.isDarwin
-          then "sudo reboot now"
-          else "sudo systemctl reboot";
-        shutdown =
-          if pkgs.stdenv.isDarwin
-          then "sudo shutdown -h now"
-          else "sudo systemctl poweroff";
-        sd =
-          if pkgs.stdenv.isDarwin
-          then "sudo shutdown -h now"
-          else "sudo systemctl poweroff";
+        reboot = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
+        rb = if pkgs.stdenv.isDarwin then "sudo reboot now" else "sudo systemctl reboot";
+        shutdown = if pkgs.stdenv.isDarwin then "sudo shutdown -h now" else "sudo systemctl poweroff";
+        sd = if pkgs.stdenv.isDarwin then "sudo shutdown -h now" else "sudo systemctl poweroff";
       };
     };
 

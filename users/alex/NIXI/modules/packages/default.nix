@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   home.packages = with pkgs; [
     # calcurse
     chatgpt-cli
@@ -37,7 +38,7 @@
     obsidian
     unstable.cargo
     mas
-    thefuck
+    pay-respects # replacement for thefuck which was removed
     zsh-completions
     zoom-us
     unar

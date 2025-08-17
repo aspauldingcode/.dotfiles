@@ -2,7 +2,8 @@
   config,
   pkgs,
   ...
-}: let
+}:
+let
   # Dependencies
   cat = "${pkgs.coreutils}/bin/cat";
   cut = "${pkgs.coreutils}/bin/cut";
@@ -23,24 +24,27 @@
   pavucontrol = "${pkgs.pavucontrol}/bin/pavucontrol";
   wl-gammarelay-rs = "${pkgs.wl-gammarelay-rs}/bin/wl-gammarelay-rs";
 
-  jsonOutput = name: {
-    pre ? "",
-    text ? "",
-    tooltip ? "",
-    alt ? "",
-    class ? "",
-    percentage ? "",
-  }: "${pkgs.writeShellScriptBin "waybar-${name}" ''
-    set -euo pipefail
-    ${pre}
-    ${jq} -cn \
-    --arg text "${text}" \
-    --arg tooltip "${tooltip}" \
-    --arg alt "${alt}" \
-    --arg class "${class}" \
-    --arg percentage "${percentage}" \
-    '{text:$text,tooltip:$tooltip,alt:$alt,class:$class,percentage:$percentage}'
-  ''}/bin/waybar-${name}";
+  jsonOutput =
+    name:
+    {
+      pre ? "",
+      text ? "",
+      tooltip ? "",
+      alt ? "",
+      class ? "",
+      percentage ? "",
+    }:
+    "${pkgs.writeShellScriptBin "waybar-${name}" ''
+      set -euo pipefail
+      ${pre}
+      ${jq} -cn \
+      --arg text "${text}" \
+      --arg tooltip "${tooltip}" \
+      --arg alt "${alt}" \
+      --arg class "${class}" \
+      --arg percentage "${percentage}" \
+      '{text:$text,tooltip:$tooltip,alt:$alt,class:$class,percentage:$percentage}'
+    ''}/bin/waybar-${name}";
 
   commonConfig = {
     modules-left = [
@@ -455,33 +459,30 @@
     };
   };
 
-  gapsOnConfig =
-    commonConfig
-    // {
-      name = "gaps";
-      mode = "dock";
-      layer = "top";
-      # height = 33;
-      margin-top = 10;
-      margin-left = 10;
-      margin-right = 10;
-      position = "top";
-    };
+  gapsOnConfig = commonConfig // {
+    name = "gaps";
+    mode = "dock";
+    layer = "top";
+    # height = 33;
+    margin-top = 10;
+    margin-left = 10;
+    margin-right = 10;
+    position = "top";
+  };
 
-  gapsOffConfig =
-    commonConfig
-    // {
-      name = "gapless";
-      start_hidden = true;
-      mode = "dock";
-      layer = "top";
-      # height = 33;
-      margin-top = 0;
-      margin-left = 0;
-      margin-right = 0;
-      position = "top";
-    };
-in {
+  gapsOffConfig = commonConfig // {
+    name = "gapless";
+    start_hidden = true;
+    mode = "dock";
+    layer = "top";
+    # height = 33;
+    margin-top = 0;
+    margin-left = 0;
+    margin-right = 0;
+    position = "top";
+  };
+in
+{
   programs.waybar = {
     enable = true;
     systemd.enable = true;
@@ -489,215 +490,217 @@ in {
       gaps = gapsOnConfig;
       gapsless = gapsOffConfig;
     };
-    style = let
-      inherit (config.colorscheme) colors;
-    in ''
-      window#waybar {
-        background-color: alpha(#${colors.base00}, 1.0);
-        border: 2px solid #${colors.base05};
-      }
-      window#waybar.gaps {
-        border-radius: 10;
-      }
-      window#waybar.gapless {
-        border-radius: 0;
-      }
+    style =
+      let
+        inherit (config.colorscheme) colors;
+      in
+      ''
+        window#waybar {
+          background-color: alpha(#${colors.base00}, 1.0);
+          border: 2px solid #${colors.base05};
+        }
+        window#waybar.gaps {
+          border-radius: 10;
+        }
+        window#waybar.gapless {
+          border-radius: 0;
+        }
 
-      window#waybar.hidden {
-        opacity: 0.2;
-      }
+        window#waybar.hidden {
+          opacity: 0.2;
+        }
 
-      #workspaces {
-        transition: none;
-        background: transparent;
-        color: #${colors.base04};
-        padding: 0px;
-        padding-left: 4px;
-        /* margin: -8 0px; */
-        font-size: 9pt;
-      }
+        #workspaces {
+          transition: none;
+          background: transparent;
+          color: #${colors.base04};
+          padding: 0px;
+          padding-left: 4px;
+          /* margin: -8 0px; */
+          font-size: 9pt;
+        }
 
-      #workspaces button {
-        transition: none;
-        background: transparent;
-        color: #${colors.base04};
-        padding: 0px;
-        margin: -2px -16px;
-        border: none;
-      }
+        #workspaces button {
+          transition: none;
+          background: transparent;
+          color: #${colors.base04};
+          padding: 0px;
+          margin: -2px -16px;
+          border: none;
+        }
 
-      #workspaces button.hover {
-        transition: none;
-        background: transparent;
-        box-shadow: inherit;
-        text-shadow: inherit;
-        border-radius: inherit;
-      }
+        #workspaces button.hover {
+          transition: none;
+          background: transparent;
+          box-shadow: inherit;
+          text-shadow: inherit;
+          border-radius: inherit;
+        }
 
-      #workspaces button.focused {
-        transition: none;color: #${colors.base0A};
-        font-family: 'JetBrains Mono', Bold;
-      }
+        #workspaces button.focused {
+          transition: none;color: #${colors.base0A};
+          font-family: 'JetBrains Mono', Bold;
+        }
 
-      .modules-left {
-        background-color: #${colors.base00};
-        border: 1px solid #${colors.base07};
-        border-radius: 30px;
-        margin-left: 21px;
-        margin-top: 7px;
-        margin-bottom: 7px;
-        font-family: 'JetBrains Mono', Regular;
-        font-size: 9pt;
-        color: #${colors.base05};
-      }
+        .modules-left {
+          background-color: #${colors.base00};
+          border: 1px solid #${colors.base07};
+          border-radius: 30px;
+          margin-left: 21px;
+          margin-top: 7px;
+          margin-bottom: 7px;
+          font-family: 'JetBrains Mono', Regular;
+          font-size: 9pt;
+          color: #${colors.base05};
+        }
 
-      .modules-center {
-        background-color: #${colors.base00};
-        border: 1px solid #${colors.base07};
-        border-radius: 30px;
-        margin-top: 7px;
-        margin-bottom: 7px;
-        font-family: 'JetBrains Mono', Regular;
-        font-size: 10pt;
-        color: #${colors.base05};
-      }
+        .modules-center {
+          background-color: #${colors.base00};
+          border: 1px solid #${colors.base07};
+          border-radius: 30px;
+          margin-top: 7px;
+          margin-bottom: 7px;
+          font-family: 'JetBrains Mono', Regular;
+          font-size: 10pt;
+          color: #${colors.base05};
+        }
 
-      .modules-right {
-        background-color: #${colors.base00};
-        border: 1px solid #${colors.base07};
-        border-radius: 30px;
-        margin-top: 7px;
-        margin-bottom: 7px;
-        margin-right: 21px;
-        font-family: 'JetBrains Mono', Regular;
-        font-size: 10pt;
-        color: #${colors.base05};
-      }
+        .modules-right {
+          background-color: #${colors.base00};
+          border: 1px solid #${colors.base07};
+          border-radius: 30px;
+          margin-top: 7px;
+          margin-bottom: 7px;
+          margin-right: 21px;
+          font-family: 'JetBrains Mono', Regular;
+          font-size: 10pt;
+          color: #${colors.base05};
+        }
 
-      #custom-menu {
-        background-color: #${colors.base02};
-        border-radius: 30px;
-        padding-left: 14px;
-        padding-right: 14px;
-      }
+        #custom-menu {
+          background-color: #${colors.base02};
+          border-radius: 30px;
+          padding-left: 14px;
+          padding-right: 14px;
+        }
 
-      #custom-currentplayer { /* SPOTIFY ICON */
-        background-color: #${colors.base02};
-        border: 0px solid #${colors.base05};
-        border-radius: 30px;
-        padding-left: 18px;
-        padding-right: 14px;
-        font-size: 9pt;
-      }
+        #custom-currentplayer { /* SPOTIFY ICON */
+          background-color: #${colors.base02};
+          border: 0px solid #${colors.base05};
+          border-radius: 30px;
+          padding-left: 18px;
+          padding-right: 14px;
+          font-size: 9pt;
+        }
 
-      #custom-player {
-        padding-left: 8px;
-        padding-right: 8px;
-      }
+        #custom-player {
+          padding-left: 8px;
+          padding-right: 8px;
+        }
 
-      #custom-seperator-left,
-      #custom-seperator-right {
-        padding-left: 8px;
-      }
+        #custom-seperator-left,
+        #custom-seperator-right {
+          padding-left: 8px;
+        }
 
-      #window {
-        padding-left: 16px;
-        padding-right: 8px;
-      }
+        #window {
+          padding-left: 16px;
+          padding-right: 8px;
+        }
 
-      #custom-datetime
-      #memory {
-        /* margin-top: 0px; */
-        /* margin-bottom: 0px; */
-      }
+        #custom-datetime
+        #memory {
+          /* margin-top: 0px; */
+          /* margin-bottom: 0px; */
+        }
 
-      #custom-datetime {
-        font-family: 'JetBrains Mono', Regular;
-        font-size: 9pt;
-        background-color: #${colors.base02};
-        border: 0px solid #${colors.base05};
-        border-radius: 30px;
-        padding-left: 16px;
-        padding-right: 16px;
-        font-size: 9pt;
-      }
+        #custom-datetime {
+          font-family: 'JetBrains Mono', Regular;
+          font-size: 9pt;
+          background-color: #${colors.base02};
+          border: 0px solid #${colors.base05};
+          border-radius: 30px;
+          padding-left: 16px;
+          padding-right: 16px;
+          font-size: 9pt;
+        }
 
-      #custom-hostname {
-        background-color: #${colors.base0C};
-        border-radius: 30px;
-      }
+        #custom-hostname {
+          background-color: #${colors.base0C};
+          border-radius: 30px;
+        }
 
-      #pulseaudio,
-      #custom-backlight,
-      #custom-nightlight,
-      #custom-brightness,
-      #custom-gamma {
-        background-color: #${colors.base00};
-        border: 0px solid #${colors.base05};
-        border-radius: 30px;
-        color: #${colors.base05};
-        padding-left: 8px;
-        padding-right: 8px;
-        margin: 0px;
-        font-size: 9pt;
-      }
+        #pulseaudio,
+        #custom-backlight,
+        #custom-nightlight,
+        #custom-brightness,
+        #custom-gamma {
+          background-color: #${colors.base00};
+          border: 0px solid #${colors.base05};
+          border-radius: 30px;
+          color: #${colors.base05};
+          padding-left: 8px;
+          padding-right: 8px;
+          margin: 0px;
+          font-size: 9pt;
+        }
 
-      #cava {
-        padding-left: 4px;
-        padding-right: 4px;
-        font-size: 9pt;
-        font-family: 'JetBrains Mono', Regular;
-      }
+        #cava {
+          padding-left: 4px;
+          padding-right: 4px;
+          font-size: 9pt;
+          font-family: 'JetBrains Mono', Regular;
+        }
 
-      #custom-datetime
-      #spotify,
-      .mail
-      {
-        background-color: #${colors.base02};
-        border: 0px solid #${colors.base05};
-        border-radius: 30px;
-        padding-left: 16px;
-        padding-right: 16px;
-      }
+        #custom-datetime
+        #spotify,
+        .mail
+        {
+          background-color: #${colors.base02};
+          border: 0px solid #${colors.base05};
+          border-radius: 30px;
+          padding-left: 16px;
+          padding-right: 16px;
+        }
 
-      #tray {
-        padding-left: 8px;
-        padding-right: 8px;
-      }
+        #tray {
+          padding-left: 8px;
+          padding-right: 8px;
+        }
 
-      #network {
-        padding-right: 4px;
-      }
+        #network {
+          padding-right: 4px;
+        }
 
-      #cpu {
-        background-color: #${colors.base00};
-        border-radius: 30px;
-        padding-left: 16px;
-        padding-right: 16px;
-        font-size: 9pt;
-      }
-      #memory {
-        background-color: #${colors.base02};
-        border: 0px solid #${colors.base05};
-        border-radius: 30px;
-        padding-left: 16px;
-        padding-right: 16px;
-        font-size: 9pt;
-      }
+        #cpu {
+          background-color: #${colors.base00};
+          border-radius: 30px;
+          padding-left: 16px;
+          padding-right: 16px;
+          font-size: 9pt;
+        }
+        #memory {
+          background-color: #${colors.base02};
+          border: 0px solid #${colors.base05};
+          border-radius: 30px;
+          padding-left: 16px;
+          padding-right: 16px;
+          font-size: 9pt;
+        }
 
-      tooltip {
-        background-color: alpha(#${colors.base00}, 1.0);
-        border: 2px solid #${colors.base05};
-        border-radius: 10px;
-        margin-top: 20px;
-      }
+        tooltip {
+          background-color: alpha(#${colors.base00}, 1.0);
+          border: 2px solid #${colors.base05};
+          border-radius: 10px;
+          margin-top: 20px;
+        }
 
-      tooltip * {
-        color: #${colors.base05};
-        font-family: 'JetBrains Mono', Regular;
-        font-size: 9pt;
-        padding: 6px 5px;
-      }
-    '';
+        tooltip * {
+          color: #${colors.base05};
+          font-family: 'JetBrains Mono', Regular;
+          font-size: 9pt;
+          padding: 6px 5px;
+        }
+      '';
   };
 }

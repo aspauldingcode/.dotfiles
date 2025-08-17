@@ -1,4 +1,4 @@
-{pkgs}:
+{ pkgs }:
 pkgs.stdenv.mkDerivation {
   name = "InputSourceSelector";
   version = "1.0.0";

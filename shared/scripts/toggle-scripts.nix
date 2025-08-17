@@ -94,6 +94,24 @@
         echo "toggle-nightlight: Only supported on macOS"
       ''}
     '')
+
+    # toggle-theme - Removed, now using universal theme-toggle module
+
+    # toggle-cursor-theme - Cursor theme switching for macOS
+    (pkgs.writeShellScriptBin "toggle-cursor-theme" ''
+      ${lib.optionalString pkgs.stdenv.isDarwin ''
+        # Toggle cursor theme on macOS
+        echo "Toggling cursor theme..."
+
+        # This would typically be handled by the nix-colors specialisation
+        # but we can also toggle the system cursor if needed
+        echo "Cursor theme switching is handled by the nix specialisation toggle-theme command."
+        echo "Run 'toggle-theme' to switch between light and dark themes including cursor themes."
+      ''}
+      ${lib.optionalString (!pkgs.stdenv.isDarwin) ''
+        echo "toggle-cursor-theme: Cursor theme switching handled by toggle-theme on NixOS"
+      ''}
+    '')
   ];
   # Note: nightlight CLI tool should be installed separately via Homebrew
   # The toggle-nightlight script will check for its availability

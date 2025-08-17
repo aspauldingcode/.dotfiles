@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   imports = [
     ./cursorcerer.nix
     ./karabiner.nix

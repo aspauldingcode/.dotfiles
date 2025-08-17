@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   inherit (lib) optional optionals optionalString;
 
   # Fetch the Okular source code
@@ -118,7 +119,8 @@ with lib; let
       extra-cmake-modules
     ];
 
-    buildInputs = with pkgs;
+    buildInputs =
+      with pkgs;
       [
         libsForQt5.qtbase
         libsForQt5.qtdeclarative
@@ -160,22 +162,21 @@ with lib; let
         darwin.apple_sdk.frameworks.Cocoa
       ];
 
-    cmakeFlags =
-      [
-        "-DCMAKE_BUILD_TYPE=Release"
-        "-DBUILD_TESTING=OFF"
-        "-DOKULAR_UI=desktop"
-        "-DWITH_MOBIPOCKET=ON"
-        "-DWITH_CHM=ON"
-        "-DWITH_PDF=ON"
-        "-DFORCE_NOT_REQUIRED_DEPENDENCIES=CHM;LibSpectre;Poppler;KF5::KAccountsIntegration;KF5::Purpose"
-        "-DCMAKE_DISABLE_FIND_PACKAGE_KF5KAccountsIntegration=ON"
-        "-DCMAKE_DISABLE_FIND_PACKAGE_KF5Purpose=ON"
-        "-DCMAKE_DISABLE_FIND_PACKAGE_KF5KExiv2=ON"
-        "-DCMAKE_VERBOSE_MAKEFILE=ON"
-        "-DCMAKE_INSTALL_PREFIX=$out"
-      ]
-      ++ optional pkgs.stdenv.isDarwin "-DCMAKE_OSX_DEPLOYMENT_TARGET=10.14";
+    cmakeFlags = [
+      "-DCMAKE_BUILD_TYPE=Release"
+      "-DBUILD_TESTING=OFF"
+      "-DOKULAR_UI=desktop"
+      "-DWITH_MOBIPOCKET=ON"
+      "-DWITH_CHM=ON"
+      "-DWITH_PDF=ON"
+      "-DFORCE_NOT_REQUIRED_DEPENDENCIES=CHM;LibSpectre;Poppler;KF5::KAccountsIntegration;KF5::Purpose"
+      "-DCMAKE_DISABLE_FIND_PACKAGE_KF5KAccountsIntegration=ON"
+      "-DCMAKE_DISABLE_FIND_PACKAGE_KF5Purpose=ON"
+      "-DCMAKE_DISABLE_FIND_PACKAGE_KF5KExiv2=ON"
+      "-DCMAKE_VERBOSE_MAKEFILE=ON"
+      "-DCMAKE_INSTALL_PREFIX=$out"
+    ]
+    ++ optional pkgs.stdenv.isDarwin "-DCMAKE_OSX_DEPLOYMENT_TARGET=10.14";
 
     preConfigure = optionalString pkgs.stdenv.isDarwin ''
       export MACOSX_DEPLOYMENT_TARGET=10.14
@@ -214,6 +215,7 @@ with lib; let
       platforms = platforms.linux ++ platforms.darwin;
     };
   };
-in {
-  environment.systemPackages = [okular];
+in
+{
+  environment.systemPackages = [ okular ];
 }

@@ -3,7 +3,8 @@
   lib,
   pkgs,
   ...
-}: {
+}:
+{
   # Basic SSH daemon configuration for Darwin
   services.openssh = {
     enable = true;

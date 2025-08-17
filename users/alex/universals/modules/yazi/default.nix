@@ -7,7 +7,8 @@
 # FIXME: why is yazi broken on nixos?
 let
   inherit (config.colorScheme) palette;
-in {
+in
+{
   programs.yazi = {
     enable = true;
     enableZshIntegration = true;
@@ -68,7 +69,7 @@ in {
         tab_active = {
           reversed = true;
         };
-        tab_inactive = {};
+        tab_inactive = { };
         tab_width = 1;
         count_copied = {
           fg = "#${palette.base07}";
@@ -213,7 +214,7 @@ in {
           fg = "#${palette.base0E}";
           underline = true;
         };
-        title = {};
+        title = { };
       };
       which = {
         cand = {

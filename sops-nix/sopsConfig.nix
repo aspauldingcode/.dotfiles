@@ -3,7 +3,8 @@
   user,
   environment ? "development", # production, staging, development
   hostname ? "unknown",
-}: let
+}:
+let
   # Validate environment parameter
   validEnvironments = [
     "production"
@@ -22,19 +23,17 @@
   };
 
   # System-specific secret files with fallback
-  systemSecretFile = let
-    systemFile = ../secrets/systems + "/${hostname}.yaml";
-  in
-    if builtins.pathExists systemFile
-    then systemFile
-    else null;
+  systemSecretFile =
+    let
+      systemFile = ../secrets/systems + "/${hostname}.yaml";
+    in
+    if builtins.pathExists systemFile then systemFile else null;
 
-  userSecretFile = let
-    userFile = ../secrets/users + "/${user}.yaml";
-  in
-    if builtins.pathExists userFile
-    then userFile
-    else null;
+  userSecretFile =
+    let
+      userFile = ../secrets/users + "/${user}.yaml";
+    in
+    if builtins.pathExists userFile then userFile else null;
 
   # Production-ready sops configuration with security hardening
   commonSopsConfigBase = {
@@ -241,55 +240,53 @@
   };
 
   # Development secrets (subset of production with additional dev-specific secrets)
-  developmentSecrets =
-    productionSecrets
-    // {
-      # === Development-specific ===
-      test_user_password = {
-        owner = user;
-        mode = "0400";
-      };
-      test_api_key = {
-        owner = user;
-        mode = "0400";
-      };
-      local_ssl_cert = {
-        owner = user;
-        mode = "0400";
-      };
-      local_ssl_key = {
-        owner = user;
-        mode = "0400";
-      };
-      dev_database_url = {
-        owner = user;
-        mode = "0400";
-      };
-
-      # === Network and Connectivity ===
-      wifi_dev_network_password = {
-        owner = user;
-        mode = "0400";
-      };
-      vpn_dev_config = {
-        owner = user;
-        mode = "0400";
-      };
-
-      # === Development Tools ===
-      docker_registry_token = {
-        owner = user;
-        mode = "0400";
-      };
-      npm_auth_token = {
-        owner = user;
-        mode = "0400";
-      };
-      pypi_token = {
-        owner = user;
-        mode = "0400";
-      };
+  developmentSecrets = productionSecrets // {
+    # === Development-specific ===
+    test_user_password = {
+      owner = user;
+      mode = "0400";
     };
+    test_api_key = {
+      owner = user;
+      mode = "0400";
+    };
+    local_ssl_cert = {
+      owner = user;
+      mode = "0400";
+    };
+    local_ssl_key = {
+      owner = user;
+      mode = "0400";
+    };
+    dev_database_url = {
+      owner = user;
+      mode = "0400";
+    };
+
+    # === Network and Connectivity ===
+    wifi_dev_network_password = {
+      owner = user;
+      mode = "0400";
+    };
+    vpn_dev_config = {
+      owner = user;
+      mode = "0400";
+    };
+
+    # === Development Tools ===
+    docker_registry_token = {
+      owner = user;
+      mode = "0400";
+    };
+    npm_auth_token = {
+      owner = user;
+      mode = "0400";
+    };
+    pypi_token = {
+      owner = user;
+      mode = "0400";
+    };
+  };
 
   # Legacy secrets for backward compatibility
   legacySecrets = {
@@ -333,14 +330,15 @@
 
   # Select secrets based on environment with validation
   environmentSecrets =
-    if !isValidEnvironment
-    then throw "Invalid environment '${environment}'. Must be one of: ${builtins.concatStringsSep ", " validEnvironments}"
-    else {
-      production = productionSecrets;
-      staging = productionSecrets; # Use production secrets for staging
-      development = developmentSecrets;
-      legacy = legacySecrets;
-    };
+    if !isValidEnvironment then
+      throw "Invalid environment '${environment}'. Must be one of: ${builtins.concatStringsSep ", " validEnvironments}"
+    else
+      {
+        production = productionSecrets;
+        staging = productionSecrets; # Use production secrets for staging
+        development = developmentSecrets;
+        legacy = legacySecrets;
+      };
 
   # NixOS-specific sops configuration with enhanced security
   nixosSopsConfig = nixpkgs.lib.recursiveUpdate commonSopsConfigBase {
@@ -362,10 +360,10 @@
   # Home Manager secrets (without owner and mode, with proper attribute handling)
   hmSecrets = builtins.mapAttrs (
     name: value:
-      removeAttrs value [
-        "owner"
-        "mode"
-      ]
+    removeAttrs value [
+      "owner"
+      "mode"
+    ]
   ) (environmentSecrets.${environment} or environmentSecrets.legacy);
 
   # Home Manager-specific sops configuration
@@ -383,14 +381,17 @@
   # Utility functions for secret management
   secretUtils = {
     # Function to check if a secret exists
-    hasSecret = secretName:
+    hasSecret =
+      secretName:
       builtins.hasAttr secretName (environmentSecrets.${environment} or environmentSecrets.legacy);
 
     # Function to get secret path
-    getSecretPath = secretName:
-      if secretUtils.hasSecret secretName
-      then "/run/secrets/${secretName}"
-      else throw "Secret '${secretName}' not found in environment '${environment}'";
+    getSecretPath =
+      secretName:
+      if secretUtils.hasSecret secretName then
+        "/run/secrets/${secretName}"
+      else
+        throw "Secret '${secretName}' not found in environment '${environment}'";
 
     # Function to validate environment
     validateEnvironment = env: builtins.elem env validEnvironments;
@@ -401,7 +402,8 @@
 
   # For backward compatibility, keep commonSopsConfig pointing to the NixOS version
   commonSopsConfig = nixosSopsConfig;
-in {
+in
+{
   inherit
     commonSopsConfigBase
     nixosSopsConfig

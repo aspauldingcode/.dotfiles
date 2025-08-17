@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   programs.nixvim.plugins = {
     # Essential completion sources only
     cmp-nvim-lsp.enable = true;
@@ -197,34 +198,36 @@
     # LSP kind icons for completion
     lspkind = {
       enable = true;
-      symbolMap = {
-        # Removed Copilot symbol - LSP-AI integrates through nvim_lsp
-        Text = "󰉿";
-        Method = "󰆧";
-        Function = "󰊕";
-        Constructor = "";
-        Field = "󰜢";
-        Variable = "󰀫";
-        Class = "󰠱";
-        Interface = "";
-        Module = "";
-        Property = "󰜢";
-        Unit = "󰑭";
-        Value = "󰎠";
-        Enum = "";
-        Keyword = "󰌋";
-        Snippet = "";
-        Color = "";
-        File = "󰈙";
-        Reference = "";
-        Folder = "󰉋";
-        EnumMember = "";
-        Constant = "";
-        Struct = "󰙅";
-        Event = "";
-        Operator = "󰆕";
-        TypeParameter = "";
-        AI = "󰧑"; # AI completion symbol
+      settings = {
+        symbol_map = {
+          # Removed Copilot symbol - LSP-AI integrates through nvim_lsp
+          Text = "󰉿";
+          Method = "󰆧";
+          Function = "󰊕";
+          Constructor = "";
+          Field = "󰜢";
+          Variable = "󰀫";
+          Class = "󰠱";
+          Interface = "";
+          Module = "";
+          Property = "󰜢";
+          Unit = "󰑭";
+          Value = "󰎠";
+          Enum = "";
+          Keyword = "󰌋";
+          Snippet = "";
+          Color = "";
+          File = "󰈙";
+          Reference = "";
+          Folder = "󰉋";
+          EnumMember = "";
+          Constant = "";
+          Struct = "󰙅";
+          Event = "";
+          Operator = "󰆕";
+          TypeParameter = "";
+          AI = "󰧑"; # AI completion symbol
+        };
       };
     };
 
@@ -245,7 +248,7 @@
           end
         '';
         run_on_every_keystroke = true;
-        ignored_file_types = {};
+        ignored_file_types = { };
       };
     };
   };

@@ -2,13 +2,12 @@
   config,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (config.colorScheme) palette;
-  fontSize =
-    if pkgs.stdenv.isDarwin
-    then 12.5
-    else 9.0;
-in {
+  fontSize = if pkgs.stdenv.isDarwin then 12.5 else 9.0;
+in
+{
   home.packages = with pkgs; [
     # ueberzug
     # ueberzugpp # required for yazi Window System Protocol to preview images.

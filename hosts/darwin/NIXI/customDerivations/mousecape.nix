@@ -1,4 +1,4 @@
-{pkgs}:
+{ pkgs }:
 pkgs.stdenv.mkDerivation {
   name = "Mousecape";
   src = pkgs.fetchurl {
@@ -6,7 +6,7 @@ pkgs.stdenv.mkDerivation {
     sha256 = "sha256-lp7HFGr1J+iQCUWVDplF8rFcTrGf+DX4baYzLsUi/9I=";
   };
 
-  buildInputs = [pkgs.unzip];
+  buildInputs = [ pkgs.unzip ];
 
   unpackPhase = ''
     unzip $src -d $out

@@ -11,13 +11,14 @@
       powerline-fonts
       powerline-symbols
       font-awesome_5
-      (nerdfonts.override {fonts = ["JetBrainsMono"];})
+      nerd-fonts.jetbrains-mono
     ];
   };
   # system.build = builtins.exec "echo 'hello, world.'";
   # Auto upgrade nix package and the daemon service.
   services = {
     tailscale.enable = true;
+    theme-toggle.enable = true;
   };
   networking = {
     computerName = "NIXY"; # REQUIRED! "NIXY" to build nix flakes
@@ -67,7 +68,7 @@
           "big-parallel"
           "nixos-test"
         ];
-        mandatoryFeatures = [];
+        mandatoryFeatures = [ ];
         sshUser = "alex";
         sshKey = "/Users/alex/.ssh/id_ed25519"; # SSH key for connecting to NIXSTATION64
         protocol = "ssh-ng"; # Use new SSH protocol for better performance
@@ -117,13 +118,13 @@
     overlays = [
       (final: prev: {
         # Override Valgrind to be a dummy package on Darwin since it's not supported
-        valgrind = prev.runCommand "valgrind-dummy" {} ''
+        valgrind = prev.runCommand "valgrind-dummy" { } ''
           mkdir -p $out/bin
           echo '#!/bin/sh' > $out/bin/valgrind
           echo 'echo "Valgrind is not supported on Darwin"' >> $out/bin/valgrind
           chmod +x $out/bin/valgrind
         '';
-        
+
         # Override packages that might depend on Valgrind
         pipewire = prev.pipewire.override {
           vulkanSupport = false;

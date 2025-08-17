@@ -2,8 +2,8 @@
   description = "Production-Ready Universal Flake - macOS, NixOS & Mobile Support";
 
   inputs = {
-    # Core nixpkgs channels - using consistent 24.11 stable release
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    # Core nixpkgs channels - using unstable to avoid libaio build issues
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Flake framework for better organization
@@ -12,13 +12,13 @@
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
 
-    # System management - using compatible versions
+    # System management - using master branches for unstable compatibility
     nix-darwin = {
-      url = "github:lnl7/nix-darwin/nix-darwin-24.11";
+      url = "github:lnl7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -103,7 +103,7 @@
       url = "github:cpick/nix-rosetta-builder";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-  
+
     # Ansible automation with Nix
     nixible = {
       url = "gitlab:TECHNOFAB/nixible?dir=lib";
@@ -111,8 +111,9 @@
     };
   };
 
-  outputs = inputs @ {flake-parts, ...}:
-    flake-parts.lib.mkFlake {inherit inputs;} {
+  outputs =
+    inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
       # Supported systems for multi-platform builds
       systems = [
         "x86_64-linux" # Intel/AMD Linux

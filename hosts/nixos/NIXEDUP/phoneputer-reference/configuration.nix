@@ -5,7 +5,8 @@
   lib,
   pkgs,
   ...
-}: {
+}:
+{
   # Allow unfree packages (needed for OnePlus firmware)
   nixpkgs.config.allowUnfree = true;
 

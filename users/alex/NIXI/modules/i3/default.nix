@@ -1,4 +1,4 @@
-{pkgs, ...}:
+{ pkgs, ... }:
 # i3 configuration for NIXI macOS on xQuartz.app!
 {
   xdg.configFile.i3 = {

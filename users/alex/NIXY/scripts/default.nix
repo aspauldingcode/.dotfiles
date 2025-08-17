@@ -2,21 +2,24 @@
   config,
   pkgs,
   ...
-}: let
+}:
+let
   systemType = pkgs.stdenv.hostPlatform.system;
   homebrewPath =
-    if systemType == "aarch64-darwin"
-    then "/opt/homebrew/bin"
-    else if systemType == "x86_64-darwin"
-    then "/usr/local/bin"
-    else throw "Homebrew Unsupported architecture: ${systemType}";
+    if systemType == "aarch64-darwin" then
+      "/opt/homebrew/bin"
+    else if systemType == "x86_64-darwin" then
+      "/usr/local/bin"
+    else
+      throw "Homebrew Unsupported architecture: ${systemType}";
   jq = "${pkgs.jq}/bin/jq";
   yabai = "${pkgs.yabai}/bin/yabai";
   sketchybar = "${pkgs.unstable.sketchybar}/bin/sketchybar";
   borders = "";
   skhd = "${pkgs.skhd}/bin/skhd";
   inherit (config.colorScheme) palette;
-in {
+in
+{
   home = {
     packages = with pkgs; [
       #analyze-output

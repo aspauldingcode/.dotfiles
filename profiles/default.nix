@@ -1,5 +1,6 @@
 # Profiles Index - Reusable configuration profiles
-{inputs, ...}: {
+{ inputs, ... }:
+{
   flake.profiles = {
     # Desktop profile - GUI applications, window managers, etc.
     desktop = ./desktop;

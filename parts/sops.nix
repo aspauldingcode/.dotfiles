@@ -1,10 +1,12 @@
 # SOPS Module - Secrets management configuration
-{inputs, ...}: let
+{ inputs, ... }:
+let
   # Import SOPS configurations
   sopsConfigs = import ../sops-nix/sopsConfig.nix {
     nixpkgs = inputs.nixpkgs;
     user = "alex";
   };
-in {
+in
+{
   flake.sopsConfigs = sopsConfigs;
 }

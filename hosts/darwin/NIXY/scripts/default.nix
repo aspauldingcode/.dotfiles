@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   environment.systemPackages = with pkgs; [
     (writeShellScriptBin "rebuild" ''
       echo "Rebuilding..."

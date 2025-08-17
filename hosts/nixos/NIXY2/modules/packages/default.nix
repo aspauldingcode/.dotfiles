@@ -4,7 +4,8 @@
   pkgs,
   nixpkgs,
   ...
-}: {
+}:
+{
   programs = {
     thunar = {
       enable = true;

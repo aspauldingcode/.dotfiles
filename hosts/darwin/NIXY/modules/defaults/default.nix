@@ -33,14 +33,16 @@
       swapLeftCtrlAndFn = false; # was true, was nice, but fucked up external usb keyboard.
     };
     defaults = {
-      alf = {
-        allowdownloadsignedenabled = 1;
-        allowsignedenabled = 1;
-      };
       smb = {
         NetBIOSName = "${config.networking.hostName}";
         ServerDescription = null;
       };
     };
+  };
+
+  # Replace deprecated alf options with new networking.applicationFirewall options
+  networking.applicationFirewall = {
+    allowSignedApp = true;
+    allowSigned = true;
   };
 }

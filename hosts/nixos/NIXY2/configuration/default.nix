@@ -6,12 +6,13 @@
   mobile-nixos,
   apple-silicon,
   ...
-}: {
+}:
+{
   # SOPS secrets declarations
   sops.secrets = {
-    wifi_bubbles_passwd = {};
-    wifi_eduroam_userID = {};
-    wifi_eduroam_passwd = {};
+    wifi_bubbles_passwd = { };
+    wifi_eduroam_userID = { };
+    wifi_eduroam_passwd = { };
   };
 
   nixpkgs.flake = {
@@ -41,7 +42,7 @@
       theme = "rings";
       themePackages = with pkgs; [
         # By default we would install all themes
-        (adi1090x-plymouth-themes.override {selected_themes = ["rings"];})
+        (adi1090x-plymouth-themes.override { selected_themes = [ "rings" ]; })
       ];
     };
   };
@@ -65,8 +66,8 @@
     };
     graphics = {
       enable = true;
-      extraPackages = with pkgs; [];
-      extraPackages32 = with pkgs; [];
+      extraPackages = with pkgs; [ ];
+      extraPackages32 = with pkgs; [ ];
     };
   };
 
@@ -240,7 +241,7 @@
       sddm = {
         enable = false;
         wayland.enable = true; # Correctly placed under displayManager
-        theme = "${import ./sddm-themes.nix {inherit pkgs;}}"; # Correctly placed under displayManager
+        theme = "${import ./sddm-themes.nix { inherit pkgs; }}"; # Correctly placed under displayManager
       };
     };
     desktopManager = {
@@ -294,8 +295,8 @@
     };
 
     printing = {
-      listenAddresses = ["*:631"];
-      allowFrom = ["all"];
+      listenAddresses = [ "*:631" ];
+      allowFrom = [ "all" ];
       browsing = true;
       defaultShared = true;
     };
@@ -307,11 +308,11 @@
       wheelNeedsPassword = false;
       extraRules = [
         {
-          users = ["privileged_user"];
+          users = [ "privileged_user" ];
           commands = [
             {
               command = "ALL";
-              options = ["NOPASSWD"]; # "SETENV" #
+              options = [ "NOPASSWD" ]; # "SETENV" #
             }
           ];
         }
@@ -360,7 +361,7 @@
     susu = {
       isNormalUser = true;
       description = "Su Su Oo";
-      extraGroups = ["networkmanager"];
+      extraGroups = [ "networkmanager" ];
     };
   };
 
@@ -369,11 +370,11 @@
     powerline-fonts
     powerline-symbols
     font-awesome_5
-    (nerdfonts.override {fonts = ["JetBrainsMono"];})
+    nerd-fonts.jetbrains-mono
   ];
 
   nix = {
-    registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
+    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
     settings = {
       auto-optimise-store = true; # Auto Optimize nix store.
@@ -427,7 +428,7 @@
   console = {
     earlySetup = true;
     font = "ter-132n";
-    packages = with pkgs; [terminus_font];
+    packages = with pkgs; [ terminus_font ];
     keyMap = "us";
   };
 

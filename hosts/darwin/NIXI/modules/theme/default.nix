@@ -1,4 +1,5 @@
 {
+  inputs,
   nix-colors,
   lib,
   config,
@@ -20,30 +21,27 @@ let
   # - horizon-light
   scheme = "gruvbox-dark-soft";
 in
-  # Choose from: https://tinted-theming.github.io/base16-gallery/
-  {
-    # Import the default home manager modules from nix-colors
-    imports = [
+# Choose from: https://tinted-theming.github.io/base16-gallery/
+{
+  # Import the default home manager modules from nix-colors
+  imports = [
     inputs.nix-colors.homeManagerModules.default
     ./glow-theme.nix
   ];
 
-    # Set the global color scheme to the selected scheme
-    colorscheme = nix-colors.colorSchemes.${scheme};
+  # Set the global color scheme to the selected scheme
+  colorScheme = nix-colors.colorSchemes.${scheme};
 
-    home-manager.users.${user} = {
-      # Set the color scheme for the user to the selected scheme
-      colorscheme = nix-colors.colorSchemes.${scheme};
+  home-manager.users.${user} = {
+    # Import nix-colors home-manager module
+    imports = [
+      nix-colors.homeManagerModules.default
+    ];
 
-      specialisation = {
-        light-theme = {
-          configuration = {
-            # Override the color scheme with a specific one (atelier-dune-light) for the light-theme specialisation
-            # The mkForce function is used to ensure that this value takes precedence over any other definitions
-            # Ensure the attribute name matches the one used elsewhere (colorscheme)
-            colorscheme = lib.mkForce nix-colors.colorSchemes."gruvbox-light-soft";
-          };
-        };
-      };
-    };
-  }
+    # Set the color scheme for the user to the selected scheme
+    colorScheme = nix-colors.colorSchemes.${scheme};
+
+    # Note: Light theme switching is now handled via separate flake outputs (NIXI-light)
+    # instead of specialisations, so no specialisation configuration is needed here.
+  };
+}

@@ -11,13 +11,14 @@
       powerline-fonts
       powerline-symbols
       font-awesome_5
-      (nerdfonts.override {fonts = ["JetBrainsMono"];})
+      nerd-fonts.jetbrains-mono
     ];
   };
   # system.build = builtins.exec "echo 'hello, world.'";
   # Auto upgrade nix package and the daemon service.
   services = {
     tailscale.enable = true;
+    theme-toggle.enable = true;
   };
   networking = {
     computerName = "NIXI"; # REQUIRED! "NIXI" to build nix flakes
@@ -67,7 +68,7 @@
           "big-parallel"
           "nixos-test"
         ];
-        mandatoryFeatures = [];
+        mandatoryFeatures = [ ];
         sshUser = "alex";
         sshKey = "/Users/alex/.ssh/id_ed25519"; # SSH key for connecting to NIXSTATION64
         protocol = "ssh-ng"; # Use new SSH protocol for better performance

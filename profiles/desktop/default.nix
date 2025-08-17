@@ -5,7 +5,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   # Desktop-specific configuration
   imports = [
     # Add desktop-specific modules here

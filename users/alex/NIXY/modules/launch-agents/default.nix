@@ -2,7 +2,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   launchd.agents = {
     toggle-darkmode = {
       enable = true;
@@ -16,16 +17,6 @@
         KeepAlive = false;
         StandardOutPath = "/tmp/toggle-darkmode.log";
         StandardErrorPath = "/tmp/toggle-darkmode.error.log";
-      };
-    };
-
-    alt-tab-macos = {
-      enable = true;
-      config = {
-        Label = "com.aspauldingcode.alt-tab-macos";
-        Program = "${pkgs.alt-tab-macos}/Applications/AltTab.app/Contents/MacOS/AltTab";
-        RunAtLoad = true;
-        KeepAlive = true;
       };
     };
 

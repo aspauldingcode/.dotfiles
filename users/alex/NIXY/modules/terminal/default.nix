@@ -4,10 +4,12 @@
   pkgs,
   nix-colors,
   ...
-}: let
+}:
+let
   name = "${config.colorScheme.slug}";
   inherit (config.colorScheme) palette;
-in {
+in
+{
   targets.darwin.defaults."com.apple.Terminal" = {
     "Default Window Settings" = name;
     "Startup Window Settings" = name;
