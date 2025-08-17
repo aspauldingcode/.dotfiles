@@ -107,7 +107,6 @@
     # Ansible automation with Nix
     nixible = {
       url = "gitlab:TECHNOFAB/nixible?dir=lib";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
