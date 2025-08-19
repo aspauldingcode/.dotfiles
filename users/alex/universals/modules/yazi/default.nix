@@ -28,7 +28,7 @@ in
       flavor = {
         use = "";
       };
-      manager = {
+      mgr = {
         cwd = {
           fg = "#${palette.base0C}";
         };

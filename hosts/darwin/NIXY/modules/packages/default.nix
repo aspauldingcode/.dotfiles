@@ -67,6 +67,7 @@
     # (pkgs.callPackage ./../../customDerivations/cursorcerer.nix {}) # Temporarily disabled due to build issues
     (pkgs.callPackage ./../../customDerivations/mousecape.nix { })
     (pkgs.callPackage ./../../customDerivations/inputsourceselector.nix { })
+    (pkgs.callPackage ./../../customDerivations/color-picker.nix { })
   ];
 
   nixpkgs.config = {

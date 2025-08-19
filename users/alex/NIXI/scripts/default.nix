@@ -404,6 +404,111 @@ in
         echo "yeah not quite."
       '')
 
+      # 🎨 Simple Color Picker Eyedropper Tool (AppKit-based)
+      (pkgs.writeShellScriptBin "color-picker" ''
+                          #!/bin/bash
+
+                # macOS AppKit Color Picker Eyedropper Tool
+                # Usage: color-picker [--raw|-r]
+
+                set -euo pipefail
+
+                # Check for raw flag
+                RAW_MODE=false
+                if [[ "''${1:-}" == "--raw" || "''${1:-}" == "-r" ]]; then
+                  RAW_MODE=true
+                fi
+
+                # Show opening message unless in raw mode
+                if [ "$RAW_MODE" = false ]; then
+                  echo "🎨 Opening Picker Tool. Select your color..."
+                fi
+
+                # Create temporary Python script with nix-shell shebang
+                TEMP_SCRIPT=$(mktemp /tmp/color_picker.XXXXXX.py)
+
+                # Cleanup function
+                cleanup() {
+                  rm -f "$TEMP_SCRIPT"
+                }
+                trap cleanup EXIT
+
+                # Write Python script with nix-shell shebang for PyObjC
+                cat > "$TEMP_SCRIPT" << 'EOF'
+        #!/usr/bin/env nix-shell
+        #! nix-shell -i python3 -p python3Packages.pyobjc-framework-Cocoa
+
+        import sys
+        from AppKit import NSColorPanel, NSApplication, NSApp
+        from PyObjCTools import AppHelper
+
+        class ColorPickerDelegate:
+            def __init__(self):
+                self.selected_color = None
+
+            def applicationDidFinishLaunching_(self, notification):
+                color_panel = NSColorPanel.sharedColorPanel()
+                color_panel.setShowsAlpha_(False)
+                color_panel.setMode_(1)  # RGB mode
+                color_panel.setContinuous_(False)
+                color_panel.setTarget_(self)
+                color_panel.setAction_('colorSelected:')
+                color_panel.orderFront_(None)
+
+            def colorSelected_(self, sender):
+                color = sender.color()
+                # Convert to sRGB colorspace to avoid issues
+                srgb_color = color.colorUsingColorSpace_(sender.colorSpace())
+                if not srgb_color:
+                    srgb_color = color
+
+                red = int(round(srgb_color.redComponent() * 255))
+                green = int(round(srgb_color.greenComponent() * 255))
+                blue = int(round(srgb_color.blueComponent() * 255))
+
+                # Clamp values
+                red = max(0, min(255, red))
+                green = max(0, min(255, green))
+                blue = max(0, min(255, blue))
+
+                hex_color = f'{red:02X}{green:02X}{blue:02X}'
+                print(hex_color)
+                NSApp().terminate_(None)
+
+        if __name__ == "__main__":
+            app = NSApplication.sharedApplication()
+            delegate = ColorPickerDelegate()
+            app.setDelegate_(delegate)
+            AppHelper.runEventLoop()
+        EOF
+
+                # Make script executable and run it
+                chmod +x "$TEMP_SCRIPT"
+                RESULT=$("$TEMP_SCRIPT" 2>/dev/null || echo "CANCELLED")
+
+                # Handle errors and cancellation
+                if [[ -z "$RESULT" || "$RESULT" == "CANCELLED" ]]; then
+                  if [ "$RAW_MODE" = false ]; then
+                    echo "❌ Color selection cancelled."
+                  fi
+                  exit 1
+                fi
+
+                # Format hex color with #
+                HEX_COLOR="#$RESULT"
+
+                # Copy to clipboard
+                echo -n "$HEX_COLOR" | pbcopy
+
+                # Output result based on mode
+                if [ "$RAW_MODE" = true ]; then
+                  echo "$RESULT"
+                else
+                  echo "✨ You picked: $HEX_COLOR"
+                  echo "📋 Color copied to clipboard!"
+                fi
+      '')
+
       # connect to school vms
       (pkgs.writeShellScriptBin "connect_to_vm" ''
         #!/bin/bash

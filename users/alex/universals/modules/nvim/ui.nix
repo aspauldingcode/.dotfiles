@@ -658,7 +658,25 @@
         hijack_cursor = null;
         hijack_netrw = null;
         hijack_unnamed_buffer_when_opening = null;
-        on_attach = null;
+        on_attach = {
+          __raw = ''
+            function(bufnr)
+              local api = require("nvim-tree.api")
+
+              -- Default keymaps
+              api.config.mappings.default_on_attach(bufnr)
+
+              -- Custom keymap: q to close NvimTree
+              vim.keymap.set('n', 'q', api.tree.close, {
+                desc = 'Close NvimTree',
+                buffer = bufnr,
+                noremap = true,
+                silent = true,
+                nowait = true
+              })
+            end
+          '';
+        };
         prefer_startup_root = null;
         reload_on_bufenter = null;
         respect_buf_cwd = null;
@@ -676,8 +694,60 @@
       };
     };
 
-    # Buffer tabs
-    bufferline.enable = true;
+    # Buffer tabs - Using barbar instead of bufferline for better colorscheme integration
+    barbar = {
+      enable = true;
+      settings = {
+        # barbar automatically respects colorscheme changes
+        animation = true;
+        auto_hide = false;
+        tabpages = true;
+        closable = true;
+        clickable = true;
+        # Focus on close
+        focus_on_close = "left";
+        # Hide inactive buffers and file extensions
+        hide = {
+          extensions = false;
+          inactive = false;
+        };
+        # Highlight settings
+        highlight_alternate = false;
+        highlight_inactive_file_icons = false;
+        highlight_visible = true;
+        # Icons
+        icons = {
+          buffer_index = false;
+          buffer_number = false;
+          button = "×"; # Close button (visible X)
+          # Skip diagnostics configuration for now
+          filetype = {
+            custom_colors = false;
+            enabled = true;
+          };
+          separator = {
+            left = "▎";
+            right = "";
+          };
+          modified = {
+            button = "●";
+          };
+          pinned = {
+            button = "";
+            filename = true;
+          };
+        };
+        # Layout settings
+        insert_at_end = false;
+        insert_at_start = false;
+        maximum_padding = 1;
+        minimum_padding = 1;
+        maximum_length = 30;
+        semantic_letters = true;
+        letters = "asdfjkl;ghnmxcvbziowerutyqpASDFJKLGHNMXCVBZIOWERUTYQP";
+        no_name_title = "[No Name]";
+      };
+    };
 
     # Startup screen
     startup.enable = false;
@@ -795,9 +865,9 @@
           enabled = true;
           char = null;
           highlight = [
-            "IndentBlanklineScope1"
-            "IndentBlanklineScope2"
-            "IndentBlanklineScope3"
+            "Function"
+            "Label"
+            "Keyword"
           ];
           show_exact_scope = true;
           show_start = true;

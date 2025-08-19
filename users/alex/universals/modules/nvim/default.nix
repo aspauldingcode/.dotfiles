@@ -71,6 +71,10 @@
         -- Print a little welcome message when nvim is opened!
         -- print("Hello world!")
 
+        -- Remove any conflicting keymaps that might be set in options.lua
+        pcall(vim.keymap.del, 'n', '<C-b>')
+        pcall(vim.keymap.del, 'n', '<C-S-b>')
+
         -- All my configuration options for nvim:
         ${builtins.readFile ./options.lua}
 
@@ -97,6 +101,122 @@
 
         -- Let origami handle fold method and expressions
         -- No manual fold configuration needed
+
+        -- Simple hot-reload for color scheme
+        local function reload_colors()
+          -- Parse colors.toml to detect light/dark variant
+          local colors_file = vim.fn.expand("~/colors.toml")
+          local variant = "dark"  -- default
+
+          if vim.fn.filereadable(colors_file) == 1 then
+            local content = vim.fn.readfile(colors_file)
+            for _, line in ipairs(content) do
+              local variant_match = line:match('variant = "([^"]*)"')
+              if variant_match then
+                variant = variant_match
+                break
+              end
+            end
+          end
+
+          -- Set background based on variant
+          vim.o.background = variant
+
+          -- Since we're using base16 plugin with custom setup, we need to re-source the config
+          -- to pick up the new background setting and re-apply colors
+          vim.cmd("source ~/.config/nvim/init.lua")
+
+          -- Force refresh of UI elements that might not update automatically
+          vim.cmd("redraw!")
+          vim.cmd("doautocmd ColorScheme")
+
+          -- Refresh tabline and statusline
+          vim.cmd("redrawtabline")
+          vim.cmd("redrawstatus")
+
+          -- Force barbar to refresh (it should automatically pick up colorscheme changes)
+          -- barbar respects colorscheme changes better than bufferline
+          local barbar_ok = pcall(require, 'barbar')
+          if barbar_ok then
+            -- barbar automatically updates with colorscheme changes, no manual refresh needed
+            vim.cmd("doautocmd User BarbarStart")
+          end
+
+          print("🎨 Colors reloaded (" .. variant .. " mode)")
+        end
+
+        -- Create user command for manual reload
+        vim.api.nvim_create_user_command('ReloadColors', reload_colors, {
+          desc = 'Reload current colorscheme with updated background'
+        })
+
+        -- Auto-reload when returning to neovim (checks for theme changes)
+        vim.api.nvim_create_autocmd({"FocusGained", "BufEnter", "CursorHold", "CursorHoldI"}, {
+          pattern = "*",
+          callback = function()
+            local colors_file = vim.fn.expand("~/colors.toml")
+            if vim.fn.filereadable(colors_file) == 1 then
+              -- Read the actual file content to detect changes (since it's a nix symlink)
+              local content = vim.fn.readfile(colors_file)
+              local content_hash = vim.fn.join(content, "\n")
+
+              -- Initialize if not set
+              if not vim.g.last_colors_content then
+                vim.g.last_colors_content = content_hash
+                return
+              end
+
+              -- Check if content changed (not just timestamp, since it's a symlink)
+              if content_hash ~= vim.g.last_colors_content then
+                print("🔄 Auto-reloading colors (theme changed)")
+                reload_colors()
+                vim.g.last_colors_content = content_hash
+              end
+            end
+          end,
+          desc = "Auto-reload colors when returning to neovim or entering buffers"
+        })
+
+        -- Initialize last content check (for symlink detection)
+        local colors_file = vim.fn.expand("~/colors.toml")
+        if vim.fn.filereadable(colors_file) == 1 then
+          local content = vim.fn.readfile(colors_file)
+          vim.g.last_colors_content = vim.fn.join(content, "\n")
+        else
+          vim.g.last_colors_content = ""
+        end
+
+        -- Set up ColorScheme autocommand to refresh barbar (though it should auto-update)
+        vim.api.nvim_create_autocmd("ColorScheme", {
+          pattern = "*",
+          callback = function()
+            -- barbar should automatically pick up colorscheme changes
+            -- but we can trigger a refresh just in case
+            local barbar_ok = pcall(require, 'barbar')
+            if barbar_ok then
+              vim.defer_fn(function()
+                vim.cmd("doautocmd User BarbarStart")
+              end, 10)
+            end
+          end,
+          desc = "Refresh barbar when colorscheme changes"
+        })
+
+        -- Also set up a timer-based check as fallback (every 2 seconds)
+        local timer = vim.loop.new_timer()
+        timer:start(2000, 2000, vim.schedule_wrap(function()
+          local colors_file = vim.fn.expand("~/colors.toml")
+          if vim.fn.filereadable(colors_file) == 1 then
+            local content = vim.fn.readfile(colors_file)
+            local content_hash = vim.fn.join(content, "\n")
+
+            if vim.g.last_colors_content and content_hash ~= vim.g.last_colors_content then
+              print("🔄 Auto-reloading colors (timer check)")
+              reload_colors()
+              vim.g.last_colors_content = content_hash
+            end
+          end
+        end))
       '';
 
       keymaps = [
@@ -105,7 +225,7 @@
         # LSP Diagnostic navigation (updated to use new API)
         {
           mode = "n";
-          key = "<leader>e";
+          key = "<leader>d";
           action = "<cmd>lua vim.diagnostic.open_float()<CR>";
           options = {
             desc = "Show diagnostic error messages";
@@ -415,7 +535,7 @@
         # File tree keymaps
         {
           mode = "n";
-          key = "<C-b>";
+          key = "<leader>e";
           action = "<cmd>NvimTreeToggle<CR>";
           options = {
             desc = "Toggle file tree";
@@ -423,10 +543,18 @@
         }
         {
           mode = "n";
+          key = "<C-b>";
+          action = "<cmd>NvimTreeToggle<CR>";
+          options = {
+            desc = "Toggle file tree (Ctrl-b)";
+          };
+        }
+        {
+          mode = "n";
           key = "<C-S-b>";
           action = "<cmd>NvimTreeToggle<CR>";
           options = {
-            desc = "Toggle file tree (alternative)";
+            desc = "Toggle file tree (Ctrl-Shift-b)";
           };
         }
 
@@ -517,7 +645,20 @@
             desc = "Toggle line wrapping";
           };
         }
+        {
+          mode = "n";
+          key = "<leader>tc";
+          action = ":ReloadColors<CR>";
+          options = {
+            silent = true;
+            desc = "Reload colors from ~/colors.toml";
+          };
+        }
       ];
+
+      # Colorscheme is handled by base16 plugin configuration below
+      # Set background based on color scheme variant
+      opts.background = if config.colorScheme.variant == "light" then "light" else "dark";
 
       colorschemes.base16 = {
         enable = true;

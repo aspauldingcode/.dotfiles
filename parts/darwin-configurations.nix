@@ -1,5 +1,18 @@
 # Darwin Configurations Module
 { inputs, lib, ... }:
+let
+  # Centralized theme selection
+  themes = {
+    NIXY = {
+      dark = "selenized-dark";
+      light = "selenized-light";
+    };
+    NIXI = {
+      dark = "selenized-dark";
+      light = "selenized-light";
+    };
+  };
+in
 {
   flake.darwinConfigurations = {
     NIXY = inputs.nix-darwin.lib.darwinSystem {
@@ -49,6 +62,9 @@
       modules = inputs.self.commonModules.darwin ++ [
         ../hosts/darwin/NIXY
         {
+          # Override colorScheme at system level for postActivation script
+          colorScheme = lib.mkForce inputs.nix-colors.colorSchemes.${themes.NIXY.light};
+
           home-manager = inputs.self.commonConfigs.homeManagerDarwin // {
             users.alex = {
               imports = [
@@ -57,8 +73,8 @@
               home = {
                 username = "alex";
               };
-              # Use light theme - using selenized-light
-              colorScheme = lib.mkForce inputs.nix-colors.colorSchemes.selenized-light;
+              # Use light theme from centralized theme selection
+              colorScheme = lib.mkForce inputs.nix-colors.colorSchemes.${themes.NIXY.light};
             };
           };
         }
@@ -71,6 +87,9 @@
       modules = inputs.self.commonModules.darwin ++ [
         ../hosts/darwin/NIXI
         {
+          # Override colorScheme at system level for postActivation script
+          colorScheme = lib.mkForce inputs.nix-colors.colorSchemes.${themes.NIXI.light};
+
           home-manager = inputs.self.commonConfigs.homeManagerDarwin // {
             users.alex = {
               imports = [
@@ -79,8 +98,8 @@
               home = {
                 username = "alex";
               };
-              # Use light theme - using tomorrow due to other light themes having malformed hex values
-              colorScheme = lib.mkForce inputs.nix-colors.colorSchemes.tomorrow;
+              # Use light theme from centralized theme selection
+              colorScheme = lib.mkForce inputs.nix-colors.colorSchemes.${themes.NIXI.light};
             };
           };
         }

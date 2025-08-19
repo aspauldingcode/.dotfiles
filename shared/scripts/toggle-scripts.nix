@@ -48,23 +48,19 @@
       ''}
     '')
 
-    # toggle-darkmode
+    # toggle-darkmode (alias to toggle-theme for proper system rebuilding)
     (pkgs.writeShellScriptBin "toggle-darkmode" ''
-      ${lib.optionalString pkgs.stdenv.isDarwin ''
-        # Toggle dark mode on macOS using AppleScript
-        osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to not dark mode'
+      echo "⚠️  toggle-darkmode is deprecated. Use 'toggle-theme' instead."
+      echo "🔄 Redirecting to toggle-theme..."
+      echo ""
 
-        # Get current dark mode state and display message
-        current_state=$(osascript -e 'tell application "System Events" to tell appearance preferences to return dark mode')
-        if [[ "$current_state" == "true" ]]; then
-          echo "Dark Mode: Enabled"
-        else
-          echo "Dark Mode: Disabled"
-        fi
-      ''}
-      ${lib.optionalString (!pkgs.stdenv.isDarwin) ''
-        echo "toggle-darkmode: Only supported on macOS"
-      ''}
+      # Check if toggle-theme exists
+      if command -v toggle-theme >/dev/null 2>&1; then
+        toggle-theme "$@"
+      else
+        echo "❌ toggle-theme not found. Please ensure theme-toggle service is enabled."
+        exit 1
+      fi
     '')
 
     # toggle-nightlight

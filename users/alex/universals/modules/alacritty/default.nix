@@ -130,6 +130,10 @@ in
         };
         blink_interval = 750;
       };
+      env = {
+        TERM = "xterm-256color";
+      };
+
       general = {
         live_config_reload = true;
       };

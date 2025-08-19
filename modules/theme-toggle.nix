@@ -32,6 +32,24 @@ with lib;
         text = ''
           set -euo pipefail
 
+          # Parse arguments
+          target_variant=""
+          if [[ $# -gt 0 ]]; then
+            case "$1" in
+              light|dark)
+                target_variant="$1"
+                echo "🎯 Forcing theme to: $target_variant"
+                ;;
+              *)
+                echo "Usage: toggle-theme [light|dark]"
+                echo "  light - Force light theme"
+                echo "  dark  - Force dark theme"
+                echo "  (no args) - Toggle between themes"
+                exit 1
+                ;;
+            esac
+          fi
+
           # Get current macOS theme state
           hostname=$(scutil --get LocalHostName 2>/dev/null || hostname)
           macos_dark_mode=$(osascript -e 'tell application "System Events" to tell appearance preferences to get dark mode' 2>/dev/null || echo "true")
@@ -43,6 +61,22 @@ with lib;
           fi
 
           echo "Current theme variant: $current_variant"
+
+          # Determine what to switch to
+          if [[ -n "$target_variant" ]]; then
+            # Force specific variant
+            if [[ "$target_variant" == "$current_variant" ]]; then
+              echo "ℹ️  Already using $target_variant theme, rebuilding anyway..."
+            fi
+            switch_to="$target_variant"
+          else
+            # Toggle mode
+            if [[ "$current_variant" == "dark" ]]; then
+              switch_to="light"
+            else
+              switch_to="dark"
+            fi
+          fi
 
           ${optionalString pkgs.stdenv.isDarwin ''
             # macOS nix-darwin specialisation switching
@@ -59,39 +93,39 @@ with lib;
             # Get hostname for flake configuration
             hostname=$(scutil --get LocalHostName 2>/dev/null || hostname)
 
-            if [[ "$current_variant" == "dark" ]]; then
+            if [[ "$switch_to" == "light" ]]; then
               # Switch to light theme
-              echo "Switching from dark to light theme..."
+              echo "Switching to light theme..."
               sudo darwin-rebuild switch --flake ~/.dotfiles#"$hostname"-light
-              
+
               # Set macOS to light mode
               echo "Setting macOS to light mode..."
               osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to false' 2>/dev/null || true
-              
+
               echo "✓ Switched to light theme"
             else
               # Switch to dark theme
-              echo "Switching from light to dark theme..."
+              echo "Switching to dark theme..."
               sudo darwin-rebuild switch --flake ~/.dotfiles#"$hostname"
-              
+
               # Set macOS to dark mode
               echo "Setting macOS to dark mode..."
               osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to true' 2>/dev/null || true
-              
+
               echo "✓ Switched to dark theme"
             fi
           ''}
 
           ${optionalString pkgs.stdenv.isLinux ''
             # NixOS system specialisation switching
-            echo "Toggling theme specialisation on NixOS..."
+            echo "Switching theme on NixOS..."
 
             # Get current system generation
             current_system=$(readlink /run/current-system)
 
-            if [[ "$current_variant" == "dark" ]]; then
+            if [[ "$switch_to" == "light" ]]; then
               # Switch to light specialisation
-              echo "Switching from dark to light theme..."
+              echo "Switching to light theme..."
               if [[ -d "$current_system/specialisation/light-theme" ]]; then
                 sudo "$current_system"/specialisation/light-theme/bin/switch-to-configuration switch
                 echo "✓ Switched to light theme"
@@ -101,7 +135,7 @@ with lib;
               fi
             else
               # Switch back to base system (dark theme)
-              echo "Switching from light to dark theme..."
+              echo "Switching to dark theme..."
               base_system=$(echo "$current_system" | sed 's|/specialisation/light-theme||')
               sudo "$base_system"/bin/switch-to-configuration switch
               echo "✓ Switched to dark theme"

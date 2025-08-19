@@ -1,5 +1,18 @@
 # NixOS Configurations Module
-{ inputs, ... }:
+{ inputs, lib, ... }:
+let
+  # Centralized theme selection
+  themes = {
+    NIXSTATION64 = {
+      dark = "selenized-dark";
+      light = "selenized-light";
+    };
+    NIXY2 = {
+      dark = "selenized-dark";
+      light = "selenized-light";
+    };
+  };
+in
 {
   flake.nixosConfigurations = {
     # x86_64 Linux (stable) - Desktop workstation
@@ -56,6 +69,52 @@
               "electron-33.4.11"
               "olm-3.2.16"
             ];
+          };
+        }
+      ];
+    };
+
+    # Light theme configurations for NixOS systems
+    NIXSTATION64-light = inputs.nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      specialArgs = inputs.self.commonConfigs.specialArgs // {
+        inherit (inputs) apple-silicon mobile-nixos;
+      };
+      modules = inputs.self.commonModules.nixos ++ [
+        ../hosts/nixos/NIXSTATION64
+        {
+          # Override colorScheme at system level
+          colorScheme = lib.mkForce inputs.nix-colors.colorSchemes.${themes.NIXSTATION64.light};
+
+          home-manager = inputs.self.commonConfigs.homeManagerNixOS // {
+            users.alex = {
+              imports = [ ../users/alex/NIXSTATION64 ];
+              # Use light theme from centralized theme selection
+              colorScheme = lib.mkForce inputs.nix-colors.colorSchemes.${themes.NIXSTATION64.light};
+            };
+          };
+        }
+      ];
+    };
+
+    NIXY2-light = inputs.nixpkgs.lib.nixosSystem {
+      system = "aarch64-linux";
+      specialArgs = inputs.self.commonConfigs.specialArgs // {
+        inherit (inputs) apple-silicon mobile-nixos;
+      };
+      modules = inputs.self.commonModules.nixos ++ [
+        ../hosts/nixos/NIXY2
+        inputs.apple-silicon.nixosModules.apple-silicon-support
+        {
+          # Override colorScheme at system level
+          colorScheme = lib.mkForce inputs.nix-colors.colorSchemes.${themes.NIXY2.light};
+
+          home-manager = inputs.self.commonConfigs.homeManagerNixOS // {
+            users.alex = {
+              imports = [ ../users/alex/NIXY2 ];
+              # Use light theme from centralized theme selection
+              colorScheme = lib.mkForce inputs.nix-colors.colorSchemes.${themes.NIXY2.light};
+            };
           };
         }
       ];

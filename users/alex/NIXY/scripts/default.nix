@@ -439,6 +439,53 @@ in
             ;;
         esac
       '')
+
+      # 🎨 Swift-based Color Picker using native macOS NSColorPanel
+      (pkgs.writeShellScriptBin "color-picker" ''
+        #!/bin/bash
+
+        # macOS Color Picker using Swift
+        # Usage: color-picker [--raw|-r]
+
+        set -euo pipefail
+
+        # Check for raw flag
+        RAW_MODE=false
+        if [[ "''${1:-}" == "--raw" || "''${1:-}" == "-r" ]]; then
+          RAW_MODE=true
+        fi
+
+        # Show opening message unless in raw mode
+        if [ "$RAW_MODE" = false ]; then
+          echo "🎨 Opening Color Picker. Select a color and close the panel..."
+        fi
+
+        # Run the color picker and capture result
+        RESULT=$(ColorPicker 2>/dev/null)
+        EXIT_CODE=$?
+
+        # Handle errors and cancellation
+        if [[ $EXIT_CODE -ne 0 || -z "$RESULT" || "$RESULT" == "CANCELLED" ]]; then
+          if [ "$RAW_MODE" = false ]; then
+            echo "❌ Color selection cancelled."
+          fi
+          exit 1
+        fi
+
+        # Format hex color with #
+        HEX_COLOR="#$RESULT"
+
+        # Copy to clipboard
+        echo -n "$HEX_COLOR" | pbcopy
+
+        # Output result based on mode
+        if [ "$RAW_MODE" = true ]; then
+          echo "$RESULT"
+        else
+          echo "✨ You picked: $HEX_COLOR"
+          echo "📋 Color copied to clipboard!"
+        fi
+      '')
     ];
   };
 }
