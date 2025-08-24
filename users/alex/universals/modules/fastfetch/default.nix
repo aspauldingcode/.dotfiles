@@ -3,8 +3,7 @@
   pkgs,
   nix-colors,
   ...
-}:
-{
+}: {
   programs.fastfetch = {
     enable = true;
     settings = {

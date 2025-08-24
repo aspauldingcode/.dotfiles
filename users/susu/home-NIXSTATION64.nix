@@ -3,8 +3,7 @@
   config,
   pkgs,
   ...
-}:
-{
+}: {
   imports = [
     ./modules/NIXSTATION64/packages-NIXSTATION64.nix
   ];

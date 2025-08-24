@@ -1,6 +1,5 @@
 # Modules Index - Centralized module management
-{ inputs, ... }:
-{
+{inputs, ...}: {
   flake.modules = {
     # Universal modules (can be used by both NixOS and nix-darwin)
     theme-toggle = ./theme-toggle.nix;

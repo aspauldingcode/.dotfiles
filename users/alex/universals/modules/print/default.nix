@@ -2,10 +2,12 @@
   pkgs,
   lib,
   ...
-}:
-let
+}: let
   # Helper function to determine OS-specific keymap
-  osKeymap = if pkgs.stdenv.isDarwin then "<D-p>" else "<C-p>";
+  osKeymap =
+    if pkgs.stdenv.isDarwin
+    then "<D-p>"
+    else "<C-p>";
 
   # Create the print script content
   printScript = ''
@@ -415,8 +417,7 @@ let
     # Run main function with all arguments
     main "$@"
   '';
-in
-{
+in {
   # Add required packages for printing functionality
   home.packages = with pkgs; [
     pandoc

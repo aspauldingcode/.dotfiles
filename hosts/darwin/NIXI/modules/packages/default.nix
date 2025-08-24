@@ -2,8 +2,7 @@
   pkgs,
   inputs,
   ...
-}:
-{
+}: {
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
   environment.systemPackages = with pkgs; [
@@ -65,14 +64,13 @@
     fd # find tool
     ripgrep
     # (pkgs.callPackage ./../../customDerivations/cursorcerer.nix {}) # Temporarily disabled due to build issues
-    (pkgs.callPackage ./../../customDerivations/mousecape.nix { })
-    (pkgs.callPackage ./../../customDerivations/inputsourceselector.nix { })
+    (pkgs.callPackage ./../../customDerivations/mousecape.nix {})
+    (pkgs.callPackage ./../../customDerivations/inputsourceselector.nix {})
   ];
 
   nixpkgs.config = {
     allowUnfree = true;
-    allowUnsupportedSystemPredicate =
-      pkg:
+    allowUnsupportedSystemPredicate = pkg:
       builtins.elem (pkgs.lib.getName pkg) [
         "swiftformat"
         "sourcekit-lsp"
@@ -95,13 +93,13 @@
       "demo"
       "alex"
     ];
-    extra-sandbox-paths = [ "/bin/sh=${pkgs.bash}/bin/sh" ];
+    extra-sandbox-paths = ["/bin/sh=${pkgs.bash}/bin/sh"];
     builders-use-substitutes = true;
     experimental-features = [
       "nix-command"
       "flakes"
     ];
-    substituters = [ "https://cache.nixos.org/" ];
+    substituters = ["https://cache.nixos.org/"];
     trusted-public-keys = [
       "hydra.nixos.org-1:CNHJZBh9K4tP3EKF6FkkgeVYsS3ohTl+oS0Qa8bezVs="
     ];

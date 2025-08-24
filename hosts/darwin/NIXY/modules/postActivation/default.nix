@@ -4,17 +4,15 @@
   inputs,
   user,
   ...
-}:
-let
-  InputSourceSelector = pkgs.callPackage ../../customDerivations/inputsourceselector.nix { };
+}: let
+  InputSourceSelector = pkgs.callPackage ../../customDerivations/inputsourceselector.nix {};
   systemType = pkgs.stdenv.hostPlatform.system;
   homebrewPath =
-    if systemType == "aarch64-darwin" then
-      "/opt/homebrew/bin"
-    else if systemType == "x86_64-darwin" then
-      "/usr/local/bin"
-    else
-      throw "Homebrew Unsupported architecture: ${systemType}";
+    if systemType == "aarch64-darwin"
+    then "/opt/homebrew/bin"
+    else if systemType == "x86_64-darwin"
+    then "/usr/local/bin"
+    else throw "Homebrew Unsupported architecture: ${systemType}";
   inherit (config.colorScheme) palette;
   # wallpaper_input =
   #   if pkgs.stdenv.isDarwin
@@ -25,8 +23,7 @@ let
   #   then "/var/root/Pictures/gowall/nix-colors-wallpaper-darwin.png"
   #   else "/var/root/Pictures/gowall/nix-colors-wallpaper.png";
   # gowall = "${pkgs.unstable.gowall}/bin/gowall";
-in
-{
+in {
   system.activationScripts.postActivation.text = ''
     # ===================================================================
     # Binary Quarantine Attribute Cleanup
@@ -105,10 +102,9 @@ in
 
     echo "Setting macOS appearance to ${config.colorScheme.variant} mode..."
     ${
-      if config.colorScheme.variant == "dark" then
-        "osascript -e 'tell application \"System Events\" to tell appearance preferences to set dark mode to true' 2>/dev/null || true"
-      else
-        "osascript -e 'tell application \"System Events\" to tell appearance preferences to set dark mode to false' 2>/dev/null || true"
+      if config.colorScheme.variant == "dark"
+      then "osascript -e 'tell application \"System Events\" to tell appearance preferences to set dark mode to true' 2>/dev/null || true"
+      else "osascript -e 'tell application \"System Events\" to tell appearance preferences to set dark mode to false' 2>/dev/null || true"
     }
 
     # ===================================================================

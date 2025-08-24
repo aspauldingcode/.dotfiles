@@ -2,11 +2,9 @@
   config,
   lib,
   ...
-}:
-let
+}: let
   inherit (config.colorScheme) palette;
-in
-{
+in {
   home.file.".config/maco/config" = {
     text = ''
       max-visible=-1

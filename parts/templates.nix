@@ -1,6 +1,5 @@
 # Templates Module - Flake templates
-{ inputs, ... }:
-{
+{inputs, ...}: {
   flake.templates = {
     # Default template
     default = {

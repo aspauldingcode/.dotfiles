@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   programs.nixvim.plugins = {
     lsp = {
       enable = true;
@@ -155,10 +154,10 @@
                 version = "LuaJIT";
               };
               diagnostics = {
-                globals = [ "vim" ];
+                globals = ["vim"];
               };
               workspace = {
-                library = [ "\${3rd}/luv/library" ];
+                library = ["\${3rd}/luv/library"];
                 checkThirdParty = false;
               };
               telemetry = {
@@ -176,7 +175,7 @@
               expr = "import <nixpkgs> { }";
             };
             formatting = {
-              command = [ "nixpkgs-fmt" ];
+              command = ["nixpkgs-fmt"];
             };
           };
         };

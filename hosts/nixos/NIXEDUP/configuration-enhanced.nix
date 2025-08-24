@@ -7,8 +7,7 @@
   inputs,
   user,
   ...
-}:
-{
+}: {
   imports = [
     # Import phoneputer base configuration
     "${inputs.mobile-nixos}/examples/demo/configuration.nix"
@@ -318,10 +317,10 @@
 
     fontconfig = {
       defaultFonts = {
-        serif = [ "Noto Serif" ];
-        sansSerif = [ "Noto Sans" ];
-        monospace = [ "Fira Code" ];
-        emoji = [ "Noto Color Emoji" ];
+        serif = ["Noto Serif"];
+        sansSerif = ["Noto Sans"];
+        monospace = ["Fira Code"];
+        emoji = ["Noto Color Emoji"];
       };
     };
   };
@@ -348,7 +347,7 @@
     # Mobile-specific optimizations
     mobile-optimization = {
       description = "Mobile device optimizations";
-      wantedBy = [ "multi-user.target" ];
+      wantedBy = ["multi-user.target"];
       script = ''
         # CPU governor for battery life
         echo powersave > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor || true

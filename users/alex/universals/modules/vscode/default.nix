@@ -2,8 +2,7 @@
   config,
   pkgs,
   ...
-}:
-let
+}: let
   base16Settings = {
     "$schema" = "vscode://schemas/color-theme";
     name = "Base16 ${config.colorScheme.slug}";
@@ -1212,23 +1211,26 @@ let
       }
     ];
   };
-in
-{
+in {
   programs.vscode = {
     enable = true;
     package = pkgs.code-cursor;
 
     profiles.default.userSettings = {
       "workbench.colorTheme" = "Default ${
-        if config.colorScheme.variant == "light" then "Light" else "Dark"
+        if config.colorScheme.variant == "light"
+        then "Light"
+        else "Dark"
       } Modern";
-      "workbench.colorCustomizations" = base16Settings.colors // {
-        "minimap.selectionOccurrenceHighlight" = "#${config.colorScheme.palette.base03}40";
-        "widget.shadow" = "#${config.colorScheme.palette.base00}40";
-        "editor.lineHighlightBackground" = "#${config.colorScheme.palette.base01}40";
-        "editor.lineHighlightBorder" = "#${config.colorScheme.palette.base01}40";
-        "editor.selectionBackground" = "#${config.colorScheme.palette.base02}80";
-      };
+      "workbench.colorCustomizations" =
+        base16Settings.colors
+        // {
+          "minimap.selectionOccurrenceHighlight" = "#${config.colorScheme.palette.base03}40";
+          "widget.shadow" = "#${config.colorScheme.palette.base00}40";
+          "editor.lineHighlightBackground" = "#${config.colorScheme.palette.base01}40";
+          "editor.lineHighlightBorder" = "#${config.colorScheme.palette.base01}40";
+          "editor.selectionBackground" = "#${config.colorScheme.palette.base02}80";
+        };
       "editor.tokenColorCustomizations" = {
         "textMateRules" = base16Settings.tokenColors;
       };
@@ -1320,14 +1322,13 @@ in
       # Swift language settings
       "swift.path" = "/usr/bin/swift";
       "swift.sourcekit-lsp.serverPath" = "/usr/bin/sourcekit-lsp";
-      "swift.sourcekit-lsp.toolchainPath" =
-        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain";
+      "swift.sourcekit-lsp.toolchainPath" = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain";
 
       # Rust analyzer settings
       "rust-analyzer.enable" = true;
       "rust-analyzer.server.path" = "rust-analyzer";
       "rust-analyzer.checkOnSave.command" = "clippy";
-      "rust-analyzer.checkOnSave.extraArgs" = [ "--all-targets" ];
+      "rust-analyzer.checkOnSave.extraArgs" = ["--all-targets"];
       "rust-analyzer.cargo.buildScripts.enable" = true;
       "rust-analyzer.cargo.features" = "all";
       "rust-analyzer.inlayHints.enable" = true;
@@ -1345,13 +1346,13 @@ in
       # Python settings
       "python.defaultInterpreterPath" = "python3";
       "python.formatting.provider" = "black";
-      "python.formatting.blackArgs" = [ "--line-length=88" ];
+      "python.formatting.blackArgs" = ["--line-length=88"];
       "python.linting.enabled" = true;
       "python.linting.pylintEnabled" = true;
       "python.linting.flake8Enabled" = false;
       "python.linting.mypyEnabled" = true;
       "python.linting.lintOnSave" = true;
-      "python.sortImports.args" = [ "--profile=black" ];
+      "python.sortImports.args" = ["--profile=black"];
       "python.analysis.autoImportCompletions" = true;
       "python.analysis.typeCheckingMode" = "basic";
       "python.analysis.autoSearchPaths" = true;
@@ -1408,7 +1409,7 @@ in
         {
           "cwd" = "/path/to/make/directory";
           "binaryPath" = "/path/to/binary";
-          "binaryArgs" = [ ];
+          "binaryArgs" = [];
         }
       ];
 
@@ -1432,8 +1433,7 @@ in
       # Markdown settings
       "markdown.preview.fontSize" = 14;
       "markdown.preview.lineHeight" = 1.6;
-      "markdown.preview.fontFamily" =
-        "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+      "markdown.preview.fontFamily" = "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
       "markdown.extension.toc.levels" = "1..6";
       "markdown.extension.preview.autoShowPreviewToSide" = true;
       "markdown.extension.math.enabled" = true;
@@ -1531,12 +1531,16 @@ in
       };
       "[c]" = {
         "editor.defaultFormatter" =
-          if pkgs.stdenv.isDarwin then "jnoortheen.nix-ide" else "ms-vscode.cpptools";
+          if pkgs.stdenv.isDarwin
+          then "jnoortheen.nix-ide"
+          else "ms-vscode.cpptools";
         "editor.formatOnSave" = true;
       };
       "[cpp]" = {
         "editor.defaultFormatter" =
-          if pkgs.stdenv.isDarwin then "jnoortheen.nix-ide" else "ms-vscode.cpptools";
+          if pkgs.stdenv.isDarwin
+          then "jnoortheen.nix-ide"
+          else "ms-vscode.cpptools";
         "editor.formatOnSave" = true;
       };
       "[swift]" = {
@@ -1609,15 +1613,14 @@ in
       "workbench.settings.enableNaturalLanguageSearch" = false;
 
       # Explicitly disable rainbow/indent colorization
-      "indentRainbow.colors" = [ ];
+      "indentRainbow.colors" = [];
       "indentRainbow.enabled" = false;
       "editor.guides.indentGuides" = false;
       "editor.renderIndentGuides" = false;
 
       "editor.showFoldingControls" = "always";
     };
-    profiles.default.extensions =
-      with pkgs.vscode-extensions;
+    profiles.default.extensions = with pkgs.vscode-extensions;
       [
         # Language Support - Swift & Native Development
         sswg.swift-lang # Swift language support (original extension, still works)
@@ -1643,20 +1646,18 @@ in
         # Note: ms-vscode.cpptools doesn't support Darwin platforms
       ]
       ++ (
-        if pkgs.stdenv.isLinux && pkgs.stdenv.isAarch64 then
-          [ ]
-        else
-          [
-            ms-python.python # Python extension not available on aarch64-linux
-          ]
+        if pkgs.stdenv.isLinux && pkgs.stdenv.isAarch64
+        then []
+        else [
+          ms-python.python # Python extension not available on aarch64-linux
+        ]
       )
       ++ (
-        if pkgs.stdenv.isDarwin then
-          [ ]
-        else
-          [
-            ms-vscode.cpptools # C/C++ extension for proper formatting
-          ]
+        if pkgs.stdenv.isDarwin
+        then []
+        else [
+          ms-vscode.cpptools # C/C++ extension for proper formatting
+        ]
       )
       ++ [
         # Language Support - TypeScript/JavaScript/Web

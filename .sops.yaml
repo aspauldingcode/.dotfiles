@@ -1,6 +1,5 @@
 # SOPS configuration for multi-environment secrets management
 # This file defines encryption rules and key management for different environments
-
 # Key definitions with aliases for better management
 keys:
   # Admin keys (full access) - using actual user key

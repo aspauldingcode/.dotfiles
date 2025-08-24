@@ -1,4 +1,4 @@
-{ lib, ... }:
+{lib, ...}:
 # Configure application filetype defaults.
 {
   xdg.mimeApps = {
@@ -145,18 +145,19 @@
 # xdg-mime returns Thunar.desktop but xdg-open opens nautilus?
 # xdg-mime uses mimeapps.list to determine the default application to use.
 /*
-  Current config:
-  [Added Associations]
-  application/pdf=org.kde.okular.desktop;brave-browser.desktop;
-  application/zip=xarchiver.desktop;
-  audio/mp4=org.kde.elisa.desktop;
-  audio/vnd.wave=org.kde.elisa.desktop;
-  x-scheme-handler/magnet=userapp-transmission-gtk-6G6QC2.desktop;
+Current config:
+[Added Associations]
+application/pdf=org.kde.okular.desktop;brave-browser.desktop;
+application/zip=xarchiver.desktop;
+audio/mp4=org.kde.elisa.desktop;
+audio/vnd.wave=org.kde.elisa.desktop;
+x-scheme-handler/magnet=userapp-transmission-gtk-6G6QC2.desktop;
 
-  [Default Applications]
-  application/pdf=org.kde.okular.desktop;
-  application/zip=xarchiver.desktop
-  audio/mp4=org.kde.elisa.desktop;
-  audio/vnd.wave=org.kde.elisa.desktop;
-  x-scheme-handler/magnet=userapp-transmission-gtk-6G6QC2.desktop
+[Default Applications]
+application/pdf=org.kde.okular.desktop;
+application/zip=xarchiver.desktop
+audio/mp4=org.kde.elisa.desktop;
+audio/vnd.wave=org.kde.elisa.desktop;
+x-scheme-handler/magnet=userapp-transmission-gtk-6G6QC2.desktop
 */
+

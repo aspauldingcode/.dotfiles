@@ -5,8 +5,7 @@
   config,
   pkgs,
   ...
-}:
-{
+}: {
   # Mobile-specific configuration
   imports = [
     # Add mobile-specific modules here

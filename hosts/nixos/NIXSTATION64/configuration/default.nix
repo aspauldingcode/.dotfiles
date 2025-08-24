@@ -5,8 +5,7 @@
   pkgs,
   mobile-nixos,
   ...
-}:
-{
+}: {
   boot = {
     kernelPackages = pkgs.linuxPackages_6_13;
     loader = {
@@ -32,7 +31,7 @@
       themePackages = with pkgs; [
         # By default we would install all themes
         (adi1090x-plymouth-themes.override {
-          selected_themes = [ "rings" ];
+          selected_themes = ["rings"];
         })
       ];
     };
@@ -61,7 +60,7 @@
   };
 
   # https://nixos.wiki/wiki/AMD_GPU#HIP
-  systemd.tmpfiles.rules = [ "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}" ];
+  systemd.tmpfiles.rules = ["L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"];
 
   networking = {
     hostName = "NIXSTATION64";
@@ -100,15 +99,15 @@
       "network.target"
       "sound.target"
     ];
-    wantedBy = [ "default.target" ];
+    wantedBy = ["default.target"];
     serviceConfig.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
   };
 
   systemd.user.services.wl-gammarelay = {
     enable = true;
     description = "Gamma adjustment service for Wayland";
-    wantedBy = [ "graphical-session.target" ];
-    partOf = [ "graphical-session.target" ];
+    wantedBy = ["graphical-session.target"];
+    partOf = ["graphical-session.target"];
     serviceConfig = {
       ExecStart = "${pkgs.wl-gammarelay-rs}/bin/wl-gammarelay-rs";
       Restart = "always";
@@ -318,8 +317,8 @@
     };
 
     printing = {
-      listenAddresses = [ "*:631" ];
-      allowFrom = [ "all" ];
+      listenAddresses = ["*:631"];
+      allowFrom = ["all"];
       browsing = true;
       defaultShared = true;
     };
@@ -340,7 +339,7 @@
     enable = true;
     wlr.enable = true;
     # gtk portal needed to make gtk apps happy
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [pkgs.xdg-desktop-portal-gtk];
   };
 
   security = {
@@ -348,11 +347,11 @@
       wheelNeedsPassword = false;
       extraRules = [
         {
-          users = [ "privileged_user" ];
+          users = ["privileged_user"];
           commands = [
             {
               command = "ALL";
-              options = [ "NOPASSWD" ]; # "SETENV" #
+              options = ["NOPASSWD"]; # "SETENV" #
             }
           ];
         }
@@ -401,7 +400,7 @@
     susu = {
       isNormalUser = true;
       description = "Su Su Oo";
-      extraGroups = [ "networkmanager" ];
+      extraGroups = ["networkmanager"];
     };
   };
 
@@ -414,7 +413,7 @@
   ];
 
   nix = {
-    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
+    registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
     settings = {
       auto-optimise-store = true; # Auto Optimize nix store.
@@ -453,7 +452,7 @@
   console = {
     earlySetup = true;
     font = "ter-132n";
-    packages = with pkgs; [ terminus_font ];
+    packages = with pkgs; [terminus_font];
     keyMap = "us";
   };
 

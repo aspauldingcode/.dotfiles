@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   programs.nixvim.plugins = {
     # Essential completion sources only
     cmp-nvim-lsp.enable = true;
@@ -248,7 +247,7 @@
           end
         '';
         run_on_every_keystroke = true;
-        ignored_file_types = { };
+        ignored_file_types = {};
       };
     };
   };

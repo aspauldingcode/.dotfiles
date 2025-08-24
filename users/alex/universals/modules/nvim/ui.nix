@@ -2,8 +2,7 @@
   config,
   pkgs,
   ...
-}:
-{
+}: {
   programs.nixvim.plugins = {
     # Diagnostics display
     trouble = {
@@ -128,7 +127,7 @@
       enable = true;
       package = pkgs.vimPlugins.nvim-notify;
       settings = {
-        extraOptions = { };
+        extraOptions = {};
         fps = 30;
         level = null;
         max_height = 20;
@@ -151,372 +150,370 @@
     };
 
     # Status line
-    lualine =
-      let
-        inherit (config.colorScheme) palette;
-      in
-      {
-        enable = true;
-        settings = {
-          options = {
-            component_separators = "";
-            section_separators = {
-              left = "";
-              right = "";
-            };
-
-            theme = {
-              normal = {
-                a = {
-                  fg = "#${palette.base00}";
-                  bg = "#${palette.base0D}"; # Blue for normal mode
-                  gui = "bold";
-                };
-                b = {
-                  fg = "#${palette.base05}";
-                  bg = "#${palette.base02}";
-                };
-                c = {
-                  fg = "#${palette.base05}";
-                  bg = "#${palette.base01}";
-                };
-              };
-
-              insert = {
-                a = {
-                  fg = "#${palette.base00}";
-                  bg = "#${palette.base0B}"; # Green for insert mode
-                  gui = "bold";
-                };
-                b = {
-                  fg = "#${palette.base05}";
-                  bg = "#${palette.base02}";
-                };
-                c = {
-                  fg = "#${palette.base05}";
-                  bg = "#${palette.base01}";
-                };
-              };
-
-              visual = {
-                a = {
-                  fg = "#${palette.base00}";
-                  bg = "#${palette.base0E}"; # Purple for all visual modes
-                  gui = "bold";
-                };
-                b = {
-                  fg = "#${palette.base05}";
-                  bg = "#${palette.base02}";
-                };
-                c = {
-                  fg = "#${palette.base05}";
-                  bg = "#${palette.base01}";
-                };
-              };
-
-              replace = {
-                a = {
-                  fg = "#${palette.base00}";
-                  bg = "#${palette.base08}"; # Red for replace mode
-                  gui = "bold";
-                };
-                b = {
-                  fg = "#${palette.base05}";
-                  bg = "#${palette.base02}";
-                };
-                c = {
-                  fg = "#${palette.base05}";
-                  bg = "#${palette.base01}";
-                };
-              };
-
-              command = {
-                a = {
-                  fg = "#${palette.base00}";
-                  bg = "#${palette.base04}"; # Gray for command mode
-                  gui = "bold";
-                };
-                b = {
-                  fg = "#${palette.base05}";
-                  bg = "#${palette.base02}";
-                };
-                c = {
-                  fg = "#${palette.base05}";
-                  bg = "#${palette.base01}";
-                };
-              };
-
-              inactive = {
-                a = {
-                  fg = "#${palette.base04}";
-                  bg = "#${palette.base01}";
-                  gui = "bold";
-                };
-                b = {
-                  fg = "#${palette.base04}";
-                  bg = "#${palette.base01}";
-                };
-                c = {
-                  fg = "#${palette.base04}";
-                  bg = "#${palette.base01}";
-                };
-              };
-            };
+    lualine = let
+      inherit (config.colorScheme) palette;
+    in {
+      enable = true;
+      settings = {
+        options = {
+          component_separators = "";
+          section_separators = {
+            left = "";
+            right = "";
           };
 
-          sections = {
-            lualine_a = [
-              {
-                __raw = ''
-                  {
-                    "mode",
-                    separator = { left = "" },
-                    right_padding = 2,
-                  }
-                '';
-              }
-            ];
+          theme = {
+            normal = {
+              a = {
+                fg = "#${palette.base00}";
+                bg = "#${palette.base0D}"; # Blue for normal mode
+                gui = "bold";
+              };
+              b = {
+                fg = "#${palette.base05}";
+                bg = "#${palette.base02}";
+              };
+              c = {
+                fg = "#${palette.base05}";
+                bg = "#${palette.base01}";
+              };
+            };
 
-            lualine_c = [
-              {
-                __raw = ''
-                  {
-                    function()
-                      -- Check if we have a global LSP progress indicator
-                      if _G.lsp_progress_message then
-                        local spinners = { "⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷" }
-                        local ms = vim.loop.hrtime() / 1000000
-                        local frame = math.floor(ms / 120) % #spinners
-                        local spinner = spinners[frame + 1]
-                        return spinner .. " " .. _G.lsp_progress_message
-                      end
-                      return ""
-                    end,
-                    color = { fg = "#${palette.base0D}" },  -- Blue color for LSP status
-                    cond = function()
-                      return _G.lsp_progress_message ~= nil and _G.lsp_progress_message ~= ""
-                    end,
-                  }
-                '';
-              }
-            ];
+            insert = {
+              a = {
+                fg = "#${palette.base00}";
+                bg = "#${palette.base0B}"; # Green for insert mode
+                gui = "bold";
+              };
+              b = {
+                fg = "#${palette.base05}";
+                bg = "#${palette.base02}";
+              };
+              c = {
+                fg = "#${palette.base05}";
+                bg = "#${palette.base01}";
+              };
+            };
 
-            lualine_x = [
-              "encoding"
-              "fileformat"
-              "filetype"
-              {
-                __raw = ''
-                  {
-                    function()
-                      return "LSP"
-                    end,
-                    color = function()
-                      local clients = vim.lsp.get_clients({ bufnr = 0 })
-                      local has_traditional_lsp = false
+            visual = {
+              a = {
+                fg = "#${palette.base00}";
+                bg = "#${palette.base0E}"; # Purple for all visual modes
+                gui = "bold";
+              };
+              b = {
+                fg = "#${palette.base05}";
+                bg = "#${palette.base02}";
+              };
+              c = {
+                fg = "#${palette.base05}";
+                bg = "#${palette.base01}";
+              };
+            };
 
-                      -- Check for non-LSP-AI clients
-                      for _, client in ipairs(clients) do
-                        if client.name ~= "lsp_ai" then
-                          has_traditional_lsp = true
-                          break
-                        end
-                      end
+            replace = {
+              a = {
+                fg = "#${palette.base00}";
+                bg = "#${palette.base08}"; # Red for replace mode
+                gui = "bold";
+              };
+              b = {
+                fg = "#${palette.base05}";
+                bg = "#${palette.base02}";
+              };
+              c = {
+                fg = "#${palette.base05}";
+                bg = "#${palette.base01}";
+              };
+            };
 
-                      if has_traditional_lsp then
-                        return { bg = "#${palette.base02}", fg = "#${palette.base0B}", gui = "bold" }  -- Dark gray bg, green fg when LSP active
-                      else
-                        return { bg = "#${palette.base02}", fg = "#${palette.base08}", gui = "bold" }  -- Dark gray bg, red fg when no LSP
-                      end
-                    end,
-                    separator = { left = "", right = "" },
-                    on_click = function()
-                      local clients = vim.lsp.get_clients({ bufnr = 0 })
-                      local lines = {}
+            command = {
+              a = {
+                fg = "#${palette.base00}";
+                bg = "#${palette.base04}"; # Gray for command mode
+                gui = "bold";
+              };
+              b = {
+                fg = "#${palette.base05}";
+                bg = "#${palette.base02}";
+              };
+              c = {
+                fg = "#${palette.base05}";
+                bg = "#${palette.base01}";
+              };
+            };
 
-                      if next(clients) == nil then
-                        table.insert(lines, "No LSP clients attached to this buffer")
-                        table.insert(lines, "")
-                        table.insert(lines, "Filetype: " .. vim.bo.filetype)
-                        table.insert(lines, "")
-                        table.insert(lines, "Available LSP servers for this filetype:")
-                        table.insert(lines, "• Check your lsp.nix configuration")
-                        table.insert(lines, "• Ensure LSP servers are installed")
-                        table.insert(lines, "• Try :LspStart or :LspRestart")
-                      else
-                        table.insert(lines, "Active LSP clients for this buffer:")
-                        table.insert(lines, "")
-                        for _, client in pairs(clients) do
-                          -- Skip LSP-AI from this list (it has its own status)
-                          if client.name ~= "lsp_ai" then
-                            table.insert(lines, "• " .. client.name .. " (ID: " .. client.id .. ")")
-                            if client.server_capabilities then
-                              local caps = {}
-                              if client.server_capabilities.documentFormattingProvider then
-                                table.insert(caps, "formatting")
-                              end
-                              if client.server_capabilities.hoverProvider then
-                                table.insert(caps, "hover")
-                              end
-                              if client.server_capabilities.completionProvider then
-                                table.insert(caps, "completion")
-                              end
-                              if client.server_capabilities.definitionProvider then
-                                table.insert(caps, "go-to-def")
-                              end
-                              if #caps > 0 then
-                                table.insert(lines, "  Capabilities: " .. table.concat(caps, ", "))
-                              end
-                            end
-                            table.insert(lines, "")
-                          end
-                        end
-
-                        -- If no non-LSP-AI clients, show appropriate message
-                        if #lines == 2 then -- Only header lines
-                          table.insert(lines, "No traditional LSP clients attached")
-                          table.insert(lines, "(LSP-AI is handled separately)")
-                        end
-                      end
-
-                      -- Create popup buffer
-                      local buf = vim.api.nvim_create_buf(false, true)
-                      vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-                      vim.api.nvim_buf_set_option(buf, 'modifiable', false)
-                      vim.api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
-
-                      -- Calculate popup size
-                      local width = 60
-                      local height = math.min(#lines + 2, 15)
-
-                      -- Open popup
-                      local win = vim.api.nvim_open_win(buf, true, {
-                        relative = 'editor',
-                        width = width,
-                        height = height,
-                        col = (vim.o.columns - width) / 2,
-                        row = (vim.o.lines - height) / 2,
-                        style = 'minimal',
-                        border = 'rounded',
-                        title = ' LSP Status ',
-                        title_pos = 'center'
-                      })
-
-                      -- Set popup keymaps
-                      vim.api.nvim_buf_set_keymap(buf, 'n', 'q', '<cmd>close<cr>', { noremap = true, silent = true })
-                      vim.api.nvim_buf_set_keymap(buf, 'n', '<Esc>', '<cmd>close<cr>', { noremap = true, silent = true })
-                    end,
-                  }
-                '';
-              }
-              {
-                __raw = ''
-                  {
-                    function()
-                      return "󰧑"  -- AI stars nerd font icon
-                    end,
-                    color = function()
-                      -- Check if cmp-ai is available and API key is set
-                      local has_cmp_ai = pcall(require, 'cmp_ai')
-                      local api_key = os.getenv("OPENAI_API_KEY")
-
-                      if has_cmp_ai and api_key then
-                        return { bg = "#${palette.base01}", fg = "#${palette.base05}", gui = "bold" }  -- Darker gray bg, white fg when ready
-                      else
-                        return { bg = "#${palette.base01}", fg = "#${palette.base03}", gui = "bold" }  -- Darker gray bg, dark fg when not ready
-                      end
-                    end,
-                    separator = { left = "", right = "" },
-                    on_click = function()
-                      local has_cmp_ai = pcall(require, 'cmp_ai')
-                      local api_key = os.getenv("OPENAI_API_KEY")
-
-                      local lines = {}
-                      if has_cmp_ai and api_key then
-                        table.insert(lines, "AI Completion: ✓ Ready")
-                        table.insert(lines, "Provider: cmp-ai")
-                        table.insert(lines, "")
-                        table.insert(lines, "Configuration:")
-                        table.insert(lines, "• Backend: OpenAI GPT-4o")
-                        table.insert(lines, "• Max Lines: 100")
-                        table.insert(lines, "• API Key: ✓ Set")
-                        table.insert(lines, "• Run on Keystroke: Disabled")
-                        table.insert(lines, "")
-                        table.insert(lines, "Available keybindings:")
-                        table.insert(lines, "• <leader>ag - Trigger AI completion")
-                        table.insert(lines, "• <leader>ac - Open AI chat (Avante)")
-                        table.insert(lines, "• <leader>at - Check AI status")
-                        table.insert(lines, "• <leader>as - Check AI setup")
-                        table.insert(lines, "• <C-Space> - Manual completion")
-                        table.insert(lines, "")
-                        table.insert(lines, "Integration:")
-                        table.insert(lines, "• Works directly with nvim-cmp")
-                        table.insert(lines, "• Priority: 800 (after LSP)")
-                        table.insert(lines, "• Max items: 10")
-                      else
-                        table.insert(lines, "AI Completion: ✗ Not Ready")
-                        table.insert(lines, "")
-                        table.insert(lines, "Issues:")
-                        if not has_cmp_ai then
-                          table.insert(lines, "• cmp-ai plugin not loaded")
-                        end
-                        if not api_key then
-                          table.insert(lines, "• OpenAI API key not set")
-                          table.insert(lines, "  Export OPENAI_API_KEY environment variable")
-                        end
-                        table.insert(lines, "")
-                        table.insert(lines, "Setup:")
-                        table.insert(lines, "• Provider: OpenAI GPT-4o")
-                        table.insert(lines, "• Requires: OPENAI_API_KEY environment variable")
-                        table.insert(lines, "• Integration: nvim-cmp source")
-                      end
-
-                      -- Create popup buffer
-                      local buf = vim.api.nvim_create_buf(false, true)
-                      vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-                      vim.api.nvim_buf_set_option(buf, 'modifiable', false)
-                      vim.api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
-
-                      -- Calculate popup size
-                      local width = 55
-                      local height = math.min(#lines + 2, 18)
-
-                      -- Open popup
-                      local win = vim.api.nvim_open_win(buf, true, {
-                        relative = 'editor',
-                        width = width,
-                        height = height,
-                        col = (vim.o.columns - width) / 2,
-                        row = (vim.o.lines - height) / 2,
-                        style = 'minimal',
-                        border = 'rounded',
-                        title = ' AI Completion Status ',
-                        title_pos = 'center'
-                      })
-
-                      -- Set popup keymaps
-                      vim.api.nvim_buf_set_keymap(buf, 'n', 'q', '<cmd>close<cr>', { noremap = true, silent = true })
-                      vim.api.nvim_buf_set_keymap(buf, 'n', '<Esc>', '<cmd>close<cr>', { noremap = true, silent = true })
-                    end,
-                  }
-                '';
-              }
-            ];
-
-            lualine_z = [
-              {
-                __raw = ''
-                  {
-                    "location",
-                    separator = { right = "" },
-                    left_padding = 2,
-                  }
-                '';
-              }
-            ];
+            inactive = {
+              a = {
+                fg = "#${palette.base04}";
+                bg = "#${palette.base01}";
+                gui = "bold";
+              };
+              b = {
+                fg = "#${palette.base04}";
+                bg = "#${palette.base01}";
+              };
+              c = {
+                fg = "#${palette.base04}";
+                bg = "#${palette.base01}";
+              };
+            };
           };
         };
+
+        sections = {
+          lualine_a = [
+            {
+              __raw = ''
+                {
+                  "mode",
+                  separator = { left = "" },
+                  right_padding = 2,
+                }
+              '';
+            }
+          ];
+
+          lualine_c = [
+            {
+              __raw = ''
+                {
+                  function()
+                    -- Check if we have a global LSP progress indicator
+                    if _G.lsp_progress_message then
+                      local spinners = { "⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷" }
+                      local ms = vim.loop.hrtime() / 1000000
+                      local frame = math.floor(ms / 120) % #spinners
+                      local spinner = spinners[frame + 1]
+                      return spinner .. " " .. _G.lsp_progress_message
+                    end
+                    return ""
+                  end,
+                  color = { fg = "#${palette.base0D}" },  -- Blue color for LSP status
+                  cond = function()
+                    return _G.lsp_progress_message ~= nil and _G.lsp_progress_message ~= ""
+                  end,
+                }
+              '';
+            }
+          ];
+
+          lualine_x = [
+            "encoding"
+            "fileformat"
+            "filetype"
+            {
+              __raw = ''
+                {
+                  function()
+                    return "LSP"
+                  end,
+                  color = function()
+                    local clients = vim.lsp.get_clients({ bufnr = 0 })
+                    local has_traditional_lsp = false
+
+                    -- Check for non-LSP-AI clients
+                    for _, client in ipairs(clients) do
+                      if client.name ~= "lsp_ai" then
+                        has_traditional_lsp = true
+                        break
+                      end
+                    end
+
+                    if has_traditional_lsp then
+                      return { bg = "#${palette.base02}", fg = "#${palette.base0B}", gui = "bold" }  -- Dark gray bg, green fg when LSP active
+                    else
+                      return { bg = "#${palette.base02}", fg = "#${palette.base08}", gui = "bold" }  -- Dark gray bg, red fg when no LSP
+                    end
+                  end,
+                  separator = { left = "", right = "" },
+                  on_click = function()
+                    local clients = vim.lsp.get_clients({ bufnr = 0 })
+                    local lines = {}
+
+                    if next(clients) == nil then
+                      table.insert(lines, "No LSP clients attached to this buffer")
+                      table.insert(lines, "")
+                      table.insert(lines, "Filetype: " .. vim.bo.filetype)
+                      table.insert(lines, "")
+                      table.insert(lines, "Available LSP servers for this filetype:")
+                      table.insert(lines, "• Check your lsp.nix configuration")
+                      table.insert(lines, "• Ensure LSP servers are installed")
+                      table.insert(lines, "• Try :LspStart or :LspRestart")
+                    else
+                      table.insert(lines, "Active LSP clients for this buffer:")
+                      table.insert(lines, "")
+                      for _, client in pairs(clients) do
+                        -- Skip LSP-AI from this list (it has its own status)
+                        if client.name ~= "lsp_ai" then
+                          table.insert(lines, "• " .. client.name .. " (ID: " .. client.id .. ")")
+                          if client.server_capabilities then
+                            local caps = {}
+                            if client.server_capabilities.documentFormattingProvider then
+                              table.insert(caps, "formatting")
+                            end
+                            if client.server_capabilities.hoverProvider then
+                              table.insert(caps, "hover")
+                            end
+                            if client.server_capabilities.completionProvider then
+                              table.insert(caps, "completion")
+                            end
+                            if client.server_capabilities.definitionProvider then
+                              table.insert(caps, "go-to-def")
+                            end
+                            if #caps > 0 then
+                              table.insert(lines, "  Capabilities: " .. table.concat(caps, ", "))
+                            end
+                          end
+                          table.insert(lines, "")
+                        end
+                      end
+
+                      -- If no non-LSP-AI clients, show appropriate message
+                      if #lines == 2 then -- Only header lines
+                        table.insert(lines, "No traditional LSP clients attached")
+                        table.insert(lines, "(LSP-AI is handled separately)")
+                      end
+                    end
+
+                    -- Create popup buffer
+                    local buf = vim.api.nvim_create_buf(false, true)
+                    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+                    vim.api.nvim_buf_set_option(buf, 'modifiable', false)
+                    vim.api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
+
+                    -- Calculate popup size
+                    local width = 60
+                    local height = math.min(#lines + 2, 15)
+
+                    -- Open popup
+                    local win = vim.api.nvim_open_win(buf, true, {
+                      relative = 'editor',
+                      width = width,
+                      height = height,
+                      col = (vim.o.columns - width) / 2,
+                      row = (vim.o.lines - height) / 2,
+                      style = 'minimal',
+                      border = 'rounded',
+                      title = ' LSP Status ',
+                      title_pos = 'center'
+                    })
+
+                    -- Set popup keymaps
+                    vim.api.nvim_buf_set_keymap(buf, 'n', 'q', '<cmd>close<cr>', { noremap = true, silent = true })
+                    vim.api.nvim_buf_set_keymap(buf, 'n', '<Esc>', '<cmd>close<cr>', { noremap = true, silent = true })
+                  end,
+                }
+              '';
+            }
+            {
+              __raw = ''
+                {
+                  function()
+                    return "󰧑"  -- AI stars nerd font icon
+                  end,
+                  color = function()
+                    -- Check if cmp-ai is available and API key is set
+                    local has_cmp_ai = pcall(require, 'cmp_ai')
+                    local api_key = os.getenv("OPENAI_API_KEY")
+
+                    if has_cmp_ai and api_key then
+                      return { bg = "#${palette.base01}", fg = "#${palette.base05}", gui = "bold" }  -- Darker gray bg, white fg when ready
+                    else
+                      return { bg = "#${palette.base01}", fg = "#${palette.base03}", gui = "bold" }  -- Darker gray bg, dark fg when not ready
+                    end
+                  end,
+                  separator = { left = "", right = "" },
+                  on_click = function()
+                    local has_cmp_ai = pcall(require, 'cmp_ai')
+                    local api_key = os.getenv("OPENAI_API_KEY")
+
+                    local lines = {}
+                    if has_cmp_ai and api_key then
+                      table.insert(lines, "AI Completion: ✓ Ready")
+                      table.insert(lines, "Provider: cmp-ai")
+                      table.insert(lines, "")
+                      table.insert(lines, "Configuration:")
+                      table.insert(lines, "• Backend: OpenAI GPT-4o")
+                      table.insert(lines, "• Max Lines: 100")
+                      table.insert(lines, "• API Key: ✓ Set")
+                      table.insert(lines, "• Run on Keystroke: Disabled")
+                      table.insert(lines, "")
+                      table.insert(lines, "Available keybindings:")
+                      table.insert(lines, "• <leader>ag - Trigger AI completion")
+                      table.insert(lines, "• <leader>ac - Open AI chat (Avante)")
+                      table.insert(lines, "• <leader>at - Check AI status")
+                      table.insert(lines, "• <leader>as - Check AI setup")
+                      table.insert(lines, "• <C-Space> - Manual completion")
+                      table.insert(lines, "")
+                      table.insert(lines, "Integration:")
+                      table.insert(lines, "• Works directly with nvim-cmp")
+                      table.insert(lines, "• Priority: 800 (after LSP)")
+                      table.insert(lines, "• Max items: 10")
+                    else
+                      table.insert(lines, "AI Completion: ✗ Not Ready")
+                      table.insert(lines, "")
+                      table.insert(lines, "Issues:")
+                      if not has_cmp_ai then
+                        table.insert(lines, "• cmp-ai plugin not loaded")
+                      end
+                      if not api_key then
+                        table.insert(lines, "• OpenAI API key not set")
+                        table.insert(lines, "  Export OPENAI_API_KEY environment variable")
+                      end
+                      table.insert(lines, "")
+                      table.insert(lines, "Setup:")
+                      table.insert(lines, "• Provider: OpenAI GPT-4o")
+                      table.insert(lines, "• Requires: OPENAI_API_KEY environment variable")
+                      table.insert(lines, "• Integration: nvim-cmp source")
+                    end
+
+                    -- Create popup buffer
+                    local buf = vim.api.nvim_create_buf(false, true)
+                    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+                    vim.api.nvim_buf_set_option(buf, 'modifiable', false)
+                    vim.api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
+
+                    -- Calculate popup size
+                    local width = 55
+                    local height = math.min(#lines + 2, 18)
+
+                    -- Open popup
+                    local win = vim.api.nvim_open_win(buf, true, {
+                      relative = 'editor',
+                      width = width,
+                      height = height,
+                      col = (vim.o.columns - width) / 2,
+                      row = (vim.o.lines - height) / 2,
+                      style = 'minimal',
+                      border = 'rounded',
+                      title = ' AI Completion Status ',
+                      title_pos = 'center'
+                    })
+
+                    -- Set popup keymaps
+                    vim.api.nvim_buf_set_keymap(buf, 'n', 'q', '<cmd>close<cr>', { noremap = true, silent = true })
+                    vim.api.nvim_buf_set_keymap(buf, 'n', '<Esc>', '<cmd>close<cr>', { noremap = true, silent = true })
+                  end,
+                }
+              '';
+            }
+          ];
+
+          lualine_z = [
+            {
+              __raw = ''
+                {
+                  "location",
+                  separator = { right = "" },
+                  left_padding = 2,
+                }
+              '';
+            }
+          ];
+        };
       };
+    };
 
     # Status column with beautiful fold icons
     statuscol = {
@@ -542,7 +539,7 @@
           }
           # Git signs and diagnostics (between line numbers and fold icons)
           {
-            text = [ "%s" ];
+            text = ["%s"];
             click = "v:lua.ScSa";
           }
           # Beautiful fold column with modern icons (after git signs)
@@ -649,7 +646,7 @@
     nvim-tree = {
       enable = true;
       ignoreBufferOnSetup = false;
-      ignoreFtOnSetup = [ ];
+      ignoreFtOnSetup = [];
       openOnSetup = true;
       openOnSetupFile = false;
       settings = {
@@ -768,23 +765,23 @@
         lists = [
           {
             type = "files";
-            header = [ "   MRU" ];
+            header = ["   MRU"];
           }
           {
             type = "dir";
-            header = [ { __raw = "'   MRU' .. vim.loop.cwd()"; } ];
+            header = [{__raw = "'   MRU' .. vim.loop.cwd()";}];
           }
           {
             type = "sessions";
-            header = [ "   Sessions" ];
+            header = ["   Sessions"];
           }
           {
             type = "bookmarks";
-            header = [ "   Bookmarks" ];
+            header = ["   Bookmarks"];
           }
           {
             type = "commands";
-            header = [ "   Commands" ];
+            header = ["   Commands"];
           }
         ];
       };
@@ -882,7 +879,10 @@
     # Commenting
     comment = {
       enable = true;
-      settings.opleader.line = if pkgs.stdenv.isDarwin then "<D-/>" else "<C-/>";
+      settings.opleader.line =
+        if pkgs.stdenv.isDarwin
+        then "<D-/>"
+        else "<C-/>";
     };
 
     # Mini modules (without animations)

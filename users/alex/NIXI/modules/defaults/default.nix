@@ -4,22 +4,23 @@
   pkgs,
   nix-colors,
   ...
-}:
-{
+}: {
   targets.darwin.defaults = {
     "NSGlobalDomain" = {
       NSColorSimulateHardwareAccent = true;
       NSColorSimulatedHardwareEnclosureNumber = 4;
-      AppleHighlightColor =
-        let
-          hexColor = "${config.colorScheme.palette.base0D}";
-          hexColorConverted = builtins.toString (
-            (builtins.map (x: x / 255.0) (nix-colors.lib.conversions.hexToRGB hexColor)) ++ [ "Other" ]
-          );
-        in
+      AppleHighlightColor = let
+        hexColor = "${config.colorScheme.palette.base0D}";
+        hexColorConverted = builtins.toString (
+          (builtins.map (x: x / 255.0) (nix-colors.lib.conversions.hexToRGB hexColor)) ++ ["Other"]
+        );
+      in
         hexColorConverted;
       TISRomanSwitchState = 1;
-      AppleInterfaceStyle = if config.colorScheme.variant == "dark" then "Dark" else "Light";
+      AppleInterfaceStyle =
+        if config.colorScheme.variant == "dark"
+        then "Dark"
+        else "Light";
       AppleShowAllFiles = true;
       NSScrollAnimationEnabled = false;
       NSAutomaticWindowAnimationsEnabled = false;
@@ -71,27 +72,27 @@
       wvous-tr-corner = 1;
       show-process-indicators = true;
       tilesize = 40;
-      persistent-apps = [
-        "/System/Applications/Launchpad.app"
-        # "/Applications/Nix\ Apps/Spotify.app"
-        # "${config.programs.spicetify.spicedSpotify}/Applications/Spotify.app"
-        "${pkgs.obsidian}/Applications/Obsidian.app"
-      ]
-      ++ (
-        if pkgs.stdenv.isDarwin then
-          [ ]
-        else
-          [
+      persistent-apps =
+        [
+          "/System/Applications/Launchpad.app"
+          # "/Applications/Nix\ Apps/Spotify.app"
+          # "${config.programs.spicetify.spicedSpotify}/Applications/Spotify.app"
+          "${pkgs.obsidian}/Applications/Obsidian.app"
+        ]
+        ++ (
+          if pkgs.stdenv.isDarwin
+          then []
+          else [
             "${pkgs.firefox-bin}/Applications/Firefox.app"
           ]
-      )
-      ++ [
-        "${pkgs.brave}/Applications/Brave Browser.app"
-        "/System/Applications/Messages.app"
-        "/System/Applications/Facetime.app"
-        "/Applications/Windows App.app"
-        "${pkgs.alacritty}/Applications/Alacritty.app"
-      ];
+        )
+        ++ [
+          "${pkgs.brave}/Applications/Brave Browser.app"
+          "/System/Applications/Messages.app"
+          "/System/Applications/Facetime.app"
+          "/Applications/Windows App.app"
+          "${pkgs.alacritty}/Applications/Alacritty.app"
+        ];
     };
 
     "com.apple.menuextra.clock" = {

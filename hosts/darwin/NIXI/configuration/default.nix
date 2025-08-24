@@ -68,7 +68,7 @@
           "big-parallel"
           "nixos-test"
         ];
-        mandatoryFeatures = [ ];
+        mandatoryFeatures = [];
         sshUser = "alex";
         sshKey = "/Users/alex/.ssh/id_ed25519"; # SSH key for connecting to NIXSTATION64
         protocol = "ssh-ng"; # Use new SSH protocol for better performance

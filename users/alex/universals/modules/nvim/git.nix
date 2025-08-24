@@ -2,8 +2,7 @@
   pkgs,
   config,
   ...
-}:
-{
+}: {
   programs.nixvim.plugins = {
     # Git integration
     gitsigns = {

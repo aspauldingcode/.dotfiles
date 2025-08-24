@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## \[Unreleased\]
+## [Unreleased]
 
 ### Added
 
@@ -53,7 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rollback and recovery procedures
 - Performance optimization tools
 
-## \[1.0.0\] - 2024-01-XX
+## [1.0.0] - 2024-01-XX
 
 ### Added
 
@@ -215,18 +215,18 @@ ______________________________________________________________________
 
 #### Planned Features
 
-- \[ \] Web-based configuration dashboard
-- \[ \] Automated dependency updates
-- \[ \] Advanced monitoring and alerting
-- \[ \] Integration with external secret managers
-- \[ \] Mobile device configuration support
+- [ ] Web-based configuration dashboard
+- [ ] Automated dependency updates
+- [ ] Advanced monitoring and alerting
+- [ ] Integration with external secret managers
+- [ ] Mobile device configuration support
 
 #### Improvements
 
-- \[ \] Performance optimization for large configurations
-- \[ \] Enhanced error reporting and debugging
-- \[ \] Additional programming language support
-- \[ \] Extended platform support (Windows WSL, etc.)
+- [ ] Performance optimization for large configurations
+- [ ] Enhanced error reporting and debugging
+- [ ] Additional programming language support
+- [ ] Extended platform support (Windows WSL, etc.)
 
 ______________________________________________________________________
 
@@ -234,7 +234,7 @@ ______________________________________________________________________
 
 When making changes, please update this changelog following these guidelines:
 
-1. **Add entries under \[Unreleased\]** for new changes
+1. **Add entries under [Unreleased]** for new changes
 1. **Use semantic versioning** for releases
 1. **Categorize changes** as Added, Changed, Deprecated, Removed, Fixed, or Security
 1. **Include breaking changes** with migration instructions

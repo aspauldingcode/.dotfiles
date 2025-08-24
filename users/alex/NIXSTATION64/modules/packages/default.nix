@@ -2,8 +2,7 @@
   pkgs,
   lib,
   ...
-}:
-{
+}: {
   config = lib.mkIf pkgs.stdenv.isLinux {
     home = {
       packages = with pkgs; [
@@ -128,21 +127,22 @@
         tt
 
         (python311.withPackages (
-          ps: with ps; [
-            toml
-            python-lsp-server
-            pyls-isort
-            flake8
-            evdev
-            pynput
-            pygame
-            matplotlib
-            libei
-            keyboard
-            sympy
-            numpy
-            i3ipc
-          ]
+          ps:
+            with ps; [
+              toml
+              python-lsp-server
+              pyls-isort
+              flake8
+              evdev
+              pynput
+              pygame
+              matplotlib
+              libei
+              keyboard
+              sympy
+              numpy
+              i3ipc
+            ]
         ))
 
         (prismlauncher.override {

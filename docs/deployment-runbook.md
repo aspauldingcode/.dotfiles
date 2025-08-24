@@ -8,27 +8,27 @@ This runbook provides step-by-step procedures for deploying and managing the pro
 
 ### Security Verification
 
-- \[ \] All SOPS keys are properly rotated for production
-- \[ \] Secrets are encrypted and validated
-- \[ \] Security scanning has passed in CI/CD
-- \[ \] No hardcoded credentials in configurations
-- \[ \] Firewall rules are configured appropriately
+- [ ] All SOPS keys are properly rotated for production
+- [ ] Secrets are encrypted and validated
+- [ ] Security scanning has passed in CI/CD
+- [ ] No hardcoded credentials in configurations
+- [ ] Firewall rules are configured appropriately
 
 ### Configuration Validation
 
-- \[ \] All configurations pass `nix flake check`
-- \[ \] Cross-platform builds are tested
-- \[ \] Development shells are functional
-- \[ \] Custom packages build successfully
-- \[ \] Performance benchmarks are within acceptable limits
+- [ ] All configurations pass `nix flake check`
+- [ ] Cross-platform builds are tested
+- [ ] Development shells are functional
+- [ ] Custom packages build successfully
+- [ ] Performance benchmarks are within acceptable limits
 
 ### Infrastructure Readiness
 
-- \[ \] Target hardware is available and accessible
-- \[ \] Network connectivity is established
-- \[ \] Backup systems are in place
-- \[ \] Monitoring systems are configured
-- \[ \] Rollback procedures are tested
+- [ ] Target hardware is available and accessible
+- [ ] Network connectivity is established
+- [ ] Backup systems are in place
+- [ ] Monitoring systems are configured
+- [ ] Rollback procedures are tested
 
 ## 🎯 Deployment Procedures
 

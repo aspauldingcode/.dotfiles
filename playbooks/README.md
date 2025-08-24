@@ -9,6 +9,7 @@ This directory contains Nixible playbooks for configuring remote devices using A
 A comprehensive playbook for setting up a **jailbroken iPhone** (hostname: "8AMPS") with essential development tools and configurations.
 
 #### Target Device Configuration
+
 - **Device**: Jailbroken iPhone "8AMPS"
 - **IP Address**: `10.0.0.84`
 - **Primary User**: `mobile` (fallback to `root`)
@@ -17,6 +18,7 @@ A comprehensive playbook for setting up a **jailbroken iPhone** (hostname: "8AMP
 #### What it installs and configures:
 
 **Essential Packages:**
+
 - `neovim` - Modern vim editor with custom configuration
 - `wget` & `curl` - Download utilities
 - `git` - Version control system
@@ -30,6 +32,7 @@ A comprehensive playbook for setting up a **jailbroken iPhone** (hostname: "8AMP
 - Development tools: `python3`, `python3-pip`, `unzip`, `nano`
 
 **Custom Configurations:**
+
 - **Zsh setup** with Oh My Zsh for both `mobile` and `root` users
 - **Neovim configuration** with sensible defaults and iPhone-specific settings
 - **Custom aliases** including jailbreak-specific commands (`respring`, `safemode`)
@@ -48,18 +51,18 @@ nix run .#remote-device-setup
 #### Prerequisites
 
 1. **SSH Access**: Ensure SSH is enabled on your jailbroken iPhone
-2. **SSH Key**: Have your SSH private key at `~/.ssh/id_ed25519`
-3. **Network**: Device should be accessible at `10.0.0.84`
-4. **Jailbreak**: Device must be jailbroken with apt package manager available
+1. **SSH Key**: Have your SSH private key at `~/.ssh/id_ed25519`
+1. **Network**: Device should be accessible at `10.0.0.84`
+1. **Jailbreak**: Device must be jailbroken with apt package manager available
 
 #### Customization
 
 To customize for your device:
 
 1. **Change IP Address**: Update `ansible_host` in the inventory section
-2. **Change Username**: Modify `ansible_user` (typically `mobile` or `root`)
-3. **Add Packages**: Extend the package lists in the apt tasks
-4. **Modify Configs**: Update the shell and editor configurations as needed
+1. **Change Username**: Modify `ansible_user` (typically `mobile` or `root`)
+1. **Add Packages**: Extend the package lists in the apt tasks
+1. **Modify Configs**: Update the shell and editor configurations as needed
 
 #### Jailbreak-Specific Features
 
@@ -74,21 +77,25 @@ The playbook includes several iPhone/jailbreak-specific enhancements:
 #### Troubleshooting
 
 **Connection Issues:**
+
 - Verify SSH is running: `ssh mobile@10.0.0.84`
 - Check if OpenSSH is installed on the jailbroken device
 - Ensure the device is on the same network
 
 **Package Installation Failures:**
+
 - Some packages might not be available in Cydia/apt repositories
 - The playbook uses `ignore_errors: true` for optional components
 - Check if Cydia sources are properly configured
 
 **Permission Issues:**
+
 - Ensure the user has sudo privileges
 - Some jailbroken devices may have different permission structures
 - Try running with `root` user if `mobile` fails
 
 **Network Connectivity:**
+
 - Verify the device can reach external repositories
 - Check if the device has internet connectivity
 - Some corporate networks may block package downloads
@@ -105,9 +112,9 @@ The playbook includes several iPhone/jailbreak-specific enhancements:
 To add a new playbook:
 
 1. Create a new `.nix` file in this directory
-2. Follow the Nixible structure with `collections`, `inventory`, and `playbook` sections
-3. Add the playbook to `parts/packages.nix` using `inputs.nixible.lib.mkNixibleCli`
-4. Update this README with documentation
+1. Follow the Nixible structure with `collections`, `inventory`, and `playbook` sections
+1. Add the playbook to `parts/packages.nix` using `inputs.nixible.lib.mkNixibleCli`
+1. Update this README with documentation
 
 ## Nixible Documentation
 

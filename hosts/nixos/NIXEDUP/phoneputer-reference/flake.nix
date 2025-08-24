@@ -20,25 +20,22 @@
   ############################################
   # Flake Outputs
   ############################################
-  outputs =
-    {
-      self,
-      nixpkgs,
-      mobile-nixos,
-      ...
-    }:
-    let
-      system = "aarch64-linux";
-    in
-    {
-      nixosConfigurations = {
-        phoneputer = nixpkgs.lib.nixosSystem {
-          inherit system;
-          modules = [
-            (import "${mobile-nixos}/lib/configuration.nix" { device = "oneplus-enchilada"; })
-            ./configuration.nix
-          ];
-        };
+  outputs = {
+    self,
+    nixpkgs,
+    mobile-nixos,
+    ...
+  }: let
+    system = "aarch64-linux";
+  in {
+    nixosConfigurations = {
+      phoneputer = nixpkgs.lib.nixosSystem {
+        inherit system;
+        modules = [
+          (import "${mobile-nixos}/lib/configuration.nix" {device = "oneplus-enchilada";})
+          ./configuration.nix
+        ];
       };
     };
+  };
 }

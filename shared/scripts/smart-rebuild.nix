@@ -4,8 +4,7 @@
   pkgs,
   ...
 }:
-with lib;
-{
+with lib; {
   environment.systemPackages = [
     (pkgs.writeShellScriptBin "smart-rebuild" ''
       set -euo pipefail
@@ -19,11 +18,11 @@ with lib;
               echo "dark"  # Default to dark on non-macOS systems
               return
           fi
-          
+
           # Get current macOS theme state
           local macos_dark_mode
           macos_dark_mode=$(osascript -e 'tell application "System Events" to tell appearance preferences to get dark mode' 2>/dev/null || echo "true")
-          
+
           if [[ "$macos_dark_mode" == "true" ]]; then
               echo "dark"
           else

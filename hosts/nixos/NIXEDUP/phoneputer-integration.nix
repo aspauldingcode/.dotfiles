@@ -7,12 +7,11 @@
   user,
   inputs,
   ...
-}:
-{
+}: {
   # Import phoneputer-style configuration
   imports = [
     # Mobile NixOS device configuration for OnePlus 6T
-    (import "${inputs.mobile-nixos}/lib/configuration.nix" { device = "oneplus-fajita"; })
+    (import "${inputs.mobile-nixos}/lib/configuration.nix" {device = "oneplus-fajita";})
   ];
 
   # Allow unfree packages (needed for OnePlus firmware)
@@ -161,7 +160,7 @@
   hardware.sensor.iio.enable = true;
 
   # Allow insecure packages if needed
-  nixpkgs.config.permittedInsecurePackages = [ "olm-3.2.16" ];
+  nixpkgs.config.permittedInsecurePackages = ["olm-3.2.16"];
 
   # System state version
   system.stateVersion = "25.11";

@@ -19,21 +19,21 @@ mkdir -p "$MOUNTPOINT_DIR"
 
 # Check if already mounted
 if mount | grep -q "$MOUNTPOINT_DIR"; then
-    echo "Volume already mounted at $MOUNTPOINT_DIR"
+  echo "Volume already mounted at $MOUNTPOINT_DIR"
 else
-    echo "Mounting system volume with read-write access..."
-    # First try to unmount if it's mounted elsewhere
-    sudo diskutil unmount "/dev/$SYSTEM_VOLUME_IDENTIFIER" 2>/dev/null || true
-    # Mount the system volume with read-write access
-    sudo mount -o nobrowse,rw -t apfs "/dev/$SYSTEM_VOLUME_IDENTIFIER" "$MOUNTPOINT_DIR"
+  echo "Mounting system volume with read-write access..."
+  # First try to unmount if it's mounted elsewhere
+  sudo diskutil unmount "/dev/$SYSTEM_VOLUME_IDENTIFIER" 2>/dev/null || true
+  # Mount the system volume with read-write access
+  sudo mount -o nobrowse,rw -t apfs "/dev/$SYSTEM_VOLUME_IDENTIFIER" "$MOUNTPOINT_DIR"
 fi
 
 # Verify the mount was successful
 if [ ! -d "$MOUNTPOINT_DIR/$DOCK_RESOURCES_PATH" ]; then
-    echo "Error: Could not access Dock resources at $MOUNTPOINT_DIR/$DOCK_RESOURCES_PATH"
-    echo "Available directories in mount point:"
-    ls -la "$MOUNTPOINT_DIR/" 2>/dev/null || echo "Mount point is empty or inaccessible"
-    exit 1
+  echo "Error: Could not access Dock resources at $MOUNTPOINT_DIR/$DOCK_RESOURCES_PATH"
+  echo "Available directories in mount point:"
+  ls -la "$MOUNTPOINT_DIR/" 2>/dev/null || echo "Mount point is empty or inaccessible"
+  exit 1
 fi
 
 echo "Successfully mounted. Proceeding with modifications..."
@@ -51,12 +51,12 @@ sudo $PlistBuddy -c "Delete 'finder-running':2:sub" "$PLIST_PATH" 2>/dev/null ||
 sudo $PlistBuddy -c "Delete 'trash':1" "$PLIST_PATH" 2>/dev/null || true
 
 echo "Adding new entries..."
-sudo $PlistBuddy    -c "Add 'finder-running':2:sub Dict" \
-                    -c "Add 'finder-running':2:sub:0:command integer 1004" \
-                    -c "Add 'finder-running':2:sub:0:name string REMOVE_FROM_DOCK" \
-                    -c "Add 'trash':1 Dict" \
-                    -c "Add 'trash':1:0:command integer 1004" \
-                    -c "Add 'trash':1:0:name string REMOVE_FROM_DOCK" "$PLIST_PATH"
+sudo $PlistBuddy -c "Add 'finder-running':2:sub Dict" \
+  -c "Add 'finder-running':2:sub:0:command integer 1004" \
+  -c "Add 'finder-running':2:sub:0:name string REMOVE_FROM_DOCK" \
+  -c "Add 'trash':1 Dict" \
+  -c "Add 'trash':1:0:command integer 1004" \
+  -c "Add 'trash':1:0:name string REMOVE_FROM_DOCK" "$PLIST_PATH"
 
 # 4 - Repair file ownership
 echo "Repairing file ownership..."

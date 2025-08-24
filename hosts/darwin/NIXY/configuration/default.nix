@@ -68,7 +68,7 @@
           "big-parallel"
           "nixos-test"
         ];
-        mandatoryFeatures = [ ];
+        mandatoryFeatures = [];
         sshUser = "alex";
         sshKey = "/Users/alex/.ssh/id_ed25519"; # SSH key for connecting to NIXSTATION64
         protocol = "ssh-ng"; # Use new SSH protocol for better performance
@@ -118,7 +118,7 @@
     overlays = [
       (final: prev: {
         # Override Valgrind to be a dummy package on Darwin since it's not supported
-        valgrind = prev.runCommand "valgrind-dummy" { } ''
+        valgrind = prev.runCommand "valgrind-dummy" {} ''
           mkdir -p $out/bin
           echo '#!/bin/sh' > $out/bin/valgrind
           echo 'echo "Valgrind is not supported on Darwin"' >> $out/bin/valgrind

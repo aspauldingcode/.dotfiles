@@ -3,11 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   inherit (config.colorscheme) colors;
-in
-{
+in {
   programs.fuzzel = {
     enable = true;
     settings = {

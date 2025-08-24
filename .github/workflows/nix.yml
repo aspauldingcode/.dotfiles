@@ -51,9 +51,7 @@ jobs:
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          base: main
-          head: HEAD
-          extra_args: --debug --only-verified
+          extra_args: --only-verified --no-update
       - name: SOPS validation
         run: |
           echo "🔐 Validating SOPS encrypted files..."
@@ -84,7 +82,7 @@ jobs:
       - name: Run formatter checks
         run: |
           echo "🎨 Checking code formatting..."
-          nix fmt -- --check .
+          nix fmt -- --fail-on-change
       - name: Run statix (Nix linter)
         run: |
           echo "🔍 Running Nix static analysis..."

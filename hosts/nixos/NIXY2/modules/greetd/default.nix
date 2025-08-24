@@ -3,8 +3,7 @@
   pkgs,
   lib,
   ...
-}:
-{
+}: {
   # Enable greetd service for regreet to work properly
   services.greetd = {
     enable = true;

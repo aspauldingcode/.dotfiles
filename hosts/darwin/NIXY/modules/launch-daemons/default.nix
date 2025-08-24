@@ -2,8 +2,7 @@
   config,
   pkgs,
   ...
-}:
-{
+}: {
   environment.systemPackages = with pkgs; [
     # desktop_cleaner
   ];

@@ -3,8 +3,7 @@
   lib,
   pkgs,
   ...
-}:
-{
+}: {
   programs.unmenu = {
     enable = true;
     settings = {

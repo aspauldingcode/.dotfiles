@@ -3,34 +3,60 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   inherit (config.colorScheme) palette;
 
   # Convert hex colors to RGB values for DiscordRecolor theme
-  hexToRgb =
-    hex:
-    let
-      # Strip the # prefix if present
-      cleanHex = if builtins.substring 0 1 hex == "#" then builtins.substring 1 6 hex else hex;
-      
-      # Convert hex digit to decimal
-      hexDigitToInt = d:
-        if d == "0" then 0 else if d == "1" then 1 else if d == "2" then 2 else if d == "3" then 3
-        else if d == "4" then 4 else if d == "5" then 5 else if d == "6" then 6 else if d == "7" then 7
-        else if d == "8" then 8 else if d == "9" then 9 else if d == "a" || d == "A" then 10
-        else if d == "b" || d == "B" then 11 else if d == "c" || d == "C" then 12
-        else if d == "d" || d == "D" then 13 else if d == "e" || d == "E" then 14
-        else if d == "f" || d == "F" then 15 else 0;
-      
-      # Convert two hex digits to decimal
-      hexPairToInt = h1: h2: (hexDigitToInt h1) * 16 + (hexDigitToInt h2);
-      
-      r = hexPairToInt (builtins.substring 0 1 cleanHex) (builtins.substring 1 1 cleanHex);
-      g = hexPairToInt (builtins.substring 2 1 cleanHex) (builtins.substring 3 1 cleanHex);
-      b = hexPairToInt (builtins.substring 4 1 cleanHex) (builtins.substring 5 1 cleanHex);
-    in
-    "${toString r},${toString g},${toString b}";
+  hexToRgb = hex: let
+    # Strip the # prefix if present
+    cleanHex =
+      if builtins.substring 0 1 hex == "#"
+      then builtins.substring 1 6 hex
+      else hex;
+
+    # Convert hex digit to decimal
+    hexDigitToInt = d:
+      if d == "0"
+      then 0
+      else if d == "1"
+      then 1
+      else if d == "2"
+      then 2
+      else if d == "3"
+      then 3
+      else if d == "4"
+      then 4
+      else if d == "5"
+      then 5
+      else if d == "6"
+      then 6
+      else if d == "7"
+      then 7
+      else if d == "8"
+      then 8
+      else if d == "9"
+      then 9
+      else if d == "a" || d == "A"
+      then 10
+      else if d == "b" || d == "B"
+      then 11
+      else if d == "c" || d == "C"
+      then 12
+      else if d == "d" || d == "D"
+      then 13
+      else if d == "e" || d == "E"
+      then 14
+      else if d == "f" || d == "F"
+      then 15
+      else 0;
+
+    # Convert two hex digits to decimal
+    hexPairToInt = h1: h2: (hexDigitToInt h1) * 16 + (hexDigitToInt h2);
+
+    r = hexPairToInt (builtins.substring 0 1 cleanHex) (builtins.substring 1 1 cleanHex);
+    g = hexPairToInt (builtins.substring 2 1 cleanHex) (builtins.substring 3 1 cleanHex);
+    b = hexPairToInt (builtins.substring 4 1 cleanHex) (builtins.substring 5 1 cleanHex);
+  in "${toString r},${toString g},${toString b}";
 
   # Create DiscordRecolor theme using nix-colors palette
   discordRecolorTheme = ''
@@ -48,7 +74,7 @@ let
       --accentcolor: ${hexToRgb palette.base0D};              /* Primary accent (links, buttons) */
       --linkcolor: ${hexToRgb palette.base0D};                /* Link color */
       --mentioncolor: ${hexToRgb palette.base0A};             /* Mention highlight */
-      
+
       /* Text colors */
       --textbrightest: ${hexToRgb palette.base07};            /* Brightest text */
       --textbrighter: ${hexToRgb palette.base06};             /* Brighter text */
@@ -56,7 +82,7 @@ let
       --textdark: ${hexToRgb palette.base04};                 /* Darker text */
       --textdarker: ${hexToRgb palette.base03};               /* Even darker text */
       --textdarkest: ${hexToRgb palette.base02};              /* Darkest text */
-      
+
       /* Background colors */
       --backgroundaccent: ${hexToRgb palette.base0D};         /* Accent backgrounds */
       --backgroundprimary: ${hexToRgb palette.base00};        /* Main background */
@@ -64,19 +90,18 @@ let
       --backgroundsecondaryalt: ${hexToRgb palette.base01};   /* Alt secondary background */
       --backgroundtertiary: ${hexToRgb palette.base02};       /* Tertiary background */
       --backgroundfloating: ${hexToRgb palette.base01};       /* Floating elements */
-      
+
       /* Status colors */
       --statusgreen: ${hexToRgb palette.base0B};              /* Online status */
       --statusyellow: ${hexToRgb palette.base0A};             /* Away status */
       --statusred: ${hexToRgb palette.base08};                /* DND/Error status */
       --statuspurple: ${hexToRgb palette.base0E};             /* Streaming status */
-      
+
       /* Additional theme colors */
       --settingsicons: 1;                                     /* Enable settings icons */
     }
   '';
-in
-{
+in {
   programs.vesktop = {
     enable = true;
 
@@ -91,6 +116,10 @@ in
 
       # Privacy settings
       checkUpdates = false;
+
+      # Background and border colors for launch screen
+      splashBackground = "#${palette.base00}";
+      splashBorder = "#${palette.base0D}";
     };
 
     # Vencord configuration with nix-colors theming
@@ -101,7 +130,7 @@ in
       # Vencord settings
       settings = {
         # Enable useful plugins
-        enabledThemes = [ "NixColors-DiscordRecolor.css" ];
+        enabledThemes = ["NixColors-DiscordRecolor.css"];
 
         # Plugin configuration (all disabled by default)
         plugins = {
@@ -131,7 +160,6 @@ in
           CallTimer.enabled = false;
           ClearURLs.enabled = false;
           ClientTheme.enabled = false;
-          ClientTheme.color = "#${palette.base0D}";
           ColorSighted.enabled = false;
           CrashHandler.enabled = false;
           EmoteCloner.enabled = false;
@@ -246,7 +274,7 @@ in
 
       # Custom themes with nix-colors integration
       themes = {
-        "NixColors-DiscordRecolor.css" = discordRecolorTheme;
+        "NixColors-DiscordRecolor" = discordRecolorTheme;
       };
     };
   };
