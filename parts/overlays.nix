@@ -44,7 +44,6 @@
             pkg:
             builtins.elem (inputs.nixpkgs.lib.getName pkg) [
               "vscode"
-              "discord"
               "spotify"
               "zoom"
               "slack"

@@ -117,7 +117,7 @@ in
     # Action:  Set nvram boot arguments for arm64e preview ABI support
     # ===================================================================
 
-    echo "Setting nvram boot-args preview abi for yabai scripting addition and glow/ammonia..."
+    echo "Setting nvram boot-args..."
     sudo nvram boot-args=-arm64e_preview_abi
 
     echo "Setting profile picture..."

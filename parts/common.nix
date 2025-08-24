@@ -48,7 +48,7 @@
             pkg:
             builtins.elem (inputs.nixpkgs.lib.getName pkg) [
               "vscode"
-              "discord"
+              # "discord" # Removed - only install via nixcord
               "spotify"
               "zoom"
               "slack"
@@ -110,6 +110,7 @@
         inputs.mac-app-util.homeManagerModules.default
         inputs.sops-nix.homeManagerModules.sops
         inputs.spicetify-nix.homeManagerModules.default
+        inputs.nixcord.homeModules.nixcord
       ];
       extraSpecialArgs = {
         inherit inputs;

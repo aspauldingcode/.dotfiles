@@ -5,7 +5,6 @@
     ./brave
     ./btop
     ./colima
-    ./discord
     ./fastfetch
     ./firefox
     ./git
@@ -13,6 +12,7 @@
     ./okular
     ./print
     ./shells
+    ./vesktop
     ./vscode
     ./yazi
     ./zellij

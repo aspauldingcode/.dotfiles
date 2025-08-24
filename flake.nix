@@ -35,7 +35,10 @@
 
     # Theming and UI
     nix-colors.url = "github:misterio77/nix-colors";
-
+    spicetify-nix = {
+      url = "github:Gerg-L/spicetify-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # Security and secrets management
     sops-nix = {
       url = "github:Mic92/sops-nix";
@@ -48,10 +51,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
-    spicetify-nix = {
-      url = "github:Gerg-L/spicetify-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     # Community packages and overlays
     nur.url = "github:nix-community/nur";
