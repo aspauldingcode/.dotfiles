@@ -526,4 +526,4 @@ This configuration is available under the **MIT License**. See [LICENSE](LICENSE
 
 ______________________________________________________________________
 
-**Made with ❤️ and Nix** | [Report Issues](https://github.com/aspauldingcode/dotfiles/issues) | [Discussions](https://github.com/aspauldingcode/dotfiles/discussions)
+**Made with ❤️ and Nix** | [Report Issues](https://github.com/aspauldingcode/.dotfiles/issues) | [Discussions](https://github.com/aspauldingcode/.dotfiles/discussions)
