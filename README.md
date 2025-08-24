@@ -118,7 +118,7 @@ This repository follows a standardized `flake-parts` structure for better organi
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
 # Clone the repository
-git clone https://github.com/yourusername/dotfiles.git ~/.dotfiles
+git clone https://github.com/aspauldingcode/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 ```
 
@@ -524,4 +524,4 @@ This configuration is available under the **MIT License**. See [LICENSE](LICENSE
 
 ______________________________________________________________________
 
-**Made with ❤️ and Nix** | [Report Issues](https://github.com/yourusername/dotfiles/issues) | [Discussions](https://github.com/yourusername/dotfiles/discussions)
+**Made with ❤️ and Nix** | [Report Issues](https://github.com/aspauldingcode/dotfiles/issues) | [Discussions](https://github.com/aspauldingcode/dotfiles/discussions)

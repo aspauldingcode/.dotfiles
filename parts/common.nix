@@ -110,7 +110,6 @@
         inputs.mac-app-util.homeManagerModules.default
         inputs.sops-nix.homeManagerModules.sops
         inputs.spicetify-nix.homeManagerModules.default
-        inputs.nixcord.homeModules.nixcord
       ];
       extraSpecialArgs = {
         inherit inputs;
