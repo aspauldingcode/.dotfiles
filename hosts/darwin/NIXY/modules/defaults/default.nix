@@ -13,15 +13,14 @@
       # Following line should allow us to avoid a logout/login cycle
       /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
-      # Enable Fast User Switching
-      sudo defaults write /Library/Preferences/.GlobalPreferences MultipleSessionEnabled -bool true
-      defaults write .GlobalPreferences userMenuExtraStyle -int 2 # 0 = Full Name, 1 = Account Name, 2 = Icon
-
       # Disable persistence opening apps at login
       defaults write -g ApplePersistence -bool no
 
       # Show AirDrop in the sidebar
       defaults write com.apple.sidebarlists systemitems -dict-add ShowAirDrop -bool true
+
+      # Disable the "Are you sure you want to open this application?" dialog
+      defaults write com.apple.LaunchServices LSQuarantine -bool false
     '';
     startup.chime = false; # MUTE STARTUP CHIME!
     keyboard = {
