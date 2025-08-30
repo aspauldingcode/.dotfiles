@@ -1,4 +1,4 @@
-{pkgs}:
+{ pkgs }:
 pkgs.stdenv.mkDerivation {
   name = "ColorPicker";
   version = "1.0.0";
@@ -89,8 +89,7 @@ pkgs.stdenv.mkDerivation {
   '';
 
   buildInputs = with pkgs; [
-    darwin.apple_sdk.frameworks.Cocoa
-    darwin.apple_sdk.frameworks.Foundation
+    # Frameworks are provided by the system, not needed as buildInputs
   ];
 
   buildPhase = ''

@@ -3,7 +3,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   home = {
     stateVersion = "24.11"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
     homeDirectory = lib.mkForce "/Users/alex";
@@ -21,9 +22,12 @@
     home-manager.enable = true;
     ssh = {
       enable = true;
-      addKeysToAgent = "yes";
+      enableDefaultConfig = false;
 
       matchBlocks = {
+        "*" = {
+          addKeysToAgent = "yes";
+        };
         "github.com" = {
           hostname = "github.com";
           user = "git";
@@ -47,6 +51,44 @@
           "/System/Library/LaunchAgents/com.apple.OSDUIHelper.plist"
         ];
         RunAtLoad = true;
+        StandardErrorPath = "/dev/null";
+        StandardOutPath = "/dev/null";
+      };
+    };
+
+    # Warning dialog at 8:25 PM
+    shutdown-warning = {
+      enable = true;
+      config = {
+        Program = "/usr/bin/osascript";
+        ProgramArguments = [
+          "/usr/bin/osascript"
+          "-e"
+          "display dialog \"Your Mac will shut down in 5 minutes at 8:30 PM\" with title \"Shutdown Warning\" buttons {\"OK\"} default button \"OK\" with icon caution"
+        ];
+        StartCalendarInterval = {
+          Hour = 20;
+          Minute = 25;
+        };
+        StandardErrorPath = "/dev/null";
+        StandardOutPath = "/dev/null";
+      };
+    };
+
+    # Immediate shutdown at 8:30 PM
+    auto-shutdown = {
+      enable = true;
+      config = {
+        Program = "/sbin/shutdown";
+        ProgramArguments = [
+          "/sbin/shutdown"
+          "-h"
+          "now"
+        ];
+        StartCalendarInterval = {
+          Hour = 20;
+          Minute = 30;
+        };
         StandardErrorPath = "/dev/null";
         StandardOutPath = "/dev/null";
       };

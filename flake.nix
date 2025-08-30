@@ -46,10 +46,6 @@
     };
 
     # macOS specific tools
-    mac-app-util = {
-      url = "github:hraban/mac-app-util";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
 
     # Community packages and overlays
@@ -109,8 +105,9 @@
     };
   };
 
-  outputs = inputs @ {flake-parts, ...}:
-    flake-parts.lib.mkFlake {inherit inputs;} {
+  outputs =
+    inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
       # Supported systems for multi-platform builds
       systems = [
         "x86_64-linux" # Intel/AMD Linux

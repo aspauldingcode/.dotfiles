@@ -3,7 +3,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   home = {
     stateVersion = "24.11"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
     homeDirectory = lib.mkForce "/Users/alex";
@@ -21,9 +22,12 @@
     home-manager.enable = true;
     ssh = {
       enable = true;
-      addKeysToAgent = "yes";
+      enableDefaultConfig = false;
 
       matchBlocks = {
+        "*" = {
+          addKeysToAgent = "yes";
+        };
         "github.com" = {
           hostname = "github.com";
           user = "git";

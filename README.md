@@ -17,7 +17,7 @@ A comprehensive, production-ready Nix configuration using `flake-parts` for mana
 
 👨‍💻 Code Statistics:
 
-_Total LOC (including blanks, comments): **45344**_
+_Total LOC (including blanks, comments): **45522**_
 
 <details>
 <summary>🔍 Click to expand code stats.</summary>
@@ -28,18 +28,18 @@ _Total LOC (including blanks, comments): **45344**_
 | JSON | 1 | 402 | 402 | 0 | 0 |
 | Lua | 1 | 225 | 138 | 50 | 37 |
 | Markdown | 14 | 3879 | 0 | 2562 | 1317 |
-| Nix | 234 | 30944 | 25620 | 3217 | 2107 |
+| Nix | 234 | 31042 | 25700 | 3228 | 2114 |
 | Python | 5 | 1617 | 1407 | 61 | 149 |
-| Shell | 18 | 4060 | 2988 | 390 | 682 |
+| Shell | 19 | 4140 | 3054 | 397 | 689 |
 | Plain Text | 1 | 1 | 0 | 1 | 0 |
 | TOML | 0 | 0 |  |  |  |
 | Vim script | 0 | 0 |  |  |  |
 | YAML | 9 | 482 | 304 | 160 | 18 |
-| **Total**  | 289 | 45344 | 33691 | 6661 | 4992 |
+| **Total**  | 290 | 45522 | 33837 | 6679 | 5006 |
 
 </details>
 
-Last updated: Wed Aug 27 14:38:01 PDT 2025
+Last updated: Fri Aug 29 17:25:37 PDT 2025
 <!-- END CODE STATS -->
 
 ## 🖥️ Supported Systems

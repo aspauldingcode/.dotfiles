@@ -5,14 +5,13 @@
   config,
   user,
   ...
-}: let
+}:
+let
   inherit (lib) mkForce;
   inherit (config.colorScheme) palette;
-in {
-  home.packages =
-    if pkgs.stdenv.isDarwin
-    then [pkgs.defaultbrowser]
-    else [];
+in
+{
+  home.packages = if pkgs.stdenv.isDarwin then [ pkgs.defaultbrowser ] else [ ];
 
   # home.activation =
   #   if pkgs.stdenv.isDarwin
@@ -458,7 +457,7 @@ in {
             }
           }
         '';
-        bookmarks = {};
+        bookmarks = { };
         extensions = {
           packages = with pkgs.nur.repos.rycee.firefox-addons; [
             # youtube fixup - removed enhancer-for-youtube as it's no longer available
@@ -489,7 +488,7 @@ in {
                 homepage = "https://github.com/domdomegg/hideytthumbnails-extension";
                 description = "Watch videos on YouTube fullscreen within your browsers screen.";
                 license = lib.licenses.mpl20;
-                mozPermissions = ["storage"];
+                mozPermissions = [ "storage" ];
                 platforms = lib.platforms.all;
               };
             })
@@ -519,7 +518,8 @@ in {
           "browser.download.viewableInternally.typeWasRegistered.xml" = true;
           "browser.fullscreen.autohide" = false;
           "browser.link.open_newwindow" = 3; # Open links in new tabs
-          "browser.newtabpage.activity-stream.newNewtabExperience.colors" = "#${palette.base0D},#${palette.base08},#${palette.base0B},#${palette.base09},#${palette.base0E},#${palette.base0A},#${palette.base0F}";
+          "browser.newtabpage.activity-stream.newNewtabExperience.colors" =
+            "#${palette.base0D},#${palette.base08},#${palette.base0B},#${palette.base09},#${palette.base0E},#${palette.base0A},#${palette.base0F}";
           "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
           "browser.search.isUS" = true;
           "browser.search.region" = "US";
@@ -528,17 +528,15 @@ in {
           "browser.shell.checkDefaultBrowser" = false;
           "browser.shell.defaultBrowserCheckCount" = 1;
           "browser.startup.homepage" = "moz-extension://9d877b4e-2fe9-4689-b41a-566a02359dd1/index.html";
-          "browser.tabs.inTitlebar" =
-            if pkgs.stdenv.isDarwin
-            then 1
-            else 0; # Set 0 for Default OS titlebar, 1 for no titlebar
+          "browser.tabs.inTitlebar" = if pkgs.stdenv.isDarwin then 1 else 0; # Set 0 for Default OS titlebar, 1 for no titlebar
           "browser.tabs.loadInBackground" = true;
           "browser.tabs.warnOnClose" = false;
           "browser.tabs.warnOnCloseOtherTabs" = false;
           "browser.tabs.tabmanager.enabled" = false;
           "browser.warnOnQuit" = false;
           "browser.warnOnQuitShortcut" = false;
-          "browser.uiCustomization.state" = ''{"placements":{"nav-bar":["_3c078156-979c-498b-8990-85f7987dd929_-browser-action","back-button","forward-button","stop-reload-button","urlbar-container","ublock0_raymondhill_net-browser-action","_testpilot-containers-browser-action"],"TabsToolbar":["tabbrowser-tabs","new-tab-button"],"PersonalToolbar":["import-button","personal-bookmarks"]},"seen":["ublock0_raymondhill_net-browser-action","_testpilot-containers-browser-action"],"dirtyAreaCache":["nav-bar","PersonalToolbar","TabsToolbar"],"currentVersion":18}'';
+          "browser.uiCustomization.state" =
+            ''{"placements":{"nav-bar":["_3c078156-979c-498b-8990-85f7987dd929_-browser-action","back-button","forward-button","stop-reload-button","urlbar-container","ublock0_raymondhill_net-browser-action","_testpilot-containers-browser-action"],"TabsToolbar":["tabbrowser-tabs","new-tab-button"],"PersonalToolbar":["import-button","personal-bookmarks"]},"seen":["ublock0_raymondhill_net-browser-action","_testpilot-containers-browser-action"],"dirtyAreaCache":["nav-bar","PersonalToolbar","TabsToolbar"],"currentVersion":18}'';
           "browser.urlbar.placeholderName" = "DuckDuckGo";
           "browser.urlbar.quickactions.enabled" = false;
           "browser.urlbar.quickactions.showPrefs" = false;
@@ -575,7 +573,8 @@ in {
           "layout.css.osx-font-smoothing.enabled" = true;
           "network.proxy.socks_remote_dns" = true;
           "pdfjs.forcePageColors" = false;
-          "pdfjs.highlightEditorColors" = "yellow=#${palette.base0A},green=#${palette.base0B},blue=#${palette.base0D},pink=#${palette.base0E},red=#${palette.base08}";
+          "pdfjs.highlightEditorColors" =
+            "yellow=#${palette.base0A},green=#${palette.base0B},blue=#${palette.base0D},pink=#${palette.base0E},red=#${palette.base08}";
           "pdfjs.pageColorsBackground" = "#${palette.base00}";
           "pdfjs.pageColorsForeground" = "#${palette.base05}";
           "privacy.donottrackheader.enabled" = true;
@@ -594,6 +593,9 @@ in {
           "security.webauth.webauthn_enable_usbtoken" = true;
           "signon.rememberSignons" = true;
           "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+
+          # Enable Browser Console for userChrome.css hot-reload
+          "devtools.chrome.enabled" = true;
           "ui.use_standins_for_native_colors" = false;
           "webgl.colorspaces.prototype" = false;
           # "widget.gtk.libadwaita-colors.enabled" = true;
@@ -833,9 +835,9 @@ in {
   };
 
   xdg.mimeApps.defaultApplications = {
-    "text/html" = ["firefox.desktop"];
-    "text/xml" = ["firefox.desktop"];
-    "x-scheme-handler/http" = ["firefox.desktop"];
-    "x-scheme-handler/https" = ["firefox.desktop"];
+    "text/html" = [ "firefox.desktop" ];
+    "text/xml" = [ "firefox.desktop" ];
+    "x-scheme-handler/http" = [ "firefox.desktop" ];
+    "x-scheme-handler/https" = [ "firefox.desktop" ];
   };
 }

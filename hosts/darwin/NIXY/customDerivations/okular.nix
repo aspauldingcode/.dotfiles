@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   inherit (lib) optional optionals optionalString;
 
   # Fetch the Okular source code
@@ -118,20 +119,19 @@ with lib; let
       extra-cmake-modules
     ];
 
-    buildInputs = with pkgs;
+    buildInputs =
+      with pkgs;
       [
         libsForQt5.qtbase
         libsForQt5.qtdeclarative
         libsForQt5.qtsvg
         libsForQt5.qtspeech
-        libsForQt5.phonon
         poppler
         poppler_utils
         libsForQt5.poppler
         libsForQt5.karchive
         libsForQt5.kbookmarks
         libsForQt5.kconfig
-        libsForQt5.kconfigwidgets
         libsForQt5.kcoreaddons
         libsForQt5.kcrash
         libsForQt5.kiconthemes
@@ -141,8 +141,6 @@ with lib; let
         libsForQt5.ktextwidgets
         libsForQt5.kxmlgui
         libsForQt5.threadweaver
-        libsForQt5.kpty
-        libsForQt5.khtml
         libkexiv2
         discount
         freetype
@@ -156,30 +154,45 @@ with lib; let
         chmlib
         libspectre
       ]
-      ++ optionals stdenv.isDarwin [
-        darwin.apple_sdk.frameworks.Cocoa
+          ++ optionals stdenv.isDarwin [
+      # Darwin-specific dependencies
+      pkgs.apple-sdk_11
+    ]
+      ++ optionals stdenv.isLinux [
+        # Linux-only dependencies that cause issues on Darwin
+        libsForQt5.phonon
+        libsForQt5.kconfigwidgets
+        libsForQt5.kpty
+        libsForQt5.khtml
       ];
 
-    cmakeFlags =
-      [
-        "-DCMAKE_BUILD_TYPE=Release"
-        "-DBUILD_TESTING=OFF"
-        "-DOKULAR_UI=desktop"
-        "-DWITH_MOBIPOCKET=ON"
-        "-DWITH_CHM=ON"
-        "-DWITH_PDF=ON"
-        "-DFORCE_NOT_REQUIRED_DEPENDENCIES=CHM;LibSpectre;Poppler;KF5::KAccountsIntegration;KF5::Purpose"
-        "-DCMAKE_DISABLE_FIND_PACKAGE_KF5KAccountsIntegration=ON"
-        "-DCMAKE_DISABLE_FIND_PACKAGE_KF5Purpose=ON"
-        "-DCMAKE_DISABLE_FIND_PACKAGE_KF5KExiv2=ON"
-        "-DCMAKE_VERBOSE_MAKEFILE=ON"
-        "-DCMAKE_INSTALL_PREFIX=$out"
-      ]
-      ++ optional pkgs.stdenv.isDarwin "-DCMAKE_OSX_DEPLOYMENT_TARGET=10.14";
+    cmakeFlags = [
+      "-DCMAKE_BUILD_TYPE=Release"
+      "-DBUILD_TESTING=OFF"
+      "-DOKULAR_UI=desktop"
+      "-DWITH_MOBIPOCKET=ON"
+      "-DWITH_CHM=ON"
+      "-DWITH_PDF=ON"
+      "-DFORCE_NOT_REQUIRED_DEPENDENCIES=CHM;LibSpectre;Poppler;KF5::KAccountsIntegration;KF5::Purpose"
+      "-DCMAKE_DISABLE_FIND_PACKAGE_KF5KAccountsIntegration=ON"
+      "-DCMAKE_DISABLE_FIND_PACKAGE_KF5Purpose=ON"
+      "-DCMAKE_DISABLE_FIND_PACKAGE_KF5KExiv2=ON"
+      "-DCMAKE_DISABLE_FIND_PACKAGE_Wayland=ON"
+      "-DCMAKE_DISABLE_FIND_PACKAGE_WaylandClient=ON"
+      "-DCMAKE_DISABLE_FIND_PACKAGE_WaylandProtocols=ON"
+      "-DCMAKE_DISABLE_FIND_PACKAGE_PlasmaWaylandProtocols=ON"
+      "-DCMAKE_VERBOSE_MAKEFILE=ON"
+      "-DCMAKE_INSTALL_PREFIX=$out"
+    ]
+    ++ optionals pkgs.stdenv.isDarwin [
+      "-DCMAKE_OSX_DEPLOYMENT_TARGET=11.0"
+      "-DCMAKE_FRAMEWORK_PATH=${pkgs.apple-sdk_11}/System/Library/Frameworks"
+    ];
 
-    preConfigure = optionalString pkgs.stdenv.isDarwin ''
-      export MACOSX_DEPLOYMENT_TARGET=10.14
-    '';
+      preConfigure = optionalString pkgs.stdenv.isDarwin ''
+    export MACOSX_DEPLOYMENT_TARGET=11.0
+    export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -F${pkgs.apple-sdk_11}/System/Library/Frameworks"
+  '';
 
     NIX_CFLAGS_COMPILE = optionalString pkgs.stdenv.isDarwin "-fno-strict-aliasing";
 
@@ -214,6 +227,5 @@ with lib; let
       platforms = platforms.linux ++ platforms.darwin;
     };
   };
-in {
-  environment.systemPackages = [okular];
-}
+in
+okular

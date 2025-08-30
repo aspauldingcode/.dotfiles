@@ -6,7 +6,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.services.theme-toggle = {
     enable = mkEnableOption "theme toggle functionality";
 
@@ -15,13 +16,14 @@ with lib; {
       description = "The theme toggle package to use";
       default = pkgs.writeShellApplication {
         name = "toggle-theme";
-        runtimeInputs = with pkgs;
+        runtimeInputs =
+          with pkgs;
           [
             coreutils
             ripgrep
           ]
           ++ optionals pkgs.stdenv.isDarwin [
-            # macOS-specific tools
+            # macOS-specific tools for Firefox hot-reload
           ]
           ++ optionals pkgs.stdenv.isLinux [
             # Linux-specific tools
@@ -112,6 +114,31 @@ with lib; {
 
               echo "✓ Switched to dark theme"
             fi
+
+            # Hot-reload Firefox userChrome.css without restarting
+            if pgrep -f "Firefox.app" >/dev/null; then
+              echo "🔄 Hot-reloading Firefox userChrome.css..."
+
+              # Create the JavaScript reload command
+              js_reload_cmd='(function(){try{const ss=Components.classes["@mozilla.org/content/style-sheet-service;1"].getService(Components.interfaces.nsIStyleSheetService);const io=Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService);const ds=Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);const chromepath=ds.get("UChrm",Components.interfaces.nsIFile);chromepath.append("userChrome.css");const chromefile=io.newFileURI(chromepath);if(ss.sheetRegistered(chromefile,ss.USER_SHEET)){ss.unregisterSheet(chromefile,ss.USER_SHEET);}ss.loadAndRegisterSheet(chromefile,ss.USER_SHEET);console.log("✅ userChrome.css reloaded");return "Success!";}catch(e){console.error("❌ Error:",e);return "Failed: "+e.message;}})()'
+
+              # Use AppleScript to send the reload command to Firefox Browser Console
+              osascript -e "
+                tell application \"Firefox\" to activate
+                delay 0.3
+                tell application \"System Events\"
+                  key code 38 using {command down, shift down}  -- Cmd+Shift+J to open Browser Console
+                  delay 0.8
+                  keystroke \"$js_reload_cmd\"
+                  delay 0.2
+                  key code 36  -- Enter key
+                  delay 0.5
+                  key code 38 using {command down, shift down}  -- Cmd+Shift+J to close Browser Console
+                end tell
+              " 2>/dev/null && echo "✅ Firefox userChrome.css hot-reloaded" || echo "⚠️  Firefox hot-reload failed, userChrome.css will apply on next restart"
+            else
+              echo "ℹ️  Firefox not running, userChrome.css changes will apply when Firefox starts"
+            fi
           ''}
 
           ${optionalString pkgs.stdenv.isLinux ''
@@ -138,6 +165,18 @@ with lib; {
               sudo "$base_system"/bin/switch-to-configuration switch
               echo "✓ Switched to dark theme"
             fi
+
+            # Hot-reload Firefox userChrome.css without restarting
+            if pgrep -f firefox >/dev/null; then
+              echo "🔄 Firefox detected. For userChrome.css hot-reload:"
+              echo "   1. Open Firefox Browser Console with Ctrl+Shift+J"
+              echo "   2. Paste and run this command:"
+              echo "   (function(){try{const ss=Components.classes['@mozilla.org/content/style-sheet-service;1'].getService(Components.interfaces.nsIStyleSheetService);const io=Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService);const ds=Components.classes['@mozilla.org/file/directory_service;1'].getService(Components.interfaces.nsIProperties);const chromepath=ds.get('UChrm',Components.interfaces.nsIFile);chromepath.append('userChrome.css');const chromefile=io.newFileURI(chromepath);if(ss.sheetRegistered(chromefile,ss.USER_SHEET)){ss.unregisterSheet(chromefile,ss.USER_SHEET);}ss.loadAndRegisterSheet(chromefile,ss.USER_SHEET);console.log('✅ userChrome.css reloaded');return 'Success!';}catch(e){console.error('❌ Error:',e);return 'Failed: '+e.message;}})()"
+              echo ""
+              echo "💡 Tip: Bookmark this command in Firefox for quick access!"
+            else
+              echo "ℹ️  Firefox not running, userChrome.css changes will apply when Firefox starts"
+            fi
           ''}
         '';
       };
@@ -146,6 +185,6 @@ with lib; {
 
   config = mkIf config.services.theme-toggle.enable {
     # Add the toggle-theme script to system packages
-    environment.systemPackages = [config.services.theme-toggle.package];
+    environment.systemPackages = [ config.services.theme-toggle.package ];
   };
 }

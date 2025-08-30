@@ -1,4 +1,5 @@
-{nix-colors, ...}: {
+{ nix-colors, ... }:
+{
   home = {
     username = "alex";
     homeDirectory = "/home/alex";
@@ -7,14 +8,19 @@
 
   services.ssh-agent.enable = true;
   programs.ssh = {
-    addKeysToAgent = true;
+    enableDefaultConfig = false;
+    matchBlocks = {
+      "*" = {
+        addKeysToAgent = true;
+      };
+    };
   };
 
   # Decoratively fix virt-manager error: "Could not detect a default hypervisor" instead of imperitively through virt-manager's menubar > file > Add Connection
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
-      autoconnect = ["qemu:///system"];
-      uris = ["qemu:///system"];
+      autoconnect = [ "qemu:///system" ];
+      uris = [ "qemu:///system" ];
     };
   };
 
