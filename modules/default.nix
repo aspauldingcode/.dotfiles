@@ -14,6 +14,7 @@
     darwin = {
       # macOS-specific modules
       default = ./darwin/default.nix;
+      plist-manager = ./darwin/plist-manager.nix;
     };
 
     # Home Manager modules

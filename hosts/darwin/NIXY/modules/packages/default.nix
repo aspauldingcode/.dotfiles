@@ -68,7 +68,7 @@
     (pkgs.callPackage ./../../customDerivations/mousecape.nix { })
     (pkgs.callPackage ./../../customDerivations/inputsourceselector.nix { })
     (pkgs.callPackage ./../../customDerivations/color-picker.nix { })
-    (pkgs.callPackage ./../../customDerivations/okular.nix { })
+    # (pkgs.callPackage ./../../customDerivations/okular.nix { })
   ];
 
   nixpkgs.config = {

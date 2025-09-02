@@ -27,7 +27,7 @@
 /.venv/
 
 # Nix build outputs
-./result/
+result
 
 # ignore unsupported files
 fifo

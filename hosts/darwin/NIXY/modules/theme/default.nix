@@ -22,7 +22,7 @@ in
   # Import the default home manager modules from nix-colors
   imports = [
     inputs.nix-colors.homeManagerModules.default
-    ./tinted-mac.nix
+    # ./tinted-mac.nix
   ];
 
   # Set the global color scheme to the selected scheme

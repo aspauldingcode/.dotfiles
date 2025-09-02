@@ -7,6 +7,7 @@
     # ./nix-the-planet
     ./openssh
     ./packages
+    ./macos-settings
     ./postActivation
     ./spicetify
     ./theme

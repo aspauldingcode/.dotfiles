@@ -31,6 +31,7 @@
       inputs.sops-nix.darwinModules.sops
       inputs.nix-homebrew.darwinModules.nix-homebrew
       inputs.spicetify-nix.darwinModules.default
+      inputs.nix-plist-manager.darwinModules.default
       {
         # Use centralized overlays
         nixpkgs.overlays = [ inputs.self.overlays.default ];

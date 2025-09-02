@@ -47,6 +47,10 @@
 
     # macOS specific tools
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+    nix-plist-manager = {
+      url = "github:sushydev/nix-plist-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Community packages and overlays
     nur.url = "github:nix-community/nur";
