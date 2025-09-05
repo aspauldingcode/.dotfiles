@@ -34,7 +34,7 @@
     };
 
   # Application firewall configuration (replaces deprecated alf settings)
-  networking.applicationFirewall = {
+  system.networking.applicationFirewall = {
     allowSignedApp = true;
     allowSigned = true;
   };
