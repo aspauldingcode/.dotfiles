@@ -33,11 +33,11 @@
       swapLeftCtrlAndFn = false; # was true, was nice, but fucked up external usb keyboard.
     };
 
-  # Application firewall configuration (replaces deprecated alf settings)
-  system.networking.applicationFirewall = {
-    allowSignedApp = true;
-    allowSigned = true;
-  };
+    # Application firewall configuration (replaces deprecated alf settings)
+    networking.applicationFirewall = {
+      allowSignedApp = true;
+      allowSigned = true;
+    };
     defaults = {
       smb = {
         NetBIOSName = "${config.networking.hostName}";
