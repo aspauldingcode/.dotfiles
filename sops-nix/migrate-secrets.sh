@@ -448,7 +448,7 @@ let
   };
 in {
   # For NixOS configurations
-  imports = [ sopsConfig.nixosSopsConfig ];
+  imports = [ sopsConfig.systemSopsConfig ];
   
   # Example service using secrets
   services.myapp = {

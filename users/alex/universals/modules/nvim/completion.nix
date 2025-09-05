@@ -116,7 +116,13 @@
             __raw = "cmp.mapping.abort()";
           };
           "<Esc>" = {
-            __raw = "cmp.mapping.abort()";
+            __raw = ''cmp.mapping(function(fallback)
+              if cmp.visible() then
+                cmp.abort()
+              else
+                fallback()
+              end
+            end, { 'i', 's' })'';
           };
           "<CR>" = {
             __raw = "cmp.mapping.confirm({ select = true })";
@@ -240,13 +246,13 @@
         provider_options = {
           model = "gpt-4o";
         };
-        notify = true;
+        notify = false;
         notify_callback = ''
           function(msg)
-            vim.notify(msg)
+            -- Disabled notifications
           end
         '';
-        run_on_every_keystroke = true;
+        run_on_every_keystroke = false;
         ignored_file_types = {};
       };
     };

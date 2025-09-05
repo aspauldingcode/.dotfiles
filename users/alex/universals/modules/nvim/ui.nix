@@ -445,7 +445,7 @@
                     separator = { left = "", right = "" },
                     on_click = function()
                       local has_cmp_ai = pcall(require, 'cmp_ai')
-                      local api_key = os.getenv("OPENAI_API_KEY")
+                      local api_key = vim.env.OPENAI_API_KEY
 
                       local lines = {}
                       if has_cmp_ai and api_key then

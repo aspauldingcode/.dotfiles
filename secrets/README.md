@@ -1,6 +1,6 @@
 # Secrets Management with sops-nix
 
-This directory contains the production-ready secrets management setup using `sops-nix` for multi-user and multi-device deployments.
+This directory contains the development secrets management setup using `sops-nix`.
 
 ## 📁 Directory Structure
 
@@ -9,10 +9,6 @@ secrets/
 ├── README.md                    # This documentation
 ├── development/
 │   └── secrets.yaml            # Development environment secrets
-├── production/
-│   └── secrets.yaml            # Production environment secrets
-├── staging/
-│   └── secrets.yaml            # Staging environment secrets
 ├── systems/
 │   ├── NIXY.yaml               # System-specific secrets for NIXY (Apple Silicon)
 │   ├── NIXI.yaml               # System-specific secrets for NIXI (Intel)
@@ -23,7 +19,6 @@ secrets/
 
 sops-nix/
 ├── sopsConfig.nix              # Main configuration module
-├── secrets.yaml                # Legacy secrets (backward compatibility)
 └── .sops.yaml                  # SOPS encryption rules
 ```
 
@@ -31,10 +26,7 @@ sops-nix/
 
 ### Environment Separation
 
-- **Production**: Full production secrets with strict access controls
-- **Staging**: Uses production secrets for consistency
-- **Development**: Subset of production + development-specific secrets
-- **Legacy**: Backward compatibility for existing setups
+- **Development**: Development environment secrets with appropriate access controls
 
 ### Access Control
 
@@ -61,11 +53,11 @@ let
   sopsConfig = import ../sops-nix/sopsConfig.nix {
     inherit nixpkgs;
     user = "alex";
-    environment = "production"; # or "staging", "development"
+    environment = "development";
     hostname = config.networking.hostName;
   };
 in {
-  imports = [ sopsConfig.nixosSopsConfig ];
+  imports = [ sopsConfig.systemSopsConfig ];
   
   # Access secrets in your configuration
   services.myapp.apiKey = config.sops.secrets.anthropic_api_key.path;
@@ -108,7 +100,7 @@ in {
   allSecrets = utils.listSecrets;
   
   # Validate environment
-  isValidEnv = utils.validateEnvironment "production";
+  isValidEnv = utils.validateEnvironment "development";
 }
 ```
 
@@ -190,9 +182,6 @@ in {
 ### Encrypting New Secrets
 
 ```bash
-# For production environment
-sops secrets/production/secrets.yaml
-
 # For development environment
 sops secrets/development/secrets.yaml
 
@@ -221,7 +210,7 @@ sops updatekeys secrets/production/secrets.yaml
 
 ```bash
 # Validate secret files
-sops --decrypt secrets/production/secrets.yaml > /dev/null
+sops --decrypt secrets/development/secrets.yaml > /dev/null
 
 # Check configuration
 nix eval --json .#nixosConfigurations.NIXY.config.sops.secrets --apply builtins.attrNames
@@ -231,33 +220,24 @@ nix eval --json .#nixosConfigurations.NIXY.config.sops.secrets --apply builtins.
 
 ### From Legacy Setup
 
-1. **Backup existing secrets**:
+1. **Migrate secrets to development structure**:
 
    ```bash
-   cp sops-nix/secrets.yaml sops-nix/secrets.yaml.backup
-   ```
-
-1. **Migrate secrets to new structure**:
-
-   ```bash
-   # Copy relevant secrets to appropriate environment files
+   # Add secrets to development environment
    sops secrets/development/secrets.yaml
    # Add your secrets here
    ```
 
-1. **Update configurations**:
+2. **Update configurations**:
 
    ```nix
-   # Change from:
-   sops.defaultSopsFile = ../sops-nix/secrets.yaml;
-
-   # To:
+   # Use the simplified configuration:
    imports = [ (import ../sops-nix/sopsConfig.nix {
      inherit nixpkgs;
      user = "alex";
      environment = "development";
      hostname = config.networking.hostName;
-   }).nixosSopsConfig ];
+   }).systemSopsConfig ];
    ```
 
 ### Adding New Environments
@@ -305,12 +285,12 @@ nix eval --json .#nixosConfigurations.NIXY.config.sops.secrets --apply builtins.
 - ✅ Group secrets by category and environment
 - ✅ Use descriptive secret names
 - ✅ Document secret purposes and usage
-- ✅ Keep development and production secrets separate
+- ✅ Use appropriate access controls for development secrets
 - ✅ Use consistent naming conventions
 
 ### Deployment
 
-- ✅ Test secret access in staging before production
+- ✅ Test secret access in development environment
 - ✅ Use environment-specific configurations
 - ✅ Implement proper error handling
 - ✅ Monitor secret access and usage
@@ -323,10 +303,10 @@ nix eval --json .#nixosConfigurations.NIXY.config.sops.secrets --apply builtins.
 1. **Secret not found**:
 
    ```
-   Error: Secret 'my_secret' not found in environment 'production'
+   Error: Secret 'my_secret' not found in environment 'development'
    ```
 
-   - Check if secret exists in the environment's secrets file
+   - Check if secret exists in the development secrets file
    - Verify secret name spelling
    - Ensure environment is correctly set
 
@@ -340,13 +320,13 @@ nix eval --json .#nixosConfigurations.NIXY.config.sops.secrets --apply builtins.
    - Verify user has access to the secret
    - Check if secret is properly decrypted
 
-1. **Invalid environment**:
+3. **Invalid environment**:
 
    ```
-   Error: Invalid environment 'prod'. Must be one of: production, staging, development, legacy
+   Error: Invalid environment 'prod'. Must be: development
    ```
 
-   - Use exact environment names from validEnvironments
+   - Use 'development' as the environment name
    - Check spelling and case sensitivity
 
 1. **Key not found**:

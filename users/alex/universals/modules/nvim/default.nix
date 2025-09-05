@@ -68,6 +68,10 @@
         pumheight = 15; # Maximum number of items in popup menu
         pumwidth = 30; # Minimum width of popup menu
         pumblend = 10; # Transparency for popup menu
+        
+        # Disable built-in mode display since lualine shows it
+        showmode = false; # Don't show mode in command line (lualine handles it)
+        cmdheight = 1; # Command line height
       };
 
       globals = {
@@ -77,6 +81,20 @@
       };
 
       extraConfigLua = ''
+        -- Load environment variables from secrets file if available
+        local secrets_file = "/run/secrets/rendered/secrets.env"
+        if vim.fn.filereadable(secrets_file) == 1 then
+          for line in io.lines(secrets_file) do
+            local key, value = line:match("^export%s+([^=]+)=(.*)$")
+            if key and value then
+              -- Remove quotes if present
+              value = value:gsub('^"(.*)"$', '%1')
+              value = value:gsub("^'(.*)'$", '%1')
+              vim.fn.setenv(key, value)
+            end
+          end
+        end
+
         -- Print a little welcome message when nvim is opened!
         -- print("Hello world!")
 

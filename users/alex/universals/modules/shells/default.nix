@@ -26,12 +26,7 @@
 
         export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
 
-        # Secrets temporarily disabled for build - need proper SOPS encryption setup
-
         oh-my-posh disable notice
-        fastfetch
-        sleep 3
-        clear
       '';
       shellAliases = {
         l = "eza --icons --group-directories-first";
@@ -73,12 +68,7 @@
 
         export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
 
-        # Secrets temporarily disabled for build - need proper SOPS encryption setup
-
         oh-my-posh disable notice
-        fastfetch
-        sleep 3
-        clear
       '';
       shellAliases = {
         l = "eza --icons --group-directories-first";
@@ -117,12 +107,7 @@
 
         set -gx SOPS_AGE_KEY_FILE "$HOME/.config/sops/age/keys.txt"
 
-        # Secrets temporarily disabled for build - need proper SOPS encryption setup
-
         oh-my-posh disable notice
-        fastfetch
-        sleep 3
-        clear
       '';
       shellAliases = {
         l = "eza --icons --group-directories-first";
@@ -180,9 +165,6 @@
         $env.SOPS_AGE_KEY_FILE = ($env.HOME | path join ".config" "sops" "age" "keys.txt")
 
         oh-my-posh disable notice
-        fastfetch
-        sleep 3
-        clear
       '';
       extraEnv = '''';
       extraLogin = '''';

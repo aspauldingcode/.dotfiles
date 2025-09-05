@@ -8,7 +8,7 @@
       inputs.self.modules.theme-toggle
       inputs.home-manager.nixosModules.home-manager
       inputs.sops-nix.nixosModules.sops
-      { imports = [ inputs.self.sopsConfigs.nixosSopsConfig ]; }
+      { imports = [ inputs.self.sopsConfigs.systemSopsConfig ]; }
       {
         # Use centralized overlays
         nixpkgs.overlays = [ inputs.self.overlays.default ];

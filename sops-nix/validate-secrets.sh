@@ -241,7 +241,7 @@ check_sops_config_nix() {
   fi
 
   # Check for required functions
-  local required_exports=("nixosSopsConfig" "hmSopsConfig" "secretUtils")
+  local required_exports=("systemSopsConfig" "hmSopsConfig" "getSecretPath")
   local missing_exports=()
 
   for export in "${required_exports[@]}"; do

@@ -32,11 +32,13 @@
       swapLeftCommandAndLeftAlt = false;
       swapLeftCtrlAndFn = false; # was true, was nice, but fucked up external usb keyboard.
     };
+
+  # Application firewall configuration (replaces deprecated alf settings)
+  networking.applicationFirewall = {
+    allowSignedApp = true;
+    allowSigned = true;
+  };
     defaults = {
-      alf = {
-        allowdownloadsignedenabled = 1;
-        allowsignedenabled = 1;
-      };
       smb = {
         NetBIOSName = "${config.networking.hostName}";
         ServerDescription = null;

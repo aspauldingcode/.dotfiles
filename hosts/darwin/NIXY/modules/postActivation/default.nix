@@ -121,10 +121,6 @@ in {
     sudo dscl . delete /Users/${user} Picture
     sudo dscl . create /Users/${user} Picture "${../../../../../users/${user}/face.heic}"
 
-    echo "Setting permissions for ${config.colorScheme.slug}-${config.colorScheme.variant} Glow Theme..."
-    sudo chmod -R 777 /Library/GlowThemes/${config.colorScheme.slug}-${config.colorScheme.variant}/
-    sudo chmod -R 777 /Library/GlowThemes/${config.colorScheme.slug}-${config.colorScheme.variant}/settings.plist
-
     echo "Setting Xcode for xcode-select..."
     sudo xcode-select -s /Applications/Xcode.app
     sudo xcodebuild -license accept
