@@ -25,6 +25,7 @@
     fastfetch
     zellij
     gh
+    geteduroam
     kdePackages.kdeconnect-kde
     universal-android-debloater
     clang
