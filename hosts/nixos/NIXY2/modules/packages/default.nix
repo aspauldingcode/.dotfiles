@@ -20,7 +20,7 @@
 
   environment.systemPackages = with pkgs; [
     way-displays
-    greetd.regreet
+    regreet
     neovim
     fastfetch
     zellij

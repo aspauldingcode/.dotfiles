@@ -7,14 +7,15 @@
   # Environment-specific secret files
   secretFiles = {
     development = ../secrets/development/secrets.yaml;
+    personal = ../secrets/users/alex.yaml;
   };
 
   # Base sops configuration
-  commonSopsConfigBase = {
+  commonSopsConfigBase = { environment ? "development" }: {
     sops = {
       defaultSopsFile = secretFiles.${environment} or secretFiles.development;
       defaultSopsFormat = "yaml";
-      
+
       age = {
         sshKeyPaths = [
           "/etc/ssh/ssh_host_ed25519_key"
@@ -23,7 +24,7 @@
         keyFile = "/var/lib/sops-nix/key.txt";
         generateKey = true;
       };
-      
+
       validateSopsFiles = true;
       keepGenerations = 5;
     };
@@ -43,15 +44,19 @@
     azure_openai_api_key = defaultSecretConfig;
     github_token = defaultSecretConfig;
     bedrock_key = defaultSecretConfig;
+
+    # WiFi passwords
+    wifi_home_password = defaultSecretConfig;
   };
 
   # Select secrets based on environment
   environmentSecrets = {
     development = coreSecrets;
+    personal = coreSecrets;
   };
 
   # Unified system sops configuration for both NixOS and Darwin
-  systemSopsConfig = { config, pkgs, ... }: nixpkgs.lib.recursiveUpdate commonSopsConfigBase {
+  systemSopsConfig = { environment ? "development", ... }: { config, pkgs, ... }: nixpkgs.lib.recursiveUpdate (commonSopsConfigBase { inherit environment; }) {
     sops = {
       secrets = environmentSecrets.${environment} or environmentSecrets.development;
 
@@ -60,7 +65,7 @@
 
       # Environment-specific settings
       environment = {
-        SOPS_ENVIRONMENT = environment;
+        SOPS_ENVIRONMENT = nixpkgs.lib.mkForce environment;
         SOPS_HOSTNAME = hostname;
         SOPS_USER = user;
       };
@@ -104,7 +109,7 @@
             echo "[ -f /run/secrets/rendered/secrets.env ] && source /run/secrets/rendered/secrets.env" >> /etc/zshrc
           fi
         fi
-        
+
         # Add sourcing to /etc/bashrc if it exists
         if [ -f /etc/bashrc ]; then
           if ! grep -q "secrets.env" /etc/bashrc; then
@@ -115,9 +120,10 @@
       fi
     '';
   };
+};
 
   # Home Manager secrets (without owner and mode, with proper attribute handling)
-  hmSecrets = builtins.mapAttrs (
+  hmSecrets = { environment ? "development" }: builtins.mapAttrs (
     name: value:
       removeAttrs value [
         "owner"
@@ -126,9 +132,9 @@
   ) (environmentSecrets.${environment} or environmentSecrets.development);
 
   # Home Manager-specific sops configuration
-  hmSopsConfig = nixpkgs.lib.recursiveUpdate commonSopsConfigBase {
+  hmSopsConfig = { environment ? "development", ... }: { config, pkgs, ... }: nixpkgs.lib.recursiveUpdate (commonSopsConfigBase { inherit environment; }) {
     sops = {
-      secrets = hmSecrets;
+      secrets = hmSecrets { inherit environment; };
 
       # Home Manager specific settings
       age.keyFile = "/home/${user}/.config/sops/age/keys.txt";

@@ -8,7 +8,7 @@
       inputs.self.modules.theme-toggle
       inputs.home-manager.nixosModules.home-manager
       inputs.sops-nix.nixosModules.sops
-      { imports = [ inputs.self.sopsConfigs.systemSopsConfig ]; }
+      # { imports = [ inputs.self.sopsConfigs.systemSopsConfig ]; }
       {
         # Use centralized overlays
         nixpkgs.overlays = [ inputs.self.overlays.default ];
@@ -90,7 +90,7 @@
       backupFileExtension = "backup";
       sharedModules = [
         inputs.sops-nix.homeManagerModules.sops
-        { imports = [ inputs.self.sopsConfigs.hmSopsConfig ]; }
+        # { imports = [ (inputs.self.sopsConfigs.hmSopsConfig { environment = "development"; }) ]; }
         # Disable version check to prevent warnings
         { home.enableNixpkgsReleaseCheck = false; }
       ];

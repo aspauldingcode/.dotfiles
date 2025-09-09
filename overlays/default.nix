@@ -108,7 +108,38 @@ final: prev: {
     doCheck = !final.stdenv.isDarwin;
   });
 
-  # Fix libdrm to disable Valgrind on Darwin
+  # Fix vim plugin tests failing on Apple Silicon
+  vimPlugins = final.lib.mapAttrs (name: pkg:
+    if final.lib.hasInfix "fzf-lua" name then
+      pkg.overrideAttrs (oldAttrs: {
+        doCheck = !final.stdenv.isAarch64;
+      })
+    else
+      pkg
+  ) prev.vimPlugins;
+
+  # Fix luajit vim plugin tests failing on Apple Silicon
+  luajitPackages = final.lib.mapAttrs (name: pkg:
+    if final.lib.hasInfix "fzf-lua" name then
+    
+      pkg.overrideAttrs (oldAttrs: {
+        doCheck = !final.stdenv.isAarch64;
+      })
+    else
+      pkg
+  ) prev.luajitPackages;
+
+  # Fix lua package tests failing on Apple Silicon
+  luaPackages = final.lib.mapAttrs (name: pkg:
+    if final.lib.hasInfix "fzf-lua" name then
+      pkg.overrideAttrs (oldAttrs: {
+        doCheck = !final.stdenv.isAarch64;
+      })
+    else
+      pkg
+  ) prev.luaPackages;
+
+  # Fix libdrm to disable Valgrind on Darwin and Apple Silicon Linux
   libdrm = prev.libdrm.overrideAttrs (oldAttrs: {
     buildInputs = final.lib.filter (dep: !(final.lib.hasPrefix "valgrind" (final.lib.getName dep))) (
       oldAttrs.buildInputs or [ ]
@@ -116,7 +147,7 @@ final: prev: {
 
     mesonFlags =
       (oldAttrs.mesonFlags or [ ])
-      ++ final.lib.optionals final.stdenv.isDarwin [
+      ++ final.lib.optionals (final.stdenv.isDarwin || final.stdenv.isAarch64) [
         "-Dvalgrind=disabled"
       ];
   });

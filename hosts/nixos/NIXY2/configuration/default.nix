@@ -7,12 +7,8 @@
   apple-silicon,
   ...
 }: {
-  # SOPS secrets declarations
-  sops.secrets = {
-    wifi_bubbles_passwd = {};
-    wifi_eduroam_userID = {};
-    wifi_eduroam_passwd = {};
-  };
+  # SOPS secrets are now managed through the centralized sops configuration
+  # See sops-nix/sopsConfig.nix for secret definitions
 
   nixpkgs.flake = {
     setFlakeRegistry = false;
@@ -50,7 +46,6 @@
     asahi = {
       # Disable firmware extraction since asahi-fwextract was removed
       extractPeripheralFirmware = false;
-      useExperimentalGPUDriver = true;
     };
 
     bluetooth = {
@@ -179,7 +174,6 @@
           user = "greeter";
         };
       };
-      vt = 1; # signed integer
     };
 
     input-remapper = {

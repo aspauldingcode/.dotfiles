@@ -4,7 +4,7 @@
   sopsConfigs = import ../sops-nix/sopsConfig.nix {
     nixpkgs = inputs.nixpkgs;
     user = "alex";
-    environment = "legacy"; # Use legacy environment for existing secrets
+    # Don't set a default environment here - let each system specify it
   };
 in {
   flake.sopsConfigs = sopsConfigs;

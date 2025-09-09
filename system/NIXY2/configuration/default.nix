@@ -4,21 +4,27 @@
   config,
   pkgs,
   mobile-nixos,
+  apple-silicon,
   ...
-}: {
+}:
+
+{
+  nixpkgs.flake = {
+    setFlakeRegistry = false;
+    setNixPath = false;
+  };
+
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernel.sysctl."net.ipv4.ip_forward" = true;
     loader = {
-      timeout = 3;
+      timeout = 0;
       systemd-boot.enable = true; # switch to dinit for mac/linux/bsd?
       efi.canTouchEfiVariables = true;
     };
     kernelParams = [
-      "amdgpu.si_support=0"
       "boot.shell_on_fail"
       "ipv6.disable=1"
       "loglevel=3"
-      "nvidia-drm.modeset=1"
       "quiet"
       "rd.systemd.show_status=false"
       "rd.udev.log_level=3"
@@ -30,15 +36,17 @@
       theme = "rings";
       themePackages = with pkgs; [
         # By default we would install all themes
-        (adi1090x-plymouth-themes.override {
-          selected_themes = ["rings"];
-        })
+        (adi1090x-plymouth-themes.override { selected_themes = [ "rings" ]; })
       ];
     };
   };
 
   hardware = {
-    amdgpu.initrd.enable = true;
+    asahi = {
+      extractPeripheralFirmware = true;
+      peripheralFirmwareDirectory = ../firmware-NIXY2;
+    };
+
     bluetooth = {
       enable = true;
       powerOnBoot = true;
@@ -51,81 +59,45 @@
     };
     graphics = {
       enable = true;
-      extraPackages = with pkgs; [
-        rocmPackages.clr.icd
-        amdvlk
-      ];
-      # extraPackages32 = with pkgs; [ driversi686Linux.amdvlk ];
+      extraPackages = with pkgs; [ ];
+      extraPackages32 = with pkgs; [ ];
     };
   };
-
-  # https://nixos.wiki/wiki/AMD_GPU#HIP
-  systemd.tmpfiles.rules = ["L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"];
 
   networking = {
-    hostName = "NIXSTATION64";
-    domain = "local";
-    networkmanager.enable = true;
-
-    networkmanager.dns = lib.mkForce "default"; # Use NetworkManager's default DNS settings
+    wireless.iwd = {
+      enable = true;
+      settings = {
+        IPv6 = {
+          Enabled = false;
+        };
+        Settings = {
+          AutoConnect = true;
+        };
+      };
+    };
+    interfaces."usb" = {
+      useDHCP = false;
+      ipv4.addresses = [
+        {
+          address = "192.168.7.1";
+          prefixLength = 24;
+        }
+      ];
+    };
+    networkmanager = {
+      enable = true;
+      wifi.backend = "iwd"; # for asahi wifi!
+      dns = "dnsmasq";
+    };
     firewall = {
-      allowedTCPPorts = [
-        5354
-        1714
-        1764
-      ];
-      allowedUDPPorts = [
-        5353
-        1714
-        1764
-      ];
-    };
-  };
-
-  systemd.services.avahi-daemon = {
-    serviceConfig = {
-      Restart = "always";
-      RestartSec = "5";
-    };
-  };
-
-  time = {
-    timeZone = "America/Denver";
-  };
-
-  systemd.user.services.mpris-proxy = {
-    description = "Mpris proxy";
-    after = [
-      "network.target"
-      "sound.target"
-    ];
-    wantedBy = ["default.target"];
-    serviceConfig.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
-  };
-
-  systemd.user.services.wl-gammarelay = {
-    enable = true;
-    description = "Gamma adjustment service for Wayland";
-    wantedBy = ["graphical-session.target"];
-    partOf = ["graphical-session.target"];
-    serviceConfig = {
-      ExecStart = "${pkgs.wl-gammarelay-rs}/bin/wl-gammarelay-rs";
-      Restart = "always";
-    };
-  };
-
-  i18n = {
-    defaultLocale = "en_US.UTF-8";
-    extraLocaleSettings = {
-      LC_ADDRESS = "en_US.UTF-8";
-      LC_IDENTIFICATION = "en_US.UTF-8";
-      LC_MEASUREMENT = "en_US.UTF-8";
-      LC_MONETARY = "en_US.UTF-8";
-      LC_NAME = "en_US.UTF-8";
-      LC_NUMERIC = "en_US.UTF-8";
-      LC_PAPER = "en_US.UTF-8";
-      LC_TELEPHONE = "en_US.UTF-8";
-      LC_TIME = "en_US.UTF-8";
+      enable = false;
+      extraCommands = ''
+        # Replace "eth0" with your primary network interface
+        iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+        iptables -A FORWARD -i eth0 -o usb0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+        iptables -A FORWARD -i usb0 -o eth0 -j ACCEPT
+      '';
     };
   };
 
@@ -134,11 +106,11 @@
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.sway}/bin/sway --config ${../modules/greetd/sway-config}";
+          command = "${pkgs.swayfx}/bin/sway --config ${../modules/greetd/sway-config}";
           user = "greeter";
         };
         background = {
-          path = "${../../../../users/alex/extraConfig/wallpapers/gruvbox-nix.png}";
+          path = "${../../../users/alex/extraConfig/wallpapers/gruvbox-nix.png}";
           fit = "Fill";
         };
         env = {
@@ -168,38 +140,21 @@
     };
     sway = {
       enable = true;
-      wrapperFeatures.gtk = true;
-      package = pkgs.swayfx;
     };
+    light.enable = true;
     fish.enable = false;
     zsh.enable = true;
     ssh.enableAskPassword = false;
     adb.enable = true; # Enable Android De-Bugging.
     gnome-disks.enable = true; # GNOME Disks daemon, UDisks2 GUI
     xwayland.enable = false;
-    kdeconnect = {
-      enable = true;
-      package = pkgs.kdePackages.kdeconnect-kde;
-    };
   };
 
   environment.systemPackages = with pkgs; [
     jetbrains-mono
     adwaita-icon-theme
     bibata-cursors
-    alacritty # gpu accelerated terminal
-    wayland
-    xdg-utils # for opening default programs when clicking links
-    glib # gsettings
-    dracula-theme # gtk theme
-    swaylock
-    swayidle
-    grim # screenshot functionality
-    slurp # screenshot functionality
-    wl-clipboard # wl-copy and wl-paste for copy/paste from stdin / stdout
-    bemenu # wayland clone of dmenu
-    mako # notification system developed by swaywm maintainer
-    wdisplays # tool to configure displays
+    gtklock-userinfo-module
   ];
 
   services = {
@@ -212,6 +167,11 @@
           user = "greeter";
         };
       };
+      vt = 1; # signed integer
+    };
+
+    input-remapper = {
+      enable = true;
     };
 
     pipewire = {
@@ -264,19 +224,25 @@
       };
     };
 
-    # xdg-desktop-portal works by exposing a series of D-Bus interfaces
-    # known as portals under a well-known name
-    # (org.freedesktop.portal.Desktop) and object path
-    # (/org/freedesktop/portal/desktop).
-    # The portal interfaces include APIs for file access, opening URIs,
-    # printing and others.
-    dbus.enable = true;
-
+    displayManager = {
+      sddm = {
+        enable = false;
+        wayland.enable = true; # Correctly placed under displayManager
+        theme = "${import ./sddm-themes.nix { inherit pkgs; }}"; # Correctly placed under displayManager
+      };
+    };
+    desktopManager = {
+      plasma6.enable = false;
+    };
+    xserver = {
+      enable = false;
+      windowManager.i3.enable = true;
+    };
     xrdp = {
       enable = true;
-      port = 3389;
+      port = 3389; # default 3389
       openFirewall = true;
-      defaultWindowManager = "sway";
+      defaultWindowManager = "i3";
     };
 
     udisks2.enable = true;
@@ -290,7 +256,7 @@
       };
     };
     resolved = {
-      enable = true;
+      enable = false;
       fallbackDns = [
         "8.8.8.8"
         "2001:4860:4860::8844"
@@ -303,7 +269,7 @@
       nssmdns4 = true; # Printing
       openFirewall = true;
       ipv4 = true;
-      ipv6 = false;
+      ipv6 = true;
       reflector = true;
       publish = {
         enable = true;
@@ -316,29 +282,12 @@
     };
 
     printing = {
-      listenAddresses = ["*:631"];
-      allowFrom = ["all"];
+      listenAddresses = [ "*:631" ];
+      allowFrom = [ "all" ];
       browsing = true;
       defaultShared = true;
     };
     blueman.enable = true;
-
-    # Enable kmscon to replace default TTYs with support for TrueType fonts
-    kmscon = {
-      enable = true;
-      extraConfig = ''
-        font-name=JetBrains Mono Nerd Font Mono
-        font-size=14
-        font-dpi=192
-      '';
-    };
-  };
-
-  xdg.portal = {
-    enable = true;
-    wlr.enable = true;
-    # gtk portal needed to make gtk apps happy
-    extraPortals = [pkgs.xdg-desktop-portal-gtk];
   };
 
   security = {
@@ -346,11 +295,11 @@
       wheelNeedsPassword = false;
       extraRules = [
         {
-          users = ["privileged_user"];
+          users = [ "privileged_user" ];
           commands = [
             {
               command = "ALL";
-              options = ["NOPASSWD"]; # "SETENV" #
+              options = [ "NOPASSWD" ]; # "SETENV" #
             }
           ];
         }
@@ -399,7 +348,7 @@
     susu = {
       isNormalUser = true;
       description = "Su Su Oo";
-      extraGroups = ["networkmanager"];
+      extraGroups = [ "networkmanager" ];
     };
   };
 
@@ -412,7 +361,7 @@
   ];
 
   nix = {
-    registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
+    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
     settings = {
       auto-optimise-store = true; # Auto Optimize nix store.
@@ -423,10 +372,25 @@
     };
   };
 
+  # nixpkgs = {
+  #   config = {
+  #     allowUnfree = true;
+  #     permittedInsecurePackages = [ "electron-19.1.9" ];
+  #   };
+  #   overlays = [
+  #     inputs.nur.overlays.default
+  #     (final: _prev: {
+  #       unstable = import inputs.unstable_nixpkgs {
+  #         inherit (final) system config;
+  #       };
+  #     })
+  #   ];
+  # };
+
   virtualisation = {
     docker.enable = true;
     libvirtd.enable = true;
-    waydroid.enable = true;
+    waydroid.enable = false; # FIXME asahi linux?
     lxd.enable = true;
   };
 
@@ -435,7 +399,7 @@
       enable = true;
       allowReboot = false;
     };
-    stateVersion = "23.05"; # Did you read the comment?
+    stateVersion = "24.11"; # Did you read the comment?
     activationScripts.script.text = ''
       cp /home/alex/.dotfiles/users/alex/face.png /var/lib/AccountsService/icons/alex
       cp /home/alex/.dotfiles/users/susu/face.png /var/lib/AccountsService/icons/susu
@@ -451,8 +415,18 @@
   console = {
     earlySetup = true;
     font = "ter-132n";
-    packages = with pkgs; [terminus_font];
+    packages = with pkgs; [ terminus_font ];
     keyMap = "us";
+  };
+
+  # Enable kmscon to replace default TTYs with support for TrueType fonts
+  services.kmscon = {
+    enable = true;
+    extraConfig = ''
+      font-name=JetBrains Mono Nerd Font Mono
+      font-size=14
+      font-dpi=192
+    '';
   };
 
   # Keep a fallback traditional TTY (tty1) for emergencies
