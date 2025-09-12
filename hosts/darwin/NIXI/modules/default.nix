@@ -9,7 +9,6 @@
     ./packages
     ./macos-settings
     ./postActivation
-    ./scripts
     ./spicetify
     ./theme
     # ./wallpaper

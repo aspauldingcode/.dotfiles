@@ -1,0 +1,19 @@
+# Mobile Zsh Configuration
+# Basic shell configuration for mobile devices
+
+# Set up basic aliases
+alias ll='ls -la'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Basic prompt
+PS1='%n@%m:%~$ '
+
+# History settings
+HISTSIZE=1000
+SAVEHIST=1000
+HISTFILE=~/.zsh_history
+
+# Basic completion
+autoload -U compinit
+compinit

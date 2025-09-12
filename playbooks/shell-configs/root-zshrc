@@ -1,0 +1,19 @@
+# Root Zsh Configuration
+# Basic shell configuration for root user
+
+# Set up basic aliases
+alias ll='ls -la'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Root-specific prompt (red)
+PS1='%F{red}%n@%m:%~%f# '
+
+# History settings
+HISTSIZE=1000
+SAVEHIST=1000
+HISTFILE=/root/.zsh_history
+
+# Basic completion
+autoload -U compinit
+compinit

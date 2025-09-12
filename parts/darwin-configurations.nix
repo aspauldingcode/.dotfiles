@@ -41,29 +41,30 @@ in {
         ];
     };
 
-    NIXI = inputs.nix-darwin.lib.darwinSystem {
-      system = "x86_64-darwin";
-      specialArgs = inputs.self.commonConfigs.specialArgs;
-      modules =
-        inputs.self.commonModules.darwin
-        ++ [
-          ../hosts/darwin/NIXI
-          {
-            home-manager =
-              inputs.self.commonConfigs.homeManagerDarwin
-              // {
-                users.alex = {
-                  imports = [
-                    ../users/alex/NIXI
-                  ];
-                  home = {
-                    username = "alex";
-                  };
-                };
-              };
-          }
-        ];
-    };
+# NIXI temporarily disabled due to module evaluation issues
+    # NIXI = inputs.nix-darwin.lib.darwinSystem {
+    #   system = "x86_64-darwin";
+    #   specialArgs = inputs.self.commonConfigs.specialArgs;
+    #   modules =
+    #     inputs.self.commonModules.darwin
+    #     ++ [
+    #       ../hosts/darwin/NIXI
+    #       {
+    #         home-manager =
+    #           inputs.self.commonConfigs.homeManagerDarwin
+    #           // {
+    #             users.alex = {
+    #               imports = [
+    #                 ../users/alex/NIXI
+    #               ];
+    #               home = {
+    #                 username = "alex";
+    #               };
+    #             };
+    #           };
+    #       }
+    #     ];
+    # };
 
     # Light theme configurations
     NIXY-light = inputs.nix-darwin.lib.darwinSystem {
@@ -95,33 +96,34 @@ in {
         ];
     };
 
-    NIXI-light = inputs.nix-darwin.lib.darwinSystem {
-      system = "x86_64-darwin";
-      specialArgs = inputs.self.commonConfigs.specialArgs;
-      modules =
-        inputs.self.commonModules.darwin
-        ++ [
-          ../hosts/darwin/NIXI
-          {
-            # Override colorScheme at system level for postActivation script
-            colorScheme = lib.mkForce inputs.nix-colors.colorSchemes.${themes.NIXI.light};
+# NIXI-light temporarily disabled due to module evaluation issues
+    # NIXI-light = inputs.nix-darwin.lib.darwinSystem {
+    #   system = "x86_64-darwin";
+    #   specialArgs = inputs.self.commonConfigs.specialArgs;
+    #   modules =
+    #     inputs.self.commonModules.darwin
+    #     ++ [
+    #       ../hosts/darwin/NIXI
+    #       {
+    #         # Override colorScheme at system level for postActivation script
+    #         colorScheme = lib.mkForce inputs.nix-colors.colorSchemes.${themes.NIXI.light};
 
-            home-manager =
-              inputs.self.commonConfigs.homeManagerDarwin
-              // {
-                users.alex = {
-                  imports = [
-                    ../users/alex/NIXI
-                  ];
-                  home = {
-                    username = "alex";
-                  };
-                  # Use light theme from centralized theme selection
-                  colorScheme = lib.mkForce inputs.nix-colors.colorSchemes.${themes.NIXI.light};
-                };
-              };
-          }
-        ];
-    };
+    #         home-manager =
+    #           inputs.self.commonConfigs.homeManagerDarwin
+    #           // {
+    #             users.alex = {
+    #               imports = [
+    #                 ../users/alex/NIXI
+    #               ];
+    #               home = {
+    #                 username = "alex";
+    #               };
+    #               # Use light theme from centralized theme selection
+    #               colorScheme = lib.mkForce inputs.nix-colors.colorSchemes.${themes.NIXI.light};
+    #             };
+    #           };
+    #       }
+    #     ];
+    # };
   };
 }

@@ -1,0 +1,14 @@
+# Root Bash Configuration
+# Basic shell configuration for root user
+
+# Set up basic aliases
+alias ll='ls -la'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Root-specific prompt (red)
+PS1='\[\033[01;31m\]\u@\h:\w\[\033[00m\]# '
+
+# History settings
+HISTSIZE=1000
+HISTFILESIZE=2000

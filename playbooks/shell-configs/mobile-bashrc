@@ -1,0 +1,14 @@
+# Mobile Bash Configuration
+# Basic shell configuration for mobile devices
+
+# Set up basic aliases
+alias ll='ls -la'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Basic prompt
+PS1='\u@\h:\w\$ '
+
+# History settings
+HISTSIZE=1000
+HISTFILESIZE=2000
