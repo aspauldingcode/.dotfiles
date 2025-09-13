@@ -57,6 +57,7 @@ install_linux() {
   INSTALLER_URL="https://install.determinate.systems/nix"
 
   info "Running installer script from $INSTALLER_URL..."
+  info "should be no confirm up in this biz?"
   curl -sSfL "$INSTALLER_URL" | sh -s -- install --determinate --no-confirm || error "Installation failed."
 
   info "Installation complete."
