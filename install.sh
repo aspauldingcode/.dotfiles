@@ -19,13 +19,21 @@ detect_os() {
   esac
 }
 
+is_nixos() {
+  if [[ -f /etc/os-release ]]; then
+    if grep -qi '^ID=nixos' /etc/os-release; then
+      return 0
+    fi
+  fi
+  return 1
+}
+
 install_mac() {
   info "Detected macOS. Installing Nix via Determinate .pkg..."
 
   PKG_URL="https://install.determinate.systems/determinate-pkg/stable/Universal"
   PKG_FILE="Determinate.pkg"
 
-  # Download the .pkg, follow redirects, no-cache
   info "Downloading installer package from $PKG_URL..."
   curl -L -H 'Cache-Control: no-cache' -o "$PKG_FILE" "$PKG_URL" || error "Failed to download .pkg installer."
 
@@ -39,6 +47,11 @@ install_mac() {
 }
 
 install_linux() {
+  if is_nixos; then
+    info "Detected NixOS. Your Nix flake should already install Determinate Nix. Skipping installation."
+    return
+  fi
+
   info "Detected Linux. Installing Determinate Nix via official script..."
 
   INSTALLER_URL="https://install.determinate.systems/nix"
