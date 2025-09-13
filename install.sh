@@ -1,42 +1,33 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -e
 
-# Pretty output
-info() { echo -e "\033[1;32m[INFO]\033[0m $*"; }
-error() { echo -e "\033[1;31m[ERROR]\033[0m $*" >&2; }
+if [[ "$(uname)" == "Darwin" ]]; then
+  echo "[INFO] Detected macOS. Installing via .pkg..."
 
-OS="$(uname)"
-FLAKE_URI="github:aspauldingcode/.dotfiles"
+  # Short URL for the pkg
+  SHORT_URL="https://install.determinate.systems/determinate-pkg/stable/Universal"
 
-if [[ "$OS" == "Darwin" ]]; then
-    info "Detected macOS. Installing Nix via .pkg..."
+  # Get the real URL by following the redirect, but only fetch headers first
+  REAL_URL=$(curl -sI "$SHORT_URL" | awk '/^location:/ {print $2}' | tr -d '\r')
 
-    # ✅ Correct .pkg URL for macOS Universal installer
-    curl -sSfL https://install.determinate.systems/determinate-pkg/stable/Universal -o /tmp/determinate.pkg
-    sudo installer -pkg /tmp/determinate.pkg -target /
+  echo "[INFO] Resolved real .pkg URL: $REAL_URL"
 
-    # Load nix profile
-    source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+  TMP_PKG=$(mktemp -t determinate_pkg_XXXXXX.pkg)
 
-    info "Running darwin-rebuild switch..."
-    sudo nix run github:nix-darwin/nix-darwin#darwin-rebuild -- switch --flake "$FLAKE_URI"
+  echo "[INFO] Downloading installer package..."
+  curl -L --fail -o "$TMP_PKG" "$REAL_URL"
 
-elif [[ "$OS" == "Linux" ]]; then
-    info "Detected Linux. Installing Nix via shell script..."
+  echo "[INFO] Running installer..."
+  sudo installer -pkg "$TMP_PKG" -target /
 
-    curl -sSfL https://install.determinate.systems/nix | sh -s -- install --determinate --no-confirm
+  rm -f "$TMP_PKG"
+  echo "[INFO] Installation complete."
 
-    # Load nix profile
-    source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-
-    info "Linux install complete. Customize your flake activation here if needed."
-    # Example:
-    # home-manager switch --flake "$FLAKE_URI"
-    # sudo nixos-rebuild switch --flake "$FLAKE_URI"
+elif [[ "$(uname)" == "Linux" ]]; then
+  echo "[INFO] Detected Linux. Installing via CLI..."
+  curl -sSfL https://install.determinate.systems/nix | sh -s -- install --determinate --no-confirm
 
 else
-    error "Unsupported OS: $OS"
-    exit 1
+  echo "[ERROR] Unsupported OS: $(uname)"
+  exit 1
 fi
-
-info "✅ Installation complete!"
