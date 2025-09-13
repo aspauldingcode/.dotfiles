@@ -58,7 +58,7 @@ install_linux() {
 
   info "Running installer script from $INSTALLER_URL..."
   curl -sSfL "$INSTALLER_URL" | sh -s -- install --determinate --no-confirm && \
-. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh || error "Installation failed."
+  . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh || error "Installation failed."
 
   info "Installation complete."
 }
