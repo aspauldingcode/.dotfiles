@@ -182,14 +182,13 @@
               echo "Setting up GitHub authentication..."
               
               # Authenticate with GitHub
-              gh auth login --web --git-protocol ssh --skip-ssh-key
-              
-              # Add SSH key to GitHub after auth
-              if gh auth status >/dev/null 2>&1; then
+              if gh auth login --web --git-protocol ssh --skip-ssh-key; then
+                # Add SSH key to GitHub after successful auth
                 gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(hostname)-$(date +%Y%m%d)" >/dev/null 2>&1 || true
+                echo "✅ GitHub authentication successful"
               else
-                echo "❌ GitHub authentication failed"
-                return 1
+                echo "⚠️  GitHub authentication failed or was cancelled"
+                echo "You can still clone the repository manually or re-run setup later"
               fi
             fi
             
