@@ -178,33 +178,21 @@
             
             # GitHub authentication
             if ! gh auth status >/dev/null 2>&1; then
-              clear
               echo "Setting up GitHub authentication..."
-              echo "This will open a browser window for authentication."
-              echo "Press Enter to continue or Ctrl+C to skip..."
-              read -r
-              
-              # Authenticate with GitHub
-              echo "Launching GitHub authentication..."
-              # Run gh auth login interactively, do not skip SSH key, and let user see prompts
-              if gh auth login --web --git-protocol ssh; then
-                # Check if the SSH key is already added to GitHub
-                if ! gh ssh-key list | grep -q "$(cat ~/.ssh/id_ed25519.pub | awk '{print $2}')"; then
-                  echo "Adding SSH key to GitHub..."
-                  if gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(hostname)-$(date +%Y%m%d)"; then
-                    echo "✅ SSH key added successfully"
-                  else
-                    echo "⚠️  SSH key may already exist or failed to add"
-                  fi
-                else
-                  echo "✅ SSH key already exists on GitHub"
-                fi
-                echo "✅ GitHub authentication successful"
-              else
+              gh auth login --web --git-protocol ssh || {
                 echo "⚠️  GitHub authentication failed or was cancelled"
-                echo "You can still clone the repository manually or re-run setup later"
-                echo "To authenticate later, run: gh auth login"
+                echo "You can authenticate later with: gh auth login"
+                return 1
+              }
+              # Add SSH key if not present
+              if ! gh ssh-key list | grep -q "$(awk '{print $2}' ~/.ssh/id_ed25519.pub 2>/dev/null)"; then
+                gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(hostname)-$(date +%Y%m%d)" \
+                  && echo "✅ SSH key added to GitHub" \
+                  || echo "⚠️  Failed to add SSH key (may already exist)"
+              else
+                echo "✅ SSH key already exists on GitHub"
               fi
+              echo "✅ GitHub authentication successful"
             else
               echo "✅ Already authenticated with GitHub"
             fi
