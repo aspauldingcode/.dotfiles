@@ -180,16 +180,28 @@
             if ! gh auth status >/dev/null 2>&1; then
               clear
               echo "Setting up GitHub authentication..."
+              echo "This will open a browser window for authentication."
+              echo "Press Enter to continue or Ctrl+C to skip..."
+              read -r
               
               # Authenticate with GitHub
+              echo "Launching GitHub authentication..."
               if gh auth login --web --git-protocol ssh --skip-ssh-key; then
                 # Add SSH key to GitHub after successful auth
-                gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(hostname)-$(date +%Y%m%d)" >/dev/null 2>&1 || true
+                echo "Adding SSH key to GitHub..."
+                if gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(hostname)-$(date +%Y%m%d)" 2>/dev/null; then
+                  echo "✅ SSH key added successfully"
+                else
+                  echo "⚠️  SSH key may already exist or failed to add"
+                fi
                 echo "✅ GitHub authentication successful"
               else
                 echo "⚠️  GitHub authentication failed or was cancelled"
                 echo "You can still clone the repository manually or re-run setup later"
+                echo "To authenticate later, run: gh auth login"
               fi
+            else
+              echo "✅ Already authenticated with GitHub"
             fi
             
             # Ask for clone location and clone repository
