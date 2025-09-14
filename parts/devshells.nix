@@ -128,26 +128,30 @@
           gnused
           gnugrep
           jq
+        ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
+          # macOS specific tools
+          defaultbrowser
         ];
 
         shellHook = ''
-          # Create the setup script
+          # Automated setup function
           setup_dotfiles_dev() {
-            echo "🚀 Dotfiles Development Setup"
-            echo "============================="
-            echo ""
+            clear
+            echo "🚀 Setting up dotfiles development environment..."
+            
+            # Set Firefox as default browser on macOS
+            if [[ "$OSTYPE" == "darwin"* ]] && command -v defaultbrowser >/dev/null 2>&1; then
+              defaultbrowser firefox >/dev/null 2>&1 || true
+            fi
             
             # Check if git is configured
             if ! git config --global user.name >/dev/null 2>&1 || ! git config --global user.email >/dev/null 2>&1; then
-              echo "📝 Setting up Git configuration..."
-              
               # Get user name
               USER_NAME=$(dialog --inputbox "Enter your Git username:" 10 50 3>&1 1>&2 2>&3 3>&-)
               if [ $? -eq 0 ] && [ -n "$USER_NAME" ]; then
                 git config --global user.name "$USER_NAME"
-                echo "✅ Git username set to: $USER_NAME"
               else
-                echo "❌ Git username setup cancelled"
+                echo "Setup cancelled."
                 return 1
               fi
               
@@ -155,122 +159,64 @@
               USER_EMAIL=$(dialog --inputbox "Enter your Git email:" 10 50 3>&1 1>&2 2>&3 3>&-)
               if [ $? -eq 0 ] && [ -n "$USER_EMAIL" ]; then
                 git config --global user.email "$USER_EMAIL"
-                echo "✅ Git email set to: $USER_EMAIL"
               else
-                echo "❌ Git email setup cancelled"
+                echo "Setup cancelled."
                 return 1
               fi
-              
               clear
             fi
             
-            # Check GitHub authentication
+            # Prompt about SSH key setup for GitHub auth
             if ! gh auth status >/dev/null 2>&1; then
-              echo "🔐 GitHub authentication required..."
-              echo "This will open Firefox for GitHub login."
-              
-              if dialog --yesno "Proceed with GitHub authentication using Firefox?" 10 50; then
+              if dialog --yesno "Set up SSH key for GitHub authentication?\n\nThis will:\n- Generate an SSH key (if needed)\n- Authenticate with GitHub via browser\n- Add SSH key to your GitHub account" 12 60; then
                 clear
-                echo "🌐 Opening Firefox for GitHub authentication..."
+                echo "Setting up GitHub authentication..."
                 
-                # Platform-specific Firefox launch
-                if [[ "$OSTYPE" == "darwin"* ]]; then
-                  export BROWSER="${pkgs.firefox-bin}/Applications/Firefox.app/Contents/MacOS/firefox"
-                else
-                  export BROWSER="${pkgs.firefox}/bin/firefox"
+                # Generate SSH key silently if needed
+                if [ ! -f ~/.ssh/id_ed25519 ]; then
+                  mkdir -p ~/.ssh
+                  ssh-keygen -t ed25519 -C "$(git config --global user.email)" -f ~/.ssh/id_ed25519 -N "" -q
                 fi
                 
-                # Authenticate with GitHub using Firefox
-                gh auth login --web --git-protocol ssh
+                # Start SSH agent and add key
+                eval "$(ssh-agent -s)" >/dev/null 2>&1
+                ssh-add ~/.ssh/id_ed25519 >/dev/null 2>&1
                 
+                # Authenticate with GitHub
+                gh auth login --web --git-protocol ssh --skip-ssh-key
+                
+                # Add SSH key to GitHub after auth
                 if gh auth status >/dev/null 2>&1; then
-                  echo "✅ GitHub authentication successful!"
-                else
-                  echo "❌ GitHub authentication failed"
-                  return 1
+                  gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(hostname)-$(date +%Y%m%d)" >/dev/null 2>&1 || true
                 fi
               else
-                echo "❌ GitHub authentication cancelled"
+                echo "GitHub authentication skipped."
                 return 1
               fi
-            else
-              echo "✅ Already authenticated with GitHub"
             fi
             
-            # Check SSH key
-            if ! gh ssh-key list | grep -q "ed25519"; then
-              echo "🔑 Setting up SSH key..."
-              
-              # Generate SSH key if needed
-              if [ ! -f ~/.ssh/id_ed25519 ]; then
-                ssh-keygen -t ed25519 -C "$(git config --global user.email)" -f ~/.ssh/id_ed25519 -N ""
-                echo "✅ SSH key generated"
-              fi
-              
-              # Add SSH key to GitHub
-              gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(hostname)-$(date +%Y%m%d)"
-              echo "✅ SSH key added to GitHub"
-            else
-              echo "✅ SSH key already configured"
-            fi
-            
-            # Clone repository
+            # Clone repository if needed
             if [ ! -d ~/.dotfiles ]; then
-              echo "📦 Cloning dotfiles repository..."
-              
-              if dialog --yesno "Clone aspauldingcode/.dotfiles to ~/.dotfiles?" 10 50; then
+              if dialog --yesno "Clone aspauldingcode/.dotfiles to ~/.dotfiles?" 8 50; then
                 clear
-                echo "🔄 Cloning repository..."
-                
-                # Use nix shell to ensure git is available for the clone
-                nix shell nixpkgs#git --command git clone git@github.com:aspauldingcode/.dotfiles.git ~/.dotfiles
-                
+                echo "Cloning repository..."
+                git clone git@github.com:aspauldingcode/.dotfiles.git ~/.dotfiles
                 if [ $? -eq 0 ]; then
-                  echo "✅ Repository cloned successfully to ~/.dotfiles"
-                  echo ""
-                  echo "🎉 Setup complete! You can now:"
-                  echo "  cd ~/.dotfiles"
-                  echo "  nix develop .#contribute  # Enter development shell"
-                  echo "  # Make your changes and push to GitHub"
+                  echo "✅ Setup complete! Repository cloned to ~/.dotfiles"
                 else
                   echo "❌ Failed to clone repository"
                   return 1
                 fi
-              else
-                echo "ℹ️  Repository clone skipped"
               fi
-            else
-              echo "✅ Repository already exists at ~/.dotfiles"
             fi
             
-            echo ""
-            echo "🎯 Development environment ready!"
-            echo "Next steps:"
-            echo "  - cd ~/.dotfiles (if not already there)"
-            echo "  - Make your changes"
-            echo "  - git add, commit, and push your changes"
-            echo "  - Use 'nix run github:aspauldingcode/.dotfiles' to test builds"
+            clear
+            echo "🎉 Development environment ready!"
+            echo "You can now make changes and push to GitHub."
           }
           
-          echo "🛠️  Dotfiles Development & Contribution Shell"
-          echo "=============================================="
-          echo ""
-          echo "This shell provides tools for developing the dotfiles flake:"
-          echo "  - git: Version control"
-          echo "  - gh: GitHub CLI"
-          echo "  - firefox: Web browser for GitHub auth"
-          echo "  - dialog: Interactive setup dialogs"
-          echo ""
-          echo "Commands:"
-          echo "  setup_dotfiles_dev  # Run the complete setup process"
-          echo ""
-          echo "The setup will:"
-          echo "  1. Configure git user settings"
-          echo "  2. Authenticate with GitHub using Firefox"
-          echo "  3. Set up SSH keys"
-          echo "  4. Clone the repository to ~/.dotfiles"
-          echo ""
-          echo "Run 'setup_dotfiles_dev' to get started!"
+          # Auto-run setup
+          setup_dotfiles_dev
         '';
       };
     };
