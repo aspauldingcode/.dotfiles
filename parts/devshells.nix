@@ -202,21 +202,18 @@
               CLONE_PATH=$(eval echo "$CLONE_PATH")
               
               if [ ! -d "$CLONE_PATH" ]; then
-                if dialog --yesno "Clone aspauldingcode/.dotfiles to $CLONE_PATH?" 8 60; then
-                  clear
-                  echo "Cloning repository to $CLONE_PATH..."
-                  
-                  # Create parent directory if needed
-                  mkdir -p "$(dirname "$CLONE_PATH")"
-                  
-                  git clone git@github.com:aspauldingcode/.dotfiles.git "$CLONE_PATH"
-                  if [ $? -eq 0 ]; then
-                    echo "✅ Setup complete! Repository cloned to $CLONE_PATH"
-                    echo "💡 To use this flake: cd $CLONE_PATH"
-                  else
-                    echo "❌ Failed to clone repository"
-                    return 1
-                  fi
+                clear
+                echo "Cloning repository to $CLONE_PATH..."
+                
+                # Create parent directory if needed
+                mkdir -p "$(dirname "$CLONE_PATH")"
+                
+                git clone git@github.com:aspauldingcode/.dotfiles.git "$CLONE_PATH"
+                if [ $? -eq 0 ]; then
+                  echo "✅ Setup complete! Repository cloned to $CLONE_PATH"
+                else
+                  echo "❌ Failed to clone repository"
+                  return 1
                 fi
               else
                 echo "✅ Repository already exists at $CLONE_PATH"
