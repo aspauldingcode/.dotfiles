@@ -196,23 +196,44 @@
             fi
             
             # Clone repository if needed
-            if [ ! -d ~/.dotfiles ]; then
-              if dialog --yesno "Clone aspauldingcode/.dotfiles to ~/.dotfiles?" 8 50; then
-                clear
-                echo "Cloning repository..."
-                git clone git@github.com:aspauldingcode/.dotfiles.git ~/.dotfiles
-                if [ $? -eq 0 ]; then
-                  echo "✅ Setup complete! Repository cloned to ~/.dotfiles"
-                else
-                  echo "❌ Failed to clone repository"
-                  return 1
+            CLONE_PATH=$(dialog --inputbox "Enter clone destination:" 10 50 "$HOME/.dotfiles" 3>&1 1>&2 2>&3 3>&-)
+            if [ $? -eq 0 ] && [ -n "$CLONE_PATH" ]; then
+              # Expand tilde if present
+              CLONE_PATH=$(eval echo "$CLONE_PATH")
+              
+              if [ ! -d "$CLONE_PATH" ]; then
+                if dialog --yesno "Clone aspauldingcode/.dotfiles to $CLONE_PATH?" 8 60; then
+                  clear
+                  echo "Cloning repository to $CLONE_PATH..."
+                  
+                  # Create parent directory if needed
+                  mkdir -p "$(dirname "$CLONE_PATH")"
+                  
+                  git clone git@github.com:aspauldingcode/.dotfiles.git "$CLONE_PATH"
+                  if [ $? -eq 0 ]; then
+                    echo "✅ Setup complete! Repository cloned to $CLONE_PATH"
+                    echo "💡 To use this flake: cd $CLONE_PATH"
+                  else
+                    echo "❌ Failed to clone repository"
+                    return 1
+                  fi
                 fi
+              else
+                echo "✅ Repository already exists at $CLONE_PATH"
               fi
+            else
+              echo "Clone cancelled."
             fi
             
             clear
             echo "🎉 Development environment ready!"
             echo "You can now make changes and push to GitHub."
+            
+            # Change to the cloned repository directory
+            if [ -n "$CLONE_PATH" ] && [ -d "$CLONE_PATH" ]; then
+              echo "📁 Changing to repository directory..."
+              cd "$CLONE_PATH"
+            fi
           }
           
           # Auto-run setup
