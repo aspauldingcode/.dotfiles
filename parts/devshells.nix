@@ -166,36 +166,34 @@
               clear
             fi
             
-            # Prompt about SSH key setup for GitHub auth
+            # Generate SSH key silently before GitHub auth
+            if [ ! -f ~/.ssh/id_ed25519 ]; then
+              mkdir -p ~/.ssh
+              ssh-keygen -t ed25519 -C "$(git config --global user.email)" -f ~/.ssh/id_ed25519 -N "" -q
+            fi
+            
+            # Start SSH agent and add key
+            eval "$(ssh-agent -s)" >/dev/null 2>&1
+            ssh-add ~/.ssh/id_ed25519 >/dev/null 2>&1
+            
+            # GitHub authentication
             if ! gh auth status >/dev/null 2>&1; then
-              if dialog --yesno "Set up SSH key for GitHub authentication?\n\nThis will:\n- Generate an SSH key (if needed)\n- Authenticate with GitHub via browser\n- Add SSH key to your GitHub account" 12 60; then
-                clear
-                echo "Setting up GitHub authentication..."
-                
-                # Generate SSH key silently if needed
-                if [ ! -f ~/.ssh/id_ed25519 ]; then
-                  mkdir -p ~/.ssh
-                  ssh-keygen -t ed25519 -C "$(git config --global user.email)" -f ~/.ssh/id_ed25519 -N "" -q
-                fi
-                
-                # Start SSH agent and add key
-                eval "$(ssh-agent -s)" >/dev/null 2>&1
-                ssh-add ~/.ssh/id_ed25519 >/dev/null 2>&1
-                
-                # Authenticate with GitHub
-                gh auth login --web --git-protocol ssh --skip-ssh-key
-                
-                # Add SSH key to GitHub after auth
-                if gh auth status >/dev/null 2>&1; then
-                  gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(hostname)-$(date +%Y%m%d)" >/dev/null 2>&1 || true
-                fi
+              clear
+              echo "Setting up GitHub authentication..."
+              
+              # Authenticate with GitHub
+              gh auth login --web --git-protocol ssh --skip-ssh-key
+              
+              # Add SSH key to GitHub after auth
+              if gh auth status >/dev/null 2>&1; then
+                gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(hostname)-$(date +%Y%m%d)" >/dev/null 2>&1 || true
               else
-                echo "GitHub authentication skipped."
+                echo "❌ GitHub authentication failed"
                 return 1
               fi
             fi
             
-            # Clone repository if needed
+            # Ask for clone location and clone repository
             CLONE_PATH=$(dialog --inputbox "Enter clone destination:" 10 50 "$HOME/.dotfiles" 3>&1 1>&2 2>&3 3>&-)
             if [ $? -eq 0 ] && [ -n "$CLONE_PATH" ]; then
               # Expand tilde if present
