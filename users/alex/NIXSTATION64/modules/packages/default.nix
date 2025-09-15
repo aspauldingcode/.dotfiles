@@ -49,7 +49,7 @@
         libusb1
         libusbmuxd
         obsidian
-        rofi-wayland-unwrapped
+        rofi-unwrapped
         zoom-us
 
         # Multimedia and graphics

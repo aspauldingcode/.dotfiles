@@ -62,11 +62,6 @@
   '';
 
   # Console configuration for TTY
-  console = {
-    font = "Lat2-Terminus16";
-    keyMap = "us";
-    useXkbConfig = true;
-  };
 
   # System-specific environment variables
   environment.sessionVariables = {
@@ -155,9 +150,6 @@
   systemd.tmpfiles.rules = [
     "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
     "d /tmp 1777 root root 10d"
-    {
-      contents = "65536";
-      path = "/proc/sys/fs/inotify/max_user_watches";
-    }
+    "w /proc/sys/fs/inotify/max_user_watches - - - - 65536"
   ];
 }
