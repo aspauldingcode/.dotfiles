@@ -14,7 +14,7 @@
   home = {
     username = user;
     homeDirectory = "/home/${user}";
-    stateVersion = "24.11"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+    stateVersion = "25.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   };
 
   services.ssh-agent.enable = true;

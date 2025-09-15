@@ -1,28 +1,48 @@
+# Alex's Home Manager Configuration for NIXY
+# aarch64 Darwin (Apple Silicon) macOS System  
 {
   inputs,
   pkgs,
   lib,
-  config,
-  nix-colors,
   user,
+  nix-colors,
   ...
 }: let
-  sopsConfig = import ../../../sops-nix/sopsConfig.nix {
-    nixpkgs = inputs.nixpkgs;
-    user = "alex";
-    environment = "development";
-    hostname = "NIXY";
-  };
+  # Define username once for this user configuration
+  username = "alex";
 in {
   imports = [
-    inputs.sops-nix.homeManagerModules.sops
-    sopsConfig.hmSopsConfig
-    nix-colors.homeManagerModules.default
-    ../universals/modules
+    ../../../shared/base/alex-base.nix
+    ./modules
     ./home
     ./scripts
-    ./modules
   ];
 
-  # sops-nix templates are configured in sopsConfig.nix
+  # Pass username to all imported modules
+  _module.args = {
+    inherit username;
+  };
+
+  # macOS-specific overrides
+  home.sessionVariables = {
+    FLAKE = "/Users/${user}/.dotfiles";
+  };
+
+  # macOS-specific packages
+  home.packages = with pkgs; [
+    # macOS development tools
+    darwin.lsusb
+    
+    # Cross-platform tools that work well on macOS
+    vscode
+    
+    # Media tools
+    # (some packages may be different or unavailable on macOS)
+  ];
+
+  # macOS-specific program configurations
+  programs = {
+    # Override terminal for macOS
+    alacritty.settings.window.decorations = "buttonless";
+  };
 }

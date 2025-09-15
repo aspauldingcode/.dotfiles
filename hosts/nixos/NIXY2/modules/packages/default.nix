@@ -19,8 +19,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    way-displays
-    regreet
+    # Removed: way-displays, regreet
     neovim
     fastfetch
     zellij
@@ -37,12 +36,12 @@
     uutils-coreutils
     libusb1
     networkmanagerapplet
-    wl-clipboard
+    # Removed: wl-clipboard (Wayland-specific)
     yazi
     grim
     krita
     libreoffice-fresh
-    xdg-desktop-portal-wlr
+    # Removed: xdg-desktop-portal-wlr (Wayland-specific)
     killall
     tree
     curl

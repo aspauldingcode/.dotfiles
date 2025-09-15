@@ -1,9 +1,9 @@
-{ nix-colors, ... }:
+{ nix-colors, username, ... }:
 {
   home = {
-    username = "alex";
-    homeDirectory = "/home/alex";
-    stateVersion = "24.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+    username = username;
+    homeDirectory = "/home/${username}";
+    stateVersion = "25.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   };
 
   services.ssh-agent.enable = true;

@@ -4,8 +4,7 @@
     ./mimeapps
     ./niri
     ./packages
-    ./sway
     ./theme
-    ./waybar
+    # Removed: sway, waybar
   ];
 }

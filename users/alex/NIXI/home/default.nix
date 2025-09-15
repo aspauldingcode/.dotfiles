@@ -2,12 +2,13 @@
   lib,
   config,
   pkgs,
+  username,
   ...
 }:
 {
   home = {
-    stateVersion = "24.11"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-    homeDirectory = lib.mkForce "/Users/alex";
+    stateVersion = "25.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+    homeDirectory = lib.mkForce "/Users/${username}";
     shellAliases = {
       python = "python3.12";
     };

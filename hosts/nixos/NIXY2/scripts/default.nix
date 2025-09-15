@@ -2,17 +2,18 @@
   config,
   lib,
   pkgs,
+  hostname,
   ...
 }: {
   environment = {
     sessionVariables.NIXOS_OZONE_WL = "1";
     systemPackages = with pkgs; [
-      #rebuild #sudo nixos-rebuild switch --show-trace --option eval-cache false --flake .#NIXY2
+      #rebuild #sudo nixos-rebuild switch --show-trace --option eval-cache false --flake .#${hostname}
       (pkgs.writeShellScriptBin "rebuild" ''
-        # NIXY2(aarch64-linux)
+        # ${hostname}(aarch64-linux)
         cd ~/.dotfiles
-        sudo nixos-rebuild switch --show-trace --impure --flake .#NIXY2
-        #home-manager switch --flake .#alex@NIXY2
+        sudo nixos-rebuild switch --show-trace --impure --flake .#${hostname}
+        #home-manager switch --flake .#alex@${hostname}
 
         echo "Updating README with code statistics..."
         update-readme

@@ -53,7 +53,7 @@
       obs-studio-plugins.obs-vkcapture
       #obs-studio-plugins.wlrobs # NOT WORKING on aarch64-linux!
       #spotify-unwrapped # NOT AVAILABLE on aarch64-linux!
-      sway-contrib.grimshot
+      # Removed: sway-contrib.grimshot (Wayland-specific)
 
       # Desktop environment and window management
       bemenu

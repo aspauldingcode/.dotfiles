@@ -21,6 +21,7 @@
           echo "Nix version: $(nix --version)"
           echo "Flake path: ${inputs.self}"
         ''}";
+        meta.description = "Show dotfiles configuration information";
       };
 
       # System info app
@@ -38,6 +39,7 @@
           echo "Home: $HOME"
           echo "PWD: $PWD"
         ''}";
+        meta.description = "Display detailed system information";
       };
     };
   };

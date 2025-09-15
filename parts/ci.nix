@@ -62,12 +62,14 @@
       ci-check = {
         type = "app";
         program = "${self'.packages.ci-check}/bin/ci-check";
+        meta.description = "Run CI checks for the flake";
       };
 
       # CI deploy app
       ci-deploy = {
         type = "app";
         program = "${self'.packages.ci-deploy}/bin/ci-deploy";
+        meta.description = "Deploy system configuration via CI";
       };
     };
   };

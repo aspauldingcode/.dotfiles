@@ -2,15 +2,16 @@
   config,
   lib,
   pkgs,
+  hostname,
   ...
 }: {
   environment.systemPackages = with pkgs; [
-    #rebuild #sudo nixos-rebuild switch --show-trace --option eval-cache false --flake .#NIXSTATION64
+    #rebuild #sudo nixos-rebuild switch --show-trace --option eval-cache false --flake .#HOSTNAME
     (pkgs.writeShellScriptBin "rebuild" ''
-      # NIXSTATION64(x86_64-linux)
+      # ${hostname}(x86_64-linux)
       cd ~/.dotfiles
-      sudo nixos-rebuild switch --show-trace --flake .#NIXSTATION64
-      #home-manager switch --flake .#alex@NIXSTATION64
+      sudo nixos-rebuild switch --show-trace --flake .#${hostname}
+      #home-manager switch --flake .#alex@${hostname}
 
       echo "Updating README with code statistics..."
       update-readme

@@ -1,8 +1,8 @@
-# Home Manager Configurations Module
+# Home Manager Configurations Module - Pure Flake Schema Compliance
 {inputs, ...}: {
-  # Standalone Home Manager configurations (optional)
+  # Standalone Home Manager configurations (for systems without NixOS/nix-darwin)
   flake.homeConfigurations = {
-    # Standalone configuration for systems without NixOS/nix-darwin
+    # Generic standalone configuration
     "alex@generic" = inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = import inputs.nixpkgs {
         system = "x86_64-linux";
@@ -14,9 +14,7 @@
             "olm-3.2.16"
           ];
         };
-        overlays = [
-          inputs.self.overlays.default
-        ];
+        overlays = [inputs.self.overlays.default];
       };
       extraSpecialArgs = {
         inherit inputs;

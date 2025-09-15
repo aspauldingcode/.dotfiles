@@ -24,8 +24,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    way-displays
-    greetd.regreet
+    # Removed: way-displays, greetd.regreet
     neovim
     fastfetch
     zellij
@@ -37,12 +36,12 @@
     sqlite
     libusb1
     networkmanagerapplet
-    wl-clipboard
+    # Removed: wl-clipboard (Wayland-specific)
     yazi
     grim
     krita
     libreoffice-fresh
-    xdg-desktop-portal-wlr
+    # Removed: xdg-desktop-portal-wlr (Wayland-specific)
     killall
     tree
     curl
@@ -84,6 +83,6 @@
     dtc
     gnome-themes-extra
     perl
-    virt-manager
+    # Removed: virt-manager (virtual machines)
   ];
 }

@@ -1,12 +1,11 @@
-{pkgs, ...}: {
+{pkgs, hostname, ...}: {
   environment.systemPackages = with pkgs; [
     (writeShellScriptBin "rebuild" ''
-      echo "Rebuilding..."
+      echo "Rebuilding ${hostname}..."
       cd ~/.dotfiles
-      sudo darwin-rebuild switch --show-trace --flake .#NIXY
+      sudo darwin-rebuild switch --show-trace --flake .#${hostname}
 
-      echo "Fetching latest erase-install pkg."
-      ${bash}/bin/bash ${../../../erase-install-fetcher.sh}
+      # Removed: erase-install fetcher script
 
       echo "Updating README with code statistics..."
       update-readme

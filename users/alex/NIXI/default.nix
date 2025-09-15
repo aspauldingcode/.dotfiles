@@ -1,16 +1,48 @@
+# Alex's Home Manager Configuration for NIXI
+# x86_64 Darwin (Intel) macOS System
 {
   inputs,
   pkgs,
   lib,
-  nix-colors,
   user,
+  nix-colors,
   ...
-}: {
+}: let
+  # Define username once for this user configuration
+  username = "alex";
+in {
   imports = [
-    nix-colors.homeManagerModules.default
-    ../universals/modules
+    ../../../shared/base/alex-base.nix
+    ./modules
     ./home
     ./scripts
-    ./modules
   ];
+
+  # Pass username to all imported modules
+  _module.args = {
+    inherit username;
+  };
+
+  # macOS-specific overrides
+  home.sessionVariables = {
+    FLAKE = "/Users/${user}/.dotfiles";
+  };
+
+  # macOS-specific packages
+  home.packages = with pkgs; [
+    # macOS development tools
+    darwin.lsusb
+    
+    # Cross-platform tools that work well on macOS
+    vscode
+    
+    # Media tools
+    # (some packages may be different or unavailable on macOS)
+  ];
+
+  # macOS-specific program configurations  
+  programs = {
+    # Override terminal for macOS
+    alacritty.settings.window.decorations = "buttonless";
+  };
 }

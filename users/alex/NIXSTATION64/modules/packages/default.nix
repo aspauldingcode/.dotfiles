@@ -13,8 +13,7 @@
         kotlin-language-server
         lua-language-server
         vscode
-        quickemu
-        quickgui
+        # Removed: quickemu, quickgui (virtual machines)
 
         # System utilities
         avahi
@@ -64,7 +63,7 @@
         obs-studio-plugins.obs-vkcapture
         obs-studio-plugins.wlrobs
         spotify-unwrapped
-        sway-contrib.grimshot
+        # Removed: sway-contrib.grimshot (Wayland-specific)
         #yt-dlp # youtube-dl fork
         #tartube-yt-dlp # GUI to use yt-dlp
 
@@ -82,23 +81,10 @@
         lxappearance
         pcmanfm
         pinentry-bemenu
-        swaybg
-        swaylock-effects
-        swayr
-        swayrbar
-        wbg
-        wev
-        wl-clipboard
-        wl-screenrec
-        wlroots
-        wlogout
-        wl-gammactl
-        wlr-randr
-        gammastep
-        wl-gammarelay-rs
-        wofi
-        wshowkeys
-        wtype
+        # Removed: swaybg, swaylock-effects, swayr, swayrbar (Wayland-specific)
+        # Removed: wbg, wev, wl-clipboard, wl-screenrec, wlroots (Wayland-specific)
+        # Removed: wlogout, wl-gammactl, wlr-randr, gammastep, wl-gammarelay-rs (Wayland-specific)
+        # Removed: wofi, wshowkeys, wtype (Wayland-specific)
 
         # Gaming and emulation
         android-studio

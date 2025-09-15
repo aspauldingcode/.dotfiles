@@ -16,9 +16,9 @@
 
     # You can place the 'home' and 'programs' sections within the 'config' attribute as follows:
     home = {
-      username = "alex";
-      homeDirectory = "/home/alex";
-      stateVersion = "23.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+      username = "alex"; # NIXEDUP is special - keep hardcoded for mobile
+      homeDirectory = "/home/alex"; # NIXEDUP is special - keep hardcoded for mobile
+      stateVersion = "25.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
       file = {
         # MANAGE DOTFILES?
       };

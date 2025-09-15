@@ -120,26 +120,18 @@
         "aarch64-darwin" # Apple Silicon macOS
       ];
 
-      # Import modular configuration parts
+
+      # Import modular configuration parts (standard outputs only)
       imports = [
-        ./parts/lib.nix
         ./parts/overlays.nix
-        ./parts/sops.nix
-        ./parts/common.nix
         ./parts/nixos-configurations.nix
         ./parts/darwin-configurations.nix
         ./parts/home-configurations.nix
         ./parts/packages.nix
         ./parts/apps.nix
         ./parts/devshells.nix
-        # ./parts/docs.nix  # TODO: Create docs directory
-        # ./parts/templates.nix  # TODO: Create templates directory
-        ./parts/ci.nix
         ./parts/formatter.nix
         ./parts/checks.nix
-        ./modules
-        ./hosts
-        ./profiles
       ];
     };
 }
