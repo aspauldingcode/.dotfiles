@@ -10,7 +10,7 @@
   ...
 }: {
   imports = [
-    ../../../shared/base/nixos-base.nix
+    ../../../../shared/base/nixos-base.nix
     ../hardware-configuration
     ../modules
   ];
@@ -147,9 +147,9 @@
   };
 
   # Systemd-specific settings
-  systemd.extraConfig = ''
-    DefaultTimeoutStopSec=10s
-  '';
+  systemd.settings.Manager = {
+    DefaultTimeoutStopSec = "10s";
+  };
 
   # System-specific tmpfiles rules
   systemd.tmpfiles.rules = [

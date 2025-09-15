@@ -10,7 +10,7 @@
   ...
 }: {
   imports = [
-    ../../../shared/base/darwin-base.nix
+    ../../../../shared/base/darwin-base.nix
     ../modules
   ];
 
