@@ -119,18 +119,12 @@
           gh
           dialog
           
-          # Browser - platform specific
-          (if pkgs.stdenv.isDarwin then firefox-bin else firefox)
-          
           # Development utilities
           openssh
           coreutils
           gnused
           gnugrep
           jq
-        ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
-          # macOS specific tools
-          defaultbrowser
         ];
 
         shellHook = ''
@@ -138,11 +132,6 @@
           setup_dotfiles_dev() {
             clear
             echo "🚀 Setting up dotfiles development environment..."
-            
-            # Set Firefox as default browser on macOS
-            if [[ "$OSTYPE" == "darwin"* ]] && command -v defaultbrowser >/dev/null 2>&1; then
-              defaultbrowser firefox >/dev/null 2>&1 || true
-            fi
             
             # Check if git is configured
             if ! git config --global user.name >/dev/null 2>&1 || ! git config --global user.email >/dev/null 2>&1; then
