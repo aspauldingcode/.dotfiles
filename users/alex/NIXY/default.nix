@@ -1,5 +1,5 @@
 # Alex's Home Manager Configuration for NIXY
-# aarch64 Darwin (Apple Silicon) macOS System  
+# aarch64 Darwin (Apple Silicon) macOS System
 {
   inputs,
   pkgs,
@@ -32,10 +32,10 @@ in {
   home.packages = with pkgs; [
     # macOS development tools
     darwin.lsusb
-    
+
     # Cross-platform tools that work well on macOS
     vscode
-    
+
     # Media tools
     # (some packages may be different or unavailable on macOS)
   ];

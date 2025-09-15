@@ -1,4 +1,4 @@
-# NIXI Darwin Configuration  
+# NIXI Darwin Configuration
 # x86_64 Darwin (Intel) macOS System
 {
   inputs,

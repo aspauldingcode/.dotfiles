@@ -15,7 +15,7 @@ in {
     # ./modules/nix-the-planet.nix
 
     # Import sops configuration for secrets management (Darwin-specific)
-    inputs.self.sopsConfigs.systemSopsConfig
+    # Note: SOPS is configured via darwin-configurations.nix modules
   ];
 
   # Pass hostname to all imported modules

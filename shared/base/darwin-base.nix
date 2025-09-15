@@ -56,7 +56,7 @@
   # Common nix configuration
   nix = {
     enable = false; # Using determinate nix
-    
+
     # Distributed builds configuration - NIXSTATION64 as builder
     distributedBuilds = true;
     buildMachines = [

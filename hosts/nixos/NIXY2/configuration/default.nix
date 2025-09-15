@@ -1,4 +1,4 @@
-# NIXY2 NixOS Configuration  
+# NIXY2 NixOS Configuration
 # aarch64 Linux (Apple Silicon) VM/Development System
 {
   inputs,
@@ -17,9 +17,12 @@
 
   # System-specific overrides using passed hostname
   networking.hostName = hostname;
-  
+
   # Apple Silicon specific kernel
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
+
+  # Apple Silicon firmware configuration
+  hardware.asahi.peripheralFirmwareDirectory = ../firmware-NIXY2;
 
   # Mobile hotspot sharing configuration
   networking = {
@@ -49,7 +52,7 @@
     script = ''
       # Enable IP forwarding
       echo 1 > /proc/sys/net/ipv4/ip_forward
-      
+
       # Configure iptables for mobile hotspot
       ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
       ${pkgs.iptables}/bin/iptables -A FORWARD -i usb0 -o eth0 -j ACCEPT
@@ -88,11 +91,6 @@
   ];
 
   # Console configuration
-  console = {
-    font = "Lat2-Terminus16";
-    keyMap = "us";
-    useXkbConfig = true;
-  };
 
   # Programs specific to this system
   programs = {

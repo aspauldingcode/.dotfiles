@@ -18,6 +18,7 @@
     inputs.home-manager.darwinModules.home-manager
     inputs.sops-nix.darwinModules.sops
     inputs.nix-homebrew.darwinModules.nix-homebrew
+    inputs.nix-plist-manager.darwinModules.default
     {
       # Use centralized overlays
       nixpkgs.overlays = [inputs.self.overlays.default];
@@ -53,34 +54,42 @@ in {
     NIXY = inputs.nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       specialArgs = commonSpecialArgs;
-      modules = commonDarwinModules ++ [
-        ../hosts/darwin/NIXY
-        {
-          home-manager = commonHomeManagerDarwin // {
-            users.alex = {
-              imports = [../users/alex/NIXY];
-              home.username = "alex";
-            };
-          };
-        }
-      ];
+      modules =
+        commonDarwinModules
+        ++ [
+          ../hosts/darwin/NIXY
+          {
+            home-manager =
+              commonHomeManagerDarwin
+              // {
+                users.alex = {
+                  imports = [../users/alex/NIXY];
+                  home.username = "alex";
+                };
+              };
+          }
+        ];
     };
 
     # x86_64 Darwin (Intel Mac)
     NIXI = inputs.nix-darwin.lib.darwinSystem {
       system = "x86_64-darwin";
       specialArgs = commonSpecialArgs;
-      modules = commonDarwinModules ++ [
-        ../hosts/darwin/NIXI
-        {
-          home-manager = commonHomeManagerDarwin // {
-            users.alex = {
-              imports = [../users/alex/NIXI];
-              home.username = "alex";
-            };
-          };
-        }
-      ];
+      modules =
+        commonDarwinModules
+        ++ [
+          ../hosts/darwin/NIXI
+          {
+            home-manager =
+              commonHomeManagerDarwin
+              // {
+                users.alex = {
+                  imports = [../users/alex/NIXI];
+                  home.username = "alex";
+                };
+              };
+          }
+        ];
     };
   };
 }

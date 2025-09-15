@@ -2,7 +2,6 @@
 # Two ways to reference secrets:
 # 1. config.sops.secrets.name.path → file path ("/run/secrets/name")
 # 2. config.sops.placeholder."name" → actual secret value
-
 {
   # Basic secret configuration
   sops.secrets.my_secret = {
@@ -22,4 +21,3 @@
   # Shell command with file
   programs.zsh.shellAliases."gh-auth" = "gh auth login --with-token < ${config.sops.secrets.github_token.path}";
 }
-

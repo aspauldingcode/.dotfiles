@@ -228,7 +228,7 @@ nix eval --json .#nixosConfigurations.NIXY.config.sops.secrets --apply builtins.
    # Add your secrets here
    ```
 
-2. **Update configurations**:
+1. **Update configurations**:
 
    ```nix
    # Use the simplified configuration:
@@ -320,7 +320,7 @@ nix eval --json .#nixosConfigurations.NIXY.config.sops.secrets --apply builtins.
    - Verify user has access to the secret
    - Check if secret is properly decrypted
 
-3. **Invalid environment**:
+1. **Invalid environment**:
 
    ```
    Error: Invalid environment 'prod'. Must be: development

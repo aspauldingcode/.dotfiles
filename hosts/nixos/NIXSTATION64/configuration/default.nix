@@ -83,7 +83,7 @@
     grim
     krita
     libreoffice-fresh
-    
+
     # Development tools
     cargo
     hexedit

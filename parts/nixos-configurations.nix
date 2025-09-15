@@ -38,7 +38,7 @@
     backupFileExtension = "backup";
     sharedModules = [
       inputs.sops-nix.homeManagerModules.sops
-      { home.enableNixpkgsReleaseCheck = false; }
+      {home.enableNixpkgsReleaseCheck = false;}
     ];
     extraSpecialArgs = {
       inherit inputs;
@@ -51,34 +51,46 @@ in {
     # x86_64 Linux - Desktop workstation
     NIXSTATION64 = inputs.nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      specialArgs = commonSpecialArgs // {
-        inherit (inputs) apple-silicon mobile-nixos;
-      };
-      modules = commonNixOSModules ++ [
-        ../hosts/nixos/NIXSTATION64
-        {
-          home-manager = commonHomeManagerNixOS // {
-            users.alex = import ../users/alex/NIXSTATION64;
-          };
-        }
-      ];
+      specialArgs =
+        commonSpecialArgs
+        // {
+          inherit (inputs) apple-silicon mobile-nixos;
+        };
+      modules =
+        commonNixOSModules
+        ++ [
+          ../hosts/nixos/NIXSTATION64
+          {
+            home-manager =
+              commonHomeManagerNixOS
+              // {
+                users.alex = import ../users/alex/NIXSTATION64;
+              };
+          }
+        ];
     };
 
     # aarch64 Linux (Apple Silicon) - VM/Development system
     NIXY2 = inputs.nixpkgs.lib.nixosSystem {
       system = "aarch64-linux";
-      specialArgs = commonSpecialArgs // {
-        inherit (inputs) apple-silicon mobile-nixos;
-      };
-      modules = commonNixOSModules ++ [
-        ../hosts/nixos/NIXY2
-        inputs.apple-silicon.nixosModules.apple-silicon-support
-        {
-          home-manager = commonHomeManagerNixOS // {
-            users.alex = import ../users/alex/NIXY2;
-          };
-        }
-      ];
+      specialArgs =
+        commonSpecialArgs
+        // {
+          inherit (inputs) apple-silicon mobile-nixos;
+        };
+      modules =
+        commonNixOSModules
+        ++ [
+          ../hosts/nixos/NIXY2
+          inputs.apple-silicon.nixosModules.apple-silicon-support
+          {
+            home-manager =
+              commonHomeManagerNixOS
+              // {
+                users.alex = import ../users/alex/NIXY2;
+              };
+          }
+        ];
     };
 
     # aarch64 Linux (mobile) - OnePlus 6T with Mobile NixOS
@@ -102,6 +114,8 @@ in {
               "olm-3.2.16"
             ];
           };
+          # Suppress mobile-nixos documentation generation warnings
+          documentation.nixos.enable = false;
         }
       ];
     };

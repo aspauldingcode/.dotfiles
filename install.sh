@@ -13,9 +13,9 @@ error() {
 detect_os() {
   unameOut="$(uname -s)"
   case "${unameOut}" in
-    Linux*)   echo "linux";;
-    Darwin*)  echo "darwin";;
-    *)        error "Unsupported OS: ${unameOut}";;
+  Linux*) echo "linux" ;;
+  Darwin*) echo "darwin" ;;
+  *) error "Unsupported OS: ${unameOut}" ;;
   esac
 }
 
@@ -57,8 +57,8 @@ install_linux() {
   INSTALLER_URL="https://install.determinate.systems/nix"
 
   info "Running installer script from $INSTALLER_URL..."
-  curl -sSfL "$INSTALLER_URL" | sh -s -- install --determinate --no-confirm && \
-  . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh || error "Installation failed."
+  curl -sSfL "$INSTALLER_URL" | sh -s -- install --determinate --no-confirm &&
+    . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh || error "Installation failed."
 
   info "Installation complete."
 }
@@ -66,9 +66,9 @@ install_linux() {
 main() {
   OS=$(detect_os)
   case "$OS" in
-    darwin) install_mac ;;
-    linux)  install_linux ;;
-    *)      error "Unsupported OS: $OS" ;;
+  darwin) install_mac ;;
+  linux) install_linux ;;
+  *) error "Unsupported OS: $OS" ;;
   esac
 }
 

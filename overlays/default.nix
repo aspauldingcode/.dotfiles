@@ -1,22 +1,21 @@
 # Custom overlays for package modifications and additions
-{ inputs }:
-final: prev: {
+{inputs}: final: prev: {
   # Custom package modifications can go here
 
   # Fix for air-formatter - make it available in stable pkgs by pulling from unstable
   # This ensures compatibility with nixvim and other tools that expect it in pkgs
   air-formatter =
-    if prev ? unstable && prev.unstable ? air-formatter then
-      prev.unstable.air-formatter
-    else if final ? unstable && final.unstable ? air-formatter then
-      final.unstable.air-formatter
-    else
-      throw "air-formatter not found in unstable packages";
+    if prev ? unstable && prev.unstable ? air-formatter
+    then prev.unstable.air-formatter
+    else if final ? unstable && final.unstable ? air-formatter
+    then final.unstable.air-formatter
+    else throw "air-formatter not found in unstable packages";
 
   # Create a Darwin-compatible wayland that's essentially a no-op
   wayland =
-    if final.stdenv.isDarwin then
-      final.runCommand "wayland-darwin-stub" { } ''
+    if final.stdenv.isDarwin
+    then
+      final.runCommand "wayland-darwin-stub" {} ''
               mkdir -p $out/lib/pkgconfig $out/include $out/bin
 
               # Create minimal pkgconfig files
@@ -66,17 +65,17 @@ final: prev: {
           description = "Wayland stub for Darwin";
           homepage = "https://wayland.freedesktop.org/";
           license = final.lib.licenses.mit;
-          maintainers = [ ];
+          maintainers = [];
           platforms = final.lib.platforms.darwin;
         };
       }
-    else
-      prev.wayland;
+    else prev.wayland;
 
   # Create a Darwin-compatible wayland-scanner that's essentially a no-op
   wayland-scanner =
-    if final.stdenv.isDarwin then
-      final.runCommand "wayland-scanner-darwin-stub" { } ''
+    if final.stdenv.isDarwin
+    then
+      final.runCommand "wayland-scanner-darwin-stub" {} ''
               mkdir -p $out/bin
 
               # Create stub wayland-scanner binary
@@ -95,13 +94,12 @@ final: prev: {
           description = "Wayland scanner stub for Darwin";
           homepage = "https://wayland.freedesktop.org/";
           license = final.lib.licenses.mit;
-          maintainers = [ ];
+          maintainers = [];
           platforms = final.lib.platforms.darwin;
           mainProgram = "wayland-scanner";
         };
       }
-    else
-      prev.wayland-scanner;
+    else prev.wayland-scanner;
 
   # Fix gpgme tests failing on Darwin
   gpgme = prev.gpgme.overrideAttrs (oldAttrs: {
@@ -109,44 +107,52 @@ final: prev: {
   });
 
   # Fix vim plugin tests failing on Apple Silicon
-  vimPlugins = final.lib.mapAttrs (name: pkg:
-    if final.lib.hasInfix "fzf-lua" name then
-      pkg.overrideAttrs (oldAttrs: {
-        doCheck = !final.stdenv.isAarch64;
-      })
-    else
-      pkg
-  ) prev.vimPlugins;
+  vimPlugins =
+    final.lib.mapAttrs (
+      name: pkg:
+        if final.lib.hasInfix "fzf-lua" name
+        then
+          pkg.overrideAttrs (oldAttrs: {
+            doCheck = !final.stdenv.isAarch64;
+          })
+        else pkg
+    )
+    prev.vimPlugins;
 
   # Fix luajit vim plugin tests failing on Apple Silicon
-  luajitPackages = final.lib.mapAttrs (name: pkg:
-    if final.lib.hasInfix "fzf-lua" name then
-    
-      pkg.overrideAttrs (oldAttrs: {
-        doCheck = !final.stdenv.isAarch64;
-      })
-    else
-      pkg
-  ) prev.luajitPackages;
+  luajitPackages =
+    final.lib.mapAttrs (
+      name: pkg:
+        if final.lib.hasInfix "fzf-lua" name
+        then
+          pkg.overrideAttrs (oldAttrs: {
+            doCheck = !final.stdenv.isAarch64;
+          })
+        else pkg
+    )
+    prev.luajitPackages;
 
   # Fix lua package tests failing on Apple Silicon
-  luaPackages = final.lib.mapAttrs (name: pkg:
-    if final.lib.hasInfix "fzf-lua" name then
-      pkg.overrideAttrs (oldAttrs: {
-        doCheck = !final.stdenv.isAarch64;
-      })
-    else
-      pkg
-  ) prev.luaPackages;
+  luaPackages =
+    final.lib.mapAttrs (
+      name: pkg:
+        if final.lib.hasInfix "fzf-lua" name
+        then
+          pkg.overrideAttrs (oldAttrs: {
+            doCheck = !final.stdenv.isAarch64;
+          })
+        else pkg
+    )
+    prev.luaPackages;
 
   # Fix libdrm to disable Valgrind on Darwin and Apple Silicon Linux
   libdrm = prev.libdrm.overrideAttrs (oldAttrs: {
     buildInputs = final.lib.filter (dep: !(final.lib.hasPrefix "valgrind" (final.lib.getName dep))) (
-      oldAttrs.buildInputs or [ ]
+      oldAttrs.buildInputs or []
     );
 
     mesonFlags =
-      (oldAttrs.mesonFlags or [ ])
+      (oldAttrs.mesonFlags or [])
       ++ final.lib.optionals (final.stdenv.isDarwin || final.stdenv.isAarch64) [
         "-Dvalgrind=disabled"
       ];
@@ -154,46 +160,49 @@ final: prev: {
 
   # Create a Darwin-compatible qtwayland that's essentially a no-op
   qtwayland =
-    if final.stdenv.isDarwin then
-      final.runCommand "qtwayland-darwin-stub" { } ''
+    if final.stdenv.isDarwin
+    then
+      final.runCommand "qtwayland-darwin-stub" {} ''
         mkdir -p $out
         echo "QtWayland stub for Darwin" > $out/README
       ''
-    else
-      prev.qtwayland;
+    else prev.qtwayland;
 
   # Fix KDE packages to work on Darwin
-  libsForQt5 = prev.libsForQt5 // {
-    kguiaddons = prev.libsForQt5.kguiaddons.overrideAttrs (oldAttrs: {
-      buildInputs = final.lib.filter (dep: !(final.lib.hasInfix "wayland" (final.lib.getName dep))) (
-        oldAttrs.buildInputs or [ ]
-      );
+  libsForQt5 =
+    prev.libsForQt5
+    // {
+      kguiaddons = prev.libsForQt5.kguiaddons.overrideAttrs (oldAttrs: {
+        buildInputs = final.lib.filter (dep: !(final.lib.hasInfix "wayland" (final.lib.getName dep))) (
+          oldAttrs.buildInputs or []
+        );
 
-      cmakeFlags =
-        (oldAttrs.cmakeFlags or [ ])
-        ++ final.lib.optionals final.stdenv.isDarwin [
-          "-DCMAKE_DISABLE_FIND_PACKAGE_Wayland=ON"
-          "-DCMAKE_DISABLE_FIND_PACKAGE_WaylandClient=ON"
-        ];
-    });
+        cmakeFlags =
+          (oldAttrs.cmakeFlags or [])
+          ++ final.lib.optionals final.stdenv.isDarwin [
+            "-DCMAKE_DISABLE_FIND_PACKAGE_Wayland=ON"
+            "-DCMAKE_DISABLE_FIND_PACKAGE_WaylandClient=ON"
+          ];
+      });
 
-    kconfigwidgets = prev.libsForQt5.kconfigwidgets.overrideAttrs (oldAttrs: {
-      buildInputs = final.lib.filter (dep: !(final.lib.hasInfix "wayland" (final.lib.getName dep))) (
-        oldAttrs.buildInputs or [ ]
-      );
+      kconfigwidgets = prev.libsForQt5.kconfigwidgets.overrideAttrs (oldAttrs: {
+        buildInputs = final.lib.filter (dep: !(final.lib.hasInfix "wayland" (final.lib.getName dep))) (
+          oldAttrs.buildInputs or []
+        );
 
-      cmakeFlags =
-        (oldAttrs.cmakeFlags or [ ])
-        ++ final.lib.optionals final.stdenv.isDarwin [
-          "-DCMAKE_DISABLE_FIND_PACKAGE_Wayland=ON"
-        ];
-    });
-  };
+        cmakeFlags =
+          (oldAttrs.cmakeFlags or [])
+          ++ final.lib.optionals final.stdenv.isDarwin [
+            "-DCMAKE_DISABLE_FIND_PACKAGE_Wayland=ON"
+          ];
+      });
+    };
 
   # Mobile-specific packages
   mobile = {
     # Mobile development tools
-    inherit (prev)
+    inherit
+      (prev)
       android-tools
       fastboot
       heimdall
@@ -202,7 +211,8 @@ final: prev: {
 
   # Development tools with custom configurations
   dev = {
-    inherit (prev)
+    inherit
+      (prev)
       git
       neovim
       tmux

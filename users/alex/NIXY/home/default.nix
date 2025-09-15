@@ -4,18 +4,14 @@
   pkgs,
   username,
   ...
-}:
-{
+}: {
   home = {
     stateVersion = "25.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
     homeDirectory = lib.mkForce "/Users/${username}";
     shellAliases = {
       python = "python3.12";
     };
-    file."Library/Application Support/Mousecape/capes" = {
-      target = "Library/Application Support/Mousecape/capes/";
-      source = ../../extraConfig/cursors-macOS;
-    };
+    # Mousecape cursor configuration removed
   };
 
   programs = {

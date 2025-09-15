@@ -9,8 +9,8 @@
   ...
 }: {
   imports = [
-    # Import phoneputer base configuration
-    "${inputs.mobile-nixos}/examples/demo/configuration.nix"
+    # Import mobile-nixos device configuration
+    (import "${inputs.mobile-nixos}/lib/configuration.nix" {device = "oneplus-fajita";})
   ];
 
   # Allow unfree packages (needed for OnePlus firmware and proprietary drivers)
@@ -69,6 +69,14 @@
       wifi.powersave = false; # Better for mobile usage
     };
     wireless.enable = false; # Use NetworkManager instead
+  };
+
+  # Disable documentation generation to suppress mobile-nixos warnings
+  documentation = {
+    enable = false;
+    nixos.enable = false;
+    man.enable = false;
+    info.enable = false;
   };
 
   # User configuration

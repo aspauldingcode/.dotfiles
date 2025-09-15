@@ -36,14 +36,14 @@ in {
     krita
     libreoffice-fresh
     element-desktop
-    
+
     # Development tools specific to desktop
     arduino-language-server
     cmake-language-server
     jdt-language-server
     kotlin-language-server
     lua-language-server
-    
+
     # System utilities for desktop
     avahi
     debootstrap
@@ -63,12 +63,12 @@ in {
     tigervnc
     usbmuxd
     xarchiver
-    
+
     # Media and graphics
     obs-studio
     obs-studio-plugins.obs-vkcapture
     spotify-unwrapped
-    
+
     # Desktop environment tools
     albert
     bemenu
@@ -78,23 +78,23 @@ in {
     lxappearance
     pcmanfm
     pinentry-bemenu
-    
+
     # Gaming and emulation
     android-studio
     element
     element-desktop
     firefox
     steam
-    
+
     # Development and debugging
     gdb
     strace
     valgrind
-    
+
     # File management
     ranger
     yazi
-    
+
     # System monitoring
     htop
     btop

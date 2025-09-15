@@ -8,7 +8,7 @@
   inputs,
   ...
 }: {
-  # Import phoneputer-style configuration
+  # Import mobile-nixos configuration
   imports = [
     # Mobile NixOS device configuration for OnePlus 6T
     (import "${inputs.mobile-nixos}/lib/configuration.nix" {device = "oneplus-fajita";})
@@ -44,8 +44,8 @@
 
   # Enable GNOME Desktop Environment (from phoneputer)
   services.xserver.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
+  services.displayManager.gdm.enable = true;
 
   # Enable GNOME Keyring for password management
   services.gnome.gnome-keyring.enable = true;
@@ -161,6 +161,14 @@
 
   # Allow insecure packages if needed
   nixpkgs.config.permittedInsecurePackages = ["olm-3.2.16"];
+
+  # Disable documentation generation to suppress mobile-nixos warnings
+  documentation = {
+    enable = false;
+    nixos.enable = false;
+    man.enable = false;
+    info.enable = false;
+  };
 
   # System state version
   system.stateVersion = "25.11";

@@ -14,7 +14,7 @@
 
   home = {
     username = user;
-    homeDirectory = 
+    homeDirectory =
       if pkgs.stdenv.isDarwin
       then "/Users/${user}"
       else "/home/${user}";
@@ -30,36 +30,40 @@
   targets.genericLinux.enable = !pkgs.stdenv.isDarwin;
 
   # Common packages across all systems
-  home.packages = with pkgs; [
-    # Essential tools
-    curl
-    wget
-    jq
-    tree
-    htop
-    unzip
-    zip
-    git
-    lazygit
-    neovim
-    fastfetch
-    zellij
-    
-    # Development tools
-    nodejs_20
-    python3
-  ] ++ lib.optionals (!pkgs.stdenv.isDarwin) [
-    # Linux-specific packages
-    xdg-utils
-  ];
+  home.packages = with pkgs;
+    [
+      # Essential tools
+      curl
+      wget
+      jq
+      tree
+      htop
+      unzip
+      zip
+      git
+      lazygit
+      neovim
+      fastfetch
+      zellij
+
+      # Development tools
+      nodejs_20
+      python3
+    ]
+    ++ lib.optionals (!pkgs.stdenv.isDarwin) [
+      # Linux-specific packages
+      xdg-utils
+    ];
 
   # Common session variables
-  home.sessionVariables = {
-    EDITOR = lib.mkDefault "nvim";
-    TERMINAL = lib.mkDefault "alacritty";
-  } // lib.optionalAttrs pkgs.stdenv.isLinux {
-    BROWSER = lib.mkDefault "firefox";
-  };
+  home.sessionVariables =
+    {
+      EDITOR = lib.mkDefault "nvim";
+      TERMINAL = lib.mkDefault "alacritty";
+    }
+    // lib.optionalAttrs pkgs.stdenv.isLinux {
+      BROWSER = lib.mkDefault "firefox";
+    };
 
   # Linux-specific XDG configuration
   xdg = lib.mkIf (!pkgs.stdenv.isDarwin) {

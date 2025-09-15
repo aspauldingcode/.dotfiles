@@ -32,15 +32,15 @@ in {
   home.packages = with pkgs; [
     # macOS development tools
     darwin.lsusb
-    
+
     # Cross-platform tools that work well on macOS
     vscode
-    
+
     # Media tools
     # (some packages may be different or unavailable on macOS)
   ];
 
-  # macOS-specific program configurations  
+  # macOS-specific program configurations
   programs = {
     # Override terminal for macOS
     alacritty.settings.window.decorations = "buttonless";

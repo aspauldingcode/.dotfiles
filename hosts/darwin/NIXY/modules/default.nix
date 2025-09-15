@@ -8,8 +8,8 @@
     ./openssh
     ./packages
     ./macos-settings
-    ./postActivation
-    ./spicetify
+    # ./postActivation  # Moved to shared/scripts/post-activation.nix
+    # ./spicetify  # Moved to home-manager configuration
     ./theme
     # ./wallpaper
     # ./wg-quick  # Commented out due to missing private key files

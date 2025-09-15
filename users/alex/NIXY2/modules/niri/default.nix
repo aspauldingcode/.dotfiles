@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  inherit (config.colorscheme) colors;
+  inherit (config.colorScheme) palette;
 in {
   # Niri configuration file - minimal default setup
   xdg.configFile."niri/config.kdl".text = ''
@@ -58,14 +58,14 @@ in {
 
         focus-ring {
             width 4
-            active-color "#${colors.base0C}"
-            inactive-color "#${colors.base03}"
+            active-color "#${palette.base0C}"
+            inactive-color "#${palette.base03}"
         }
 
         border {
             width 2
-            active-color "#${colors.base0A}"
-            inactive-color "#${colors.base03}"
+            active-color "#${palette.base0A}"
+            inactive-color "#${palette.base03}"
         }
     }
 

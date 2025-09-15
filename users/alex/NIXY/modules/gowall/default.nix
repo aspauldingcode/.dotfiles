@@ -10,7 +10,7 @@ in {
     enable = true;
     text = ''
       themes:
-        - name: "${config.colorscheme.slug}-${config.colorscheme.variant}"
+        - name: "${config.colorScheme.slug}-${config.colorScheme.variant}"
           colors:
             - "#${palette.base00}"
             - "#${palette.base01}"
@@ -35,7 +35,7 @@ in {
     enable = true;
     text = ''
       themes:
-        - name: "${config.colorscheme.slug}-${config.colorscheme.variant}"
+        - name: "${config.colorScheme.slug}-${config.colorScheme.variant}"
           colors:
             - "#${palette.base00}"
             - "#${palette.base01}"

@@ -7,6 +7,6 @@ in
   {
     imports = [nix-colors.homeManagerModules.default];
     # nix-colors
-    colorscheme = nix-colors.colorSchemes.${scheme};
-    home-manager.users.alex.colorscheme = nix-colors.colorSchemes.${scheme};
+    colorScheme = nix-colors.colorSchemes.${scheme};
+    home-manager.users.alex.colorScheme = nix-colors.colorSchemes.${scheme};
   }

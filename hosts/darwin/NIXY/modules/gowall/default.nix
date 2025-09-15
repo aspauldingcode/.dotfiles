@@ -10,7 +10,7 @@ in {
     enable = true;
     text = ''
       {
-        "name": "${config.colorscheme.slug}",
+        "name": "${config.colorScheme.slug}",
         "colors": [
           "#${palette.base00}",
           "#${palette.base01}",

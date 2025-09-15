@@ -1,5 +1,8 @@
-{ nix-colors, username, ... }:
 {
+  nix-colors,
+  username,
+  ...
+}: {
   home = {
     username = username;
     homeDirectory = "/home/${username}";
@@ -19,8 +22,8 @@
   # Decoratively fix virt-manager error: "Could not detect a default hypervisor" instead of imperitively through virt-manager's menubar > file > Add Connection
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
-      autoconnect = [ "qemu:///system" ];
-      uris = [ "qemu:///system" ];
+      autoconnect = ["qemu:///system"];
+      uris = ["qemu:///system"];
     };
   };
 

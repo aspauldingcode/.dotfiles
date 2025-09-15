@@ -7,7 +7,7 @@
   scheme = "gruvbox-dark-soft";
 in {
   imports = [nix-colors.homeManagerModules.default];
-  colorscheme = nix-colors.colorSchemes.${scheme};
+  colorScheme = nix-colors.colorSchemes.${scheme};
 
   home.pointerCursor = {
     gtk.enable = true;

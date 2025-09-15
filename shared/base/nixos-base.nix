@@ -106,7 +106,7 @@
     fwupd.enable = true;
     upower.enable = true;
     power-profiles-daemon.enable = true;
-    thermald.enable = true;
+    thermald.enable = lib.mkDefault (pkgs.stdenv.hostPlatform.system == "x86_64-linux");
     openssh = {
       enable = true;
       settings = {
@@ -198,7 +198,7 @@
       zoxide
       fzf
     ];
-    
+
     variables = {
       EDITOR = "nvim";
       BROWSER = "firefox";

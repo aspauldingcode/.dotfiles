@@ -50,25 +50,25 @@ in {
     usbmuxd
     wget
     xarchiver
-    
+
     # Media (some may not be available on aarch64-linux)
     obs-studio-plugins.obs-vkcapture
-    
+
     # Desktop environment tools
     bemenu
     clipman
     imv
     lxappearance
     pcmanfm
-    
+
     # Development tools
     gdb
     strace
-    
+
     # File management
     ranger
     yazi
-    
+
     # System monitoring
     htop
     btop

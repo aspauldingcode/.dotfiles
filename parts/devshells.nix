@@ -118,7 +118,7 @@
           git
           gh
           dialog
-          
+
           # Development utilities
           openssh
           coreutils
@@ -132,7 +132,7 @@
           setup_dotfiles_dev() {
             clear
             echo "🚀 Setting up dotfiles development environment..."
-            
+
             # Check if git is configured
             if ! git config --global user.name >/dev/null 2>&1 || ! git config --global user.email >/dev/null 2>&1; then
               # Get user name
@@ -143,7 +143,7 @@
                 echo "Setup cancelled."
                 return 1
               fi
-              
+
               # Get user email
               USER_EMAIL=$(dialog --inputbox "Enter your Git email:" 10 50 3>&1 1>&2 2>&3 3>&-)
               if [ $? -eq 0 ] && [ -n "$USER_EMAIL" ]; then
@@ -154,17 +154,17 @@
               fi
               clear
             fi
-            
+
             # Generate SSH key silently before GitHub auth
             if [ ! -f ~/.ssh/id_ed25519 ]; then
               mkdir -p ~/.ssh
               ssh-keygen -t ed25519 -C "$(git config --global user.email)" -f ~/.ssh/id_ed25519 -N "" -q
             fi
-            
+
             # Start SSH agent and add key
             eval "$(ssh-agent -s)" >/dev/null 2>&1
             ssh-add ~/.ssh/id_ed25519 >/dev/null 2>&1
-            
+
             # GitHub authentication
             if ! gh auth status >/dev/null 2>&1; then
               echo "Setting up GitHub authentication..."
@@ -185,20 +185,20 @@
             else
               echo "✅ Already authenticated with GitHub"
             fi
-            
+
             # Ask for clone location and clone repository
             CLONE_PATH=$(dialog --inputbox "Enter clone destination:" 10 50 "$HOME/.dotfiles" 3>&1 1>&2 2>&3 3>&-)
             if [ $? -eq 0 ] && [ -n "$CLONE_PATH" ]; then
               # Expand tilde if present
               CLONE_PATH=$(eval echo "$CLONE_PATH")
-              
+
               if [ ! -d "$CLONE_PATH" ]; then
                 clear
                 echo "Cloning repository to $CLONE_PATH..."
-                
+
                 # Create parent directory if needed
                 mkdir -p "$(dirname "$CLONE_PATH")"
-                
+
                 git clone git@github.com:aspauldingcode/.dotfiles.git "$CLONE_PATH"
                 if [ $? -eq 0 ]; then
                   echo "✅ Setup complete! Repository cloned to $CLONE_PATH"
@@ -212,18 +212,18 @@
             else
               echo "Clone cancelled."
             fi
-            
+
             clear
             echo "🎉 Development environment ready!"
             echo "You can now make changes and push to GitHub."
-            
+
             # Change to the cloned repository directory
             if [ -n "$CLONE_PATH" ] && [ -d "$CLONE_PATH" ]; then
               echo "📁 Changing to repository directory..."
               cd "$CLONE_PATH"
             fi
           }
-          
+
           # Auto-run setup
           setup_dotfiles_dev
         '';

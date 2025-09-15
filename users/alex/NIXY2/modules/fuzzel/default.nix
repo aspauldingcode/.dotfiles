@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  inherit (config.colorscheme) colors;
+  inherit (config.colorScheme) palette;
 in {
   programs.fuzzel = {
     enable = true;
@@ -25,14 +25,14 @@ in {
         inner-pad = 0;
       };
 
-      colors = {
-        background = "${colors.base00}dd";
-        text = "${colors.base05}ff";
-        match = "${colors.base0C}ff";
-        selection = "${colors.base02}ff";
-        selection-text = "${colors.base05}ff";
-        selection-match = "${colors.base0C}ff";
-        border = "${colors.base07}ff";
+      palette = {
+        background = "${palette.base00}dd";
+        text = "${palette.base05}ff";
+        match = "${palette.base0C}ff";
+        selection = "${palette.base02}ff";
+        selection-text = "${palette.base05}ff";
+        selection-match = "${palette.base0C}ff";
+        border = "${palette.base07}ff";
       };
 
       border = {

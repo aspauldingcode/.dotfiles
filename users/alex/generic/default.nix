@@ -8,7 +8,6 @@
 }: {
   imports = [
     nix-colors.homeManagerModules.default
-    ../universals/modules
   ];
 
   home.username = user;

@@ -11,30 +11,30 @@
     "colors.toml" = {
       text = ''
         # 🎨 Color Palette Configuration
-        # Generated from nix-colors: ${config.colorscheme.slug} (${config.colorscheme.variant})
+        # Generated from nix-colors: ${config.colorScheme.slug} (${config.colorScheme.variant})
 
         [theme]
-        name = "${config.colorscheme.slug}"
-        variant = "${config.colorscheme.variant}"
+        name = "${config.colorScheme.slug}"
+        variant = "${config.colorScheme.variant}"
 
-        # 🎯 Current Active Colors (${config.colorscheme.slug})
+        # 🎯 Current Active Colors (${config.colorScheme.slug})
         [colors]
-        base00 = "#${config.colorscheme.palette.base00}"  # Background (Darkest)
-        base01 = "#${config.colorscheme.palette.base01}"  # Lighter Background (Status bars)
-        base02 = "#${config.colorscheme.palette.base02}"  # Selection Background
-        base03 = "#${config.colorscheme.palette.base03}"  # Comments, Invisibles, Line Highlighting
-        base04 = "#${config.colorscheme.palette.base04}"  # Dark Foreground (Status bars)
-        base05 = "#${config.colorscheme.palette.base05}"  # Default Foreground, Caret, Delimiters
-        base06 = "#${config.colorscheme.palette.base06}"  # Light Foreground
-        base07 = "#${config.colorscheme.palette.base07}"  # Lightest Foreground (Highlights)
-        base08 = "#${config.colorscheme.palette.base08}"  # Red (Errors, Important)
-        base09 = "#${config.colorscheme.palette.base09}"  # Orange (Warnings, Escape Sequences)
-        base0A = "#${config.colorscheme.palette.base0A}"  # Yellow (Classes, Constants)
-        base0B = "#${config.colorscheme.palette.base0B}"  # Green (Strings, Success)
-        base0C = "#${config.colorscheme.palette.base0C}"  # Cyan (Special Cases, Regexp)
-        base0D = "#${config.colorscheme.palette.base0D}"  # Blue (Functions, Methods)
-        base0E = "#${config.colorscheme.palette.base0E}"  # Magenta (Keywords, Storage)
-        base0F = "#${config.colorscheme.palette.base0F}"  # Brown (Deprecated, Special)
+        base00 = "#${config.colorScheme.palette.base00}"  # Background (Darkest)
+        base01 = "#${config.colorScheme.palette.base01}"  # Lighter Background (Status bars)
+        base02 = "#${config.colorScheme.palette.base02}"  # Selection Background
+        base03 = "#${config.colorScheme.palette.base03}"  # Comments, Invisibles, Line Highlighting
+        base04 = "#${config.colorScheme.palette.base04}"  # Dark Foreground (Status bars)
+        base05 = "#${config.colorScheme.palette.base05}"  # Default Foreground, Caret, Delimiters
+        base06 = "#${config.colorScheme.palette.base06}"  # Light Foreground
+        base07 = "#${config.colorScheme.palette.base07}"  # Lightest Foreground (Highlights)
+        base08 = "#${config.colorScheme.palette.base08}"  # Red (Errors, Important)
+        base09 = "#${config.colorScheme.palette.base09}"  # Orange (Warnings, Escape Sequences)
+        base0A = "#${config.colorScheme.palette.base0A}"  # Yellow (Classes, Constants)
+        base0B = "#${config.colorScheme.palette.base0B}"  # Green (Strings, Success)
+        base0C = "#${config.colorScheme.palette.base0C}"  # Cyan (Special Cases, Regexp)
+        base0D = "#${config.colorScheme.palette.base0D}"  # Blue (Functions, Methods)
+        base0E = "#${config.colorScheme.palette.base0E}"  # Magenta (Keywords, Storage)
+        base0F = "#${config.colorScheme.palette.base0F}"  # Brown (Deprecated, Special)
 
         # 📋 Base16 Default Reference Colors
         [reference.colors]

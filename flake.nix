@@ -1,5 +1,5 @@
 {
-  description = "Production-Ready Universal Flake - macOS, NixOS & Mobile Support";
+  description = "Production-Ready Universal Nix Flake - Multi-Host, Multi-User with Home Manager, Nix-Darwin, NixOS & SOPS secrets management";
 
   inputs = {
     # Core nixpkgs channels - using unstable to avoid libaio build issues
@@ -109,9 +109,8 @@
     };
   };
 
-  outputs =
-    inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
+  outputs = inputs @ {flake-parts, ...}:
+    flake-parts.lib.mkFlake {inherit inputs;} {
       # Supported systems for multi-platform builds
       systems = [
         "x86_64-linux" # Intel/AMD Linux
@@ -119,7 +118,6 @@
         "x86_64-darwin" # Intel macOS
         "aarch64-darwin" # Apple Silicon macOS
       ];
-
 
       # Import modular configuration parts (standard outputs only)
       imports = [

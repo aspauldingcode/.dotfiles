@@ -3,8 +3,7 @@
   user,
   environment ? "development", # production, staging, development
   hostname ? "unknown",
-}:
-let
+}: let
   # Environment-specific secret files
   secretFiles = {
     development = ../secrets/development/secrets.yaml;
@@ -12,28 +11,24 @@ let
   };
 
   # Base sops configuration
-  commonSopsConfigBase =
-    {
-      environment ? "development",
-    }:
-    {
-      sops = {
-        defaultSopsFile = secretFiles.${environment} or secretFiles.development;
-        defaultSopsFormat = "yaml";
+  commonSopsConfigBase = {environment ? "development"}: {
+    sops = {
+      defaultSopsFile = secretFiles.${environment} or secretFiles.development;
+      defaultSopsFormat = "yaml";
 
-        age = {
-          sshKeyPaths = [
-            "/etc/ssh/ssh_host_ed25519_key"
-            "/etc/ssh/ssh_host_rsa_key"
-          ];
-          keyFile = "/var/lib/sops-nix/key.txt";
-          generateKey = true;
-        };
-
-        validateSopsFiles = true;
-        keepGenerations = 5;
+      age = {
+        sshKeyPaths = [
+          "/etc/ssh/ssh_host_ed25519_key"
+          "/etc/ssh/ssh_host_rsa_key"
+        ];
+        keyFile = "/var/lib/sops-nix/key.txt";
+        generateKey = true;
       };
+
+      validateSopsFiles = true;
+      keepGenerations = 5;
     };
+  };
 
   # Simplified secret configuration with standard permissions
   defaultSecretConfig = {
@@ -61,13 +56,12 @@ let
   };
 
   # Unified system sops configuration for both NixOS and Darwin
-  systemSopsConfig =
-    {
-      environment ? "development",
-      ...
-    }:
-    { config, pkgs, ... }:
-    nixpkgs.lib.recursiveUpdate (commonSopsConfigBase { inherit environment; }) {
+  systemSopsConfig = {environment ? "development", ...}: {
+    config,
+    pkgs,
+    ...
+  }:
+    nixpkgs.lib.recursiveUpdate (commonSopsConfigBase {inherit environment;}) {
       sops = {
         secrets = environmentSecrets.${environment} or environmentSecrets.development;
 
@@ -133,28 +127,24 @@ let
     };
 
   # Home Manager secrets (without owner and mode, with proper attribute handling)
-  hmSecrets =
-    {
-      environment ? "development",
-    }:
+  hmSecrets = {environment ? "development"}:
     builtins.mapAttrs (
       name: value:
-      removeAttrs value [
-        "owner"
-        "mode"
-      ]
+        removeAttrs value [
+          "owner"
+          "mode"
+        ]
     ) (environmentSecrets.${environment} or environmentSecrets.development);
 
   # Home Manager-specific sops configuration
-  hmSopsConfig =
-    {
-      environment ? "development",
-      ...
-    }:
-    { config, pkgs, ... }:
-    nixpkgs.lib.recursiveUpdate (commonSopsConfigBase { inherit environment; }) {
+  hmSopsConfig = {environment ? "development", ...}: {
+    config,
+    pkgs,
+    ...
+  }:
+    nixpkgs.lib.recursiveUpdate (commonSopsConfigBase {inherit environment;}) {
       sops = {
-        secrets = hmSecrets { inherit environment; };
+        secrets = hmSecrets {inherit environment;};
 
         # Home Manager specific settings
         age.keyFile = "/home/${user}/.config/sops/age/keys.txt";
@@ -165,9 +155,7 @@ let
 
   # Simple utility for getting secret paths
   getSecretPath = secretName: "/run/secrets/${secretName}";
-
-in
-{
+in {
   inherit
     systemSopsConfig
     hmSopsConfig
