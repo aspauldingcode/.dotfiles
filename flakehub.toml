@@ -1,0 +1,38 @@
+[flake]
+# FlakeHub rolling release configuration
+rolling = true
+
+# Repository metadata
+description = "Production-Ready Universal Nix Flake - Multi-Host, Multi-User with Home Manager, Nix-Darwin, NixOS & SOPS secrets management"
+
+# License information
+license = "MIT"
+
+# Categories for FlakeHub discovery
+categories = ["nix-darwin", "nixos", "home-manager", "dotfiles", "multi-host"]
+
+# Additional metadata
+[flake.metadata]
+homepage = "https://github.com/aspauldingcode/.dotfiles"
+documentation = "https://github.com/aspauldingcode/.dotfiles/blob/main/README.md"
+repository = "https://github.com/aspauldingcode/.dotfiles"
+
+# Outputs to include in FlakeHub
+[flake.outputs]
+# Darwin configurations
+"darwinConfigurations.NIXY" = "Apple Silicon macOS configuration"
+"darwinConfigurations.NIXI" = "Intel macOS configuration"
+
+# NixOS configurations  
+"nixosConfigurations.NIXSTATION64" = "Desktop NixOS configuration"
+"nixosConfigurations.NIXY2" = "Apple Silicon NixOS configuration"
+"nixosConfigurations.NIXEDUP" = "Enhanced NixOS configuration"
+
+# Home Manager configurations
+"homeConfigurations.alex" = "User configuration for alex"
+
+# Development shells
+"devShells.default" = "Default development environment"
+
+# Packages
+"packages" = "Custom packages and derivations"
