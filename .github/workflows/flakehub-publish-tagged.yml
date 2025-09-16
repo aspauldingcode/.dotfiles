@@ -39,4 +39,7 @@ jobs:
           visibility: "public"
           name: "aspauldingcode/.dotfiles"
           tag: "${{ inputs.tag }}"
-          include-output-paths: true
+          include-output-paths: false
+        env:
+          # FlakeHub authentication token
+          FLAKEHUB_PUSH_TOKEN: ${{ secrets.FLAKEHUB_PUSH_TOKEN }}
