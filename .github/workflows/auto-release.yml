@@ -13,6 +13,10 @@ jobs:
       - run: |
           COUNT=$(gh release list --limit 1000 | grep -E "^rolling-v0\.1\." | wc -l || echo "0")
           VERSION="rolling-v0.1.$((COUNT + 1))"
-          gh release create "$VERSION" --title "$VERSION" --prerelease --generate-notes
+          if ! gh release view "$VERSION" >/dev/null 2>&1; then
+            gh release create "$VERSION" --title "$VERSION" --prerelease --generate-notes
+          else
+            echo "Release $VERSION already exists, skipping"
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
