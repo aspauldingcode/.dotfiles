@@ -1,88 +1,18 @@
-name: "Auto Release on Main"
+name: "Auto Release"
 on:
   push:
     branches:
       - "main"
 jobs:
-  auto-release:
+  release:
     runs-on: "ubuntu-latest"
     permissions:
       contents: "write"
-      pull-requests: "read"
     steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v4"
-        with:
-          fetch-depth: 0 # Fetch full history for commit counting
-      - name: "Get release count"
-        id: release_count
-        run: |
-          # Get the count of existing releases that match our pattern
-          EXISTING_RELEASES=$(gh release list --limit 1000 | grep -E "^rolling-v0\.1\." | wc -l || echo "0")
-          NEW_COUNT=$((EXISTING_RELEASES + 1))
-          echo "count=$NEW_COUNT" >> $GITHUB_OUTPUT
-          echo "version=0.1.$NEW_COUNT" >> $GITHUB_OUTPUT
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: "Check if release exists"
-        id: check_release
-        run: |
-          VERSION="0.1.${{ steps.release_count.outputs.count }}"
-          if gh release view "rolling-v$VERSION" >/dev/null 2>&1; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: "Generate release notes"
-        id: release_notes
-        if: steps.check_release.outputs.exists == 'false'
-        run: |
-          COMMIT_SHA="${{ github.sha }}"
-          COMMIT_MSG=$(git log -1 --pretty=format:"%s" $COMMIT_SHA)
-          COMMIT_AUTHOR=$(git log -1 --pretty=format:"%an" $COMMIT_SHA)
-
-          cat << EOF > release_notes.md
-          ⚠️ **Rolling Release** - This is an automated unstable release. Tags prefixed with 'rolling-' are auto-generated and separate from manual version tags.
-
-          ## Automated Rolling Release v${{ steps.release_count.outputs.version }}
-
-          **Latest Commit:** $COMMIT_MSG
-          **Author:** $COMMIT_AUTHOR
-          **Commit:** [\`${COMMIT_SHA:0:7}\`](https://github.com/${{ github.repository }}/commit/$COMMIT_SHA)
-
-          ### Usage
-
-          To use this flake:
-          \`\`\`bash
-          # Use latest rolling release
-          nix flake show github:${{ github.repository }}
-
-          # Pin to this specific rolling version
-          nix flake show github:${{ github.repository }}/rolling-v${{ steps.release_count.outputs.version }}
-          \`\`\`
-
-          ### Installation
-
-          \`\`\`bash
-          # Clone and install
-          git clone https://github.com/${{ github.repository }}.git
-          cd .dotfiles
-          ./install.sh
-          \`\`\`
-
-          ---
-          *This is an automated rolling release generated from the latest commit to main.*
-          EOF
-      - name: "Create Release"
-        if: steps.check_release.outputs.exists == 'false'
-        run: |
-          # Create release with rolling- prefix to distinguish from manual tags
-          ROLLING_TAG="rolling-v${{ steps.release_count.outputs.version }}"
-          gh release create "$ROLLING_TAG" \
-            --title "Rolling Release v${{ steps.release_count.outputs.version }}" \
-            --notes-file release_notes.md \
-            --prerelease
+      - uses: "actions/checkout@v4"
+      - run: |
+          COUNT=$(gh release list --limit 1000 | grep -E "^rolling-v0\.1\." | wc -l || echo "0")
+          VERSION="rolling-v0.1.$((COUNT + 1))"
+          gh release create "$VERSION" --title "$VERSION" --prerelease --generate-notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
