@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - "main"
-
 jobs:
   auto-release:
     runs-on: "ubuntu-latest"
@@ -14,8 +13,7 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@v4"
         with:
-          fetch-depth: 0  # Fetch full history for commit counting
-
+          fetch-depth: 0 # Fetch full history for commit counting
       - name: "Get release count"
         id: release_count
         run: |
@@ -26,7 +24,6 @@ jobs:
           echo "version=0.1.$NEW_COUNT" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: "Check if release exists"
         id: check_release
         run: |
@@ -38,7 +35,6 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: "Generate release notes"
         id: release_notes
         if: steps.check_release.outputs.exists == 'false'
@@ -46,40 +42,39 @@ jobs:
           COMMIT_SHA="${{ github.sha }}"
           COMMIT_MSG=$(git log -1 --pretty=format:"%s" $COMMIT_SHA)
           COMMIT_AUTHOR=$(git log -1 --pretty=format:"%an" $COMMIT_SHA)
-          
+
           cat << EOF > release_notes.md
           ⚠️ **Rolling Release** - This is an automated unstable release. Tags prefixed with 'rolling-' are auto-generated and separate from manual version tags.
-          
+
           ## Automated Rolling Release v${{ steps.release_count.outputs.version }}
-          
+
           **Latest Commit:** $COMMIT_MSG
           **Author:** $COMMIT_AUTHOR
           **Commit:** [\`${COMMIT_SHA:0:7}\`](https://github.com/${{ github.repository }}/commit/$COMMIT_SHA)
-          
+
           ### Usage
-          
+
           To use this flake:
           \`\`\`bash
           # Use latest rolling release
           nix flake show github:${{ github.repository }}
-          
+
           # Pin to this specific rolling version
           nix flake show github:${{ github.repository }}/rolling-v${{ steps.release_count.outputs.version }}
           \`\`\`
-          
+
           ### Installation
-          
+
           \`\`\`bash
           # Clone and install
           git clone https://github.com/${{ github.repository }}.git
           cd .dotfiles
           ./install.sh
           \`\`\`
-          
+
           ---
           *This is an automated rolling release generated from the latest commit to main.*
           EOF
-
       - name: "Create Release"
         if: steps.check_release.outputs.exists == 'false'
         run: |
