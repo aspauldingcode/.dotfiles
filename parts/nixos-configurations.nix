@@ -47,9 +47,12 @@
     };
   };
 in {
-  flake.nixosConfigurations = {
-    # x86_64 Linux - Desktop workstation
-    NIXSTATION64 = inputs.nixpkgs.lib.nixosSystem {
+  flake.nixosConfigurations = let
+    # Conditionally exclude aarch64-linux configs in CI
+    isCI = (builtins.getEnv "FLAKEHUB_CI") == "1";
+    baseConfigs = {
+      # x86_64 Linux - Desktop workstation
+      NIXSTATION64 = inputs.nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs =
         commonSpecialArgs
@@ -68,10 +71,12 @@ in {
               };
           }
         ];
+      };
     };
-
-    # aarch64 Linux (Apple Silicon) - VM/Development system
-    NIXY2 = inputs.nixpkgs.lib.nixosSystem {
+    
+    aarch64Configs = {
+      # aarch64 Linux (Apple Silicon) - VM/Development system
+      NIXY2 = inputs.nixpkgs.lib.nixosSystem {
       system = "aarch64-linux";
       specialArgs =
         commonSpecialArgs
@@ -91,10 +96,10 @@ in {
               };
           }
         ];
-    };
+      };
 
-    # aarch64 Linux (mobile) - OnePlus 6T with Mobile NixOS
-    NIXEDUP = inputs.nixpkgs.lib.nixosSystem {
+      # aarch64 Linux (mobile) - OnePlus 6T with Mobile NixOS
+      NIXEDUP = inputs.nixpkgs.lib.nixosSystem {
       system = "aarch64-linux";
       specialArgs = {
         inherit inputs;
@@ -118,6 +123,8 @@ in {
           documentation.nixos.enable = false;
         }
       ];
+      };
     };
-  };
+  in
+    if isCI then baseConfigs else (baseConfigs // aarch64Configs);
 }

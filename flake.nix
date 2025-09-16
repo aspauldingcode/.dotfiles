@@ -109,15 +109,24 @@
     };
   };
 
-  outputs = inputs @ {flake-parts, ...}:
+  outputs = inputs @ {flake-parts, ...}: let
+    # Conditionally exclude aarch64-linux in CI to avoid mobile-nixos build issues
+    allSystems = [
+      "x86_64-linux" # Intel/AMD Linux
+      "aarch64-linux" # ARM64 Linux (Apple Silicon, Mobile)
+      "x86_64-darwin" # Intel macOS
+      "aarch64-darwin" # Apple Silicon macOS
+    ];
+    ciSystems = [
+      "x86_64-linux" # Intel/AMD Linux
+      "x86_64-darwin" # Intel macOS
+      "aarch64-darwin" # Apple Silicon macOS
+    ];
+    systems = if (builtins.getEnv "FLAKEHUB_CI") == "1" then ciSystems else allSystems;
+  in
     flake-parts.lib.mkFlake {inherit inputs;} {
       # Supported systems for multi-platform builds
-      systems = [
-        "x86_64-linux" # Intel/AMD Linux
-        "aarch64-linux" # ARM64 Linux (Apple Silicon, Mobile)
-        "x86_64-darwin" # Intel macOS
-        "aarch64-darwin" # Apple Silicon macOS
-      ];
+      inherit systems;
 
       # Import modular configuration parts (standard outputs only)
       imports = [
