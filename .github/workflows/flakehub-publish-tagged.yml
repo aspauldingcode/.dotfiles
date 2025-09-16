@@ -38,7 +38,7 @@ jobs:
         with:
           visibility: "public"
           name: "aspauldingcode/.dotfiles"
-          tag: "${{ inputs.tag }}"
+          tag: "${{ inputs.tag || github.ref_name }}"
           include-output-paths: false
         env:
           # FlakeHub authentication token
