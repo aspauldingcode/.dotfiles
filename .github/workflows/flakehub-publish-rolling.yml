@@ -20,6 +20,7 @@ jobs:
           rolling: true
           visibility: "public"
           include-output-paths: true
+          systems: "x86_64-linux"
         env:
           # FlakeHub authentication token
           FLAKEHUB_PUSH_TOKEN: ${{ secrets.FLAKEHUB_PUSH_TOKEN }}
