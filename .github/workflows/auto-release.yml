@@ -12,10 +12,10 @@ jobs:
       - uses: "actions/checkout@v4"
       - run: |
           COUNT=1
-          while gh release view "rolling-v0.1.$COUNT" >/dev/null 2>&1; do
+          while gh release view "v0.1.$COUNT" >/dev/null 2>&1; do
             COUNT=$((COUNT + 1))
           done
-          VERSION="rolling-v0.1.$COUNT"
+          VERSION="v0.1.$COUNT"
           gh release create "$VERSION" --title "$VERSION" --prerelease --generate-notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
