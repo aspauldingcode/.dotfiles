@@ -49,7 +49,7 @@
 in {
   flake.nixosConfigurations = let
     # Conditionally exclude aarch64-linux configs in CI
-    isCI = (builtins.getEnv "FLAKEHUB_CI") == "1";
+    isCI = (builtins.getEnv "GITHUB_ACTIONS") == "true" || (builtins.getEnv "FLAKEHUB_CI") == "1";
     baseConfigs = {
       # x86_64 Linux - Desktop workstation
       NIXSTATION64 = inputs.nixpkgs.lib.nixosSystem {

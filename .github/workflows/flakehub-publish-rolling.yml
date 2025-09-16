@@ -14,8 +14,6 @@ jobs:
         with:
           persist-credentials: false
       - uses: "DeterminateSystems/determinate-nix-action@v3"
-      - name: "Set CI flag"
-        run: echo "FLAKEHUB_CI=1" >> $GITHUB_ENV
       - uses: "DeterminateSystems/flakehub-push@main"
         with:
           name: "aspauldingcode/.dotfiles"

@@ -122,11 +122,12 @@
       "x86_64-darwin" # Intel macOS
       "aarch64-darwin" # Apple Silicon macOS
     ];
-    systems = if (builtins.getEnv "FLAKEHUB_CI") == "1" then ciSystems else allSystems;
+    # Check for GitHub Actions or FlakeHub CI environment
+    isCI = (builtins.getEnv "GITHUB_ACTIONS") == "true" || (builtins.getEnv "FLAKEHUB_CI") == "1";
   in
     flake-parts.lib.mkFlake {inherit inputs;} {
       # Supported systems for multi-platform builds
-      inherit systems;
+      systems = if isCI then ciSystems else allSystems;
 
       # Import modular configuration parts (standard outputs only)
       imports = [
