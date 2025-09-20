@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Safari/605.1.15" version="28.2.3">
   <diagram name="Page-1" id="A2PJj4b6LsWDSMQUGuEN">
-    <mxGraphModel dx="1756" dy="624" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1950" dy="757" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -59,17 +59,34 @@
         <mxCell id="MtlewYbVIbxLeJqWz2Zs-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="MtlewYbVIbxLeJqWz2Zs-8" target="MtlewYbVIbxLeJqWz2Zs-16">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="MtlewYbVIbxLeJqWz2Zs-8" value="Local Network Modem" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="MtlewYbVIbxLeJqWz2Zs-8" value="Local Network Modem" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
           <mxGeometry x="230" y="270" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="MtlewYbVIbxLeJqWz2Zs-10" value="8AMPS (aarch64-darwin)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="500" y="320" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="MtlewYbVIbxLeJqWz2Zs-12" value="NIXY (aarch64-darwin)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="40" y="170" width="120" height="60" as="geometry" />
+          <mxGeometry x="90" y="190" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="MtlewYbVIbxLeJqWz2Zs-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0;exitDx=0;exitDy=0;shape=link;width=6.399999999999999;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="280" as="sourcePoint" />
+            <mxPoint x="90" y="230" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="20" y="280" />
+              <mxPoint x="20" y="270" />
+              <mxPoint x="50" y="270" />
+              <mxPoint x="50" y="230" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="MtlewYbVIbxLeJqWz2Zs-42" value="Same device" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="MtlewYbVIbxLeJqWz2Zs-41">
+          <mxGeometry x="0.0571" y="-1" relative="1" as="geometry">
+            <mxPoint x="-1" y="-6" as="offset" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="MtlewYbVIbxLeJqWz2Zs-16" value="NIXY2 (aarch64-linux)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="-110" y="270" width="120" height="60" as="geometry" />
+          <mxGeometry x="-120" y="270" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="MtlewYbVIbxLeJqWz2Zs-17" value="NIXI (x86_64-darwin)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="-10" y="370" width="120" height="60" as="geometry" />
@@ -93,7 +110,7 @@
             <mxPoint y="10" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="MtlewYbVIbxLeJqWz2Zs-24" value="Start Here!" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+        <mxCell id="MtlewYbVIbxLeJqWz2Zs-24" value="Start Here!" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
           <mxGeometry x="220" y="30" width="60" height="30" as="geometry" />
         </mxCell>
         <mxCell id="MtlewYbVIbxLeJqWz2Zs-29" value="iPhone 12 Pro Max&lt;div&gt;iOS 16.1 Jailbroken with Dopamine+RootHide&lt;div&gt;Runs X11 &amp;amp; XVnc &amp;amp; TrollVNC &amp;amp; SSH, FluxBox, XTerm&lt;/div&gt;&lt;/div&gt;&lt;div&gt;Jailed iOS APT Package Manager&lt;/div&gt;&lt;div&gt;Sileo GUI Package Manager&lt;/div&gt;&lt;div&gt;TrollStore installed&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
@@ -103,10 +120,10 @@
           <mxGeometry x="330" y="450" width="60" height="30" as="geometry" />
         </mxCell>
         <mxCell id="MtlewYbVIbxLeJqWz2Zs-32" value="M1 Macbook Air 2020 with macOS" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="50" y="130" width="100" height="30" as="geometry" />
+          <mxGeometry x="100" y="150" width="100" height="30" as="geometry" />
         </mxCell>
         <mxCell id="MtlewYbVIbxLeJqWz2Zs-34" value="M1 Macbook Air 2020 with NixOS (Asahi)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="-115" y="230" width="130" height="30" as="geometry" />
+          <mxGeometry x="-125" y="230" width="130" height="30" as="geometry" />
         </mxCell>
         <mxCell id="MtlewYbVIbxLeJqWz2Zs-35" value="Intel Macbook Pro 2017 with MacOS" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry y="335" width="100" height="30" as="geometry" />
