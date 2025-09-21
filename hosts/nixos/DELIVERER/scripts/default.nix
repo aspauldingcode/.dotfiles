@@ -1,7 +1,4 @@
 # DELIVERER-specific scripts
-{
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   # DELIVERER-specific scripts can be added here
 }

@@ -44,6 +44,9 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    
+    # Determinate Nix installer and management
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
 
     # macOS specific tools
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";

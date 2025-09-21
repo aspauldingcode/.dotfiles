@@ -60,6 +60,7 @@ in {
         commonNixOSModules
         ++ [
           ../hosts/nixos/NIXSTATION64
+          inputs.determinate.nixosModules.default
           {
             home-manager =
               commonHomeManagerNixOS
@@ -83,6 +84,7 @@ in {
         ++ [
           ../hosts/nixos/NIXY2
           inputs.apple-silicon.nixosModules.apple-silicon-support
+          inputs.determinate.nixosModules.default
           {
             home-manager =
               commonHomeManagerNixOS
@@ -105,6 +107,7 @@ in {
         commonNixOSModules
         ++ [
           ../hosts/nixos/DELIVERER
+          inputs.determinate.nixosModules.default
           {
             home-manager =
               commonHomeManagerNixOS
@@ -126,6 +129,7 @@ in {
       modules = [
         ../hosts/nixos/NIXEDUP
         inputs.sops-nix.nixosModules.sops
+        inputs.determinate.nixosModules.default
         {
           nixpkgs.overlays = [inputs.self.overlays.default];
           nixpkgs.config = {
