@@ -21,21 +21,53 @@ jobs:
           persist-credentials: false
           ref: "${{ (inputs.tag != null) && format('refs/tags/{0}', inputs.tag) || '' }}"
       - uses: "DeterminateSystems/determinate-nix-action@v3"
-      - name: "Comment out aarch64-linux configurations temporarily"
+      - name: "Create minimal flake for FlakeHub"
         run: |
-          # Backup original files
-          cp parts/nixos-configurations.nix parts/nixos-configurations.nix.backup
+          # Backup original flake
+          cp flake.nix flake.nix.backup
           
-          # Simply comment out the aarch64-linux configurations
-          # This is much safer than trying to remove them completely
-          sed -i 's/^    # aarch64 Linux (Apple Silicon)/    # COMMENTED OUT - aarch64 Linux (Apple Silicon)/' parts/nixos-configurations.nix
-          sed -i 's/^    NIXY2 =/    # NIXY2 =/' parts/nixos-configurations.nix
-          sed -i 's/^    # aarch64 Linux (mobile)/    # COMMENTED OUT - aarch64 Linux (mobile)/' parts/nixos-configurations.nix  
-          sed -i 's/^    NIXEDUP =/    # NIXEDUP =/' parts/nixos-configurations.nix
+          # Create a minimal flake that only includes compatible systems
+          cat > flake.nix << 'EOF'
+          {
+            description = "Alex's NixOS and Darwin System Configurations";
+            
+            inputs = {
+              nixpkgs.url = "https://api.flakehub.com/f/pinned/NixOS/nixpkgs/0.1.864002+rev-8eaee110344796db060382e15d3af0a9fc396e0e/01996678-f0d1-77fc-b2c3-9c3d83d401d2/source.tar.gz?narHash=sha256-iCGWf/LTy%2BaY0zFu8q12lK8KuZp7yvdhStehhyX1v8w%3D";
+              nixpkgs-unstable.url = "github:nixos/nixpkgs/8eaee110344796db060382e15d3af0a9fc396e0e";
+              nix-darwin.url = "github:lnl7/nix-darwin/25381509d5c91bbf3c30e23abc6d8476d2143cd1";
+              home-manager.url = "github:nix-community/home-manager/939e91e1cff1f99736c5b02529658218ed819a2a";
+              determinate.url = "https://api.flakehub.com/f/pinned/DeterminateSystems/determinate/3.11.2/01993f0b-1215-7072-ac1a-f2b27b566115/source.tar.gz?narHash=sha256-iOOoVdrkcyk95Xg68TuPeAwpz%2Bv80mgZCqil0jpPZuY%3D";
+            };
+            
+            outputs = { nixpkgs, nix-darwin, home-manager, determinate, ... }: {
+              # Only include x86_64-linux configurations (no aarch64-linux)
+              nixosConfigurations = {
+                NIXSTATION64 = nixpkgs.lib.nixosSystem {
+                  system = "x86_64-linux";
+                  modules = [ ./hosts/nixos/NIXSTATION64 ];
+                };
+                DELIVERER = nixpkgs.lib.nixosSystem {
+                  system = "x86_64-linux";
+                  modules = [ ./hosts/nixos/DELIVERER ];
+                };
+              };
+              
+              # Include Darwin configurations
+              darwinConfigurations = {
+                NIXI = nix-darwin.lib.darwinSystem {
+                  system = "aarch64-darwin";
+                  modules = [ ./hosts/darwin/NIXI ];
+                };
+                NIXY = nix-darwin.lib.darwinSystem {
+                  system = "aarch64-darwin";
+                  modules = [ ./hosts/darwin/NIXY ];
+                };
+              };
+            };
+          }
+          EOF
           
-          echo "Commented out aarch64-linux configurations"
-          echo "Checking syntax..."
-          nix flake check --no-build || echo "Syntax check failed, but proceeding..."
+          echo "Created minimal flake.nix for FlakeHub"
       
       - uses: "DeterminateSystems/flakehub-push@main"
         with:
@@ -46,7 +78,7 @@ jobs:
         env:
           FLAKEHUB_PUSH_TOKEN: ${{ secrets.FLAKEHUB_PUSH_TOKEN }}
       
-      - name: "Restore original nixos-configurations.nix"
+      - name: "Restore original flake.nix"
         if: always()
         run: |
-          mv parts/nixos-configurations.nix.backup parts/nixos-configurations.nix
+          mv flake.nix.backup flake.nix
