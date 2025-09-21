@@ -101,6 +101,13 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+  
+  # Fix build issues with graphics libraries
+  nixpkgs.config.packageOverrides = pkgs: {
+    libdrm = pkgs.libdrm.override {
+      withValgrind = false;
+    };
+  };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
