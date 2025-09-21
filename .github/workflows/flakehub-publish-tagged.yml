@@ -27,5 +27,6 @@ jobs:
           name: "aspauldingcode/.dotfiles"
           tag: "${{ inputs.tag }}"
           include-output-paths: true
+          systems: "x86_64-linux,x86_64-darwin,aarch64-darwin"
         env:
           FLAKEHUB_PUSH_TOKEN: ${{ secrets.FLAKEHUB_PUSH_TOKEN }}
