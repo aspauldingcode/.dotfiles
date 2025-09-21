@@ -101,15 +101,6 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-  
-  # Fix libdrm valgrind dependency issue with flakes
-  nixpkgs.overlays = [
-    (final: prev: {
-      libdrm = prev.libdrm.overrideAttrs (oldAttrs: {
-        mesonFlags = (oldAttrs.mesonFlags or []) ++ [ "-Dvalgrind=disabled" ];
-      });
-    })
-  ];
 
 
   # List packages installed in system profile. To search, run:
