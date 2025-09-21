@@ -1,0 +1,45 @@
+name: "Publish tags to FlakeHub"
+on:
+  push:
+    tags:
+      - "v?[0-9]+.[0-9]+.[0-9]+*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "The existing tag to publish to FlakeHub"
+        type: "string"
+        required: true
+jobs:
+  flakehub-publish:
+    runs-on: "ubuntu-latest"
+    permissions:
+      id-token: "write"
+      contents: "read"
+    steps:
+      - uses: "actions/checkout@v5"
+        with:
+          persist-credentials: false
+          ref: "${{ (inputs.tag != null) && format('refs/tags/{0}', inputs.tag) || '' }}"
+      
+      # Set up QEMU for multi-architecture emulation
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+      
+      - uses: "DeterminateSystems/determinate-nix-action@v3"
+        with:
+          # Enable extra platforms for cross-compilation
+          extra-conf: |
+            extra-platforms = aarch64-linux
+            extra-system-features = nixos-test benchmark big-parallel kvm
+      
+      - uses: "DeterminateSystems/flakehub-push@main"
+        with:
+          visibility: "public"
+          name: "aspauldingcode/.dotfiles"
+          tag: "${{ inputs.tag || github.ref_name }}"
+          include-output-paths: false
+        env:
+          # FlakeHub authentication token
+          FLAKEHUB_PUSH_TOKEN: ${{ secrets.FLAKEHUB_PUSH_TOKEN }}
