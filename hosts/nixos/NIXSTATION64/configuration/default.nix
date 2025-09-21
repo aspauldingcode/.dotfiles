@@ -47,7 +47,7 @@
     docker.enable = true;
     libvirtd.enable = true;
     waydroid.enable = true;
-    lxd.enable = true;
+    # lxd.enable = true; # LXD has been removed from NixOS, consider using Incus instead
   };
 
   # Additional groups for main user
