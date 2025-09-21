@@ -21,53 +21,9 @@ jobs:
           persist-credentials: false
           ref: "${{ (inputs.tag != null) && format('refs/tags/{0}', inputs.tag) || '' }}"
       - uses: "DeterminateSystems/determinate-nix-action@v3"
-      - name: "Create minimal flake for FlakeHub"
+      - name: "Prepare for FlakeHub publishing"
         run: |
-          # Backup original flake
-          cp flake.nix flake.nix.backup
-          
-          # Create a minimal flake that only includes compatible systems
-          cat > flake.nix << 'EOF'
-          {
-            description = "Alex's NixOS and Darwin System Configurations";
-            
-            inputs = {
-              nixpkgs.url = "https://api.flakehub.com/f/pinned/NixOS/nixpkgs/0.1.864002+rev-8eaee110344796db060382e15d3af0a9fc396e0e/01996678-f0d1-77fc-b2c3-9c3d83d401d2/source.tar.gz?narHash=sha256-iCGWf/LTy%2BaY0zFu8q12lK8KuZp7yvdhStehhyX1v8w%3D";
-              nixpkgs-unstable.url = "github:nixos/nixpkgs/8eaee110344796db060382e15d3af0a9fc396e0e";
-              nix-darwin.url = "github:lnl7/nix-darwin/25381509d5c91bbf3c30e23abc6d8476d2143cd1";
-              home-manager.url = "github:nix-community/home-manager/939e91e1cff1f99736c5b02529658218ed819a2a";
-              determinate.url = "https://api.flakehub.com/f/pinned/DeterminateSystems/determinate/3.11.2/01993f0b-1215-7072-ac1a-f2b27b566115/source.tar.gz?narHash=sha256-iOOoVdrkcyk95Xg68TuPeAwpz%2Bv80mgZCqil0jpPZuY%3D";
-            };
-            
-            outputs = { nixpkgs, nix-darwin, home-manager, determinate, ... }: {
-              # Only include x86_64-linux configurations (no aarch64-linux)
-              nixosConfigurations = {
-                NIXSTATION64 = nixpkgs.lib.nixosSystem {
-                  system = "x86_64-linux";
-                  modules = [ ./hosts/nixos/NIXSTATION64 ];
-                };
-                DELIVERER = nixpkgs.lib.nixosSystem {
-                  system = "x86_64-linux";
-                  modules = [ ./hosts/nixos/DELIVERER ];
-                };
-              };
-              
-              # Include Darwin configurations
-              darwinConfigurations = {
-                NIXI = nix-darwin.lib.darwinSystem {
-                  system = "aarch64-darwin";
-                  modules = [ ./hosts/darwin/NIXI ];
-                };
-                NIXY = nix-darwin.lib.darwinSystem {
-                  system = "aarch64-darwin";
-                  modules = [ ./hosts/darwin/NIXY ];
-                };
-              };
-            };
-          }
-          EOF
-          
-          echo "Created minimal flake.nix for FlakeHub"
+          echo "Using my-flake-is-too-big flag to skip problematic evaluations"
       
       - uses: "DeterminateSystems/flakehub-push@main"
         with:
@@ -75,10 +31,11 @@ jobs:
           name: "aspauldingcode/.dotfiles"
           tag: "${{ inputs.tag }}"
           include-output-paths: true
+          my-flake-is-too-big: true
         env:
           FLAKEHUB_PUSH_TOKEN: ${{ secrets.FLAKEHUB_PUSH_TOKEN }}
       
-      - name: "Restore original flake.nix"
+      - name: "Cleanup"
         if: always()
         run: |
-          mv flake.nix.backup flake.nix
+          echo "Workflow completed"
