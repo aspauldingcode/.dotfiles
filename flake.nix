@@ -2,8 +2,8 @@
   description = "Production-Ready Universal Nix Flake - Multi-Host, Multi-User with Home Manager, Nix-Darwin, NixOS & SOPS secrets management";
 
   inputs = {
-    # Core nixpkgs channels - using unstable to avoid libaio build issues
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    # Core nixpkgs channels - using stable 25.05 for reliability
+    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1.*";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Flake framework for better organization
