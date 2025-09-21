@@ -21,12 +21,24 @@ jobs:
           persist-credentials: false
           ref: "${{ (inputs.tag != null) && format('refs/tags/{0}', inputs.tag) || '' }}"
       - uses: "DeterminateSystems/determinate-nix-action@v3"
+      - name: "Remove aarch64-linux configurations temporarily"
+        run: |
+          # Create a temporary flake that excludes aarch64-linux configurations
+          cp flake.nix flake.nix.backup
+          # Remove NIXEDUP and NIXY2 from nixosConfigurations (they require aarch64-linux)
+          sed -i '/NIXEDUP.*=/,/};/d' flake.nix
+          sed -i '/NIXY2.*=/,/};/d' flake.nix
+      
       - uses: "DeterminateSystems/flakehub-push@main"
         with:
           visibility: "public"
           name: "aspauldingcode/.dotfiles"
           tag: "${{ inputs.tag }}"
           include-output-paths: true
-          exclude-systems: "aarch64-linux"
         env:
           FLAKEHUB_PUSH_TOKEN: ${{ secrets.FLAKEHUB_PUSH_TOKEN }}
+      
+      - name: "Restore original flake.nix"
+        if: always()
+        run: |
+          mv flake.nix.backup flake.nix
