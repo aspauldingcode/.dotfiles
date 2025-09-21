@@ -93,6 +93,28 @@ in {
         ];
     };
 
+    # x86_64 Linux - DELIVERER server/workstation
+    DELIVERER = inputs.nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      specialArgs =
+        commonSpecialArgs
+        // {
+          inherit (inputs) apple-silicon mobile-nixos;
+        };
+      modules =
+        commonNixOSModules
+        ++ [
+          ../hosts/nixos/DELIVERER
+          {
+            home-manager =
+              commonHomeManagerNixOS
+              // {
+                users.alex = import ../users/alex/DELIVERER;
+              };
+          }
+        ];
+    };
+
     # aarch64 Linux (mobile) - OnePlus 6T with Mobile NixOS
     NIXEDUP = inputs.nixpkgs.lib.nixosSystem {
       system = "aarch64-linux";
