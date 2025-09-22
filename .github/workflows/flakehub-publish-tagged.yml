@@ -23,7 +23,7 @@ jobs:
       - uses: "DeterminateSystems/determinate-nix-action@v3"
       - name: "Prepare for FlakeHub publishing"
         run: |
-          echo "Using my-flake-is-too-big flag to skip problematic evaluations"
+          echo "Publishing flake without mobile-nixos configurations to avoid import-from-derivation issues"
       
       - uses: "DeterminateSystems/flakehub-push@main"
         with:
@@ -31,7 +31,6 @@ jobs:
           name: "aspauldingcode/.dotfiles"
           tag: "${{ inputs.tag }}"
           include-output-paths: true
-          my-flake-is-too-big: true
         env:
           FLAKEHUB_PUSH_TOKEN: ${{ secrets.FLAKEHUB_PUSH_TOKEN }}
       

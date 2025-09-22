@@ -118,32 +118,36 @@ in {
         ];
     };
 
-    # aarch64 Linux (mobile) - OnePlus 6T with Mobile NixOS
-    NIXEDUP = inputs.nixpkgs.lib.nixosSystem {
-      system = "aarch64-linux";
-      specialArgs = {
-        inherit inputs;
-        inherit (inputs) mobile-nixos;
-        user = "alex";
-      };
-      modules = [
-        ../hosts/nixos/NIXEDUP
-        inputs.sops-nix.nixosModules.sops
-        inputs.determinate.nixosModules.default
-        {
-          nixpkgs.overlays = [inputs.self.overlays.default];
-          nixpkgs.config = {
-            allowUnfree = true;
-            permittedInsecurePackages = [
-              "electron-19.1.9"
-              "electron-33.4.11"
-              "olm-3.2.16"
-            ];
-          };
-          # Suppress mobile-nixos documentation generation warnings
-          documentation.nixos.enable = false;
-        }
-      ];
-    };
+    # NOTE: NIXEDUP configuration temporarily excluded from FlakeHub publishing
+    # due to import-from-derivation issues with mobile-nixos evaluation.
+    # 
+    # To enable NIXEDUP locally, uncomment the following configuration:
+    #
+    # NIXEDUP = inputs.nixpkgs.lib.nixosSystem {
+    #   system = "aarch64-linux";
+    #   specialArgs = {
+    #     inherit inputs;
+    #     inherit (inputs) mobile-nixos;
+    #     user = "alex";
+    #   };
+    #   modules = [
+    #     ../hosts/nixos/NIXEDUP
+    #     inputs.sops-nix.nixosModules.sops
+    #     inputs.determinate.nixosModules.default
+    #     {
+    #       nixpkgs.overlays = [inputs.self.overlays.default];
+    #       nixpkgs.config = {
+    #         allowUnfree = true;
+    #         permittedInsecurePackages = [
+    #           "electron-19.1.9"
+    #           "electron-33.4.11"
+    #           "olm-3.2.16"
+    #         ];
+    #       };
+    #       # Suppress mobile-nixos documentation generation warnings
+    #       documentation.nixos.enable = false;
+    #     }
+    #   ];
+    # };
   };
 }
