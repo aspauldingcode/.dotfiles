@@ -86,9 +86,9 @@
   users.users.alex = {
     isNormalUser = true;
     description = "Alex Spaulding";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = ["networkmanager" "wheel"];
     packages = with pkgs; [
-    #  thunderbird
+      #  thunderbird
     ];
   };
 
@@ -101,7 +101,6 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -131,15 +130,15 @@
   services.avahi.publish.addresses = true;
   services.avahi.nssmdns4 = true;
   services.avahi.extraServiceFiles.rdp = ''
-    <?xml version="1.0" standalone='no'?>
-    <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
-    <service-group>
-      <name replace-wildcards="yes">%h</name>
-      <service>
-        <type>_rdp._tcp</type>
-	<port>3389</port>
-      </service>
-    </service-group>
+       <?xml version="1.0" standalone='no'?>
+       <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+       <service-group>
+         <name replace-wildcards="yes">%h</name>
+         <service>
+           <type>_rdp._tcp</type>
+    <port>3389</port>
+         </service>
+       </service-group>
   '';
   services.avahi.extraServiceFiles.vnc = ''
     <?xml version="1.0" standalone='no'?>
@@ -153,24 +152,23 @@
     </service-group>
   '';
 
-
-systemd.services.tigervnc = {
-  description = "TigerVNC server";
-  serviceConfig = {
-    User = "root";
-    ExecStart = ''
-      ${pkgs.x11vnc}/bin/x11vnc \
-        -display :0 \
-        -rfbport 5900 \
-        -rfbauth /etc/nixos/vnc-password \
-        -auth /var/run/lightdm/root/:0 \
-	-forever \
-	-shared
-    '';
-    Restart = "always";
+  systemd.services.tigervnc = {
+    description = "TigerVNC server";
+    serviceConfig = {
+      User = "root";
+      ExecStart = ''
+             ${pkgs.x11vnc}/bin/x11vnc \
+               -display :0 \
+               -rfbport 5900 \
+               -rfbauth /etc/nixos/vnc-password \
+               -auth /var/run/lightdm/root/:0 \
+        -forever \
+        -shared
+      '';
+      Restart = "always";
+    };
+    wantedBy = ["multi-user.target"];
   };
-  wantedBy = [ "multi-user.target" ];
-};
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ 5900 ];
@@ -185,5 +183,4 @@ systemd.services.tigervnc = {
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.05"; # Did you read the comment?
-
 }

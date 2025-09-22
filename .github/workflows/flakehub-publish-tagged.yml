@@ -24,7 +24,6 @@ jobs:
       - name: "Prepare for FlakeHub publishing"
         run: |
           echo "Publishing flake without mobile-nixos configurations to avoid import-from-derivation issues"
-      
       - uses: "DeterminateSystems/flakehub-push@main"
         with:
           visibility: "public"
@@ -33,7 +32,6 @@ jobs:
           include-output-paths: true
         env:
           FLAKEHUB_PUSH_TOKEN: ${{ secrets.FLAKEHUB_PUSH_TOKEN }}
-      
       - name: "Cleanup"
         if: always()
         run: |

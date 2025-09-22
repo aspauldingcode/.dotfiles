@@ -120,7 +120,7 @@ in {
 
     # NOTE: NIXEDUP configuration temporarily excluded from FlakeHub publishing
     # due to import-from-derivation issues with mobile-nixos evaluation.
-    # 
+    #
     # To enable NIXEDUP locally, uncomment the following configuration:
     #
     # NIXEDUP = inputs.nixpkgs.lib.nixosSystem {

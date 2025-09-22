@@ -58,8 +58,7 @@
     ++ lib.optionals pkgs.stdenv.isDarwin [
       # Darwin-specific packages
       macos-instantview
-    ]
-    ;
+    ];
 
   # Common session variables
   home.sessionVariables =

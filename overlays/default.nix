@@ -1,6 +1,5 @@
 # Custom overlays for package modifications and additions
 {inputs}: final: prev: {
-
   # Mobile-specific packages
   mobile = {
     # Mobile development tools
