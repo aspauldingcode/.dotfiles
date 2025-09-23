@@ -20,7 +20,7 @@ jobs:
       - uses: "actions/checkout@v5"
         with:
           persist-credentials: false
-          ref: "${{ github.event.inputs.tag && format('refs/tags/{0}', github.event.inputs.tag) || github.ref }}"
+          ref: "${{ github.event.inputs.tag && format('refs/tags/{0}', github.event.inputs.tag) || '' }}"
       
       - uses: "DeterminateSystems/determinate-nix-action@v3"
       
