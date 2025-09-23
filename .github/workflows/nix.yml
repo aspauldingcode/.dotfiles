@@ -6,6 +6,10 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v3
+      - name: Nothing but Nix
+        uses: wimpysworld/nothing-but-nix@main
+        with:
+          hatchet-protocol: 'cleave'
       - uses: DeterminateSystems/determinate-nix-action@v3
       - uses: DeterminateSystems/flakehub-cache-action@main
       - run: nix build
