@@ -14,10 +14,22 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v4
+      - name: Check initial disk space
+        run: |
+          echo "=== Initial Disk Space ==="
+          df -h
+          echo "=== Largest directories ==="
+          sudo du -sh /usr/* 2>/dev/null | sort -hr | head -10 || true
       - name: Nothing but Nix
         uses: wimpysworld/nothing-but-nix@main
         with:
           hatchet-protocol: 'cleave'
+      - name: Check disk space after nothing-but-nix
+        run: |
+          echo "=== Disk Space After nothing-but-nix ==="
+          df -h
+          echo "=== Available space on root ==="
+          df -h / | tail -1 | awk '{print "Available: " $4}'
       - uses: DeterminateSystems/determinate-nix-action@v3
       - uses: DeterminateSystems/flakehub-cache-action@main
       - run: nix build
