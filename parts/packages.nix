@@ -23,8 +23,7 @@
         nix flake show
       '';
 
-      # Dialog-based secrets manager for sops-nix
-      secrets-manager = pkgs.callPackage ../packages/secrets-manager.nix {};
+
 
       # Mobile NixOS installer helper
       mobile-installer = pkgs.writeShellScriptBin "mobile-installer" ''

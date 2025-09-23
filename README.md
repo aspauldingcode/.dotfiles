@@ -186,7 +186,6 @@ Run applications with `nix run .#<app-name>`:
 |-------------|-------------|
 | `default` | System information and flake overview |
 | `system-info` | Detailed system information |
-| `secrets-manager` | Interactive SOPS secrets management |
 | `mobile-installer` | Mobile NixOS installer for OnePlus 6T |
 | `update-readme` | Update README.md with current code statistics |
 | `ci-check` | Comprehensive CI/CD checks |
@@ -198,9 +197,6 @@ Run applications with `nix run .#<app-name>`:
 ```bash
 # Get system information
 nix run .#default
-
-# Manage secrets interactively
-nix run .#secrets-manager
 
 # Update code statistics in README
 nix run .#update-readme
@@ -326,14 +322,12 @@ sops secrets/users/alex.yaml
 # Rekey secrets after adding new recipients
 sops updatekeys secrets/production/secrets.yaml
 
-# Interactive secrets management
-nix run .#secrets-manager
+```bash
+# Edit secrets directly with SOPS
+sops secrets/development/secrets.yaml
 
-# Validate all secrets
-./scripts/secrets-manager.sh validate
-
-# Audit secret access
-./scripts/secrets-manager.sh audit
+# Generate age keys
+age-keygen -o ~/.config/sops/age/keys.txt
 ```
 
 ### Environment Structure
@@ -389,7 +383,7 @@ nix run .#ci-check
 
 ```bash
 # Test secrets decryption
-./scripts/secrets-manager.sh validate
+sops -d secrets/development/secrets.yaml > /dev/null
 
 # Test system deployment (dry-run)
 sudo nixos-rebuild dry-run --flake .#NIXSTATION64

@@ -1,4 +1,4 @@
-# Development Shells Module
+# Development Shells Module - Optimized for reduced build size
 {inputs, ...}: {
   perSystem = {
     config,
@@ -9,12 +9,127 @@
     ...
   }: {
     devShells = {
+      # Minimal default shell - lightweight for quick access
       default = pkgs.mkShell {
-        name = "dotfiles-dev";
+        name = "dotfiles-minimal";
+
+        packages = with pkgs; [
+          # Essential tools only
+          git
+          jq
+          bat
+          tree
+        ];
+
+        shellHook = ''
+          echo "🚀 Minimal dotfiles environment (lightweight)"
+          echo "Available specialized shells:"
+          echo "  - nix develop .#nix-dev     # Nix development tools"
+          echo "  - nix develop .#mobile-dev  # Mobile NixOS development"
+          echo "  - nix develop .#secrets     # Secrets management"
+          echo "  - nix develop .#full        # All tools (heavy)"
+          echo ""
+        '';
+      };
+
+      # Nix development shell - for Nix code work
+      nix-dev = pkgs.mkShell {
+        name = "nix-development";
+
+        packages = with pkgs; [
+          # Nix development tools
+          nixpkgs-fmt
+          statix
+          deadnix
+          alejandra
+          nil
+          nix-tree
+          nix-diff
+
+          # Basic tools
+          git
+          jq
+          bat
+          tree
+        ];
+
+        shellHook = ''
+          echo "🔧 Nix Development Environment"
+          echo "Available tools:"
+          echo "  - nixpkgs-fmt: Format Nix files"
+          echo "  - statix: Lint Nix files"
+          echo "  - deadnix: Find dead Nix code"
+          echo "  - alejandra: Alternative Nix formatter"
+          echo "  - nix flake check: Validate flake"
+          echo ""
+        '';
+      };
+
+      # Mobile development shell - isolated heavy dependencies
+      mobile-dev = pkgs.mkShell {
+        name = "mobile-development";
+
+        packages = with pkgs; [
+          # Mobile-specific tools (heavy)
+          android-tools # includes fastboot
+
+          # Basic tools
+          git
+          jq
+          bat
+          tree
+        ];
+
+        shellHook = ''
+          echo "📱 Mobile NixOS Development Environment"
+          echo "Mobile NixOS tools:"
+          echo "  - fastboot: Flash mobile devices"
+          echo "  - android-tools: Android development tools"
+          echo ""
+          echo "Build mobile image: nix build .#nixosConfigurations.NIXEDUP.config.system.build.android-bootimg"
+          echo ""
+        '';
+      };
+
+      # Secrets management development shell - optimized
+      secrets = pkgs.mkShell {
+        name = "secrets-management";
+
+        packages = with pkgs; [
+          # Core secrets management tools
+          sops
+          age
+          dialog
+          yq-go
+          jq
+
+          # Basic tools (reduced set)
+          bat
+          tree
+          git
+        ];
+
+        shellHook = ''
+          echo "🔐 Secrets Management Shell"
+          echo "Available tools:"
+          echo "  - sops: Secrets editor"
+          echo "  - age: Encryption tool"
+          echo "  - dialog: Interactive dialogs"
+          echo "  - yq/jq: YAML/JSON processors"
+          echo ""
+          echo "Usage examples:"
+          echo "  sops secrets/development/secrets.yaml"
+          echo "  age-keygen -o ~/.config/sops/age/keys.txt"
+        '';
+      };
+
+      # Full development shell - use sparingly (heavy)
+      full = pkgs.mkShell {
+        name = "full-development";
 
         packages = with pkgs;
           [
-            # Nix development tools
+            # All Nix tools
             nixpkgs-fmt
             statix
             deadnix
@@ -23,15 +138,21 @@
             nix-tree
             nix-diff
 
+            # Mobile development
+            android-tools
+
+            # Secrets management
+            sops
+            age
+            dialog
+            yq-go
+
             # General development tools
             bat
             tree
             git
             jq
             yq
-
-            # Mobile development (for Mobile NixOS)
-            android-tools # includes fastboot
 
             # System tools
             htop
@@ -45,68 +166,17 @@
           ];
 
         shellHook = ''
-          echo "🚀 Welcome to the dotfiles development environment!"
-          echo "Available tools:"
-          echo "  - nixpkgs-fmt: Format Nix files"
-          echo "  - statix: Lint Nix files"
-          echo "  - deadnix: Find dead Nix code"
-          echo "  - alejandra: Alternative Nix formatter"
-          echo "  - nix flake check: Validate flake"
+          echo "🚀 Full Development Environment (Heavy - 400MB+)"
+          echo "================================================"
+          echo "⚠️  This shell includes ALL tools and is resource-intensive"
+          echo "Consider using specialized shells for better performance:"
+          echo "  - nix develop .#nix-dev     # Nix development only"
+          echo "  - nix develop .#mobile-dev  # Mobile development only"
+          echo "  - nix develop .#secrets     # Secrets management only"
           echo ""
-          echo "Mobile NixOS tools:"
-          echo "  - fastboot: Flash mobile devices"
-          echo "  - android-tools: Android development tools"
+          echo "Available tools: All Nix, mobile, secrets, and system tools"
           echo ""
         '';
-      };
-
-      # Secrets management development shell
-      secrets = pkgs.mkShell {
-        name = "secrets-dev";
-
-        packages = with pkgs; [
-          # Core secrets management tools
-          sops
-          age
-          dialog
-          yq-go
-          jq
-
-          # Development and debugging tools
-          bat
-          tree
-          git
-          gnused
-          gnugrep
-          gawk
-          coreutils
-          findutils
-
-          # Custom secrets manager
-          self'.packages.secrets-manager
-        ];
-
-        shellHook = ''
-          echo "🔐 Secrets Management Development Environment"
-          echo "============================================="
-          echo ""
-          echo "Available tools:"
-          echo "  - secrets-manager: Dialog-based secrets UI"
-          echo "  - sops: Encrypt/decrypt secrets"
-          echo "  - age: Key management"
-          echo "  - dialog: Terminal UI framework"
-          echo ""
-          echo "Quick start:"
-          echo "  secrets-manager          # Launch dialog UI"
-          echo "  sops secrets/dev/secrets.yaml  # Edit secrets directly"
-          echo ""
-          echo "Environment variables:"
-          echo "  DOTFILES_DIR=''${DOTFILES_DIR:-$(pwd)}"
-          echo ""
-        '';
-
-        # Set environment variables for secrets management
-        DOTFILES_DIR = "${placeholder "out"}";
       };
 
       # Development contribution shell with GitHub setup
