@@ -313,7 +313,7 @@ This configuration uses **SOPS-nix** with **age encryption** for production-read
 
 ### Quick Commands
 
-```bash
+````bash
 # Edit secrets (environment-specific)
 sops secrets/production/secrets.yaml
 sops secrets/development/secrets.yaml
@@ -328,7 +328,7 @@ sops secrets/development/secrets.yaml
 
 # Generate age keys
 age-keygen -o ~/.config/sops/age/keys.txt
-```
+````
 
 ### Environment Structure
 

@@ -1,10 +1,10 @@
 {
-  nix-colors,
   username,
   ...
-}: {
+}:
+{
   home = {
-    username = username;
+    inherit username;
     homeDirectory = "/home/${username}";
     stateVersion = "25.05"; # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   };
@@ -22,8 +22,8 @@
   # Decoratively fix virt-manager error: "Could not detect a default hypervisor" instead of imperitively through virt-manager's menubar > file > Add Connection
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
-      autoconnect = ["qemu:///system"];
-      uris = ["qemu:///system"];
+      autoconnect = [ "qemu:///system" ];
+      uris = [ "qemu:///system" ];
     };
   };
 

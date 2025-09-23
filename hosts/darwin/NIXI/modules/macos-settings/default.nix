@@ -1,15 +1,11 @@
 # NIXI plist-manager Configuration
 # Intel macOS optimized system settings
+_:
 {
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
   # Enable plist-manager with NIXI preset
   nix-plist-manager = {
     enable = true;
-    users = ["alex"];
+    users = [ "alex" ];
 
     # System settings
     systemSettings = {

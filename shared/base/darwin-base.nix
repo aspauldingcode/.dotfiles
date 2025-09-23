@@ -1,13 +1,11 @@
 # Shared Darwin Base Configuration
 # Used by all Darwin systems with system-specific overrides
 {
-  inputs,
-  lib,
-  config,
   pkgs,
   user,
   ...
-}: {
+}:
+{
   # Common fonts
   fonts.packages = with pkgs; [
     dejavu_fonts
@@ -65,8 +63,12 @@
         system = "x86_64-linux";
         maxJobs = 4;
         speedFactor = 2;
-        supportedFeatures = ["kvm" "big-parallel" "nixos-test"];
-        mandatoryFeatures = [];
+        supportedFeatures = [
+          "kvm"
+          "big-parallel"
+          "nixos-test"
+        ];
+        mandatoryFeatures = [ ];
         sshUser = "alex";
         sshKey = "/Users/alex/.ssh/id_ed25519";
         protocol = "ssh-ng";
@@ -105,9 +107,9 @@
       allowUnsupportedSystem = true;
     };
     overlays = [
-      (final: prev: {
+      (_final: prev: {
         # Override Valgrind to be a dummy package on Darwin since it's not supported
-        valgrind = prev.runCommand "valgrind-dummy" {} ''
+        valgrind = prev.runCommand "valgrind-dummy" { } ''
           mkdir -p $out/bin
           echo '#!/bin/sh' > $out/bin/valgrind
           echo 'echo "Valgrind is not supported on Darwin"' >> $out/bin/valgrind

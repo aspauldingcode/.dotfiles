@@ -1,13 +1,9 @@
-{
-  inputs,
-  lib,
-  config,
-  pkgs,
-  ...
-}: let
+_:
+let
   # Define hostname once for this system
   hostname = "NIXSTATION64";
-in {
+in
+{
   imports = [
     ./hardware-configuration
     ./scripts

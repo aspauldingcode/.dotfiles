@@ -2,7 +2,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   launchd.agents = {
     toggle-darkmode = {
       enable = true;

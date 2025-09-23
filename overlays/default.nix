@@ -1,10 +1,10 @@
 # Custom overlays for package modifications and additions
-{inputs}: final: prev: {
+_:
+_final: prev: {
   # Mobile-specific packages
   mobile = {
     # Mobile development tools
-    inherit
-      (prev)
+    inherit (prev)
       android-tools
       fastboot
       heimdall
@@ -13,8 +13,7 @@
 
   # Development tools with custom configurations
   dev = {
-    inherit
-      (prev)
+    inherit (prev)
       git
       neovim
       tmux

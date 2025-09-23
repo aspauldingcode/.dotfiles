@@ -1,9 +1,6 @@
 {
   pkgs,
-  inputs,
-  config,
   lib,
-  user,
   ...
 }:
 # window management toggle scripts - template outlines

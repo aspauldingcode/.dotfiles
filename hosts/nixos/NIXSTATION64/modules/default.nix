@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ ... }:
+{
   imports = [
     ./packages
     ./theme

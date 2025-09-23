@@ -1,16 +1,15 @@
 # Alex's Home Manager Configuration for NIXSTATION64
 # x86_64 Linux Desktop Workstation
 {
-  inputs,
   pkgs,
-  lib,
   user,
-  nix-colors,
   ...
-}: let
+}:
+let
   # Define username once for this user configuration
   username = "alex";
-in {
+in
+{
   imports = [
     ../../../shared/base/alex-base.nix
     ./modules

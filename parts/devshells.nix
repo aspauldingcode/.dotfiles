@@ -1,135 +1,42 @@
 # Development Shells Module - Optimized for reduced build size
-{inputs, ...}: {
-  perSystem = {
-    config,
-    self',
-    inputs',
-    pkgs,
-    system,
-    ...
-  }: {
-    devShells = {
-      # Minimal default shell - lightweight for quick access
-      default = pkgs.mkShell {
-        name = "dotfiles-minimal";
+_:
+{
+  perSystem =
+    {
+      pkgs,
+      ...
+    }:
+    {
+      devShells = {
+        # Minimal default shell - lightweight for quick access
+        default = pkgs.mkShell {
+          name = "dotfiles-minimal";
 
-        packages = with pkgs; [
-          # Essential tools only
-          git
-          jq
-          bat
-          tree
-        ];
+          packages = with pkgs; [
+            # Essential tools only
+            git
+            jq
+            bat
+            tree
+          ];
 
-        shellHook = ''
-          echo "🚀 Minimal dotfiles environment (lightweight)"
-          echo "Available specialized shells:"
-          echo "  - nix develop .#nix-dev     # Nix development tools"
-          echo "  - nix develop .#mobile-dev  # Mobile NixOS development"
-          echo "  - nix develop .#secrets     # Secrets management"
-          echo "  - nix develop .#full        # All tools (heavy)"
-          echo ""
-        '';
-      };
+          shellHook = ''
+            echo "🚀 Minimal dotfiles environment (lightweight)"
+            echo "Available specialized shells:"
+            echo "  - nix develop .#nix-dev     # Nix development tools"
+            echo "  - nix develop .#mobile-dev  # Mobile NixOS development"
+            echo "  - nix develop .#secrets     # Secrets management"
+            echo "  - nix develop .#full        # All tools (heavy)"
+            echo ""
+          '';
+        };
 
-      # Nix development shell - for Nix code work
-      nix-dev = pkgs.mkShell {
-        name = "nix-development";
+        # Nix development shell - for Nix code work
+        nix-dev = pkgs.mkShell {
+          name = "nix-development";
 
-        packages = with pkgs; [
-          # Nix development tools
-          nixpkgs-fmt
-          statix
-          deadnix
-          alejandra
-          nil
-          nix-tree
-          nix-diff
-
-          # Basic tools
-          git
-          jq
-          bat
-          tree
-        ];
-
-        shellHook = ''
-          echo "🔧 Nix Development Environment"
-          echo "Available tools:"
-          echo "  - nixpkgs-fmt: Format Nix files"
-          echo "  - statix: Lint Nix files"
-          echo "  - deadnix: Find dead Nix code"
-          echo "  - alejandra: Alternative Nix formatter"
-          echo "  - nix flake check: Validate flake"
-          echo ""
-        '';
-      };
-
-      # Mobile development shell - isolated heavy dependencies
-      mobile-dev = pkgs.mkShell {
-        name = "mobile-development";
-
-        packages = with pkgs; [
-          # Mobile-specific tools (heavy)
-          android-tools # includes fastboot
-
-          # Basic tools
-          git
-          jq
-          bat
-          tree
-        ];
-
-        shellHook = ''
-          echo "📱 Mobile NixOS Development Environment"
-          echo "Mobile NixOS tools:"
-          echo "  - fastboot: Flash mobile devices"
-          echo "  - android-tools: Android development tools"
-          echo ""
-          echo "Build mobile image: nix build .#nixosConfigurations.NIXEDUP.config.system.build.android-bootimg"
-          echo ""
-        '';
-      };
-
-      # Secrets management development shell - optimized
-      secrets = pkgs.mkShell {
-        name = "secrets-management";
-
-        packages = with pkgs; [
-          # Core secrets management tools
-          sops
-          age
-          dialog
-          yq-go
-          jq
-
-          # Basic tools (reduced set)
-          bat
-          tree
-          git
-        ];
-
-        shellHook = ''
-          echo "🔐 Secrets Management Shell"
-          echo "Available tools:"
-          echo "  - sops: Secrets editor"
-          echo "  - age: Encryption tool"
-          echo "  - dialog: Interactive dialogs"
-          echo "  - yq/jq: YAML/JSON processors"
-          echo ""
-          echo "Usage examples:"
-          echo "  sops secrets/development/secrets.yaml"
-          echo "  age-keygen -o ~/.config/sops/age/keys.txt"
-        '';
-      };
-
-      # Full development shell - use sparingly (heavy)
-      full = pkgs.mkShell {
-        name = "full-development";
-
-        packages = with pkgs;
-          [
-            # All Nix tools
+          packages = with pkgs; [
+            # Nix development tools
             nixpkgs-fmt
             statix
             deadnix
@@ -138,166 +45,259 @@
             nix-tree
             nix-diff
 
-            # Mobile development
-            android-tools
+            # Basic tools
+            git
+            jq
+            bat
+            tree
+          ];
 
-            # Secrets management
+          shellHook = ''
+            echo "🔧 Nix Development Environment"
+            echo "Available tools:"
+            echo "  - nixpkgs-fmt: Format Nix files"
+            echo "  - statix: Lint Nix files"
+            echo "  - deadnix: Find dead Nix code"
+            echo "  - alejandra: Alternative Nix formatter"
+            echo "  - nix flake check: Validate flake"
+            echo ""
+          '';
+        };
+
+        # Mobile development shell - isolated heavy dependencies
+        mobile-dev = pkgs.mkShell {
+          name = "mobile-development";
+
+          packages = with pkgs; [
+            # Mobile-specific tools (heavy)
+            android-tools # includes fastboot
+
+            # Basic tools
+            git
+            jq
+            bat
+            tree
+          ];
+
+          shellHook = ''
+            echo "📱 Mobile NixOS Development Environment"
+            echo "Mobile NixOS tools:"
+            echo "  - fastboot: Flash mobile devices"
+            echo "  - android-tools: Android development tools"
+            echo ""
+            echo "Build mobile image: nix build .#nixosConfigurations.NIXEDUP.config.system.build.android-bootimg"
+            echo ""
+          '';
+        };
+
+        # Secrets management development shell - optimized
+        secrets = pkgs.mkShell {
+          name = "secrets-management";
+
+          packages = with pkgs; [
+            # Core secrets management tools
             sops
             age
             dialog
             yq-go
+            jq
 
-            # General development tools
+            # Basic tools (reduced set)
             bat
             tree
             git
-            jq
-            yq
-
-            # System tools
-            htop
-            neofetch
-          ]
-          ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
-            # macOS specific tools
-            m-cli
-            mas
-            terminal-notifier
           ];
 
-        shellHook = ''
-          echo "🚀 Full Development Environment (Heavy - 400MB+)"
-          echo "================================================"
-          echo "⚠️  This shell includes ALL tools and is resource-intensive"
-          echo "Consider using specialized shells for better performance:"
-          echo "  - nix develop .#nix-dev     # Nix development only"
-          echo "  - nix develop .#mobile-dev  # Mobile development only"
-          echo "  - nix develop .#secrets     # Secrets management only"
-          echo ""
-          echo "Available tools: All Nix, mobile, secrets, and system tools"
-          echo ""
-        '';
-      };
+          shellHook = ''
+            echo "🔐 Secrets Management Shell"
+            echo "Available tools:"
+            echo "  - sops: Secrets editor"
+            echo "  - age: Encryption tool"
+            echo "  - dialog: Interactive dialogs"
+            echo "  - yq/jq: YAML/JSON processors"
+            echo ""
+            echo "Usage examples:"
+            echo "  sops secrets/development/secrets.yaml"
+            echo "  age-keygen -o ~/.config/sops/age/keys.txt"
+          '';
+        };
 
-      # Development contribution shell with GitHub setup
-      contribute = pkgs.mkShell {
-        name = "dotfiles-contribute";
+        # Full development shell - use sparingly (heavy)
+        full = pkgs.mkShell {
+          name = "full-development";
 
-        packages = with pkgs; [
-          # Core development tools
-          git
-          gh
-          dialog
+          packages =
+            with pkgs;
+            [
+              # All Nix tools
+              nixpkgs-fmt
+              statix
+              deadnix
+              alejandra
+              nil
+              nix-tree
+              nix-diff
 
-          # Development utilities
-          openssh
-          coreutils
-          gnused
-          gnugrep
-          jq
-        ];
+              # Mobile development
+              android-tools
 
-        shellHook = ''
-          # Automated setup function
-          setup_dotfiles_dev() {
-            clear
-            echo "🚀 Setting up dotfiles development environment..."
+              # Secrets management
+              sops
+              age
+              dialog
+              yq-go
 
-            # Check if git is configured
-            if ! git config --global user.name >/dev/null 2>&1 || ! git config --global user.email >/dev/null 2>&1; then
-              # Get user name
-              USER_NAME=$(dialog --inputbox "Enter your Git username:" 10 50 3>&1 1>&2 2>&3 3>&-)
-              if [ $? -eq 0 ] && [ -n "$USER_NAME" ]; then
-                git config --global user.name "$USER_NAME"
-              else
-                echo "Setup cancelled."
-                return 1
-              fi
+              # General development tools
+              bat
+              tree
+              git
+              jq
+              yq
 
-              # Get user email
-              USER_EMAIL=$(dialog --inputbox "Enter your Git email:" 10 50 3>&1 1>&2 2>&3 3>&-)
-              if [ $? -eq 0 ] && [ -n "$USER_EMAIL" ]; then
-                git config --global user.email "$USER_EMAIL"
-              else
-                echo "Setup cancelled."
-                return 1
-              fi
+              # System tools
+              htop
+              neofetch
+            ]
+            ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
+              # macOS specific tools
+              m-cli
+              mas
+              terminal-notifier
+            ];
+
+          shellHook = ''
+            echo "🚀 Full Development Environment (Heavy - 400MB+)"
+            echo "================================================"
+            echo "⚠️  This shell includes ALL tools and is resource-intensive"
+            echo "Consider using specialized shells for better performance:"
+            echo "  - nix develop .#nix-dev     # Nix development only"
+            echo "  - nix develop .#mobile-dev  # Mobile development only"
+            echo "  - nix develop .#secrets     # Secrets management only"
+            echo ""
+            echo "Available tools: All Nix, mobile, secrets, and system tools"
+            echo ""
+          '';
+        };
+
+        # Development contribution shell with GitHub setup
+        contribute = pkgs.mkShell {
+          name = "dotfiles-contribute";
+
+          packages = with pkgs; [
+            # Core development tools
+            git
+            gh
+            dialog
+
+            # Development utilities
+            openssh
+            coreutils
+            gnused
+            gnugrep
+            jq
+          ];
+
+          shellHook = ''
+            # Automated setup function
+            setup_dotfiles_dev() {
               clear
-            fi
+              echo "🚀 Setting up dotfiles development environment..."
 
-            # Generate SSH key silently before GitHub auth
-            if [ ! -f ~/.ssh/id_ed25519 ]; then
-              mkdir -p ~/.ssh
-              ssh-keygen -t ed25519 -C "$(git config --global user.email)" -f ~/.ssh/id_ed25519 -N "" -q
-            fi
-
-            # Start SSH agent and add key
-            eval "$(ssh-agent -s)" >/dev/null 2>&1
-            ssh-add ~/.ssh/id_ed25519 >/dev/null 2>&1
-
-            # GitHub authentication
-            if ! gh auth status >/dev/null 2>&1; then
-              echo "Setting up GitHub authentication..."
-              gh auth login --web --git-protocol ssh || {
-                echo "⚠️  GitHub authentication failed or was cancelled"
-                echo "You can authenticate later with: gh auth login"
-                return 1
-              }
-              # Add SSH key if not present
-              if ! gh ssh-key list | grep -q "$(awk '{print $2}' ~/.ssh/id_ed25519.pub 2>/dev/null)"; then
-                gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(hostname)-$(date +%Y%m%d)" \
-                  && echo "✅ SSH key added to GitHub" \
-                  || echo "⚠️  Failed to add SSH key (may already exist)"
-              else
-                echo "✅ SSH key already exists on GitHub"
-              fi
-              echo "✅ GitHub authentication successful"
-            else
-              echo "✅ Already authenticated with GitHub"
-            fi
-
-            # Ask for clone location and clone repository
-            CLONE_PATH=$(dialog --inputbox "Enter clone destination:" 10 50 "$HOME/.dotfiles" 3>&1 1>&2 2>&3 3>&-)
-            if [ $? -eq 0 ] && [ -n "$CLONE_PATH" ]; then
-              # Expand tilde if present
-              CLONE_PATH=$(eval echo "$CLONE_PATH")
-
-              if [ ! -d "$CLONE_PATH" ]; then
-                clear
-                echo "Cloning repository to $CLONE_PATH..."
-
-                # Create parent directory if needed
-                mkdir -p "$(dirname "$CLONE_PATH")"
-
-                git clone git@github.com:aspauldingcode/.dotfiles.git "$CLONE_PATH"
-                if [ $? -eq 0 ]; then
-                  echo "✅ Setup complete! Repository cloned to $CLONE_PATH"
+              # Check if git is configured
+              if ! git config --global user.name >/dev/null 2>&1 || ! git config --global user.email >/dev/null 2>&1; then
+                # Get user name
+                USER_NAME=$(dialog --inputbox "Enter your Git username:" 10 50 3>&1 1>&2 2>&3 3>&-)
+                if [ $? -eq 0 ] && [ -n "$USER_NAME" ]; then
+                  git config --global user.name "$USER_NAME"
                 else
-                  echo "❌ Failed to clone repository"
+                  echo "Setup cancelled."
                   return 1
                 fi
-              else
-                echo "✅ Repository already exists at $CLONE_PATH"
+
+                # Get user email
+                USER_EMAIL=$(dialog --inputbox "Enter your Git email:" 10 50 3>&1 1>&2 2>&3 3>&-)
+                if [ $? -eq 0 ] && [ -n "$USER_EMAIL" ]; then
+                  git config --global user.email "$USER_EMAIL"
+                else
+                  echo "Setup cancelled."
+                  return 1
+                fi
+                clear
               fi
-            else
-              echo "Clone cancelled."
-            fi
 
-            clear
-            echo "🎉 Development environment ready!"
-            echo "You can now make changes and push to GitHub."
+              # Generate SSH key silently before GitHub auth
+              if [ ! -f ~/.ssh/id_ed25519 ]; then
+                mkdir -p ~/.ssh
+                ssh-keygen -t ed25519 -C "$(git config --global user.email)" -f ~/.ssh/id_ed25519 -N "" -q
+              fi
 
-            # Change to the cloned repository directory
-            if [ -n "$CLONE_PATH" ] && [ -d "$CLONE_PATH" ]; then
-              echo "📁 Changing to repository directory..."
-              cd "$CLONE_PATH"
-            fi
-          }
+              # Start SSH agent and add key
+              eval "$(ssh-agent -s)" >/dev/null 2>&1
+              ssh-add ~/.ssh/id_ed25519 >/dev/null 2>&1
 
-          # Auto-run setup
-          setup_dotfiles_dev
-        '';
+              # GitHub authentication
+              if ! gh auth status >/dev/null 2>&1; then
+                echo "Setting up GitHub authentication..."
+                gh auth login --web --git-protocol ssh || {
+                  echo "⚠️  GitHub authentication failed or was cancelled"
+                  echo "You can authenticate later with: gh auth login"
+                  return 1
+                }
+                # Add SSH key if not present
+                if ! gh ssh-key list | grep -q "$(awk '{print $2}' ~/.ssh/id_ed25519.pub 2>/dev/null)"; then
+                  gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(hostname)-$(date +%Y%m%d)" \
+                    && echo "✅ SSH key added to GitHub" \
+                    || echo "⚠️  Failed to add SSH key (may already exist)"
+                else
+                  echo "✅ SSH key already exists on GitHub"
+                fi
+                echo "✅ GitHub authentication successful"
+              else
+                echo "✅ Already authenticated with GitHub"
+              fi
+
+              # Ask for clone location and clone repository
+              CLONE_PATH=$(dialog --inputbox "Enter clone destination:" 10 50 "$HOME/.dotfiles" 3>&1 1>&2 2>&3 3>&-)
+              if [ $? -eq 0 ] && [ -n "$CLONE_PATH" ]; then
+                # Expand tilde if present
+                CLONE_PATH=$(eval echo "$CLONE_PATH")
+
+                if [ ! -d "$CLONE_PATH" ]; then
+                  clear
+                  echo "Cloning repository to $CLONE_PATH..."
+
+                  # Create parent directory if needed
+                  mkdir -p "$(dirname "$CLONE_PATH")"
+
+                  git clone git@github.com:aspauldingcode/.dotfiles.git "$CLONE_PATH"
+                  if [ $? -eq 0 ]; then
+                    echo "✅ Setup complete! Repository cloned to $CLONE_PATH"
+                  else
+                    echo "❌ Failed to clone repository"
+                    return 1
+                  fi
+                else
+                  echo "✅ Repository already exists at $CLONE_PATH"
+                fi
+              else
+                echo "Clone cancelled."
+              fi
+
+              clear
+              echo "🎉 Development environment ready!"
+              echo "You can now make changes and push to GitHub."
+
+              # Change to the cloned repository directory
+              if [ -n "$CLONE_PATH" ] && [ -d "$CLONE_PATH" ]; then
+                echo "📁 Changing to repository directory..."
+                cd "$CLONE_PATH"
+              fi
+            }
+
+            # Auto-run setup
+            setup_dotfiles_dev
+          '';
+        };
       };
     };
-  };
 }

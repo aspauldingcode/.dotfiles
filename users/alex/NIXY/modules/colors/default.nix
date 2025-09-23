@@ -1,8 +1,5 @@
 {
   config,
-  pkgs,
-  lib,
-  nix-colors,
   ...
 }:
 # generate a color palette from nix-colors (to view all colors in a file!)

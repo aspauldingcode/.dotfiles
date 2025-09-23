@@ -1,4 +1,5 @@
 # DELIVERER-specific scripts
-{pkgs, ...}: {
+_:
+{
   # DELIVERER-specific scripts can be added here
 }

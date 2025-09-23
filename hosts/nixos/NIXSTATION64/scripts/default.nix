@@ -1,10 +1,9 @@
 {
-  config,
-  lib,
   pkgs,
   hostname,
   ...
-}: {
+}:
+{
   environment.systemPackages = with pkgs; [
     #rebuild #sudo nixos-rebuild switch --show-trace --option eval-cache false --flake .#HOSTNAME
     (pkgs.writeShellScriptBin "rebuild" ''

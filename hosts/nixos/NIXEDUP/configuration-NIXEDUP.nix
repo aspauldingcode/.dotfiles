@@ -1,12 +1,11 @@
 # NixOS Mobile configuration for OnePlus 6T (NIXEDUP)
 # Based on phoneputer template: https://github.com/mwlaboratories/phoneputer
 {
-  config,
-  lib,
   pkgs,
   user,
   ...
-}: {
+}:
+{
   # Allow unfree packages (needed for OnePlus firmware)
   nixpkgs.config.allowUnfree = true;
 
@@ -28,7 +27,7 @@
   # Define the user for sops-nix secret ownership
   users.users.${user} = {
     isNormalUser = true;
-    extraGroups = ["wheel"];
+    extraGroups = [ "wheel" ];
     hashedPassword = "!";
   };
 
@@ -133,14 +132,14 @@
   };
 
   # Sops-nix secrets
-  sops.secrets.wifi_bubbles_passwd = {};
+  sops.secrets.wifi_bubbles_passwd = { };
 
   # Mobile-specific hardware configuration
   hardware.sensor.iio.enable = true;
   services.pulseaudio.enable = false; # Disabled in favor of pipewire
 
   # Allow insecure olm package (required by some mobile apps)
-  nixpkgs.config.permittedInsecurePackages = ["olm-3.2.16"];
+  nixpkgs.config.permittedInsecurePackages = [ "olm-3.2.16" ];
 
   # System state version
   system.stateVersion = "25.11";

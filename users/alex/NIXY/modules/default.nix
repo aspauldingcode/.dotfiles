@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   imports = [
     ./cava
     ./colors

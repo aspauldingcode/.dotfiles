@@ -7,17 +7,15 @@
   user,
   nix-colors,
   ...
-}: {
+}:
+{
   imports = [
     inputs.nix-colors.homeManagerModules.default
   ];
 
   home = {
     username = user;
-    homeDirectory =
-      if pkgs.stdenv.isDarwin
-      then "/Users/${user}"
-      else "/home/${user}";
+    homeDirectory = if pkgs.stdenv.isDarwin then "/Users/${user}" else "/home/${user}";
     stateVersion = "25.05";
   };
 
@@ -30,7 +28,8 @@
   targets.genericLinux.enable = !pkgs.stdenv.isDarwin;
 
   # Common packages across all systems
-  home.packages = with pkgs;
+  home.packages =
+    with pkgs;
     [
       # Essential tools
       curl
@@ -61,14 +60,13 @@
     ];
 
   # Common session variables
-  home.sessionVariables =
-    {
-      EDITOR = lib.mkDefault "nvim";
-      TERMINAL = lib.mkDefault "alacritty";
-    }
-    // lib.optionalAttrs pkgs.stdenv.isLinux {
-      BROWSER = lib.mkDefault "firefox";
-    };
+  home.sessionVariables = {
+    EDITOR = lib.mkDefault "nvim";
+    TERMINAL = lib.mkDefault "alacritty";
+  }
+  // lib.optionalAttrs pkgs.stdenv.isLinux {
+    BROWSER = lib.mkDefault "firefox";
+  };
 
   # Linux-specific XDG configuration
   xdg = lib.mkIf (!pkgs.stdenv.isDarwin) {

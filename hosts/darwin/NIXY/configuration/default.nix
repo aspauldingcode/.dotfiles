@@ -1,14 +1,10 @@
 # NIXY Darwin Configuration
 # aarch64 Darwin (Apple Silicon) macOS System
 {
-  inputs,
-  lib,
-  config,
-  pkgs,
-  user,
   hostname,
   ...
-}: {
+}:
+{
   imports = [
     ../../../../shared/base/darwin-base.nix
     ../modules

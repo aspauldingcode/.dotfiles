@@ -1,11 +1,8 @@
 # Development Profile - Development tools and environment
 {
-  inputs,
-  lib,
-  config,
-  pkgs,
   ...
-}: {
+}:
+{
   # Development-specific configuration
   imports = [
     # Add development-specific modules here

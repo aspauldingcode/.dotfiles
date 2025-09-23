@@ -114,8 +114,9 @@
     };
   };
 
-  outputs = inputs @ {flake-parts, ...}:
-    flake-parts.lib.mkFlake {inherit inputs;} {
+  outputs =
+    inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
       # Supported systems for multi-platform builds
       systems = [
         "x86_64-linux" # Intel/AMD Linux

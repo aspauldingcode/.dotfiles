@@ -1,9 +1,7 @@
 {
-  lib,
-  config,
-  pkgs,
   ...
-}: {
+}:
+{
   #You can import other home-manager modules here
   imports = [
     ./modules/NIXSTATION/packages-NIXEDUP.nix

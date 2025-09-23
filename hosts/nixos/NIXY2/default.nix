@@ -1,15 +1,9 @@
-{
-  inputs,
-  lib,
-  config,
-  pkgs,
-  mobile-nixos,
-  apple-silicon,
-  ...
-}: let
+_:
+let
   # Define hostname once for this system
   hostname = "NIXY2";
-in {
+in
+{
   imports = [
     ./hardware-configuration
     ./scripts

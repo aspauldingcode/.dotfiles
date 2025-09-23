@@ -1,9 +1,9 @@
 # airplay.nix
 {
-  config,
   pkgs,
   ...
-}: {
+}:
+{
   # Enable PipeWire and configure it for AirPlay (RAOP) support
 
   services.pipewire = {

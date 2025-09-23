@@ -1,11 +1,12 @@
 {
   config,
-  lib,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (config.colorScheme) palette;
-in {
+in
+{
   # Niri configuration file - minimal default setup
   xdg.configFile."niri/config.kdl".text = ''
     // This config is in the KDL format: https://kdl.dev

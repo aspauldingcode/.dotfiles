@@ -1,12 +1,11 @@
 {
-  config,
-  pkgs,
   lib,
   ...
-}: {
+}:
+{
   config = {
     # Ensure the directory exists
-    system.activationScripts.makeIwdDir = lib.stringAfter ["var"] ''
+    system.activationScripts.makeIwdDir = lib.stringAfter [ "var" ] ''
       mkdir -p /var/lib/iwd
     '';
 
@@ -26,7 +25,7 @@
     };
 
     # Write the eduroam config into the correct path
-    system.activationScripts.writeEduroamConfig = lib.stringAfter ["var"] ''
+    system.activationScripts.writeEduroamConfig = lib.stringAfter [ "var" ] ''
       cat > /var/lib/iwd/eduroam.8021x <<EOF
         [Security]
         EAP-Method=PEAP
@@ -45,7 +44,7 @@
       chmod 600 /var/lib/iwd/eduroam.8021x
     '';
 
-    system.activationScripts.writeBubblesPSK = lib.stringAfter ["var"] ''
+    system.activationScripts.writeBubblesPSK = lib.stringAfter [ "var" ] ''
       cat > /var/lib/iwd/Bubbles.psk <<EOF
         [Security]
         PreSharedKey=7dbf9934e879860bced9246c71971b550e5a14dd0a9df2ed4733347dea812f43

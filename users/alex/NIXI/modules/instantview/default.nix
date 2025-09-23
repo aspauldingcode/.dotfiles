@@ -1,9 +1,5 @@
+_:
 {
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
   home.file = {
     "InstantView.plist" = {
       target = "Library/Application Support/InstantView/InstantView.plist";

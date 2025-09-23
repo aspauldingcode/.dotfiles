@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ ... }:
+{
   imports = [
     ./airplay
     ./eduroam

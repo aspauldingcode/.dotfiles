@@ -2,14 +2,16 @@
   config,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (config.colorScheme) palette;
-in {
+in
+{
   programs.kitty = {
     enable = false;
     package = pkgs.kitty; # Use nixpkgs kitty package
-    darwinLaunchOptions = []; # No special launch options needed
-    environment = {}; # No extra environment variables needed
+    darwinLaunchOptions = [ ]; # No special launch options needed
+    environment = { }; # No extra environment variables needed
     extraConfig = ""; # No extra config needed
 
     shellIntegration = {

@@ -1,4 +1,5 @@
-{pkgs, ...}: let
+_:
+let
   # Configuration constants
   packages = [
     "neovim"
@@ -45,8 +46,9 @@
   rootZshrc = builtins.readFile ./shell-configs/root-zshrc;
   rootBashrc = builtins.readFile ./shell-configs/root-bashrc;
   rootFishConfig = builtins.readFile ./shell-configs/root-config.fish;
-in {
-  collections = {};
+in
+{
+  collections = { };
 
   inventory = {
     all = {
@@ -75,7 +77,7 @@ in {
       tasks = [
         {
           name = "Test connection to jailbroken iPhone";
-          "ansible.builtin.ping" = {};
+          "ansible.builtin.ping" = { };
         }
 
         {

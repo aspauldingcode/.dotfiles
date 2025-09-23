@@ -1,12 +1,9 @@
-{
-  pkgs,
-  user,
-  inputs,
-  ...
-}: let
+_:
+let
   # Define hostname once for this system
   hostname = "NIXI";
-in {
+in
+{
   imports = [
     ./scripts
     ./modules

@@ -1,13 +1,9 @@
-{
-  inputs,
-  lib,
-  config,
-  pkgs,
-  ...
-}: let
+_:
+let
   # Define hostname once for this system
   hostname = "DELIVERER";
-in {
+in
+{
   imports = [
     ./hardware-configuration
     ./scripts

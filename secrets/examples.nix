@@ -19,5 +19,6 @@
   home.sessionVariables.OPENAI_API_KEY = config.sops.placeholder."openai_api_key";
 
   # Shell command with file
-  programs.zsh.shellAliases."gh-auth" = "gh auth login --with-token < ${config.sops.secrets.github_token.path}";
+  programs.zsh.shellAliases."gh-auth" =
+    "gh auth login --with-token < ${config.sops.secrets.github_token.path}";
 }

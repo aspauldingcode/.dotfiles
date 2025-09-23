@@ -1,16 +1,15 @@
 # Alex's Home Manager Configuration for NIXY2
 # aarch64 Linux (Apple Silicon) VM/Development System
 {
-  inputs,
   pkgs,
-  lib,
   user,
-  nix-colors,
   ...
-}: let
+}:
+let
   # Define username once for this user configuration
   username = "alex";
-in {
+in
+{
   imports = [
     ../../../shared/base/alex-base.nix
     ./modules

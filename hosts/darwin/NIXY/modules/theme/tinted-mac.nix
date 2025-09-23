@@ -1,10 +1,9 @@
 {
   config,
-  lib,
-  pkgs,
   user,
   ...
-}: {
+}:
+{
   home-manager.users.${user} = {
     xdg.configFile."tinted-mac/config.toml".text = ''
       [${config.colorScheme.variant}]

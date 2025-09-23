@@ -7,7 +7,8 @@
   pkgs,
   user,
   ...
-}: {
+}:
+{
   # Common boot configuration
   boot = {
     loader = {
@@ -29,7 +30,7 @@
       theme = "rings";
       themePackages = with pkgs; [
         (adi1090x-plymouth-themes.override {
-          selected_themes = ["rings"];
+          selected_themes = [ "rings" ];
         })
       ];
     };
@@ -55,8 +56,16 @@
     networkmanager.enable = true;
     networkmanager.dns = lib.mkDefault "default";
     firewall = {
-      allowedTCPPorts = [5354 1714 1764];
-      allowedUDPPorts = [5353 1714 1764];
+      allowedTCPPorts = [
+        5354
+        1714
+        1764
+      ];
+      allowedUDPPorts = [
+        5353
+        1714
+        1764
+      ];
     };
   };
 
@@ -155,11 +164,14 @@
 
   # Common nix configuration
   nix = {
-    registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
+    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
     settings = {
       auto-optimise-store = true;
-      experimental-features = ["nix-command" "flakes"];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
     };
   };
 

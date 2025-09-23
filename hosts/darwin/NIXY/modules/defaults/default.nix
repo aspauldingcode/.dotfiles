@@ -1,8 +1,5 @@
 {
   config,
-  lib,
-  pkgs,
-  nix-colors,
   ...
 }:
 # To avoid confusion, default.nix is for importing this only.

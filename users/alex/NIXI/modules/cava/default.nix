@@ -1,15 +1,16 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   programs.cava = {
     enable = pkgs.stdenv.isLinux;
     settings = {
       /*
-      Based on the config file, these settings are marked as deprecated:
-      mode (since v0.6.0)
-      overshoot (since v0.6.0)
-      integral (since v0.8.0)
-      gravity (since v0.8.0)
-      ignore (since v0.8.0)
-      The reason is that newer versions of CAVA have replaced these with improved alternatives like noise_reduction.
+        Based on the config file, these settings are marked as deprecated:
+        mode (since v0.6.0)
+        overshoot (since v0.6.0)
+        integral (since v0.8.0)
+        gravity (since v0.8.0)
+        ignore (since v0.8.0)
+        The reason is that newer versions of CAVA have replaced these with improved alternatives like noise_reduction.
       */
       general = {
         framerate = 60;

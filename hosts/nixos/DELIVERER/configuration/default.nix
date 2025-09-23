@@ -1,14 +1,10 @@
 # DELIVERER NixOS Configuration
 # x86_64 Linux Server/Workstation
 {
-  inputs,
-  lib,
-  config,
   pkgs,
-  user,
-  hostname,
   ...
-}: {
+}:
+{
   imports = [
     ../../../../shared/base/nixos-base.nix
     ../hardware-configuration
@@ -86,7 +82,10 @@
   users.users.alex = {
     isNormalUser = true;
     description = "Alex Spaulding";
-    extraGroups = ["networkmanager" "wheel"];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
     packages = with pkgs; [
       #  thunderbird
     ];
@@ -167,7 +166,7 @@
       '';
       Restart = "always";
     };
-    wantedBy = ["multi-user.target"];
+    wantedBy = [ "multi-user.target" ];
   };
 
   # Open ports in the firewall.

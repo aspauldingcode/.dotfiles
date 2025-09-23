@@ -1,9 +1,9 @@
 # Darwin Configurations Module - Pure Flake Schema Compliance
 {
   inputs,
-  lib,
   ...
-}: let
+}:
+let
   # Inline common configurations (no custom outputs)
   commonSpecialArgs = {
     inherit inputs;
@@ -21,7 +21,7 @@
     inputs.nix-plist-manager.darwinModules.default
     {
       # Use centralized overlays
-      nixpkgs.overlays = [inputs.self.overlays.default];
+      nixpkgs.overlays = [ inputs.self.overlays.default ];
       nixpkgs.config = {
         allowUnfree = true;
         permittedInsecurePackages = [
@@ -48,48 +48,41 @@
       user = "alex";
     };
   };
-in {
+in
+{
   flake.darwinConfigurations = {
     # aarch64 Darwin (Apple Silicon)
     NIXY = inputs.nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
       specialArgs = commonSpecialArgs;
-      modules =
-        commonDarwinModules
-        ++ [
-          ../hosts/darwin/NIXY
-          {
-            home-manager =
-              commonHomeManagerDarwin
-              // {
-                users.alex = {
-                  imports = [../users/alex/NIXY];
-                  home.username = "alex";
-                };
-              };
-          }
-        ];
+      modules = commonDarwinModules ++ [
+        ../hosts/darwin/NIXY
+        {
+          home-manager = commonHomeManagerDarwin // {
+            users.alex = {
+              imports = [ ../users/alex/NIXY ];
+              home.username = "alex";
+            };
+          };
+        }
+      ];
     };
 
     # x86_64 Darwin (Intel Mac)
     NIXI = inputs.nix-darwin.lib.darwinSystem {
       system = "x86_64-darwin";
       specialArgs = commonSpecialArgs;
-      modules =
-        commonDarwinModules
-        ++ [
-          ../hosts/darwin/NIXI
-          {
-            home-manager =
-              commonHomeManagerDarwin
-              // {
-                users.alex = {
-                  imports = [../users/alex/NIXI];
-                  home.username = "alex";
-                };
-              };
-          }
-        ];
+      modules = commonDarwinModules ++ [
+        ../hosts/darwin/NIXI
+        {
+          home-manager = commonHomeManagerDarwin // {
+            users.alex = {
+              imports = [ ../users/alex/NIXI ];
+              home.username = "alex";
+            };
+          };
+        }
+      ];
     };
   };
 }

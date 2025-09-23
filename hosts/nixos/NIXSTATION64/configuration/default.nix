@@ -1,14 +1,12 @@
 # NIXSTATION64 NixOS Configuration
 # x86_64 Linux Desktop Workstation
 {
-  inputs,
-  lib,
-  config,
   pkgs,
   user,
   hostname,
   ...
-}: {
+}:
+{
   imports = [
     ../../../../shared/base/nixos-base.nix
     ../hardware-configuration
@@ -39,7 +37,7 @@
   users.users.susu = {
     isNormalUser = true;
     description = "Su Su Oo";
-    extraGroups = ["networkmanager"];
+    extraGroups = [ "networkmanager" ];
   };
 
   # System-specific virtualization
@@ -51,7 +49,10 @@
   };
 
   # Additional groups for main user
-  users.users.${user}.extraGroups = ["kvm" "libvirtd"];
+  users.users.${user}.extraGroups = [
+    "kvm"
+    "libvirtd"
+  ];
 
   # System-specific activation scripts
   system.activationScripts.script.text = ''

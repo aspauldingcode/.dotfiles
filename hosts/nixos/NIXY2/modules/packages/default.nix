@@ -1,10 +1,9 @@
 # Configure included packages for NixOS.
 {
-  lib,
   pkgs,
-  nixpkgs,
   ...
-}: {
+}:
+{
   programs = {
     thunar = {
       enable = true;

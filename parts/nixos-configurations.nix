@@ -1,9 +1,9 @@
 # NixOS Configurations Module - Pure Flake Schema Compliance
 {
   inputs,
-  lib,
   ...
-}: let
+}:
+let
   # Inline common configurations (no custom outputs)
   commonSpecialArgs = {
     inherit inputs;
@@ -19,7 +19,7 @@
     inputs.sops-nix.nixosModules.sops
     {
       # Use centralized overlays
-      nixpkgs.overlays = [inputs.self.overlays.default];
+      nixpkgs.overlays = [ inputs.self.overlays.default ];
       nixpkgs.config = {
         allowUnfree = true;
         permittedInsecurePackages = [
@@ -38,7 +38,7 @@
     backupFileExtension = "backup";
     sharedModules = [
       inputs.sops-nix.homeManagerModules.sops
-      {home.enableNixpkgsReleaseCheck = false;}
+      { home.enableNixpkgsReleaseCheck = false; }
     ];
     extraSpecialArgs = {
       inherit inputs;
@@ -46,76 +46,59 @@
       user = "alex";
     };
   };
-in {
+in
+{
   flake.nixosConfigurations = {
     # x86_64 Linux - Desktop workstation
     NIXSTATION64 = inputs.nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      specialArgs =
-        commonSpecialArgs
-        // {
-          inherit (inputs) apple-silicon mobile-nixos;
-        };
-      modules =
-        commonNixOSModules
-        ++ [
-          ../hosts/nixos/NIXSTATION64
-          inputs.determinate.nixosModules.default
-          {
-            home-manager =
-              commonHomeManagerNixOS
-              // {
-                users.alex = import ../users/alex/NIXSTATION64;
-              };
-          }
-        ];
+      specialArgs = commonSpecialArgs // {
+        inherit (inputs) apple-silicon mobile-nixos;
+      };
+      modules = commonNixOSModules ++ [
+        ../hosts/nixos/NIXSTATION64
+        inputs.determinate.nixosModules.default
+        {
+          home-manager = commonHomeManagerNixOS // {
+            users.alex = import ../users/alex/NIXSTATION64;
+          };
+        }
+      ];
     };
 
     # aarch64 Linux (Apple Silicon) - VM/Development system
     NIXY2 = inputs.nixpkgs.lib.nixosSystem {
       system = "aarch64-linux";
-      specialArgs =
-        commonSpecialArgs
-        // {
-          inherit (inputs) apple-silicon mobile-nixos;
-        };
-      modules =
-        commonNixOSModules
-        ++ [
-          ../hosts/nixos/NIXY2
-          inputs.apple-silicon.nixosModules.apple-silicon-support
-          inputs.determinate.nixosModules.default
-          {
-            home-manager =
-              commonHomeManagerNixOS
-              // {
-                users.alex = import ../users/alex/NIXY2;
-              };
-          }
-        ];
+      specialArgs = commonSpecialArgs // {
+        inherit (inputs) apple-silicon mobile-nixos;
+      };
+      modules = commonNixOSModules ++ [
+        ../hosts/nixos/NIXY2
+        inputs.apple-silicon.nixosModules.apple-silicon-support
+        inputs.determinate.nixosModules.default
+        {
+          home-manager = commonHomeManagerNixOS // {
+            users.alex = import ../users/alex/NIXY2;
+          };
+        }
+      ];
     };
 
     # x86_64 Linux - DELIVERER server/workstation
     DELIVERER = inputs.nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      specialArgs =
-        commonSpecialArgs
-        // {
-          inherit (inputs) apple-silicon mobile-nixos;
-        };
-      modules =
-        commonNixOSModules
-        ++ [
-          ../hosts/nixos/DELIVERER
-          inputs.determinate.nixosModules.default
-          {
-            home-manager =
-              commonHomeManagerNixOS
-              // {
-                users.alex = import ../users/alex/DELIVERER;
-              };
-          }
-        ];
+      specialArgs = commonSpecialArgs // {
+        inherit (inputs) apple-silicon mobile-nixos;
+      };
+      modules = commonNixOSModules ++ [
+        ../hosts/nixos/DELIVERER
+        inputs.determinate.nixosModules.default
+        {
+          home-manager = commonHomeManagerNixOS // {
+            users.alex = import ../users/alex/DELIVERER;
+          };
+        }
+      ];
     };
 
     # NOTE: NIXEDUP configuration temporarily excluded from FlakeHub publishing

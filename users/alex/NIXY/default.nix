@@ -1,16 +1,15 @@
 # Alex's Home Manager Configuration for NIXY
 # aarch64 Darwin (Apple Silicon) macOS System
 {
-  inputs,
   pkgs,
-  lib,
   user,
-  nix-colors,
   ...
-}: let
+}:
+let
   # Define username once for this user configuration
   username = "alex";
-in {
+in
+{
   imports = [
     ../../../shared/base/alex-base.nix
     ./modules

@@ -1,10 +1,10 @@
 {
-  config,
   lib,
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   environment.systemPackages = [
     (pkgs.writeShellScriptBin "smart-rebuild" ''
       set -euo pipefail

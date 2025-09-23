@@ -2,7 +2,6 @@
   lib,
   stdenv,
   fetchurl,
-  unzip,
   p7zip,
 }:
 stdenv.mkDerivation rec {
@@ -29,7 +28,7 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-XOiWc4c7Yah+mM7axk8g1gY12vXamQF78Keqd3/0/cE=";
   };
 
-  nativeBuildInputs = [p7zip];
+  nativeBuildInputs = [ p7zip ];
 
   sourceRoot = ".";
 

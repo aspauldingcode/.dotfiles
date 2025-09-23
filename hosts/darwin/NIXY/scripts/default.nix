@@ -2,7 +2,8 @@
   pkgs,
   hostname,
   ...
-}: {
+}:
+{
   environment.systemPackages = with pkgs; [
     (writeShellScriptBin "rebuild" ''
       echo "Rebuilding ${hostname}..."

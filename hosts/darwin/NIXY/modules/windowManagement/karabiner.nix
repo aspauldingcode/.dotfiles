@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}:
+_:
 #FIXME: FAILS DUE TO https://github.com/LnL7/nix-darwin/issues/1041
 {
   services.karabiner-elements = {

@@ -6,7 +6,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   options.services.theme-toggle = {
     enable = mkEnableOption "theme toggle functionality";
 
@@ -15,7 +16,8 @@ with lib; {
       description = "The theme toggle package to use";
       default = pkgs.writeShellApplication {
         name = "toggle-theme";
-        runtimeInputs = with pkgs;
+        runtimeInputs =
+          with pkgs;
           [
             coreutils
             ripgrep
@@ -183,6 +185,6 @@ with lib; {
 
   config = mkIf config.services.theme-toggle.enable {
     # Add the toggle-theme script to system packages
-    environment.systemPackages = [config.services.theme-toggle.package];
+    environment.systemPackages = [ config.services.theme-toggle.package ];
   };
 }

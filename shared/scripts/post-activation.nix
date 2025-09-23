@@ -1,21 +1,15 @@
 {
-  config,
   pkgs,
   inputs,
   user,
   lib,
   ...
-}: let
+}:
+let
   systemType = pkgs.stdenv.hostPlatform.system;
-  isDarwin = pkgs.stdenv.isDarwin;
-  InputSourceSelector = lib.mkIf isDarwin (pkgs.callPackage ../../hosts/darwin/NIXY/customDerivations/inputsourceselector.nix {});
-  homebrewPath =
-    if systemType == "aarch64-darwin"
-    then "/opt/homebrew/bin"
-    else if systemType == "x86_64-darwin"
-    then "/usr/local/bin"
-    else throw "Homebrew Unsupported architecture: ${systemType}";
-in {
+  inherit (pkgs.stdenv) isDarwin;
+in
+{
   system.activationScripts.postActivation = lib.mkIf isDarwin {
     text = ''
       # ===================================================================

@@ -1,12 +1,8 @@
+_:
 {
-  config,
-  lib,
-  users,
-  ...
-}: {
   nix-plist-manager = {
     enable = true;
-    users = ["alex"];
+    users = [ "alex" ];
 
     # System Settings Configuration
     systemSettings = {

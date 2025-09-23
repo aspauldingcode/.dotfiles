@@ -1,11 +1,11 @@
 {
   config,
-  lib,
-  pkgs,
   ...
-}: let
+}:
+let
   inherit (config.colorScheme) palette;
-in {
+in
+{
   environment.etc."gowall/theme.json" = {
     enable = true;
     text = ''

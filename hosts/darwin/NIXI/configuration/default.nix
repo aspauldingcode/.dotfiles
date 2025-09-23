@@ -1,14 +1,10 @@
 # NIXI Darwin Configuration
 # x86_64 Darwin (Intel) macOS System
 {
-  inputs,
-  lib,
-  config,
-  pkgs,
-  user,
   hostname,
   ...
-}: {
+}:
+{
   imports = [
     ../../../../shared/base/darwin-base.nix
     ../modules

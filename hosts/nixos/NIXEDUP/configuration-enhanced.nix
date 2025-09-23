@@ -1,16 +1,15 @@
 # Enhanced Mobile NixOS configuration for OnePlus 6T (NIXEDUP)
 # Integrates phoneputer configuration with improved mobile support
 {
-  config,
-  lib,
   pkgs,
   inputs,
   user,
   ...
-}: {
+}:
+{
   imports = [
     # Import mobile-nixos device configuration
-    (import "${inputs.mobile-nixos}/lib/configuration.nix" {device = "oneplus-fajita";})
+    (import "${inputs.mobile-nixos}/lib/configuration.nix" { device = "oneplus-fajita"; })
   ];
 
   # Allow unfree packages (needed for OnePlus firmware and proprietary drivers)
@@ -124,7 +123,7 @@
         };
         autoLogin = {
           enable = true;
-          user = user;
+          inherit user;
         };
       };
     };
@@ -325,10 +324,10 @@
 
     fontconfig = {
       defaultFonts = {
-        serif = ["Noto Serif"];
-        sansSerif = ["Noto Sans"];
-        monospace = ["Fira Code"];
-        emoji = ["Noto Color Emoji"];
+        serif = [ "Noto Serif" ];
+        sansSerif = [ "Noto Sans" ];
+        monospace = [ "Fira Code" ];
+        emoji = [ "Noto Color Emoji" ];
       };
     };
   };
@@ -355,7 +354,7 @@
     # Mobile-specific optimizations
     mobile-optimization = {
       description = "Mobile device optimizations";
-      wantedBy = ["multi-user.target"];
+      wantedBy = [ "multi-user.target" ];
       script = ''
         # CPU governor for battery life
         echo powersave > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor || true

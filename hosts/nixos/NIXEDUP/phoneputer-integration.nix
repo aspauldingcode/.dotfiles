@@ -1,17 +1,16 @@
 # Enhanced Mobile NixOS configuration integrating phoneputer setup
 # OnePlus 6T (fajita) configuration with phoneputer optimizations
 {
-  config,
-  lib,
   pkgs,
   user,
   inputs,
   ...
-}: {
+}:
+{
   # Import mobile-nixos configuration
   imports = [
     # Mobile NixOS device configuration for OnePlus 6T
-    (import "${inputs.mobile-nixos}/lib/configuration.nix" {device = "oneplus-fajita";})
+    (import "${inputs.mobile-nixos}/lib/configuration.nix" { device = "oneplus-fajita"; })
   ];
 
   # Allow unfree packages (needed for OnePlus firmware)
@@ -160,7 +159,7 @@
   hardware.sensor.iio.enable = true;
 
   # Allow insecure packages if needed
-  nixpkgs.config.permittedInsecurePackages = ["olm-3.2.16"];
+  nixpkgs.config.permittedInsecurePackages = [ "olm-3.2.16" ];
 
   # Disable documentation generation to suppress mobile-nixos warnings
   documentation = {

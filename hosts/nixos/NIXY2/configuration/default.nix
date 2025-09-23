@@ -1,14 +1,13 @@
 # NIXY2 NixOS Configuration
 # aarch64 Linux (Apple Silicon) VM/Development System
 {
-  inputs,
   lib,
-  config,
   pkgs,
   user,
   hostname,
   ...
-}: {
+}:
+{
   imports = [
     ../../../../shared/base/nixos-base.nix
     ../hardware-configuration
@@ -28,7 +27,7 @@
   networking = {
     nat = {
       enable = true;
-      internalInterfaces = ["ve-+"];
+      internalInterfaces = [ "ve-+" ];
       externalInterface = "eth0";
       forwardPorts = [
         {
@@ -39,16 +38,20 @@
       ];
     };
     firewall = {
-      allowedTCPPorts = [80 443 22];
-      allowedUDPPorts = [53];
+      allowedTCPPorts = [
+        80
+        443
+        22
+      ];
+      allowedUDPPorts = [ 53 ];
     };
   };
 
   # Mobile hotspot iptables rules
   systemd.services.mobile-hotspot = {
     description = "Mobile Hotspot Configuration";
-    after = ["network.target"];
-    wantedBy = ["multi-user.target"];
+    after = [ "network.target" ];
+    wantedBy = [ "multi-user.target" ];
     script = ''
       # Enable IP forwarding
       echo 1 > /proc/sys/net/ipv4/ip_forward
