@@ -24,7 +24,7 @@ jobs:
       - name: Nothing but Nix
         uses: wimpysworld/nothing-but-nix@main
         with:
-          hatchet-protocol: 'cleave'
+          hatchet-protocol: 'rampage'
       - name: Check disk space after nothing-but-nix
         run: |
           echo "=== Disk Space After nothing-but-nix ==="
