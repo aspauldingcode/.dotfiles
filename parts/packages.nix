@@ -23,8 +23,6 @@
         nix flake show
       '';
 
-
-
       # Mobile NixOS installer helper
       mobile-installer = pkgs.writeShellScriptBin "mobile-installer" ''
         set -e
