@@ -21,6 +21,12 @@ jobs:
           persist-credentials: false
           ref: "${{ (inputs.tag != null) && format('refs/tags/{0}', inputs.tag) || '' }}"
       - uses: "DeterminateSystems/determinate-nix-action@v3"
+      - uses: "DeterminateSystems/flakehub-cache-action@main"
+      - name: "Build and cache outputs"
+        run: |
+          echo "Building flake outputs to populate cache"
+          nix flake check
+          nix flake show
       - name: "Prepare for FlakeHub publishing"
         run: |
           echo "Publishing flake without mobile-nixos configurations to avoid import-from-derivation issues"
