@@ -9,6 +9,7 @@ on:
         description: "The existing tag to publish to FlakeHub"
         type: "string"
         required: true
+
 jobs:
   flakehub-publish:
     runs-on: "ubuntu-latest"
@@ -19,26 +20,18 @@ jobs:
       - uses: "actions/checkout@v5"
         with:
           persist-credentials: false
-          ref: "${{ (inputs.tag != null) && format('refs/tags/{0}', inputs.tag) || '' }}"
+          ref: "${{ github.event.inputs.tag && format('refs/tags/{0}', github.event.inputs.tag) || github.ref }}"
+      
       - uses: "DeterminateSystems/determinate-nix-action@v3"
+      
       - uses: "DeterminateSystems/flakehub-cache-action@main"
-      - name: "Build and cache outputs"
-        run: |
-          echo "Building flake outputs to populate cache"
-          nix flake check
-          nix flake show
-      - name: "Prepare for FlakeHub publishing"
-        run: |
-          echo "Publishing flake without mobile-nixos configurations to avoid import-from-derivation issues"
-      - uses: "DeterminateSystems/flakehub-push@main"
+      
+      - name: "Publish to FlakeHub"
+        uses: "DeterminateSystems/flakehub-push@main"
         with:
           visibility: "public"
           name: "aspauldingcode/.dotfiles"
-          tag: "${{ inputs.tag }}"
+          tag: "${{ github.event.inputs.tag || github.ref_name }}"
           include-output-paths: true
         env:
           FLAKEHUB_PUSH_TOKEN: ${{ secrets.FLAKEHUB_PUSH_TOKEN }}
-      - name: "Cleanup"
-        if: always()
-        run: |
-          echo "Workflow completed"
