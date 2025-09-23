@@ -25,7 +25,8 @@
 
       # Nixible CLI for 8AMPS iPhone configuration
       "8AMPS" = let
-        nixible_lib = inputs.nixible.lib {
+        # Import nixible lib from non-flake input (GitLab source)
+        nixible_lib = (import "${inputs.nixible}") {
           inherit pkgs;
           lib = pkgs.lib;
         };

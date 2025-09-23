@@ -62,11 +62,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Apple Silicon and mobile support
+    # Apple Silicon
     apple-silicon = {
       url = "github:tpwrules/nixos-apple-silicon";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    # oneplus 6t phone support
     mobile-nixos = {
       url = "github:NixOS/mobile-nixos";
       flake = false;
@@ -78,7 +79,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Homebrew taps (non-flake inputs)
+    # Homebrew taps (non-flake inputs) - pinned for FlakeHub stability
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
       flake = false;
@@ -109,6 +110,7 @@
     # Ansible automation with Nix
     nixible = {
       url = "gitlab:TECHNOFAB/nixible?dir=lib";
+      flake = false;
     };
   };
 
