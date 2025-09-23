@@ -31,7 +31,6 @@ jobs:
           df -h
           echo "=== Available space on root ==="
           df -h / | tail -1 | awk '{print "Available: " $4}'
-  
   DeterminateCI:
     needs: cleanup-and-build
     uses: DeterminateSystems/ci/.github/workflows/workflow.yml@main
