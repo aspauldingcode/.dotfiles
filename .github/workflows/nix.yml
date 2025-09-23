@@ -1,3 +1,13 @@
+name: "Build Nix Package"
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+
 jobs:
   build-nix-package:
     runs-on: ubuntu-22.04
@@ -5,7 +15,7 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Nothing but Nix
         uses: wimpysworld/nothing-but-nix@main
         with:

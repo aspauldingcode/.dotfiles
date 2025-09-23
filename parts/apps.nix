@@ -41,6 +41,20 @@
         ''}";
         meta.description = "Display detailed system information";
       };
+
+      # Nixible CLI for 8AMPS iPhone configuration
+      "8AMPS" = let
+        # Import nixible lib from non-flake input (GitLab source)
+        nixible_lib = (import "${inputs.nixible}") {
+          inherit pkgs;
+          lib = pkgs.lib;
+        };
+        nixible_cli = nixible_lib.mkNixibleCli ../playbooks/remote-device-setup.nix;
+      in {
+        type = "app";
+        program = "${nixible_cli}/bin/nixible";
+        meta.description = "Configure 8AMPS iPhone using Nixible/Ansible";
+      };
     };
   };
 }
