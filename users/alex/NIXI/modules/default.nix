@@ -7,7 +7,6 @@
     ./launch-agents
     ./gowall
     ./i3
-    ./instantview
     ./karabiner
     ./kitty
     ./maco

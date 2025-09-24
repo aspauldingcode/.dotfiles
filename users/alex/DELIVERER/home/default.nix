@@ -1,10 +1,14 @@
 # DELIVERER Home Configuration for alex
 {
+  inputs,
+  lib,
+  config,
+  pkgs,
   user,
+  hostname,
   nix-colors,
   ...
-}:
-{
+}: {
   imports = [
     nix-colors.homeManagerModules.default
   ];

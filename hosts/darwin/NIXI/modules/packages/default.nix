@@ -11,7 +11,7 @@
     wget
     gnumake
     pfetch
-    # unstable.macos-instantview # Temporarily disabled due to build issues
+    unstable.tart
     prismlauncher
     nixfmt-rfc-style
     luaformatter
