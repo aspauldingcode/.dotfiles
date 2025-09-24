@@ -1,6 +1,5 @@
 # Development Shells Module - Optimized for reduced build size
-_:
-{
+_: {
   perSystem =
     {
       pkgs,

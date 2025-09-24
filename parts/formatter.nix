@@ -8,7 +8,6 @@
   perSystem =
     {
       config,
-      pkgs,
       ...
     }:
     {
@@ -17,7 +16,7 @@
 
         programs = {
           # Nix formatting - using official nixfmt (nixpkgs standard)
-        nixfmt.enable = true;
+          nixfmt.enable = true;
 
           # Nix code analysis and cleanup
           deadnix.enable = true; # Remove unused code
