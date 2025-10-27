@@ -15,6 +15,38 @@
   outputs = { self, nixpkgs, nixpkgs-darwin, flake-utils, nix-darwin, sops-nix, determinate-nix, home-manager, ... }:
     let
       hardwareDir = ./hardware;
+      # One shared Home Manager module set for all systems
+      hmSharedModules = [
+        ({ pkgs, ... }: {
+          home.stateVersion = "24.11";
+          xdg.enable = true;
+
+          programs.zsh.enable = true;
+          programs.git.enable = true;
+          programs.fzf.enable = true;
+          programs.direnv.enable = true;
+          programs.direnv.nix-direnv.enable = true;
+          programs.starship.enable = true;
+
+          home.packages = with pkgs; [
+            git curl wget
+            ripgrep fd bat tree htop
+            neovim
+            podman qemu
+          ];
+        })
+      ];
+
+      # Minimal shared NixOS base so configs build, and create admin user
+      nixosBaseModule = { ... }: {
+        system.stateVersion = "24.11";
+        users.users.admin = {
+          isNormalUser = true;
+          extraGroups = [ "wheel" ];
+        };
+        security.sudo.enable = true;
+      };
+
       makeNixosConfigurations =
         if builtins.pathExists hardwareDir then
           let
@@ -33,7 +65,20 @@
               name = name;
               value = nixpkgs.lib.nixosSystem {
                 system = systemStr;
-                modules = [ (hardwareDir + "/${fname}") ];
+                modules = [
+                  nixosBaseModule
+                  (hardwareDir + "/${fname}")
+                  home-manager.nixosModules.home-manager
+                  {
+                    home-manager.useGlobalPkgs = true;
+                    home-manager.useUserPackages = true;
+                    home-manager.users.admin = {
+                      imports = hmSharedModules;
+                      home.username = "admin";
+                      home.homeDirectory = "/home/admin";
+                    };
+                  }
+                ];
               };
             }) nixFiles)
         else {};
@@ -81,11 +126,12 @@
           '';
         };
 
-        # nix-darwin configuration
+        # nix-darwin configuration + shared Home Manager
         darwinConfigurations = if builtins.match ".*-darwin" system != null then {
           myMac = nix-darwin.lib.darwinSystem {
             inherit system;
             modules = [
+              # System settings
               {
                 # Let Determinate Nix manage Nix itself on macOS
                 nix.enable = false;
@@ -95,6 +141,18 @@
                   })
                 ];
                 environment.systemPackages = sharedPackages ++ exampleApps;
+              }
+
+              # Shared Home Manager user config
+              home-manager.darwinModules.home-manager
+              {
+                home-manager.useGlobalPkgs = true;
+                home-manager.useUserPackages = true;
+                home-manager.users.admin = {
+                  imports = hmSharedModules;
+                  home.username = "admin";
+                  home.homeDirectory = "/Users/admin";
+                };
               }
             ];
           };
@@ -117,32 +175,13 @@
             config = { allowUnfree = true; };
           };
           modules = [
-            ({ pkgs, ... }: {
-              nixpkgs.config.allowUnfree = true;
+            # Non-NixOS Linux needs the generic target enabled and user/home set
+            ({ ... }: {
               targets.genericLinux.enable = true;
-
               home.username = "admin";
               home.homeDirectory = "/home/admin";
-              home.stateVersion = "24.11";
-
-              xdg.enable = true;
-
-              programs.zsh.enable = true;
-              programs.git.enable = true;
-              programs.fzf.enable = true;
-              programs.direnv.enable = true;
-              programs.direnv.nix-direnv.enable = true;
-              programs.starship.enable = true;
-
-              home.packages = with pkgs; [
-                # VM-friendly tools and basics
-                git curl wget
-                ripgrep fd bat tree htop
-                neovim
-                podman qemu
-              ];
             })
-          ];
+          ] ++ hmSharedModules;
         };
       };
     };
