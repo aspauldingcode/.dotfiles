@@ -1,141 +1,110 @@
 {
-  description = "Production-Ready Universal Nix Flake - Multi-Host, Multi-User with Home Manager, Nix-Darwin, NixOS & SOPS secrets management";
+  description = "Multi-system, multi-arch Nix flake example with nix-darwin, determinate-nix, sops-nix";
 
   inputs = {
-    # Core nixpkgs channels - using stable 25.05 for reliability
-    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1.*";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-
-    # Flake framework for better organization
-    flake-parts = {
-      url = "github:hercules-ci/flake-parts";
-      inputs.nixpkgs-lib.follows = "nixpkgs";
-    };
-
-    # System management - using master branches for unstable compatibility
-    nix-darwin = {
-      url = "github:lnl7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Development and tooling
-    nixvim = {
-      url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nix-std.url = "github:chessai/nix-std";
-    treefmt-nix = {
-      url = "github:numtide/treefmt-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Theming and UI
-    nix-colors.url = "github:misterio77/nix-colors";
-    spicetify-nix = {
-      url = "github:Gerg-L/spicetify-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    # Security and secrets management
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Determinate Nix installer and management
-    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
-
-    # macOS specific tools
-    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
-    nix-plist-manager = {
-      url = "github:sushydev/nix-plist-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Community packages and overlays
-    nur.url = "github:nix-community/nur";
-    nixtheplanet = {
-      url = "github:matthewcroughan/nixtheplanet";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Apple Silicon
-    apple-silicon = {
-      url = "github:tpwrules/nixos-apple-silicon";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-    # oneplus 6t phone support
-    mobile-nixos = {
-      url = "github:NixOS/mobile-nixos";
-      flake = false;
-    };
-
-    # Development and reverse engineering
-    frida-nix = {
-      url = "github:itstarsun/frida-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Homebrew taps (non-flake inputs) - pinned for FlakeHub stability
-    homebrew-core = {
-      url = "github:homebrew/homebrew-core";
-      flake = false;
-    };
-    homebrew-koekeishiya = {
-      url = "github:koekeishiya/homebrew-formulae";
-      flake = false;
-    };
-    homebrew-felixkratz = {
-      url = "github:FelixKratz/homebrew-formulae";
-      flake = false;
-    };
-    homebrew-smudge = {
-      url = "github:smudge/homebrew-smudge";
-      flake = false;
-    };
-    homebrew-cask = {
-      url = "github:homebrew/homebrew-cask";
-      flake = false;
-    };
-
-    # Additional macOS tools
-    nix-rosetta-builder = {
-      url = "github:cpick/nix-rosetta-builder";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-
-    # Ansible automation with Nix
-    nixible = {
-      url = "gitlab:TECHNOFAB/nixible?dir=lib";
-      flake = false;
-    };
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
+    nix-darwin.url = "github:LnL7/nix-darwin";
+    sops-nix.url = "github:Mic92/sops-nix";
+    determinate-nix.url = "github:DeterminateSystems/determinate";
   };
 
-  outputs =
-    inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      # Supported systems for multi-platform builds
-      systems = [
-        "x86_64-linux" # Intel/AMD Linux
-        "aarch64-linux" # ARM64 Linux (Apple Silicon, Mobile)
-        "x86_64-darwin" # Intel macOS
-        "aarch64-darwin" # Apple Silicon macOS
-      ];
+  outputs = { self, nixpkgs, nixpkgs-darwin, flake-utils, nix-darwin, sops-nix, determinate-nix, ... }:
+    let
+      hardwareDir = ./hardware;
+      makeNixosConfigurations =
+        if builtins.pathExists hardwareDir then
+          let
+            files = builtins.attrNames (builtins.readDir hardwareDir);
+            nixFiles = builtins.filter (f: builtins.match ".*\\.nix" f != null) files;
+          in
+          builtins.listToAttrs (map (fname:
+            let
+              name = builtins.substring 0 (builtins.stringLength fname - 4) fname;
+              systemFile = hardwareDir + "/${name}.system";
+              systemStr = if builtins.pathExists systemFile then
+                builtins.replaceStrings ["\n" "\r"] ["" ""] (builtins.readFile systemFile)
+              else
+                "x86_64-linux";
+            in {
+              name = name;
+              value = nixpkgs.lib.nixosSystem {
+                system = systemStr;
+                modules = [ (hardwareDir + "/${fname}") ];
+              };
+            }) nixFiles)
+        else {};
+    in
+    (flake-utils.lib.eachSystem [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ] (system:
+      let
+        nixpkgsInput = if builtins.match ".*-darwin" system != null then nixpkgs-darwin else nixpkgs;
+        pkgs = import nixpkgsInput {
+          inherit system;
+          config = { allowUnfree = true; };
+        };
 
-      # Import modular configuration parts (standard outputs only)
-      imports = [
-        ./parts/overlays.nix
-        ./parts/nixos-configurations.nix
-        ./parts/darwin-configurations.nix
-        ./parts/home-configurations.nix
-        ./parts/packages.nix
-        ./parts/apps.nix
-        ./parts/devshells.nix
-        ./parts/formatter.nix
-        ./parts/checks.nix
-      ];
+        sharedPackages = with pkgs; [
+          git
+          curl
+          wget
+          rustup
+          ripgrep
+          fd
+          bat
+          tree
+          yazi
+          neovim
+        ];
+
+        exampleApps = with pkgs; [
+          firefox
+          vlc
+          htop
+        ];
+
+        linuxDE = if builtins.match ".*-linux" system != null then with pkgs; [ xfce4 xfce4-terminal ] else [];
+      in
+      {
+        packages.default = pkgs.stdenv.mkDerivation {
+          pname = "example-env";
+          version = "1.0";
+          buildInputs = sharedPackages ++ exampleApps ++ linuxDE;
+          # optional: build output script
+          unpackPhase = ":"; 
+          installPhase = ''
+            mkdir -p $out/bin
+            echo "Example environment ready" > $out/bin/hello
+            chmod +x $out/bin/hello
+          '';
+        };
+
+        # nix-darwin configuration
+        darwinConfigurations = if builtins.match ".*-darwin" system != null then {
+          myMac = nix-darwin.lib.darwinSystem {
+            inherit system;
+            modules = [
+              {
+                # Let Determinate Nix manage Nix itself on macOS
+                nix.enable = false;
+                nixpkgs.overlays = [
+                  (final: prev: {
+                    rust = prev.rustChannel.latest.stable;
+                  })
+                ];
+                environment.systemPackages = sharedPackages ++ exampleApps;
+              }
+            ];
+          };
+        } else {};
+
+        # sops-nix secrets placeholder
+        sopsSecrets = sops-nix.lib.sopsSecrets {
+          inherit pkgs;
+          secrets = {};
+        };
+      }
+    )) // {
+      nixosConfigurations = makeNixosConfigurations;
     };
 }
