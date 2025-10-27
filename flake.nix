@@ -8,9 +8,11 @@
     nix-darwin.url = "github:LnL7/nix-darwin";
     sops-nix.url = "github:Mic92/sops-nix";
     determinate-nix.url = "github:DeterminateSystems/determinate";
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-darwin, flake-utils, nix-darwin, sops-nix, determinate-nix, ... }:
+  outputs = { self, nixpkgs, nixpkgs-darwin, flake-utils, nix-darwin, sops-nix, determinate-nix, home-manager, ... }:
     let
       hardwareDir = ./hardware;
       makeNixosConfigurations =
@@ -106,5 +108,42 @@
       }
     )) // {
       nixosConfigurations = makeNixosConfigurations;
+      # Home Manager configuration for non-NixOS Linux (generic Linux)
+      homeConfigurations = {
+        # Admin user profile intended for Fedora/Ubuntu VMs using Nix + Home Manager
+        admin-linux = home-manager.lib.homeManagerConfiguration {
+          pkgs = import nixpkgs {
+            system = "x86_64-linux";
+            config = { allowUnfree = true; };
+          };
+          modules = [
+            ({ pkgs, ... }: {
+              nixpkgs.config.allowUnfree = true;
+              targets.genericLinux.enable = true;
+
+              home.username = "admin";
+              home.homeDirectory = "/home/admin";
+              home.stateVersion = "24.11";
+
+              xdg.enable = true;
+
+              programs.zsh.enable = true;
+              programs.git.enable = true;
+              programs.fzf.enable = true;
+              programs.direnv.enable = true;
+              programs.direnv.nix-direnv.enable = true;
+              programs.starship.enable = true;
+
+              home.packages = with pkgs; [
+                # VM-friendly tools and basics
+                git curl wget
+                ripgrep fd bat tree htop
+                neovim
+                podman qemu
+              ];
+            })
+          ];
+        };
+      };
     };
 }
