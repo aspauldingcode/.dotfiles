@@ -1,7 +1,6 @@
 # NIXSTATION64 NixOS Configuration
 # x86_64 Linux Desktop Workstation
 {
-  lib,
   pkgs,
   user,
   hostname,
@@ -10,6 +9,7 @@
 {
   imports = [
     ../../../../shared/base/nixos-base.nix
+    ../hardware-configuration
     ../modules
   ];
 

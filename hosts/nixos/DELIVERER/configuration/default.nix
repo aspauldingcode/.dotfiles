@@ -1,13 +1,13 @@
 # DELIVERER NixOS Configuration
 # x86_64 Linux Server/Workstation
 {
-  lib,
   pkgs,
   ...
 }:
 {
   imports = [
     ../../../../shared/base/nixos-base.nix
+    ../hardware-configuration
     ../modules
   ];
 

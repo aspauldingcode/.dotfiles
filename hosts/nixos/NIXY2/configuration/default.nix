@@ -10,6 +10,7 @@
 {
   imports = [
     ../../../../shared/base/nixos-base.nix
+    ../hardware-configuration
     ../modules
   ];
 

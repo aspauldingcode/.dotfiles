@@ -9,8 +9,6 @@ let
     inherit inputs;
     inherit (inputs) nix-colors;
     user = "alex";
-    # Per-host hardware override: pass a module when provided via --override-input host-hw
-    hardwareOverride = if inputs ? host-hw then import inputs.host-hw else null;
   };
 
   # Common NixOS modules (inlined)
