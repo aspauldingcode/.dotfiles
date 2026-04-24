@@ -59,10 +59,12 @@ sudo -u "$LOGGED_IN_USER" -H bash -c "
   cd \"\$HOME/.dotfiles\"
   git checkout development || true
   git pull || true
-
-  echo 'Applying nix-darwin configuration...'
-  nix --extra-experimental-features \"nix-command flakes\" run nix-darwin/master#darwin-rebuild -- switch --flake \".#mba\"
 "
+
+echo "Applying nix-darwin configuration as root..."
+cd "$USER_HOME/.dotfiles"
+export PATH="/nix/var/nix/profiles/default/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/homebrew/bin"
+nix --extra-experimental-features "nix-command flakes" run nix-darwin/master#darwin-rebuild -- switch --flake ".#mba"
 
 echo "Installation finished successfully at $(date)"
 EOF

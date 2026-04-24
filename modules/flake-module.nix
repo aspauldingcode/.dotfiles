@@ -28,7 +28,7 @@
             config = { 
               nixpkgs.config.allowUnfree = true;
               system.stateVersion = "24.11"; 
-              users.users.admin = {
+              users.users."8amps" = {
                 isNormalUser = true;
                 extraGroups = [ "wheel" ];
               };
@@ -46,7 +46,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.admin = {
+            home-manager.users."8amps" = {
               imports = [
                 inputs.self.modules.homeManager.shell
                 inputs.self.modules.homeManager.editor
@@ -54,8 +54,8 @@
                 inputs.self.modules.homeManager.styling
                 inputs.self.modules.homeManager.apps
               ];
-              home.username = "admin";
-              home.homeDirectory = "/home/admin";
+              home.username = "8amps";
+              home.homeDirectory = "/home/8amps";
               home.stateVersion = "24.11";
             };
           }
@@ -70,7 +70,7 @@
             config = { 
               nixpkgs.config.allowUnfree = true;
               system.stateVersion = "24.11"; 
-              users.users.admin = {
+              users.users."8amps" = {
                 isNormalUser = true;
                 extraGroups = [ "wheel" ];
               };
@@ -93,7 +93,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.admin = {
+            home-manager.users."8amps" = {
               imports = [
                 inputs.self.modules.homeManager.shell
                 inputs.self.modules.homeManager.editor
@@ -101,8 +101,8 @@
                 inputs.self.modules.homeManager.styling
                 inputs.self.modules.homeManager.apps
               ];
-              home.username = "admin";
-              home.homeDirectory = "/home/admin";
+              home.username = "8amps";
+              home.homeDirectory = "/home/8amps";
               home.stateVersion = "24.11";
             };
           }
@@ -120,9 +120,9 @@
             nixpkgs.config.allowUnfree = true;
             system.stateVersion = 5; # For nix-darwin
             nix.enable = false; # Let determinate manage it
-            users.users.admin = {
-              name = "admin";
-              home = "/Users/admin";
+            users.users."8amps" = {
+              name = "8amps";
+              home = "/Users/8amps";
             };
           }
           inputs.home-manager.darwinModules.home-manager
@@ -136,7 +136,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.admin = {
+            home-manager.users."8amps" = {
               imports = [
                 inputs.self.modules.homeManager.shell
                 inputs.self.modules.homeManager.editor
@@ -144,8 +144,8 @@
                 inputs.self.modules.homeManager.styling
                 inputs.self.modules.homeManager.apps
               ];
-              home.username = "admin";
-              home.homeDirectory = "/Users/admin";
+              home.username = "8amps";
+              home.homeDirectory = "/Users/8amps";
               home.stateVersion = "24.11";
             };
           }
@@ -155,14 +155,14 @@
 
     homeConfigurations = {
       # Example standalone Home Manager config
-      admin-linux = inputs.home-manager.lib.homeManagerConfiguration {
+      "8amps-linux" = inputs.home-manager.lib.homeManagerConfiguration {
         pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
         extraSpecialArgs = { inherit inputs; };
         modules = [
           {
             nixpkgs.config.allowUnfree = true;
-            home.username = "admin";
-            home.homeDirectory = "/home/admin";
+            home.username = "8amps";
+            home.homeDirectory = "/home/8amps";
             home.stateVersion = "24.11";
             targets.genericLinux.enable = true;
           }
