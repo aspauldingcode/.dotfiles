@@ -13,6 +13,7 @@
     ./styling.nix
     ./linux-desktop.nix
     ./mobile.nix
+    ./apps.nix
   ];
 
   config = {
@@ -51,6 +52,7 @@
                 inputs.self.modules.homeManager.editor
                 inputs.self.modules.homeManager.secrets
                 inputs.self.modules.homeManager.styling
+                inputs.self.modules.homeManager.apps
               ];
               home.username = "admin";
               home.homeDirectory = "/home/admin";
@@ -97,6 +99,7 @@
                 inputs.self.modules.homeManager.editor
                 inputs.self.modules.homeManager.secrets
                 inputs.self.modules.homeManager.styling
+                inputs.self.modules.homeManager.apps
               ];
               home.username = "admin";
               home.homeDirectory = "/home/admin";
@@ -139,6 +142,7 @@
                 inputs.self.modules.homeManager.editor
                 inputs.self.modules.homeManager.secrets
                 inputs.self.modules.homeManager.styling
+                inputs.self.modules.homeManager.apps
               ];
               home.username = "admin";
               home.homeDirectory = "/Users/admin";
@@ -167,6 +171,7 @@
           inputs.self.modules.homeManager.editor
           inputs.self.modules.homeManager.secrets
           inputs.self.modules.homeManager.styling
+          inputs.self.modules.homeManager.apps
           inputs.stylix.homeModules.stylix
         ];
       };
