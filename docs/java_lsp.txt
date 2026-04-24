@@ -1,0 +1,580 @@
+nvim-jdtls is what we'll use for java lsp
+
+
+
+TARKA
+_LABS Get in
+touch->
+/Web - 5 Min Read
+
+Neovim as a java IDE
+Dhruva Sagar
+Dhruva Sagar
+Developer
+
+Neovim as a java IDE
+Table of contents
+
+/01
+Intro
+/02
+Installing Dependencies
+/03
+Install Java Specific Plugins
+/04
+LSP Configuration
+/05
+DAP Configuration
+/06
+Conclusion
+Neovim has come a long way today from it’s original goal of being able to support asynchronous jobs. Today it comes packed with a ton of useful and high performance libraries and plugins. To add to that it also has a highly enthusiastic and vibrant community of lua developers who are working tirelessly to make neovim better.
+
+Today we’ll look at how one can easily configure neovim to work similar to a modern Java IDE.
+
+
+Installing Dependencies
+
+Ensure that you have the following dependencies installed on your system.
+
+Install NeoVIM, if you haven’t already. Needless to say this is a hard requirement
+Install Java (JDK), preferably version 17 or above for better compatibility with jdtls our Java Language Server
+Configure a NeoVIM to use a plugin manager. My plugin manager of choice is Lazy.nvim, however you can use any plugin manager you prefer, just refer to your plugin’s documentation for instructions on how to install and manage plugins that we’ll be using for this tutorial
+Install Java Specific Plugins
+
+Install the Plugin none-ls for Formatting
+
+none-ls is a fork of null-ls that is actively maintained.
+
+We install none-ls and configure it to use google-java-format as a formatter and checkstyle as a diagnostic.
+Checkstyle is configured with an additional argument to use the google checks xml file (this is from public domain).
+We also install mason-null-ls that helps us ensure both google-java-format and checkstyle are installed using mason
+{
+    {
+        "nvimtools/none-ls.nvim",
+        config = function()
+          local nls = require("null-ls")
+          local fmt = nls.builtins.formatting
+          local dgn = nls.builtins.diagnostics
+          local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+          nls.setup({
+            sources = {
+              -- # FORMATTING #
+              fmt.google_java_format.with({ extra_args = { "--aosp" } }),
+              -- # DIAGNOSTICS #
+              dgn.checkstyle.with({
+                extra_args = {
+                  "-c",
+                  vim.fn.expand("~/dotfiles/config/google_checks.xml"),
+                },
+              }),
+            },
+            on_attach = function(client, bufnr)
+              if client.supports_method("textDocument/formatting") then
+                vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+                vim.api.nvim_create_autocmd("BufWritePre", {
+                  group = augroup,
+                  buffer = bufnr,
+                  callback = function()
+                    vim.lsp.buf.format({ bufnr = bufnr })
+                  end,
+                })
+              end
+            end,
+          })
+        end,
+    },
+    {
+        "jay-babu/mason-null-ls.nvim",
+        event = { "BufReadPre", "BufNewFile" },
+        dependencies = {
+          "williamboman/mason.nvim",
+          "nvimtools/none-ls.nvim",
+        },
+        opt = {
+          ensure_installed = {
+            "checkstyle",
+            "google-java-format",
+          },
+        },
+    },
+}
+Install DAP (Debug Adapter Protocol client)
+
+Here we’ll install the following plugins that help us setup a working DAP client that can be used for real-time debugging.
+
+nvim-dap DAP Client implementation for NeoVIM
+nvim-dap-ui: A UI for DAP
+nvim-dap-virtual-text: A plugin that adds helpful virtual text for DAP
+{
+    -- DAP
+    "mfussenegger/nvim-dap",
+    -- DAP UI
+	{
+		"rcarriga/nvim-dap-ui",
+		lazy = true,
+		dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
+		config = function()
+			require("dapui").setup()
+		end,
+	},
+    -- DAP Virtual Text
+	{
+		"theHamsta/nvim-dap-virtual-text",
+		dependencies = { "mfussenegger/nvim-dap", "nvim-treesitter/nvim-treesitter" },
+		config = function()
+			require("nvim-dap-virtual-text").setup()
+		end,
+	},
+}
+Install LSP Plugins
+
+Here we’ll install the plugins to help with configuring NeoVIM LSP configuration for Java
+
+mason-lspconfig.nvim: This helps us ensure our required lsp servers are installed using mason
+nvim-java: For helping automate all configurations for Java in an automated way
+{
+    {
+      "williamboman/mason-lspconfig.nvim",
+      dependencies = { "williamboman/mason.nvim", "neovim/nvim-lspconfig" },
+    },
+    -- Setups up neovim for
+    -- 1. lsp (with the help of lspconfig)
+    -- 2. Dap configurations, etc.
+    -- LSP Configuration
+    { "nvim-java/nvim-java" },
+}
+LSP Configuration
+
+Now that we have installed all the required plugins, we can configure LSP to work with NeoVIM. Here we’ll configure a bunch of LSP specific keybindings that are helpful in leveraging LSP functionality.
+
+local on_attach = function(client, buffer)
+  vim.api.nvim_set_option_value("omnifunc", "v:lua.vim.lsp.omnifunc", { buf = bufnr })
+  local nmap = function(keys, func, desc)
+    if desc then
+      desc = "LSP: " .. desc
+    end
+
+    vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc })
+  end
+
+  -- Useful LSP Keymaps
+  nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
+  nmap("gr", vim.lsp.buf.references, "[G]oto [R]eferences")
+  nmap("gI", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
+  nmap("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
+  nmap("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
+  nmap("<leader>D", vim.lsp.buf.type_definition, "Type [D]efinition")
+  nmap("<leader>ds", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
+  nmap("<leader>ws", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[W]orkspace [S]ymbols")
+  nmap("<leader>lr", vim.lsp.codelens.run, "[R]un [C]odelens")
+  nmap("<Leader>ih", function()
+    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+  end, "[I]nlay [H]ints")
+
+  -- See `:help K` for why this keymap
+  nmap("K", vim.lsp.buf.hover, "Hover Documentation")
+  nmap("<C-k>", vim.lsp.buf.signature_help, "Signature Documentation")
+
+  -- Lesser used LSP functionality
+  nmap("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+  nmap("<leader>wa", vim.lsp.buf.add_workspace_folder, "[W]orkspace [A]dd Folder")
+  nmap("<leader>wr", vim.lsp.buf.remove_workspace_folder, "[W]orkspace [R]emove Folder")
+  nmap("<leader>wl", function()
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  end, "[W]orkspace [L]ist Folders")
+
+  -- Diagnostics
+  nmap("gl", vim.diagnostic.open_float, "[O]pen [D]iagnostics")
+  nmap("[d", vim.diagnostic.goto_prev, "[G]oto [P]revious Diagnostics")
+  nmap("]d", vim.diagnostic.goto_next, "[G]oto [N]ext Diagnostics")
+
+  -- Enable Inalay Hints if the lsp server supports it
+  if client.server_capabilities.inlayHintProvider then
+    vim.lsp.inlay_hint.enable(true)
+  end
+end
+
+require("java").setup({})
+require("mason").setup({})
+
+-- List of LSP servers to be installed using mason with the help of mason-lspconfig
+local servers = {
+    jdtls = {
+        settings = {
+            java = {
+                configuration = {
+                    runtimes = {
+                        {
+                            name = "Java 22",
+                            -- Set this to the path of the JDK installation
+                            path = "<path/to/jdk>",
+                            default = true,
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+
+local mason_lspconfig = require("mason-lspconfig")
+mason_lspconfig.setup({
+  ensure_installed = vim.tbl_keys(servers),
+})
+mason_lspconfig.setup_handlers({
+  function(server_name)
+    require("lspconfig")[server_name].setup({
+      capabilities = capabilities,
+      on_attach = on_attach,
+      settings = servers[server_name],
+    })
+  end,
+})
+DAP Configuration
+
+Now that LSP has been configured, lets configure DAP as well.
+
+local dap, dapui = require("dap"), require("dapui")
+
+-- Auto Open DAP UI when debugging starts
+dap.listeners.after.event_initialized["dapui_config"] = function()
+  dapui.open()
+end
+-- Auto Close DAP UI when debugging ends
+dap.listeners.before.event_terminated["dapui_config"] = function()
+  dapui.close()
+end
+dap.listeners.after.event_exited["dapui_config"] = function()
+  dapui.close()
+end
+
+-- Useful DAP Keymaps
+vim.keymap.set("n", "<Leader>do", function()
+  require("dapui").open()
+end, { desc = "dapui.open" })
+vim.keymap.set("n", "<Leader>dc", function()
+  require("dap").continue()
+end, { desc = "dap.continue" })
+vim.keymap.set("n", "<Leader>dso", function()
+  require("dap").step_over()
+end, { desc = "dap.step_over" })
+vim.keymap.set("n", "<Leader>dsi", function()
+  require("dap").step_into()
+end, { desc = "dap.step_into" })
+vim.keymap.set("n", "<Leader>dsb", function()
+  require("dap").step_out()
+end, { desc = "dap.step_out" })
+vim.keymap.set("n", "<Leader>b", function()
+  require("dap").toggle_breakpoint()
+end, { desc = "dap.toggle_breakpoint" })
+vim.keymap.set("n", "<Leader>B", function()
+  require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+end, { desc = "dap.set_breakpoint with condition" })
+vim.keymap.set("n", "<Leader>lp", function()
+  require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
+end, { desc = "dap.set_breakpoint with log point message" })
+vim.keymap.set("n", "<Leader>dr", function()
+  require("dap").repl.open()
+end, { desc = "dap.repl.open" })
+vim.keymap.set("n", "<Leader>dl", function()
+  require("dap").run_last()
+end, { desc = "dap.run_last" })
+vim.keymap.set("n", "<Leader>dq", function()
+  require("dapui").close()
+end, { desc = "dapui.close" })
+
+vim.keymap.set({ "n", "v" }, "<Leader>dh", function()
+  require("dap.ui.widgets").hover()
+end, { desc = "dap.ui.widgets.hover" })
+
+vim.keymap.set({ "n", "v" }, "<Leader>dp", function()
+  require("dap.ui.widgets").preview()
+end, { desc = "dap.ui.widgets.preview" })
+
+vim.keymap.set("n", "<Leader>df", function()
+  local widgets = require("dap.ui.widgets")
+  widgets.centered_float(widgets.frames)
+end, { desc = "dap.ui.widgets.frames" })
+
+vim.keymap.set("n", "<Leader>dsc", function()
+  local widgets = require("dap.ui.widgets")
+  widgets.centered_float(widgets.scopes)
+end, { desc = "dap.ui.widgets.scopes" })
+If you want to debug remotely or by running the debug server within docker, you can use the VS Code launch.json file to configure the debug server.
+
+You can load vscode launch.json file which is typically found ta ./.vscode/launch.json using this:
+
+require("dap.ext.vscode").load_launchjs()
+This is how your launch.json would look like :
+
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Project",
+      "type": "java",
+      "request": "attach",
+      "hostName": "127.0.0.1",
+      "port": 8000,
+      "projectName": "<project-name>",
+      "sourcePaths": ["src"],
+      "mainClass": "com.package.MainClass"
+    }
+  ]
+}
+Conclusion
+
+With this setup, Neovim now provides a robust environment for Java development, including syntax highlighting, LSP support, autocompletion, and debugging capabilities. This setup ensures that you have a streamlined and efficient workflow for Java development.
+
+If you have any questions or need further clarifications, feel free to ask.
+
+Dhruva Sagar
+Dhruva Sagar
+Developer
+
+He is still thinking what to write about him
+
+Medium 
+_related articles
+
+View all
+
+/Web
+Building a Scalable Ingestion Pipeline with Rust
+Dhruva Sagar   5 min read
+Inserting Millions of Records in Java: Strategies and Benchmarks
+/Web
+Inserting Millions of Records in Java: Strategies and Benchmarks
+Kesavan   11 min read
+Let’s build digital solutions together.
+Get in touch
+->
+Lenny Face
+/MusicTech
+/HealthCareTech
+/GenAI
+/Design
+/Develop
+/Case_Studies
+/Careers
+/About
+/Contact
+/blogs/talks/train
+TwitterLinkedIn
+Tarka Labs is a division of Sedin Technologies
+Skip to content
+nvim-java
+nvim-java
+Repository navigation
+Code
+Issues
+32
+ (32)
+Pull requests
+4
+ (4)
+Agents
+Discussions
+Actions
+Projects
+Wiki
+Security and quality
+Insights
+Owner avatar
+nvim-java
+Public
+nvim-java/nvim-java
+
+t
+T
+Name		
+github-actions[bot]s1n7ax
+github-actions[bot]
+and
+s1n7ax
+chore(doc): automatic vimdoc update (#478)
+602a5f7
+ · 
+2 months ago
+.devcontainer
+fix: vim.lsp.buf.document_symbol returns nothing for jdtls (#449)
+4 months ago
+.github
+chore: bump min nvim version to 0.11.5 (#456)
+4 months ago
+.vscode
+feat: v4.0.0
+4 months ago
+dev
+feat: auto configure jdtls and dap at start up (#2)
+3 years ago
+doc
+chore(doc): automatic vimdoc update (#478)
+2 months ago
+lua
+feat: add JavaTestRunAllTests and JavaTestDebugAllTests commands (#467)
+2 months ago
+plugin
+feat: add JavaTestRunAllTests and JavaTestDebugAllTests commands (#467)
+2 months ago
+tests
+chore: upgrde packages
+4 months ago
+.editorconfig
+feat: add editor config
+3 years ago
+.gitignore
+feat: v4.0.0
+4 months ago
+.luacheckrc
+chore: disable line length check in luacheck
+4 months ago
+.luarc.json
+feat: v4.0.0
+4 months ago
+.stylua.toml
+feat: v4.0.0
+4 months ago
+CHANGELOG.md
+chore(main): release 4.1.0 (#476)
+2 months ago
+CLAUDE.md
+docs: clarify feat: usage in commit messages
+4 months ago
+LICENSE
+chore: license update
+2 years ago
+Makefile
+feat: v4.0.0
+4 months ago
+README.md
+chore: update README with new test commands (#477)
+2 months ago
+lazy.lua
+feat: v4.0.0
+4 months ago
+Repository files navigation
+README
+MIT license
+☕ nvim-java
+
+Spring Java Gradle Apache Maven Neovim Lua
+
+Linux Windows macOS
+
+Just install and start writing public static void main(String[] args).
+
+Tip
+
+You can find cool tips & tricks here https://github.com/nvim-java/nvim-java/wiki/Tips-&-Tricks
+📢 Demo
+
+ Demo.mp4 
+
+💫 Features
+
+✅ Spring Boot Tools
+✅ Diagnostics & Auto Completion
+✅ Automatic Debug Configuration
+✅ Organize Imports & Code Formatting
+✅ Running Tests
+✅ Run & Debug Profiles
+✅ Built-in Application Runner with Log Viewer
+✅ Profile Management UI
+✅ Decompiler Support
+✅ Code Actions
+🔨 How to Install
+
+🔸details
+⌨️ Commands
+
+🔸details
+💻 APIs
+
+🔸details
+🗜️ How to Use JDK X.X Version?
+
+🔸details
+🔧 Configuration
+
+🔸details
+⛳ Architecture
+
+🔸details
+📑 Projects Acknowledgement
+
+spring-boot.nvim is the one that starts sts4 & do other necessary jdtls sts4 sync command registration in nvim-java.
+
+nvim-jdtls is a plugin that follows "Keep it simple, stupid!" approach. If you love customizing things by yourself, then give nvim-jdtls a try.
+
+About
+
+Painless Java in Neovim
+
+Topics
+testing  debugging  spring spring-boot  autocompletion neovim  language-server-protocol running  diagnostics  neovim-plugin language-server-client neovim-plugins
+Resources
+ Readme
+License
+ MIT license
+ Activity
+ Custom properties
+Stars
+ 1.6k stars
+Watchers
+ 14 watching
+Forks
+ 87 forks
+Report repository
+Releases 45
+
+v4.1.0
+Latest
+on Feb 3
++ 44 releases
+Sponsor this project
+
+patreon
+patreon.com/s1n7ax
+Packages
+
+No packages published
+Contributors
+13
+
+ @s1n7ax
+ @github-actions[bot]
+ @ellisonleao
+ @atm1020
+ @logrusx
+ @Zeioth
+ @mKrswe
+ @vinibispo
+ @joaoLouceiro
+ @TheLeoP
+ @Joao-Queiroga
+ @JxJxxJxJ
+ @OmniSudo
+Languages
+
+Lua
+99.6%
+ 
+Other
+0.4%
+Footer
+© 2026 GitHub, Inc.
+Footer navigation
+Terms
+Privacy
+Security
+Status
+Community
+Docs
+Contact
+Manage cookies
+Do not share my personal information
+

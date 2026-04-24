@@ -1,0 +1,271 @@
+The location of Java on macOS depends on the type of installation (e.g., standard DMG, Homebrew, or via an IDE). 
+Primary Installation Locations
+Standard JDK Path: Most JDK installers (Oracle, Adoptium, etc.) install to:
+/Library/Java/JavaVirtualMachines/
+The executable and libraries are typically found deeper within the bundle at:
+/Library/Java/JavaVirtualMachines/<version>.jdk/Contents/Home/
+Homebrew Installations:
+Apple Silicon (M-Series): /opt/homebrew/Cellar/openjdk/
+Intel Macs: /usr/local/Cellar/openjdk/
+IDE-Specific Path: Some IDEs like IntelliJ IDEA install Java to:
+~/Library/Java/JavaVirtualMachines/
+Legacy/JRE Path: If only a Java Runtime Environment (JRE) is installed, it may be located at:
+/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/ 
+Stack Overflow
+Stack Overflow
+ +7
+How to Find the Path via Terminal
+The most reliable way to find where Java is currently running or registered is through command-line tools:
+Check Default Version Home: Run the following command to see the path of your current default Java home:
+/usr/libexec/java_home
+List All Installed Versions: To see every Java version registered on your system and their exact paths, use:
+/usr/libexec/java_home -V (Note the capital V)
+Identify the Binary: To find the location of the java command being executed, use:
+which java
+Note: This usually points to a system wrapper at /usr/bin/java, which then redirects to the real installation. 
+Stack Overflow
+Stack Overflow
+ +5
+Setting the Environment Variable
+For development, you often need to set the JAVA_HOME variable. You can do this by adding the following line to your shell profile (e.g., .zshrc or .zprofile):
+export JAVA_HOME=$(/usr/libexec/java_home) 
+Snyk
+Snyk
+ +1
+
+
+
+
+
+ We must symlink for java installation from nix.
+ I want to use openjdk 21 for nix installation and symlink to the user's home directory with home manager
+
+
+ NixOS logo
+Back to nixos.org
+Packages
+Options
+3rd-party Flakes
+NixOS Wiki
+Search more than 120 000 packages
+
+Search
+Channel: 25.11unstable
+Package sets
+javaPackages
+14
+No package set
+14
+jetbrains
+3
+Licenses
+GNU General Public License v2.0 only
+18
+Classpath exception 2.0
+10
+GNU General Public License v2.0
+9
+GNU General Public License v2.0 or later
+2
+MIT License
+1
+Maintainers
+Tomodachi94
+24
+Sean Gilligan
+24
+Infinidoge
+24
+Arne Keller
+24
+Anna Pavlyuk
+24
+Edward Tjörnhammar
+18
+Takuo Yonezawa
+9
+Ao Li
+2
+Michal Rus
+1
+John Mercier
+1
+Emily
+1
+Teams
+Java
+24
+Platforms
+x86_64-linux
+31
+aarch64-linux
+31
+x86_64-darwin
+30
+aarch64-darwin
+28
+i686-linux
+22
+Sort: Best match
+Showing results 1-31 of 31 packages.
+Data from nixpkgs 10e7ad5b.
+jdk8_headless
+Open-source Java Development Kit
+Name: openjdk-headlessVersion: 8u472-b08Outputs: out debug jre🌐 Homepage📦 SourceLicense: GNU General Public License v2.0 only
+▾▾▾ Show more package details ▾▾▾
+jetbrains.jdk
+OpenJDK fork to better support Jetbrains's products
+Name: jetbrains-jdk-jcefVersion: 21.0.9-b1163.86Outputs: out debug🌐 Homepage📦 SourceLicense: GNU General Public License v2.0 only
+▲▲▲ Hide package details ▲▲▲
+JetBrains Runtime is a runtime environment for running IntelliJ Platform based products on Windows, Mac OS X, and Linux. JetBrains Runtime is based on OpenJDK project with some modifications. These modifications include: Subpixel Anti-Aliasing, enhanced font rendering on Linux, HiDPI support, ligatures, some fixes for native crashes not presented in official build, and other small enhancements. JetBrains Runtime is not a certified build of OpenJDK. Please, use at your own risk.
+
+How to install jetbrains.jdk?
+nix-env
+nix profile
+NixOS Configuration
+nix-shell
+A nix-shell will temporarily modify your $PATH environment variable. This can be used to try a piece of software before deciding to permanently install it.
+
+nix-shell -p jetbrains.jdk
+Programs provided
+
+Only the main program of this package is known:
+
+java
+
+Maintainers
+
+Edward Tjörnhammar <ed@cflags.cc>
+Ao Li <aoli.al@hotmail.com>
+✉️ Mail to all maintainers
+@edwtjo @aoli-al
+Platforms
+
+aarch64-darwin
+aarch64-linux
+i686-linux
+x86_64-darwin
+x86_64-linux
+jdk11_headless
+Open-source Java Development Kit
+Name: openjdk-headlessVersion: 11.0.29+7Outputs: out debug🌐 Homepage📦 SourceLicense: GNU General Public License v2.0 only
+▾▾▾ Show more package details ▾▾▾
+jdk17_headless
+Open-source Java Development Kit
+Name: openjdk-headlessVersion: 17.0.18+8Outputs: out debug🌐 Homepage📦 SourceLicense: GNU General Public License v2.0 only
+▾▾▾ Show more package details ▾▾▾
+jdk21_headless
+Open-source Java Development Kit
+Name: openjdk-headlessVersion: 21.0.10+7Outputs: out debug🌐 Homepage📦 SourceLicense: GNU General Public License v2.0 only
+▾▾▾ Show more package details ▾▾▾
+jdk25_headless
+Open-source Java Development Kit
+Name: openjdk-headlessVersion: 25.0.2+10Outputs: out debug🌐 Homepage📦 SourceLicense: GNU General Public License v2.0 only
+▾▾▾ Show more package details ▾▾▾
+jre11_minimal
+Minimal JRE for OpenJDK 11.0.29+7
+Name: openjdk-minimal-jreVersion: 11.0.29+7🌐 Homepage📦 SourceLicense: GNU General Public License v2.0 only
+▾▾▾ Show more package details ▾▾▾
+jre17_minimal
+Minimal JRE for OpenJDK 17.0.18+8
+Name: openjdk-minimal-jreVersion: 17.0.18+8🌐 Homepage📦 SourceLicense: GNU General Public License v2.0 only
+▾▾▾ Show more package details ▾▾▾
+jre21_minimal
+Minimal JRE for OpenJDK 21.0.10+7
+Name: openjdk-minimal-jreVersion: 21.0.10+7🌐 Homepage📦 SourceLicense: GNU General Public License v2.0 only
+▾▾▾ Show more package details ▾▾▾
+jre25_minimal
+Minimal JRE for OpenJDK 25.0.2+10
+Name: openjdk-minimal-jreVersion: 25.0.2+10🌐 Homepage📦 SourceLicense: GNU General Public License v2.0 only
+▾▾▾ Show more package details ▾▾▾
+jre_minimal
+Minimal JRE for OpenJDK 21.0.10+7
+Name: openjdk-minimal-jreVersion: 21.0.10+7🌐 Homepage📦 SourceLicense: GNU General Public License v2.0 only
+▾▾▾ Show more package details ▾▾▾
+visualvm
+Visual interface for viewing information about Java applications
+Name: visualvmVersion: 2.2🌐 Homepage📦 SourceLicenses: GNU General Public License v2.0 or later ▪ Classpath exception 2.0
+▾▾▾ Show more package details ▾▾▾
+fastjar
+Fast Java archiver written in C
+Name: fastjarVersion: 0.98Outputs: out info man🌐 Homepage📦 SourceLicense: GNU General Public License v2.0 or later
+▾▾▾ Show more package details ▾▾▾
+adoptopenjdk-icedtea-web
+Java web browser plugin and an implementation of Java Web Start
+Name: adoptopenjdk-icedtea-webVersion: 1.8.8🌐 Homepage📦 Source
+▾▾▾ Show more package details ▾▾▾
+javaPackages.compiler.openjdk11
+Open-source Java Development Kit
+Name: openjdkVersion: 11.0.29+7Outputs: out debug🌐 Homepage📦 SourceLicense: GNU General Public License v2.0 only
+▾▾▾ Show more package details ▾▾▾
+javaPackages.compiler.openjdk11-bootstrap
+Eclipse Temurin, prebuilt OpenJDK binary
+Name: temurin-binVersion: 11.0.28📦 SourceLicenses: GNU General Public License v2.0 ▪ Classpath exception 2.0
+▾▾▾ Show more package details ▾▾▾
+javaPackages.compiler.openjdk17
+Open-source Java Development Kit
+Name: openjdkVersion: 17.0.18+8Outputs: out debug🌐 Homepage📦 SourceLicense: GNU General Public License v2.0 only
+▾▾▾ Show more package details ▾▾▾
+javaPackages.compiler.openjdk17-bootstrap
+Eclipse Temurin, prebuilt OpenJDK binary
+Name: temurin-binVersion: 17.0.16📦 SourceLicenses: GNU General Public License v2.0 ▪ Classpath exception 2.0
+▾▾▾ Show more package details ▾▾▾
+javaPackages.compiler.openjdk21
+Open-source Java Development Kit
+Name: openjdkVersion: 21.0.10+7Outputs: out debug🌐 Homepage📦 SourceLicense: GNU General Public License v2.0 only
+▾▾▾ Show more package details ▾▾▾
+javaPackages.compiler.openjdk25
+Open-source Java Development Kit
+Name: openjdkVersion: 25.0.2+10Outputs: out debug🌐 Homepage📦 SourceLicense: GNU General Public License v2.0 only
+▾▾▾ Show more package details ▾▾▾
+javaPackages.compiler.openjdk8
+Open-source Java Development Kit
+Name: openjdkVersion: 8u472-b08Outputs: out debug jre🌐 Homepage📦 SourceLicense: GNU General Public License v2.0 only
+▾▾▾ Show more package details ▾▾▾
+javaPackages.compiler.openjdk8-bootstrap
+Eclipse Temurin, prebuilt OpenJDK binary
+Name: temurin-binVersion: 8.0.462📦 SourceLicenses: GNU General Public License v2.0 ▪ Classpath exception 2.0
+▾▾▾ Show more package details ▾▾▾
+javaPackages.compiler.semeru-bin.jdk-11
+IBM Semeru Runtime, prebuilt OpenJDK binary
+Name: semeru-binVersion: 11.0.23📦 SourceLicenses: GNU General Public License v2.0 ▪ Classpath exception 2.0
+▾▾▾ Show more package details ▾▾▾
+javaPackages.compiler.semeru-bin.jdk-17
+IBM Semeru Runtime, prebuilt OpenJDK binary
+Name: semeru-binVersion: 17.0.9📦 SourceLicenses: GNU General Public License v2.0 ▪ Classpath exception 2.0
+▾▾▾ Show more package details ▾▾▾
+javaPackages.compiler.semeru-bin.jdk-21
+IBM Semeru Runtime, prebuilt OpenJDK binary
+Name: semeru-binVersion: 21.0.3📦 SourceLicenses: GNU General Public License v2.0 ▪ Classpath exception 2.0
+▾▾▾ Show more package details ▾▾▾
+javaPackages.compiler.semeru-bin.jdk-8
+IBM Semeru Runtime, prebuilt OpenJDK binary
+Name: semeru-binVersion: 8.0.412📦 SourceLicenses: GNU General Public License v2.0 ▪ Classpath exception 2.0
+▾▾▾ Show more package details ▾▾▾
+javaPackages.compiler.temurin-bin.jdk-21
+Eclipse Temurin, prebuilt OpenJDK binary
+Name: temurin-binVersion: 21.0.8📦 SourceLicenses: GNU General Public License v2.0 ▪ Classpath exception 2.0
+▾▾▾ Show more package details ▾▾▾
+javaPackages.compiler.temurin-bin.jdk-25
+Eclipse Temurin, prebuilt OpenJDK binary
+Name: temurin-binVersion: 25.0.0📦 SourceLicenses: GNU General Public License v2.0 ▪ Classpath exception 2.0
+▾▾▾ Show more package details ▾▾▾
+jetbrains.jdk-no-jcef
+OpenJDK fork to better support Jetbrains's products
+Name: jetbrains-jdkVersion: 21.0.9-b1163.86Outputs: out debug🌐 Homepage📦 SourceLicense: GNU General Public License v2.0 only
+▾▾▾ Show more package details ▾▾▾
+jetbrains.jdk-no-jcef-17
+OpenJDK fork which better supports Jetbrains's products
+Name: jetbrains-jdkVersion: 17.0.15-b1381Outputs: out debug🌐 Homepage📦 SourceLicense: GNU General Public License v2.0 only
+▾▾▾ Show more package details ▾▾▾
+nixpkgs-openjdk-updater
+Updater for Nixpkgs OpenJDK packages
+Name: nixpkgs-openjdk-updaterVersion: 0.1.0Outputs: out dist📦 SourceLicense: MIT License
+▾▾▾ Show more package details ▾▾▾
+First
+Previous
+Next
+Last
+Please help us improve the search by reporting issues.
+❤️ Elasticsearch instance graciously provided by Bonsai. Thank you! ❤️
+

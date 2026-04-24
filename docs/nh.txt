@@ -1,0 +1,2 @@
+nh - Better output for nix, nixos-rebuild, home-manager and nix-darwin CLI leveraging dix and nix-output-monitor.
+I would like to use nh for better usage of cli

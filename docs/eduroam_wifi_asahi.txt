@@ -1,0 +1,584 @@
+We will need to use the pytohn script and obtain Eastern Washington University's certificate using official python script, but we must use NIX to complete this and sops-nix to configure keys privately
+
+
+
+Skip to main contentAccessibility help
+Accessibility feedback
+
+
+ 
+AI Mode
+All
+Shopping
+News
+Videos
+Images
+Forums
+More
+Tools
+AI Overview
+Connecting to eduroam on Fedora Asahi Remix (M1/M2 Mac) requires switching the WiFi backend from iwd to wpa_supplicant because iwd often fails with WPA2-Enterprise. Create or edit /etc/NetworkManager/conf.d/wifi_backend.conf to include [device] and wifi.backend=wpa_supplicant to resolve connection issues and enable standard network login. 
+Reddit
+Reddit
+Steps to Connect Eduroam on Asahi Linux
+Switch WiFi Backend: The most common fix for eduroam on Asahi is changing the backend to wpa_supplicant.
+Open a terminal.
+Run sudo nano /etc/NetworkManager/conf.d/wifi_backend.conf.
+Add the following:
+ini
+[device]
+wifi.backend=wpa_supplicant
+Save and exit (Ctrl+O, Enter, Ctrl+X).
+Restart NetworkManager: sudo systemctl restart NetworkManager.
+Manual Configuration (If needed):
+Select eduroam in your network manager.
+Security: WPA2 or WPA3 Enterprise.
+Authentication: PEAP.
+CA Certificate: Usually "Do not check" or "System CA" depending on school requirements.
+Phase2 Auth: MSCHAPv2.
+Identity/Username: Your institution email or username.
+Password: Your institution password.
+Alternative Method (Manual Config File):
+If using iwd directly, users on this GitHub gist suggest creating a manual configuration file at /var/lib/iwd/eduroam.8021x with your credentials. 
+Gist
+Gist
+ +4
+Troubleshooting
+Authentication Issues: Ensure you are using your institution's specific "remote access" credentials, not just your main portal password, as noted by Oxford University IT.
+Slow Speeds/Drops: Users on the Fedora Project Discussion report that 2.4GHz WiFi can be slow on Asahi due to Bluetooth interference. Consider disabling Bluetooth if connection is poor, or sticking to 5GHz networks.
+Secrets Required Error: If you get a "secrets required" error, changing the wifi backend to wpa_supplicant as shown above usually fixes the issue, as seen in this Reddit post. 
+Note: For many users, using the official python script from cat.eduroam.org can automatically handle this configuration, as discussed on Reddit. 
+Very slow wifi on Asahi compared to MacOS on M1 2022
+Aug 11, 2024 — Bluetooth Interference with 2.4GHz WiFi: On a MacBook Pro M1 running Asahi, there appears to be a conflict when using both Bluetoo...
+
+Fedora Discussion
+Issue with eduroam (WPA2-Enterprise Wifi) : r/AsahiLinux
+Apr 11, 2023 — Eduroam Connection Fix: Users experiencing issues connecting to WPA2-Enterprise networks like eduroam on Asahi Linux can resolve t...
+
+Reddit
+problem with connecting to wifi on new asahi linux install - Reddit
+Aug 6, 2023 — I just installed asahi linux on my mac m1, everything went smoothly. When I boot into asahi and try connecting to my 2.4ghz wifi i...
+
+Reddit
+Show all
+Dive deeper in AI Mode
+
+
+
+
+
+
+
+
+Issue with eduroam (WPA2-Enterprise Wifi) : r/AsahiLinux
+
+Reddit · r/AsahiLinux
+10+ comments · 3 years ago
+I fail connecting to the eduroam wifi network (WPA2-Enterprise, Tunneled TLS and PAP for authentication). I have another Device running fedora and here the ...Read more
+wifi issues on m1 macbook after fresh install : r/AsahiLinux
+16 posts
+Jan 5, 2026
+Wifi connection : r/AsahiLinux - Reddit
+5 posts
+Apr 11, 2022
+More results from www.reddit.com
+Missing: m1 ‎| Show results with: m1
+People also ask
+Does Asahi Linux work on M1?
+Is eduroam 2.4 GHz or 5?
+Can you connect to eduroam on a Mac?
+Why is my eduroam not letting me connect?
+Very slow wifi on Asahi compared to MacOS on M1 2022
+
+Fedora Discussion
+https://discussion.fedoraproject.org › ... › Ask Asahi
+Aug 11, 2024 — I have very big difference in download speeds when booting between Asahi and MacOS. I have done this test on multiple different networks and all have similar ...Read more
+How to connect to Eduroam UiA (University of Agder) WiFi ...
+
+Gist
+https://gist.github.com › nielth
+The script UiA want you to use to connect to Eduroam WiFi found at https://cat.eduroam.org/ does not support iwd (wireless daemon for Linux).Read more
+Missing: m1 ‎| Show results with: m1
+M1 Series Feature Support
+
+Asahi Linux
+https://asahilinux.org › docs › platform › m1
+This page details currently supported features on all M1 series (M1, M1 Pro, M1 Max, M1 Ultra) Apple Silicon Macs, as well as their progress towards being ...Read more
+Missing: eduroam ‎| Show results with: eduroam
+Running Fedora Asahi Linux on an M1 MacBook Pro 16
+
+thecurlybraces.com
+https://blog.thecurlybraces.com › 2024/10 › running-fe...
+Oct 13, 2024 — My experience of daily driving the Fedora Asahi Linux on a MacBook Pro 16 as a web developer — what worked well and what could be better.
+Dave Airlie just announced in the Maintainers Summit that ...
+
+Hacker News
+https://news.ycombinator.com › item
+Completely new GPU drivers are quite rare and the macOS drivers from Asahi are a showcase proving that Rust and GPU drivers work together well. If there's any ...Read more
+Apple M1 Asahi Linux | Armada Alliance Docs
+
+Armada Alliance
+https://armada-alliance.com › docs › stake-pool-guides
+Asahi Arch Linux, minimal or desktop installed on your M1 or M2. You can also use the Asahi installer to create a UEFI boot partition that will allow you to ...Read more
+Fedora Asahi Remix installation report for M1 Pro (after
+
+Fedora Discussion
+https://discussion.fedoraproject.org › ... › Asahi General
+Oct 4, 2023 — Fedora Asahi Remix installation report for M1 ... The biggest issue I had was Wifi completely dropping and reconnecting every 5 minutes.Read more
+The Omarchy Manual
+
+Omacom
+https://learn.omacom.io › the-omarchy-manual
+Omarchy is installed using an ISO. It's designed for a dedicated drive, so dual-booting requires two disks in your machine (unless you do a manual install to ...Read more
+I put Asahi Linux on my M1 MacBook and it's surprisingly ...
+
+Tux Machines
+https://news.tuxmachines.org › 2026/03/14 › I_put_Asa...
+Mar 14, 2026 — No longer, though, as Asahi Linux lets you install Fedora with GNOME or KDE Plasma on your Mac M1 or M2 machine. I decided to install it on my ...Read more
+People also search for
+Eduroam on m1 asahi reddit
+Eduroam on m1 asahi github
+1	
+2
+3
+4
+5
+6
+7
+8
+9
+Next
+Results are personalized
+-
+Try without personalization
+Cheney, Washington - From your IP address
+ - Update location
+HelpSend feedbackPrivacyTerms
+
+
+Skip to content
+ 
+Search Gists
+
+All gists
+Back to GitHub
+ 
+ @nielth
+nielth/How to connect to UiA Eduroam Wifi with Asahi - Arch ARM64.md
+Last active 4 years ago • Report abuse
+Code
+Revisions
+6
+Clone this repository at &lt;script src=&quot;https://gist.github.com/nielth/da49c44c142fdf4e85f7f3d4686d0157.js&quot;&gt;&lt;/script&gt;
+
+How to connect to Eduroam UiA (University of Agder) WiFi on Asahi Linux (Arch Linux ARM aarch64).
+How to connect to UiA Eduroam Wifi with Asahi - Arch ARM64.md
+The script UiA want you to use to connect to Eduroam WiFi found at https://cat.eduroam.org/ does not support iwd (wireless daemon for Linux). It is therefore necessary to configure the network manually. Luckily it is not that hard.
+
+Configuration
+
+Create a file under /var/lib/iwd/eduroam.8021x and add the following (remember to change USERNAME and PASSWORD)
+
+[Security]
+EAP-Method=PEAP
+EAP-Identity=anonymous@uia.no
+EAP-PEAP-Phase2-Method=MSCHAPV2
+EAP-PEAP-Phase2-Identity=[USERNAME]@uia.no
+EAP-PEAP-Phase2-Password=[PasswordInCleartext]
+
+
+[Settings]
+AutoConnect=true
+In order to keep the password hidden from any other user reading it without sudo permissions, it is recommended changing permissions on the file for only sudoers.
+
+sudo chmod 600 /var/lib/iwd/eduroam.8021x
+Run
+
+$ iwctl
+[iwd]# station wlan0 connect eduroam
+If for some reason you get the error "Operation failed" and /var/lib/iwd/eduroam.8021x does not exist anymore, create the file again and try again (weird bug)
+
+Debugging
+
+For any debugging run journalctl -u iwd.service. For further information about iwd and Eduroam go to https://wiki.archlinux.org/title/iwd
+ @aspauldingcode
+Comment
+ Leave a comment
+Footer
+© 2026 GitHub, Inc.
+Footer navigation
+Terms
+Privacy
+Security
+Status
+Community
+Docs
+Contact
+Manage cookies
+Do not share my personal information
+Skip to main content
+Issue with eduroam (WPA2-Enterprise Wifi) : r/AsahiLinux
+ 
+
+r/AsahiLinux
+
+Advertise on Reddit
+
+Open chat
+Create
+Create post
+Open inbox
+
+User Avatar
+Expand user menu
+Skip to Navigation Skip to Right Sidebar
+
+Back
+ 
+Go to AsahiLinux
+r/AsahiLinux
+•
+3y ago
+ntuseracc
+
+Issue with eduroam (WPA2-Enterprise Wifi)
+
+Hi, i now declared defeat after spending almost 2 hours to get this working on my macbook running asahi. Wifi works fine for anything else but i fail connecting to the eduroam wifi network (WPA2-Enterprise, Tunneled TLS and PAP for authentication).
+
+I have another Device running fedora and here the connection works without any issues.
+
+Wondering if i am missing any specific arch packets or if this might be a driver limitation?
+
+UPDATE:
+
+Switching the NetworkManager Wifi Backend from iwd to wpa_supplicant fixed the issue for me:
+
+/etc/NetworkManager/conf.d/wifi_backend.conf
+
+
+[device]
+wifi.backend=wpa_supplicant
+ 
+Upvote
+16
+
+Downvote
+ 
+13
+Go to comments
+
+
+Share
+ u/tmobile avatar
+tmobile
+•
+Promoted
+ 
+Life moves quick – does your internet keep up? T-Mobile now has the fastest 5G Home Internet – simple to set up and ready for everything from homework to work mode to movie night. Just $35/mo. Plus a 5-year price guarantee
+Learn More
+t-mobile.com
+ Thumbnail image: Life moves quick – does your internet keep up? T-Mobile now has the fastest 5G Home Internet – simple to set up and ready for everything from homework to work mode to movie night. Just $35/mo. Plus a 5-year price guarantee
+ 
+Sort by:
+
+Best
+ 
+Search Comments
+Expand comment search
+Comments Section
+Casual_Bit
+•
+3y ago
+•
+Edited 3y ago
+I had the same issue a few weeks ago.You do not need any specific drivers. You will need the Root Certificate from the Eduroam distributer you are using.That has to be added via Kleopatra to the trusted certificates.
+
+Then add all the Configuration stuff in the connectons settings, this will create all the needed files. The root certificate path should be in /etc/ssl/certs
+
+I used PEAP for authentication.
+
+Hope this helps in any way. For more information https://wiki.archlinux.org/title/iwd and then the eduroam chapter. You can manually create all files but I would recommend the way through settings.
+
+Upvote
+8
+
+Downvote
+ 
+Reply
+
+Award
+
+Share
+ 
+ u/andybotting avatar
+andybotting
+•
+3y ago
+I had an issue like this as well, and solved it by setting NetworkManager to go back to wpa_supplicant, from iwd. Looks like the Asahi install forced NM to use iwd, which is a change from the default I believe.
+
+
+Upvote
+2
+
+Downvote
+ 
+Reply
+
+Award
+
+Share
+ 
+ u/marcan42 avatar
+marcan42
+•
+3y ago
+We force iwd because wpa_supplicant does not support WPA3 on Broadcom cards (or at least didn't last I checked).
+
+
+Upvote
+5
+
+Downvote
+ 
+Reply
+
+Award
+
+Share
+ 
+ u/andybotting avatar
+andybotting
+•
+3y ago
+Good to know. Thanks
+
+Upvote
+2
+
+Downvote
+ 
+Reply
+
+Award
+
+Share
+ 
+cAtloVeR9998
+•
+3y ago
+IWD is better in many cases. Avoids needing a separate DHCP client (ie dhcpcd) and is a general improvement. But even though things have improved, it seems to still cause eduroam headaches.
+
+Upvote
+5
+
+Downvote
+ 
+Reply
+
+Award
+
+Share
+ 
+ u/ntuseracc avatar
+ntuseracc
+OP
+•
+3y ago
+this sounds intresting. tried disaböomg iwd and enabling wpa_supplicant but now wifi stopped working completely :)
+
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+
+Award
+
+Share
+ 
+ u/ntuseracc avatar
+ntuseracc
+OP
+•
+3y ago
+well should have read the docs and did it completely wrong. Now i properly changed the nm configuration file and will try this again tomorrow.
+
+Upvote
+2
+
+Downvote
+ 
+Reply
+
+Award
+
+Share
+ 
+ u/ntuseracc avatar
+ntuseracc
+OP
+•
+3y ago
+Weird i tried both methods, manual setup and the python script. Both work fine on my fedora x64 based system.
+
+
+Upvote
+2
+
+Downvote
+ 
+Reply
+
+Award
+
+Share
+ 
+cAtloVeR9998
+•
+3y ago
+Did you try the official Python script? My Uni provided me with a different Linux script, but I had better luck with the "CAT" script.
+
+Even though I do like the improvements that are coming to WiFi on Linux with IWD, I never had eduroam issues on my X86 laptop running Fedora with Eduroam. Fedora is still using the legacy wpa_supplicant.
+
+Though tbf, most of my personal issues happened before IWD (and before that, I was using netctl) which both didn't have official support by the script I was using at the time. The "CAT" script provides hooks for IWD, wpa_supplicant, and Network Manager (aka, should cover 99.9% of configurations). (My Uni provided a bash script with an embedded gz archive containing several python files. Idk, but the single .py script file looks a lot more reasonable to me)
+
+
+Upvote
+2
+
+Downvote
+ 
+Reply
+
+Award
+
+Share
+ 
+ u/ntuseracc avatar
+ntuseracc
+OP
+•
+3y ago
+•
+Edited 3y ago
+yeah i tried manual setup first and then the python script supplied by cat.eduroam.org. It finished without any issues and the information was stored successfully but still no luck. It won't connect. Our university open wifi works fine but i need cisco anyconnect for that one so no alternative on aarch64 :(
+
+Like i said i tried it with a fedora notebook running the 38 beta next which worked right away so i can rule out any authentication/configuration issues. didn't check if this one used iwd or wpa_supplicant tho and i left it at work. Will check again tomorrow but it seems like 38 still ships with wpa_supplicant by default.
+
+working eduroam is more important for me than wpa3 so i will try this again tomorrow. Switching networkmanager to wpa_supplicant should be possible by changing
+
+/etc/NetworkManager/conf.d/wifi_backend.conf
+
+[device]
+wifi.backend=wpa_supplicant
+After changing this and rebooting it seems to work fine at home, will report back after i tried this at work again :)
+
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+
+Award
+
+Share
+ 
+ u/ntuseracc avatar
+ntuseracc
+OP
+•
+3y ago
+Ok i can confirm that switching to wpa_supplicant fixes eduroam. Just did a manual setup and it connected right away. Thanks @all for pointing me into the right direction.
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+
+Award
+
+Share
+ 
+dramaticJar
+•
+3y ago
+i just run the python install script from the eduroam website. it works if you have all python dependencies installed
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+
+Award
+
+Share
+ 
+ u/thegreatpotatogod avatar
+thegreatpotatogod
+•
+3y ago
+Oh I also dealt with this (twice, as they updated the certificate just after I forgot the procedure lol). It can be done with IWD, but you need to manually download the certificate, and manually copy over some of the info from variables in that automated CAT script (which doesn't supply IWD)
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+
+Award
+
+Share
+ 
+Community Info Section
+r/AsahiLinux
+ Joined
+AsahiLinux
+Asahi Linux: Linux on Apple Silicon Website: https://asahilinux.org Documentation: https://docs.fedoraproject.org/en-US/fedora-asahi-remix/ For users wanting general support and questions regarding Linux kernel, consider r/linuxquestions or r/linux4noobs For gaming specific questions, head over to /r/AsahiGaming
+
+Show more
+Created Dec 24, 2020
+Public
+15K
+Weekly visitors
+158
+Weekly contributions
+R/ASAHILINUX RULES
+1
+Follow our Code Of Conduct
+2
+No conspiracy theories
+3
+Keep things on topic
+4
+No "status update" posts
+5
+No iCloud/Activation Lock questions
+6
+No third-party uninstall videos/guides
+7
+No game support
+MODERATORS
+Message Mods
+u/Sandstar101Rom
+u/marcan42 avatar
+u/marcan42
+u/FOHjim avatar
+u/FOHjim
+View all moderators
+Reddit Rules
+Privacy Policy
+User Agreement
+Your Privacy Choices
+Accessibility
+Reddit, Inc. © 2026. All rights reserved.
+
+Expand Navigation

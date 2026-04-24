@@ -1,0 +1,752 @@
+Skip to main content
+How to get all the goodness of Cursor (Agentic coding, MCP) in Neovim : r/neovim
+
+Open menu
+ 
+
+r/neovim
+
+
+Open chat
+Create
+Create post
+Open inbox
+
+User Avatar
+Expand user menu
+ 
+Back
+ 
+Go to neovim
+r/neovim
+•
+10mo ago
+shricodev
+
+How to get all the goodness of Cursor (Agentic coding, MCP) in Neovim
+
+Blog Post
+ 
+
+0:03 / 1:50
+
+
+
+
+I have been a long-time Neovim user. But, in the last few months, I saw a lot of my co-workers have shifted from VSCode/Neovim to Cursor.
+
+I never got that initial appeal, as I never liked VSCode to begin with. But I just used Cursor's agentic coding, and it literally blew my mind. It's so good and precise in code writing and editing.
+
+I was thinking of getting that subscription for Cursor, but I found some cool plugins and gateways that made me rethink my decision. So, I added them to my Neovim setup to delay my FOMO. And it's been going really well.
+
+Here's what I used:
+
+Avante plugin for adding the agentic coding feature
+MCPHub plugin for adding MCP servers support
+Composio for getting managed servers (Slack, Github, etc)
+The process took me just a few minutes.
+
+Here's a detailed step-by-step guide: How to transform Neovim into Cursor in minutes
+
+Would love to know if you have any other setup, anything to not switch to Cursor, lol.
+Archived post. New comments cannot be posted and votes cannot be cast.
+
+Upvote
+112
+
+Downvote
+ 
+61
+Go to comments
+
+
+Share
+ u/MSFT_Cloud avatar
+MSFT_Cloud
+•
+Promoted
+ 
+Help protect your team from threats like phishing, giving them the freedom to do their best work.​
+Learn More
+microsoft.com
+Clickable image which will reveal the video player: Help protect your team from threats like phishing, giving them the freedom to do their best work.​ 
+Collapse video player
+ 
+
+0:00 / 0:00
+
+
+
+
+Sort by:
+
+Best
+ 
+Search Comments
+Expand comment search
+Comments Section
+u/kenflingnor avatar
+kenflingnor
+•
+10mo ago
+I started out with Avante for this but I found it to be annoying to use, and way too verbose in its output. 
+
+I’ve been using Code Companion lately and I find the results to be very similar to what I get from copilot in VS Code. 
+
+
+Upvote
+37
+
+Downvote
+ 
+shricodev
+OP
+•
+10mo ago
+The most annoying part of avante is mainly the fact that you can't cancel the response and must wait until it finishes. I've heard so much about code companion and am thinking of giving it a shot.
+
+
+Upvote
+6
+
+Downvote
+ 
+jessevdp
+•
+10mo ago
+It’s super nice for the chat but I haven’t had any success with the agentic workflows.
+
+That being said… I am using my company’s proxy API as a provider to get access to models so it could be that it just doesn’t play nice. It keeps messing up responses to call tools etc.
+
+Perhaps the story is much better when using actual 1st party adapters.
+
+Upvote
+2
+
+Downvote
+ 
+oVerde
+•
+10mo ago
+mouse=""
+<leader-a-S> stops the response, welcome
+
+Upvote
+1
+
+Downvote
+ 
+[deleted]
+•
+10mo ago
+me too. I find codecompanion a really unintrusive, vim-friendly way to use llms in neovim.
+
+it's powerful, configurable, simple to use, doesn't do anything weird, and doesn't feel like it's trying to turn neovim into something it's not.
+
+Upvote
+5
+
+Downvote
+ 
+Keyruu
+•
+10mo ago
+what is your workflow with that? do you have a prompt that you always use or do you tag the tools as you need them?
+
+Upvote
+2
+
+Downvote
+ 
+oVerde
+•
+10mo ago
+mouse=""
+Here is a system prompt from GitHub Copilot team that also makes Avante less verbose and waaaay effective
+
+https://www.reddit.com/r/neovim/s/n4zwxNkW2X
+
+Upvote
+1
+
+Downvote
+ 
+ReiOokami
+•
+10mo ago
+Claude code is really all you need.
+
+
+Upvote
+47
+
+Downvote
+ 
+ u/daliusd_ avatar
+daliusd_
+•
+10mo ago
+I heard https://opencode.ai/ is good as well. It would be interesting to hear comparison from someone who have used both.
+
+
+Upvote
+13
+
+Downvote
+ 
+ironj
+•
+10mo ago
+I'll definitely try this out, but not before the following open issue is resolved: https://github.com/sst/opencode/issues/675
+
+
+Upvote
+5
+
+Downvote
+ 
+ u/daliusd_ avatar
+daliusd_
+•
+10mo ago
+Fair concern.
+
+Upvote
+3
+
+Downvote
+ 
+jessevdp
+•
+10mo ago
+This! They rewrote it recently and it supports custom providers now too. I’m finally able to give it a shot.
+
+Upvote
+1
+
+Downvote
+ 
+ReiOokami
+•
+10mo ago
+Tried it, seemed worse then Claude code
+
+
+Upvote
+1
+
+Downvote
+ 
+ u/daliusd_ avatar
+daliusd_
+•
+10mo ago
+Thanks. It would be interesting to hear more details: models you have used (e.g. same models, different ones). What "seemed worse" means?
+
+Upvote
+3
+
+Downvote
+ 
+More replies
+u/zipperhead avatar
+zipperhead
+•
+10mo ago
+Holy smokes, I tried it out - not recommended to use this on an openrouter account. It really chews up the tokens. I guess that's why they recommend a full claude account.
+
+Upvote
+1
+
+Downvote
+ 
+ u/SpecificFly5486 avatar
+SpecificFly5486
+•
+10mo ago
+This, simple, no bloat ui, beautiful
+
+Upvote
+13
+
+Downvote
+ 
+disperso
+•
+10mo ago
+Does it have some integration with the editor or is just a pure CLI app?
+
+
+Upvote
+2
+
+Downvote
+ 
+ u/eastballz avatar
+eastballz
+•
+10mo ago
+this plugin has an ide integration so it can see your files, visual selection, and adds commands for easily sending thing to claude https://github.com/coder/claudecode.nvim
+
+Upvote
+3
+
+Downvote
+ 
+ReiOokami
+•
+10mo ago
+It’s pure cli.
+
+Upvote
+1
+
+Downvote
+ 
+ u/toadi avatar
+toadi
+•
+10mo ago
+Switched from avante to codecompanion. Have integrated vectorcode to index my codebase to provide the LSP symbols to the model. I use MCPhub integration too.
+
+Was still missing 1 key element and am integrating contextfiles into the codecompanion (https://github.com/banjo/contextfiles.nvim) which will simulate the cursor rules.
+
+Now we are talking. It has better context through vector code and contexfiles. Integrates with MCP servers.
+
+BUT I still use the kilo code extension in vscode too. You can use tools in codecompanion. Editing files, reading files, going to the web, ... But it feels all clunky. Have the feeling it works smoother in vscode. Another part I like in kilocode is the memorybank. This helps to keep context between chats.
+
+In essence I keep switching between both.
+
+
+Upvote
+15
+
+Downvote
+ 
+ u/__nostromo__ avatar
+__nostromo__
+•
+10mo ago
+Neovim contributor
+Would you share your config + setup details? I'm about to be going down this journey and getting VectorCode + MCP + codecompanion + contextfiles all working at once sounds sounds complex. I'd appreciate being able to look at a working example
+
+Upvote
+1
+
+Downvote
+ 
+oVerde
+•
+10mo ago
+•
+Edited 10mo ago
+mouse=""
+You don’t need neither these two on Avante just mention @codebase on your chat, it also has RAG as a tool, then your prompt drags your indexed codebase together
+
+
+Upvote
+1
+
+Downvote
+ 
+ u/toadi avatar
+toadi
+•
+10mo ago
+Seems the are finally finding their own. Think code comdecompanion builds a nice API to integrate the plugins with it and avante goes for the all in one solution. Both have merrit.
+
+Currently am integrating the memory bank MCP into codecompanion. To emulate that feature.
+
+Personally I'm more and more looking into MCP servers. Tools seem to use them. Benefit is that with the MCP servers I can set one up streamlining indexing, context and memory and all tools can integrate it.
+
+In our company I want to let the devs free what tool/model they use. But the coding standards, guidelines and project instructions are always the same. This way it doesn't need to be formatted for copilot, some vscode extension any other ide plugin or even into a neovim plugin. Just provide the MCP to it with our setup and done.
+
+Upvote
+1
+
+Downvote
+ 
+ u/horrificrabbit avatar
+horrificrabbit
+•
+8mo ago
+Hi! I have written a plugin that makes it possible to use the memory bank as a variable in the codecompany chat
+
+You might be interested.
+
+https://github.com/theStrangeAdventurer/ai_memory.nvim
+
+Upvote
+1
+
+Downvote
+ 
+shricodev
+OP
+•
+10mo ago
+I'm planning to switch from Avante to Code Companion and see how it goes. Avante kind of bugs out sometimes.
+
+Upvote
+0
+
+Downvote
+ 
+ u/OpenAI avatar
+u/OpenAI
+•
+Promoted
+ 
+Built to scale with you from the start. Codex, available with ChatGPT.
+Sign Up
+chatgpt.com
+ Thumbnail image: Built to scale with you from the start. Codex, available with ChatGPT.
+u/BrownCarter avatar
+BrownCarter
+•
+10mo ago
+lua
+I tried Avante, I like the idea but it is not really there yet.
+
+
+Upvote
+8
+
+Downvote
+ 
+shricodev
+OP
+•
+10mo ago
+Agree! It's still in development, but we have something at least.
+
+Upvote
+2
+
+Downvote
+ 
+[deleted]
+•
+10mo ago
+cool
+
+
+Upvote
+3
+
+Downvote
+ 
+shricodev
+OP
+•
+10mo ago
+Thanks
+
+Upvote
+3
+
+Downvote
+ 
+AegisMirror
+•
+10mo ago
+Does either Avante or CodeCompanion offer the ability to switch between models for agents? I haven't found much information on that capability (I could be blind or just dumb though).
+
+But ya, I really like the ability in Cursor to switch between models depending the nature and complexity of task I'm performing.
+
+
+Upvote
+3
+
+Downvote
+ 
+ u/daliusd_ avatar
+daliusd_
+•
+10mo ago
+codecompanion allows that. I recommend checking opencode.ai as well.
+
+Upvote
+8
+
+Downvote
+ 
+shricodev
+OP
+•
+10mo ago
+I see there's a discussion on this same topic: https://github.com/yetone/avante.nvim/issues/1566
+
+It seems to allow changing models from a single provider, but I haven't worked with it yet. I just change the config to include the right model and provider manually.
+
+Upvote
+2
+
+Downvote
+ 
+oVerde
+•
+10mo ago
+mouse=""
+In Avante it is <leader-a-?> although you may need to configure some non mainstream
+
+Upvote
+1
+
+Downvote
+ 
+ u/dbosInc avatar
+u/dbosInc
+•
+Promoted
+ 
+Durable AI orchestration for Python, Java, Go, TypeScript
+Learn More
+dbos.dev
+ Thumbnail image: Durable AI orchestration for Python, Java, Go, TypeScript
+Logical-Idea-1708
+•
+10mo ago
+Been experimenting with code companion. How much context do you need to give it to generate something useful?
+
+
+Upvote
+2
+
+Downvote
+ 
+ u/toadi avatar
+toadi
+•
+10mo ago
+I am using codecompanion with mcphub too. The context window depends on the model used. Think sonnet is at 200k.
+
+
+Upvote
+3
+
+Downvote
+ 
+Logical-Idea-1708
+•
+10mo ago
+What is mcp hub?
+
+
+Upvote
+1
+
+Downvote
+ 
+ u/toadi avatar
+toadi
+•
+10mo ago
+Not sure what part to explain. First there is MCP which is Model Context Protocol. This is a way to let the llm interface with external services. For example let it connect to your slack channel and post or read messages.
+
+A hub is a place where you can discover MCP servers. As I integrated: https://github.com/ravitemer/mcphub.nvim
+
+It has a marketplace where you can explore pre -written tools and integrate them. That marketplace part is the hub part.
+dreddnyc
+•
+10mo ago
+It’s a plugin to manage MCP servers and expose them for the coding LLMs to use.
+shricodev
+OP
+•
+10mo ago
+Think of it mainly as a marketplace where you can install some MCP servers that you run either with Docker or a Python application, which I see mainly uses uvx.
+u/daliusd_ avatar
+daliusd_
+•
+10mo ago
+I guess it depends on task. I have used codecompanion in the past and now have moved to simple gp.nvim and opencode.ai. E.g. giving file content for codecompanion/gp.nvim and asking to write tests for it is all you need.
+u/Perfect_spot avatar
+Perfect_spot
+•
+10mo ago
+I tried avante but it's very rough. For the agentic workflow to be worth it the UX needs to be way better. I tried putting in some time to create a plugin for myself for these purposes but I found creating good UI for this rather hard in neovim. I think claude code or opencode is the way to go for now. I mostly rely on supermaven for in-editor AI help.
+u/teerre avatar
+teerre
+•
+10mo ago
+This is all fine, but these workflows are severely lacking. There's certainly a layer missing that actually orchestrates the prompts. Something like this https://github.com/oraios/serena is basically needed for anything non trivial
+bug-way
+•
+10mo ago
+Are you finding any benefit to having these agentic AI tools integrated into your editor, as opposed to simply using an agentic AI in your terminal? I've been using Codex, Claude, and recently Gemini-cli for agentic AI in the terminal and I can't imagine a better way to use it. I don't see why it needs to be coupled with the editor, but I'm curious to hear if you think there's an advantage to that. I'm using windsurf.vim for code completion in neovim, but that's the only AI plugin I feel is needed
+
+shricodev
+OP
+•
+10mo ago
+TBH, I don't feel much of a need to have this integrated directly into Neovim compared to Claude Code or others. It just sort of fits with the workflow when using Neovim, and you don't need to switch tabs and all. That's pretty much the only advantage I can see for now. Still, Claude Code or anything else is far superior.
+
+There's still just a lot of bugs with avente.nvim and not something I'd recommend just yet.
+sazary
+•
+10mo ago
+besides not being as "polished" as cursor, the performance issue in avante just kills the productivity. when a chat gets any longer than a trivial one it would kill the cpu. last time i checked the issue on github said it's a markdown thing and there's no plan for fixing it, you should just start a new chat
+
+shricodev
+OP
+•
+10mo ago
+I haven't done much work with avante.nvim yet. it's just some minor work, so I never ran into this issue. It might be worth considering. But, I will say that this plugin is filled with tons of bugs. I run into one every other time
+Tasty-Fish-8588
+•
+10mo ago
+Is there any plugin like tab completion like to be used in neovim ?
+
+shricodev
+OP
+•
+10mo ago
+If you're looking for suggestions with tab completion, there's blink.cmp and also nvim-cmp. If you're looking for AI tab completion, I suggest windsurf.nvim.
+LemurZA
+•
+10mo ago
+Codecompanion + MCPHub is my setup.
+
+Then I also use Claudecode.nvim
+
+shricodev
+OP
+•
+10mo ago
+Good to know there's claudecode.nvim out there.
+u/Timely-Coffee-6408 avatar
+Timely-Coffee-6408
+•
+10mo ago
+Just use Claude code
+
+shricodev
+OP
+•
+10mo ago
+Claude code is too goated, but it does not hurt to have something that works directly in Neovim.
+
+u/Timely-Coffee-6408 avatar
+Timely-Coffee-6408
+•
+10mo ago
+You can use neovim to open/edit files referenced by Claude code
+raysamram
+•
+10mo ago
+I largely prefer coding on Neovim, and while CodeCompanion and Avante exist and can be great, sadly they don't replace the power of tab completion of Cursor (the best i found to replace it is supermaven but that still doesn't do the jump around in the file :/)
+
+tris203
+•
+10mo ago
+Plugin author
+https://github.com/copilotlsp-nvim/copilot-lsp
+oVerde
+•
+10mo ago
+mouse=""
+Avante has an experimental Tab in its config (called just auto_suggestions), remember to set a fast cheat model as Gemini 2.5 Flash Lite and booom tab is here. Also, GitHub LSP. And you can have both.
+
+alphabet_american
+•
+10mo ago
+Plugin author
+
+Help lead our community
+Apply to be a moderator
+
+Dismiss
+Apply
+Community Info Section
+r/neovim
+ Join
+Neovim
+Neovim is a hyperextensible Vim-based text editor. Learn more at neovim.io.
+Created Feb 24, 2014
+Public
+
+Community Guide
+113K
+Weekly visitors
+1.3K
+Weekly contributions
+USER FLAIR
+u/BigMacCircuits avatar
+BigMacCircuits
+COMMUNITY BOOKMARKS
+Wiki
+PROMOTED
+ 
+ sidebar promoted post thumbnail
+R/NEOVIM RULES
+1
+The golden rule
+2
+No elitism
+3
+No low-effort content
+4
+No witch hunting
+5
+No duplicate content
+6
+No getting started posts
+7
+No soliciting/spamming/selling
+8
+No plagiarism
+9
+Use the monthly threads
+NEOVIM LINKS
+Neovim.io
+Neovim GitHub
+Neovim Twitter
+Neovim Bluesky
+Neovim Mastodon
+Neovim Discourse
+Neovim Matrix
+OTHER RESOURCES
+r/neovim wiki
+Getting Started Guide
+This Week in Neovim
+Awesome Neovim
+dotfyle
+Contributing
+FLAIRS
+Discussion
+Plugin
+This Week in Neovim
+Tips and Tricks
+Video
+101 Questions
+Need Help
+Need Help┃Solved
+Dotfile Review
+Color Scheme
+Random
+Announcement
+Blog Post
+Meta
+Meme
+POST APPROVALS
+We have automated post filter to ensure the quality of the community. If your post got caught in the filter, please be patient for a bit. We try to approve all false positives within 24 hours.
+
+Earn trust by participating in the community to gather karma, and your posts will skip the filter.
+MODERATORS
+Message Mods
+ u/lukas-reineke avatar
+u/lukas-reineke  
+Neovim contributor
+ u/AutoModerator avatar
+u/AutoModerator
+View all moderators
+PROMOTED
+ 
+ sidebar promoted post thumbnail
+Reddit Rules
+Privacy Policy
+User Agreement
+Your Privacy Choices
+Accessibility
+Reddit, Inc. © 2026. All rights reserved.

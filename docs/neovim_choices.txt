@@ -1,0 +1,842 @@
+Skip to main content
+Neovim on NixOS: Nixvim vs NixCats vs NVF : r/neovim
+
+Open menu
+ 
+
+r/neovim
+
+
+Open chat
+Create
+Create post
+Open inbox
+
+User Avatar
+Expand user menu
+ 
+Back
+ 
+Go to neovim
+r/neovim
+•
+4mo ago
+Yametsu
+
+Neovim on NixOS: Nixvim vs NixCats vs NVF
+
+Video
+r/NixOS
+•
+4 mo. ago
+Neovim on NixOS: Nixvim vs NixCats vs NVF
+ Play
+43 upvotes · 24 comments
+ 
+Upvote
+3
+
+Downvote
+ 
+12
+Go to comments
+
+
+Share
+ u/google avatar
+google
+•
+Promoted
+ 
+Get the browser with Gemini built in. Download Google Chrome today.
+Download
+google.com
+ Thumbnail image: Get the browser with Gemini built in. Download Google Chrome today.
+ 
+Sort by:
+
+Best
+ 
+Search Comments
+Expand comment search
+Comments Section
+augustocdias
+•
+4mo ago
+lua
+I’m in the process of moving to NixOs and I’m still not convinced about moving my neovim config to home manager. I like to hack a lot in my config and I always like to keep it up to date, so it would become more of a hassle than solve any problem for me. I have a group of plugins that I use that rarely break each other so the biggest selling points of nix are not convincing me here. I still didn’t have time to watch the video but I went to each of those projects and checked them out and I was impressed by NVF and NixCats. I’m more tempted to try NixCats out because I have a lot of custom lua code and I don’t want to maintain them as inline nix files. One thing I’m confused in both of them is where the plugins are resolved? Both of them define just telescope for example. Are they actually in nix’s repositories? What if a plugin I want is not there?
+
+
+Upvote
+4
+
+Downvote
+ 
+Reply
+ 
+catphish_
+•
+4mo ago
+NixCats rocks. Frankly without it i wouldn't have even bothered "Nixifying" my config. Being able to have my config insta on non-Nox systems is a huge plus. And the built in alias makes it super easy to test after a flake rebuild.
+
+
+Upvote
+3
+
+Downvote
+ 
+Reply
+ 
+augustocdias
+•
+4mo ago
+lua
+Can you share your config so I can see an example?
+
+
+Upvote
+4
+
+Downvote
+ 
+Reply
+ 
+catphish_
+•
+3mo ago
+Sorry for the late reply
+
+NixCats Nvim Config
+
+My general nix config repo is available for reference as well.
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+ 
+More replies
+Yametsu
+OP
+•
+4mo ago
+You can have the full config working on other systems? I was under the impression that NixCats handles all the downloading for binaries or plugin sources. So if you put it, let's say on Fedora, what manages the downloads?
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+ 
+ u/fear_my_presence avatar
+fear_my_presence
+•
+4mo ago
+:wq
+I personally use https://github.com/nix-community/kickstart-nix.nvim and I find it to be the most straightforward out of all "neovim config as a nix derivation" options:
+
+plugins are defined as flake inputs with "flake = false", so they don't even have to be from nixpkgs
+external packages are managed with nix, as they should be
+neovim config stays in lua
+Uses lazy.nvim (may be good or bad, depending on your approach to neovim config)
+nix code for constructing the derivation is actually pretty straightforward and open for customization.
+The downsides I've encountered are related to nixpkgs sometimes breaking how 'mkNeovim' function is implemented. And the iteration speed is also a factor, because on every update you need to "nix run .", ehich takes time, so just keep that in mind.
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+ 
+ 
+Help lead our community
+Apply to be a moderator
+
+Dismiss
+Apply
+Community Info Section
+r/neovim
+ Join
+Neovim
+Neovim is a hyperextensible Vim-based text editor. Learn more at neovim.io.
+Created Feb 24, 2014
+Public
+
+Community Guide
+113K
+Weekly visitors
+1.3K
+Weekly contributions
+USER FLAIR
+u/BigMacCircuits avatar
+BigMacCircuits
+COMMUNITY BOOKMARKS
+Wiki
+PROMOTED
+ 
+ sidebar promoted post thumbnail
+R/NEOVIM RULES
+1
+The golden rule
+2
+No elitism
+3
+No low-effort content
+4
+No witch hunting
+5
+No duplicate content
+6
+No getting started posts
+7
+No soliciting/spamming/selling
+8
+No plagiarism
+9
+Use the monthly threads
+NEOVIM LINKS
+Neovim.io
+Neovim GitHub
+Neovim Twitter
+Neovim Bluesky
+Neovim Mastodon
+Neovim Discourse
+Neovim Matrix
+OTHER RESOURCES
+r/neovim wiki
+Getting Started Guide
+This Week in Neovim
+Awesome Neovim
+dotfyle
+Contributing
+FLAIRS
+Discussion
+Plugin
+This Week in Neovim
+Tips and Tricks
+Video
+101 Questions
+Need Help
+Need Help┃Solved
+Dotfile Review
+Color Scheme
+Random
+Announcement
+Blog Post
+Meta
+Meme
+POST APPROVALS
+We have automated post filter to ensure the quality of the community. If your post got caught in the filter, please be patient for a bit. We try to approve all false positives within 24 hours.
+
+Earn trust by participating in the community to gather karma, and your posts will skip the filter.
+MODERATORS
+Message Mods
+ u/lukas-reineke avatar
+u/lukas-reineke  
+Neovim contributor
+ u/AutoModerator avatar
+u/AutoModerator
+View all moderators
+PROMOTED
+ 
+ sidebar promoted post thumbnail
+Reddit Rules
+Privacy Policy
+User Agreement
+Your Privacy Choices
+Accessibility
+Reddit, Inc. © 2026. All rights reserved.
+
+
+
+Skip to main content
+Anyone using nixvim? : r/NixOS
+
+Open menu
+ 
+
+r/NixOS
+
+
+Open chat
+Create
+Create post
+Open inbox
+
+User Avatar
+Expand user menu
+ 
+Back
+ 
+Go to NixOS
+r/NixOS
+•
+2y ago
+CerealBit
+
+Anyone using nixvim?
+
+How do you like it and do you prefer it over native configuration?
+
+Also, do you mind sharing your configuration? I'm looking for some inspiration and layouts :)
+ 
+Upvote
+44
+
+Downvote
+ 
+29
+Go to comments
+
+
+Share
+ u/Jeep avatar
+Jeep
+•
+Promoted
+ 
+Let the all-new Jeep® Cherokee Hybrid with 30% more cargo space take you there.
+Learn More
+jeep.com
+Clickable image which will reveal the video player: Let the all-new Jeep® Cherokee Hybrid with 30% more cargo space take you there. 
+Collapse video player
+ 
+
+0:00 / 0:00
+
+
+
+
+ 
+Sort by:
+
+Best
+ 
+Search Comments
+Expand comment search
+Comments Section
+u/webmessiah avatar
+webmessiah
+•
+2y ago
+Migrated to Nixvim to overcome all problems with mason, npm, python, luarocks, you name it...
+
+Been happily using it for over a month, never regret that, a pleasure of thing.
+
+check it out!
+https://github.com/webmessia-h/nixvi
+
+Upvote
+23
+
+Downvote
+ 
+Reply
+ 
+no_brains101
+•
+2y ago
+•
+Edited 2y ago
+Profile Badge for the Achievement Top 1% Commenter Top 1% Commenter
+I can't recommend it to someone who actually knows how nvim config works unless you really want to try to ditch as much Lua as possible for some reason and give up on having neodev working or any form of lua_ls plugin option discovery. You also won't be able to meaningfully edit your config without rebuilding via nix.
+
+That being said, for a nix user wanting to use nvim for the first time it's a decent option, and it doesn't work worse than the other projects for the things it has options for.
+
+If you like distros, it's basically just another distro except you lua.lsp.enable in nix rather than in Lua.
+
+If what you want is to use nix as a plugin manager and then configure like normal in Lua, there are better options such as nixCats or even mnw
+
+Those will allow you to replace your nvim package managers and mason with nix, while letting you configure as close to normal as possible.
+
+nixCats lets you do a bunch of cool stuff in nix with the regular config you created, and pass info effortlessly from nix to lua while also doing what the other options do without adding much more complexity.
+
+You can make it more complex but basic useage is that you just add the plugins to the list in the starter template and configure in the normal neovim files, just like the other options.
+
+You can just make more lists if you want and conditionally include them and have your lua easily know about that.
+
+mnw just wraps neovim with a config directory, downloads plugins to start and opt and some extra path values, and stops there. and kickstart-nix.nvim is a template thats basically just "how to use pkgs.wrapNeovimUnstable" which does more or less the same stuff as mnw
+
+nixVim is a more managed experience, for the user who doesn't wanna think about how the rust.lsp.enabled = true option actually works IMO. (hint: it just adds the lsp to your path and calls lspconfig on it)
+
+Personal opinion:
+
+Out of all these options, in my opinion nixCats with lz.n or lze for lazy loading is the only one that can actually be said to offer a better experience, with more options, than default regular neovim configuration with a regular neovim package manager.
+
+But again, that is tinted by my personal opinion. I LIKE neovim config. I like to be able to build my own random stuff if I want with minimal impedence. I dont want to just say language.lsp.enable = true I want to be able to mess with the options in any cursed way that lua allows me to in order to make it work really well if I want. I also want to be able to build a plugin in my pack directory and see my updates without reloading, and I want the super nice autocomplete from lazydev+lua_ls while I do it. I also wrote nixCats so, yeah, very biased. But I created it for a reason.
+
+Its very comparable to lazy.nvim based configs when you use lz.n or lze for lazy loading too, but with a bunch of extra nix-side things you could do if you wanted to that are very cool such as dev-shell specific subsets of your config without needing to make an entire duplicate config (and actually being able to install them both at the same time)
+
+The simpler example is the example config in the nixCats repo itself, literally everything outside of the ./nix directory, although even that one splits up the plugins into separate lists to show people how to use the category feature.
+
+The more complex ones are like my mess of a config or this excellent nixCats contributor's config
+
+Upvote
+14
+
+Downvote
+ 
+Reply
+ 
+[deleted]
+•
+2y ago
+I use it. I prefer a typical lua setup with lazynvim. Here's my config:
+
+https://github.com/RoastBeefer00/nix-home/tree/main/nixvim
+
+I was able to port probably 98% of my lua config to nixvim. The biggest downside is you're kind of at the mercy of the maintainers if there's a bug or a feature not implemented for a plugin.
+
+
+Upvote
+11
+
+Downvote
+ 
+Reply
+ 
+ u/glepage00 avatar
+glepage00
+•
+2y ago
+And what a bunch of assholes they are !
+
+Kidding, glad that you enjoy our work. We try our best to keep the number of mishaps low, but unfortunately it still happens from time to time.
+
+We are also slowly starting to implementing lazy loading. Do not hesitate to submit issues, PRs or messages in our matrix channel.
+
+Happy hacking !
+
+
+Upvote
+21
+
+Downvote
+ 
+Reply
+ 
+[deleted]
+•
+2y ago
+Don't get me wrong it's been a positive experience and the one time I had a breaking bug you guys fixed it within a couple days!
+
+I just prefer to configure using Lua, that's all. I will say an ADVANTAGE of nixvim is I don't have to use lazynvim or mason to constantly update my packages and plugins. Nix takes care of that for me.
+
+In my opinion having a layer of abstraction on top of the config is better to be avoided. Having said that I'm still using nixvim lol
+
+
+Upvote
+6
+
+Downvote
+ 
+Reply
+ 
+ u/glepage00 avatar
+glepage00
+•
+2y ago
+You are perfectly right. Nixvim is an opinionated solution to neovim configuration on nix. There are very valid arguments for not using nixvim.
+
+Always keep in mind the tradeofs of each solution. Also, it's great to discuss about them to make an informed choice.
+
+Configuring everything in lua has the big advantage of simplicity, avoiding yet another layer of complexity.
+
+Upvote
+7
+
+Downvote
+ 
+Reply
+ 
+ u/glepage00 avatar
+glepage00
+•
+2y ago
+You can find several examples on our documentation page: https://nix-community.github.io/nixvim/user-guide/config-examples.html
+
+Also, do not hesitate to visit our matrix channel if you have any question or suggestion :)
+
+Upvote
+6
+
+Downvote
+ 
+Reply
+ 
+ u/Atlassian_Official avatar
+u/Atlassian_Official
+•
+Promoted
+ 
+Who's responsible for your agents' output?
+u/USMCamp0811 avatar
+USMCamp0811
+•
+2y ago
+Yes! I love it! It makes configuring Neovim a snap! And it you can run your Neovim anyhwere without a hassle!
+
+mine is at https://gitlab.com/usmcamp0811/dotfiles/-/tree/nixos/packages/neovim?ref_type=heads
+
+Upvote
+3
+
+Downvote
+ 
+Reply
+ 
+rafaelnexus
+•
+2y ago
+Iam pretty new to Nix universe but a long time vim/neovim user, was expecting a pretty bumpy ride. Instead, ported my lua config in pretty much a day and have been using no problem since then.
+
+Highly recommend.
+
+Upvote
+2
+
+Downvote
+ 
+Reply
+ 
+ u/ppen9u1n avatar
+ppen9u1n
+•
+2y ago
+It's a cool project with smart and dedicated people driving it. That said, I migrated from nixvim to nvf a while ago, which is a bit less rigid to add not-yet-supported plugins and has more "out of the box" defaults. Both are expanding/improving at a fast pace last time I checked.
+
+Upvote
+2
+
+Downvote
+ 
+Reply
+ 
+Snuffy-the-seal
+•
+2y ago
+I started using it from scratch, i.e. I didn't have an existing NeoVim configuration in the first place. I think this made things a bit harder, given that I had to figure out what settings/plugins/etc I wanted via NeoVim, then figure out how to translate this. While many settings options can easily be set, I had some difficulties with other aspects (stuff like raw lua code in NixVim options, certain plugins not working properly etc). All things considered, I like it very much. I think it makes sense to use it in on NixOS or on a system running the nix package manager.
+
+https://github.com/LucaAAntonelli/nixos-config
+
+Upvote
+2
+
+Downvote
+ 
+Reply
+ 
+ u/odd_lama avatar
+odd_lama
+•
+2y ago
+I have a full IDE like setup using only nixvim (no mason / other runtime stuff) here, in case you are interested in seeing a more complex config: https://github.com/oddlama/nix-config/tree/main/users/myuser/neovim
+
+I also configured a second nixvim instance to use nvim as my manpager: https://github.com/oddlama/nix-config/blob/main/users/myuser/dev/manpager.nix
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+ 
+[deleted]
+•
+2y ago
+yeah, I was able to set it up, get all 30 of my plug ins working, get auto completion and snippets working, and get lazy loading to work.
+
+At this point, nix is my second most use language. So I've pretty much abandoned lua.
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+ 
+Ken_Mcnutt
+•
+2y ago
+I've been using it for a few months and really like it so far.
+
+to be fair I've mostly been using it to edit my nix config, so not really any heavy development use yet.
+
+the only thing I haven't been able to get working is passing raw lua or a function as an argument into a config option. I've tried a dozen different ways but after consulting the Matrix room, it's not possible yet
+
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+ 
+no_brains101
+•
+2y ago
+•
+Edited 2y ago
+Profile Badge for the Achievement Top 1% Commenter Top 1% Commenter
+You can literally write Lua in nix strings in nixvim. It's very possible. It's not super easy to pass Lua code from a nix file to a separate Lua file (unless you are using nixCats instead)
+
+But in nixVim you can still write whatever lua you want in nix strings... You just might not be able to pass Lua code into the options that they already translated to nix for you... You can definitely find a way to get the info in though.
+
+It might involve not using the nixVim options but rather doing it as if it was a plugin they didn't have a config for, but it is possible.
+
+I can't help but feel like, whenever you want to do something more than nixVim has already set up for you, in order to do it you have to drop most of the advantages of nixVim to do so.
+
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+ 
+Ken_Mcnutt
+•
+2y ago
+so my case was I was trying to configure my lualine statusbar the way I had it before, which was that for the function that displays the current vim mode, I wrote a custom function with my own icons and passed a reference to that function as the "module" in that section of the status line.
+
+I can use the extraLua option in nixvim to get the raw function INTO the init.nvim file, but there's no way to configure the lua line option within nixvim to actually point to that function.
+
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+ 
+no_brains101
+•
+2y ago
+Profile Badge for the Achievement Top 1% Commenter Top 1% Commenter
+But you could skip using any of the nixVim options for lualine, and configure the plugin entirely in extraLua, no? If you just enable lualine but don't set any options it doesn't call the setup function or pass any options I would hope?
+
+I know you can include custom Lua along with a plugin without using any nixVim options for it, just like the home manager syntax, I've seen it, but I don't remember what the options was called
+
+Upvote
+2
+
+Downvote
+ 
+Reply
+ 
+no_brains101
+•
+2y ago
+•
+Edited 2y ago
+Profile Badge for the Achievement Top 1% Commenter Top 1% Commenter
+https://github.com/RoastBeefer00/nix-home/blob/0f602d7a1e757db2bf9bfc218e14f2a213d87766/nixvim/plugins/surround.nix
+
+Do this but for lualine and you can skip all the nixVim options that are blocking you and just configure it normally (this is not my config, but I can guarantee that if you did this correctly, it would work, as this allows you to install a plugin without adding any config from nixvim, and then specify arbitrary lua to configure it yourself).
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+ 
+More replies
+u/AMCPlus avatar
+u/AMCPlus
+•
+Promoted
+ 
+Complex characters. Compelling Stories. Watch unforgettable characters in The Audacity, Mad Men, Parish, and more on AMC+.
+Sign Up
+amcplus.com
+Clickable image which will reveal the video player: Complex characters. Compelling Stories. Watch unforgettable characters in The Audacity, Mad Men, Parish, and more on AMC+.    
+Collapse video player
+ 
+
+0:00 / 0:00
+
+
+
+
+gkze
+•
+2y ago
+Yes. Have been a happy user for over 5 months now and can definitely recommend it. Haven’t had to write more than 10 lines of Lua for any gaps. https://github.com/gkze/nixcfg/blob/master/user/george/home.nix Starting on line 670 currently. Happy to answer questions. ‘man nixvim’ is your friend.
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+ 
+ u/TECHNOFAB avatar
+TECHNOFAB
+•
+2y ago
+I actually started with Nvim after using Nix and NixOS for some while (a year or two, can't remember :D). Went directly to Nixvim and till now am really happy with it. Works well with my existing nix tooling, can easily be formatted, linted, bundled etc.
+
+All my IaC stuff uses/is fully defined in Nix (Kubenix Terranix, my own utils), so it feels very comfortable to be able to use it there aswell
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+ 
+HakerHaker
+•
+2y ago
+•
+Edited 2y ago
+I used it extensively for a long time, and it is a great abstraction. Unfortunately, I reach for a lot of plugins not offered in nix pkgs and so I had to add the inputs to my flake, create the overlay, and then configure in a Lua directory that gets sourced to nixvim's extra Lua config.
+
+This worked very well, but now I was maintaining a large nvim code base in 2 languages, and while I was very organized, it became quite tedious to debug because i needed more granular control over the config. Also no lazy loading. And after a while, nvim became quite laggy.
+
+So I rolled my own plugin manager that basically follows lazy.nvim's specification format but relies on nix to install, and this plugin manager simply configures/loads them. It supports lazy-loading and a unified approach to configuring plugins and custom plugins. Now I just maintain an all Lua config that gets sourced in my home-manager nvim config. My neovim is now significantly faster with less mental overhead as well as more fine-grained control.
+
+here it is in case you're interested
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+ 
+Dem_Skillz1
+•
+2y ago
+Nah i just use my lua config and nixld for lsps with mason
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+ 
+Thixez-3567
+•
+2y ago
+used it for a while, then had some problems with some plugins... honestly can't remember, ditched it and never came back... it is easier on some stuff sure, but how hard is neovim actually?
+
+and if you find an issue, good luck trying to debug and find its origin
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+ 
+ u/timbetimbe avatar
+timbetimbe
+•
+2y ago
+I use it and I love it! https://github.com/vinniefranco/nixvim-config
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+ 
+[deleted]
+•
+2y ago
+I just use folke's LazyVim distro with mason disabled. Super simple.
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+ 
+bsendpacket
+•
+2y ago
+Nixvim is great, can recommend. Only downside is that sometimes a update will change a few things, and you’ll have to fix it and run a full rebuild
+
+https://github.com/bsendpacket/nixcfg/blob/master/neovim/neovim.nix
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+ 
+RevocableBasher
+•
+2y ago
+Hey,
+
+I was using nixVim earlier but I found that the abstraction is even harder to work with. I currently use kickstart-nix which I can configure entirely using lua while still use nix to fetch the packages for me. I heard good about nixCats as well.
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+ 
+ u/w0rkz4me avatar
+w0rkz4me
+•
+2y ago
+just gonna drop this one here ... bam
+
+Upvote
+1
+
+Downvote
+ 
+Reply
+ 
+Community Info Section
+r/NixOS
+ Joined
+NixOS - Purely functional
+Created Aug 26, 2011
+Public
+48K
+Weekly visitors
+1.1K
+Weekly contributions
+COMMUNITY ACHIEVEMENTS
+Repeat Contributor
+Flag Planter
+Repeat Contributor, 
+Flag Planter
+2 unlocked
+
+View All
+PROMOTED
+ 
+ sidebar promoted post thumbnail
+MODERATORS
+Message Mods
+ u/kxra avatar
+u/kxra
+u/iElectric avatar
+u/iElectric
+Domen
+View all moderators
+PROMOTED
+ 
+ sidebar promoted post thumbnail
+Reddit Rules
+Privacy Policy
+User Agreement
+Your Privacy Choices
+Accessibility
+Reddit, Inc. © 2026. All rights reserved.

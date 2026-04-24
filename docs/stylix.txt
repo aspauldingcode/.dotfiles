@@ -1,0 +1,14 @@
+1. Stylix (Recommended for Beginners)
+Stylix is a high-level tool that automatically themes your entire system (GTK, Qt, wallpaper, terminal, editors) based on a single image or a Base16 scheme. 
+NixOS Discourse
+NixOS Discourse
+ +4
+Setup: Add the Stylix flake to your configuration and define a base16Scheme and a wallpaper.
+Benefit: It handles the complex "glue" code needed to sync themes across disparate applications like Firefox, Alacritty, and GNOME/KDE. 
+NixOS Discourse
+NixOS Discourse
+ +2
+
+
+
+ I would like to use stylix and theme dark and light variant base16 scheme, similar to nix colors for our multi-platform nix config. We might need to use gowall for wallpaper colorization. and, use nix specialization for light/dark across home-manager AND nix-darwin/nixos configuration. must follow dendentric patterns

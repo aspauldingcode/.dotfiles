@@ -1,0 +1,4 @@
+git@github.com:ktosiek/ansible-nix.git
+
+
+I can configure my jailbroken iPhone and termux config from android remotely over the network using my main server. 
