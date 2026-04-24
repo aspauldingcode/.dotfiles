@@ -21,10 +21,11 @@
     home.packages = with pkgs; [ 
       nh 
       code-cursor
-      jetbrains.idea
       jetbrains.rider
       firefox
       brave
+    ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
+      jetbrains.idea
     ];
   };
 }

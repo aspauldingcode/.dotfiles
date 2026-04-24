@@ -19,9 +19,7 @@
       plugins = {
         lualine.enable = true;
         treesitter.enable = true;
-        
-        # We can add custom plugins here. Since Codecompanion and Yazi are specifically requested:
-        # We add them via extraPlugins.
+        yazi.enable = true;
       };
 
       extraPlugins = with pkgs.vimPlugins; [
@@ -36,16 +34,6 @@
             repo = "codecompanion.nvim";
             rev = "main";
             hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; # To be replaced with actual hash or let Nix build it to get hash
-          };
-        })
-        (pkgs.vimUtils.buildVimPlugin {
-          pname = "yazi.nvim";
-          version = "latest";
-          src = pkgs.fetchFromGitHub {
-            owner = "mikavilpas";
-            repo = "yazi.nvim";
-            rev = "main";
-            hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; # To be replaced
           };
         })
       ];
