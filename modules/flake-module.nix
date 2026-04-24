@@ -25,6 +25,7 @@
         modules = [
           { 
             config = { 
+              nixpkgs.config.allowUnfree = true;
               system.stateVersion = "24.11"; 
               users.users.admin = {
                 isNormalUser = true;
@@ -65,6 +66,7 @@
         modules = [
           { 
             config = { 
+              nixpkgs.config.allowUnfree = true;
               system.stateVersion = "24.11"; 
               users.users.admin = {
                 isNormalUser = true;
@@ -72,6 +74,7 @@
               };
               fileSystems."/" = { device = "/dev/disk/by-label/nixos"; fsType = "ext4"; };
               fileSystems."/boot" = { device = "/dev/disk/by-label/boot"; fsType = "vfat"; };
+              fileSystems."/boot/asahi" = { device = "/dev/disk/by-label/asahi"; fsType = "vfat"; };
               hardware.asahi.extractPeripheralFirmware = false; # Bypass check for evaluation
             }; 
           }
@@ -111,6 +114,7 @@
         specialArgs = { inherit inputs; };
         modules = [
           {
+            nixpkgs.config.allowUnfree = true;
             system.stateVersion = 5; # For nix-darwin
             nix.enable = false; # Let determinate manage it
             users.users.admin = {
@@ -152,6 +156,7 @@
         extraSpecialArgs = { inherit inputs; };
         modules = [
           {
+            nixpkgs.config.allowUnfree = true;
             home.username = "admin";
             home.homeDirectory = "/home/admin";
             home.stateVersion = "24.11";
@@ -174,6 +179,7 @@
           {
             config = {
               nixpkgs.hostPlatform = "x86_64-linux";
+              nixpkgs.config.allowUnfree = true;
             };
           }
         ];

@@ -18,6 +18,13 @@
       enableZshIntegration = true;
     };
 
-    home.packages = [ pkgs.nh ];
+    home.packages = with pkgs; [ 
+      nh 
+      code-cursor
+      jetbrains.idea
+      jetbrains.rider
+      firefox
+      brave
+    ];
   };
 }
