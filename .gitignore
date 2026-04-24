@@ -1,3 +1,4 @@
 /subrepos/
 .DS_Store
 result
+*.pkg
