@@ -69,6 +69,9 @@ EOF
 
 chmod +x "$BUILD_DIR/scripts/postinstall"
 
+# Ensure we cleanly replace any previous package
+rm -f "$PKG_NAME"
+
 echo "Building $PKG_NAME..."
 pkgbuild --identifier "$IDENTIFIER" --version "1.0" --nopayload --scripts "$BUILD_DIR/scripts" "$PKG_NAME"
 
