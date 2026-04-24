@@ -16,7 +16,7 @@
 
     specialisation = {
       light.configuration = {
-        stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-light-medium.yaml";
+        stylix.base16Scheme = inputs.nixpkgs.lib.mkForce "${pkgs.base16-schemes}/share/themes/gruvbox-light-medium.yaml";
       };
     };
   };

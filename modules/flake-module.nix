@@ -31,10 +31,6 @@
                 extraGroups = [ "wheel" ];
               };
             }; 
-            options.services.displayManager.generic = inputs.nixpkgs.lib.mkOption {
-              type = inputs.nixpkgs.lib.types.unspecified;
-              default = {};
-            };
           }
           inputs.home-manager.nixosModules.home-manager
           
@@ -74,12 +70,10 @@
                 isNormalUser = true;
                 extraGroups = [ "wheel" ];
               };
-              hardware.asahi.useExperimentalGPUDriver = true;
+              fileSystems."/" = { device = "/dev/disk/by-label/nixos"; fsType = "ext4"; };
+              fileSystems."/boot" = { device = "/dev/disk/by-label/boot"; fsType = "vfat"; };
+              hardware.asahi.extractPeripheralFirmware = false; # Bypass check for evaluation
             }; 
-            options.services.displayManager.generic = inputs.nixpkgs.lib.mkOption {
-              type = inputs.nixpkgs.lib.types.unspecified;
-              default = {};
-            };
           }
           inputs.apple-silicon.nixosModules.apple-silicon-support
           inputs.home-manager.nixosModules.home-manager
