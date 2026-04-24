@@ -30,10 +30,26 @@ exec > >(tee -a "$LOG_FILE") 2>&1
 echo "Starting dotfiles installation at $(date)"
 echo "Target user: $LOGGED_IN_USER"
 
-# Run the installation as the user to ensure it goes into their home folder properly
+# We must run the Nix installer as root
+if ! command -v nix &> /dev/null; then
+  if [ -e "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh" ]; then
+    . "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh"
+  fi
+fi
+
+if ! command -v nix &> /dev/null; then
+  echo "Nix not found. Installing Determinate Systems Nix globally..."
+  curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install --no-confirm
+fi
+
+# Run the user-level installation
 sudo -u "$LOGGED_IN_USER" -H bash -c "
   set -e
-  export PATH=\"/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/homebrew/bin\"
+  export PATH=\"/nix/var/nix/profiles/default/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/homebrew/bin\"
+
+  if [ -e \"/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh\" ]; then
+    . \"/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh\"
+  fi
 
   if [ ! -d \"\$HOME/.dotfiles\" ]; then
     echo 'Cloning .dotfiles repository...'
@@ -44,8 +60,8 @@ sudo -u "$LOGGED_IN_USER" -H bash -c "
   git checkout development || true
   git pull || true
 
-  echo 'Running install-mac.sh...'
-  ./install-mac.sh
+  echo 'Applying nix-darwin configuration...'
+  nix --extra-experimental-features \"nix-command flakes\" run nix-darwin/master#darwin-rebuild -- switch --flake \".#mba\"
 "
 
 echo "Installation finished successfully at $(date)"
@@ -61,4 +77,4 @@ rm -rf "$BUILD_DIR"
 
 echo ""
 echo "Done! You can now distribute '$PKG_NAME'."
-echo "Double-clicking it will run the install-mac.sh script in the background."
+echo "Double-clicking it will run the embedded installer and securely bootstrap your dotfiles."
