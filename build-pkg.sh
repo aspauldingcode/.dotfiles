@@ -18,14 +18,37 @@ cat << 'EOF' > "$BUILD_DIR/scripts/postinstall"
 #!/usr/bin/env bash
 set -e
 
-# To ensure the script is run with the right permissions and context
-# Usually postinstall runs as root, so we need to run Nix as the user who installed it
-USER_HOME=$(eval echo "~$USER")
+# The postinstall script is run as root by Installer.app
+# Let's find the user logged into the GUI console
+LOGGED_IN_USER=$(stat -f "%Su" /dev/console)
+USER_HOME=$(eval echo "~$LOGGED_IN_USER")
 
-echo "Running installation payload..."
+# Log output to a file on the user's desktop for debugging
+LOG_FILE="$USER_HOME/Desktop/dotfiles_install.log"
+exec > >(tee -a "$LOG_FILE") 2>&1
 
-# Remote execution of the simplified installation script
-sudo -u "$USER" bash -c "bash <(curl -sL https://raw.githubusercontent.com/aspauldingcode/.dotfiles/development/install-mac.sh)"
+echo "Starting dotfiles installation at $(date)"
+echo "Target user: $LOGGED_IN_USER"
+
+# Run the installation as the user to ensure it goes into their home folder properly
+sudo -u "$LOGGED_IN_USER" -H bash -c "
+  set -e
+  export PATH=\"/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/homebrew/bin\"
+
+  if [ ! -d \"\$HOME/.dotfiles\" ]; then
+    echo 'Cloning .dotfiles repository...'
+    git clone https://github.com/aspauldingcode/.dotfiles.git \"\$HOME/.dotfiles\"
+  fi
+
+  cd \"\$HOME/.dotfiles\"
+  git checkout development || true
+  git pull || true
+
+  echo 'Running install-mac.sh...'
+  ./install-mac.sh
+"
+
+echo "Installation finished successfully at $(date)"
 EOF
 
 chmod +x "$BUILD_DIR/scripts/postinstall"
