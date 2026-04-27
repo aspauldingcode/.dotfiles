@@ -59,6 +59,7 @@ jobs:
             extra-platforms = aarch64-linux
 
       - name: Set up Magic Nix Cache
+        if: runner.os == 'Linux'
         uses: DeterminateSystems/magic-nix-cache-action@main
 
       - name: Build ${{ matrix.name }}
