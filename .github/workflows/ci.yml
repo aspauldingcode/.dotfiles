@@ -1,0 +1,87 @@
+name: "CI"
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - development
+  pull_request:
+    branches:
+      - main
+      - master
+      - development
+  workflow_dispatch:
+
+jobs:
+  matrix:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: "mba (Darwin)"
+            os: macos-14
+            attr: "darwinConfigurations.mba.system"
+          - name: "nixos-test (NixOS)"
+            os: ubuntu-latest
+            attr: "nixosConfigurations.nixos-test.config.system.build.toplevel"
+          - name: "mba-asahi (NixOS ARM)"
+            os: ubuntu-latest
+            attr: "nixosConfigurations.mba-asahi.config.system.build.toplevel"
+          - name: "8amps-linux (Home Manager)"
+            os: ubuntu-latest
+            attr: "homeConfigurations.8amps-linux.activationPackage"
+          - name: "linux-generic (System Manager)"
+            os: ubuntu-latest
+            attr: "systemConfigs.linux-generic.config.build.toplevel"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Rampage Mode (Nothing but Nix)
+        if: runner.os == 'Linux'
+        uses: wimpysworld/nothing-but-nix@main
+        with:
+          hatchet-protocol: 'rampage'
+
+      - name: Set up QEMU (for ARM builds)
+        if: runner.os == 'Linux'
+        uses: docker/setup-qemu-action@v3
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            build-dir = /nix/build
+            extra-platforms = aarch64-linux
+
+      - name: Set up Magic Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Build ${{ matrix.name }}
+        run: |
+          # Use quotes for Home Manager config name with dashes
+          if [[ "${{ matrix.attr }}" == *"8amps-linux"* ]]; then
+             nix build .#homeConfigurations.\"8amps-linux\".activationPackage --print-build-logs
+          else
+             nix build .#${{ matrix.attr }} --print-build-logs
+          fi
+
+  publish:
+    needs: matrix
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/development' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Publish to Upstream Development Channel
+        run: |
+          echo "All builds passed. The 'development' channel is now validated."
+          # If the user has a specific 'development' channel branch or FlakeHub integration:
+          # nix run .#publish-to-flakehub -- --channel development
+          # For now, we signal success.
