@@ -20,6 +20,7 @@
     inputs.self.modules.homeManager.antigravity
     inputs.self.modules.homeManager.wallpaper
     inputs.self.modules.homeManager.spotify
+    inputs.self.modules.homeManager.vesktop
     
     # External modules
     inputs.stylix.homeModules.stylix

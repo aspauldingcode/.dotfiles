@@ -391,19 +391,27 @@
           })
         end
 
-        -- Apply Catppuccin Macchiato via mini.base16 (matches Stylix global theme)
+        -- Apply Stylix theme via mini.base16
         local ok2, base16 = pcall(require, "mini.base16")
         if ok2 then
           base16.setup({
             palette = {
-              base00 = "#24273a", base01 = "#363a4f",
-              base02 = "#494d64", base03 = "#6e738d",
-              base04 = "#a5adcb", base05 = "#cad3f5",
-              base06 = "#f4dbd6", base07 = "#b7bdf8",
-              base08 = "#ed8796", base09 = "#f5a97f",
-              base0A = "#eed49f", base0B = "#a6da95",
-              base0C = "#8bd5ca", base0D = "#8aadf4",
-              base0E = "#c6a0f6", base0F = "#f0c6c6",
+              base00 = "${config.lib.stylix.colors.withHashtag.base00}",
+              base01 = "${config.lib.stylix.colors.withHashtag.base01}",
+              base02 = "${config.lib.stylix.colors.withHashtag.base02}",
+              base03 = "${config.lib.stylix.colors.withHashtag.base03}",
+              base04 = "${config.lib.stylix.colors.withHashtag.base04}",
+              base05 = "${config.lib.stylix.colors.withHashtag.base05}",
+              base06 = "${config.lib.stylix.colors.withHashtag.base06}",
+              base07 = "${config.lib.stylix.colors.withHashtag.base07}",
+              base08 = "${config.lib.stylix.colors.withHashtag.base08}",
+              base09 = "${config.lib.stylix.colors.withHashtag.base09}",
+              base0A = "${config.lib.stylix.colors.withHashtag.base0A}",
+              base0B = "${config.lib.stylix.colors.withHashtag.base0B}",
+              base0C = "${config.lib.stylix.colors.withHashtag.base0C}",
+              base0D = "${config.lib.stylix.colors.withHashtag.base0D}",
+              base0E = "${config.lib.stylix.colors.withHashtag.base0E}",
+              base0F = "${config.lib.stylix.colors.withHashtag.base0F}",
             },
           })
         end

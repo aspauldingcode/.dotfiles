@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, lib, ... }:
 
 {
   imports = [
@@ -6,7 +6,9 @@
     {
       nixpkgs.hostPlatform = "aarch64-darwin";
       nixpkgs.config.allowUnfree = true;
-      nixpkgs.overlays = [ inputs.self.overlays.default ];
+      nixpkgs.overlays = [ 
+        inputs.self.overlays.default 
+      ];
       system.stateVersion = 5;
       
       nix.enable = false; # Let determinate manage it
@@ -51,6 +53,7 @@
     {
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
+      home-manager.backupFileExtension = lib.mkForce "backup";
       home-manager.extraSpecialArgs = { inherit inputs; };
       home-manager.users."8amps" = {
         imports = [
@@ -66,6 +69,7 @@
           inputs.self.modules.homeManager.jetbrains
           inputs.self.modules.homeManager.wallpaper
           inputs.self.modules.homeManager.spotify
+          inputs.self.modules.homeManager.vesktop
         ];
         home.username = "8amps";
         home.homeDirectory = "/Users/8amps";
@@ -81,6 +85,7 @@
         dendritic.apps.cursor.enable = true;
         dendritic.apps.beeper.enable = true;
         dendritic.apps.jetbrains.enable = true;
+        dendritic.wallpaper.enable = true;
 
         # ─────────────────────────────────────────────────────────────
       };

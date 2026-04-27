@@ -56,7 +56,9 @@
 
       homeConfigurations = {
         "8amps-linux" = inputs.home-manager.lib.homeManagerConfiguration {
-          pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+          pkgs = import inputs.nixpkgs {
+            system = "x86_64-linux";
+          };
           extraSpecialArgs = { inherit inputs; };
           modules = [ ../hosts/hm/8amps-linux ];
         };

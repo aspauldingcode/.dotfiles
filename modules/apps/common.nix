@@ -1,15 +1,24 @@
 {
-  flake.modules.homeManager.apps = { pkgs, inputs, ... }: {
-    imports = [
-      inputs.zen-browser.homeModules.default
-    ];
-
-    programs.zen-browser = {
-      enable = true;
+  flake.modules.homeManager.apps = { pkgs, inputs, config, lib, ... }: {
+    programs.librewolf = {
+      enable = lib.mkForce true;
       profiles.default = {
         id = 0;
         name = "default";
-        isDefault = true;
+        settings = {
+          "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+          "browser.tabs.drawInTitlebar" = true;
+          "svg.context-properties.content.enabled" = true;
+        };
+      };
+      profiles.default-release = {
+        id = 1;
+        name = "default-release";
+        settings = {
+          "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+          "browser.tabs.drawInTitlebar" = true;
+          "svg.context-properties.content.enabled" = true;
+        };
       };
       policies = {
         ExtensionSettings = {
@@ -25,10 +34,9 @@
       };
     };
 
-    home.file."Library/Application Support/Zen/installs.ini".text = ''
-      [EE6ABAA7614B74D6]
-      Default=Profiles/default
-      Locked=1
+    home.activation.removeLibreWolfUserJS = lib.hm.dag.entryBefore ["checkLinkTargets"] ''
+      rm -f "${config.home.homeDirectory}/Library/Application Support/LibreWolf/Profiles/default/user.js"
+      rm -f "${config.home.homeDirectory}/Library/Application Support/LibreWolf/Profiles/default-release/user.js"
     '';
 
     programs.brave = {

@@ -44,16 +44,13 @@ jobs:
         if: runner.os == 'Linux'
         uses: wimpysworld/nothing-but-nix@main
         with:
-          hatchet-protocol: 'rampage'
-
+          hatchet-protocol: "rampage"
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
         with:
           extra-conf: |
             build-dir = /nix/build
-            extra-substituters = https://nixos-apple-silicon.cachix.org https://install.determinate.systems
-            extra-trusted-public-keys = nixos-apple-silicon.cachix.org-1:EvGI0LLrSyMPgGwEJIwq8DU4o5q/T0vO14IIOK/Rbfs= install.determinate.systems-1:JuyFtQ+v0GMMfxGIBZZaHF/QqPHMtP7P7oG2gMBGVPw=
 
       - name: Set up Magic Nix Cache
         if: runner.os == 'Linux'

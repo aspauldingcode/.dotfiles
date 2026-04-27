@@ -6,6 +6,7 @@
     {
       nixpkgs.hostPlatform = "aarch64-linux";
       nixpkgs.config.allowUnfree = true;
+      nixpkgs.overlays = [ ];
       system.stateVersion = "24.11";
 
       users.users."8amps" = {
@@ -34,6 +35,7 @@
     {
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
+      home-manager.backupFileExtension = "backup";
       home-manager.extraSpecialArgs = { inherit inputs; };
       home-manager.users."8amps" = {
         imports = [
@@ -46,6 +48,7 @@
           inputs.self.modules.homeManager.antigravity
           inputs.self.modules.homeManager.wallpaper
           inputs.self.modules.homeManager.spotify
+          inputs.self.modules.homeManager.vesktop
         ];
         home.username = "8amps";
         home.homeDirectory = "/home/8amps";
@@ -55,9 +58,6 @@
         dendritic.apps.ghostty.enable = true;
         dendritic.apps.antigravity.enable = true;
 
-        # zen-browser is only available on x86_64/Darwin, not aarch64-linux
-        programs.zen-browser.enable = lib.mkForce false;
-        stylix.targets.zen-browser.enable = lib.mkForce false;
         # ─────────────────────────────────────────────────────────────
       };
     }

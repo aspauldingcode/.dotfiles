@@ -13,7 +13,7 @@
         programs.spicetify = {
           enable = true;
           spotifyPackage = pkgs.spotify;
-          colorScheme = lib.mkForce "catppuccin-macchiato";
+          colorScheme = lib.mkForce "Everforest";
 
           # Using the built-in comfy theme
           theme = lib.mkForce spicePkgs.themes.comfy;

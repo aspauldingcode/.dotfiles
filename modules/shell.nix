@@ -73,7 +73,7 @@
       };
 
       home.sessionVariables = {
-        FLAKE = "${config.home.homeDirectory}/.dotfiles" + (lib.optionalString pkgs.stdenv.isDarwin "#mba");
+        NH_FLAKE = "${config.home.homeDirectory}/.dotfiles" + (lib.optionalString pkgs.stdenv.isDarwin "#mba");
       };
 
       # Yazi minimal configuration with ANSI inheritance
