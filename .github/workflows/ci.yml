@@ -52,6 +52,8 @@ jobs:
         with:
           extra-conf: |
             build-dir = /nix/build
+            extra-substituters = https://nixos-apple-silicon.cachix.org https://install.determinate.systems
+            extra-trusted-public-keys = nixos-apple-silicon.cachix.org-1:EvGI0LLrSyMPgGwEJIwq8DU4o5q/T0vO14IIOK/Rbfs= install.determinate.systems-1:JuyFtQ+v0GMMfxGIBZZaHF/QqPHMtP7P7oG2gMBGVPw=
 
       - name: Set up Magic Nix Cache
         if: runner.os == 'Linux'
