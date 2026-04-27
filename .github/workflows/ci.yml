@@ -26,9 +26,9 @@ jobs:
           - name: "nixos-test (NixOS)"
             os: ubuntu-latest
             attr: "nixosConfigurations.nixos-test.config.system.build.toplevel"
-          - name: "mba-asahi (NixOS ARM - Eval Only)"
-            os: ubuntu-latest
-            attr: "nixosConfigurations.mba-asahi.config.system.build.toplevel.drvPath"
+          - name: "mba-asahi (NixOS ARM)"
+            os: ubuntu-22.04-arm
+            attr: "nixosConfigurations.mba-asahi.config.system.build.toplevel"
           - name: "8amps-linux (Home Manager)"
             os: ubuntu-latest
             attr: "homeConfigurations.8amps-linux.activationPackage"
@@ -46,17 +46,12 @@ jobs:
         with:
           hatchet-protocol: 'rampage'
 
-      - name: Set up QEMU (for ARM builds)
-        if: runner.os == 'Linux'
-        run: |
-          docker run --privileged --rm tonistiigi/binfmt:qemu-v7.0.0 --install all
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
         with:
           extra-conf: |
             build-dir = /nix/build
-            extra-platforms = aarch64-linux
 
       - name: Set up Magic Nix Cache
         if: runner.os == 'Linux'
