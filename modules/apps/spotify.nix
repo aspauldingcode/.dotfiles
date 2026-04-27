@@ -1,14 +1,14 @@
 {
   flake.modules.homeManager.spotify = { pkgs, lib, inputs, ... }: let
     spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+    # Spotify is not available for aarch64-linux
+    isSupported = !(pkgs.stdenv.isLinux && pkgs.stdenv.isAarch64);
   in {
-    imports = [
-      inputs.spicetify-nix.homeManagerModules.default
-    ];
+    imports = lib.optional isSupported inputs.spicetify-nix.homeManagerModules.default;
 
-    stylix.targets.spicetify.enable = true;
+    stylix.targets.spicetify.enable = isSupported;
 
-    programs.spicetify = {
+    programs.spicetify = lib.mkIf isSupported {
       enable = true;
       spotifyPackage = pkgs.spotify;
       colorScheme = lib.mkForce "catppuccin-macchiato";
