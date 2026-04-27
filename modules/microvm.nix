@@ -17,7 +17,7 @@
 
     # ── NixOS Specific Module ───────────────────────────────────
     flake.modules.nixos.microvm = { pkgs, inputs, ... }: {
-      environment.systemPackages = [ inputs.microvm.packages.${pkgs.system}.default ];
+      environment.systemPackages = [ inputs.microvm.packages.${pkgs.stdenv.hostPlatform.system}.microvm ];
     };
 
     # ── The MicroVM Definition ──────────────────────────────────
