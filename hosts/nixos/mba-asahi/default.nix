@@ -8,6 +8,9 @@
       nixpkgs.config.allowUnfree = true;
       system.stateVersion = "24.11";
       
+      # Stub kernel for CI to avoid building Asahi kernel in QEMU
+      boot.kernelPackages = lib.mkIf (pkgs.stdenv.buildPlatform.system != pkgs.stdenv.hostPlatform.system) (lib.mkForce pkgs.linuxPackages_latest);
+
       users.users."8amps" = {
         isNormalUser = true;
         extraGroups = [ "wheel" ];
