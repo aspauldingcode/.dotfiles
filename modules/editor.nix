@@ -361,8 +361,8 @@
           src = pkgs.fetchFromGitHub {
             owner = "olimorris";
             repo = "codecompanion.nvim";
-            rev = "main";
-            hash = "sha256-DN0amyAg7OirpQXsH7Cetk15j5pb7t9r02mMnsJCMAI=";
+            rev = "fcfb7130f570ef2bbb52cbe9167c1999bc41029a";
+            hash = "sha256-bcFT8PAFicRgPNAoxzrcAYH1wYJQ6Yu/E94H7M2DNaA=";
           };
           dependencies = [ plenary-nvim nvim-treesitter ];
           doCheck = false;
