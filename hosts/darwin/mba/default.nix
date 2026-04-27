@@ -65,6 +65,7 @@
           inputs.self.modules.homeManager.beeper
           inputs.self.modules.homeManager.jetbrains
           inputs.self.modules.homeManager.wallpaper
+          inputs.self.modules.homeManager.spotify
         ];
         home.username = "8amps";
         home.homeDirectory = "/Users/8amps";

@@ -36,6 +36,11 @@
 
     stylix.url = "github:danth/stylix";
 
+    spicetify-nix = {
+      url = "github:Gerg-L/spicetify-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     apple-silicon = {
       url = "github:tpwrules/nixos-apple-silicon";
       inputs.nixpkgs.follows = "nixpkgs";

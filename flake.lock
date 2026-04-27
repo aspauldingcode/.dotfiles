@@ -708,6 +708,7 @@
         "nixpkgs-darwin": "nixpkgs-darwin",
         "nixvim": "nixvim",
         "sops-nix": "sops-nix",
+        "spicetify-nix": "spicetify-nix",
         "stylix": "stylix",
         "system-manager": "system-manager",
         "zen-browser": "zen-browser"
@@ -749,6 +750,27 @@
         "url": "https://spectrum-os.org/git/spectrum"
       }
     },
+    "spicetify-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "systems": "systems_2"
+      },
+      "locked": {
+        "lastModified": 1777183994,
+        "narHash": "sha256-zahis/vVFOsWv/HeyHbU13jxnrCC+ppIg49xG+viWxg=",
+        "owner": "Gerg-L",
+        "repo": "spicetify-nix",
+        "rev": "501256c3e670ca1679501ce3839ea805df00d8ba",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Gerg-L",
+        "repo": "spicetify-nix",
+        "type": "github"
+      }
+    },
     "stylix": {
       "inputs": {
         "base16": "base16",
@@ -760,7 +782,7 @@
         "gnome-shell": "gnome-shell",
         "nixpkgs": "nixpkgs_4",
         "nur": "nur",
-        "systems": "systems_2",
+        "systems": "systems_3",
         "tinted-kitty": "tinted-kitty",
         "tinted-schemes": "tinted-schemes",
         "tinted-tmux": "tinted-tmux",
@@ -833,6 +855,21 @@
       }
     },
     "systems_3": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_4": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
@@ -923,7 +960,7 @@
           "nixpkgs"
         ],
         "pre-commit-hooks-nix": "pre-commit-hooks-nix",
-        "systems": "systems_3"
+        "systems": "systems_4"
       },
       "locked": {
         "lastModified": 1770377964,
