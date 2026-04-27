@@ -15,6 +15,5 @@
     # Pull in Feature Modules from the Hub (System Level)
     inputs.self.modules.nixos.shell
     inputs.self.modules.nixos.secrets
-    inputs.self.modules.nixos.styling
   ];
 }
