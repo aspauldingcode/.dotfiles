@@ -1,21 +1,24 @@
 {
   flake.modules.nixos.shell =
-    { pkgs, lib, config, options, ... }:
+    { pkgs, lib, options, ... }:
     {
       # TODO: Revert to default behavior once https://github.com/NixOS/nixpkgs/issues/513543 is resolved.
-      programs.zsh.enable = true;
+      programs = lib.optionalAttrs (options ? programs && options.programs ? zsh) {
+        zsh.enable = true;
+      };
  
-      users = lib.optionalAttrs (options.users ? defaultUserShell) {
+      users = lib.optionalAttrs (options ? users && options.users ? defaultUserShell && options ? programs && options.programs ? zsh) {
         defaultUserShell = pkgs.zsh;
       };
  
       environment = {
-        shells = [ pkgs.zsh ];
         systemPackages = [
           pkgs.nh
           pkgs.yazi
         ];
-      } // (lib.optionalAttrs (options.environment ? binsh) {
+      } // (lib.optionalAttrs (options ? environment && options.environment ? shells) {
+        shells = [ pkgs.zsh ];
+      }) // (lib.optionalAttrs (options ? environment && options.environment ? binsh) {
         binsh = "${pkgs.zsh}/bin/zsh";
       });
     };

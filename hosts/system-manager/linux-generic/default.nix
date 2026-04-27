@@ -8,7 +8,7 @@
         nixpkgs.config.allowUnfree = true;
         
         # System Manager specific setup
-        system-manager.allowInsecure = false;
+        system-manager.allowAnyDistro = true;
       };
     }
 
