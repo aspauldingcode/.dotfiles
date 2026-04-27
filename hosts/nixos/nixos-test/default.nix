@@ -12,6 +12,11 @@
         isNormalUser = true;
         extraGroups = [ "wheel" ];
       };
+ 
+      # Dummy filesystem for CI verification
+      fileSystems."/" = { device = "/dev/sda1"; fsType = "ext4"; };
+      boot.loader.grub.enable = true;
+      boot.loader.grub.device = "nodev";
     }
 
     # 2. Import Home Manager
