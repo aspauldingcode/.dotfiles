@@ -38,7 +38,7 @@
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
       home-manager.extraSpecialArgs = { inherit inputs; };
-      home-manager.users."8amps" = {
+      home-manager.users."8amps" = { pkgs, lib, ... }: {
         imports = [
           inputs.self.modules.homeManager.shell
           inputs.self.modules.homeManager.editor
@@ -53,10 +53,20 @@
         home.username = "8amps";
         home.homeDirectory = "/home/8amps";
         home.stateVersion = "24.11";
-        
+
         # ── Feature Toggles ─────────────────────────────────────────
         dendritic.apps.ghostty.enable = true;
         dendritic.apps.antigravity.enable = true;
+
+        # When cross-compiling (e.g. x86 CI building ARM), bypass stylix palette
+        # IFD by providing the base16 scheme directly. This prevents palette-generator
+        # (a Haskell binary) from being built under QEMU, which always fails.
+        stylix.image = lib.mkIf
+          (pkgs.stdenv.buildPlatform.system != pkgs.stdenv.hostPlatform.system)
+          (lib.mkForce null);
+        stylix.base16Scheme = lib.mkIf
+          (pkgs.stdenv.buildPlatform.system != pkgs.stdenv.hostPlatform.system)
+          (lib.mkForce "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml");
         # ─────────────────────────────────────────────────────────────
       };
     }
