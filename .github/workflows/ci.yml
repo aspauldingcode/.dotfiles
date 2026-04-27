@@ -26,9 +26,9 @@ jobs:
           - name: "nixos-test (NixOS)"
             os: ubuntu-latest
             attr: "nixosConfigurations.nixos-test.config.system.build.toplevel"
-          - name: "mba-asahi (NixOS ARM)"
+          - name: "mba-asahi (NixOS ARM - Eval Only)"
             os: ubuntu-latest
-            attr: "nixosConfigurations.mba-asahi.config.system.build.toplevel"
+            attr: "nixosConfigurations.mba-asahi.config.system.build.toplevel.drvPath"
           - name: "8amps-linux (Home Manager)"
             os: ubuntu-latest
             attr: "homeConfigurations.8amps-linux.activationPackage"
