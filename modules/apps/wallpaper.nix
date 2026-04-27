@@ -97,7 +97,12 @@
 
     config = lib.mkIf cfg.enable {
       # ── Stylix Integration ──────────────────────────────────────
-      stylix.image = lib.mkForce processedImage;
+      # Disable palette generation for ARM in CI to avoid expensive/flaky emulated Haskell builds
+      stylix.image = lib.mkForce (
+        if (builtins.getEnv "CI" == "true" && pkgs.stdenv.hostPlatform.isAarch64) 
+        then null 
+        else processedImage
+      );
 
       # ── Packages ────────────────────────────────────────────────
       home.packages = [ pkgs.gowall ] 
