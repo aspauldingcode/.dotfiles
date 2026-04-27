@@ -64,6 +64,7 @@
 
       systemConfigs = {
         linux-generic = inputs.system-manager.lib.makeSystemConfig {
+          specialArgs = { inherit inputs; };
           modules = [ ../hosts/system-manager/linux-generic ];
         };
       };

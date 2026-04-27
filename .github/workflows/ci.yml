@@ -48,7 +48,8 @@ jobs:
 
       - name: Set up QEMU (for ARM builds)
         if: runner.os == 'Linux'
-        uses: docker/setup-qemu-action@v3
+        run: |
+          docker run --privileged --rm tonistiigi/binfmt:qemu-v7.0.0 --install all
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main

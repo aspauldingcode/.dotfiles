@@ -4,7 +4,6 @@
   imports = [
     {
       config = {
-        _module.args.inputs = inputs;
         nixpkgs.hostPlatform = "x86_64-linux";
         nixpkgs.config.allowUnfree = true;
         
