@@ -1,0 +1,40 @@
+{
+  flake.modules.homeManager.cursor = { pkgs, lib, config, ... }: let
+    cfg = config.dendritic.apps.cursor;
+
+    # ── Derive settings & extensions from Antigravity (1:1) ──────
+    # Antigravity uses programs.vscode, which Stylix auto-themes.
+    # Cursor reuses the exact same resolved settings + extensions
+    # so both editors are always visually identical.
+    sharedSettings = config.programs.vscode.profiles.default.userSettings;
+    sharedExtensions = config.programs.vscode.profiles.default.extensions;
+
+    # Build extension symlinks by reading each extension's directory
+    extensionFiles = lib.foldl' (acc: ext: let
+      extPath = "${ext}/share/vscode/extensions";
+      dirs = builtins.attrNames (builtins.readDir extPath);
+    in acc // (lib.listToAttrs (map (dir: {
+      name = ".cursor/extensions/${dir}";
+      value = { source = "${extPath}/${dir}"; };
+    }) dirs))) {} sharedExtensions;
+  in {
+    options.dendritic.apps.cursor = {
+      enable = lib.mkEnableOption "Cursor IDE";
+    };
+
+    config = lib.mkIf cfg.enable {
+      home.packages = [
+        (if pkgs.stdenv.isLinux then pkgs.code-cursor-fhs else pkgs.code-cursor)
+      ];
+
+      # Install all extensions from Antigravity (including Stylix theme)
+      # and use the same settings (Stylix injects fonts, theme, etc.)
+      home.file = extensionFiles // lib.optionalAttrs pkgs.stdenv.isDarwin {
+        "Library/Application Support/Cursor/User/settings.json" = {
+          force = true;
+          text = builtins.toJSON sharedSettings;
+        };
+      };
+    };
+  };
+}
