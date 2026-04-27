@@ -47,7 +47,7 @@
 
     specialisation.light.configuration = {
       stylix.polarity = lib.mkForce "light";
-      stylix.base16Scheme = lib.mkForce (pkgs.base16-schemes + "/share/themes/everforest-light-medium.yaml");
+      stylix.base16Scheme = lib.mkForce (pkgs.base16-schemes + "/share/themes/everforest-dark-soft.yaml");
     };
   };
 
