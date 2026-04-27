@@ -97,9 +97,10 @@
 
     config = lib.mkIf cfg.enable {
       # ── Stylix Integration ──────────────────────────────────────
-      # Disable palette generation for ARM in CI to avoid expensive/flaky emulated Haskell builds
+      # Disable palette generation when cross-compiling or emulating (like ARM on x86 CI)
+      # building Haskell (palette-generator) in QEMU is extremely flaky and slow.
       stylix.image = lib.mkForce (
-        if (builtins.getEnv "CI" == "true" && pkgs.stdenv.hostPlatform.isAarch64) 
+        if (pkgs.stdenv.buildPlatform.system != pkgs.stdenv.hostPlatform.system && pkgs.stdenv.hostPlatform.isAarch64) 
         then null 
         else processedImage
       );
