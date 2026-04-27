@@ -44,12 +44,16 @@
           inputs.self.modules.homeManager.editor
           inputs.self.modules.homeManager.secrets
           inputs.self.modules.homeManager.styling
-          inputs.self.modules.homeManager.apps
           inputs.self.modules.homeManager.ghostty
           inputs.self.modules.homeManager.antigravity
           inputs.self.modules.homeManager.wallpaper
           inputs.self.modules.homeManager.spotify
-        ];
+          # zen-browser's stylix integration unconditionally references
+          # stylix.generated.palette (an IFD), which forces palette-generator
+          # to be built under QEMU emulation. Skip apps on cross-compile.
+        ] ++ pkgs.lib.optional
+          (pkgs.stdenv.buildPlatform.system == pkgs.stdenv.hostPlatform.system)
+          inputs.self.modules.homeManager.apps;
         home.username = "8amps";
         home.homeDirectory = "/home/8amps";
         home.stateVersion = "24.11";
