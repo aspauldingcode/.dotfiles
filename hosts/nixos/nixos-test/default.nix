@@ -38,6 +38,8 @@
           inputs.self.modules.homeManager.apps
           inputs.self.modules.homeManager.ghostty
           inputs.self.modules.homeManager.antigravity
+          inputs.self.modules.homeManager.wallpaper
+          inputs.self.modules.homeManager.spotify
         ];
         home.username = "8amps";
         home.homeDirectory = "/home/8amps";

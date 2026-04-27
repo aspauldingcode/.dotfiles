@@ -18,6 +18,8 @@
     inputs.self.modules.homeManager.apps
     inputs.self.modules.homeManager.ghostty
     inputs.self.modules.homeManager.antigravity
+    inputs.self.modules.homeManager.wallpaper
+    inputs.self.modules.homeManager.spotify
     
     # External modules
     inputs.stylix.homeModules.stylix
