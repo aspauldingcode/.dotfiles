@@ -132,7 +132,7 @@ in
         ${lib.optionalString (vsock.cid != null) ''
           VSOCK_ABS="${hostName}-vsock.sock"
           [[ "$VSOCK_ABS" != /* ]] && VSOCK_ABS="$PWD/$VSOCK_ABS"
-          CMD+=(--device "virtio-vsock,port=1024,socketURL=''${VSOCK_ABS},listen")
+          CMD+=(--device "virtio-vsock,port=1024,socketURL=''${VSOCK_ABS},connect")
         ''}
         exec "''${CMD[@]}"
       ''}";
