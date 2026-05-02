@@ -93,7 +93,7 @@
           config = {
             Label = "com.aspaulding.waypipe";
             ProgramArguments = [
-              "${pkgs.wawona}/Applications/Wawona.app/Contents/MacOS/waypipe"
+              "${pkgs.wawona-macos}/Applications/Wawona.app/Contents/MacOS/waypipe"
               "-s"
               "${config.home.homeDirectory}/.dotfiles/dendritic-vm-vsock.sock"
               "client"
