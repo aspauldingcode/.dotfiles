@@ -55,6 +55,20 @@
           boot.initrd.systemd.enable = false;
           boot.kernelPackages = pkgs.linuxPackages;
 
+          # Guest-side Wayland proxy: listens on /run/user/1000/wayland-1 and connects to VSOCK Host (CID 2), port 1024
+          systemd.user.services.wayland-vsock-proxy = {
+            description = "Wayland VSOCK Proxy";
+            wantedBy = [ "default.target" ];
+            serviceConfig = {
+              ExecStart = "${pkgs.socat}/bin/socat UNIX-LISTEN:%t/wayland-1,fork VSOCK-CONNECT:2:1024";
+              Restart = "always";
+            };
+          };
+
+          environment.variables = {
+            WAYLAND_DISPLAY = "wayland-1";
+          };
+
           documentation.enable = false;
           documentation.nixos.enable = false;
           documentation.man.enable = false;
