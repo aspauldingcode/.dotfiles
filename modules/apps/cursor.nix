@@ -18,6 +18,7 @@
       value = { source = "${extPath}/${dir}"; };
     }) dirs))) {} sharedExtensions;
   in {
+    imports = [ ./_vscode-common.nix ];
     options.dendritic.apps.cursor = {
       enable = lib.mkEnableOption "Cursor IDE";
     };

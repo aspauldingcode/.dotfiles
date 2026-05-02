@@ -47,7 +47,12 @@
     };
 
     microvm = {
-      url = "github:microvm-nix/microvm.nix";
+      url = "path:./subrepos/microvm.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    wawona = {
+      url = "github:Wawona/Wawona/development";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

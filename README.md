@@ -44,14 +44,3 @@ nix run github:aspauldingcode/.dotfiles#uninstall
 ```
 
 This will safely present a terminal UI to confirm, uninstall `nix-darwin`, delete all system generations, and garbage collect to free up space.
-## Roadmap & Future Considerations
-
-### 🚀 Unified System Management (`system-manager`)
-This repository currently uses **nix-darwin** for macOS system settings and **Home Manager** for user-level configuration. 
-
-In the future, we aim to migrate system-level logic (global packages, `/etc` files) to **[system-manager](subrepos/system-manager)**. This will allow for:
-- **True Universal Config:** The same system-level modules running across macOS, NixOS, and generic Linux distros.
-- **Minimal Glue:** Reducing `nix-darwin` to only handle macOS-specific hardware/UI quirks (TouchID, Dock, etc.).
-- **Consistent Environment:** Ensuring that global binaries and system-wide shell environments are identical regardless of the host OS.
-
-*Note: This migration is currently on hold until `system-manager`'s Darwin support matures further.*

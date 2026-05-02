@@ -1,5 +1,6 @@
 {
   flake.modules.homeManager.apps = { pkgs, inputs, config, lib, ... }: {
+    /* 
     programs.librewolf = {
       enable = lib.mkForce true;
       profiles.default = {
@@ -33,6 +34,7 @@
         };
       };
     };
+    */
 
     home.activation.removeLibreWolfUserJS = lib.hm.dag.entryBefore ["checkLinkTargets"] ''
       rm -f "${config.home.homeDirectory}/Library/Application Support/LibreWolf/Profiles/default/user.js"
@@ -49,8 +51,8 @@
 
     home.packages = with pkgs; [
       # IDEs
-      jetbrains.clion
-      jetbrains.idea
+      # jetbrains.clion
+      # jetbrains.idea
       # Dev tools
       gh                  # GitHub CLI
       ghidra              # Reverse engineering

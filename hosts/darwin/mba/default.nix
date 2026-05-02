@@ -1,17 +1,27 @@
-{ inputs, lib, ... }:
+{ inputs, pkgs, lib, ... }:
 
 {
   imports = [
     # 1. Base identity and platform
+    inputs.determinate-nix.darwinModules.default
     {
       nixpkgs.hostPlatform = "aarch64-darwin";
       nixpkgs.config.allowUnfree = true;
       nixpkgs.overlays = [ 
         inputs.self.overlays.default 
+        inputs.wawona.overlays.default
       ];
       system.stateVersion = 5;
-      
-      nix.enable = false; # Let determinate manage it
+      documentation.enable = lib.mkForce false;
+      documentation.man.enable = lib.mkForce false;
+      documentation.doc.enable = lib.mkForce false;
+      documentation.info.enable = false;
+
+      environment.systemPackages = [
+        pkgs.wawona
+      ];
+
+      nix.enable = false;
       nix.settings = {
         experimental-features = [ "nix-command" "flakes" ];
         warn-dirty = false;
@@ -28,6 +38,7 @@
           "cache.flakehub.com-10:2GqeNlIp6AKp4EF2MVbE1kBOp9iBSyo0UPR9KoR0o1Y="
         ];
         netrc-file = "/nix/var/determinate/netrc";
+        trusted-users = [ "@wheel" "root" "8amps" ];
       };
       
       security.pam.services.sudo_local.touchIdAuth = true;
@@ -36,6 +47,7 @@
       users.users."8amps" = {
         name = "8amps";
         home = "/Users/8amps";
+        shell = pkgs.zsh;
       };
     }
 
@@ -48,6 +60,7 @@
     inputs.self.modules.darwin.styling
     inputs.self.modules.darwin.mas
     inputs.self.modules.darwin.wallpaper
+    inputs.self.modules.darwin.microvm
 
     # 4. Configure Home Manager
     {
@@ -55,7 +68,25 @@
       home-manager.useUserPackages = true;
       home-manager.backupFileExtension = lib.mkForce "backup";
       home-manager.extraSpecialArgs = { inherit inputs; };
-      home-manager.users."8amps" = {
+      home-manager.users."8amps" = { config, ... }: {
+        gtk.gtk4.theme = null;
+        manual.manpages.enable = false;
+        manual.html.enable = false;
+        manual.json.enable = false;
+
+        # Wawona LaunchAgent
+        launchd.agents.wawona = {
+          enable = true;
+          config = {
+            Label = "com.aspaulding.wawona";
+            ProgramArguments = [ "${pkgs.wawona}/bin/wawona" ];
+            KeepAlive = true;
+            RunAtLoad = true;
+            StandardOutPath = "${config.home.homeDirectory}/.cache/wawona.log";
+            StandardErrorPath = "${config.home.homeDirectory}/.cache/wawona.err";
+          };
+        };
+
         imports = [
           inputs.self.modules.homeManager.shell
           inputs.self.modules.homeManager.editor
@@ -86,6 +117,10 @@
         dendritic.apps.beeper.enable = true;
         dendritic.apps.jetbrains.enable = true;
         dendritic.wallpaper.enable = true;
+        
+        programs.zsh.shellAliases = {
+          microvm-run = "${inputs.self.nixosConfigurations.microvm.config.microvm.runner.vfkit}/bin/microvm-run";
+        };
 
         # ─────────────────────────────────────────────────────────────
       };

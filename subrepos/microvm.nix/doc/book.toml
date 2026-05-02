@@ -1,0 +1,8 @@
+[book]
+authors = ["Astro"]
+language = "en"
+src = "src"
+title = "microvm.nix"
+
+[output.html]
+git-repository-url = "https://github.com/microvm-nix/microvm.nix"

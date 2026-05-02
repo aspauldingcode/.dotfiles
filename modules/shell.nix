@@ -2,15 +2,12 @@
   flake.modules.nixos.shell =
     { pkgs, lib, options, ... }:
     {
-      # TODO: Revert to default behavior once https://github.com/NixOS/nixpkgs/issues/513543 is resolved.
-      programs = lib.optionalAttrs (options ? programs && options.programs ? zsh) {
-        zsh.enable = true;
-      };
- 
-      users = lib.optionalAttrs (options ? users && options.users ? defaultUserShell && options ? programs && options.programs ? zsh) {
+      programs.zsh.enable = true;
+
+      users = lib.optionalAttrs (options ? users && options.users ? defaultUserShell) {
         defaultUserShell = pkgs.zsh;
       };
- 
+
       environment = {
         systemPackages = [
           pkgs.nh
@@ -18,16 +15,15 @@
         ];
       } // (lib.optionalAttrs (options ? environment && options.environment ? shells) {
         shells = [ pkgs.zsh ];
-      }) // (lib.optionalAttrs (options ? environment && options.environment ? binsh) {
-        binsh = "${pkgs.zsh}/bin/zsh";
       });
     };
 
   flake.modules.darwin.shell =
     { pkgs, inputs, ... }:
     {
-      # TODO: Revert to default behavior once https://github.com/NixOS/nixpkgs/issues/513543 is resolved.
       programs.zsh.enable = true;
+      environment.shells = [ pkgs.zsh ];
+      
       environment.systemPackages = [
         pkgs.nh
         pkgs.yazi
@@ -36,16 +32,26 @@
     };
 
   flake.modules.homeManager.shell =
-    { pkgs, config, lib, ... }:
+    { pkgs, config, lib, inputs, ... }:
     {
       programs.zsh = {
         enable = true;
-        # TODO: Revert to `package = pkgs.zsh;` once https://github.com/NixOS/nixpkgs/issues/513543 is resolved.
-        # Currently using default macOS zsh via emptyDirectory to avoid the issue.
-        package = pkgs.emptyDirectory;
         enableCompletion = true;
-        autosuggestion.enable = false;
-        syntaxHighlighting.enable = false;
+        autosuggestion.enable = true;
+        syntaxHighlighting.enable = true;
+        # Use zsh from nixpkgs to override macOS default
+        package = pkgs.zsh;
+        
+        history = {
+          size = 10000;
+          path = "${config.home.homeDirectory}/.zsh_history";
+        };
+
+        initContent = ''
+          # Any custom zsh config can go here
+          bindkey '^[[A' up-line-or-search
+          bindkey '^[[B' down-line-or-search
+        '';
       };
 
       programs.starship = {
@@ -60,7 +66,7 @@
           nix_shell.disabled = false;
 
           # Performance optimizations
-          command_timeout = 500; # Restore default timeout
+          command_timeout = 2000; # Increased to 2s to prevent Swift/Swiftly timeouts
           scan_timeout = 100;    # Default 30ms is too low for dirs with nix store symlinks
 
           # Clean up the directory module
@@ -102,6 +108,7 @@
 
       home.packages = with pkgs; [
         nh
+        zsh-completions
       ];
     };
 }

@@ -11,7 +11,24 @@
     stylix = {
       enable = true;
       polarity = "dark";
-      base16Scheme = pkgs.base16-schemes + "/share/themes/everforest-dark-medium.yaml";
+      base16Scheme = {
+        base00 = "2d302f";
+        base01 = "434846";
+        base02 = "5a605d";
+        base03 = "9da8a3";
+        base04 = "cad8d2";
+        base05 = "e0f0ef";
+        base06 = "ecf6f2";
+        base07 = "fcfefd";
+        base08 = "f9906f";
+        base09 = "b38a61";
+        base0A = "f0c239";
+        base0B = "8ab361";
+        base0C = "30dff3";
+        base0D = "b0a4e3";
+        base0E = "cca4e3";
+        base0F = "ca6924";
+      };
 
       fonts = {
         monospace = {
@@ -44,11 +61,6 @@
         popups = 0.95;
       };
     };
-
-    specialisation.light.configuration = {
-      stylix.polarity = lib.mkForce "light";
-      stylix.base16Scheme = lib.mkForce (pkgs.base16-schemes + "/share/themes/everforest-dark-soft.yaml");
-    };
   };
 
   # ── Darwin Styling (System-level) ─────────────────────────────
@@ -63,7 +75,24 @@
     stylix = {
       enable = true;
       polarity = "dark";
-      base16Scheme = pkgs.base16-schemes + "/share/themes/everforest-dark-medium.yaml";
+      base16Scheme = {
+        base00 = "2d302f";
+        base01 = "434846";
+        base02 = "5a605d";
+        base03 = "9da8a3";
+        base04 = "cad8d2";
+        base05 = "e0f0ef";
+        base06 = "ecf6f2";
+        base07 = "fcfefd";
+        base08 = "f9906f";
+        base09 = "b38a61";
+        base0A = "f0c239";
+        base0B = "8ab361";
+        base0C = "30dff3";
+        base0D = "b0a4e3";
+        base0E = "cca4e3";
+        base0F = "ca6924";
+      };
 
       fonts = {
         monospace = {
@@ -95,12 +124,10 @@
       stylix = {
         # We only need to define targets here; the base theme is inherited from system
         enable = true;
-        polarity = "dark";
-        base16Scheme = pkgs.base16-schemes + "/share/themes/everforest-dark-medium.yaml";
 
         targets.vscode.enable = true;
         targets.ghostty.enable = true;
-        targets.librewolf.enable = false; # Use manual CSS for better Everforest control
+        targets.librewolf.enable = false; # Use manual CSS for better DanQing control
       };
 
       # ── Stylix-Themed LibreWolf UI ──────────────────────────────
@@ -195,13 +222,12 @@
         };
       };
 
-      # ── GTK Theming (Linux only) ────────────────────────────────
-      gtk = lib.mkMerge [
-        {gtk4.theme = null;} 
-        (lib.mkIf (!isDarwin) {
-          enable = true;
-        })
-      ];
+      # ── GTK Theming ─────────────────────────────────────────────
+      gtk = {
+        gtk4.theme = lib.mkForce null; # Silence evaluation warning on all platforms
+        enable = lib.mkDefault (!isDarwin);
+        gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
+      };
 
       # ── Qt Theming (Linux only) ─────────────────────────────────
       qt = lib.mkIf (!isDarwin) {
@@ -210,7 +236,7 @@
       };
 
       # ── Terminal env ────────────────────────────────────────────
-      programs.zsh.envExtra = ''
+      programs.zsh.initContent = ''
         export COLORTERM=truecolor
       '';
     };

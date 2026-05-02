@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 set -euo pipefail
 
 # Regenerate NixOS hardware-configuration.nix into this repo per host.
@@ -14,7 +14,7 @@ fi
 HOST="$(hostnamectl --static 2>/dev/null || hostname -s || hostname)"
 
 # Resolve repo root relative to this script
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 TARGET_DIR="${REPO_ROOT}/hardware"
 mkdir -p "${TARGET_DIR}"

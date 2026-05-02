@@ -12,6 +12,7 @@
       users.users."8amps" = {
         isNormalUser = true;
         extraGroups = [ "wheel" ];
+        shell = pkgs.zsh;
       };
  
       # Dummy filesystem for CI verification
@@ -45,7 +46,7 @@
           inputs.self.modules.homeManager.styling
           inputs.self.modules.homeManager.apps
           inputs.self.modules.homeManager.ghostty
-          inputs.self.modules.homeManager.antigravity
+          inputs.self.modules.homeManager.nixvim-ide
           inputs.self.modules.homeManager.wallpaper
           inputs.self.modules.homeManager.spotify
           inputs.self.modules.homeManager.vesktop
@@ -56,7 +57,7 @@
         
         # ── Feature Toggles ─────────────────────────────────────────
         dendritic.apps.ghostty.enable = true;
-        dendritic.apps.antigravity.enable = true;
+        dendritic.apps.nixvim-ide.enable = true;
         # ─────────────────────────────────────────────────────────────
       };
     }

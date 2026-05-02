@@ -20,7 +20,7 @@
         lib.flatten (lib.mapAttrsToList (name: type:
           let path = dir + "/${name}"; in
           if type == "directory" then getFiles path
-          else if type == "regular" && lib.hasSuffix ".nix" name && name != "default.nix" then [ path ]
+          else if type == "regular" && lib.hasSuffix ".nix" name && name != "default.nix" && !(lib.hasPrefix "_" name) then [ path ]
           else []
         ) (builtins.readDir dir));
     in

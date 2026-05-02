@@ -1,0 +1,71 @@
+{ pkgs, lib, config, ... }:
+
+{
+  config = lib.mkIf config.microvm.guest.enable {
+    assertions = [
+      {assertion = (config.microvm.writableStoreOverlay != null) -> (!config.nix.optimise.automatic && !config.nix.settings.auto-optimise-store);
+       message = ''
+         `nix.optimise.automatic` and `nix.settings.auto-optimise-store` do not work with `microvm.writableStoreOverlay`.
+       '';}];
+
+
+    boot.loader.grub.enable = false;
+    # boot.initrd.systemd.enable = lib.mkDefault true;
+    boot.initrd.kernelModules = [
+      "virtio_mmio"
+      "virtio_pci"
+      "virtio_blk"
+      "9pnet_virtio"
+      "9p"
+      "virtiofs"
+    ] ++ lib.optionals (
+      pkgs.stdenv.targetPlatform.system == "x86_64-linux" &&
+      config.microvm.hypervisor == "firecracker"
+    ) [
+      # Keyboard controller that can receive CtrlAltDel
+      "i8042"
+    ] ++ lib.optionals (config.microvm.writableStoreOverlay != null) [
+      "overlay"
+    ];
+
+    microvm.kernelParams = let
+      # When a store disk is used, we can drop references to the packed contents as the squashfs/erofs contains all paths.
+      toplevel = if config.microvm.storeOnDisk then
+        builtins.unsafeDiscardStringContext config.system.build.toplevel
+      else
+        config.system.build.toplevel;
+    in config.boot.kernelParams ++ [
+      "init=${toplevel}/init"
+    ];
+
+    # modules that consume boot time but have rare use-cases
+    boot.blacklistedKernelModules = [
+      "rfkill" "intel_pstate"
+    ] ++ lib.optional (!config.microvm.graphics.enable) "drm";
+
+    systemd =
+      let
+        # nix-daemon works only with a writable /nix/store
+        enableNixDaemon = config.microvm.writableStoreOverlay != null;
+      in {
+        services.nix-daemon.enable = lib.mkDefault enableNixDaemon;
+        sockets.nix-daemon.enable = lib.mkDefault enableNixDaemon;
+
+        # consumes a lot of boot time
+        services.mount-pstore.enable = false;
+
+        # just fails in the usual usage of microvm.nix
+        generators = { systemd-gpt-auto-generator = "/dev/null"; };
+      };
+
+    # Set /etc/machine-id from machineId if provided
+    # This ensures the guest machine-id matches the UUID passed to machined and SMBIOS
+    environment.etc."machine-id" = lib.mkIf (config.microvm.machineId != null) {
+      text = lib.replaceString "-" "" config.microvm.machineId + "\n";
+    };
+    # Generate hostId from machine-id like systemd would do
+    networking.hostId = lib.mkIf (config.microvm.machineId != null) (lib.mkDefault (
+      builtins.substring 0 8 config.microvm.machineId
+    ));
+  };
+}
