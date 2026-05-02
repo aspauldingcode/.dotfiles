@@ -130,10 +130,10 @@ in
           CMD+=(--restful-uri "unix:///$SOCKET_ABS")
         ''}
         ${lib.optionalString (vsock.cid != null) ''
-          # Directly connect guest vsock 1024 to the macOS Wawona Wayland socket.
-          # Wawona uses /tmp/wawona-$UID/wayland-0. vfkit "listen" mode allows the guest
-          # to initiate the connection, and vfkit will natively dial this UNIX socket.
-          VSOCK_ABS="/tmp/wawona-$(id -u)/wayland-0"
+          # vfkit "listen" mode allows the guest to initiate the connection.
+          # The host waypipe client will create and listen on this UNIX socket.
+          VSOCK_ABS="${hostName}-vsock.sock"
+          [[ "$VSOCK_ABS" != /* ]] && VSOCK_ABS="$PWD/$VSOCK_ABS"
           CMD+=(--device "virtio-vsock,port=1024,socketURL=''${VSOCK_ABS},listen")
         ''}
         exec "''${CMD[@]}"

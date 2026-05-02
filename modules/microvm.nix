@@ -57,10 +57,10 @@
 
           # Guest-side Wayland proxy: listens on /run/user/1000/wayland-1 and connects to VSOCK Host (CID 2), port 1024
           systemd.user.services.wayland-vsock-proxy = {
-            description = "Wayland VSOCK Proxy";
+            description = "Wayland Waypipe VSOCK Proxy";
             wantedBy = [ "default.target" ];
             serviceConfig = {
-              ExecStart = "${pkgs.socat}/bin/socat UNIX-LISTEN:%t/wayland-1,fork VSOCK-CONNECT:2:1024";
+              ExecStart = "${pkgs.waypipe}/bin/waypipe --display wayland-1 --vsock -s 2:1024 server -- sleep infinity";
               Restart = "always";
             };
           };

@@ -87,6 +87,28 @@
           };
         };
 
+        # Waypipe LaunchAgent (Host-side proxy for Wawona)
+        launchd.agents.waypipe = {
+          enable = true;
+          config = {
+            Label = "com.aspaulding.waypipe";
+            ProgramArguments = [
+              "${pkgs.wawona}/Applications/Wawona.app/Contents/MacOS/waypipe"
+              "-s"
+              "${config.home.homeDirectory}/.dotfiles/dendritic-vm-vsock.sock"
+              "client"
+            ];
+            EnvironmentVariables = {
+              WAYLAND_DISPLAY = "wayland-0";
+              XDG_RUNTIME_DIR = "/tmp/wawona-503";
+            };
+            KeepAlive = true;
+            RunAtLoad = true;
+            StandardOutPath = "${config.home.homeDirectory}/.cache/waypipe.log";
+            StandardErrorPath = "${config.home.homeDirectory}/.cache/waypipe.err";
+          };
+        };
+
         imports = [
           inputs.self.modules.homeManager.shell
           inputs.self.modules.homeManager.editor
