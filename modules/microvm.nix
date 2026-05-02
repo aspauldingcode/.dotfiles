@@ -24,7 +24,7 @@
         ({ lib, pkgs, ... }: {
           nixpkgs.hostPlatform = "aarch64-linux";
           nixpkgs.config.allowUnfree = true;
-          networking.hostName = "dendritic-vm";
+          networking.hostName = "dendritic-vm2";
           system.stateVersion = "24.11";
           
           users.users."8amps" = {
