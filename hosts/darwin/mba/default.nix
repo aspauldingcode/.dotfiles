@@ -11,7 +11,10 @@
         inputs.self.overlays.default 
         inputs.wawona.overlays.default
       ];
+      system.primaryUser = "8amps";
+      networking.hostName = "mba";
       system.stateVersion = 5;
+      system.defaults.dock.show-recents = false;
       documentation.enable = lib.mkForce false;
       documentation.man.enable = lib.mkForce false;
       documentation.doc.enable = lib.mkForce false;
@@ -19,6 +22,7 @@
 
       environment.systemPackages = [
         pkgs.wawona
+        pkgs.socat
       ];
 
       nix.enable = false;
@@ -61,6 +65,10 @@
     inputs.self.modules.darwin.mas
     inputs.self.modules.darwin.wallpaper
     inputs.self.modules.darwin.microvm
+    inputs.self.modules.darwin.dock
+    inputs.self.modules.darwin.ghostty
+    inputs.self.modules.darwin.cursor
+    inputs.self.modules.darwin.apps
 
     # 4. Configure Home Manager
     {
@@ -94,8 +102,10 @@
             Label = "com.aspaulding.waypipe";
             ProgramArguments = [
               "${inputs.wawona.packages.${pkgs.stdenv.hostPlatform.system}.wawona-macos}/Applications/Wawona.app/Contents/MacOS/waypipe"
+              "--display"
+              "/tmp/wawona-503/wayland-0"
               "-s"
-              "${config.home.homeDirectory}/.dotfiles/dendritic-vm-vsock.sock"
+              "/etc/nix-darwin/waypipe-wawona.sock"
               "client"
             ];
             EnvironmentVariables = {
@@ -106,6 +116,25 @@
             RunAtLoad = true;
             StandardOutPath = "${config.home.homeDirectory}/.cache/waypipe.log";
             StandardErrorPath = "${config.home.homeDirectory}/.cache/waypipe.err";
+          };
+        };
+
+        # Bridge LaunchAgent: connects the VSOCK socket from vfkit to the Waypipe socket
+        launchd.agents.waypipe-bridge = {
+          enable = true;
+          config = {
+            Label = "com.aspaulding.waypipe-bridge";
+            ProgramArguments = [
+              "${pkgs.socat}/bin/socat"
+              "UNIX-CONNECT:/etc/nix-darwin/dendritic-vm-vsock.sock"
+              "UNIX-CONNECT:/etc/nix-darwin/waypipe-wawona.sock"
+            ];
+            KeepAlive = {
+              SuccessfulExit = false;
+            };
+            RunAtLoad = true;
+            StandardOutPath = "${config.home.homeDirectory}/.cache/waypipe-bridge.log";
+            StandardErrorPath = "${config.home.homeDirectory}/.cache/waypipe-bridge.err";
           };
         };
 

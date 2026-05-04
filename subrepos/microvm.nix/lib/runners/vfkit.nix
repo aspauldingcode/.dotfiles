@@ -16,7 +16,7 @@ let
     storeOnDisk storeDisk kernel initrdPath kernelParams
     balloon devices credentialFiles vsock graphics;
 
-  inherit (microvmConfig.vfkit) extraArgs logLevel rosetta;
+  inherit (microvmConfig.vfkit) extraArgs logLevel;
 
   volumesWithLetters = withDriveLetters microvmConfig;
 
@@ -27,10 +27,6 @@ let
 
   kernelCmdLine = [ "console=${kernelConsole}" "reboot=t" "panic=-1" ] ++ kernelParams;
 
-  bootloaderArgs = [
-    "--bootloader"
-    "linux,kernel=${kernelPath},initrd=${initrdPath},cmdline=\"${builtins.concatStringsSep " " kernelCmdLine}\""
-  ];
 
   deviceArgs =
     [
@@ -64,93 +60,67 @@ let
         throw "vfkit bridge networking requires vmnet-helper which is not yet implemented. Use type = \"user\" for NAT networking."
       else
         throw "vfkit does not support ${type} networking on macOS. Use type = \"user\" for NAT networking."
-    ) interfaces)
-    ++ lib.optionals rosetta.enable (
-      let
-        rosettaArgs = builtins.concatStringsSep "," (
-          [ "rosetta" "mountTag=rosetta" ]
-          ++ lib.optional rosetta.install "install"
-          ++ lib.optional rosetta.ignoreIfMissing "ignoreIfMissing"
-        );
-      in
-      [ "--device" rosettaArgs ]
-    );
+    ) interfaces);
 
-  allArgsWithoutSocket = [
-    "${lib.getExe vfkitPkg}"
+  canShutdown = socket != null;
+
+  allArgs = [
     "--cpus" (toString vcpu)
     "--memory" (toString mem)
+    "--kernel" kernelPath
+    "--initrd" initrdPath
+    "--kernel-cmdline" (builtins.concatStringsSep " " kernelCmdLine)
   ]
-  ++ lib.optionals (logLevel != null) [
-    "--log-level" logLevel
-  ]
-  ++ lib.optionals graphics.enable [
-    "--gui"
-  ]
-  ++ bootloaderArgs
+  ++ lib.optionals (logLevel != null) [ "--log-level" logLevel ]
+  ++ lib.optionals graphics.enable [ "--gui" ]
   ++ deviceArgs
   ++ extraArgs;
 
 in
 {
+  inherit canShutdown;
   tapMultiQueue = false;
-
-  preStart = lib.optionalString (socket != null) ''
-    rm -f ${socket}
-  '' + lib.optionalString (vsock.cid != null) ''
-    rm -f ${hostName}-vsock.sock
-  '';
-
-  command =
-    if !vmHostPackages.stdenv.hostPlatform.isDarwin
-    then throw "vfkit only works on macOS (Darwin). Current host: ${system}"
-    else if vmHostPackages.stdenv.hostPlatform.isAarch64 != pkgs.stdenv.hostPlatform.isAarch64
-    then throw "vfkit requires matching host and guest architectures. Host: ${system}, Guest: ${pkgs.stdenv.hostPlatform.system}"
-    else if user != null
-    then throw "vfkit does not support changing user"
-    else if balloon
-    then throw "vfkit does not support memory ballooning"
-    else if rosetta.enable && !vmHostPackages.stdenv.hostPlatform.isAarch64
-    then throw "Rosetta requires Apple Silicon (aarch64-darwin). Current host: ${system}"
-    else if devices != []
-    then throw "vfkit does not support device passthrough"
-    else if credentialFiles != {}
-    then throw "vfkit does not support credentialFiles"
-    else if vsock.cid != null && false # vsock handled below
-    then throw "vfkit vsock support not yet implemented in microvm.nix"
-    else
-      let
-        vfkitCmd = lib.concatStringsSep " " (map lib.escapeShellArg allArgsWithoutSocket);
-      in
-      "bash -c ${lib.escapeShellArg ''
-        CMD=(${vfkitCmd})
-        ${lib.optionalString (socket != null) ''
-          SOCKET_ABS=${lib.escapeShellArg socket}
-          [[ "$SOCKET_ABS" != /* ]] && SOCKET_ABS="$PWD/$SOCKET_ABS"
-          CMD+=(--restful-uri "unix:///$SOCKET_ABS")
-        ''}
-        ${lib.optionalString (vsock.cid != null) ''
-          # vfkit "listen" mode allows the guest to initiate the connection.
-          # The host waypipe client will create and listen on this UNIX socket.
-          VSOCK_ABS="${hostName}-vsock.sock"
-          [[ "$VSOCK_ABS" != /* ]] && VSOCK_ABS="$PWD/$VSOCK_ABS"
-          CMD+=(--device "virtio-vsock,port=1024,socketURL=''${VSOCK_ABS},listen")
-        ''}
-        exec "''${CMD[@]}"
-      ''}";
-
-  canShutdown = socket != null;
-
-  shutdownCommand =
-    if socket != null
-    then ''
-      SOCKET_ABS="${lib.escapeShellArg socket}"
-      [[ "$SOCKET_ABS" != /* ]] && SOCKET_ABS="$PWD/$SOCKET_ABS"
-      echo '{"state": "Stop"}' | ${lib.getExe vmHostPackages.socat} - "UNIX-CONNECT:$SOCKET_ABS"
-    ''
-    else throw "Cannot shutdown without socket";
-
+  requiresMacvtapAsFds = false;
   supportsNotifySocket = false;
 
-  requiresMacvtapAsFds = false;
+  preStart = lib.optionalString (socket != null) "rm -f ${socket}\n";
+
+  command =
+    let
+      # Validation
+      check = cond: msg: if cond then throw msg else null;
+      errors = [
+        (check (!vmHostPackages.stdenv.hostPlatform.isDarwin) "vfkit only works on macOS (Darwin)")
+        (check (vmHostPackages.stdenv.hostPlatform.isAarch64 != pkgs.stdenv.hostPlatform.isAarch64) "Architecture mismatch")
+        (check (user != null) "vfkit does not support changing user")
+        (check (balloon) "vfkit does not support memory ballooning")
+        (check (devices != []) "vfkit does not support device passthrough")
+        (check (credentialFiles != {}) "vfkit does not support credentialFiles")
+      ];
+      valid = lib.all (e: e == null) errors;
+    in
+    if !valid then lib.findFirst (e: e != null) null errors
+    else
+      let
+        vfkitArgs = lib.concatStringsSep " " (map lib.escapeShellArg allArgs);
+      in
+      "bash -c " + lib.escapeShellArg ''
+        ARGS=(${vfkitArgs})
+        ${lib.optionalString (socket != null) ''
+          S=${lib.escapeShellArg socket}
+          [[ "$S" != /* ]] && S="$PWD/$S"
+          ARGS+=(--restful-uri "unix://$S")
+        ''}
+        ${lib.optionalString (vsock.cid != null) ''
+          V="${hostName}-vsock.sock"
+          [[ "$V" != /* ]] && V="$PWD/$V"
+          ARGS+=(--device "virtio-vsock,port=1024,socketURL=$V")
+        ''}
+        exec ${lib.getExe vfkitPkg} "''${ARGS[@]}"
+      '';
+
+  shutdownCommand = lib.optionalString canShutdown ''
+    S="${socket}"; [[ "$S" != /* ]] && S="$PWD/$S"
+    echo '{"state": "Stop"}' | ${lib.getExe vmHostPackages.socat} - "UNIX-CONNECT:$S"
+  '';
 }

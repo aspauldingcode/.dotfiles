@@ -79,7 +79,7 @@
       };
 
       home.sessionVariables = {
-        NH_FLAKE = "${config.home.homeDirectory}/.dotfiles" + (lib.optionalString pkgs.stdenv.isDarwin "#mba");
+        NH_FLAKE = (if pkgs.stdenv.isDarwin then "/etc/nix-darwin#mba" else "/etc/nixos");
       };
 
       # Yazi minimal configuration with ANSI inheritance
@@ -92,6 +92,21 @@
             show_hidden = true;
             sort_by = "natural";
           };
+        };
+        plugins = {
+          mount = pkgs.fetchzip {
+            url = "https://github.com/yazi-rs/plugins/archive/main.tar.gz";
+            sha256 = "197j219p7x2lxf4fdpdmp9ycd16yl8p22bv5a4257d9yc4ikpxxj";
+          } + "/mount.yazi";
+        };
+        keymap = {
+          manager.prepend_keymap = [
+            {
+              on = [ "M" ];
+              run = "plugin mount";
+              desc = "Mount disk";
+            }
+          ];
         };
       };
 
@@ -109,6 +124,7 @@
       home.packages = with pkgs; [
         nh
         zsh-completions
+        # (import ./pkgs/_fancy-cat.nix { inherit pkgs; }) # Takes too long
       ];
     };
 }

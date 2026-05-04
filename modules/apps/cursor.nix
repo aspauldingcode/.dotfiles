@@ -38,4 +38,11 @@
       };
     };
   };
+
+  # Dock registration: Cursor owns its dock entry
+  flake.modules.darwin.cursor = { pkgs, ... }: {
+    dendritic.dock.apps = [
+      "${if pkgs.stdenv.isDarwin then pkgs.code-cursor else pkgs.code-cursor-fhs}/Applications/Cursor.app"
+    ];
+  };
 }

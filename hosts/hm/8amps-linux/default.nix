@@ -24,12 +24,14 @@
     inputs.self.modules.homeManager.wallpaper
     inputs.self.modules.homeManager.spotify
     inputs.self.modules.homeManager.vesktop
+    inputs.self.modules.homeManager.sway
     
     # External modules
 
     {
       # ── Feature Toggles ─────────────────────────────────────────
-      dendritic.apps.ghostty.enable = false;
+      dendritic.apps.ghostty.enable = true;
+      dendritic.apps.sway.enable = true;
       dendritic.apps.antigravity.enable = false;
       # ─────────────────────────────────────────────────────────────
     }

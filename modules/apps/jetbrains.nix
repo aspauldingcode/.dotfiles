@@ -280,6 +280,15 @@
       </application>
     '';
 
+    googleJavaFormatXml = pkgs.writeText "google-java-format.xml" ''
+      <application>
+        <component name="GoogleJavaFormatSettings">
+          <option name="enabled" value="true" />
+          <option name="style" value="GOOGLE" />
+        </component>
+      </application>
+    '';
+
     # Directories to skip (not actual IDE products)
     skipDirs = "Daemon|Local|consentOptions|bl|crl";
   in {
@@ -315,6 +324,7 @@
             $DRY_RUN_CMD cp -f "${consoleFontXml}" "$product_dir/options/console-font.xml"
             $DRY_RUN_CMD cp -f "${terminalFontXml}" "$product_dir/options/terminal-font.xml"
             $DRY_RUN_CMD cp -f "${keymapXml}" "$product_dir/options/keymap.xml"
+            $DRY_RUN_CMD cp -f "${googleJavaFormatXml}" "$product_dir/options/google-java-format.xml"
           done
         fi
       '';

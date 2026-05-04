@@ -222,4 +222,11 @@
       home.packages = [ config.programs.ghostty.package ];
     };
   };
+
+  # Dock registration: Ghostty owns its dock entry
+  flake.modules.darwin.ghostty = { pkgs, ... }: {
+    dendritic.dock.apps = [
+      "${if pkgs.stdenv.isDarwin then pkgs.ghostty-bin else pkgs.ghostty}/Applications/Ghostty.app"
+    ];
+  };
 }

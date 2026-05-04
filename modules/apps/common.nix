@@ -61,4 +61,11 @@
       fastfetch           # System info
     ];
   };
+
+  # Dock registration: Brave owns its dock entry
+  flake.modules.darwin.apps = { pkgs, ... }: {
+    dendritic.dock.apps = [
+      "${pkgs.brave}/Applications/Brave Browser.app"
+    ];
+  };
 }

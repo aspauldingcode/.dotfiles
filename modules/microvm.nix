@@ -1,4 +1,5 @@
 { inputs, ... }:
+# UNIQUE_COMMENT_TO_FORCE_HASH_CHANGE_V1
 {
   config = {
     # ── Darwin Specific Module ──────────────────────────────────
@@ -34,8 +35,9 @@
           };
           services.getty.autologinUser = "8amps";
 
-          microvm = {
+            microvm = {
             hypervisor = "vfkit";
+            socket = "/Users/8amps/.local/share/microvm/dendritic-vm.sock";
             vcpu = 2; mem = 2047;
             vsock.cid = 3;
             shares = [{ proto = "virtiofs"; tag = "ro-store"; source = "/nix/store"; mountPoint = "/nix/.ro-store"; }];
@@ -55,19 +57,30 @@
           boot.initrd.systemd.enable = false;
           boot.kernelPackages = pkgs.linuxPackages;
 
-          # Guest-side Wayland proxy: listens on /run/user/1000/wayland-1 and connects to VSOCK Host (CID 2), port 1024
-          systemd.user.services.wayland-vsock-proxy = {
-            description = "Wayland Waypipe VSOCK Proxy";
-            wantedBy = [ "default.target" ];
-            serviceConfig = {
-              ExecStart = "${pkgs.waypipe}/bin/waypipe --display wayland-1 --vsock -s 2:1024 server -- sleep infinity";
-              Restart = "always";
-            };
-          };
-
+          # Configure Sway for software rendering
           environment.variables = {
-            WAYLAND_DISPLAY = "wayland-1";
+            WLR_RENDERER = "pixman";
+            WLR_NO_HARDWARE_CURSORS = "1";
+            # Allow sway to run without a seat/logind if needed (common in microvms)
+            WLR_BACKENDS = "wayland"; 
           };
+          programs.sway.package = lib.mkForce pkgs.sway;
+          environment.systemPackages = [
+            (lib.hiPrio (pkgs.writeShellScriptBin "sway" ''
+              # Ensure XDG_RUNTIME_DIR is set (it should be, but let's be safe)
+              export XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+              echo "Connecting to macOS host over VSOCK port 1024... (XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR)"
+              
+              # Ensure the runtime directory exists
+              mkdir -p "$XDG_RUNTIME_DIR"
+              
+              exec ${pkgs.waypipe}/bin/waypipe \
+                --display "$XDG_RUNTIME_DIR/wayland-1" \
+                --socket vsock:2:1024 \
+                server \
+                -- ${pkgs.sway}/bin/sway "$@"
+            ''))
+          ];
 
           documentation.enable = false;
           documentation.nixos.enable = false;

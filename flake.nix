@@ -99,12 +99,18 @@
               text = ''
                 set -e
                 
-                TARGET_DIR="$HOME/.dotfiles"
                 REPO_URL="git@github.com:aspauldingcode/.dotfiles.git"
+
+                # Determine the system config directory based on OS
+                if [[ "$OSTYPE" == "darwin"* ]]; then
+                   TARGET_DIR="/etc/nix-darwin"
+                else
+                   TARGET_DIR="/etc/nixos"
+                fi
 
                 if [ ! -d "$TARGET_DIR" ]; then
                   echo "Cloning $REPO_URL to $TARGET_DIR..."
-                  git clone "$REPO_URL" "$TARGET_DIR"
+                  sudo git clone "$REPO_URL" "$TARGET_DIR"
                 fi
 
                 cd "$TARGET_DIR"

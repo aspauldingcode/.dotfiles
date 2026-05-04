@@ -1,4 +1,13 @@
-{ pkgs, lib, ... }: {
+{ pkgs, lib, ... }: 
+let
+  modern-pdf-preview = pkgs.vscode-utils.extensionFromVscodeMarketplace {
+    publisher = "chocolatedesue";
+    name = "modern-pdf-preview";
+    version = "1.5.9";
+    sha256 = "0qwzwaynf7wb7lfaaimxlr0n1ngrc68q15mv6hdjpffp52yq7rbh";
+  };
+in
+{
   # ── Shared settings & extensions for VSCode, Cursor, and Antigravity ──
   programs.vscode = {
     enable = true;
@@ -12,6 +21,9 @@
       "terminal.integrated.fontSize" = lib.mkForce 12;
       "window.zoomLevel" = 0;
       "swiftformat.path" = "${pkgs.swiftformat}/bin/swiftformat";
+      "workbench.editorAssociations" = {
+        "*.pdf" = "chocolatedesue.modern-pdf-preview";
+      };
       "[nix]" = {
         "editor.defaultFormatter" = "jnoortheen.nix-ide";
         "editor.formatOnSave" = true;
@@ -36,6 +48,18 @@
       "[s]" = {
         "editor.formatOnSave" = true;
       };
+      "[java]" = {
+        "editor.defaultFormatter" = "redhat.java";
+        "editor.formatOnSave" = true;
+      };
+      "java.format.settings.url" = "${./eclipse-java-google-style.xml}";
+      "java.format.settings.profile" = "GoogleStyle";
+      "java.format.enabled" = true;
+      "tinymist.preview.refresh" = "onType";
+      "[typst]" = {
+        "editor.defaultFormatter" = "myriad-dreamin.tinymist";
+        "editor.formatOnSave" = true;
+      };
       "C_cpp.intelliSenseEngine" = "disabled";
     };
 
@@ -53,6 +77,8 @@
       tamasfe.even-better-toml
       ms-vscode-remote.remote-ssh
       ms-vscode.cpptools
+      modern-pdf-preview
+      myriad-dreamin.tinymist
     ];
   };
 }

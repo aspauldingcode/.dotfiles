@@ -32,8 +32,8 @@
 
       fonts = {
         monospace = {
-          package = pkgs.nerd-fonts.monaspace;
-          name = "MonaspiceNe Nerd Font Mono";
+          package = pkgs.maple-mono.NF;
+          name = "Maple Mono NF";
         };
         sansSerif = {
           package = pkgs.inter;
@@ -96,8 +96,8 @@
 
       fonts = {
         monospace = {
-          package = pkgs.nerd-fonts.monaspace;
-          name = "MonaspiceNe Nerd Font Mono";
+          package = pkgs.maple-mono.NF;
+          name = "Maple Mono NF";
         };
         sansSerif = {
           package = pkgs.inter;

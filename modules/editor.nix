@@ -62,7 +62,7 @@
             "bash" "c" "cpp" "css" "html" "java" "javascript"
             "json" "lua" "markdown" "markdown_inline" "nix"
             "python" "rust" "swift" "toml" "typescript" "tsx"
-            "vim" "vimdoc" "yaml" "objc"
+            "vim" "vimdoc" "yaml" "objc" "typst"
           ];
         };
       };
@@ -81,8 +81,21 @@
           # C / C++ / Objective-C
           clangd.enable = true;
           # Rust (handled by rustaceanvim, do NOT enable rust_analyzer here)
-          # Java
-          jdtls.enable = true;
+          # Java — jdtls with DAP debug support enabled on attach
+          jdtls = {
+            enable = true;
+            # Pass the java-debug plugin JAR so jdtls can handle vscode.java.startDebugSession
+            extraOptions.init_options.bundles = [
+              "${pkgs.vscode-extensions.vscjava.vscode-java-debug}/share/vscode/extensions/vscjava.vscode-java-debug/server/com.microsoft.java.debug.plugin-0.53.2.jar"
+            ];
+            # After jdtls attaches: register DAP + auto-discover main classes
+            onAttach.function = ''
+              require('jdtls').setup_dap({ hotcodereplace = 'auto' })
+              require('jdtls.dap').setup_dap_main_class_configs()
+            '';
+          };
+          # Typst
+          tinymist.enable = true;
           # Lua
           lua_ls.enable = true;
           # HTML / CSS / JSON
@@ -125,14 +138,45 @@
       plugins.blink-cmp = {
         enable = true;
         settings = {
-          keymap.preset = "default";
+          # Tab accepts, Esc cancels, Enter does NOT complete
+          keymap = {
+            preset = "none";
+            "<Tab>" = [ "select_and_accept" "snippet_forward" "fallback" ];
+            "<S-Tab>" = [ "snippet_backward" "fallback" ];
+            "<CR>" = [ "fallback" ];  # Enter types a newline only, never completes
+            "<Esc>" = [ "hide" "fallback" ];
+            "<C-Space>" = [ "show" "show_documentation" "hide_documentation" ];
+            "<C-e>" = [ "hide" ];
+            "<C-y>" = [ "select_and_accept" ];
+            "<Up>" = [ "select_prev" "fallback" ];
+            "<Down>" = [ "select_next" "fallback" ];
+          };
           sources = {
             default = [ "lsp" "path" "snippets" "buffer" ];
           };
           signature.enabled = true;
           completion = {
-            documentation.auto_show = true;
+            documentation = {
+              auto_show = true;
+              auto_show_delay_ms = 200;
+            };
             ghost_text.enabled = false; # Let copilot-lua handle ghost text
+            list.selection = {
+              # Don't auto-insert, just highlight — press Tab to accept
+              preselect = false;
+              auto_insert = false;
+            };
+            menu = {
+              # Show keyboard hints in the completion menu border
+              border = "rounded";
+              draw = {
+                columns = [
+                  { "__unkeyed-1" = "label"; }
+                  { "__unkeyed-2" = "label_description"; gap = 1; }
+                  { "__unkeyed-3" = "kind_icon"; "__unkeyed-4" = "kind"; gap = 1; }
+                ];
+              };
+            };
           };
         };
       };
@@ -171,21 +215,21 @@
           };
           formatters_by_ft = {
             python = [ "ruff_format" "isort" ];
-            javascript = [[ "prettierd" "prettier" ]];
-            typescript = [[ "prettierd" "prettier" ]];
-            javascriptreact = [[ "prettierd" "prettier" ]];
-            typescriptreact = [[ "prettierd" "prettier" ]];
-            html = [[ "prettierd" "prettier" ]];
-            css = [[ "prettierd" "prettier" ]];
-            json = [[ "prettierd" "prettier" ]];
-            yaml = [[ "prettierd" "prettier" ]];
-            markdown = [[ "prettierd" "prettier" ]];
+            javascript = { __unkeyed-1 = "prettierd"; __unkeyed-2 = "prettier"; stop_after_first = true; };
+            typescript = { __unkeyed-1 = "prettierd"; __unkeyed-2 = "prettier"; stop_after_first = true; };
+            javascriptreact = { __unkeyed-1 = "prettierd"; __unkeyed-2 = "prettier"; stop_after_first = true; };
+            typescriptreact = { __unkeyed-1 = "prettierd"; __unkeyed-2 = "prettier"; stop_after_first = true; };
+            html = { __unkeyed-1 = "prettierd"; __unkeyed-2 = "prettier"; stop_after_first = true; };
+            css = { __unkeyed-1 = "prettierd"; __unkeyed-2 = "prettier"; stop_after_first = true; };
+            json = { __unkeyed-1 = "prettierd"; __unkeyed-2 = "prettier"; stop_after_first = true; };
+            yaml = { __unkeyed-1 = "prettierd"; __unkeyed-2 = "prettier"; stop_after_first = true; };
+            markdown = { __unkeyed-1 = "prettierd"; __unkeyed-2 = "prettier"; stop_after_first = true; };
             nix = [ "nixfmt" ];
             rust = [ "rustfmt" ];
             c = [ "clang-format" ];
             cpp = [ "clang-format" ];
             objc = [ "clang-format" ];
-            java = [ "clang-format" ];
+            java = [ "google-java-format" ];
             swift = [ "swiftformat" ];
             lua = [ "stylua" ];
             sh = [ "shfmt" ];
@@ -234,11 +278,62 @@
             end
           '';
         }
+        # Auto-show diagnostics under the cursor
+        {
+          event = [ "CursorHold" "CursorHoldI" ];
+          callback.__raw = ''
+            function()
+              -- Close popup when moving cursor or typing
+              vim.diagnostic.open_float(nil, { 
+                focus = false, 
+                scope = "cursor",
+                close_events = { "CursorMoved", "CursorMovedI", "BufHidden", "InsertCharPre", "WinLeave" }
+              })
+            end
+          '';
+        }
       ];
 
       # ── Debugging (DAP) ─────────────────────────────────────────
-      plugins.dap-ui.enable = true;
-      plugins.dap-virtual-text.enable = true;
+      plugins.dap-ui = {
+        enable = true;
+        settings = {
+          # Auto-open/close the UI when a debug session starts/ends
+          icons = { expanded = "▾"; collapsed = "▸"; current_frame = "▸"; };
+          layouts = [
+            {
+              elements = [
+                { id = "scopes"; size = 0.40; }
+                { id = "breakpoints"; size = 0.20; }
+                { id = "stacks"; size = 0.20; }
+                { id = "watches"; size = 0.20; }
+              ];
+              position = "left";
+              size = 40;
+            }
+            {
+              elements = [
+                { id = "repl"; size = 0.5; }
+                { id = "console"; size = 0.5; }
+              ];
+              position = "bottom";
+              size = 10;
+            }
+          ];
+        };
+      };
+      plugins.dap-virtual-text = {
+        enable = true;
+        settings = {
+          enabled = true;
+          enabled_commands = true;
+          highlight_changed_variables = true;
+          highlight_new_as_changed = true;
+          show_stop_reason = true;
+          commented = false;
+          virt_text_pos = "eol"; # Show values at end of line
+        };
+      };
       plugins.dap = {
         enable = true;
         adapters = {
@@ -309,6 +404,8 @@
               cwd = "\${workspaceFolder}";
             }
           ];
+          # Java configs are populated dynamically by jdtls.dap.setup_dap_main_class_configs()
+          # when jdtls attaches — no static entries needed here.
         };
       };
 
@@ -428,6 +525,7 @@
 
       # ── Agentic AI Coding (CodeCompanion) ───────────────────────
       extraPlugins = with pkgs.vimPlugins; [
+        nvim-jdtls
         vim-autoswap # Automatically handle .swp file prompts
         (pkgs.vimUtils.buildVimPlugin {
           pname = "codecompanion.nvim";
@@ -441,9 +539,36 @@
           dependencies = [ plenary-nvim nvim-treesitter ];
           doCheck = false;
         })
+        (pkgs.vimUtils.buildVimPlugin {
+          pname = "eagle.nvim";
+          version = "latest";
+          src = pkgs.fetchzip {
+            url = "https://github.com/soulis-1256/eagle.nvim/archive/HEAD.tar.gz";
+            sha256 = "1l131sv72mklizpa6yp8dbc52blcvcchmjmbbwm0y4bvl3rk9s0s";
+          };
+          doCheck = false;
+        })
+        pkgs.vimPlugins.typst-preview-nvim
       ];
 
       extraConfigLua = ''
+        -- ── Auto-open/close DAP UI on session start/end (VSCode-like) ──
+        local dap, dapui = require("dap"), require("dapui")
+        dapui.setup()
+        dap.listeners.before.attach.dapui_config = function() dapui.open() end
+        dap.listeners.before.launch.dapui_config = function() dapui.open() end
+        dap.listeners.before.event_terminated.dapui_config = function() dapui.close() end
+        dap.listeners.before.event_exited.dapui_config = function() dapui.close() end
+
+        -- Enable mouse hover events for eagle.nvim
+        vim.o.mousemoveevent = true
+        
+        -- Setup eagle.nvim for VSCode-like mouse hover
+        local ok_eagle, eagle = pcall(require, "eagle")
+        if ok_eagle then
+          eagle.setup()
+        end
+
         -- CodeCompanion setup
         local ok, cc = pcall(require, "codecompanion")
         if ok then
@@ -568,13 +693,13 @@
         { mode = "n"; key = "-"; action = "<cmd>Oil<cr>"; options.desc = "Open Oil"; }
 
         # Telescope
-        { mode = "n"; key = "<leader>ff"; action = "<cmd>Telescope find_files<cr>"; options.desc = "Find Files"; }
-        { mode = "n"; key = "<leader>fg"; action = "<cmd>Telescope live_grep<cr>"; options.desc = "Live Grep"; }
-        { mode = "n"; key = "<leader>fb"; action = "<cmd>Telescope buffers<cr>"; options.desc = "Buffers"; }
-        { mode = "n"; key = "<leader>fh"; action = "<cmd>Telescope help_tags<cr>"; options.desc = "Help Tags"; }
-        { mode = "n"; key = "<leader>fr"; action = "<cmd>Telescope oldfiles<cr>"; options.desc = "Recent Files"; }
-        { mode = "n"; key = "<leader>fd"; action = "<cmd>Telescope diagnostics<cr>"; options.desc = "Diagnostics"; }
-        { mode = "n"; key = "<leader>fs"; action = "<cmd>Telescope lsp_document_symbols<cr>"; options.desc = "Document Symbols"; }
+        { mode = "n"; key = "<leader>sf"; action = "<cmd>Telescope find_files<cr>"; options.desc = "Find Files"; }
+        { mode = "n"; key = "<leader>sg"; action = "<cmd>Telescope live_grep<cr>"; options.desc = "Live Grep"; }
+        { mode = "n"; key = "<leader>sb"; action = "<cmd>Telescope buffers<cr>"; options.desc = "Buffers"; }
+        { mode = "n"; key = "<leader>sh"; action = "<cmd>Telescope help_tags<cr>"; options.desc = "Help Tags"; }
+        { mode = "n"; key = "<leader>sr"; action = "<cmd>Telescope oldfiles<cr>"; options.desc = "Recent Files"; }
+        { mode = "n"; key = "<leader>sd"; action = "<cmd>Telescope diagnostics<cr>"; options.desc = "Diagnostics"; }
+        { mode = "n"; key = "<leader>ss"; action = "<cmd>Telescope lsp_document_symbols<cr>"; options.desc = "Document Symbols"; }
 
         # LSP
         { mode = "n"; key = "gd"; action = "<cmd>Telescope lsp_definitions<cr>"; options.desc = "Go to Definition"; }
@@ -625,7 +750,7 @@
         { mode = "n"; key = "<C-l>"; action = "<C-w>l"; options.desc = "Move Right"; }
 
         # Format
-        { mode = "n"; key = "<leader>cf"; action = "<cmd>lua require('conform').format()<cr>"; options.desc = "Format File"; }
+        { mode = "n"; key = "<leader>f"; action = "<cmd>lua require('conform').format()<cr>"; options.desc = "Format File"; }
         # MicroVM
         {
           mode = "n";
@@ -640,6 +765,21 @@
     home.packages = with pkgs; [
       # Formatters
       nixfmt              # Nix (Official)
+      (pkgs.writeShellScriptBin "google-java-format" ''
+        #!/bin/sh
+        # Buffer stdin
+        input=$(cat)
+        # Try google-java-format first (strict standard)
+        output=$(echo "$input" | ${pkgs.google-java-format}/bin/google-java-format "$@" 2>/dev/null)
+        if [ $? -eq 0 ]; then
+          echo "$output"
+        else
+          # Fallback to clang-format for snippets (forgiving standard)
+          echo "$input" | ${pkgs.clang-tools}/bin/clang-format --assume-filename=Snippet.java
+        fi
+      '')
+      typst               # Typst compiler
+      tinymist            # Typst LSP
       prettierd           # JS/TS/HTML/CSS/JSON/YAML/MD
       stylua              # Lua
       shfmt               # Shell
@@ -659,5 +799,7 @@
     ] ++ lib.optionals (!isDarwin) [
       gdb                 # Debugger (Linux)
     ];
+
+    # ── Fancy-cat Configuration ──────────────────────────────────
   };
 }
