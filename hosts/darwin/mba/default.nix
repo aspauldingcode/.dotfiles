@@ -153,7 +153,7 @@
         imports = [
           inputs.self.modules.homeManager.shell
           inputs.self.modules.homeManager.terminal
-          inputs.self.modules.homeManager.editor
+          # inputs.self.modules.homeManager.editor
           inputs.self.modules.homeManager.secrets
           inputs.self.modules.homeManager.styling
           inputs.self.modules.homeManager.apps
