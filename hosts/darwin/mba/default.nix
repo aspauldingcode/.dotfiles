@@ -1,20 +1,30 @@
 { inputs, pkgs, lib, ... }:
 
 {
+  nixpkgs.config.allowUnfree = true;
+
+  nixpkgs.config.permittedInsecurePackages = [
+    "librewolf-150.0.1-1"
+    "librewolf-unwrapped-150.0.1-1"
+  ];
+
   imports = [
     # 1. Base identity and platform
     inputs.determinate-nix.darwinModules.default
     {
       nixpkgs.hostPlatform = "aarch64-darwin";
-      nixpkgs.config.allowUnfree = true;
-      nixpkgs.overlays = [ 
-        inputs.self.overlays.default 
+      nixpkgs.overlays = [
+        inputs.self.overlays.default
         inputs.wawona.overlays.default
       ];
       system.primaryUser = "8amps";
       networking.hostName = "mba";
       system.stateVersion = 5;
       system.defaults.dock.show-recents = false;
+      system.defaults.finder.AppleShowAllFiles = true;
+      system.defaults.finder.ShowPathbar = true;
+      system.defaults.finder.ShowStatusBar = true;
+
       documentation.enable = lib.mkForce false;
       documentation.man.enable = lib.mkForce false;
       documentation.doc.enable = lib.mkForce false;
@@ -69,6 +79,8 @@
     inputs.self.modules.darwin.ghostty
     inputs.self.modules.darwin.cursor
     inputs.self.modules.darwin.apps
+    inputs.self.modules.darwin.python
+    inputs.self.modules.darwin.maintenance
 
     # 4. Configure Home Manager
     {
@@ -105,7 +117,7 @@
               "--display"
               "/tmp/wawona-503/wayland-0"
               "-s"
-              "/etc/nix-darwin/waypipe-wawona.sock"
+              "/etc/nix-darwin/.dotfiles/waypipe-wawona.sock"
               "client"
             ];
             EnvironmentVariables = {
@@ -126,8 +138,8 @@
             Label = "com.aspaulding.waypipe-bridge";
             ProgramArguments = [
               "${pkgs.socat}/bin/socat"
-              "UNIX-CONNECT:/etc/nix-darwin/dendritic-vm-vsock.sock"
-              "UNIX-CONNECT:/etc/nix-darwin/waypipe-wawona.sock"
+              "UNIX-CONNECT:/etc/nix-darwin/.dotfiles/dendritic-vm-vsock.sock"
+              "UNIX-CONNECT:/etc/nix-darwin/.dotfiles/waypipe-wawona.sock"
             ];
             KeepAlive = {
               SuccessfulExit = false;
@@ -140,6 +152,7 @@
 
         imports = [
           inputs.self.modules.homeManager.shell
+          inputs.self.modules.homeManager.terminal
           inputs.self.modules.homeManager.editor
           inputs.self.modules.homeManager.secrets
           inputs.self.modules.homeManager.styling
@@ -148,6 +161,7 @@
           inputs.self.modules.homeManager.antigravity
           inputs.self.modules.homeManager.cursor
           inputs.self.modules.homeManager.beeper
+          inputs.self.modules.homeManager.python
           inputs.self.modules.homeManager.jetbrains
           inputs.self.modules.homeManager.wallpaper
           inputs.self.modules.homeManager.spotify
@@ -168,6 +182,7 @@
         dendritic.apps.beeper.enable = true;
         dendritic.apps.jetbrains.enable = true;
         dendritic.wallpaper.enable = true;
+        dendritic.python.enable = true;
         
         programs.zsh.shellAliases = {
           microvm-run = "${inputs.self.nixosConfigurations.microvm.config.microvm.runner.vfkit}/bin/microvm-run";
@@ -192,6 +207,8 @@
         # for Safari. Enable them in: Safari → Settings → Extensions
         safari.extensions = [
           { name = "uBlock Origin Lite"; id = 6745342698; }
+          { name = "SponsorBlock for Safari"; id = 1573461917; }
+          { name = "Dark Reader for Safari"; id = 1438243180; }
         ];
       };
     }

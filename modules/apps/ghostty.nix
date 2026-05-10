@@ -17,6 +17,7 @@
         
         settings = {
           font-size = config.dendritic.apps.ghostty.fontSize;
+          font-family = "Maple Mono NF";
           window-decoration = true;
           macos-option-as-alt = true;
           shell-integration = "detect";

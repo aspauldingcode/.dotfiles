@@ -31,6 +31,7 @@
     inputs.self.modules.nixos.styling
     inputs.self.modules.nixos.linux-desktop
     inputs.self.modules.nixos.microvm
+    inputs.self.modules.nixos.python
 
     # 4. Configure Home Manager
     {
@@ -46,6 +47,7 @@
           inputs.self.modules.homeManager.styling
           inputs.self.modules.homeManager.apps
           inputs.self.modules.homeManager.ghostty
+          inputs.self.modules.homeManager.python
           inputs.self.modules.homeManager.nixvim-ide
           inputs.self.modules.homeManager.wallpaper
           inputs.self.modules.homeManager.spotify
@@ -54,10 +56,21 @@
         home.username = "8amps";
         home.homeDirectory = "/home/8amps";
         home.stateVersion = "24.11";
+        
+        # ── Show Hidden Files (GTK) ──────────────────────────────────
+        dconf.settings = {
+          "org/gtk/settings/file-chooser" = {
+            show-hidden = true;
+          };
+          "org/gtk/v4/settings/file-chooser" = {
+            show-hidden = true;
+          };
+        };
 
         # ── Feature Toggles ─────────────────────────────────────────
         dendritic.apps.ghostty.enable = true;
         dendritic.apps.nixvim-ide.enable = true;
+        dendritic.python.enable = true;
 
         # ─────────────────────────────────────────────────────────────
       };

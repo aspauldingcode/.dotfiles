@@ -109,6 +109,13 @@
         };
       };
     };
+
+    # Explicitly add fonts to system-wide packages for Darwin
+    fonts.packages = [ 
+      pkgs.maple-mono.NF 
+      pkgs.inter
+      pkgs.noto-fonts
+    ];
   };
 
   # ── Home Manager Styling (TEMPORARY REMOVAL FOR TESTING) ──────

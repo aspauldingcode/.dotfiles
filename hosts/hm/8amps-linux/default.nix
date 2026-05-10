@@ -21,6 +21,7 @@
     inputs.self.modules.homeManager.apps
     inputs.self.modules.homeManager.ghostty
     inputs.self.modules.homeManager.antigravity
+    inputs.self.modules.homeManager.python
     inputs.self.modules.homeManager.wallpaper
     inputs.self.modules.homeManager.spotify
     inputs.self.modules.homeManager.vesktop
@@ -33,6 +34,7 @@
       dendritic.apps.ghostty.enable = true;
       dendritic.apps.sway.enable = true;
       dendritic.apps.antigravity.enable = false;
+      dendritic.python.enable = true;
       # ─────────────────────────────────────────────────────────────
     }
   ];

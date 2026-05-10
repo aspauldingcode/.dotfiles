@@ -34,11 +34,21 @@
     }) cfg.safari.extensions));
 
     masPackage = pkgs.mas;
+    masSync = import ../pkgs/_mas-sync.nix {
+      inherit pkgs lib masPackage allApps;
+    };
   in
   {
     # ── Options ─────────────────────────────────────────────────
     options.dendritic.mas = {
       enable = lib.mkEnableOption "Mac App Store management via mas CLI";
+
+      syncScript = lib.mkOption {
+        type = lib.types.package;
+        readOnly = true;
+        default = masSync;
+        description = "The mas-sync script package.";
+      };
 
       apps = lib.mkOption {
         type = lib.types.attrsOf lib.types.int;
@@ -114,44 +124,7 @@
       # install script so the user sees full interactive output.
       environment.systemPackages = [
         masPackage
-        (pkgs.writeShellScriptBin "mas-sync" ''
-          set -euo pipefail
-          export PATH="${lib.makeBinPath [ masPackage pkgs.coreutils ]}:$PATH"
-          export MAS_NO_AUTO_INDEX=1
-
-          echo ""
-          echo "══════════════════════════════════════════════════════════"
-          echo "  Mac App Store — Declarative Sync via mas"
-          echo "══════════════════════════════════════════════════════════"
-          echo ""
-          echo "  ℹ  You must be signed into the Mac App Store GUI."
-          echo "     (mas signin is disabled on modern macOS)"
-          echo ""
-
-          INSTALLED=$(mas list 2>/dev/null || true)
-
-          ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: id: ''
-            if echo "$INSTALLED" | grep -q "^${toString id} "; then
-              echo "  ✓ ${name} (${toString id}) — already installed"
-            else
-              echo "  ⤓ Installing ${name} (${toString id})..."
-              # Use 'purchase' for first-time free downloads,
-              # fall back to 'install' for previously purchased apps.
-              if mas purchase ${toString id}; then
-                echo "  ✓ ${name} — installed successfully"
-              elif mas install ${toString id}; then
-                echo "  ✓ ${name} — re-installed successfully"
-              else
-                echo "  ✗ ${name} — install failed (check App Store sign-in)" >&2
-              fi
-            fi
-          '') allApps)}
-
-          echo ""
-          echo "══════════════════════════════════════════════════════════"
-          echo "  Mac App Store sync complete."
-          echo "══════════════════════════════════════════════════════════"
-        '')
+        masSync
       ];
     };
   };

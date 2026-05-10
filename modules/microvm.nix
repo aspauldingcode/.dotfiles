@@ -25,6 +25,12 @@
         ({ lib, pkgs, ... }: {
           nixpkgs.hostPlatform = "aarch64-linux";
           nixpkgs.config.allowUnfree = true;
+          nixpkgs.config.permittedInsecurePackages = [
+            "librewolf-150.0.1-1"
+            "librewolf-unwrapped-150.0.1-1"
+            "librewolf-bin-150.0-1"
+            "librewolf-bin-unwrapped-150.0-1"
+          ];
           networking.hostName = "dendritic-vm";
           system.stateVersion = "24.11";
           
@@ -38,13 +44,13 @@
             microvm = {
             hypervisor = "vfkit";
             socket = "/Users/8amps/.local/share/microvm/dendritic-vm.sock";
-            vcpu = 2; mem = 2047;
+            vcpu = 2; mem = 8192;
             vsock.cid = 3;
             shares = [{ proto = "virtiofs"; tag = "ro-store"; source = "/nix/store"; mountPoint = "/nix/.ro-store"; }];
             registerWithMachined = false;
             vmHostPackages = inputs.nixpkgs.legacyPackages."aarch64-darwin";
             writableStoreOverlay = "/nix/.rw-store";
-            volumes = [{ image = "/Users/8amps/.local/share/microvm/dendritic-vm.img"; mountPoint = "/nix/.rw-store"; size = 10240; }];
+            volumes = [{ image = "/Users/8amps/.local/share/microvm/dendritic-vm.img"; mountPoint = "/nix/.rw-store"; size = 20480; }];
             vfkit.logLevel = "info";
           };
 

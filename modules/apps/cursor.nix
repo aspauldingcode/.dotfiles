@@ -28,13 +28,14 @@
         (if pkgs.stdenv.isLinux then pkgs.code-cursor-fhs else pkgs.code-cursor)
       ];
 
-      # Install all extensions from Antigravity (including Stylix theme)
-      # and use the same settings (Stylix injects fonts, theme, etc.)
+      # Link derived extensions (symlinks)
       home.file = extensionFiles // lib.optionalAttrs pkgs.stdenv.isDarwin {
         "Library/Application Support/Cursor/User/settings.json" = {
           force = true;
           text = builtins.toJSON sharedSettings;
         };
+      } // lib.optionalAttrs pkgs.stdenv.isLinux {
+        ".cursor/User/settings.json".text = builtins.toJSON sharedSettings;
       };
     };
   };

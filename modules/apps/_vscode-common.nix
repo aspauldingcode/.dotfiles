@@ -13,11 +13,14 @@ in
     enable = true;
     profiles.default.userSettings = {
       "cursor.composer.enabled" = false;
+      "files.readonlyFromPermissions" = true;
       "window.titleBarStyle" = "custom";
       "workbench.colorTheme" = lib.mkForce "Stylix";
+      "editor.fontFamily" = lib.mkForce "'Maple Mono NF', monospace";
       "editor.fontSize" = lib.mkForce 12;
-      "editor.fontLigatures" = true;
+      "editor.fontLigatures" = "'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'cv01', 'cv02', 'cv03'";
       "editor.rulers" = [ 80 ];
+      "terminal.integrated.fontFamily" = "'Maple Mono NF'";
       "terminal.integrated.fontSize" = lib.mkForce 12;
       "window.zoomLevel" = 0;
       "swiftformat.path" = "${pkgs.swiftformat}/bin/swiftformat";
