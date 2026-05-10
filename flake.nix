@@ -70,8 +70,6 @@
             nixfmt
             sops
             age
-          ] ++ [
-            inputs'.nixvim.packages.default
           ];
         };
 

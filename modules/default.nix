@@ -3,7 +3,7 @@ let
   # Verifying that each file exists and is correctly imported
   shell = import ./shell.nix;
   terminal = import ./terminal.nix;
-  editor = import ./editor.nix;
+
   secrets = import ./secrets.nix;
   styling = import ./styling.nix;
   apps = import ./apps/common.nix;
@@ -28,7 +28,7 @@ in
     ./dock.nix
     ./microvm.nix
     ./terminal.nix
-    ./editor.nix
+
     ./linux-desktop.nix
     ./shell.nix
     ./python.nix
@@ -76,7 +76,7 @@ in
       homeManagerModules = {
         shell = shell.flake.modules.homeManager.shell;
         terminal = terminal.flake.modules.homeManager.terminal;
-        editor = editor.flake.modules.homeManager.editor;
+
         secrets = secrets.flake.modules.homeManager.secrets;
         styling = styling.flake.modules.homeManager.styling;
         apps = apps.flake.modules.homeManager.apps;
