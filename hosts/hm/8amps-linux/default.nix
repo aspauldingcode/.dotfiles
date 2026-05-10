@@ -15,7 +15,7 @@
 
     # Pull in Feature Modules from the Hub
     inputs.self.modules.homeManager.shell
-    inputs.self.modules.homeManager.editor
+    # inputs.self.modules.homeManager.editor
     inputs.self.modules.homeManager.secrets
     inputs.self.modules.homeManager.styling
     inputs.self.modules.homeManager.apps

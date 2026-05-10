@@ -24,10 +24,7 @@
 
     determinate-nix.url = "github:DeterminateSystems/determinate";
 
-    nixvim = {
-      url = "github:nix-community/nixvim/nixos-25.11";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+
 
     system-manager = {
       url = "github:numtide/system-manager";
@@ -46,11 +43,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    microvm = {
-      url = "path:./subrepos/microvm.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     wawona = {
       url = "github:Wawona/Wawona/development";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -63,9 +55,6 @@
       systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
 
       imports = [
-        # In a fully dendritic pattern, we can import our top-level configuration modules.
-        # However, for NixOS, Darwin, and Home Manager, we will define them in `flake` output
-        # or use flake-parts modules if we're setting up the entire config matrix.
         ./modules
       ];
 

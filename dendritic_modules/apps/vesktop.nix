@@ -53,19 +53,7 @@
           };
         };
 
-        # Supplementary CSS layered on top of the Stylix base16 theme.
-        # Stylix injects its theme via vencord.themes.stylix automatically.
-        vencord.extraQuickCss = ''
-          /* ── Vesktop Stylix supplementary overrides ─────────── */
-          /* Soften Discord's default blue mention highlight        */
-          .mention {
-            background-color: var(--base0D-hex, #89b4fa22) !important;
-          }
-          /* Smooth message hover transitions */
-          .message-2CShn3 {
-            transition: background-color 0.15s ease;
-          }
-        '';
+
       };
     };
   };
