@@ -35,7 +35,7 @@ in
   # ── Manual Module Imports (Bypassing Ghost Files) ───────────
   imports = [
     ./dock.nix
-    ./microvm.nix
+    # ./microvm.nix
     ./terminal.nix
 
     ./linux-desktop.nix
@@ -87,7 +87,7 @@ in
       homeManagerModules = {
         shell = shell.flake.modules.homeManager.shell;
         terminal = terminal.flake.modules.homeManager.terminal;
-        editor = editor.flake.modules.homeManager.editor;
+        editor = editor;
         opencode = opencode_dummy.flake.modules.homeManager.opencode;
         qt = qt_dummy.flake.modules.homeManager.qt;
 
@@ -128,6 +128,8 @@ in
           specialArgs = { inherit inputs; };
           modules = [ ../hosts/nixos/mba-asahi ];
         };
+
+        microvm = microvm.config.flake.nixosConfigurations.microvm;
       };
 
       homeConfigurations = {

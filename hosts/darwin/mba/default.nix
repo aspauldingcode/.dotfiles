@@ -30,7 +30,6 @@
       documentation.info.enable = false;
 
       environment.systemPackages = [
-        pkgs.wawona
         pkgs.socat
       ];
 

@@ -15,4 +15,13 @@
       ];
     };
   };
+
+  flake.modules.homeManager.linux-desktop = { pkgs, lib, ... }: {
+    options.dendritic.apps.linux-desktop = {
+      enable = lib.mkEnableOption "Linux Desktop (Sway)";
+    };
+    config = {
+      # Home Manager specific linux desktop config (empty for now)
+    };
+  };
 }

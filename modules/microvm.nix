@@ -19,7 +19,7 @@
         inputs.home-manager.nixosModules.home-manager
         inputs.determinate-nix.nixosModules.default
         inputs.self.nixosModules.shell
-        inputs.self.nixosModules.styling
+        # inputs.self.nixosModules.styling
         # inputs.self.nixosModules.linux-desktop
         
         ({ lib, pkgs, ... }: {
@@ -45,7 +45,7 @@
             hypervisor = "vfkit";
             socket = "/Users/8amps/.local/share/microvm/dendritic-vm.sock";
             vcpu = 2; mem = 8192;
-            vsock.cid = 3;
+            # vsock.cid = 3;
             shares = [{ proto = "virtiofs"; tag = "ro-store"; source = "/nix/store"; mountPoint = "/nix/.ro-store"; }];
             registerWithMachined = false;
             vmHostPackages = inputs.nixpkgs.legacyPackages."aarch64-darwin";
