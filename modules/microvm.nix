@@ -18,9 +18,9 @@
         inputs.microvm.nixosModules.microvm
         inputs.home-manager.nixosModules.home-manager
         inputs.determinate-nix.nixosModules.default
-        inputs.self.modules.nixos.shell
-        inputs.self.modules.nixos.styling
-        inputs.self.modules.nixos.linux-desktop
+        inputs.self.nixosModules.shell
+        inputs.self.nixosModules.styling
+        # inputs.self.nixosModules.linux-desktop
         
         ({ lib, pkgs, ... }: {
           nixpkgs.hostPlatform = "aarch64-linux";

@@ -14,18 +14,18 @@
     }
 
     # Pull in Feature Modules from the Hub
-    inputs.self.modules.homeManager.shell
-    # inputs.self.modules.homeManager.editor
-    inputs.self.modules.homeManager.secrets
-    inputs.self.modules.homeManager.styling
-    inputs.self.modules.homeManager.apps
-    inputs.self.modules.homeManager.ghostty
-    inputs.self.modules.homeManager.antigravity
-    inputs.self.modules.homeManager.python
-    inputs.self.modules.homeManager.wallpaper
-    inputs.self.modules.homeManager.spotify
-    inputs.self.modules.homeManager.vesktop
-    inputs.self.modules.homeManager.sway
+    inputs.self.homeManagerModules.shell
+    # inputs.self.homeManagerModules.editor
+    inputs.self.homeManagerModules.secrets
+    inputs.self.homeManagerModules.styling
+    inputs.self.homeManagerModules.apps
+    inputs.self.homeManagerModules.ghostty
+    inputs.self.homeManagerModules.antigravity
+    inputs.self.homeManagerModules.python
+    inputs.self.homeManagerModules.wallpaper
+    inputs.self.homeManagerModules.spotify
+    inputs.self.homeManagerModules.vesktop
+    inputs.self.homeManagerModules.sway
     
     # External modules
 

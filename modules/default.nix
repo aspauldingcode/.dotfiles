@@ -9,12 +9,21 @@ let
   apps = import ./apps/common.nix;
   cursor = import ./apps/cursor.nix;
   antigravity = import ./apps/antigravity.nix;
+  ghostty = import ./apps/ghostty.nix;
+  beeper = import ./apps/beeper.nix;
+  jetbrains = import ./apps/jetbrains.nix;
+  vscode = import ./apps/vscode.nix;
+  spotify = import ./apps/spotify.nix;
+  vesktop = import ./apps/vesktop.nix;
   dock = import ./dock.nix;
-  microvm = import ./microvm.nix;
+  microvm = import ./microvm.nix { inherit inputs; };
   wallpaper = import ./apps/wallpaper.nix;
   mas = import ./apps/mas.nix;
   python = import ./python.nix;
   maintenance = import ./darwin-maintenance.nix;
+  editor = import ./editor.nix { inherit inputs; };
+  opencode_dummy = import ./opencode_dummy.nix { inherit inputs; };
+  qt_dummy = import ./qt_dummy.nix { inherit inputs; };
 in
 {
   # ── Options ──────────────────────────────────────────────────
@@ -34,7 +43,6 @@ in
     ./python.nix
     ./overlays.nix
     ./secrets.nix
-    ./styling.nix
     ./mobile.nix
     ./apps/common.nix
     ./apps/jetbrains.nix
@@ -48,6 +56,7 @@ in
     ./apps/mas.nix
     ./apps/wallpaper.nix
     ./darwin-maintenance.nix
+    ./editor.nix
   ];
 
   config = {
@@ -65,10 +74,12 @@ in
       darwinModules = {
         dock = dock.flake.modules.darwin.dock;
         shell = shell.flake.modules.darwin.shell;
+        secrets = secrets.flake.modules.darwin.secrets;
+        styling = styling.flake.modules.darwin.styling;
         apps = apps.flake.modules.darwin.apps;
         wallpaper = wallpaper.flake.modules.darwin.wallpaper;
         mas = mas.flake.modules.darwin.mas;
-        microvm = microvm.flake.modules.darwin.microvm;
+        microvm = microvm.config.flake.modules.darwin.microvm;
         maintenance = maintenance.flake.modules.darwin.maintenance;
         python = python.flake.modules.darwin.python;
       };
@@ -76,12 +87,21 @@ in
       homeManagerModules = {
         shell = shell.flake.modules.homeManager.shell;
         terminal = terminal.flake.modules.homeManager.terminal;
+        editor = editor.flake.modules.homeManager.editor;
+        opencode = opencode_dummy.flake.modules.homeManager.opencode;
+        qt = qt_dummy.flake.modules.homeManager.qt;
 
         secrets = secrets.flake.modules.homeManager.secrets;
         styling = styling.flake.modules.homeManager.styling;
         apps = apps.flake.modules.homeManager.apps;
         cursor = cursor.flake.modules.homeManager.cursor;
         antigravity = antigravity.flake.modules.homeManager.antigravity;
+        ghostty = ghostty.flake.modules.homeManager.ghostty;
+        beeper = beeper.flake.modules.homeManager.beeper;
+        jetbrains = jetbrains.flake.modules.homeManager.jetbrains;
+        vscode = vscode.flake.modules.homeManager.vscode;
+        spotify = spotify.flake.modules.homeManager.spotify;
+        vesktop = vesktop.flake.modules.homeManager.vesktop;
         wallpaper = wallpaper.flake.modules.homeManager.wallpaper;
         python = python.flake.modules.homeManager.python;
         linux-desktop = (import ./linux-desktop.nix).flake.modules.homeManager.linux-desktop;

@@ -43,8 +43,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    wawona = {
-      url = "github:Wawona/Wawona/development";
+    microvm = {
+      url = "github:astro/microvm.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

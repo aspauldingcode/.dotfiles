@@ -15,7 +15,6 @@
       nixpkgs.hostPlatform = "aarch64-darwin";
       nixpkgs.overlays = [
         inputs.self.overlays.default
-        inputs.wawona.overlays.default
       ];
       system.primaryUser = "8amps";
       networking.hostName = "mba";
@@ -69,18 +68,16 @@
     inputs.home-manager.darwinModules.home-manager
 
     # 3. Pull in Feature Modules from the Hub (inputs.self.modules)
-    inputs.self.modules.darwin.shell
-    inputs.self.modules.darwin.secrets
-    inputs.self.modules.darwin.styling
-    inputs.self.modules.darwin.mas
-    inputs.self.modules.darwin.wallpaper
-    inputs.self.modules.darwin.microvm
-    inputs.self.modules.darwin.dock
-    inputs.self.modules.darwin.ghostty
-    inputs.self.modules.darwin.cursor
-    inputs.self.modules.darwin.apps
-    inputs.self.modules.darwin.python
-    inputs.self.modules.darwin.maintenance
+    inputs.self.darwinModules.shell
+    inputs.self.darwinModules.secrets
+    inputs.self.darwinModules.styling
+    inputs.self.darwinModules.mas
+    inputs.self.darwinModules.wallpaper
+    inputs.self.darwinModules.microvm
+    inputs.self.darwinModules.dock
+    inputs.self.darwinModules.apps
+    inputs.self.darwinModules.python
+    inputs.self.darwinModules.maintenance
 
     # 4. Configure Home Manager
     {
@@ -95,77 +92,79 @@
         manual.json.enable = false;
 
         # Wawona LaunchAgent
-        launchd.agents.wawona = {
-          enable = true;
-          config = {
-            Label = "com.aspaulding.wawona";
-            ProgramArguments = [ "${pkgs.wawona}/bin/wawona" ];
-            KeepAlive = true;
-            RunAtLoad = true;
-            StandardOutPath = "${config.home.homeDirectory}/.cache/wawona.log";
-            StandardErrorPath = "${config.home.homeDirectory}/.cache/wawona.err";
-          };
-        };
+        # launchd.agents.wawona = {
+        #   enable = true;
+        #   config = {
+        #     Label = "com.aspaulding.wawona";
+        #     ProgramArguments = [ "${pkgs.wawona}/bin/wawona" ];
+        #     KeepAlive = true;
+        #     RunAtLoad = true;
+        #     StandardOutPath = "${config.home.homeDirectory}/.cache/wawona.log";
+        #     StandardErrorPath = "${config.home.homeDirectory}/.cache/wawona.err";
+        #   };
+        # };
 
         # Waypipe LaunchAgent (Host-side proxy for Wawona)
-        launchd.agents.waypipe = {
-          enable = true;
-          config = {
-            Label = "com.aspaulding.waypipe";
-            ProgramArguments = [
-              "${inputs.wawona.packages.${pkgs.stdenv.hostPlatform.system}.wawona-macos}/Applications/Wawona.app/Contents/MacOS/waypipe"
-              "--display"
-              "/tmp/wawona-503/wayland-0"
-              "-s"
-              "/etc/nix-darwin/.dotfiles/waypipe-wawona.sock"
-              "client"
-            ];
-            EnvironmentVariables = {
-              WAYLAND_DISPLAY = "wayland-0";
-              XDG_RUNTIME_DIR = "/tmp/wawona-503";
-            };
-            KeepAlive = true;
-            RunAtLoad = true;
-            StandardOutPath = "${config.home.homeDirectory}/.cache/waypipe.log";
-            StandardErrorPath = "${config.home.homeDirectory}/.cache/waypipe.err";
-          };
-        };
+        # launchd.agents.waypipe = {
+        #   enable = true;
+        #   config = {
+        #     Label = "com.aspaulding.waypipe";
+        #     ProgramArguments = [
+        #       "${inputs.wawona.packages.${pkgs.stdenv.hostPlatform.system}.wawona-macos}/Applications/Wawona.app/Contents/MacOS/waypipe"
+        #       "--display"
+        #       "/tmp/wawona-503/wayland-0"
+        #       "-s"
+        #       "/etc/nix-darwin/.dotfiles/waypipe-wawona.sock"
+        #       "client"
+        #     ];
+        #     EnvironmentVariables = {
+        #       WAYLAND_DISPLAY = "wayland-0";
+        #       XDG_RUNTIME_DIR = "/tmp/wawona-503";
+        #     };
+        #     KeepAlive = true;
+        #     RunAtLoad = true;
+        #     StandardOutPath = "${config.home.homeDirectory}/.cache/waypipe.log";
+        #     StandardErrorPath = "${config.home.homeDirectory}/.cache/waypipe.err";
+        #   };
+        # };
 
         # Bridge LaunchAgent: connects the VSOCK socket from vfkit to the Waypipe socket
-        launchd.agents.waypipe-bridge = {
-          enable = true;
-          config = {
-            Label = "com.aspaulding.waypipe-bridge";
-            ProgramArguments = [
-              "${pkgs.socat}/bin/socat"
-              "UNIX-CONNECT:/etc/nix-darwin/.dotfiles/dendritic-vm-vsock.sock"
-              "UNIX-CONNECT:/etc/nix-darwin/.dotfiles/waypipe-wawona.sock"
-            ];
-            KeepAlive = {
-              SuccessfulExit = false;
-            };
-            RunAtLoad = true;
-            StandardOutPath = "${config.home.homeDirectory}/.cache/waypipe-bridge.log";
-            StandardErrorPath = "${config.home.homeDirectory}/.cache/waypipe-bridge.err";
-          };
-        };
+        # launchd.agents.waypipe-bridge = {
+        #   enable = true;
+        #   config = {
+        #     Label = "com.aspaulding.waypipe-bridge";
+        #     ProgramArguments = [
+        #       "${pkgs.socat}/bin/socat"
+        #       "UNIX-CONNECT:/etc/nix-darwin/.dotfiles/dendritic-vm-vsock.sock"
+        #       "UNIX-CONNECT:/etc/nix-darwin/.dotfiles/waypipe-wawona.sock"
+        #     ];
+        #     KeepAlive = {
+        #       SuccessfulExit = false;
+        #     };
+        #     RunAtLoad = true;
+        #     StandardOutPath = "${config.home.homeDirectory}/.cache/waypipe-bridge.log";
+        #     StandardErrorPath = "${config.home.homeDirectory}/.cache/waypipe-bridge.err";
+        #   };
+        # };
 
         imports = [
-          inputs.self.modules.homeManager.shell
-          inputs.self.modules.homeManager.terminal
-          # inputs.self.modules.homeManager.editor
-          inputs.self.modules.homeManager.secrets
-          inputs.self.modules.homeManager.styling
-          inputs.self.modules.homeManager.apps
-          inputs.self.modules.homeManager.ghostty
-          inputs.self.modules.homeManager.antigravity
-          inputs.self.modules.homeManager.cursor
-          inputs.self.modules.homeManager.beeper
-          inputs.self.modules.homeManager.python
-          inputs.self.modules.homeManager.jetbrains
-          inputs.self.modules.homeManager.wallpaper
-          inputs.self.modules.homeManager.spotify
-          inputs.self.modules.homeManager.vesktop
+          inputs.self.homeManagerModules.shell
+          inputs.self.homeManagerModules.terminal
+          inputs.self.homeManagerModules.editor
+          inputs.self.homeManagerModules.secrets
+          # inputs.self.homeManagerModules.styling
+          inputs.self.homeManagerModules.apps
+          inputs.self.homeManagerModules.ghostty
+          inputs.self.homeManagerModules.antigravity
+          inputs.self.homeManagerModules.cursor
+          inputs.self.homeManagerModules.beeper
+          inputs.self.homeManagerModules.python
+          inputs.self.homeManagerModules.jetbrains
+          inputs.self.homeManagerModules.wallpaper
+          inputs.self.homeManagerModules.spotify
+          inputs.self.homeManagerModules.vesktop
+          inputs.self.homeManagerModules.opencode
+          inputs.self.homeManagerModules.qt
         ];
         home.username = "8amps";
         home.homeDirectory = "/Users/8amps";
