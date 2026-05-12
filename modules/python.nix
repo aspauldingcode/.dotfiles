@@ -8,7 +8,7 @@
       ...
     }:
     let
-      pythonPkg = pkgs.python314;
+      pythonPkg = pkgs.python3;
 
       pythonEnv = pythonPkg.withPackages (ps: with ps; [
         pip
@@ -56,7 +56,7 @@
       ...
     }:
     let
-      pythonPkg = pkgs.python314;
+      pythonPkg = pkgs.python3;
 
       pythonEnv = pythonPkg.withPackages (ps: with ps; [
         pip
@@ -104,7 +104,7 @@
       ...
     }:
     let
-      pythonPkg = pkgs.python314;
+      pythonPkg = pkgs.python3;
 
       pythonEnv = pythonPkg.withPackages (ps: with ps; [
         pip

@@ -1,15 +1,10 @@
 { inputs, ... }: {
-  flake.modules.homeManager.qt = { lib, ... }: {
-    options.qt.kvantum = lib.mkOption {
-      type = lib.types.attrsOf lib.types.unspecified;
-      default = {};
-    };
-    options.qt.platformTheme = lib.mkOption {
-      type = lib.types.attrsOf lib.types.unspecified;
-      default = {};
-    };
-    config = {
-      qt.enable = lib.mkDefault false;
-    };
+  # This is a Home Manager module
+  options.qt.kvantum = inputs.nixpkgs.lib.mkOption {
+    type = inputs.nixpkgs.lib.types.attrsOf inputs.nixpkgs.lib.unspecified;
+    default = {};
+  };
+  config = {
+    qt.enable = inputs.nixpkgs.lib.mkDefault false;
   };
 }

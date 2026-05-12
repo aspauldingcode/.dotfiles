@@ -6,9 +6,9 @@
     flake.modules.darwin.microvm = { pkgs, inputs, ... }: {
       environment.systemPackages = [ 
         inputs.determinate-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
-        inputs.self.nixosConfigurations.microvm.config.microvm.runner.vfkit
+        # inputs.self.nixosConfigurations.microvm.config.microvm.runner.vfkit
       ];
-      environment.shellAliases.microvm-run = "${inputs.self.nixosConfigurations.microvm.config.microvm.runner.vfkit}/bin/microvm-run";
+      # environment.shellAliases.microvm-run = "${inputs.self.nixosConfigurations.microvm.config.microvm.runner.vfkit}/bin/microvm-run";
     };
 
     # ── The MicroVM Definition ──────────────────────────────────
@@ -25,12 +25,7 @@
         ({ lib, pkgs, ... }: {
           nixpkgs.hostPlatform = "aarch64-linux";
           nixpkgs.config.allowUnfree = true;
-          nixpkgs.config.permittedInsecurePackages = [
-            "librewolf-150.0.1-1"
-            "librewolf-unwrapped-150.0.1-1"
-            "librewolf-bin-150.0-1"
-            "librewolf-bin-unwrapped-150.0-1"
-          ];
+
           networking.hostName = "dendritic-vm";
           system.stateVersion = "24.11";
           

@@ -12,14 +12,15 @@
   # Vesktop is supported on both Linux and Darwin (macOS).
   # Reference: https://github.com/nix-community/stylix/blob/master/modules/discord/vesktop.nix
 
-  flake.modules.homeManager.vesktop = { pkgs, lib, ... }: {
+  flake.modules.homeManager.vesktop = { pkgs, lib, inputs, ... }: {
     config = {
       # ── Stylix: enable the vesktop colourscheme target ───────────
-      stylix.targets.vesktop.enable = true;
+      stylix.targets.vesktop.enable = false;
 
       # ── Vesktop application ──────────────────────────────────────
       programs.vesktop = {
-        enable = true;
+        enable = pkgs.stdenv.isDarwin;
+        package = lib.mkIf pkgs.stdenv.isDarwin (lib.mkForce inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.vesktop);
 
         # Application-level settings
         # Written to $XDG_CONFIG_HOME/vesktop/settings.json

@@ -113,12 +113,12 @@
         # targets.lsd.enable = true;
         # targets.btop.enable = true;
         # targets.vesktop.enable = true;
-        targets.spicetify.enable = true;
+        targets.spicetify.enable = lib.mkForce true;
         targets.qt.enable = false;
       };
 
-      # ── Stylix-Themed LibreWolf UI ──────────────────────────────
-      programs.librewolf.profiles = let 
+      # ── Stylix-Themed Firefox UI ──────────────────────────────
+      programs.firefox.profiles = let 
         c = config.lib.stylix.colors.withHashtag;
         
         commonCss = ''
@@ -218,7 +218,7 @@
 
       # ── Qt Theming (Linux only) ─────────────────────────────────
       qt = lib.mkIf (!isDarwin) {
-        enable = true;
+        enable = lib.mkForce true;
         platformTheme.name = lib.mkForce "gtk3";
       };
 

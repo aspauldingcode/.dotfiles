@@ -2,11 +2,8 @@
 
 {
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowBroken = true;
 
-  nixpkgs.config.permittedInsecurePackages = [
-    "librewolf-150.0.1-1"
-    "librewolf-unwrapped-150.0.1-1"
-  ];
 
   imports = [
     # 1. Base identity and platform
@@ -182,9 +179,9 @@
         dendritic.wallpaper.enable = true;
         dendritic.python.enable = true;
         
-        programs.zsh.shellAliases = {
-          microvm-run = "${inputs.self.nixosConfigurations.microvm.config.microvm.runner.vfkit}/bin/microvm-run";
-        };
+        # programs.zsh.shellAliases = {
+        #   microvm-run = "${inputs.self.nixosConfigurations.microvm.config.microvm.runner.vfkit}/bin/microvm-run";
+        # };
 
         # ─────────────────────────────────────────────────────────────
       };

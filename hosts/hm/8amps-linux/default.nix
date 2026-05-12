@@ -2,6 +2,7 @@
 
 {
   imports = [
+    inputs.self.homeManagerModules.theme
     {
       home.username = "8amps";
       home.homeDirectory = "/home/8amps";
@@ -15,7 +16,7 @@
 
     # Pull in Feature Modules from the Hub
     inputs.self.homeManagerModules.shell
-    # inputs.self.homeManagerModules.editor
+    inputs.self.homeManagerModules.editor
     inputs.self.homeManagerModules.secrets
     inputs.self.homeManagerModules.styling
     inputs.self.homeManagerModules.apps
@@ -25,6 +26,8 @@
     inputs.self.homeManagerModules.wallpaper
     inputs.self.homeManagerModules.spotify
     inputs.self.homeManagerModules.vesktop
+    inputs.self.homeManagerModules.opencode
+    inputs.self.homeManagerModules.qt
     inputs.self.homeManagerModules.linux-desktop
     
     # External modules
