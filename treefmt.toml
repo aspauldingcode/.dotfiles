@@ -1,0 +1,60 @@
+# treefmt.toml — unified formatter config for the dotfiles repo
+# Used by `nix fmt` (via treefmt-nix) and the ibecker.treefmt-vscode extension.
+
+[global]
+excludes = [
+  "*.lock",
+  "result",
+  # sops-managed: every encrypt rewrites the envelope, so any reformat
+  # we do here will be silently undone (and meanwhile breaks sops's MAC).
+  "secrets/**",
+  "*.sops",
+  "*.pem.sops",
+  ".git/**",
+  "*.patch",
+  "*.xml",
+  "*.xpi",
+  "*.json",        # managed programmatically; don't auto-format
+  "flake_*.json",
+]
+
+# ── Nix ──────────────────────────────────────────────────────────
+[formatter.nixfmt]
+command = "nixfmt"
+includes = ["*.nix"]
+
+# ── Shell ─────────────────────────────────────────────────────────
+[formatter.shfmt]
+command = "shfmt"
+options = ["-i", "2", "-s", "-w"]
+includes = ["*.sh", "*.bash", ".envrc"]
+
+# ── Lua ───────────────────────────────────────────────────────────
+[formatter.stylua]
+command = "stylua"
+includes = ["*.lua"]
+
+# ── Python ────────────────────────────────────────────────────────
+[formatter.ruff]
+command = "ruff"
+options = ["format"]
+includes = ["*.py"]
+
+# ── Web / Markdown ────────────────────────────────────────────────
+[formatter.prettier]
+command = "prettier"
+options = ["--write"]
+includes = [
+  "*.js",
+  "*.ts",
+  "*.css",
+  "*.html",
+  "*.md",
+  "*.yaml",
+  "*.yml",
+]
+
+# ── Swift ─────────────────────────────────────────────────────────
+[formatter.swiftformat]
+command = "swiftformat"
+includes = ["*.swift"]

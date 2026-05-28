@@ -6,9 +6,9 @@ Personal, declarative system configuration built by **Alex Spaulding (aspaulding
 
 Following the [dendritic pattern](https://github.com/mightyiam/dendritic), this repository should be cloned to the system configuration directory for your platform. The config is system-wide and shared across all users — editing requires admin privileges.
 
-| Platform | Path |
-|---|---|
-| **NixOS** | `/etc/nixos/` |
+| Platform               | Path                         |
+| ---------------------- | ---------------------------- |
+| **NixOS**              | `/etc/nixos/`                |
 | **macOS (nix-darwin)** | `/etc/nix-darwin/.dotfiles/` |
 
 ```bash
@@ -29,7 +29,7 @@ The install script will automatically clone the repository to `/etc/nix-darwin/.
 nix run github:aspauldingcode/.dotfiles#install
 ```
 
-*(Alternatively, if you have `git` installed and prefer to authenticate over SSH, you can run `nix run git+ssh://git@github.com/aspauldingcode/.dotfiles.git#install`)*
+_(Alternatively, if you have `git` installed and prefer to authenticate over SSH, you can run `nix run git+ssh://git@github.com/aspauldingcode/.dotfiles.git#install`)_
 
 ## Daily Usage
 
@@ -49,12 +49,17 @@ nh os switch /etc/nixos -H my-nixos-host
 ```
 
 ### Pro Tips for `nh`
+
 - Use **`--ask`** to see a diff of what will change before confirming.
 - Use **`--update`** to update all your flake inputs (packages) to their latest versions.
 - The `NH_FLAKE` variable is set to `/etc/nix-darwin/.dotfiles#mba` (macOS) or `/etc/nixos` (NixOS), so `nh` always knows which host to build by default.
 
 ## Documentation
 
+- **[Dendritic Nix Documentation Suite](docs/dendritic-nix/README.md)** — Full multi-file deep dive: foundations, mechanics, repo implementation, real examples, migration, and anti-patterns.
+- **[Dendritic Nix: Patterns, Den, and Dendrix](docs/dendritic-patterns.md)** — Single-file overview of the pattern and ecosystem.
+- **[Den — Deep Reference](docs/den.md)** — Detailed documentation on Den: aspects, hosts, policies, classes, pipeline, and how this flake uses them.
+- **[sops-nix Documentation Suite](docs/sops-nix/README.md)** — Full multi-file reference for sops-nix: architecture, key management, authoring, templates, operations, and troubleshooting.
 - **[Zsh Plugins & Shell Extensions](docs/zsh-plugins.md)** — Full reference of all curated zsh plugins, CLI tools, and Nix-specific integrations.
 - **[Tmux Master Guide](docs/tmux.md)** — Learn how to use your optimized terminal multiplexer with interactive hints.
 

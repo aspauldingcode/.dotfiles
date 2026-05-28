@@ -4,7 +4,7 @@ By including the `microvm` module a set of NixOS options is made
 available for customization. These are the most important ones:
 
 | Option                         | Purpose                                                                                             |
-|--------------------------------|-----------------------------------------------------------------------------------------------------|
+| ------------------------------ | --------------------------------------------------------------------------------------------------- |
 | `microvm.hypervisor`           | Hypervisor to use by default in `microvm.declaredRunner`                                            |
 | `microvm.vcpu`                 | Number of Virtual CPU cores                                                                         |
 | `microvm.mem`                  | RAM allocation in MB                                                                                |
@@ -22,6 +22,5 @@ available for customization. These are the most important ones:
 | `microvm.storeOnDisk`          | Enables the store on the boot squashfs even in the presence of a share with the host's `/nix/store` |
 | `microvm.writableStoreOverlay` | Optional string of the path where all writes to `/nix/store` should go to.                          |
 
-See [the options declarations](
-https://github.com/microvm-nix/microvm.nix/blob/main/nixos-modules/microvm/options.nix)
+See [the options declarations](https://github.com/microvm-nix/microvm.nix/blob/main/nixos-modules/microvm/options.nix)
 for a full reference.

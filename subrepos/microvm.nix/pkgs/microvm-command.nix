@@ -1,10 +1,11 @@
-{ lib
-, git
-, jq
-, nix
-, openssh
-, writeShellScriptBin
-, stateDir ? "/var/lib/microvms"
+{
+  lib,
+  git,
+  jq,
+  nix,
+  openssh,
+  writeShellScriptBin,
+  stateDir ? "/var/lib/microvms",
 }:
 
 let
@@ -22,9 +23,14 @@ in
 writeShellScriptBin "microvm" ''
   set -e
 
-  PATH=${lib.makeBinPath [
-    git jq nix openssh
-  ]}:$PATH
+  PATH=${
+    lib.makeBinPath [
+      git
+      jq
+      nix
+      openssh
+    ]
+  }:$PATH
   STATE_DIR=${stateDir}
   ACTION=help
   FLAKE=git+file:///etc/nixos

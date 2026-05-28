@@ -38,8 +38,11 @@ pkgs.stdenv.mkDerivation rec {
     hash = "sha256-bHMrVrS8DuTmVJrFjTzWanhCjf7wC2QBW0Lyi0Wh5Bc=";
   };
 
-  nativeBuildInputs = [ pkgs.zig_0_15.hook pkgs.pkg-config ];
-  
+  nativeBuildInputs = [
+    pkgs.zig_0_15.hook
+    pkgs.pkg-config
+  ];
+
   buildInputs = [
     pkgs.mupdf
     pkgs.harfbuzz
@@ -50,7 +53,8 @@ pkgs.stdenv.mkDerivation rec {
     pkgs.gumbo
     pkgs.mujs
     pkgs.libz
-  ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
+  ]
+  ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
     pkgs.apple-sdk
     pkgs.libiconv
   ];

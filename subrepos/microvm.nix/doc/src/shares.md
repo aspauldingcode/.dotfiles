@@ -41,7 +41,6 @@ have options
 <code>-o xattr=sa -o acltype=posixacl</code>
 </div>
 
-
 ## Sharing a host's `/nix/store`
 
 If a share with `source = "/nix/store"` is defined, size and build

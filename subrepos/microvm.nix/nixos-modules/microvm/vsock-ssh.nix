@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.microvm.vsock;
@@ -19,10 +24,12 @@ in
   };
 
   config = lib.mkIf cfg.ssh.enable {
-    assertions = [{
-      assertion = cfg.cid != null;
-      message = "microvm.vsock.ssh.enable requires microvm.vsock.cid to be set";
-    }];
+    assertions = [
+      {
+        assertion = cfg.cid != null;
+        message = "microvm.vsock.ssh.enable requires microvm.vsock.cid to be set";
+      }
+    ];
 
     services.openssh.enable = true;
 

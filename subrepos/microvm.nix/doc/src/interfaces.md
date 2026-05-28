@@ -2,6 +2,7 @@
 
 Declare a MicroVM's virtual network interfaces like this in its NixOS
 configuration:
+
 ```nix
 {
   microvm.interfaces = [ {
@@ -80,7 +81,7 @@ microvm.binScripts.tap-up = lib.mkAfter ''
 
 ## `type = "macvtap"`
 
-*MACVTAP* interfaces attach to a host's physical network interface,
+_MACVTAP_ interfaces attach to a host's physical network interface,
 joining the same Ethernet segment with a separate MAC address.
 
 Before running a MicroVM interactively from a package, do the
@@ -111,4 +112,4 @@ This mode lets qemu create a tap interface and attach it to a bridge.
 
 The `qemu-bridge-helper` binary needs to be setup with the proper
 permissions. See the `host` module for that. qemu will be run
-*without* `-sandbox on` in order for this contraption to work.
+_without_ `-sandbox on` in order for this contraption to work.

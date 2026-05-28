@@ -25,12 +25,15 @@ echo "Wrote: ${TARGET_DIR}/${HOST}.nix"
 # Determine target output name
 ARCH="$(uname -m)"
 case "$ARCH" in
-  x86_64)
-    SYSTEM="x86_64-linux" ;;
-  aarch64|arm64)
-    SYSTEM="aarch64-linux" ;;
-  *)
-    SYSTEM="x86_64-linux" ;;
+x86_64)
+  SYSTEM="x86_64-linux"
+  ;;
+aarch64 | arm64)
+  SYSTEM="aarch64-linux"
+  ;;
+*)
+  SYSTEM="x86_64-linux"
+  ;;
 esac
-echo "${SYSTEM}" > "${TARGET_DIR}/${HOST}.system"
+echo "${SYSTEM}" >"${TARGET_DIR}/${HOST}.system"
 echo "To switch: sudo nixos-rebuild switch --flake ${REPO_ROOT}#${HOST}"

@@ -12,8 +12,8 @@ rm -f "$WAYPIPE_SOCKET"
 
 # Ensure Wawona runtime exists
 if [ ! -d "$WAWONA_RUNTIME" ]; then
-    echo "Error: Wawona runtime directory $WAWONA_RUNTIME not found. Is Wawona running?"
-    exit 1
+  echo "Error: Wawona runtime directory $WAWONA_RUNTIME not found. Is Wawona running?"
+  exit 1
 fi
 
 # Start waypipe client listening on a separate socket
@@ -28,11 +28,11 @@ sleep 1
 # Bridge the vfkit vsock socket to the waypipe socket
 echo "Bridging vsock socket to waypipe..."
 if [ -S "$VSOCK_SOCKET" ]; then
-    socat UNIX-CONNECT:"$VSOCK_SOCKET" UNIX-CONNECT:"$WAYPIPE_SOCKET" &
-    echo "Bridge established. Sway should now appear in Wawona."
+  socat UNIX-CONNECT:"$VSOCK_SOCKET" UNIX-CONNECT:"$WAYPIPE_SOCKET" &
+  echo "Bridge established. Sway should now appear in Wawona."
 else
-    echo "Warning: $VSOCK_SOCKET not found. Please start the MicroVM first."
-    echo "Once the VM starts, run: socat UNIX-CONNECT:$VSOCK_SOCKET UNIX-CONNECT:$WAYPIPE_SOCKET &"
+  echo "Warning: $VSOCK_SOCKET not found. Please start the MicroVM first."
+  echo "Once the VM starts, run: socat UNIX-CONNECT:$VSOCK_SOCKET UNIX-CONNECT:$WAYPIPE_SOCKET &"
 fi
 
 wait

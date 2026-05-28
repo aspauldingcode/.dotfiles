@@ -10,6 +10,7 @@ plentiful. If not, head over to the
 
 Because we already use systemd for MicroVM startup, let's pick
 `systemd-networkd`:
+
 ```nix
 networking.useNetworkd = true;
 ```

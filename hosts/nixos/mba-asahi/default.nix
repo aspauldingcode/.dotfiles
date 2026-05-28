@@ -1,4 +1,10 @@
-{ inputs, pkgs, lib, ... }:
+{
+  inputs,
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 {
   imports = [
@@ -15,9 +21,18 @@
         shell = pkgs.zsh;
       };
 
-      fileSystems."/" = { device = "/dev/disk/by-label/nixos"; fsType = "ext4"; };
-      fileSystems."/boot" = { device = "/dev/disk/by-label/boot"; fsType = "vfat"; };
-      fileSystems."/boot/asahi" = { device = "/dev/disk/by-label/asahi"; fsType = "vfat"; };
+      fileSystems."/" = {
+        device = "/dev/disk/by-label/nixos";
+        fsType = "ext4";
+      };
+      fileSystems."/boot" = {
+        device = "/dev/disk/by-label/boot";
+        fsType = "vfat";
+      };
+      fileSystems."/boot/asahi" = {
+        device = "/dev/disk/by-label/asahi";
+        fsType = "vfat";
+      };
       hardware.asahi.extractPeripheralFirmware = false;
     }
 
@@ -25,38 +40,28 @@
     inputs.apple-silicon.nixosModules.apple-silicon-support
     inputs.home-manager.nixosModules.home-manager
 
-    # 3. Pull in Feature Modules from the Hub
-    inputs.self.nixosModules.shell
-    inputs.self.nixosModules.secrets
-    inputs.self.nixosModules.styling
-    inputs.self.nixosModules.linux-desktop
-    inputs.self.nixosModules.microvm
-    inputs.self.nixosModules.python
+    # 3. Pull in the merged Dendritic feature module
+    inputs.self.modules.nixos.dendritic
 
     # 4. Configure Home Manager
     {
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
       home-manager.backupFileExtension = "backup";
+      home-manager.sharedModules = [
+        {
+          dendritic.theme.variant = lib.mkDefault config.dendritic.theme.variant;
+        }
+      ];
       home-manager.extraSpecialArgs = { inherit inputs; };
       home-manager.users."8amps" = {
         imports = [
-          inputs.self.homeManagerModules.shell
-          inputs.self.homeManagerModules.editor
-          inputs.self.homeManagerModules.secrets
-          inputs.self.homeManagerModules.styling
-          inputs.self.homeManagerModules.apps
-          inputs.self.homeManagerModules.ghostty
-          inputs.self.homeManagerModules.python
-          inputs.self.homeManagerModules.nixvim-ide
-          inputs.self.homeManagerModules.wallpaper
-          inputs.self.homeManagerModules.spotify
-          inputs.self.homeManagerModules.vesktop
+          inputs.self.modules.homeManager.dendritic
         ];
         home.username = "8amps";
         home.homeDirectory = "/home/8amps";
         home.stateVersion = "24.11";
-        
+
         # ── Show Hidden Files (GTK) ──────────────────────────────────
         dconf.settings = {
           "org/gtk/settings/file-chooser" = {
@@ -69,7 +74,6 @@
 
         # ── Feature Toggles ─────────────────────────────────────────
         dendritic.apps.ghostty.enable = true;
-        dendritic.apps.nixvim-ide.enable = true;
         dendritic.python.enable = true;
 
         # ─────────────────────────────────────────────────────────────

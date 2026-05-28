@@ -32,9 +32,6 @@ jobs:
           - name: "8amps-linux (Home Manager)"
             os: ubuntu-latest
             attr: "homeConfigurations.8amps-linux.activationPackage"
-          - name: "linux-generic (System Manager)"
-            os: ubuntu-latest
-            attr: "systemConfigs.linux-generic.config.build.toplevel"
 
     steps:
       - name: Checkout repository

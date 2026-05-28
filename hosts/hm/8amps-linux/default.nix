@@ -2,7 +2,6 @@
 
 {
   imports = [
-    inputs.self.homeManagerModules.theme
     {
       home.username = "8amps";
       home.homeDirectory = "/home/8amps";
@@ -14,29 +13,17 @@
       gtk.gtk4.theme = null;
     }
 
-    # Pull in Feature Modules from the Hub
-    inputs.self.homeManagerModules.shell
-    inputs.self.homeManagerModules.editor
-    inputs.self.homeManagerModules.secrets
-    inputs.self.homeManagerModules.styling
-    inputs.self.homeManagerModules.apps
-    inputs.self.homeManagerModules.ghostty
-    inputs.self.homeManagerModules.antigravity
-    inputs.self.homeManagerModules.python
-    inputs.self.homeManagerModules.wallpaper
-    inputs.self.homeManagerModules.spotify
-    inputs.self.homeManagerModules.vesktop
-    inputs.self.homeManagerModules.opencode
-    inputs.self.homeManagerModules.qt
-    inputs.self.homeManagerModules.linux-desktop
-    
-    # External modules
+    # Pull in the merged Dendritic feature module
+    inputs.self.modules.homeManager.dendritic
 
     {
       # ── Feature Toggles ─────────────────────────────────────────
       dendritic.apps.ghostty.enable = true;
+      dendritic.apps.vscode.enable = false;
+      dendritic.apps.cursor.enable = false;
       dendritic.apps.linux-desktop.enable = true;
       dendritic.apps.antigravity.enable = false;
+      dendritic.apps.jetbrains.enable = false;
       dendritic.python.enable = true;
       # ─────────────────────────────────────────────────────────────
     }
