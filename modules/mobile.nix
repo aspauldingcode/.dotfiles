@@ -1,9 +1,20 @@
 {
-  flake.modules.homeManager.mobile = { pkgs, inputs, ... }: {
-    # If using ansible or similar setup for Sileo packages on a jailbroken iPhone
-    home.packages = with pkgs; [
-      ansible
-      # Add other iOS automation tools here
-    ];
-  };
+  flake.modules.homeManager.dendritic =
+    {
+      pkgs,
+      lib,
+      config,
+      ...
+    }:
+    {
+      options.dendritic.mobile = {
+        enable = lib.mkEnableOption "Mobile/iOS automation tooling (ansible et al.)";
+      };
+
+      config = lib.mkIf config.dendritic.mobile.enable {
+        home.packages = with pkgs; [
+          ansible
+        ];
+      };
+    };
 }

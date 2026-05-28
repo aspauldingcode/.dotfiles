@@ -10,6 +10,7 @@ and no virtiofsd is started. These can be worked around by relying on
 ## Immediately running a nixosConfiguration
 
 To run a `nixosConfiguration` off your Flake directly use:
+
 ```bash
 nix run .#nixosConfigurations.my-microvm.config.microvm.declaredRunner
 ```
@@ -18,6 +19,7 @@ nix run .#nixosConfigurations.my-microvm.config.microvm.declaredRunner
 
 To add this runner permanently add a package like this to the outputs
 of your `flake.nix`:
+
 ```nix
 packages.x86_64-linux.my-microvm = self.nixosConfigurations.my-microvm.config.microvm.declaredRunner;
 ```

@@ -19,7 +19,7 @@ Let's explore alternative ways before detailing our elaboration:
 
 ## microvm.deploy.rebuild
 
-The *easy* interface that is named after `nixos-rebuild` combines the
+The _easy_ interface that is named after `nixos-rebuild` combines the
 two scripts that are described below:
 
 - First, we evaluate locally and build remotely with

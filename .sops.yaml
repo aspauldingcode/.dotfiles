@@ -1,0 +1,20 @@
+# sops creation/decryption rules.
+#
+# `keys` defines the canonical age recipients. To rotate or add a new
+# machine, add its age recipient here, then `sops updatekeys <file>` on
+# every encrypted file so its data key gets re-wrapped.
+#
+# `creation_rules` controls what recipients sops uses when ENCRYPTING new
+# files matching `path_regex`. Each matched file gets its data key
+# encrypted to every listed recipient.
+#
+# The age private key is *derived at runtime* from the user's SSH ed25519
+# key via sops-nix's `sops.age.sshKeyPaths`, so there's no separate age
+# private key to back up or rotate.
+keys:
+  - &user_8amps age1alw70v2xd80yrkn2ukap264c64fa64qjq7rr4uh07amu8ahm9uzs9z485w
+creation_rules:
+  # General secrets file (openai API key etc.).
+  - path_regex: secrets/secrets\.yaml$
+    age:
+      - *user_8amps

@@ -1,6 +1,6 @@
 {
   # ── Python Development Environment ────────────────────────────
-  flake.modules.darwin.python =
+  flake.modules.darwin.dendritic =
     {
       pkgs,
       lib,
@@ -10,13 +10,15 @@
     let
       pythonPkg = pkgs.python3;
 
-      pythonEnv = pythonPkg.withPackages (ps: with ps; [
-        pip
-        setuptools
-        wheel
-        ipython
-        six
-      ]);
+      pythonEnv = pythonPkg.withPackages (
+        ps: with ps; [
+          pip
+          setuptools
+          wheel
+          ipython
+          six
+        ]
+      );
     in
     {
       options.dendritic.python = {
@@ -48,7 +50,7 @@
       };
     };
 
-  flake.modules.nixos.python =
+  flake.modules.nixos.dendritic =
     {
       pkgs,
       lib,
@@ -58,13 +60,15 @@
     let
       pythonPkg = pkgs.python3;
 
-      pythonEnv = pythonPkg.withPackages (ps: with ps; [
-        pip
-        setuptools
-        wheel
-        ipython
-        six
-      ]);
+      pythonEnv = pythonPkg.withPackages (
+        ps: with ps; [
+          pip
+          setuptools
+          wheel
+          ipython
+          six
+        ]
+      );
     in
     {
       options.dendritic.python = {
@@ -96,7 +100,7 @@
       };
     };
 
-  flake.modules.homeManager.python =
+  flake.modules.homeManager.dendritic =
     {
       pkgs,
       lib,
@@ -106,13 +110,15 @@
     let
       pythonPkg = pkgs.python3;
 
-      pythonEnv = pythonPkg.withPackages (ps: with ps; [
-        pip
-        setuptools
-        wheel
-        ipython
-        six
-      ]);
+      pythonEnv = pythonPkg.withPackages (
+        ps: with ps; [
+          pip
+          setuptools
+          wheel
+          ipython
+          six
+        ]
+      );
     in
     {
       options.dendritic.python = {

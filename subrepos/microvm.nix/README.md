@@ -32,32 +32,31 @@ imperatively with the provided `microvm` command.
   shrunk using `microvm-balloon`
 - MicroVMs have a read-only root disk with either a prepopulated
   `/nix/store` or by mounting the host's along with an optional
-  writable overlay. This filesystem can be built as either *squashfs*
-  (smaller) or *erofs* (faster).
+  writable overlay. This filesystem can be built as either _squashfs_
+  (smaller) or _erofs_ (faster).
 - You define your MicroVMs in a Nix Flake's `nixosConfigurations`
   section, reusing the `nixosModules` that are exported by this Flake.
 - MicroVMs can access stateful filesystems either on a image volume as
   a block device, or alternatively as a shared directory hierarchy
-  through *9p* or *virtiofs*.
+  through _9p_ or _virtiofs_.
 - Zero, one, or more virtual tap ethernet network interfaces can be
-  attached to a MicroVM. `qemu`, `kvmtool`, and `vfkit` also support *user*
+  attached to a MicroVM. `qemu`, `kvmtool`, and `vfkit` also support _user_
   networking which requires no additional setup on the host.
 - For high-throughput TAP networking with `qemu`, enable `tap.vhost = true`
   to use vhost-net kernel acceleration (~10 Gbps vs ~1.5 Gbps without).
 
 ## Hypervisors
 
-| Hypervisor                                                              | Language | Restrictions                                          |
-|-------------------------------------------------------------------------|----------|-------------------------------------------------------|
-| [qemu](https://www.qemu.org/)                                           | C        |                                                       |
-| [cloud-hypervisor](https://www.cloudhypervisor.org/)                    | Rust     | no 9p shares                                          |
-| [firecracker](https://firecracker-microvm.github.io/)                   | Rust     | no 9p/virtiofs shares                                 |
-| [crosvm](https://github.com/google/crosvm) | Rust     | 9p shares broken                                      |
-| [kvmtool](https://github.com/kvmtool/kvmtool)                           | C        | no virtiofs shares, no control socket                 |
-| [stratovirt](https://github.com/openeuler-mirror/stratovirt)            | Rust     | no 9p/virtiofs shares, no control socket              |
-| [alioth](https://github.com/google/alioth)                              | Rust     | no virtiofs shares, no control socket                 |
-| [vfkit](https://github.com/crc-org/vfkit)                               | Go       | macOS only, no 9p shares, no tap/bridge networking    |
-
+| Hypervisor                                                   | Language | Restrictions                                       |
+| ------------------------------------------------------------ | -------- | -------------------------------------------------- |
+| [qemu](https://www.qemu.org/)                                | C        |                                                    |
+| [cloud-hypervisor](https://www.cloudhypervisor.org/)         | Rust     | no 9p shares                                       |
+| [firecracker](https://firecracker-microvm.github.io/)        | Rust     | no 9p/virtiofs shares                              |
+| [crosvm](https://github.com/google/crosvm)                   | Rust     | 9p shares broken                                   |
+| [kvmtool](https://github.com/kvmtool/kvmtool)                | C        | no virtiofs shares, no control socket              |
+| [stratovirt](https://github.com/openeuler-mirror/stratovirt) | Rust     | no 9p/virtiofs shares, no control socket           |
+| [alioth](https://github.com/google/alioth)                   | Rust     | no virtiofs shares, no control socket              |
+| [vfkit](https://github.com/crc-org/vfkit)                    | Go       | macOS only, no 9p shares, no tap/bridge networking |
 
 ## Installation
 
@@ -105,6 +104,7 @@ MicroVMs. They listen for ssh with an empty root password.
 ### Experimental: run graphical applications with graphics support
 
 On Linux with cloud-hypervisor and Wayland forwarding:
+
 ```shell
 nix run microvm#graphics neverball
 ```

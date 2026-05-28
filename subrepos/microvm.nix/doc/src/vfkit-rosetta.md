@@ -61,7 +61,7 @@ You can use `pkgsCross.gnu64.<package>` to cross-compile any package from nixpkg
 ## Options Reference
 
 | Option                                  | Type | Default | Description                     |
-|-----------------------------------------|------|---------|---------------------------------|
+| --------------------------------------- | ---- | ------- | ------------------------------- |
 | `microvm.vfkit.rosetta.enable`          | bool | `false` | Enable Rosetta support          |
 | `microvm.vfkit.rosetta.install`         | bool | `false` | Auto-install Rosetta if missing |
 | `microvm.vfkit.rosetta.ignoreIfMissing` | bool | `false` | Continue if Rosetta unavailable |

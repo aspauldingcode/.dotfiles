@@ -1,8 +1,9 @@
-{ self
-, nixpkgs
-, system
-, packages ? ""
-, tapInterface ? null
+{
+  self,
+  nixpkgs,
+  system,
+  packages ? "",
+  tapInterface ? null,
 }:
 
 # Before running: $ mkdir /tmp/share
@@ -16,63 +17,70 @@ nixpkgs.lib.nixosSystem {
     # this runs as a MicroVM
     self.nixosModules.microvm
 
-    ({ lib, pkgs, ... }: {
-      microvm = {
-        hypervisor = "qemu";
-        graphics.enable = true;
-        interfaces = lib.optional (tapInterface != null) {
-          type = "tap";
-          id = tapInterface;
-          mac = "00:00:00:00:00:02";
+    (
+      { lib, pkgs, ... }:
+      {
+        microvm = {
+          hypervisor = "qemu";
+          graphics.enable = true;
+          interfaces = lib.optional (tapInterface != null) {
+            type = "tap";
+            id = tapInterface;
+            mac = "00:00:00:00:00:02";
+          };
         };
-      };
 
-      networking.hostName = "qemu-vnc";
-      system.stateVersion = lib.trivial.release;
+        networking.hostName = "qemu-vnc";
+        system.stateVersion = lib.trivial.release;
 
-      microvm.qemu.extraArgs = [
-        "-vnc" ":0"
-        "-vga" "qxl"
-        # needed for mounse/keyboard input via vnc
-        "-device" "virtio-keyboard"
-        "-usb"
-        "-device" "usb-tablet,bus=usb-bus.0"
-      ];
+        microvm.qemu.extraArgs = [
+          "-vnc"
+          ":0"
+          "-vga"
+          "qxl"
+          # needed for mounse/keyboard input via vnc
+          "-device"
+          "virtio-keyboard"
+          "-usb"
+          "-device"
+          "usb-tablet,bus=usb-bus.0"
+        ];
 
-      services.getty.autologinUser = "user";
-      users.users.user = {
-        password = "";
-        group = "user";
-        isNormalUser = true;
-        extraGroups = [ "wheel" "video" ];
-      };
-      users.groups.user = { };
-      security.sudo = {
-        enable = true;
-        wheelNeedsPassword = false;
-      };
+        services.getty.autologinUser = "user";
+        users.users.user = {
+          password = "";
+          group = "user";
+          isNormalUser = true;
+          extraGroups = [
+            "wheel"
+            "video"
+          ];
+        };
+        users.groups.user = { };
+        security.sudo = {
+          enable = true;
+          wheelNeedsPassword = false;
+        };
 
-      services.xserver = {
-        enable = true;
-        desktopManager.xfce.enable = true;
-        displayManager.autoLogin.user = "user";
-      };
+        services.xserver = {
+          enable = true;
+          desktopManager.xfce.enable = true;
+          displayManager.autoLogin.user = "user";
+        };
 
-      hardware.graphics.enable = true;
+        hardware.graphics.enable = true;
 
-      environment.systemPackages = with pkgs; [
-        xdg-utils # Required
-      ] ++ map
-        (package:
-          lib.attrByPath (lib.splitString "." package) (throw "Package ${package} not found in nixpkgs") pkgs
-        )
-        (
-          builtins.filter
-            (package:
-              package != ""
-            )
-            (lib.splitString " " packages));
+        environment.systemPackages =
+          with pkgs;
+          [
+            xdg-utils # Required
+          ]
+          ++ map (
+            package:
+            lib.attrByPath (lib.splitString "." package) (throw "Package ${package} not found in nixpkgs") pkgs
+          ) (builtins.filter (package: package != "") (lib.splitString " " packages));
 
-    })
+      }
+    )
   ];
 }

@@ -1,4 +1,9 @@
-{ self, nixpkgs, system, hypervisor }:
+{
+  self,
+  nixpkgs,
+  system,
+  hypervisor,
+}:
 
 let
   vmName = "machined-test";
@@ -55,11 +60,14 @@ in
             # Verify the machine class is 'vm'
             host.succeed("machinectl show '${vmName}' --property=Class | grep -q 'vm'")
 
-            ${lib.optionalString ((lib.versionAtLeast pkgs.systemd.version "259") && hypervisor != "cloud-hypervisor") ''
-              # On systemd >=259 RegisterMachineEx path should expose VSOCK/SSH metadata
-              host.succeed("machinectl show '${vmName}' --property=VSockCID | grep -q 'VSockCID=${toString vsockCid}'")
-              host.succeed("machinectl show '${vmName}' --property=SSHAddress | grep -q 'SSHAddress=vsock/${toString vsockCid}'")
-            ''}
+            ${lib.optionalString
+              ((lib.versionAtLeast pkgs.systemd.version "259") && hypervisor != "cloud-hypervisor")
+              ''
+                # On systemd >=259 RegisterMachineEx path should expose VSOCK/SSH metadata
+                host.succeed("machinectl show '${vmName}' --property=VSockCID | grep -q 'VSockCID=${toString vsockCid}'")
+                host.succeed("machinectl show '${vmName}' --property=SSHAddress | grep -q 'SSHAddress=vsock/${toString vsockCid}'")
+              ''
+            }
 
             # Terminate the VM via machinectl (sends SIGTERM to hypervisor)
             host.succeed("machinectl terminate '${vmName}'")

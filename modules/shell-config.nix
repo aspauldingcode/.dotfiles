@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.shell =
+  flake.modules.nixos.dendritic =
     {
       pkgs,
       lib,
@@ -22,9 +22,14 @@
       // (lib.optionalAttrs (options ? environment && options.environment ? shells) {
         shells = [ pkgs.zsh ];
       });
+
+      security.sudo.extraConfig = ''
+        # 120 min: authenticate once, then reuse for a long session.
+        Defaults timestamp_timeout=120
+      '';
     };
 
-  flake.modules.darwin.shell =
+  flake.modules.darwin.dendritic =
     { pkgs, inputs, ... }:
     {
       programs.zsh.enable = true;
@@ -43,9 +48,14 @@
         sudo mkdir -p /Library/Java/JavaVirtualMachines
         sudo ln -sfn ${pkgs.jdk21}/Library/Java/JavaVirtualMachines/zulu-21.jdk /Library/Java/JavaVirtualMachines/nix-jdk-21.jdk
       '';
+
+      security.sudo.extraConfig = ''
+        # 120 min: authenticate once, then reuse for a long session.
+        Defaults timestamp_timeout=120
+      '';
     };
 
-  flake.modules.homeManager.shell =
+  flake.modules.homeManager.dendritic =
     {
       pkgs,
       config,
@@ -68,7 +78,7 @@
 
       programs.zsh = {
         enable = true;
-        enableCompletion = true;
+        enableCompletion = false; # We'll manage compinit manually for micro-optimization
         autosuggestion.enable = true;
         syntaxHighlighting.enable = true;
         # Use zsh from nixpkgs to override macOS default
@@ -97,10 +107,30 @@
 
         initContent = lib.mkMerge [
 
+          # ── zsh-defer (must be loaded incredibly early) ──
+          (lib.mkOrder 100 ''
+            source ${pkgs.zsh-defer}/share/zsh-defer/zsh-defer.plugin.zsh
+          '')
+
+          # ── Micro-optimized compinit ──
+          (lib.mkOrder 200 ''
+            # Load completions but only compile the cache if older than 24 hours
+            autoload -Uz compinit
+            if [[ -n ''${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh+24) ]]; then
+              compinit -C
+            else
+              compinit
+              # Compile to zsh native bytecode in the background
+              zsh-defer zcompile "''${ZDOTDIR:-$HOME}/.zcompdump"
+            fi
+
+            # Load the natively compiled bytecode cache
+            autoload -Uz bashcompinit && bashcompinit
+          '')
 
           # ── fzf-tab (must load after compinit, before other plugins) ──
           (lib.mkOrder 550 ''
-            source ${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh
+            zsh-defer source ${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh
           '')
 
           # ── Core plugins & integrations ──
@@ -110,16 +140,20 @@
             bindkey '^[[B' history-substring-search-down
 
             # ── zsh-you-should-use ──
-            source ${pkgs.zsh-you-should-use}/share/zsh/plugins/you-should-use/you-should-use.plugin.zsh
+            zsh-defer source ${pkgs.zsh-you-should-use}/share/zsh/plugins/you-should-use/you-should-use.plugin.zsh
 
             # ── zsh-vi-mode ──
-            source ${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
+            zsh-defer source ${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 
             # ── forgit (interactive git via fzf) ──
-            source ${pkgs.zsh-forgit}/share/zsh/zsh-forgit/forgit.plugin.zsh
+            zsh-defer source ${pkgs.zsh-forgit}/share/zsh/zsh-forgit/forgit.plugin.zsh
 
             # ── any-nix-shell (stay in zsh inside nix-shell/nix develop) ──
-            ${pkgs.any-nix-shell}/bin/any-nix-shell zsh --info-right | source /dev/stdin
+            zsh-defer eval "$(${pkgs.any-nix-shell}/bin/any-nix-shell zsh --info-right)"
+
+            # ── fzf explicit deferred loading ──
+            zsh-defer source ${pkgs.fzf}/share/fzf/key-bindings.zsh
+            zsh-defer source ${pkgs.fzf}/share/fzf/completion.zsh
 
             # ── sudo toggle (ESC ESC) ──
             function _sudo_toggle() {
@@ -174,7 +208,7 @@
       # ── fzf (fuzzy finder with Ctrl+R, Ctrl+T, Alt+C) ──
       programs.fzf = {
         enable = true;
-        enableZshIntegration = true;
+        enableZshIntegration = false; # We defer it manually!
         defaultCommand = "${pkgs.fd}/bin/fd --type f --hidden --follow --exclude .git";
         changeDirWidgetCommand = "${pkgs.fd}/bin/fd --type d --hidden --follow --exclude .git";
         defaultOptions = [
@@ -220,7 +254,7 @@
       # ── nix-index (command-not-found integration) ──
       programs.nix-index = {
         enable = true;
-        enableZshIntegration = true;
+        enableZshIntegration = false; # Too heavy to run synchronously
       };
 
       programs.starship = {
@@ -251,14 +285,13 @@
         NH_FLAKE = (if pkgs.stdenv.isDarwin then "/etc/nix-darwin/.dotfiles#mba" else "/etc/nixos");
       };
 
-      
       # Yazi minimal configuration with ANSI inheritance
       programs.yazi = {
         enable = true;
         enableZshIntegration = true;
         shellWrapperName = "y";
         settings = {
-          manager = {
+          mgr = {
             show_hidden = true;
             sort_by = "natural";
           };
@@ -272,7 +305,7 @@
             + "/mount.yazi";
         };
         keymap = {
-          manager.prepend_keymap = [
+          mgr.prepend_keymap = [
             {
               on = [ "M" ];
               run = "plugin mount";
@@ -295,6 +328,7 @@
 
       home.packages = with pkgs; [
         nh
+        zsh-defer
         zsh-completions
         nix-zsh-completions # Tab completions for nix CLI
         comma # Run any nixpkgs binary without installing: , cowsay hello

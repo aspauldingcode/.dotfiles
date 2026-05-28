@@ -1,8 +1,19 @@
-{ pkgs, allApps, masPackage, lib }:
+{
+  pkgs,
+  allApps,
+  masPackage,
+  lib,
+}:
 
 pkgs.writeShellScriptBin "mas-sync" ''
   set -euo pipefail
-  export PATH="${lib.makeBinPath [ masPackage pkgs.coreutils pkgs.gnugrep ]}:$PATH"
+  export PATH="${
+    lib.makeBinPath [
+      masPackage
+      pkgs.coreutils
+      pkgs.gnugrep
+    ]
+  }:$PATH"
   export MAS_NO_AUTO_INDEX=1
 
   echo ""
@@ -19,20 +30,22 @@ pkgs.writeShellScriptBin "mas-sync" ''
   echo "  ⤓ Checking for Mac App Store updates..."
   mas upgrade || echo "  ⚠️  Some updates could not be applied automatically."
 
-  ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: id: ''
-    if echo "$INSTALLED" | grep -q "^${toString id} "; then
-      echo "  ✓ ${name} (${toString id}) — already installed"
-    else
-      echo "  ⤓ Installing ${name} (${toString id})..."
-      if mas purchase ${toString id}; then
-        echo "  ✓ ${name} — installed successfully"
-      elif mas install ${toString id}; then
-        echo "  ✓ ${name} — re-installed successfully"
+  ${lib.concatStringsSep "\n" (
+    lib.mapAttrsToList (name: id: ''
+      if echo "$INSTALLED" | grep -q "^${toString id} "; then
+        echo "  ✓ ${name} (${toString id}) — already installed"
       else
-        echo "  ✗ ${name} — install failed (check App Store sign-in)" >&2
+        echo "  ⤓ Installing ${name} (${toString id})..."
+        if mas purchase ${toString id}; then
+          echo "  ✓ ${name} — installed successfully"
+        elif mas install ${toString id}; then
+          echo "  ✓ ${name} — re-installed successfully"
+        else
+          echo "  ✗ ${name} — install failed (check App Store sign-in)" >&2
+        fi
       fi
-    fi
-  '') allApps)}
+    '') allApps
+  )}
 
   echo ""
   echo "══════════════════════════════════════════════════════════"

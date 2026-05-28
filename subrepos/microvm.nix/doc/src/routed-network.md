@@ -18,7 +18,7 @@ the bridge.
 ## Addressing
 
 Compared to one Ethernet where we assign a large subnet like
-`10.0.0.0/24`, we will now only deal with *Host Routes* where the
+`10.0.0.0/24`, we will now only deal with _Host Routes_ where the
 prefix length is `/32` for IPv4 and `/128` for IPv6. Note that by
 doing this we no longer lose precious space to a subnet's network and
 broadcast addresses.

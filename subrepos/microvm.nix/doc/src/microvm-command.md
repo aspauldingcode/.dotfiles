@@ -29,7 +29,7 @@ microvm.autostart = [
 
 ## Update a MicroVM
 
-*Updating* does not refresh your packages but simply rebuilds the
+_Updating_ does not refresh your packages but simply rebuilds the
 MicroVM. Use `nix flake update` to get new package versions.
 
 ```bash

@@ -1,5 +1,9 @@
 # `nix run microvm#vm`
-{ self, nixpkgs, system }:
+{
+  self,
+  nixpkgs,
+  system,
+}:
 
 nixpkgs.lib.nixosSystem {
   inherit system;
@@ -10,20 +14,24 @@ nixpkgs.lib.nixosSystem {
     # this runs as a MicroVM that nests MicroVMs
     self.nixosModules.microvm
 
-    ({ config, lib, ... }:
+    (
+      { config, lib, ... }:
       let
         inherit (self.lib) hypervisors;
 
         hypervisorMacAddrs = builtins.listToAttrs (
-          map (hypervisor:
+          map (
+            hypervisor:
             let
               hash = builtins.hashString "sha256" hypervisor;
               c = off: builtins.substring off 2 hash;
               mac = "${builtins.substring 0 1 hash}2:${c 2}:${c 4}:${c 6}:${c 8}:${c 10}";
-            in {
+            in
+            {
               name = hypervisor;
               value = mac;
-            }) hypervisors
+            }
+          ) hypervisors
         );
 
         hypervisorIPv4Addrs = builtins.listToAttrs (
@@ -33,7 +41,8 @@ nixpkgs.lib.nixosSystem {
           }) hypervisors
         );
 
-      in {
+      in
+      {
         networking.hostName = "microvms-host";
         system.stateVersion = lib.trivial.release;
         users.users.root.password = "";
@@ -56,11 +65,13 @@ nixpkgs.lib.nixosSystem {
           # Use QEMU because nested virtualization and user networking
           # are required.
           hypervisor = "qemu";
-          interfaces = [ {
-            type = "user";
-            id = "qemu";
-            mac = "02:00:00:01:01:01";
-          } ];
+          interfaces = [
+            {
+              type = "user";
+              id = "qemu";
+              mac = "02:00:00:01:01:01";
+            }
+          ];
         };
 
         # Nested MicroVMs (a *host* option)
@@ -71,11 +82,13 @@ nixpkgs.lib.nixosSystem {
 
             microvm = {
               inherit hypervisor;
-              interfaces = [ {
-                type = "tap";
-                id = "vm-${builtins.substring 0 12 hypervisor}";
-                inherit mac;
-              } ];
+              interfaces = [
+                {
+                  type = "tap";
+                  id = "vm-${builtins.substring 0 12 hypervisor}";
+                  inherit mac;
+                }
+              ];
             };
             # Just use 99-ethernet-default-dhcp.network
             systemd.network.enable = true;
@@ -97,11 +110,14 @@ nixpkgs.lib.nixosSystem {
           networks.virbr0 = {
             matchConfig.Name = "virbr0";
 
-            addresses = [ {
-              Address = "10.0.0.1/24";
-            } {
-              Address = "fd12:3456:789a::1/64";
-            } ];
+            addresses = [
+              {
+                Address = "10.0.0.1/24";
+              }
+              {
+                Address = "fd12:3456:789a::1/64";
+              }
+            ];
             # Hand out IP addresses to MicroVMs.
             # Use `networkctl status virbr0` to see leases.
             networkConfig = {
@@ -114,9 +130,11 @@ nixpkgs.lib.nixosSystem {
               Address = hypervisorIPv4Addrs.${hypervisor};
             }) hypervisors;
             # IPv6 SLAAC
-            ipv6Prefixes = [ {
-              Prefix = "fd12:3456:789a::/64";
-            } ];
+            ipv6Prefixes = [
+              {
+                Prefix = "fd12:3456:789a::/64";
+              }
+            ];
           };
           networks.microvm-eth0 = {
             matchConfig.Name = "vm-*";
@@ -136,6 +154,7 @@ nixpkgs.lib.nixosSystem {
             internalInterfaces = [ "virbr0" ];
           };
         };
-      })
+      }
+    )
   ];
 }

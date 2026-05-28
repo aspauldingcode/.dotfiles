@@ -47,6 +47,7 @@ opting for declarative, versioned configuration instead.
 Last, the TAP interfaces of MicroVMs shall be attached to this central
 bridge. Make sure your `matchConfig` matches just the interfaces you
 want!
+
 ```nix
 systemd.network.networks."11-microvm" = {
   matchConfig.Name = "vm-*";
@@ -59,7 +60,7 @@ systemd.network.networks."11-microvm" = {
 
 IPv4 addresses are exhausted. It is a very common case that you get
 one public IPv4 address for your machine. The solution is to route
-your internal virtual machines with *Network Address Translation*.
+your internal virtual machines with _Network Address Translation_.
 
 You might not get a dedicated /64 IPv6 prefix to route to your
 MicroVMs. NAT works for this address family, too!
