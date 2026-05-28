@@ -6,9 +6,9 @@
     flake.modules.darwin.microvm = { pkgs, inputs, ... }: {
       environment.systemPackages = [ 
         inputs.determinate-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
-        inputs.self.nixosConfigurations.microvm.config.microvm.runner.vfkit
+        # inputs.self.nixosConfigurations.microvm.config.microvm.runner.vfkit
       ];
-      environment.shellAliases.microvm-run = "${inputs.self.nixosConfigurations.microvm.config.microvm.runner.vfkit}/bin/microvm-run";
+      # environment.shellAliases.microvm-run = "${inputs.self.nixosConfigurations.microvm.config.microvm.runner.vfkit}/bin/microvm-run";
     };
 
     # ── The MicroVM Definition ──────────────────────────────────
@@ -18,13 +18,14 @@
         inputs.microvm.nixosModules.microvm
         inputs.home-manager.nixosModules.home-manager
         inputs.determinate-nix.nixosModules.default
-        inputs.self.modules.nixos.shell
-        inputs.self.modules.nixos.styling
-        inputs.self.modules.nixos.linux-desktop
+        inputs.self.nixosModules.shell
+        # inputs.self.nixosModules.styling
+        # inputs.self.nixosModules.linux-desktop
         
         ({ lib, pkgs, ... }: {
           nixpkgs.hostPlatform = "aarch64-linux";
           nixpkgs.config.allowUnfree = true;
+
           networking.hostName = "dendritic-vm";
           system.stateVersion = "24.11";
           
@@ -38,13 +39,13 @@
             microvm = {
             hypervisor = "vfkit";
             socket = "/Users/8amps/.local/share/microvm/dendritic-vm.sock";
-            vcpu = 2; mem = 2047;
-            vsock.cid = 3;
+            vcpu = 2; mem = 8192;
+            # vsock.cid = 3;
             shares = [{ proto = "virtiofs"; tag = "ro-store"; source = "/nix/store"; mountPoint = "/nix/.ro-store"; }];
             registerWithMachined = false;
             vmHostPackages = inputs.nixpkgs.legacyPackages."aarch64-darwin";
             writableStoreOverlay = "/nix/.rw-store";
-            volumes = [{ image = "/Users/8amps/.local/share/microvm/dendritic-vm.img"; mountPoint = "/nix/.rw-store"; size = 10240; }];
+            volumes = [{ image = "/Users/8amps/.local/share/microvm/dendritic-vm.img"; mountPoint = "/nix/.rw-store"; size = 20480; }];
             vfkit.logLevel = "info";
           };
 

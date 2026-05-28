@@ -2,6 +2,7 @@
 
 {
   imports = [
+    inputs.self.homeManagerModules.theme
     {
       home.username = "8amps";
       home.homeDirectory = "/home/8amps";
@@ -14,25 +15,29 @@
     }
 
     # Pull in Feature Modules from the Hub
-    inputs.self.modules.homeManager.shell
-    inputs.self.modules.homeManager.editor
-    inputs.self.modules.homeManager.secrets
-    inputs.self.modules.homeManager.styling
-    inputs.self.modules.homeManager.apps
-    inputs.self.modules.homeManager.ghostty
-    inputs.self.modules.homeManager.antigravity
-    inputs.self.modules.homeManager.wallpaper
-    inputs.self.modules.homeManager.spotify
-    inputs.self.modules.homeManager.vesktop
-    inputs.self.modules.homeManager.sway
+    inputs.self.homeManagerModules.shell
+    inputs.self.homeManagerModules.editor
+    inputs.self.homeManagerModules.secrets
+    inputs.self.homeManagerModules.styling
+    inputs.self.homeManagerModules.apps
+    inputs.self.homeManagerModules.ghostty
+    inputs.self.homeManagerModules.antigravity
+    inputs.self.homeManagerModules.python
+    inputs.self.homeManagerModules.wallpaper
+    inputs.self.homeManagerModules.spotify
+    inputs.self.homeManagerModules.vesktop
+    inputs.self.homeManagerModules.opencode
+    inputs.self.homeManagerModules.qt
+    inputs.self.homeManagerModules.linux-desktop
     
     # External modules
 
     {
       # ── Feature Toggles ─────────────────────────────────────────
       dendritic.apps.ghostty.enable = true;
-      dendritic.apps.sway.enable = true;
+      dendritic.apps.linux-desktop.enable = true;
       dendritic.apps.antigravity.enable = false;
+      dendritic.python.enable = true;
       # ─────────────────────────────────────────────────────────────
     }
   ];

@@ -26,11 +26,12 @@
     inputs.home-manager.nixosModules.home-manager
 
     # 3. Pull in Feature Modules from the Hub
-    inputs.self.modules.nixos.shell
-    inputs.self.modules.nixos.secrets
-    inputs.self.modules.nixos.styling
-    inputs.self.modules.nixos.linux-desktop
-    inputs.self.modules.nixos.microvm
+    inputs.self.nixosModules.shell
+    inputs.self.nixosModules.secrets
+    inputs.self.nixosModules.styling
+    inputs.self.nixosModules.linux-desktop
+    inputs.self.nixosModules.microvm
+    inputs.self.nixosModules.python
 
     # 4. Configure Home Manager
     {
@@ -40,16 +41,17 @@
       home-manager.extraSpecialArgs = { inherit inputs; };
       home-manager.users."8amps" = {
         imports = [
-          inputs.self.modules.homeManager.shell
-          inputs.self.modules.homeManager.editor
-          inputs.self.modules.homeManager.secrets
-          inputs.self.modules.homeManager.styling
-          inputs.self.modules.homeManager.apps
-          inputs.self.modules.homeManager.ghostty
-          inputs.self.modules.homeManager.nixvim-ide
-          inputs.self.modules.homeManager.wallpaper
-          inputs.self.modules.homeManager.spotify
-          inputs.self.modules.homeManager.vesktop
+          inputs.self.homeManagerModules.shell
+          inputs.self.homeManagerModules.editor
+          inputs.self.homeManagerModules.secrets
+          inputs.self.homeManagerModules.styling
+          inputs.self.homeManagerModules.apps
+          inputs.self.homeManagerModules.ghostty
+          inputs.self.homeManagerModules.python
+          inputs.self.homeManagerModules.nixvim-ide
+          inputs.self.homeManagerModules.wallpaper
+          inputs.self.homeManagerModules.spotify
+          inputs.self.homeManagerModules.vesktop
         ];
         home.username = "8amps";
         home.homeDirectory = "/home/8amps";
@@ -58,6 +60,7 @@
         # ── Feature Toggles ─────────────────────────────────────────
         dendritic.apps.ghostty.enable = true;
         dendritic.apps.nixvim-ide.enable = true;
+        dendritic.python.enable = true;
         # ─────────────────────────────────────────────────────────────
       };
     }

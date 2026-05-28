@@ -9,11 +9,11 @@ Following the [dendritic pattern](https://github.com/mightyiam/dendritic), this 
 | Platform | Path |
 |---|---|
 | **NixOS** | `/etc/nixos/` |
-| **macOS (nix-darwin)** | `/etc/nix-darwin/` |
+| **macOS (nix-darwin)** | `/etc/nix-darwin/.dotfiles/` |
 
 ```bash
 # macOS
-sudo git clone git@github.com:aspauldingcode/.dotfiles.git /etc/nix-darwin
+sudo git clone git@github.com:aspauldingcode/.dotfiles.git /etc/nix-darwin/.dotfiles
 
 # NixOS
 sudo git clone git@github.com:aspauldingcode/.dotfiles.git /etc/nixos
@@ -23,7 +23,7 @@ sudo git clone git@github.com:aspauldingcode/.dotfiles.git /etc/nixos
 
 You can bootstrap this dotfiles configuration directly on a fresh macOS machine with Nix installed by running a single command.
 
-The install script will automatically clone the repository to `/etc/nix-darwin` (or `/etc/nixos` on NixOS) and apply the system configuration. We use the tarball link so it works even if your brand-new Mac doesn't have `git` installed yet:
+The install script will automatically clone the repository to `/etc/nix-darwin/.dotfiles` (or `/etc/nixos` on NixOS) and apply the system configuration. We use the tarball link so it works even if your brand-new Mac doesn't have `git` installed yet:
 
 ```bash
 nix run github:aspauldingcode/.dotfiles#install
@@ -37,21 +37,26 @@ Once the system is installed, you can apply changes to your configuration using 
 
 ```bash
 # Navigate to your config
-cd /etc/nix-darwin   # macOS
+cd /etc/nix-darwin/.dotfiles   # macOS
 cd /etc/nixos        # NixOS
 
 # Standard rebuild (uses the NH_FLAKE variable we configured)
 nh darwin switch
 
 # Manual rebuild (if variable is not yet active or you are on a new host)
-nh darwin switch /etc/nix-darwin -H mba
+nh darwin switch /etc/nix-darwin/.dotfiles -H mba
 nh os switch /etc/nixos -H my-nixos-host
 ```
 
 ### Pro Tips for `nh`
 - Use **`--ask`** to see a diff of what will change before confirming.
 - Use **`--update`** to update all your flake inputs (packages) to their latest versions.
-- The `NH_FLAKE` variable is set to `/etc/nix-darwin#mba` (macOS) or `/etc/nixos` (NixOS), so `nh` always knows which host to build by default.
+- The `NH_FLAKE` variable is set to `/etc/nix-darwin/.dotfiles#mba` (macOS) or `/etc/nixos` (NixOS), so `nh` always knows which host to build by default.
+
+## Documentation
+
+- **[Zsh Plugins & Shell Extensions](docs/zsh-plugins.md)** — Full reference of all curated zsh plugins, CLI tools, and Nix-specific integrations.
+- **[Tmux Master Guide](docs/tmux.md)** — Learn how to use your optimized terminal multiplexer with interactive hints.
 
 ## Uninstallation
 

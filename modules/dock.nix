@@ -9,14 +9,12 @@
     config = {
       # System apps appear first in the dock
       dendritic.dock.apps = lib.mkBefore [
-        "/System/Library/CoreServices/Finder.app"
         "/System/Applications/Apps.app"
-        "/Applications/Safari.app"
       ];
 
       system = {
         defaults.dock = {
-          autohide = true;
+          autohide = false;
           expose-animation-duration = 0.1;
           orientation = "bottom";
           show-recents = false;
