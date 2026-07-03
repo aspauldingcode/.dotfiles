@@ -60,12 +60,12 @@
     den.url = "github:denful/den";
 
     plugin-playground = {
-      url = "path:/Users/8amps/playground";
+      url = "github:aspauldingcode/playground/chore/installer-build-fixes";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
     nix-darwin-fork = {
-      url = "path:/Users/8amps/nix-darwin";
+      url = "github:aspauldingcode/nix-darwin/plugin-playground";
     };
 
   };

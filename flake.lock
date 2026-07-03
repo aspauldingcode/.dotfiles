@@ -524,13 +524,18 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "narHash": "sha256-ZqR59EUr7YFYuRtFTmruN08s2ENdLVC++PqZSZk7zw8=",
-        "path": "/Users/8amps/nix-darwin",
-        "type": "path"
+        "lastModified": 1782188990,
+        "narHash": "sha256-srFi/as8dAkw7hahSQJvRukNfGl0nSzHgDAhg2ss80w=",
+        "owner": "aspauldingcode",
+        "repo": "nix-darwin",
+        "rev": "9f6b8ce4580806af1ed598d50f391bbff898a567",
+        "type": "github"
       },
       "original": {
-        "path": "/Users/8amps/nix-darwin",
-        "type": "path"
+        "owner": "aspauldingcode",
+        "ref": "plugin-playground",
+        "repo": "nix-darwin",
+        "type": "github"
       }
     },
     "nixpkgs": {
@@ -785,13 +790,18 @@
         ]
       },
       "locked": {
-        "narHash": "sha256-tvjH9/gySSmzxIMinvpbXqoGTMouwjm9Fj/mhZ4bDdA=",
-        "path": "/Users/8amps/playground",
-        "type": "path"
+        "lastModified": 1782418472,
+        "narHash": "sha256-ISWqlB5Gd1g9HEU15X48aLcAK0zMFnMnFNkMmM+QrGs=",
+        "owner": "aspauldingcode",
+        "repo": "playground",
+        "rev": "e59f4d817e2bffd449b678ca7022687b2a4fae0f",
+        "type": "github"
       },
       "original": {
-        "path": "/Users/8amps/playground",
-        "type": "path"
+        "owner": "aspauldingcode",
+        "ref": "chore/installer-build-fixes",
+        "repo": "playground",
+        "type": "github"
       }
     },
     "root": {
