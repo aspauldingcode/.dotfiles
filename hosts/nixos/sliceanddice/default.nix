@@ -99,7 +99,20 @@
       services.openssh.enable = true;
       networking.firewall.allowedTCPPorts = [ 22 ];
 
-      environment.sessionVariables.NH_FLAKE = "/etc/nixos#sliceanddice";
+      programs.nh = {
+        enable = true;
+        flake = "/etc/nixos/.dotfiles#sliceanddice";
+      };
+
+      environment.variables = {
+        NH_FLAKE = "/etc/nixos/.dotfiles#sliceanddice";
+        NH_OS_FLAKE = "/etc/nixos/.dotfiles#sliceanddice";
+      };
+
+      environment.interactiveShellInit = ''
+        export NH_FLAKE="/etc/nixos/.dotfiles#sliceanddice"
+        export NH_OS_FLAKE="/etc/nixos/.dotfiles#sliceanddice"
+      '';
 
       environment.systemPackages = with pkgs; [
         heroic
@@ -143,6 +156,37 @@
         dendritic.apps.cursor.enable = true;
         dendritic.apps.antigravity.enable = true;
         dendritic.python.enable = true;
+
+        programs.nh = {
+          enable = true;
+          flake = "/etc/nixos/.dotfiles#sliceanddice";
+          osFlake = "/etc/nixos/.dotfiles#sliceanddice";
+        };
+
+        programs.git = {
+          enable = true;
+          settings.url."git@github.com:" = {
+            insteadOf = "https://github.com/";
+            pushInsteadOf = "https://github.com/";
+          };
+        };
+
+        programs.ssh = {
+          enable = true;
+          matchBlocks."github.com" = {
+            user = "git";
+            identityFile = "~/.ssh/id_ed25519";
+          };
+        };
+
+        # Konsole/Cursor often start non-login bash; without this, NH_FLAKE is unset.
+        programs.bash = {
+          enable = true;
+          bashrcExtra = ''
+            export NH_FLAKE="/etc/nixos/.dotfiles#sliceanddice"
+            export NH_OS_FLAKE="/etc/nixos/.dotfiles#sliceanddice"
+          '';
+        };
       };
     }
   ];
