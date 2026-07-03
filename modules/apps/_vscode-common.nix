@@ -110,7 +110,10 @@ in
     profiles.default.extensions = with pkgs.vscode-extensions; [
       bbenoist.nix
       # jnoortheen.nix-ide excluded — treefmt handles nix formatting
+      # Keep Python base + debugger stack explicit so Ruff, Cursor Pyright,
+      # and Python Debugger dependencies resolve in every VS Code fork.
       ms-python.python
+      ms-python.debugpy
       charliermarsh.ruff
       dbaeumer.vscode-eslint
       esbenp.prettier-vscode

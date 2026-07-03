@@ -11,10 +11,14 @@
   nixpkgs.config.allowBroken = true;
 
   imports = [
-    # 1. Base identity and platform
     inputs.determinate-nix.darwinModules.default
+    "${inputs.nix-darwin-fork}/modules/services/plugin-playground"
     {
       config = {
+        services.plugin-playground = {
+          enable = false;
+          package = inputs.plugin-playground.packages.${pkgs.stdenv.hostPlatform.system}.default;
+        };
         nixpkgs.hostPlatform = "aarch64-darwin";
         nixpkgs.overlays = [
           inputs.self.overlays.default
@@ -189,6 +193,7 @@
           dendritic.apps.cursor.enable = true;
           dendritic.apps.beeper.enable = true;
           dendritic.apps.jetbrains.enable = true;
+          dendritic.mobile.enable = true;
           dendritic.wallpaper.enable = true;
           dendritic.python.enable = true;
 

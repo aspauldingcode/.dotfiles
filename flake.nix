@@ -59,6 +59,15 @@
     # flake-parts dendritic.
     den.url = "github:denful/den";
 
+    plugin-playground = {
+      url = "path:/Users/8amps/playground";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
+    nix-darwin-fork = {
+      url = "path:/Users/8amps/nix-darwin";
+    };
+
   };
 
   outputs =

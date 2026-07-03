@@ -140,6 +140,7 @@
             bindkey '^[[B' history-substring-search-down
 
             # ── zsh-you-should-use ──
+            export YSU_IGNORED_ALIASES=("ls" "ll" "la" "l" "lt" "lla" "tree" "llt" "lS" "ltm" "y")
             zsh-defer source ${pkgs.zsh-you-should-use}/share/zsh/plugins/you-should-use/you-should-use.plugin.zsh
 
             # ── zsh-vi-mode ──
@@ -327,6 +328,7 @@
       programs.htop.enable = true;
 
       home.packages = with pkgs; [
+        mcp-nixos
         nh
         zsh-defer
         zsh-completions
