@@ -5,7 +5,7 @@ set -euo pipefail
 
 TARGET_DIR="/etc/nixos/.dotfiles"
 HOST="sliceanddice"
-REPO_URL="https://github.com/aspauldingcode/.dotfiles.git"
+REPO_URL="git@github.com:aspauldingcode/.dotfiles.git"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SOURCE_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
@@ -40,14 +40,10 @@ fi
 
 cd "$TARGET_DIR"
 
-# Thin entrypoint so `nh os switch` works from /etc/nixos (repo stays in .dotfiles/).
-echo "Installing /etc/nixos/flake.nix wrapper..."
-install -Dm644 "$SOURCE_DIR/nixos/flake.nix" /etc/nixos/flake.nix
-
 echo "First switch via nixos-rebuild (bootstrap)..."
-nixos-rebuild switch --flake "/etc/nixos#$HOST"
+nixos-rebuild switch --flake "$TARGET_DIR#$HOST"
 
 echo ""
 echo "Done. Future rebuilds:"
-echo "  nh os switch              # from /etc/nixos (wrapper flake)"
-echo "  cd $TARGET_DIR && nh os switch"
+echo "  cd $TARGET_DIR && nh os switch -H $HOST"
+echo "  nh os switch $TARGET_DIR -H $HOST"

@@ -177,11 +177,6 @@
 
                     cd "$TARGET_DIR"
 
-                    if [[ "$OSTYPE" != "darwin"* ]]; then
-                       echo "Installing /etc/nixos/flake.nix wrapper..."
-                       sudo install -Dm644 "$TARGET_DIR/nixos/flake.nix" /etc/nixos/flake.nix
-                    fi
-
                     # Ensure Applications directory exists and is writable by the current user
                     if [ -d "$HOME/Applications" ]; then
                        sudo chown "$USER" "$HOME/Applications"
@@ -200,7 +195,7 @@
                        # 2. Run the switch (this will trigger the maintenance module automatically)
                        nh darwin switch -H mba "$TARGET_DIR"
                     else
-                       nh os switch /etc/nixos -H sliceanddice
+                       nh os switch "$TARGET_DIR" -H sliceanddice
                     fi
 
                     echo "Installation complete!"

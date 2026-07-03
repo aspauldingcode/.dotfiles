@@ -315,11 +315,19 @@
         };
       };
 
-      home.sessionVariables = {
-        NH_FLAKE = (
-          if pkgs.stdenv.isDarwin then "/etc/nix-darwin/.dotfiles#mba" else "/etc/nixos#sliceanddice"
-        );
-      };
+      home.sessionVariables = lib.mkMerge [
+        {
+          NH_FLAKE = (
+            if pkgs.stdenv.isDarwin then
+              "/etc/nix-darwin/.dotfiles#mba"
+            else
+              "/etc/nixos/.dotfiles#sliceanddice"
+          );
+        }
+        (lib.optionalAttrs (!pkgs.stdenv.isDarwin) {
+          NH_OS_FLAKE = "/etc/nixos/.dotfiles#sliceanddice";
+        })
+      ];
 
       # Yazi minimal configuration with ANSI inheritance
       programs.yazi = {

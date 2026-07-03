@@ -30,17 +30,22 @@
     }:
     let
       tokenPath = config.sops.secrets.gh_token.path;
+      realGh = pkgs.gh;
       gh = pkgs.writeShellScriptBin "gh" ''
         # Fall through silently if the sops secret hasn't been
         # materialised yet (fresh bootstrap, sops-nix launchd agent
         # failed, etc.) — `gh` will print its own clearer
         # "not logged in" diagnostic than a `cat: ... No such file`
-        # error would.
+        # error would. Skip bootstrap placeholders so `gh auth login`
+        # can store credentials in ~/.config/gh/hosts.yml.
         if [ -r "${tokenPath}" ]; then
-          GH_TOKEN="$(cat "${tokenPath}")"
-          export GH_TOKEN
+          _token="$(tr -d '[:space:]' < "${tokenPath}")"
+          if [ -n "$_token" ] && [ "$_token" != "placeholder" ]; then
+            GH_TOKEN="$_token"
+            export GH_TOKEN
+          fi
         fi
-        exec ${pkgs.gh}/bin/gh "$@"
+        exec ${realGh}/bin/gh "$@"
       '';
     in
     {
