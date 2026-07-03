@@ -13,8 +13,13 @@
 # private key to back up or rotate.
 keys:
   - &user_8amps age1alw70v2xd80yrkn2ukap264c64fa64qjq7rr4uh07amu8ahm9uzs9z485w
+  - &user_alex age1qt3gxwv08ak0nfjfp4np7q4rqnhc5g7hqexdsa2e3t44ruju3ujq0vzwlp
 creation_rules:
   # General secrets file (openai API key etc.).
   - path_regex: secrets/secrets\.yaml$
     age:
       - *user_8amps
+      - *user_alex
+  - path_regex: secrets/sliceanddice-secrets\.yaml$
+    age:
+      - *user_alex
