@@ -19,6 +19,7 @@
     let
       sopsFiles = [
         ../secrets/secrets.yaml
+        ../secrets/sliceanddice-secrets.yaml
       ];
 
       # Interpolate each path individually so Nix string-context is

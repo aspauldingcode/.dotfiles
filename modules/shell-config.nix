@@ -6,6 +6,15 @@
       options,
       ...
     }:
+    let
+      # GUI password prompt for sudo when no controlling tty (IDE agents, etc.).
+      # Parallels macOS Touch ID via fprintd below; askpass covers headless/GUI cases.
+      sudoAskpass = pkgs.writeShellScriptBin "sudo-askpass" ''
+        exec ${pkgs.kdePackages.kdialog}/bin/kdialog \
+          --title "Authenticate" \
+          --password "Sudo requires your password:"
+      '';
+    in
     {
       programs.zsh.enable = true;
 
@@ -13,11 +22,26 @@
         defaultUserShell = pkgs.zsh;
       };
 
+      # Linux fingerprint sudo — closest equivalent to macOS Touch ID (pam_tid).
+      services.fprintd.enable = lib.mkDefault true;
+      security.pam.services.sudo.fprintAuth = lib.mkDefault true;
+      security.pam.services.sudo-i.fprintAuth = lib.mkDefault true;
+
+      programs.ssh.enableAskPassword = lib.mkDefault true;
+
       environment = {
         systemPackages = [
           pkgs.nh
           pkgs.yazi
+          sudoAskpass
         ];
+        sessionVariables = {
+          SUDO_ASKPASS = "${sudoAskpass}/bin/sudo-askpass";
+        };
+        etc."sudo.conf".text = ''
+          # Dendritic: graphical sudo when no controlling tty (IDE agents, etc.).
+          Path askpass ${sudoAskpass}/bin/sudo-askpass
+        '';
       }
       // (lib.optionalAttrs (options ? environment && options.environment ? shells) {
         shells = [ pkgs.zsh ];
@@ -26,6 +50,7 @@
       security.sudo.extraConfig = ''
         # 120 min: authenticate once, then reuse for a long session.
         Defaults timestamp_timeout=120
+        Defaults env_keep += "SUDO_ASKPASS SSH_ASKPASS DISPLAY WAYLAND_DISPLAY XAUTHORITY"
       '';
     };
 
@@ -169,6 +194,15 @@
             zle -N _sudo_toggle
             bindkey '\e\e' _sudo_toggle
 
+            # ── sudo: askpass when no controlling tty (IDE agents, etc.) ──
+            sudo() {
+              if [[ ! -t 0 ]] && [[ -n "''${SUDO_ASKPASS:-}" ]]; then
+                command sudo -A "$@"
+              else
+                command sudo "$@"
+              fi
+            }
+
             # ── colored-man-pages ──
             export LESS_TERMCAP_mb=$'\e[1;31m'
             export LESS_TERMCAP_md=$'\e[1;36m'
@@ -282,7 +316,9 @@
       };
 
       home.sessionVariables = {
-        NH_FLAKE = (if pkgs.stdenv.isDarwin then "/etc/nix-darwin/.dotfiles#mba" else "/etc/nixos");
+        NH_FLAKE = (
+          if pkgs.stdenv.isDarwin then "/etc/nix-darwin/.dotfiles#mba" else "/etc/nixos#sliceanddice"
+        );
       };
 
       # Yazi minimal configuration with ANSI inheritance
@@ -300,7 +336,7 @@
           mount =
             pkgs.fetchzip {
               url = "https://github.com/yazi-rs/plugins/archive/main.tar.gz";
-              sha256 = "197j219p7x2lxf4fdpdmp9ycd16yl8p22bv5a4257d9yc4ikpxxj";
+              sha256 = "1ync8pxxxlj9fqig7a6a0rji8hbl7g4lhlm9a945d6lwccag1ds8";
             }
             + "/mount.yazi";
         };

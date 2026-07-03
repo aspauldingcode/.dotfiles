@@ -29,6 +29,9 @@ jobs:
           - name: "mba-asahi (NixOS ARM)"
             os: ubuntu-22.04-arm
             attr: "nixosConfigurations.mba-asahi.config.system.build.toplevel"
+          - name: "sliceanddice (NixOS x86_64)"
+            os: ubuntu-latest
+            attr: "nixosConfigurations.sliceanddice.config.system.build.toplevel"
           - name: "8amps-linux (Home Manager)"
             os: ubuntu-latest
             attr: "homeConfigurations.8amps-linux.activationPackage"

@@ -1764,6 +1764,56 @@
             options.desc = "Toggle Terminal";
           }
 
+          # Text Wrapping
+          {
+            mode = "n";
+            key = "<leader>wh";
+            action = "<cmd>set textwidth=80 formatoptions+=t<cr>mzgggqG`z";
+            options.desc = "Hard wrap entire buffer at 80 cols";
+          }
+          {
+            mode = "v";
+            key = "<leader>wh";
+            action = "<cmd>set textwidth=80 formatoptions+=t<cr>gq";
+            options.desc = "Hard wrap selection at 80 cols";
+          }
+          {
+            mode = "n";
+            key = "<leader>ws";
+            action.__raw = ''
+              function()
+                if vim.wo.wrap then
+                  vim.wo.wrap = false
+                  vim.wo.linebreak = false
+                  vim.wo.colorcolumn = ""
+                else
+                  vim.wo.wrap = true
+                  vim.wo.linebreak = true
+                  vim.wo.colorcolumn = "80"
+                end
+              end
+            '';
+            options.desc = "Toggle soft wrap at 80 cols";
+          }
+          {
+            mode = "v";
+            key = "<leader>ws";
+            action.__raw = ''
+              function()
+                if vim.wo.wrap then
+                  vim.wo.wrap = false
+                  vim.wo.linebreak = false
+                  vim.wo.colorcolumn = ""
+                else
+                  vim.wo.wrap = true
+                  vim.wo.linebreak = true
+                  vim.wo.colorcolumn = "80"
+                end
+              end
+            '';
+            options.desc = "Toggle soft wrap at 80 cols";
+          }
+
           # AI / Agentic
           {
             mode = "n";

@@ -61,6 +61,10 @@ in
     instantiate = nixosSystemWithInputs;
   };
 
+  den.hosts.x86_64-linux.sliceanddice = {
+    instantiate = nixosSystemWithInputs;
+  };
+
   # ── Host-aspect bindings ──────────────────────────────────────────────
   # Each host's aspect:
   #   • includes the shared styling aspect (gets `os`-class Stylix + per-class
@@ -103,6 +107,13 @@ in
     includes = [ config.den.aspects.styling ];
     nixos = {
       imports = [ ../hosts/nixos/nixos-test ];
+    };
+  };
+
+  den.aspects.sliceanddice = {
+    includes = [ config.den.aspects.styling ];
+    nixos = {
+      imports = [ ../hosts/nixos/sliceanddice ];
     };
   };
 

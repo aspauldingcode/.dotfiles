@@ -34,7 +34,10 @@
         enable = lib.mkEnableOption "Antigravity IDE";
       };
 
-      imports = [ ./_vscode-common.nix ];
+      imports = [
+        ./_vscode-common.nix
+        ./_ide-mcp.nix
+      ];
       config = lib.mkIf cfg.enable {
         home.packages = [
           (if pkgs.stdenv.isDarwin then pkgs.antigravity else pkgs.antigravity-fhs)
