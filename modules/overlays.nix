@@ -13,10 +13,9 @@
       };
     in
     {
-      # pipx 1.8.0 checkPhase fails on nixos-26.05 (PEP 508 spacing); use binary.
-      pipx = prev.pipx.overridePythonAttrs (old: {
-        doCheck = false;
-      });
+      # NOTE: the pipx 26.05 checkPhase fix lives in modules/python.nix (where
+      # pipx is installed) so it applies on every host, not only those importing
+      # this overlay.
 
       code-cursor = unstable.code-cursor;
       antigravity = unstable.antigravity;

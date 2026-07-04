@@ -19,6 +19,14 @@
           six
         ]
       );
+
+      # pipx 1.8.0 checkPhase fails on nixpkgs 26.05 (PEP 508 spacing in
+      # tests/test_package_specifier). Skip its tests here — where pipx is
+      # actually installed — so every host builds regardless of which overlays
+      # it applies.
+      pipx = pkgs.pipx.overridePythonAttrs (_: {
+        doCheck = false;
+      });
     in
     {
       options.dendritic.python = {
@@ -69,6 +77,14 @@
           six
         ]
       );
+
+      # pipx 1.8.0 checkPhase fails on nixpkgs 26.05 (PEP 508 spacing in
+      # tests/test_package_specifier). Skip its tests here — where pipx is
+      # actually installed — so every host builds regardless of which overlays
+      # it applies.
+      pipx = pkgs.pipx.overridePythonAttrs (_: {
+        doCheck = false;
+      });
     in
     {
       options.dendritic.python = {
@@ -119,6 +135,14 @@
           six
         ]
       );
+
+      # pipx 1.8.0 checkPhase fails on nixpkgs 26.05 (PEP 508 spacing in
+      # tests/test_package_specifier). Skip its tests here — where pipx is
+      # actually installed — so every host builds regardless of which overlays
+      # it applies.
+      pipx = pkgs.pipx.overridePythonAttrs (_: {
+        doCheck = false;
+      });
     in
     {
       options.dendritic.python = {

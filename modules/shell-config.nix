@@ -342,13 +342,10 @@
             sort_by = "natural";
           };
         };
+        # Use the nixpkgs-packaged plugin instead of fetching the yazi-rs
+        # `main` branch tarball, whose hash drifts and broke every HM build.
         plugins = {
-          mount =
-            pkgs.fetchzip {
-              url = "https://github.com/yazi-rs/plugins/archive/main.tar.gz";
-              sha256 = "1ync8pxxxlj9fqig7a6a0rji8hbl7g4lhlm9a945d6lwccag1ds8";
-            }
-            + "/mount.yazi";
+          mount = pkgs.yaziPlugins.mount;
         };
         keymap = {
           mgr.prepend_keymap = [
