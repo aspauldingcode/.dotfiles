@@ -58,6 +58,16 @@
             };
           }
           // lib.optionalAttrs pkgs.stdenv.isLinux {
+            # On Linux, Cursor reads user settings from the XDG config dir
+            # (~/.config/Cursor/User), NOT ~/.cursor/User. Writing only the
+            # latter left the real settings file (with the Stylix colorTheme)
+            # unmanaged, so Stylix never applied. Write both paths — the XDG
+            # one is authoritative and needs `force` since Cursor may have
+            # already created a plain settings.json there.
+            ".config/Cursor/User/settings.json" = {
+              force = true;
+              text = builtins.toJSON sharedSettings;
+            };
             ".cursor/User/settings.json".text = builtins.toJSON sharedSettings;
           };
       };

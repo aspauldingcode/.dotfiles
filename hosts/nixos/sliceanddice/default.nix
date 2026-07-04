@@ -25,6 +25,14 @@
 
       networking.hostName = "sliceanddice";
 
+      # The NixOS + Home Manager option manuals build their reference via
+      # `nixosOptionsDoc`, which embeds the flake's nixpkgs source path as a
+      # context-less string — the source of the `builtins.derivation ...
+      # options.json ... without a proper context` eval warning. Regular man
+      # pages (`man 1 ...`) stay enabled; only the generated NixOS options
+      # manual / `man configuration.nix` is dropped.
+      documentation.nixos.enable = false;
+
       # Bootloader
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;
@@ -199,6 +207,11 @@
         home.homeDirectory = "/home/alex";
         home.stateVersion = "24.11";
 
+        # Same rationale as `documentation.nixos.enable = false` above: the HM
+        # options manpage is built with `nixosOptionsDoc` and triggers the
+        # context-less `options.json` warning. Drop the generated HM manual.
+        manual.manpages.enable = false;
+
         dendritic.secrets.enable = true;
         dendritic.secrets.ageKeyPath = "/home/alex/.ssh/id_ed25519";
         dendritic.secrets.defaultSopsFile = ../../../secrets/sliceanddice-secrets.yaml;
@@ -206,6 +219,7 @@
         dendritic.apps.ghostty.enable = true;
         dendritic.apps.cursor.enable = true;
         dendritic.apps.antigravity.enable = true;
+        dendritic.apps.beeper.enable = true;
         dendritic.python.enable = true;
 
         # niri user config: terminal → ghostty, launcher → fuzzel.
@@ -228,9 +242,27 @@
 
         programs.ssh = {
           enable = true;
-          matchBlocks."github.com" = {
-            user = "git";
-            identityFile = "~/.ssh/id_ed25519";
+          # HM 26.05 deprecated `matchBlocks` (use `settings`) and the implicit
+          # default block (`enableDefaultConfig`). Opt out and restate the
+          # upstream defaults explicitly under `settings."*"`.
+          enableDefaultConfig = false;
+          settings = {
+            "*" = {
+              ForwardAgent = false;
+              AddKeysToAgent = "no";
+              Compression = false;
+              ServerAliveInterval = 0;
+              ServerAliveCountMax = 3;
+              HashKnownHosts = false;
+              UserKnownHostsFile = "~/.ssh/known_hosts";
+              ControlMaster = "no";
+              ControlPath = "~/.ssh/master-%r@%n:%p";
+              ControlPersist = "no";
+            };
+            "github.com" = {
+              User = "git";
+              IdentityFile = "~/.ssh/id_ed25519";
+            };
           };
         };
 

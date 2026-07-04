@@ -17,6 +17,12 @@
 
       programs.nixvim = {
         enable = true;
+        # Nixvim's inputs pin their own Nixpkgs; our flake makes it `follow`
+        # the repo Nixpkgs. Point `nixpkgs.source` at that same input so the
+        # override is explicit — silences the "affected by your flake input
+        # follows" warning and gives the internal `options.json` derivation a
+        # properly-contexted store path.
+        nixpkgs.source = inputs.nixpkgs;
         defaultEditor = true;
         viAlias = true;
         vimAlias = true;
