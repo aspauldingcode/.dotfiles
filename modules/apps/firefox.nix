@@ -120,7 +120,8 @@ let
           # `$XDG_CONFIG_HOME/mozilla/firefox` for stateVersion >= 26.05; we
           # stay on the legacy `.mozilla/firefox` (matching the activation
           # script's `ffDir`) and set it explicitly to silence the warning.
-          configPath = if pkgs.stdenv.isDarwin then "Library/Application Support/Firefox" else ".mozilla/firefox";
+          configPath =
+            if pkgs.stdenv.isDarwin then "Library/Application Support/Firefox" else ".mozilla/firefox";
 
           profiles.default = {
             id = 0;
