@@ -131,13 +131,6 @@ in
           inputs.microvm.nixosModules.microvm
           inputs.home-manager.nixosModules.home-manager
           inputs.determinate-nix.nixosModules.default
-          ({
-            options.services.displayManager.generic = lib.mkOption {
-              type = lib.types.raw;
-              default = { };
-              description = "Compatibility option for Stylix GNOME target.";
-            };
-          })
         ];
 
         nixpkgs.hostPlatform = "aarch64-linux";

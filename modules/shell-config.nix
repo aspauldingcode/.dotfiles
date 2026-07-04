@@ -9,10 +9,12 @@
     let
       # GUI password prompt for sudo when no controlling tty (IDE agents, etc.).
       # Parallels macOS Touch ID via fprintd below; askpass covers headless/GUI cases.
+      # Uses zenity (GTK) so it works under any Wayland compositor without pulling
+      # in KDE/Plasma.
       sudoAskpass = pkgs.writeShellScriptBin "sudo-askpass" ''
-        exec ${pkgs.kdePackages.kdialog}/bin/kdialog \
-          --title "Authenticate" \
-          --password "Sudo requires your password:"
+        exec ${pkgs.zenity}/bin/zenity \
+          --password \
+          --title "Authenticate"
       '';
     in
     {

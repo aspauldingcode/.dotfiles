@@ -29,19 +29,36 @@
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;
 
-      # NVIDIA Optimus (Intel iGPU + NVIDIA dGPU)
-      hardware.graphics.enable = true;
+      # Latest mainline kernel from nixpkgs 26.05 (>= 7.0). The NVIDIA open
+      # kernel modules track new kernels closely, so this builds cleanly on
+      # Ampere; if a future bump ever breaks the nvidia module, pin back to
+      # `pkgs.linuxPackages`.
+      boot.kernelPackages = pkgs.linuxPackages_latest;
+
+      # Hybrid graphics: Intel Tiger Lake UHD (PCI:0:2:0) + NVIDIA RTX 3050 Ti
+      # Mobile / GA107 Ampere (PCI:1:0:0). The internal panel is driven by the
+      # Intel iGPU; the NVIDIA GPU is used via PRIME render offload.
+      hardware.graphics = {
+        enable = true;
+        enable32Bit = true;
+      };
       hardware.nvidia = {
         modesetting.enable = true;
-        powerManagement.enable = false;
+        # Keep the dGPU powered but idle (no finegrained runtime-PM): finegrained
+        # aggressively suspends the GPU and has been a black-screen source here.
+        powerManagement.enable = true;
         powerManagement.finegrained = false;
-        open = false;
+        # Ampere (RTX 30xx) → the open kernel modules are recommended and build
+        # cleanly against mainline kernels; the proprietary blob lags new kernels.
+        open = true;
         nvidiaSettings = true;
-        package = config.boot.kernelPackages.nvidiaPackages.stable;
         prime = {
-          sync.enable = true;
+          # Render offload: compositor runs on Intel, apps opt into NVIDIA via
+          # `nvidia-offload <cmd>` (NVIDIA_* env vars).
+          offload.enable = true;
+          offload.enableOffloadCmd = true;
           intelBusId = "PCI:0:2:0";
-          nvidiaBusId = "PCI:01:0:0";
+          nvidiaBusId = "PCI:1:0:0";
         };
       };
 
@@ -62,12 +79,29 @@
         LC_TIME = "en_US.UTF-8";
       };
 
-      # KDE Plasma desktop (override dendritic Sway defaults)
+      # ── Wayland desktop: niri ────────────────────────────────────────────
+      # Disable the dendritic Sway + ly defaults; we run niri (scrollable
+      # tiling Wayland compositor) with greetd + tuigreet as a minimal DM.
       services.displayManager.ly.enable = lib.mkForce false;
       programs.sway.enable = lib.mkForce false;
-      services.xserver.enable = true;
-      services.displayManager.sddm.enable = true;
-      services.desktopManager.plasma6.enable = true;
+
+      programs.niri.enable = true;
+
+      # greetd + tuigreet: tiny, reliable console greeter that launches the
+      # niri session directly on the Intel GPU. No SDDM/X server required.
+      services.greetd = {
+        enable = true;
+        settings.default_session = {
+          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --asterisks --cmd niri-session";
+          user = "greeter";
+        };
+      };
+
+      # NVIDIA drm for Xwayland/offload. videoDrivers pulls in the driver even
+      # though niri itself is a native Wayland compositor on Intel.
+      services.xserver.videoDrivers = [ "nvidia" ];
+
+      console.keyMap = "us";
       services.xserver.xkb = {
         layout = "us";
         variant = "";
@@ -92,9 +126,6 @@
         shell = pkgs.zsh;
       };
 
-      services.displayManager.autoLogin.enable = true;
-      services.displayManager.autoLogin.user = "alex";
-
       programs.firefox.enable = true;
       services.openssh.enable = true;
       networking.firewall.allowedTCPPorts = [ 22 ];
@@ -107,6 +138,8 @@
       environment.variables = {
         NH_FLAKE = "/etc/nixos/.dotfiles#sliceanddice";
         NH_OS_FLAKE = "/etc/nixos/.dotfiles#sliceanddice";
+        # Prefer Wayland for toolkits; fall back to Xwayland where needed.
+        NIXOS_OZONE_WL = "1";
       };
 
       environment.interactiveShellInit = ''
@@ -118,12 +151,28 @@
         heroic
         vesktop
         prismlauncher
-        code-cursor
         git
-        kdePackages.kwallet-pam
         android-tools
         waypipe
-        antigravity
+        # NOTE: cursor + antigravity are installed via Home Manager
+        # (dendritic.apps.cursor/antigravity → the FHS builds on Linux), so they
+        # are intentionally NOT listed here to avoid a non-FHS PATH duplicate.
+
+        # ── niri Wayland userland ──
+        # NOTE: waybar / fuzzel / mako / swaylock / swayidle are configured &
+        # installed via Home Manager in modules/apps/niri.nix (so Stylix themes
+        # them). Only the "plumbing" tools live here.
+        libnotify # notify-send (for mako)
+        swaybg # wallpaper (spawned by niri)
+        wl-clipboard # clipboard
+        cliphist # clipboard history (Mod+V)
+        brightnessctl # backlight keys (needs system install for udev)
+        playerctl # media keys
+        pavucontrol # audio GUI
+        grim # screenshot capture
+        slurp # region selector
+        xwayland-satellite # X11 app support under niri
+        foot # lightweight fallback terminal (if ghostty ever fails to start)
       ];
     }
 
@@ -134,6 +183,8 @@
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
       home-manager.backupFileExtension = "hm-bak";
+      # Plasma rewrites ~/.gtkrc-2.0 as a plain file; allow replacing stale hm-bak backups.
+      home-manager.backupCommand = "rm -f -- \"$2\" && mv -- \"$1\" \"$2\"";
       home-manager.sharedModules = [
         {
           dendritic.theme.variant = lib.mkDefault config.dendritic.theme.variant;
@@ -157,6 +208,10 @@
         dendritic.apps.antigravity.enable = true;
         dendritic.python.enable = true;
 
+        # niri user config: terminal → ghostty, launcher → fuzzel.
+        dendritic.apps.niri.enable = true;
+        dendritic.apps.niri.terminal = "ghostty";
+
         programs.nh = {
           enable = true;
           flake = "/etc/nixos/.dotfiles#sliceanddice";
@@ -179,14 +234,6 @@
           };
         };
 
-        # Konsole/Cursor often start non-login bash; without this, NH_FLAKE is unset.
-        programs.bash = {
-          enable = true;
-          bashrcExtra = ''
-            export NH_FLAKE="/etc/nixos/.dotfiles#sliceanddice"
-            export NH_OS_FLAKE="/etc/nixos/.dotfiles#sliceanddice"
-          '';
-        };
       };
     }
   ];

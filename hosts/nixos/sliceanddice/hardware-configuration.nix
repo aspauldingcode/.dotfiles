@@ -20,7 +20,11 @@
     "usb_storage"
     "sd_mod"
   ];
-  boot.initrd.kernelModules = [ ];
+  # Early KMS on the Intel iGPU (the internal panel is wired to Intel).
+  # NVIDIA modules are loaded by the hardware.nvidia module — do NOT force
+  # "nvidia" into initrd/kernelModules here: on this hybrid laptop that
+  # races the display bring-up and leaves a black screen at boot.
+  boot.initrd.kernelModules = [ "i915" ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 

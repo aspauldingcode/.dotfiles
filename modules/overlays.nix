@@ -13,6 +13,11 @@
       };
     in
     {
+      # pipx 1.8.0 checkPhase fails on nixos-26.05 (PEP 508 spacing); use binary.
+      pipx = prev.pipx.overridePythonAttrs (old: {
+        doCheck = false;
+      });
+
       code-cursor = unstable.code-cursor;
       antigravity = unstable.antigravity;
       spotify = unstable.spotify;
