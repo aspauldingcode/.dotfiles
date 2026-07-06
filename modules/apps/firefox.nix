@@ -200,12 +200,27 @@ let
           };
         };
 
-        # Codesign the HM-managed Firefox.app bundle on Darwin so Launch
-        # Services accepts it after `home-manager` regenerates the bundle.
+        # Adhoc-sign the HM-managed Firefox.app on Darwin when it is a writable
+        # local bundle. HM usually symlinks into /nix/store; those bundles are
+        # already adhoc-signed at build time and `--deep` re-signing fails on
+        # read-only store Mach-O (e.g. XUL, stale `.firefox-old` backups).
         home.activation.signFirefoxApp = lib.mkIf pkgs.stdenv.isDarwin (
-          lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-            if [ -d "$HOME/Applications/Home Manager Apps/Firefox.app" ]; then
-              /usr/bin/codesign --force --deep --sign - "$HOME/Applications/Home Manager Apps/Firefox.app"
+          lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+            _ffApp="$HOME/Applications/Home Manager Apps/Firefox.app"
+            if [ ! -e "$_ffApp" ]; then
+              :
+            elif [ -L "$_ffApp" ]; then
+              _ffTarget="$(${pkgs.coreutils}/bin/readlink "$_ffApp")"
+              case "$_ffTarget" in
+                /nix/store/*) ;;
+                *)
+                  rm -f "$_ffTarget/Contents/MacOS/.firefox-old" 2>/dev/null || true
+                  /usr/bin/codesign --force --sign - "$_ffTarget"
+                  ;;
+              esac
+            elif [ -d "$_ffApp" ]; then
+              rm -f "$_ffApp/Contents/MacOS/.firefox-old" 2>/dev/null || true
+              /usr/bin/codesign --force --sign - "$_ffApp"
             fi
           ''
         );

@@ -25,12 +25,23 @@
         # ── Stylix: enable the vesktop colourscheme target ───────────
         stylix.targets.vesktop.enable = true;
 
-        # Codesign the HM-managed Vesktop.app bundle on Darwin so Launch
-        # Services accepts it after `home-manager` regenerates the bundle.
+        # Adhoc-sign Vesktop when it is a writable local bundle. Store
+        # symlinks are already signed at build time; `--deep` fails on them.
         home.activation.signVesktopApp = lib.mkIf pkgs.stdenv.isDarwin (
-          lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-            if [ -d "$HOME/Applications/Home Manager Apps/Vesktop.app" ]; then
-              /usr/bin/codesign --force --deep --sign - "$HOME/Applications/Home Manager Apps/Vesktop.app"
+          lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+            _app="$HOME/Applications/Home Manager Apps/Vesktop.app"
+            if [ ! -e "$_app" ]; then
+              :
+            elif [ -L "$_app" ]; then
+              _target="$(${pkgs.coreutils}/bin/readlink "$_app")"
+              case "$_target" in
+                /nix/store/*) ;;
+                *)
+                  /usr/bin/codesign --force --sign - "$_target"
+                  ;;
+              esac
+            elif [ -d "$_app" ]; then
+              /usr/bin/codesign --force --sign - "$_app"
             fi
           ''
         );
