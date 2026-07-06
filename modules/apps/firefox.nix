@@ -44,11 +44,12 @@ let
                 pathInstallHash "${(inputs.firefox-darwin.overlay pkgs pkgs).firefox-bin}/Applications/Firefox.app/Contents/MacOS"
               else
                 "";
-            precomputedHashes =
-              lib.concatStringsSep " " (lib.filter (h: h != "") [
+            precomputedHashes = lib.concatStringsSep " " (
+              lib.filter (h: h != "") [
                 packageInstallHash
                 overlayInstallHash
-              ]);
+              ]
+            );
           in
           lib.hm.dag.entryAfter [ "writeBoundary" ] ''
                       _ffDir="$HOME/${ffDir}"
@@ -73,15 +74,15 @@ let
                       done
 
                       ${lib.optionalString pkgs.stdenv.isDarwin ''
-                      # HM app bundle: hash both the user-facing path and the store target.
-                      _ffApp="$HOME/Applications/Home Manager Apps/Firefox.app"
-                      if [ -e "$_ffApp" ]; then
-                        _add_hash_for_path "$_ffApp/Contents/MacOS"
-                        if [ -L "$_ffApp" ]; then
-                          _ffTarget="$(${pkgs.coreutils}/bin/readlink "$_ffApp")"
-                          _add_hash_for_path "$_ffTarget/Contents/MacOS"
+                        # HM app bundle: hash both the user-facing path and the store target.
+                        _ffApp="$HOME/Applications/Home Manager Apps/Firefox.app"
+                        if [ -e "$_ffApp" ]; then
+                          _add_hash_for_path "$_ffApp/Contents/MacOS"
+                          if [ -L "$_ffApp" ]; then
+                            _ffTarget="$(${pkgs.coreutils}/bin/readlink "$_ffApp")"
+                            _add_hash_for_path "$_ffTarget/Contents/MacOS"
+                          fi
                         fi
-                      fi
                       ''}
 
                       if command -v firefox >/dev/null 2>&1; then
