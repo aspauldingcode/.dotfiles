@@ -11,6 +11,11 @@ let
     }:
     let
       cfg = config.dendritic.apps.firefox;
+
+      # Firefox maps each install path to a profile via installs.ini. The hash
+      # is the first 16 uppercase hex chars of SHA-256 over the install dir
+      # (Darwin: .../Firefox.app/Contents/MacOS, Linux: .../bin).
+      pathInstallHash = path: lib.toUpper (lib.substring 0 16 (builtins.hashString "sha256" path));
     in
     {
       options.dendritic.apps.firefox = {
@@ -22,15 +27,28 @@ let
       };
 
       config = lib.mkIf cfg.enable {
-        # ── Write Firefox installs.ini to suppress profile chooser ───
-        # Firefox can choose different install paths depending on launcher
-        # resolution (app bundle path, wrapped binary path, resolved exec target).
-        # We precompute hashes for all known path variants, keep any existing
-        # install hashes, and map all of them to the declarative profile.
+        # We precompute hashes for all known path variants and map each to the
+        # single declarative `Profiles/default` profile with Locked=1.
         home.activation.setupFirefoxProfile =
           let
             ffDir = if pkgs.stdenv.isDarwin then "Library/Application Support/Firefox" else ".mozilla/firefox";
             profilePath = "Profiles/default";
+            packageInstallDir =
+              if pkgs.stdenv.isDarwin then
+                "${config.programs.firefox.package}/Applications/Firefox.app/Contents/MacOS"
+              else
+                "${config.programs.firefox.package}/bin";
+            packageInstallHash = pathInstallHash packageInstallDir;
+            overlayInstallHash =
+              if pkgs.stdenv.isDarwin then
+                pathInstallHash "${(inputs.firefox-darwin.overlay pkgs pkgs).firefox-bin}/Applications/Firefox.app/Contents/MacOS"
+              else
+                "";
+            precomputedHashes =
+              lib.concatStringsSep " " (lib.filter (h: h != "") [
+                packageInstallHash
+                overlayInstallHash
+              ]);
           in
           lib.hm.dag.entryAfter [ "writeBoundary" ] ''
                       _ffDir="$HOME/${ffDir}"
@@ -49,21 +67,22 @@ let
             PY
                       }
 
-                      # Keep any existing section names so current hashes remain pinned.
-                      if [ -f "$_installsIni" ]; then
-                        ${pkgs.gawk}/bin/awk '
-                          /^\[[0-9A-F]{16}\]$/ {
-                            print substr($0, 2, 16)
-                          }
-                        ' "$_installsIni" >> "$_hashesFile" || true
-                      fi
+                      # Pin the declarative HM package (and Darwin overlay bundle).
+                      for _hash in ${precomputedHashes}; do
+                        printf '%s\n' "$_hash" >> "$_hashesFile"
+                      done
 
-                      # Darwin launcher path (the currently observed Firefox hash is tied to
-                      # this launch flow for this setup, so keep it as a compatibility key).
-                      if [ -d "$HOME/Applications/Home Manager Apps/Firefox.app/Contents/MacOS" ]; then
-                        _add_hash_for_path "$HOME/Applications/Home Manager Apps/Firefox.app/Contents/MacOS"
-                        printf '%s\n' "83029BECFDFE6B79" >> "$_hashesFile"
+                      ${lib.optionalString pkgs.stdenv.isDarwin ''
+                      # HM app bundle: hash both the user-facing path and the store target.
+                      _ffApp="$HOME/Applications/Home Manager Apps/Firefox.app"
+                      if [ -e "$_ffApp" ]; then
+                        _add_hash_for_path "$_ffApp/Contents/MacOS"
+                        if [ -L "$_ffApp" ]; then
+                          _ffTarget="$(${pkgs.coreutils}/bin/readlink "$_ffApp")"
+                          _add_hash_for_path "$_ffTarget/Contents/MacOS"
+                        fi
                       fi
+                      ''}
 
                       if command -v firefox >/dev/null 2>&1; then
                         _ffBin="$(command -v firefox)"
@@ -240,11 +259,13 @@ let
     let
       user = config.system.primaryUser;
       firefoxEnabled = config.home-manager.users.${user}.dendritic.apps.firefox.enable or true;
-      firefox-signed = (inputs.firefox-darwin.overlay pkgs pkgs).firefox-bin;
+      firefoxPackage = config.home-manager.users.${user}.programs.firefox.package;
     in
     lib.mkIf firefoxEnabled {
+      # Use the same HM-managed package as installs.ini so dock launches match
+      # the pinned profile hash instead of a separate overlay store path.
       dendritic.dock.apps = lib.mkOrder 100 [
-        "${firefox-signed}/Applications/Firefox.app"
+        "${firefoxPackage}/Applications/Firefox.app"
       ];
     };
 in

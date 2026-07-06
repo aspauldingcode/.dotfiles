@@ -90,10 +90,7 @@ let
           targets.nixvim.enable = true;
           targets.spicetify.enable = lib.mkForce true;
           targets.qt.enable = false;
-          targets.firefox.profileNames = [
-            "default"
-            "default-release"
-          ];
+          targets.firefox.profileNames = [ "default" ];
         };
 
         home.file."colors.toml".text = ''
@@ -1310,12 +1307,6 @@ let
             default = {
               isDefault = true;
               id = 0;
-              userChrome = stylixUserChrome;
-              userContent = stylixUserContent;
-            };
-            default-release = {
-              isDefault = false;
-              id = 1;
               userChrome = stylixUserChrome;
               userContent = stylixUserContent;
             };
