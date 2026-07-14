@@ -287,7 +287,8 @@
                   ];
                   text = ''
                     set -euo pipefail
-                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-${toString ./.}}"
+                    # Live checkout (writable); never bake flake source via toString (strips context).
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
                     exec bash ${./scripts/ssh-enroll.sh} "$@"
                   '';
                 };
@@ -313,7 +314,8 @@
                   ];
                   text = ''
                     set -euo pipefail
-                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-${toString ./.}}"
+                    # Live checkout (writable); never bake flake source via toString (strips context).
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
                     exec bash ${./scripts/ssh-rotate.sh} "$@"
                   '';
                 };

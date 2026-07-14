@@ -65,7 +65,8 @@
           set -euo pipefail
           export PASSWORD_STORE_DIR=${lib.escapeShellArg storeDir}
           export FLAKEHUB_ORG=${lib.escapeShellArg org}
-          export DOTFILES_ROOT=${lib.escapeShellArg (toString ../..)}
+          # Live checkout (writable); never bake flake source via toString (strips context).
+          export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"
           exec bash ${../../scripts/pass-rotate-cli-auth.sh} "$@"
         '';
       };

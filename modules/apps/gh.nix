@@ -55,7 +55,8 @@
         text = ''
           set -euo pipefail
           export PASSWORD_STORE_DIR=${lib.escapeShellArg storeDir}
-          export DOTFILES_ROOT=${lib.escapeShellArg (toString ../..)}
+          # Live checkout (writable); never bake flake source via toString (strips context).
+          export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"
           export MANIFEST_PATH=${../../home/github-app-manifest.json}
           export SERVER_PY=${../../scripts/github-app-manifest-server.py}
           exec bash ${../../scripts/pass-github-app-bootstrap.sh} "$@"
