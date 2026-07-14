@@ -90,7 +90,8 @@ Disable ntfy only with `dendritic.apps.pass.autoSync.notify.enable = false`.
 
 ### Tray applet (Darwin + Linux)
 
-`dendritic.apps.pass.tray.enable` defaults to `true`. One PySide6 applet:
+`dendritic.apps.pass.tray.enable` defaults to `true`. One **Rust + iced** applet
+(with `tray-icon` for the menubar glyph):
 
 | Icon | Meaning                                              |
 | ---- | ---------------------------------------------------- |

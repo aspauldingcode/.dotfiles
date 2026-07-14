@@ -81,19 +81,23 @@
         # PASS_STORE_NTFY_TOPIC_FILE must be set by the agent (sops path).
         exec ${pkgs.bash}/bin/bash ${../../scripts/pass-store-sync-notify.sh}
       '';
-      trayPython = pkgs.python3.withPackages (ps: [ ps.pyside6 ]);
-      trayPkg = pkgs.stdenvNoCC.mkDerivation {
+      trayPkg = pkgs.rustPlatform.buildRustPackage {
         pname = "pass-store-tray";
-        version = "1.0.0";
-        dontUnpack = true;
-        nativeBuildInputs = [ pkgs.makeWrapper ];
-        # pyside6 bundles Qt; skip wrapQtAppsHook (needs qtPluginPrefix/qtbase).
-        dontWrapQtApps = true;
-        installPhase = ''
-          mkdir -p $out/share/pass-store-tray $out/bin
-          cp ${./pass-store-tray/pass_store_tray.py} $out/share/pass-store-tray/pass_store_tray.py
-          makeWrapper ${trayPython}/bin/python $out/bin/pass-store-tray \
-            --add-flags "$out/share/pass-store-tray/pass_store_tray.py" \
+        version = "0.2.0";
+        src = ./pass-store-tray;
+        cargoLock.lockFile = ./pass-store-tray/Cargo.lock;
+        nativeBuildInputs = [
+          pkgs.pkg-config
+          pkgs.makeWrapper
+        ]
+        ++ lib.optionals pkgs.stdenv.isLinux [ pkgs.wrapGAppsHook3 ];
+        buildInputs = lib.optionals pkgs.stdenv.isLinux [
+          pkgs.gtk3
+          pkgs.libayatana-appindicator
+        ];
+        doCheck = false;
+        postInstall = ''
+          wrapProgram $out/bin/pass-store-tray \
             --set PASS_STORE_SYNC_SCRIPT ${syncScript} \
             --set PASS_MATERIALIZE_SCRIPT ${materializeScript} \
             --set PASSWORD_STORE_DIR ${lib.escapeShellArg storeDir} \
@@ -108,7 +112,7 @@
             }
         '';
         meta = {
-          description = "Pass store sync menubar/tray applet";
+          description = "Pass store sync menubar/tray applet (Rust + iced)";
           mainProgram = "pass-store-tray";
         };
       };
@@ -233,7 +237,7 @@
             type = lib.types.bool;
             default = true;
             description = ''
-              Unified PySide6 menubar/tray applet showing pass sync ↑/↓/idle
+              Unified Rust+iced menubar/tray applet showing pass sync ↑/↓/idle
               and system rebuild status (Darwin + Linux).
             '';
           };
