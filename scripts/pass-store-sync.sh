@@ -3,6 +3,7 @@
 #
 # Modes (PASS_STORE_SYNC_MODE):
 #   full (default) — watchexec path: pull → CI dual-encrypt → commit → push
+#                    → ntfy wake (primary peer notify; CI notify-sync is backup)
 #   pull           — notify/catch-up: cheap ls-remote gate → pull only
 #
 # Writes ~/.cache/pass-store-sync.status for the tray (no secret plaintext).
@@ -22,6 +23,60 @@ log() { printf '%s %s: %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$LOG_PREFIX" "$*"
 warn() { log "warning: $*" >&2; }
 
 utc_now() { date -u +%Y-%m-%dT%H:%M:%SZ; }
+
+# Acquire exclusive lock. Removes stale locks (dead pid). Waits up to
+# $1 seconds (default 0 = try once after stale cleanup).
+acquire_lock() {
+  local max_wait="${1:-0}" waited=0 old
+  mkdir -p "$(dirname "$LOCK_DIR")"
+  while true; do
+    if mkdir "$LOCK_DIR" 2>/dev/null; then
+      printf '%s\n' "$$" >"$LOCK_DIR/pid"
+      return 0
+    fi
+    if [[ -f $LOCK_DIR/pid ]]; then
+      old="$(tr -d '[:space:]' <"$LOCK_DIR/pid" 2>/dev/null || true)"
+      if [[ -n $old ]] && ! kill -0 "$old" 2>/dev/null; then
+        warn "removing stale lock (pid $old dead)"
+        rm -rf "$LOCK_DIR"
+        continue
+      fi
+    fi
+    if ((waited >= max_wait)); then
+      return 1
+    fi
+    sleep 1
+    waited=$((waited + 1))
+  done
+}
+
+release_lock() {
+  rm -rf "$LOCK_DIR" 2>/dev/null || true
+}
+
+# Wake peer long-pollers after a successful push. Primary path — does not
+# depend on GitHub Actions (CI notify-sync remains a backup only).
+# Never logs the topic value.
+publish_ntfy_wake() {
+  local topic_file="${PASS_STORE_NTFY_TOPIC_FILE:-}"
+  local server="${PASS_STORE_NTFY_SERVER:-https://ntfy.sh}"
+  local topic
+  server="${server%/}"
+  if [[ -z $topic_file || ! -r $topic_file ]]; then
+    warn "ntfy wake skipped (topic file missing); peers rely on CI backup"
+    return 0
+  fi
+  topic="$(tr -d '[:space:]' <"$topic_file" || true)"
+  if [[ -z $topic || $topic == placeholder ]]; then
+    warn "ntfy wake skipped (empty topic); peers rely on CI backup"
+    return 0
+  fi
+  if curl -fsS --max-time 10 -d "1" "${server}/${topic}" >/dev/null; then
+    log "ntfy wake published (peers should pull)"
+  else
+    warn "ntfy wake publish failed; CI notify-sync is backup"
+  fi
+}
 
 # Merge fields into status JSON atomically. Preserves unknown prior keys.
 write_status() {
@@ -144,12 +199,19 @@ if [[ ! -d "$PASSWORD_STORE_DIR/.git" ]]; then
   exit 0
 fi
 
-mkdir -p "$(dirname "$LOCK_DIR")"
-if ! mkdir "$LOCK_DIR" 2>/dev/null; then
-  warn "lock held at $LOCK_DIR; skip"
-  exit 0
+# pull waits for in-flight full sync; full only briefly waits + clears stale.
+if [[ $MODE == pull ]]; then
+  if ! acquire_lock 45; then
+    warn "lock held at $LOCK_DIR after 45s; skip (will retry on next ping)"
+    exit 0
+  fi
+else
+  if ! acquire_lock 8; then
+    warn "lock held at $LOCK_DIR; skip"
+    exit 0
+  fi
 fi
-trap 'rmdir "$LOCK_DIR" 2>/dev/null || true' EXIT
+trap 'release_lock' EXIT
 
 export GIT_TERMINAL_PROMPT=0
 cd "$PASSWORD_STORE_DIR"
@@ -330,6 +392,14 @@ fi
 # Rematerialize after pull/commit/push (covers pass auto-commit before agent).
 if [[ $pulled -eq 1 || $committed -eq 1 || $pushed -eq 1 || -n $dirty_preview ]]; then
   force_materialize
+fi
+
+# Primary peer wake: finish materialize under the lock, then drop lock and
+# ping so same-host notify pull can acquire immediately (CI is backup only).
+if [[ $pushed -eq 1 ]]; then
+  release_lock
+  trap - EXIT
+  publish_ntfy_wake
 fi
 
 exit 0

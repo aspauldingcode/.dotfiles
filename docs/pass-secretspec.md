@@ -57,25 +57,30 @@ and a **watchexec auto-sync agent** (default on).
 
 `dendritic.apps.pass.autoSync.enable` defaults to `true`.
 
-| Path                 | Agent                                      | Mechanism                                       |
-| -------------------- | ------------------------------------------ | ----------------------------------------------- |
-| Local edits → GitHub | `pass-store-sync` (launchd / systemd user) | watchexec → `PASS_STORE_SYNC_MODE=full`         |
-| GitHub → local       | `pass-store-sync-notify`                   | one `curl` JSON long-poll to ntfy → `MODE=pull` |
+| Path                           | Agent                                              | Mechanism                                 |
+| ------------------------------ | -------------------------------------------------- | ----------------------------------------- |
+| Local edits → GitHub           | `pass-store-sync` (launchd / systemd user)         | watchexec → `PASS_STORE_SYNC_MODE=full`   |
+| Push → peer wake (**primary**) | same `pass-store-sync` after successful `git push` | host-side `curl` one-byte publish to ntfy |
+| GitHub → local                 | `pass-store-sync-notify`                           | one `curl` JSON long-poll → `MODE=pull`   |
+| Push → peer wake (**backup**)  | Actions `notify-sync`                              | same ntfy publish if host wake failed     |
 
 **Local (watchexec):** on store changes (ignoring `.git`), waits `autoSync.debounce`
 (default `10sec`), then `git pull --rebase --autostash` → CI dual-encrypt on
-reserved paths → commit if dirty → `push`. Failures log under
-`~/.cache/pass-store-sync*.log` and retry on the next event.
+reserved paths → commit if dirty → `push` → **ntfy wake**. Failures log under
+`~/.cache/pass-store-sync*.log` and retry on the next event. Pull mode waits up
+to 45s for the sync lock (clears stale PID locks) so a concurrent full sync
+does not drop an upstream ping.
 
 **Upstream (ntfy):** idle cost is one sleeping HTTPS long-poll (no timers, no
 `ntfy` CLI). Agent order: **wait for sops topic file** (up to 120s, then exit
 so KeepAlive retries; Darwin also `WatchPaths` the secrets dir) → catch-up
 `MODE=pull` → subscribe. On each published message, cheap `git ls-remote` vs
-`HEAD`; pull only if behind. Keepalive/`open` events are ignored.
+`HEAD`; pull only if behind (with short retries). Keepalive/`open` events are
+ignored.
 
 Topic: sops `pass_store_ntfy_topic` (Alex-only) → HM writes a `0600` file the
-agent reads. Same value → Actions secret `PASS_STORE_NTFY_TOPIC` on the private
-store. Template workflow:
+agents read. Same value → Actions secret `PASS_STORE_NTFY_TOPIC` on the private
+store. Template workflow (backup only):
 [`scripts/password-store-notify-sync.yml`](../scripts/password-store-notify-sync.yml)
 (copy into `.password-store` as `.github/workflows/notify-sync.yml`).
 

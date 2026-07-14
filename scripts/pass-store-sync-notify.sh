@@ -23,9 +23,30 @@ SERVER="${PASS_STORE_NTFY_SERVER:-https://ntfy.sh}"
 DEBOUNCE_SEC="${PASS_STORE_NOTIFY_DEBOUNCE_SEC:-1}"
 WAIT_SEC="${PASS_STORE_NTFY_WAIT_SEC:-120}"
 
+still_behind() {
+  local remote local_head
+  remote="$(git -C "$PASSWORD_STORE_DIR" ls-remote origin -q HEAD 2>/dev/null | cut -f1 || true)"
+  local_head="$(git -C "$PASSWORD_STORE_DIR" rev-parse HEAD 2>/dev/null || true)"
+  [[ -n $remote && -n $local_head && $remote != "$local_head" ]]
+}
+
 pull_once() {
-  PASS_STORE_SYNC_MODE=pull PASSWORD_STORE_DIR="$PASSWORD_STORE_DIR" \
-    bash "$SYNC_SCRIPT" || true
+  # Sync waits up to 45s for the lock. Extra retries only if still behind
+  # (lock race that timed out, or brief GitHub ref lag after push).
+  local i=0
+  while ((i < 3)); do
+    PASS_STORE_SYNC_MODE=pull PASSWORD_STORE_DIR="$PASSWORD_STORE_DIR" \
+      bash "$SYNC_SCRIPT" || true
+    i=$((i + 1))
+    if ! still_behind; then
+      return 0
+    fi
+    if ((i < 3)); then
+      warn "still behind after pull; retry ${i}/2 in 2s"
+      sleep 2
+    fi
+  done
+  warn "still behind after retries; next ping/catch-up will retry"
 }
 
 wait_for_topic() {

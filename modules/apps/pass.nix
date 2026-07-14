@@ -7,7 +7,9 @@
 #
 # Auto-sync:
 #   - watchexec (FSEvents / inotify) → MODE=full pull/commit/push (local edits)
+#   - after successful push → host-side ntfy wake (primary peer notify)
 #   - curl ntfy JSON long-poll → MODE=pull (upstream-only; near-zero idle)
+#   - GitHub Actions notify-sync → ntfy (backup if host wake fails)
 # Not a periodic timer — kernel FS events + one sleeping HTTP stream.
 #
 # Activation is best-effort when sops material is missing (pre-genesis) so
@@ -58,6 +60,15 @@
         export PASS_MATERIALIZE_SCRIPT=${materializeScript}
         export PASS_MATERIALIZE_MAP=${lib.escapeShellArg "${materializeMap}"}
         export PASS_SECRETSPEC_TOML=${lib.escapeShellArg "${secretspecToml}"}
+        ${
+          if cfg.enable then
+            ''
+              export PASS_STORE_NTFY_TOPIC_FILE=${lib.escapeShellArg config.sops.secrets.pass_store_ntfy_topic.path}
+              export PASS_STORE_NTFY_SERVER=${lib.escapeShellArg cfg.autoSync.notify.server}
+            ''
+          else
+            ""
+        }
         exec ${pkgs.bash}/bin/bash ${../../scripts/pass-store-sync.sh}
       '';
       watchScript = pkgs.writeShellScript "pass-store-watch" ''
@@ -209,8 +220,10 @@
               default = true;
               description = ''
                 Upstream-only sync via one curl JSON long-poll to ntfy (no ntfy
-                CLI). Catch-up pull on agent start; MODE=pull on each message.
-                Topic from sops secret pass_store_ntfy_topic.
+                CLI). Primary wake is host-side publish after git push; this
+                agent receives those (and CI backup) pings. Catch-up pull on
+                agent start; MODE=pull on each message. Topic from sops secret
+                pass_store_ntfy_topic.
               '';
             };
             server = lib.mkOption {
