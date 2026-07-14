@@ -18,7 +18,7 @@ Captured from mba + sliceanddice while connected:
 
 Pass entry: `secretspec/shared/default/Bubbles`  
 Materialize: `~/.config/dendritic/wifi/Bubbles.psk`  
-NixOS agent file: `/var/lib/dendritic/wifi/Bubbles.psk` (root, for `nm-file-secret-agent`)
+NixOS optional root copy: `/var/lib/dendritic/wifi/Bubbles.psk` (0600)
 
 ## Module
 

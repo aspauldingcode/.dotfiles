@@ -1,11 +1,12 @@
 # Dendritic Wi-Fi — declarative known networks (pass-backed PSK).
 #
-# NixOS: NetworkManager ensureProfiles + iwd backend (see linux-desktop.nix).
+# NixOS: NetworkManager + iwd backend (see linux-desktop.nix).
 #   Match live Bubbles: WPA2-PSK, IPv4/IPv6 auto, DHCP DNS, autoconnect.
-# Darwin: nix-darwin activation via networksetup (preferred network + join).
+#   Applied by dendritic-wifi-ensure (nmcli) after pass materialize — not at rebuild.
+# Darwin: nix-darwin power-on + HM ensure via networksetup (preferred + join).
 #
 # PSK never enters the Nix store — materialized from pass SecretSpec key
-# `Bubbles` → ~/.config/dendritic/wifi/Bubbles.psk (+ root env for NM).
+# `Bubbles` → ~/.config/dendritic/wifi/Bubbles.psk (+ optional root copy).
 {
   flake.modules.nixos.dendritic =
     {
