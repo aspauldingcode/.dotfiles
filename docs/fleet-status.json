@@ -1,20 +1,20 @@
 {
   "schema": 1,
-  "generated_at": "2026-07-14T19:50:35Z",
+  "generated_at": "2026-07-14T20:27:56Z",
   "hosts": [
     {
       "host": "mba",
       "platform": "darwin",
-      "flake_rev": "025ff120",
+      "flake_rev": "6cc3b6a2",
       "status": "online",
-      "seen_at": "2026-07-14T19:50:11Z"
+      "seen_at": "2026-07-14T20:20:19Z"
     },
     {
       "host": "sliceanddice",
       "platform": "nixos",
-      "flake_rev": "c02b7ad9",
+      "flake_rev": "f4ad55f2",
       "status": "online",
-      "seen_at": "2026-07-14T19:36:23Z"
+      "seen_at": "2026-07-14T20:23:24Z"
     }
   ]
 }
