@@ -94,16 +94,17 @@
               max-length = 60;
             };
             clock = {
-              format = "  {:%H:%M}";
-              format-alt = "  {:%a %d %b}";
+              # Nerd Font (Maple Mono NF) glyphs — not ASCII spaces.
+              format = "󰥔 {:%H:%M}";
+              format-alt = "󰃭 {:%a %d %b}";
               tooltip-format = "<tt><small>{calendar}</small></tt>";
             };
             cpu = {
-              format = "  {usage}%";
+              format = "󰍛 {usage}%";
               interval = 2;
             };
             memory = {
-              format = "  {percentage}%";
+              format = "󰘚 {percentage}%";
               interval = 5;
             };
             battery = {
@@ -112,32 +113,32 @@
                 critical = 15;
               };
               format = "{icon} {capacity}%";
-              format-charging = "  {capacity}%";
-              format-plugged = "  {capacity}%";
+              format-charging = "󰂄 {capacity}%";
+              format-plugged = "󰚥 {capacity}%";
               format-icons = [
-                " "
-                " "
-                " "
-                " "
-                " "
+                "󰁺"
+                "󰁼"
+                "󰁾"
+                "󰂀"
+                "󰁹"
               ];
               interval = 10;
             };
             network = {
-              format-wifi = "  {essid}";
-              format-ethernet = "󰈀  {ifname}";
-              format-disconnected = "󰤭  offline";
+              format-wifi = "󰤨 {essid}";
+              format-ethernet = "󰈀 {ifname}";
+              format-disconnected = "󰤭 offline";
               tooltip-format = "{ifname}: {ipaddr}";
               interval = 5;
             };
             pulseaudio = {
-              format = "{icon}  {volume}%";
-              format-muted = "󰝟  muted";
+              format = "{icon} {volume}%";
+              format-muted = "󰝟 muted";
               format-icons = {
                 default = [
-                  " "
-                  " "
-                  " "
+                  "󰕿"
+                  "󰖀"
+                  "󰕾"
                 ];
               };
               on-click = "pavucontrol";
