@@ -1,314 +1,433 @@
-# Pass + SecretSpec (public .dotfiles, Alex-only)
+# Pass + SecretSpec sync (public .dotfiles)
 
-Developer/application secrets sync across macOS and NixOS via `pass` + a
-private GitHub password-store. Machine/home secrets stay on sops-nix.
+Cross-host **developer secrets** via `pass` + a **private** GitHub
+password-store, with near-real-time peer sync over **ntfy**, plus
+**SecretSpec** for runtime env injection. Machine/home secrets stay on
+**sops-nix** (separate layer).
 
-## Trust model
+This document explains:
+
+1. Exactly how the system works in this repository
+2. How **you** can replicate it with **your own** private vault (without
+   anyone else’s passwords)
+
+---
+
+## Public vs private (read this first)
+
+| Lives in **public** `.dotfiles`                            | Lives only in **your private** vaults |
+| ---------------------------------------------------------- | ------------------------------------- |
+| Nix modules, sync scripts, workflow _templates_            | GPG private key + passphrase          |
+| SecretSpec _declarations_ (`secretspec.toml` — names only) | All `pass` ciphertext (`.gpg` files)  |
+| Materialize _map_ (which keys → which `$HOME` files)       | Age master / sops plaintext           |
+| Docs, demo `DEMO_*` template paths                         | ntfy topic string                     |
+| Fingerprint / rotation _metadata_ (not key material)       | GitHub App tokens, PATs, etc.         |
+
+**Never** commit: plaintext passwords, GPG private keys, ntfy topics, or
+clones of someone else’s private `.password-store`.
+
+Forking this public repo does **not** give you Alex’s secrets. Those live
+in private GitHub repos you cannot access. To replicate, you create
+**your own** private store + **your own** GPG + **your own** ntfy topic.
+
+---
+
+## What problem this solves
+
+| Need                                         | Mechanism                                      |
+| -------------------------------------------- | ---------------------------------------------- |
+| One vault on macOS + NixOS                   | Private git-backed `~/.password-store`         |
+| Edit on one host → appear on another         | watchexec push + ntfy wake + peer pull         |
+| Host offline during the edit                 | **Catch-up pull on every ntfy reconnect**      |
+| Apps need env vars without committing `.env` | SecretSpec `pass://…` provider                 |
+| Some secrets as `$HOME` files (no rebuild)   | Materialize map after sync                     |
+| Public flake stays safe                      | Ciphertext only; GPG key via sops on each host |
+
+---
+
+## Architecture
 
 ```
-gh auth login (Alex GitHub + MFA)
+┌─────────────────────────────────────────────────────────────────┐
+│  PUBLIC flake (this repo)                                       │
+│  modules/apps/pass.nix · scripts/pass-store-*.sh                │
+│  home/secretspec.toml (names) · home/pass-materialize.json      │
+│  sops ciphertext: gpg key material + ntfy topic (Alex-only age) │
+└───────────────┬─────────────────────────────┬───────────────────┘
+                │ HM activation               │ agents
+                ▼                             ▼
+┌──────────────────────────┐    ┌─────────────────────────────────┐
+│  Host (mba / NixOS / …)  │    │  Agents (launchd / systemd)     │
+│  gpg-agent (preset)      │    │  pass-store-sync (watchexec)    │
+│  ~/.password-store       │◄──►│  pass-store-sync-notify (ntfy)  │
+│  SecretSpec / QtPass     │    │  pass-store-tray (status)       │
+└────────────┬─────────────┘    └───────────────┬─────────────────┘
+             │ git push/pull                    │ publish / long-poll
+             ▼                                  ▼
+┌──────────────────────────┐    ┌─────────────────────────────────┐
+│  PRIVATE GitHub          │    │  ntfy.sh/<YOUR_RANDOM_TOPIC>    │
+│  you/.password-store     │    │  (no secret payload — wake only)│
+│  + Actions: notify-sync  │    └─────────────────────────────────┘
+│    (backup wake)         │
+│  + Actions: secrets-smoke│
+│    (CI canary GPG only)  │
+└──────────────────────────┘
+```
+
+### Trust bootstrap (this repo’s instance)
+
+```
+gh auth login (owner MFA)
         │
- private aspauldingcode/dendritic-age-master  (age master only)
+ private age-master repo  (age key only — not the password-store)
         │
- secrets-bootstrap → sops age keys file
+ secrets-bootstrap → local sops age keys
         │
- sops ciphertext in public .dotfiles
- (gpg_private_key / gpg_passphrase)
+ sops decrypt in public .dotfiles
+ (gpg_private_key / gpg_passphrase / pass_store_ntfy_topic)
         │
    gpg-agent (preset passphrase)
         │
- ~/.password-store  ←→  private aspauldingcode/.password-store
+ ~/.password-store  ←→  private .password-store
         │
-   SecretSpec (pass://…)
-        │
-   app env vars at runtime
+   SecretSpec (pass://…) / materialize / QtPass
 ```
 
-Grace: SSH ed25519 → ssh-to-age recipients still listed in [`.sops.yaml`](../.sops.yaml)
-until all hosts use GitHub bootstrap. See [`ssh-secrets.md`](./ssh-secrets.md).
+Grace: SSH ed25519 → ssh-to-age recipients may still appear in
+[`.sops.yaml`](../.sops.yaml). See [`ssh-secrets.md`](./ssh-secrets.md).
 
-- Public `.dotfiles` never holds plaintext secrets.
-- Age recipients for GPG material are Alex-only (age master + temporary SSH age).
-- GitHub Actions on the **private** password-store uses a **CI-only** GPG canary
-  key that can decrypt template paths only — never Alex’s personal GPG key.
-- Do **not** store GPG private key in `.password-store` or grant CI access to
-  `dendritic-age-master`.
+---
 
 ## Layers
 
-| Layer           | Tool                      | Contents                             |
-| --------------- | ------------------------- | ------------------------------------ |
-| Declarations    | `secretspec.toml`         | Secret _names_ (git-safe)            |
-| Developer vault | `pass` + private GH store | Encrypted values                     |
-| Runtime         | `secretspec run`          | Env vars for child process           |
-| Machine/home    | sops-nix                  | Existing wrappers (`gh`, chatgpt, …) |
-| CI canaries     | private-repo Actions      | Template decrypt smoke               |
+| Layer           | Tool                        | Contents                                |
+| --------------- | --------------------------- | --------------------------------------- |
+| Declarations    | `secretspec.toml`           | Secret _names_ (git-safe)               |
+| Developer vault | `pass` + private GH store   | GPG-encrypted values                    |
+| Runtime         | `secretspec run` / wrappers | Env vars for child processes            |
+| Home files      | materialize map             | Optional `$HOME` files (e.g. `~/.shit`) |
+| Machine/home    | sops-nix                    | GPG key, ntfy topic, other host secrets |
+| Peer wake       | ntfy (+ CI backup)          | Empty ping — not the password itself    |
+| CI canaries     | private-repo Actions        | Template decrypt smoke (CI-only GPG)    |
 
-## Packages / HM feature
+---
 
-Enable with `dendritic.apps.pass.enable = true` (see hosts). Module:
-[`modules/apps/pass.nix`](../modules/apps/pass.nix).
+## Components → files (public repo)
 
-Provides: `pass` (+ otp), `gnupg` + agent preset, **QtPass GUI**, `browserpass`,
-`secretspec`, activation that imports GPG from sops and clones/pulls the store,
-and a **watchexec auto-sync agent** (default on).
+| Piece                    | Path                                                                                      |
+| ------------------------ | ----------------------------------------------------------------------------------------- |
+| HM feature module        | [`modules/apps/pass.nix`](../modules/apps/pass.nix)                                       |
+| Local→remote sync        | [`scripts/pass-store-sync.sh`](../scripts/pass-store-sync.sh)                             |
+| Remote→local notify      | [`scripts/pass-store-sync-notify.sh`](../scripts/pass-store-sync-notify.sh)               |
+| Rematerialize home files | [`scripts/pass-secretspec-materialize.sh`](../scripts/pass-secretspec-materialize.sh)     |
+| Materialize map          | [`home/pass-materialize.json`](../home/pass-materialize.json)                             |
+| SecretSpec declarations  | [`home/secretspec.toml`](../home/secretspec.toml)                                         |
+| Tray applet              | [`modules/apps/pass-store-tray/`](../modules/apps/pass-store-tray/)                       |
+| ntfy workflow template   | [`scripts/password-store-notify-sync.yml`](../scripts/password-store-notify-sync.yml)     |
+| Smoke CI template        | [`scripts/password-store-secrets-smoke.yml`](../scripts/password-store-secrets-smoke.yml) |
+| Genesis / provision      | `nix run .#pass-genesis` · `nix run .#pass-provision`                                     |
+| Demo declarations        | [`testdata/secretspec-demo/`](../testdata/secretspec-demo/)                               |
 
-### Auto-sync (kernel FS watcher + ntfy upstream)
+Enable on a host: `dendritic.apps.pass.enable = true` (see `hosts/`).
 
-`dendritic.apps.pass.autoSync.enable` defaults to `true`.
+Options (non-exhaustive):
 
-| Path                           | Agent                                              | Mechanism                                 |
-| ------------------------------ | -------------------------------------------------- | ----------------------------------------- |
-| Local edits → GitHub           | `pass-store-sync` (launchd / systemd user)         | watchexec → `PASS_STORE_SYNC_MODE=full`   |
-| Push → peer wake (**primary**) | same `pass-store-sync` after successful `git push` | host-side `curl` one-byte publish to ntfy |
-| GitHub → local                 | `pass-store-sync-notify`                           | one `curl` JSON long-poll → `MODE=pull`   |
-| Push → peer wake (**backup**)  | Actions `notify-sync`                              | same ntfy publish if host wake failed     |
+| Option                                       | Default                          | Role                             |
+| -------------------------------------------- | -------------------------------- | -------------------------------- |
+| `dendritic.apps.pass.repo`                   | `aspauldingcode/.password-store` | **Change this** when replicating |
+| `dendritic.apps.pass.autoSync.enable`        | `true`                           | watchexec full sync              |
+| `dendritic.apps.pass.autoSync.notify.enable` | `true`                           | ntfy long-poll peer              |
+| `dendritic.apps.pass.materialize.enable`     | `true`                           | map → `$HOME` files              |
+| `dendritic.apps.pass.tray.enable`            | `true`                           | menu-bar / StatusNotifier status |
+| `dendritic.apps.pass.gui.enable`             | `true`                           | QtPass                           |
 
-**Local (watchexec):** on store changes (ignoring `.git`), waits `autoSync.debounce`
-(default `10sec`), then `git pull --rebase --autostash` → CI dual-encrypt on
-reserved paths → commit if dirty → `push` → **ntfy wake**. Failures log under
-`~/.cache/pass-store-sync*.log` and retry on the next event. Pull mode waits up
-to 45s for the sync lock (clears stale PID locks) so a concurrent full sync
-does not drop an upstream ping.
+---
 
-**Upstream (ntfy):** idle cost is one sleeping HTTPS long-poll (no timers, no
-`ntfy` CLI). Agent order: **wait for sops topic file** (up to 120s, then exit
-so KeepAlive retries; Darwin also `WatchPaths` the secrets dir) → **catch-up
-`MODE=pull` on every subscribe and every reconnect** → subscribe. ntfy does
-**not** retain missed events — the ping is for already-online peers; reconnect
-catch-up is what brings a machine up to date after being offline. On each
-published message, cheap `git ls-remote` vs `HEAD`; pull only if behind (with
-short retries). Keepalive/`open` events are ignored.
+## Sync data plane (exact behavior)
 
-Topic: sops `pass_store_ntfy_topic` (Alex-only) → HM writes a `0600` file the
-agents read. Same value → Actions secret `PASS_STORE_NTFY_TOPIC` on the private
-store. Template workflow (backup only):
-[`scripts/password-store-notify-sync.yml`](../scripts/password-store-notify-sync.yml)
-(copy into `.password-store` as `.github/workflows/notify-sync.yml`).
+### Agents
+
+| Path                           | Agent                                   | Mechanism                               |
+| ------------------------------ | --------------------------------------- | --------------------------------------- |
+| Local edits → GitHub           | `pass-store-sync`                       | watchexec → `PASS_STORE_SYNC_MODE=full` |
+| Push → peer wake (**primary**) | same script after successful `git push` | host-side `curl -d 1` to ntfy           |
+| GitHub → local                 | `pass-store-sync-notify`                | JSON long-poll → `MODE=pull`            |
+| Push → peer wake (**backup**)  | Actions `notify-sync` on private store  | same ntfy publish if host wake failed   |
+
+### Local path (`MODE=full`)
+
+1. Debounce (~`10sec` default)
+2. Acquire lock (PID file; stale cleanup)
+3. `git pull --rebase --autostash`
+4. Re-dual-encrypt **reserved** CI template paths only
+5. Commit if dirty → `git push`
+6. Rematerialize if `secretspec/` changed
+7. **Publish ntfy wake** (primary)
+
+Logs: `~/.cache/pass-store-sync.log`  
+Status JSON (no secrets): `~/.cache/pass-store-sync.status`
+
+### Upstream path (`MODE=pull` + notify agent)
+
+1. Wait for sops topic file (up to 120s, else exit → Restart)
+2. **Catch-up pull** (`ls-remote` vs `HEAD`; pull only if behind)
+3. Subscribe: `curl -sN https://ntfy.sh/<topic>/json`
+4. On `"event":"message"` → pull again (debounced)
+5. If curl dies (offline, timeout): sleep backoff → **catch-up pull again** → resubscribe
+
+**Critical:** ntfy does **not** retain missed wakes. The ping is for peers
+already online. **Reconnect catch-up** is what makes “offline a month, then
+online” converge without a new password change.
+
+```
+Online peer:     push → ntfy message → peer pull (~seconds)
+Offline peer:    push → ntfy missed → peer reconnects → catch-up pull → caught up
+```
+
+### Manual ping
 
 ```bash
-# Manual ping (both hosts should ls-remote; pull only if behind)
 TOPIC="$(sops -d --extract '["pass_store_ntfy_topic"]' secrets/secrets.yaml)"
 curl -fsS -d "1" "https://ntfy.sh/${TOPIC}"
 ```
 
-Disable watcher with `dendritic.apps.pass.autoSync.enable = false`.
-Disable ntfy only with `dendritic.apps.pass.autoSync.notify.enable = false`.
+Disable: `autoSync.enable = false` or `autoSync.notify.enable = false`.
 
-### Tray applet (Darwin + Linux)
+---
 
-`dendritic.apps.pass.tray.enable` defaults to `true`. One **Rust** native tray
-applet (`tray-icon` / muda — NSMenu on macOS, StatusNotifier on Linux). No
-windowed GUI: status lives in the menu; actions are only **Open QtPass** and
-**Open sync log** (shared [`ui_contract`](../modules/apps/pass-store-tray/src/ui_contract.rs)).
+## Materialize (pass → `$HOME` without `nh`)
 
-| Icon | Meaning                                              |
-| ---- | ---------------------------------------------------- |
-| ↑    | Uploading local store changes to GitHub              |
-| ↓    | Downloading remote updates                           |
-| ✓    | Idle / last sync completed                           |
-| ↻    | `nh` / `*-rebuild` in progress                       |
-| !    | Error (see menu / `~/.cache/pass-store-sync.status`) |
+Pass sync updates `~/.password-store` only. Mapped keys are written to home
+files when `secretspec/` changes:
 
-Icons are **macOS menu-bar silhouettes** (template / monochrome — no green/blue
-fills). AppKit tints them for light/dark menu bar; Linux uses a light symbolic
-ink for dark panels.
+| SecretSpec key  | Home file                                               |
+| --------------- | ------------------------------------------------------- |
+| `SHIT_PASSWORD` | `~/.shit`                                               |
+| `PEE_PASSWORD`  | `~/.pee`                                                |
+| `Bubbles`       | `~/.config/dendritic/wifi/Bubbles.psk` (dendritic.wifi) |
 
-Status file (no plaintext secrets): `~/.cache/pass-store-sync.status`.
-
-Menu actions: Pull now, Rematerialize secrets, Open QtPass, Open sync log.
-
-### Fast rematerialize (no `nh` switch)
-
-Pass sync updates `~/.password-store` only. Home files that HM used to write
-only on activation (e.g. `~/.shit`) are rematerialized **immediately** when
-`secretspec/` paths change in a sync, via
-[`scripts/pass-secretspec-materialize.sh`](../scripts/pass-secretspec-materialize.sh)
-and the map [`home/pass-materialize.json`](../home/pass-materialize.json):
-
-| SecretSpec key  | Home file |
-| --------------- | --------- |
-| `SHIT_PASSWORD` | `~/.shit` |
-| `PEE_PASSWORD`  | `~/.pee`  |
+Map: [`home/pass-materialize.json`](../home/pass-materialize.json).
 
 ```bash
-# Change a mapped secret — after sync, home file updates without rebuild
 printf '%s\n' 'new value' | pass insert -e secretspec/shared/default/SHIT_PASSWORD
-# wait for watchexec debounce (~10s) or: pass-materialize
+# ~10s debounce, or: pass-materialize
 cat ~/.shit
-
-# Still need nh * switch when you change Nix *declarations*, add a new map
-# entry, or update sops age secrets — not for routine pass value edits.
 ```
 
-Runtime secrets (`GH_*`, `FLAKEHUB_TOKEN`) stay live via wrappers — not copied to
-home files. Pass never writes into `secrets/secrets.yaml`.
+Adding a **new** map entry still needs a flake commit + rebuild. Changing a
+mapped **value** does not.
 
-QtPass keeps `autoPull`/`autoPush` off so the watcher owns git traffic. Manual
-`pass git push` / `pull` still works.
+Runtime tokens (`GH_*`, `FLAKEHUB_TOKEN`) stay in pass / wrappers — not copied
+to home files.
 
-**CI canary caveat:** QtPass/`pass insert` encrypts only to `.gpg-id` (Alex).
-Template paths used by private-repo smoke (`_bootstrap/*`, `test/*`,
-`secretspec/shared/default/DEMO_*`) must stay dual-encrypted to Alex +
-`.ci-gpg-id`. Full sync re-applies the CI recipient only on those paths — real
-secrets under `secretspec/` (e.g. `GH_TOKEN`) stay Alex-only. Notify/`MODE=pull`
-never runs that walk.
+---
 
-### Remote verify from mba (sliceanddice over SSH)
+## Tray + QtPass
 
-No walk-over. After flake changes:
+Tray (`dendritic.apps.pass.tray.enable`): ↑ upload · ↓ download · ✓ idle · ↻
+rebuild · ! error. Menu: Pull now, Rematerialize, Open QtPass, Open sync log.
 
-```bash
-nh darwin switch . -H mba
-ssh sliceanddice 'cd /etc/nixos/.dotfiles && git pull --ff-only origin development && nh os switch'
-```
+QtPass: Spotlight / Dock / `qtpass`. Auto pull/push **off** so watchexec owns
+git. Store path: `~/.password-store`.
 
-Probes:
+---
 
-```bash
-# mba
-tail -f ~/.cache/pass-store-sync-notify.log
-pgrep -lf 'pass-store-sync-notify|ntfy.sh/.*/json' || true
+## CI on the private password-store
 
-# sliceanddice
-ssh sliceanddice 'systemctl --user status pass-store-sync-notify.service; pgrep -af "ntfy.sh/.*/json"'
-ssh sliceanddice 'cd ~/.password-store && git rev-parse --short HEAD'
-```
+Templates in this public repo — **copy** into the private store:
 
-### QtPass GUI (macOS + NixOS)
+| Template                                                                                  | Becomes in private store              |
+| ----------------------------------------------------------------------------------------- | ------------------------------------- |
+| [`scripts/password-store-notify-sync.yml`](../scripts/password-store-notify-sync.yml)     | `.github/workflows/notify-sync.yml`   |
+| [`scripts/password-store-secrets-smoke.yml`](../scripts/password-store-secrets-smoke.yml) | `.github/workflows/secrets-smoke.yml` |
 
-`dendritic.apps.pass.gui.enable` defaults to `true`.
+Actions secrets (private store only):
 
-| Platform | How to open                                                                         | Config                                                       |
-| -------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| macOS    | Spotlight / Dock / `open -a QtPass` / `~/Applications/Home Manager Apps/QtPass.app` | `defaults` domain `com.IJHack.QtPass` (seeded on activation) |
-| NixOS    | app launcher / `qtpass`                                                             | `~/.config/IJHack/QtPass.conf`                               |
+| Secret                  | Purpose                                        |
+| ----------------------- | ---------------------------------------------- |
+| `PASS_STORE_NTFY_TOPIC` | Same random topic as sops (never commit it)    |
+| `CI_GPG_PRIVATE_KEY`    | **CI-only** canary key (not your personal GPG) |
+| `CI_GPG_PASSPHRASE`     | Canary passphrase                              |
 
-Preconfigured to use `~/.password-store` and Nix `pass` / `gpg` / `git` / `pwgen` binaries.
+Reserved dual-encrypt paths (Alex + CI canary): `_bootstrap/*`, `test/*`,
+`secretspec/shared/default/DEMO_*`. Real secrets stay personal-GPG-only.
+`MODE=pull` never runs the dual-encrypt walk.
 
-## Template entry map
+---
 
-| pass path                                     | value (fake)                          |
-| --------------------------------------------- | ------------------------------------- |
-| `_bootstrap/ok`                               | `ok`                                  |
-| `test/example-login`                          | multiline demo login                  |
-| `secretspec/shared/default/DEMO_API_KEY`      | `demo-not-a-real-key`                 |
-| `secretspec/shared/default/DEMO_DATABASE_URL` | `postgres://demo:demo@localhost/demo` |
-| `secretspec/shared/default/SHIT_PASSWORD`     | `poo password` → HM writes `~/.shit`  |
-
-Public declarations: [`testdata/secretspec-demo/secretspec.toml`](../testdata/secretspec-demo/secretspec.toml).
-
-## Commands
-
-From the `.dotfiles` checkout:
+## Day-to-day commands
 
 ```bash
-# One-time (already run on primary machine during provision)
-nix run .#pass-genesis
-nix run .#pass-provision   # genesis + GH repo + templates + CI secrets
-
-# Routine rotation
-nix run .#pass-rotate -- --status
-nix run .#pass-rotate                 # phase 1: dual-encrypt
-# … rebuild/activate all hosts …
-nix run .#pass-rotate -- --finalize   # phase 2: drop old key
-
-# Day-to-day (auto-sync usually handles git; manual still fine)
 pass insert some/secret
 pass show _bootstrap/ok
+pass ls secretspec/shared/default
+
+# SecretSpec demo (declarations only in public repo)
 cd testdata/secretspec-demo && secretspec run -- printenv DEMO_API_KEY
 
-# Watcher / notify logs
 tail -f ~/.cache/pass-store-sync.log
 tail -f ~/.cache/pass-store-sync-notify.log
-# Linux: journalctl --user -u pass-store-sync -u pass-store-sync-notify -f
+# Linux:
+# journalctl --user -u pass-store-sync -u pass-store-sync-notify -f
 ```
 
-Current fingerprint is recorded in [`pass-gpg-fingerprint.txt`](./pass-gpg-fingerprint.txt)
-and [`pass-rotation-state.json`](./pass-rotation-state.json).
-
-## New machine
-
-1. `gh auth login` as Alex (MFA/passkeys on the GitHub account).
-2. `nix run .#secrets-bootstrap` — fetches age master from private
-   `aspauldingcode/dendritic-age-master` into the local sops age keys file.
-3. `nix run github:aspauldingcode/.dotfiles#install` (or local switch).
-4. HM activation imports GPG from sops, presets passphrase, clones
-   `aspauldingcode/.password-store` into `~/.password-store`.
-5. Optional: enroll host SSH pubkey for login — see [`ssh-secrets.md`](./ssh-secrets.md).
-
-Do not bootstrap GPG from the password-store git repo (circular / weak).
-
-## Secrets smoke CI
-
-Private repo workflow: `.github/workflows/secrets-smoke.yml` inside
-`aspauldingcode/.password-store`.
-
-- Secrets: `CI_GPG_PRIVATE_KEY`, `CI_GPG_PASSPHRASE` (Actions secrets only).
-- Asserts template decrypt + SecretSpec `DEMO_*`.
-- Reserved paths stay dual-encrypted to Alex + CI (see `.ci-gpg-id` in the store).
-- Public `.dotfiles` CI only checks declaration files (no private clone).
-
-If CI fails after rotation: ensure test paths were re-dual-encrypted to
-`.ci-gpg-id`, then `gh secret set` if the CI key itself was rotated.
-
-## Rotation runbook
-
-1. `nix run .#pass-rotate` — new key, sops previous slots filled, store dual-encrypted, push.
-2. Activate/rebuild every trusted host (imports new key + pulls).
-3. `nix run .#pass-rotate -- --finalize` — single recipient, clear previous sops slots.
-4. Commit updated `secrets/secrets.yaml` + rotation state in `.dotfiles`.
-
-Do not finalize until all hosts have pulled phase 1. Finalize is gated:
+### Cross-host verify
 
 ```bash
-CONFIRM_FINALIZE=yes nix run .#pass-rotate -- --finalize
-# optional: FORCE_FINALIZE=yes to skip the default 24h grace
+# After flake changes
+nh darwin switch . -H mba   # or: nh os switch on NixOS
+ssh other-host 'cd /etc/nixos/.dotfiles && git pull --ff-only && nh os switch'
+
+# Probes
+pgrep -lf 'pass-store-sync-notify|ntfy.sh/.*/json'
+ssh other-host 'systemctl --user status pass-store-sync-notify.service'
+ssh other-host 'cd ~/.password-store && git rev-parse --short HEAD'
 ```
 
-Guards (refuse otherwise): previous sops GPG slots still present, `.gpg-id`
-still lists **both** fingerprints, canary decrypt works. Annual reminder
-agents notify to start phase 1; finalize stays explicit — never burn the old
-key early.
+---
 
-Age recipient changes remain separate (`scripts/sops-updatekeys.sh`).
+## This repo’s instance (Alex)
 
-## CLI auth from pass (gh + fh)
+| Resource               | Where                                                         |
+| ---------------------- | ------------------------------------------------------------- |
+| Public flake           | `aspauldingcode/.dotfiles`                                    |
+| Private password-store | `aspauldingcode/.password-store`                              |
+| Private age master     | `aspauldingcode/dendritic-age-master`                         |
+| Pass GPG fingerprint   | [`docs/pass-gpg-fingerprint.txt`](./pass-gpg-fingerprint.txt) |
+| Rotation state         | [`docs/pass-rotation-state.json`](./pass-rotation-state.json) |
 
-Declarations in [`home/secretspec.toml`](../home/secretspec.toml):
+**New Alex machine:** `gh auth login` → `nix run .#secrets-bootstrap` →
+install/switch → HM imports GPG from sops, clones private store, starts agents.
 
-| Secret                 | pass path                                        | Role                                     |
-| ---------------------- | ------------------------------------------------ | ---------------------------------------- |
-| `GH_APP_CLIENT_ID`     | `secretspec/shared/default/GH_APP_CLIENT_ID`     | GitHub App (API mint)                    |
-| `GH_APP_CLIENT_SECRET` | `secretspec/shared/default/GH_APP_CLIENT_SECRET` | GitHub App secret                        |
-| `GH_REFRESH_TOKEN`     | `secretspec/shared/default/GH_REFRESH_TOKEN`     | refresh → access via API (`ghr_`→`ghu_`) |
-| `GH_TOKEN`             | `secretspec/shared/default/GH_TOKEN`             | Legacy classic PAT fallback              |
-| `FLAKEHUB_TOKEN`       | `secretspec/shared/default/FLAKEHUB_TOKEN`       | FlakeHub / determinate-nixd              |
+Do **not** bootstrap GPG from the password-store git repo (circular / weak).
 
-**GitHub — fully automated after one-time bootstrap (still uses pass):**
+### Template entries (fake values in private store)
+
+| pass path                                 | notes                       |
+| ----------------------------------------- | --------------------------- |
+| `_bootstrap/ok`                           | canary                      |
+| `test/example-login`                      | multiline demo              |
+| `secretspec/shared/default/DEMO_*`        | SecretSpec smoke            |
+| `secretspec/shared/default/SHIT_PASSWORD` | → `~/.shit` via materialize |
+
+### CLI auth secrets (declarations public, values private)
+
+See [`home/secretspec.toml`](../home/secretspec.toml): `GH_*`, `FLAKEHUB_TOKEN`.
+Helpers: `nix run .#pass-github-app-bootstrap`, `pass-rotate-cli-auth`, etc.
+
+### Rotation runbook
+
+1. `nix run .#pass-rotate` — dual-encrypt phase
+2. Rebuild/activate every trusted host
+3. `CONFIRM_FINALIZE=yes nix run .#pass-rotate -- --finalize`
+4. Commit updated `secrets/secrets.yaml` + rotation state
+
+Do not finalize until all hosts pulled phase 1.
+
+---
+
+## Replicate this yourself (your vault, your keys)
+
+Goal: same _architecture_, zero shared secrets with this repo’s private data.
+
+### 0. Prerequisites
+
+- Nix flake / home-manager (or copy the module patterns into yours)
+- GitHub account with MFA
+- Ability to create **private** repos
+
+### 1. Create private repos (yours)
 
 ```bash
-nix run .#pass-github-app-bootstrap   # manifest Create + OAuth (browser once)
-# after that:
-github-app-mint-token                 # mints access token from pass refresh_token
-gh auth status                        # wrapper mints automatically
-pass-rotate-cli-auth --github         # force API refresh
-pass-rotate-cli-auth --auto           # weekly agent refreshes when due
+# Password store (empty private repo)
+gh repo create YOUR_USER/.password-store --private --confirm
+
+# Optional but recommended: private age master for sops (do NOT put GPG here)
+gh repo create YOUR_USER/my-age-master --private --confirm
 ```
 
-Access tokens live in `~/.cache/dendritic/` (~8h). New refresh tokens are written
-back to pass (and synced). If the refresh token expires (~6 months), mint falls
-back to device flow + notification.
-
-**FlakeHub — fully automated** (`determinate-nixd auth token device create`).
+### 2. Generate your GPG + ntfy topic
 
 ```bash
-pass-rotate-cli-auth --status
-pass-rotate-cli-auth --auto
-pass-rotate-cli-auth --flakehub
+# Personal GPG for pass (example — use your own uid/policy)
+gpg --full-generate-key
+# note fingerprint → .gpg-id in the store later
+
+# Random ntfy topic (treat like a password; never commit)
+openssl rand -hex 16
+# e.g. store as: dendritic-pass-<hex>
 ```
 
-## SecretSpec in a project
+Put into **your** sops (encrypted to **your** age/SSH recipients):
+
+- `gpg_private_key` / `gpg_passphrase` (export secret key armor)
+- `pass_store_ntfy_topic` = the random topic
+
+### 3. Wire the public module to _your_ store
+
+In your host HM config:
+
+```nix
+dendritic.apps.pass.enable = true;
+dendritic.apps.pass.repo = "YOUR_USER/.password-store";  # not aspauldingcode’s
+```
+
+Point sops secrets at your ciphertext files. Do **not** reuse this repo’s
+`secrets/secrets.yaml` expecting to decrypt it — you are not an age recipient.
+
+### 4. Provision the private store
+
+Using this flake’s helpers (or equivalent):
+
+```bash
+nix run .#pass-genesis      # local store + gpg-id
+nix run .#pass-provision    # remote + templates + CI secrets (adapt for your user)
+```
+
+Or manually: `pass init <FINGERPRINT>`, `pass git init`,
+`pass git remote add origin git@github.com:YOUR_USER/.password-store.git`,
+add dual-encrypt canary paths if you want CI smoke.
+
+### 5. Copy workflow templates into the private store
+
+```bash
+cd ~/.password-store
+mkdir -p .github/workflows
+cp /path/to/.dotfiles/scripts/password-store-notify-sync.yml \
+  .github/workflows/notify-sync.yml
+# optional smoke:
+cp /path/to/.dotfiles/scripts/password-store-secrets-smoke.yml \
+  .github/workflows/secrets-smoke.yml
+git add .github && git commit -m "ci: notify-sync (+ smoke)" && git push
+```
+
+Set Actions secrets on **your** private store:
+
+```bash
+gh secret set PASS_STORE_NTFY_TOPIC -R YOUR_USER/.password-store <<<"$YOUR_TOPIC"
+# CI canary key — generate a separate GPG key used ONLY by Actions
+gh secret set CI_GPG_PRIVATE_KEY -R YOUR_USER/.password-store < ci-canary.asc
+gh secret set CI_GPG_PASSPHRASE -R YOUR_USER/.password-store <<<"…"
+```
+
+### 6. Rebuild both hosts and verify
+
+```bash
+nh darwin switch   # or nh os switch
+# second machine: pull flake + switch; agents clone/pull your private store
+
+# Host A
+pass insert demo/from-a
+# wait debounce / watch tray ↑ then ✓
+
+# Host B (online): should pull via ntfy within seconds
+pass show demo/from-a
+
+# Host B offline during insert → come online: notify reconnect catch-up
+# should pull without another insert
+```
+
+### 7. SecretSpec in _your_ projects
 
 ```toml
 [providers]
@@ -323,19 +442,36 @@ pass insert secretspec/shared/default/MY_API_KEY
 secretspec run -- ./my-app
 ```
 
-Do not commit `.env` values. Commit `secretspec.toml` declarations only.
+Commit the toml; never commit values.
 
-## Home Manager depending on pass (SecretSpec)
+### Replication checklist
 
-Nix **evaluation** never decrypts pass (no plaintext in `/nix/store`). Instead,
-HM **activation** reads via SecretSpec after GPG unlock + store pull.
+- [ ] Private `.password-store` under **your** GitHub user/org
+- [ ] Your GPG in **your** sops (not this repo’s ciphertext)
+- [ ] Your random ntfy topic in sops + Actions secret
+- [ ] `dendritic.apps.pass.repo` points at **your** store
+- [ ] Workflows copied into the private store
+- [ ] CI uses a **canary** GPG, never your daily driver private key
+- [ ] No clone/fetch of `aspauldingcode/.password-store` or age-master
 
-Demo: [`home/secretspec.toml`](../home/secretspec.toml) declares `SHIT_PASSWORD`
-and `PEE_PASSWORD`. With `dendritic.apps.pass.materialize.enable` (default
-`true`), activation and post-sync rematerialize write `~/.shit` / `~/.pee`
-(mode `0600`) per [`home/pass-materialize.json`](../home/pass-materialize.json).
+---
+
+## SecretSpec quick reference
 
 ```bash
-printf '%s\n' 'poo password' | pass insert -e secretspec/shared/default/SHIT_PASSWORD
-# after sync (or pass-materialize): cat ~/.shit — no nh switch required
+pass insert secretspec/shared/default/MY_API_KEY
+secretspec run -- ./my-app
 ```
+
+Nix evaluation never decrypts pass. HM activation / sync rematerialize reads
+via GPG after unlock.
+
+---
+
+## Security footnotes
+
+- Public `.dotfiles` never holds plaintext secrets.
+- ntfy carries a one-byte wake, not ciphertext or passwords.
+- Do not put GPG private key in `.password-store`.
+- Do not grant CI access to your age-master or personal GPG.
+- Age recipient changes: [`scripts/sops-updatekeys.sh`](../scripts/sops-updatekeys.sh).

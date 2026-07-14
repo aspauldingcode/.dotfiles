@@ -86,4 +86,10 @@ if [[ -f $STATUS_FILE ]] && command -v jq >/dev/null 2>&1; then
 fi
 
 log "done (${count} file(s))"
+
+# Optional: apply Wi-Fi profiles after PSK materialize (dendritic.wifi).
+if command -v dendritic-wifi-ensure >/dev/null 2>&1; then
+  dendritic-wifi-ensure || warn "dendritic-wifi-ensure failed"
+fi
+
 exit 0
