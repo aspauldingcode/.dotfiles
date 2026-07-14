@@ -90,8 +90,10 @@ Disable ntfy only with `dendritic.apps.pass.autoSync.notify.enable = false`.
 
 ### Tray applet (Darwin + Linux)
 
-`dendritic.apps.pass.tray.enable` defaults to `true`. One **Rust + iced** applet
-(with `tray-icon` for the menubar glyph):
+`dendritic.apps.pass.tray.enable` defaults to `true`. One **Rust** native tray
+applet (`tray-icon` / muda — NSMenu on macOS, StatusNotifier on Linux). No
+windowed GUI: status lives in the menu; actions are only **Open QtPass** and
+**Open sync log** (shared [`ui_contract`](../modules/apps/pass-store-tray/src/ui_contract.rs)).
 
 | Icon | Meaning                                              |
 | ---- | ---------------------------------------------------- |

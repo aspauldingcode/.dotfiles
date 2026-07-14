@@ -83,7 +83,7 @@
       '';
       trayPkg = pkgs.rustPlatform.buildRustPackage {
         pname = "pass-store-tray";
-        version = "0.2.0";
+        version = "0.3.0";
         src = ./pass-store-tray;
         cargoLock.lockFile = ./pass-store-tray/Cargo.lock;
         nativeBuildInputs = [
@@ -112,7 +112,7 @@
             }
         '';
         meta = {
-          description = "Pass store sync menubar/tray applet (Rust + iced)";
+          description = "Pass store sync native tray applet (Rust)";
           mainProgram = "pass-store-tray";
         };
       };
@@ -237,8 +237,8 @@
             type = lib.types.bool;
             default = true;
             description = ''
-              Unified Rust+iced menubar/tray applet showing pass sync ↑/↓/idle
-              and system rebuild status (Darwin + Linux).
+              Native Rust menubar/tray applet (tray-icon/muda) showing pass sync
+              ↑/↓/idle in the menu — no windowed GUI (Darwin + Linux).
             '';
           };
         };

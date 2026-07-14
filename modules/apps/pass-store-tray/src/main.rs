@@ -1,15 +1,20 @@
-//! Pass store sync tray — iced UI + tray-icon menubar (Darwin / Linux).
-use iced::widget::{button, column, container, row, text, Space};
-use iced::{
-    time, window, Alignment, Color, Element, Length, Subscription, Task, Theme,
-};
+//! Native menubar / tray applet — no window, no iced.
+//! macOS: NSStatusItem + NSMenu via tray-icon/muda.
+//! Linux: StatusNotifier/AppIndicator + gtk menu via tray-icon + gtk.
+mod ui_contract;
+
 use serde::Deserialize;
 use std::path::{Path, PathBuf};
-use std::process::{Command, Stdio};
+use std::process::Command;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 use tray_icon::menu::{Menu, MenuEvent, MenuItem, PredefinedMenuItem};
 use tray_icon::{Icon, TrayIcon, TrayIconBuilder};
+use ui_contract::{Action, TOOLTIP_IDLE};
+use winit::application::ApplicationHandler;
+use winit::event::StartCause;
+use winit::event_loop::{ActiveEventLoop, ControlFlow, EventLoop};
 
 #[derive(Debug, Clone, Default, Deserialize)]
 struct SyncStatus {
@@ -50,9 +55,6 @@ enum IconKind {
 struct Env {
     status_file: PathBuf,
     lock_dir: PathBuf,
-    sync_script: String,
-    materialize_script: String,
-    password_store_dir: String,
     sync_log: PathBuf,
 }
 
@@ -67,51 +69,15 @@ impl Env {
             lock_dir: std::env::var_os("PASS_STORE_SYNC_LOCK")
                 .map(PathBuf::from)
                 .unwrap_or_else(|| cache.join("pass-store-sync.lock")),
-            sync_script: std::env::var("PASS_STORE_SYNC_SCRIPT").unwrap_or_default(),
-            materialize_script: std::env::var("PASS_MATERIALIZE_SCRIPT").unwrap_or_default(),
-            password_store_dir: std::env::var("PASSWORD_STORE_DIR")
-                .unwrap_or_else(|_| home.join(".password-store").display().to_string()),
             sync_log: cache.join("pass-store-sync.log"),
         }
     }
-}
-
-struct PassTray {
-    env: Arc<Env>,
-    status: SyncStatus,
-    rebuilding: bool,
-    headline: String,
-    detail: String,
-    mat_line: String,
-    icon_kind: IconKind,
-    window_visible: bool,
-    tray: Option<TrayIcon>,
-    // Keep menu items alive for id matching.
-    item_show: MenuItem,
-    item_pull: MenuItem,
-    item_mat: MenuItem,
-    item_qtpass: MenuItem,
-    item_log: MenuItem,
-    item_quit: MenuItem,
-}
-
-#[derive(Debug, Clone)]
-enum Message {
-    Tick,
-    Pull,
-    Materialize,
-    OpenQtPass,
-    OpenLog,
-    ShowWindow,
-    HideWindow,
-    Quit,
 }
 
 fn load_status(path: &Path) -> SyncStatus {
     match std::fs::read_to_string(path) {
         Ok(raw) => serde_json::from_str(&raw).unwrap_or_else(|_| SyncStatus {
             state: "error".into(),
-            direction: "none".into(),
             message: "status unreadable".into(),
             error: Some("bad status json".into()),
             ..Default::default()
@@ -124,11 +90,7 @@ fn load_status(path: &Path) -> SyncStatus {
 }
 
 fn rebuild_running() -> bool {
-    let out = Command::new("ps")
-        .args(["-ax", "-o", "command="])
-        .output()
-        .ok();
-    let Some(out) = out else {
+    let Ok(out) = Command::new("ps").args(["-ax", "-o", "command="]).output() else {
         return false;
     };
     let text = String::from_utf8_lossy(&out.stdout);
@@ -173,7 +135,6 @@ fn icon_kind(status: &SyncStatus, rebuilding: bool, lock: bool) -> IconKind {
     IconKind::Idle
 }
 
-/// Paint a simple 32×32 RGBA glyph for the tray.
 fn make_icon(kind: IconKind) -> Icon {
     let size = 32u32;
     let mut rgba = vec![0u8; (size * size * 4) as usize];
@@ -184,7 +145,7 @@ fn make_icon(kind: IconKind) -> Icon {
         IconKind::Rebuild => (0xf5, 0x9e, 0x0b),
     };
     let put = |rgba: &mut [u8], x: i32, y: i32| {
-        if x < 0 || y < 0 || x >= size as i32 || y >= size as i32 {
+        if !(0..size as i32).contains(&x) || !(0..size as i32).contains(&y) {
             return;
         }
         let i = ((y as u32 * size + x as u32) * 4) as usize;
@@ -202,7 +163,6 @@ fn make_icon(kind: IconKind) -> Icon {
     };
     match kind {
         IconKind::Up => {
-            // Arrow up triangle + stem
             for y in 4..16 {
                 let half = (y - 4) / 2;
                 for x in (16 - half)..(16 + half) {
@@ -225,7 +185,6 @@ fn make_icon(kind: IconKind) -> Icon {
             fill_rect(&mut rgba, 14, 22, 18, 26);
         }
         IconKind::Rebuild => {
-            // thick ring segment
             for y in 4..28 {
                 for x in 4..28 {
                     let dx = x - 16;
@@ -239,7 +198,6 @@ fn make_icon(kind: IconKind) -> Icon {
             fill_rect(&mut rgba, 16, 4, 26, 10);
         }
         IconKind::Idle => {
-            // check mark
             for t in 0..10 {
                 put(&mut rgba, 8 + t, 16 + t / 2);
                 put(&mut rgba, 8 + t, 17 + t / 2);
@@ -253,38 +211,68 @@ fn make_icon(kind: IconKind) -> Icon {
     Icon::from_rgba(rgba, size, size).expect("icon rgba")
 }
 
-fn run_bg(program: &str, args: &[&str], extra_env: &[(&str, &str)]) {
-    if program.is_empty() {
-        return;
+fn open_qtpass() {
+    #[cfg(target_os = "macos")]
+    {
+        let _ = Command::new("open").args(["-a", "QtPass"]).spawn();
     }
-    let mut cmd = Command::new(program);
-    cmd.args(args)
-        .stdin(Stdio::null())
-        .stdout(Stdio::null())
-        .stderr(Stdio::null());
-    for (k, v) in extra_env {
-        cmd.env(k, v);
-    }
-    let _ = cmd.spawn();
+    #[cfg(not(target_os = "macos"))]
+        let _ = Command::new("qtpass")
+            .stdin(std::process::Stdio::null())
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
+            .spawn();
 }
 
-impl PassTray {
-    fn new() -> (Self, Task<Message>) {
-        let env = Arc::new(Env::from_env());
+fn open_sync_log(path: &Path) {
+    let path = path.display().to_string();
+    #[cfg(target_os = "macos")]
+    {
+        let _ = Command::new("open").args(["-t", &path]).spawn();
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        let _ = Command::new("xdg-open")
+            .arg(&path)
+            .stdin(std::process::Stdio::null())
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
+            .spawn();
+    }
+}
 
-        let item_show = MenuItem::new("Show status", true, None);
-        let item_pull = MenuItem::new("Pull now", true, None);
-        let item_mat = MenuItem::new("Rematerialize secrets", true, None);
-        let item_qtpass = MenuItem::new("Open QtPass", true, None);
-        let item_log = MenuItem::new("Open sync log", true, None);
-        let item_quit = MenuItem::new("Quit", true, None);
+struct NativeTray {
+    env: Env,
+    tray: TrayIcon,
+    status_headline: MenuItem,
+    status_detail: MenuItem,
+    status_mat: MenuItem,
+    item_qtpass: MenuItem,
+    item_log: MenuItem,
+    item_quit: MenuItem,
+    icon_kind: IconKind,
+    quit: Arc<AtomicBool>,
+}
+
+impl NativeTray {
+    fn build(env: Env, quit: Arc<AtomicBool>) -> Self {
+        let status_headline = MenuItem::new(ui_contract::status::HEADLINE, false, None);
+        let status_detail = MenuItem::new(ui_contract::status::DETAIL, false, None);
+        let status_mat = MenuItem::new(ui_contract::status::MATERIALIZED, false, None);
+        let item_qtpass = MenuItem::new(Action::OpenQtPass.label(), true, None);
+        let item_log = MenuItem::new(Action::OpenSyncLog.label(), true, None);
+        let item_quit = MenuItem::new(Action::Quit.label(), true, None);
 
         let menu = Menu::new();
-        let _ = menu.append(&item_show);
+        // Status block (read-only)
+        let _ = menu.append(&status_headline);
+        let _ = menu.append(&status_detail);
+        let _ = menu.append(&status_mat);
         let _ = menu.append(&PredefinedMenuItem::separator());
-        let _ = menu.append(&item_pull);
-        let _ = menu.append(&item_mat);
-        let _ = menu.append(&PredefinedMenuItem::separator());
+        // Actions from shared contract order (QtPass, sync log, then Quit)
+        debug_assert_eq!(Action::ALL[0], Action::OpenQtPass);
+        debug_assert_eq!(Action::ALL[1], Action::OpenSyncLog);
+        debug_assert_eq!(Action::ALL[2], Action::Quit);
         let _ = menu.append(&item_qtpass);
         let _ = menu.append(&item_log);
         let _ = menu.append(&PredefinedMenuItem::separator());
@@ -292,250 +280,163 @@ impl PassTray {
 
         let tray = TrayIconBuilder::new()
             .with_menu(Box::new(menu))
-            .with_tooltip("pass store sync")
+            .with_tooltip(TOOLTIP_IDLE)
             .with_icon(make_icon(IconKind::Idle))
             .build()
-            .ok();
+            .expect("create tray icon");
 
         let mut app = Self {
             env,
-            status: SyncStatus::default(),
-            rebuilding: false,
-            headline: "…".into(),
-            detail: String::new(),
-            mat_line: String::new(),
-            icon_kind: IconKind::Idle,
-            window_visible: true,
             tray,
-            item_show,
-            item_pull,
-            item_mat,
+            status_headline,
+            status_detail,
+            status_mat,
             item_qtpass,
             item_log,
             item_quit,
+            icon_kind: IconKind::Idle,
+            quit,
         };
         app.refresh();
-        (app, Task::none())
+        app
     }
 
     fn refresh(&mut self) {
-        self.status = load_status(&self.env.status_file);
-        self.rebuilding = rebuild_running();
+        let status = load_status(&self.env.status_file);
+        let rebuilding = rebuild_running();
         let lock = self.env.lock_dir.exists();
-        let kind = icon_kind(&self.status, self.rebuilding, lock);
+        let kind = icon_kind(&status, rebuilding, lock);
         if kind != self.icon_kind {
             self.icon_kind = kind;
-            if let Some(tray) = &self.tray {
-                let _ = tray.set_icon(Some(make_icon(kind)));
-            }
+            let _ = self.tray.set_icon(Some(make_icon(kind)));
         }
 
-        let err = self.status.error.as_deref().filter(|e| !e.is_empty());
-        self.headline = if self.rebuilding {
-            "Rebuilding system…".into()
+        let err = status.error.as_deref().filter(|e| !e.is_empty());
+        let headline = if rebuilding {
+            "Rebuilding system…".to_string()
         } else if lock {
-            format!("Syncing ({})…", self.status.direction)
+            format!("Syncing ({})…", status.direction)
         } else if let Some(e) = err {
             format!("Error: {e}")
         } else {
-            format!("{} · {}", self.status.state, self.status.direction)
+            format!("{} · {}", status.state, status.direction)
         };
 
-        let ab = self.status.ahead_behind.as_deref().unwrap_or("unknown");
-        let updated = self.status.updated_at.as_deref().unwrap_or("—");
-        self.detail = format!("{} · {} · {}", self.status.message, ab, updated);
+        let ab = status.ahead_behind.as_deref().unwrap_or("unknown");
+        let updated = status.updated_at.as_deref().unwrap_or("—");
+        let detail = format!("{} · {} · {}", status.message, ab, updated);
 
-        let mats = if self.status.materialized.is_empty() {
+        let mats = if status.materialized.is_empty() {
             "(none)".into()
         } else {
-            self.status.materialized.join(", ")
+            status.materialized.join(", ")
         };
-        let last_mat = self
-            .status
-            .last_materialize_at
-            .as_deref()
-            .unwrap_or("—");
-        self.mat_line = format!("Materialized: {mats} @ {last_mat}");
+        let last_mat = status.last_materialize_at.as_deref().unwrap_or("—");
+        let mat_line = format!("Materialized: {mats} @ {last_mat}");
 
-        if let Some(tray) = &self.tray {
-            let _ = tray.set_tooltip(Some(format!("pass sync: {}\n{}", self.headline, self.status.message)));
-        }
+        self.status_headline.set_text(headline.clone());
+        self.status_detail.set_text(detail);
+        self.status_mat.set_text(mat_line);
+        let _ = self
+            .tray
+            .set_tooltip(Some(format!("pass sync: {headline}")));
     }
 
-    fn poll_menu(&self) -> Option<Message> {
-        let Ok(ev) = MenuEvent::receiver().try_recv() else {
-            return None;
-        };
-        let id = ev.id;
-        if id == self.item_show.id() {
-            Some(Message::ShowWindow)
-        } else if id == self.item_pull.id() {
-            Some(Message::Pull)
-        } else if id == self.item_mat.id() {
-            Some(Message::Materialize)
-        } else if id == self.item_qtpass.id() {
-            Some(Message::OpenQtPass)
-        } else if id == self.item_log.id() {
-            Some(Message::OpenLog)
-        } else if id == self.item_quit.id() {
-            Some(Message::Quit)
-        } else {
-            None
-        }
-    }
-
-    fn update(&mut self, message: Message) -> Task<Message> {
-        if let Some(msg) = self.poll_menu() {
-            // Drain one menu event first when tick fires; also handle explicit.
-            if matches!(message, Message::Tick) {
-                return self.update(msg);
+    fn handle_menu(&mut self) {
+        while let Ok(ev) = MenuEvent::receiver().try_recv() {
+            let id = ev.id;
+            if id == self.item_qtpass.id() {
+                open_qtpass();
+            } else if id == self.item_log.id() {
+                open_sync_log(&self.env.sync_log);
+            } else if id == self.item_quit.id() {
+                self.quit.store(true, Ordering::SeqCst);
             }
         }
-
-        match message {
-            Message::Tick => {
-                while let Some(msg) = self.poll_menu() {
-                    let _ = self.update(msg);
-                }
-                self.refresh();
-                Task::none()
-            }
-            Message::Pull => {
-                run_bg(
-                    "bash",
-                    &[&self.env.sync_script],
-                    &[
-                        ("PASS_STORE_SYNC_MODE", "pull"),
-                        ("PASSWORD_STORE_DIR", &self.env.password_store_dir),
-                    ],
-                );
-                Task::none()
-            }
-            Message::Materialize => {
-                run_bg(
-                    "bash",
-                    &[&self.env.materialize_script],
-                    &[("PASSWORD_STORE_DIR", &self.env.password_store_dir)],
-                );
-                Task::none()
-            }
-            Message::OpenQtPass => {
-                #[cfg(target_os = "macos")]
-                {
-                    let _ = Command::new("open").args(["-a", "QtPass"]).spawn();
-                }
-                #[cfg(not(target_os = "macos"))]
-                {
-                    let _ = Command::new("qtpass").spawn();
-                }
-                Task::none()
-            }
-            Message::OpenLog => {
-                let path = self.env.sync_log.display().to_string();
-                #[cfg(target_os = "macos")]
-                {
-                    let _ = Command::new("open").args(["-t", &path]).spawn();
-                }
-                #[cfg(not(target_os = "macos"))]
-                {
-                    if Command::new("xdg-open").arg(&path).spawn().is_err() {
-                        let _ = Command::new("xdg-open").arg(&path).spawn();
-                    }
-                }
-                Task::none()
-            }
-            Message::ShowWindow => {
-                self.window_visible = true;
-                window::get_latest().then(|id: Option<window::Id>| match id {
-                    Some(id) => Task::batch([
-                        window::change_mode(id, window::Mode::Windowed),
-                        window::gain_focus(id),
-                    ]),
-                    None => Task::none(),
-                })
-            }
-            Message::HideWindow => {
-                self.window_visible = false;
-                window::get_latest().then(|id: Option<window::Id>| match id {
-                    Some(id) => window::change_mode(id, window::Mode::Hidden),
-                    None => Task::none(),
-                })
-            }
-            Message::Quit => iced::exit(),
-        }
-    }
-
-    fn view(&self) -> Element<'_, Message> {
-        let title = text("Pass store sync")
-            .size(20)
-            .style(|_theme: &Theme| text::Style {
-                color: Some(Color::from_rgb8(0x22, 0xc5, 0x5e)),
-            });
-
-        let body = column![
-            title,
-            Space::with_height(8),
-            text(&self.headline).size(16),
-            text(&self.detail).size(13),
-            text(&self.mat_line).size(13),
-            Space::with_height(12),
-            row![
-                button("Pull now").on_press(Message::Pull),
-                Space::with_width(8),
-                button("Rematerialize").on_press(Message::Materialize),
-            ],
-            Space::with_height(8),
-            row![
-                button("QtPass").on_press(Message::OpenQtPass),
-                Space::with_width(8),
-                button("Sync log").on_press(Message::OpenLog),
-                Space::with_width(8),
-                button("Hide").on_press(Message::HideWindow),
-            ],
-            Space::with_height(8),
-            button("Quit").on_press(Message::Quit),
-        ]
-        .spacing(4)
-        .padding(16)
-        .align_x(Alignment::Start);
-
-        container(body)
-            .width(Length::Fill)
-            .height(Length::Fill)
-            .into()
-    }
-
-    fn subscription(&self) -> Subscription<Message> {
-        Subscription::batch([
-            time::every(Duration::from_secs(2)).map(|_| Message::Tick),
-            iced::event::listen_with(|event, status, _id| {
-                if status == iced::event::Status::Captured {
-                    return None;
-                }
-                match event {
-                    iced::Event::Window(window::Event::CloseRequested) => Some(Message::HideWindow),
-                    _ => None,
-                }
-            }),
-        ])
     }
 }
 
-fn main() -> iced::Result {
-    #[cfg(target_os = "linux")]
-    {
-        // tray-icon on Linux needs gtk main context; init before iced.
-        gtk::init().expect("gtk init");
+struct App {
+    tray: Option<NativeTray>,
+    quit: Arc<AtomicBool>,
+}
+
+impl ApplicationHandler for App {
+    fn new_events(&mut self, event_loop: &ActiveEventLoop, cause: StartCause) {
+        if cause == StartCause::Init {
+            #[cfg(not(target_os = "linux"))]
+            {
+                self.tray = Some(NativeTray::build(Env::from_env(), self.quit.clone()));
+            }
+            event_loop.set_control_flow(ControlFlow::WaitUntil(
+                std::time::Instant::now() + Duration::from_secs(2),
+            ));
+        }
     }
 
-    iced::application("pass-store-tray", PassTray::update, PassTray::view)
-        .subscription(PassTray::subscription)
-        .theme(|_| Theme::Dark)
-        .window(window::Settings {
-            size: iced::Size::new(380.0, 280.0),
-            resizable: false,
-            exit_on_close_request: false,
-            ..Default::default()
-        })
-        .run_with(PassTray::new)
+    fn resumed(&mut self, _event_loop: &ActiveEventLoop) {}
+
+    fn window_event(
+        &mut self,
+        _event_loop: &ActiveEventLoop,
+        _window_id: winit::window::WindowId,
+        _event: winit::event::WindowEvent,
+    ) {
+    }
+
+    fn about_to_wait(&mut self, event_loop: &ActiveEventLoop) {
+        if self.quit.load(Ordering::SeqCst) {
+            event_loop.exit();
+            return;
+        }
+        if let Some(tray) = &mut self.tray {
+            tray.handle_menu();
+            tray.refresh();
+        }
+        event_loop.set_control_flow(ControlFlow::WaitUntil(
+            std::time::Instant::now() + Duration::from_secs(2),
+        ));
+    }
+}
+
+fn main() {
+    let quit = Arc::new(AtomicBool::new(false));
+
+    #[cfg(target_os = "linux")]
+    {
+        gtk::init().expect("gtk init");
+        let quit_gtk = quit.clone();
+        let env = Env::from_env();
+        std::thread::spawn(move || {
+            let mut tray = NativeTray::build(env, quit_gtk.clone());
+            loop {
+                if quit_gtk.load(Ordering::SeqCst) {
+                    break;
+                }
+                tray.handle_menu();
+                tray.refresh();
+                while gtk::events_pending() {
+                    gtk::main_iteration_do(false);
+                }
+                std::thread::sleep(Duration::from_millis(200));
+            }
+        });
+        let event_loop = EventLoop::new().unwrap();
+        let mut app = App {
+            tray: None,
+            quit: quit.clone(),
+        };
+        let _ = event_loop.run_app(&mut app);
+        return;
+    }
+
+    #[cfg(not(target_os = "linux"))]
+    {
+        let event_loop = EventLoop::new().unwrap();
+        let mut app = App { tray: None, quit };
+        if let Err(err) = event_loop.run_app(&mut app) {
+            eprintln!("pass-store-tray: event loop error: {err:?}");
+            std::process::exit(1);
+        }
+    }
 }
