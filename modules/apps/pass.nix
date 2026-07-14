@@ -221,8 +221,10 @@
               description = ''
                 Upstream-only sync via one curl JSON long-poll to ntfy (no ntfy
                 CLI). Primary wake is host-side publish after git push; this
-                agent receives those (and CI backup) pings. Catch-up pull on
-                agent start; MODE=pull on each message. Topic from sops secret
+                agent receives those (and CI backup) pings for near-real-time
+                peers. Catch-up pull on every subscribe/reconnect (ntfy does
+                not retain missed events) so offline hosts converge when they
+                return; MODE=pull on each message. Topic from sops secret
                 pass_store_ntfy_topic.
               '';
             };

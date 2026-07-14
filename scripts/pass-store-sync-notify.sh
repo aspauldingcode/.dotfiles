@@ -3,6 +3,13 @@
 # one curl JSON long-poll. On each message event, PASS_STORE_SYNC_MODE=pull.
 # Keepalive/open lines are ignored (no git activity).
 #
+# Offline model (the point of this agent):
+#   - ntfy does NOT queue missed messages for a month. The ping is for
+#     near-real-time peers that are already subscribed.
+#   - Catch-up pull runs on every subscribe AND every reconnect so a host
+#     that was offline during the push still converges when the network
+#     returns — without waiting for another password change.
+#
 # Race model:
 #   - Topic file comes from sops-nix (may appear after this agent starts).
 #   - Wait up to PASS_STORE_NTFY_WAIT_SEC (default 120), then exit 1 so
@@ -78,18 +85,19 @@ fi
 
 topic="$(tr -d '[:space:]' <"$TOPIC_FILE")"
 
-# Catch-up after long offline (ntfy does not retain months) — after sops ready.
-log "catch-up pull"
-pull_once
-
 # Strip trailing slash from server.
 server="${SERVER%/}"
 url="${server}/${topic}/json"
-log "subscribe $url"
 
 last_run=0
 backoff=5
 while true; do
+  # Catch-up on every (re)subscribe. ntfy pings are real-time only; this is
+  # what makes "offline for a month, then online" converge without a new event.
+  log "catch-up pull"
+  pull_once
+
+  log "subscribe $url"
   # Process substitution keeps last_run in this shell (not a pipe subshell).
   while IFS= read -r line; do
     case "$line" in
@@ -105,7 +113,8 @@ while true; do
     pull_once
     backoff=5
   done < <(curl -sN --fail --retry 0 --max-time 0 "$url" || true)
-  warn "curl stream ended; reconnect in ${backoff}s"
+
+  warn "curl stream ended; reconnect in ${backoff}s (will catch-up pull)"
   sleep "$backoff"
   if ((backoff < 60)); then
     backoff=$((backoff + 5))

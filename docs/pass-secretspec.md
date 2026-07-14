@@ -73,10 +73,12 @@ does not drop an upstream ping.
 
 **Upstream (ntfy):** idle cost is one sleeping HTTPS long-poll (no timers, no
 `ntfy` CLI). Agent order: **wait for sops topic file** (up to 120s, then exit
-so KeepAlive retries; Darwin also `WatchPaths` the secrets dir) → catch-up
-`MODE=pull` → subscribe. On each published message, cheap `git ls-remote` vs
-`HEAD`; pull only if behind (with short retries). Keepalive/`open` events are
-ignored.
+so KeepAlive retries; Darwin also `WatchPaths` the secrets dir) → **catch-up
+`MODE=pull` on every subscribe and every reconnect** → subscribe. ntfy does
+**not** retain missed events — the ping is for already-online peers; reconnect
+catch-up is what brings a machine up to date after being offline. On each
+published message, cheap `git ls-remote` vs `HEAD`; pull only if behind (with
+short retries). Keepalive/`open` events are ignored.
 
 Topic: sops `pass_store_ntfy_topic` (Alex-only) → HM writes a `0600` file the
 agents read. Same value → Actions secret `PASS_STORE_NTFY_TOPIC` on the private
