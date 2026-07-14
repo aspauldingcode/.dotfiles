@@ -26,7 +26,16 @@ esac
 [[ $HOST_ID =~ ^[a-z0-9][a-z0-9-]{0,62}$ ]] || die "invalid FLEET_HOST_ID=$HOST_ID"
 
 # Optional dedicated token (sops); else rely on existing gh auth / GH_TOKEN.
-if [[ -n ${FLEET_STATUS_TOKEN_FILE:-} && -r ${FLEET_STATUS_TOKEN_FILE} ]]; then
+# Race: sops-nix may decrypt after RunAtLoad / timer fire — wait briefly.
+if [[ -n ${FLEET_STATUS_TOKEN_FILE:-} ]]; then
+  wait_sec="${FLEET_STATUS_TOKEN_WAIT_SEC:-120}"
+  deadline=$((SECONDS + wait_sec))
+  while [[ ! -r ${FLEET_STATUS_TOKEN_FILE} ]]; do
+    if ((SECONDS >= deadline)); then
+      die "sops token not readable after ${wait_sec}s: ${FLEET_STATUS_TOKEN_FILE}"
+    fi
+    sleep 2
+  done
   token="$(tr -d '[:space:]' <"$FLEET_STATUS_TOKEN_FILE")"
   if [[ -n $token && $token != placeholder ]]; then
     export GH_TOKEN="$token"

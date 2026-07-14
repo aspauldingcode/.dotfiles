@@ -126,7 +126,12 @@
                 StandardErrorPath = "${logDir}/fleet-heartbeat.err.log";
                 EnvironmentVariables = {
                   HOME = config.home.homeDirectory;
+                  FLEET_STATUS_TOKEN_WAIT_SEC = "120";
                 };
+              }
+              // lib.optionalAttrs cfg.useSopsToken {
+                # Re-run when sops-nix decrypts late after login.
+                WatchPaths = [ "${config.home.homeDirectory}/.config/sops-nix/secrets" ];
               };
             };
           })
@@ -136,10 +141,14 @@
               Unit = {
                 Description = "Dendritic fleet heartbeat (no IP)";
                 After = [ "default.target" ];
+              }
+              // lib.optionalAttrs cfg.useSopsToken {
+                Wants = [ "sops-nix.service" ];
               };
               Service = {
                 Type = "oneshot";
                 ExecStart = "${heartbeatScript}";
+                Environment = [ "FLEET_STATUS_TOKEN_WAIT_SEC=120" ];
               };
             };
             systemd.user.timers.fleet-heartbeat = {
