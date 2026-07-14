@@ -74,74 +74,23 @@
         # Radio on; iwd remains the backend from linux-desktop.nix.
         networking.networkmanager.wifi.powersave = lib.mkDefault false;
 
+        # Do NOT rewrite NM keyfiles during nixos-rebuild — that races the live
+        # association (we already dropped sliceanddice once this way). Desired
+        # state is applied by `dendritic-wifi-ensure` after pass materialize.
         networking.wireless.iwd.settings = {
           # NM owns IP/DNS; iwd is the Wi-Fi stack only (matches current setup).
-          General.EnableNetworkConfiguration = false;
-          Network.EnableIPv6 = true;
+          General.EnableNetworkConfiguration = lib.mkDefault false;
         };
 
-        # Ensure state dir exists early.
         systemd.tmpfiles.rules = [
           "d ${cfg.stateDir} 0750 root root -"
         ];
 
-        networking.networkmanager.ensureProfiles = {
-          profiles.Bubbles = {
-            connection = {
-              id = bubbles.ssid;
-              uuid = bubbles.uuid;
-              type = "wifi";
-              autoconnect = "true";
-              autoconnect-priority = toString bubbles.autoconnectPriority;
-              # System connection — available before login (no user: permissions).
-              permissions = "";
-            };
-            wifi = {
-              mode = "infrastructure";
-              ssid = bubbles.ssid;
-            };
-            wifi-security = {
-              # Live association is WPA2 Personal; iwd still offers SAE when the AP does.
-              key-mgmt = "wpa-psk";
-              auth-alg = "open";
-              # Agent-owned — PSK never written into the NM keyfile / Nix store.
-              psk-flags = 1;
-            };
-            ipv4 = {
-              method = "auto";
-            };
-            ipv6 = {
-              method = "auto";
-              addr-gen-mode = "stable-privacy";
-            };
-          };
-          secrets.entries = [
-            {
-              matchId = bubbles.ssid;
-              matchUuid = bubbles.uuid;
-              matchType = "wifi";
-              matchSetting = "802-11-wireless-security";
-              key = "psk";
-              file = "${cfg.stateDir}/Bubbles.psk";
-              trim = true;
-            }
-          ];
-        };
-
-        # Don't block boot if PSK not materialized yet (first login / GPG).
-        systemd.services.NetworkManager-ensure-profiles = {
-          unitConfig.ConditionPathExists = "${cfg.stateDir}/Bubbles.psk";
-          serviceConfig.Restart = "on-failure";
-          serviceConfig.RestartSec = "5s";
-        };
-
-        # After PSK appears / wifi-ensure runs, bring the connection up.
         environment.systemPackages = [
           (pkgs.writeShellScriptBin "dendritic-wifi-nm-reload" ''
             set -euo pipefail
             ${pkgs.networkmanager}/bin/nmcli radio wifi on || true
             ${pkgs.networkmanager}/bin/nmcli connection reload || true
-            ${pkgs.systemd}/bin/systemctl start NetworkManager-ensure-profiles.service || true
             ${pkgs.networkmanager}/bin/nmcli connection up id Bubbles || true
           '')
         ];
@@ -266,7 +215,7 @@
         fi
         nmcli radio wifi on || true
 
-        # Root PSK file for nm-file-secret-agent (same bytes as user materialize).
+        # Root copy of passphrase (0600) for optional tooling / future use.
         if [[ -d "$STATE_DIR" ]] || sudo mkdir -p "$STATE_DIR" 2>/dev/null; then
           TMP="$(${pkgs.coreutils}/bin/mktemp)"
           printf '%s\n' "$PSK" >"$TMP"
@@ -281,14 +230,32 @@
           rm -f "$TMP"
         fi
 
-        if command -v dendritic-wifi-nm-reload >/dev/null 2>&1; then
-          dendritic-wifi-nm-reload || warn "nm-reload failed"
+        UUID="775e836e-1345-4579-bb55-17e84423aa5b"
+        # Upsert system connection matching live Bubbles (WPA2-PSK, DHCP DNS).
+        if ! nmcli -t -f UUID connection show "$SSID" &>/dev/null \
+          && ! nmcli -t -f UUID connection show uuid "$UUID" &>/dev/null; then
+          nmcli connection add type wifi con-name "$SSID" ifname '*' ssid "$SSID" \
+            wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$PSK" \
+            connection.autoconnect yes connection.autoconnect-priority 100 \
+            connection.uuid "$UUID" \
+            ipv4.method auto ipv6.method auto ipv6.addr-gen-mode stable-privacy \
+            || warn "nmcli connection add failed"
         else
-          nmcli connection reload || true
-          systemctl --user 2>/dev/null || true
-          sudo systemctl start NetworkManager-ensure-profiles.service 2>/dev/null || true
-          nmcli connection up id "$SSID" 2>/dev/null \
-            || nmcli device wifi connect "$SSID" password "$PSK" 2>/dev/null \
+          nmcli connection modify "$SSID" \
+            wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$PSK" \
+            connection.autoconnect yes connection.autoconnect-priority 100 \
+            ipv4.method auto ipv6.method auto ipv6.addr-gen-mode stable-privacy \
+            802-11-wireless.ssid "$SSID" \
+            || nmcli connection modify uuid "$UUID" \
+              wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$PSK" \
+              connection.autoconnect yes \
+            || warn "nmcli connection modify failed"
+        fi
+
+        # Prefer non-interactive up; fall back to wifi connect.
+        if ! nmcli -t -f NAME,DEVICE connection show --active | ${pkgs.gnugrep}/bin/grep -q "^''${SSID}:"; then
+          nmcli connection up id "$SSID" \
+            || nmcli device wifi connect "$SSID" password "$PSK" \
             || warn "could not activate $SSID"
         fi
         log "linux: NM/iwd ensure attempted for $SSID"

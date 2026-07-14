@@ -24,6 +24,15 @@ NixOS agent file: `/var/lib/dendritic/wifi/Bubbles.psk` (root, for `nm-file-secr
 
 [`modules/wifi.nix`](../modules/wifi.nix) — defaults `dendritic.wifi.enable = true`.
 
+| Platform | How Bubbles is applied                                    |
+| -------- | --------------------------------------------------------- |
+| NixOS    | `dendritic-wifi-ensure` → `nmcli` upsert (iwd via NM)     |
+| macOS    | `dendritic-wifi-ensure` → `networksetup` preferred + join |
+
+NixOS intentionally does **not** use `ensureProfiles` during `nixos-rebuild`
+(that rewrote keyfiles mid-activation and dropped Wi-Fi once). Desired state
+(WPA2-PSK, DHCP IPv4/IPv6, autoconnect) is applied after pass materialize.
+
 ```bash
 # After GPG unlock / pass sync
 pass-materialize          # writes Bubbles.psk
