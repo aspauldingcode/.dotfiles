@@ -53,30 +53,70 @@ Provides: `pass` (+ otp), `gnupg` + agent preset, **QtPass GUI**, `browserpass`,
 `secretspec`, activation that imports GPG from sops and clones/pulls the store,
 and a **watchexec auto-sync agent** (default on).
 
-### Auto-sync (kernel FS watcher)
+### Auto-sync (kernel FS watcher + ntfy upstream)
 
 `dendritic.apps.pass.autoSync.enable` defaults to `true`.
 
-| Platform | Agent                       | Mechanism            |
-| -------- | --------------------------- | -------------------- |
-| macOS    | `launchd` `pass-store-sync` | watchexec → FSEvents |
-| NixOS    | `systemd --user` same unit  | watchexec → inotify  |
+| Path | Agent | Mechanism |
+| ---- | ----- | --------- |
+| Local edits → GitHub | `pass-store-sync` (launchd / systemd user) | watchexec → `PASS_STORE_SYNC_MODE=full` |
+| GitHub → local | `pass-store-sync-notify` | one `curl` JSON long-poll to ntfy → `MODE=pull` |
 
-On store changes (ignoring `.git`), waits `autoSync.debounce` (default `10sec`),
-then `git pull --rebase --autostash` → commit if dirty → `push`. Failures are
-logged under `~/.cache/pass-store-sync*.log` and retried on the next event;
-activation never hard-fails on sync errors.
+**Local (watchexec):** on store changes (ignoring `.git`), waits `autoSync.debounce`
+(default `10sec`), then `git pull --rebase --autostash` → CI dual-encrypt on
+reserved paths → commit if dirty → `push`. Failures log under
+`~/.cache/pass-store-sync*.log` and retry on the next event.
+
+**Upstream (ntfy):** idle cost is one sleeping HTTPS long-poll (no timers, no
+`ntfy` CLI). On each published message, cheap `git ls-remote` vs `HEAD`; pull
+only if behind. Catch-up on agent start covers months offline (ntfy does not
+retain). Keepalive/`open` events are ignored.
+
+Topic: sops `pass_store_ntfy_topic` (Alex-only) → HM writes a `0600` file the
+agent reads. Same value → Actions secret `PASS_STORE_NTFY_TOPIC` on the private
+store. Template workflow:
+[`scripts/password-store-notify-sync.yml`](../scripts/password-store-notify-sync.yml)
+(copy into `.password-store` as `.github/workflows/notify-sync.yml`).
+
+```bash
+# Manual ping (both hosts should ls-remote; pull only if behind)
+TOPIC="$(sops -d --extract '["pass_store_ntfy_topic"]' secrets/secrets.yaml)"
+curl -fsS -d "1" "https://ntfy.sh/${TOPIC}"
+```
+
+Disable watcher with `dendritic.apps.pass.autoSync.enable = false`.
+Disable ntfy only with `dendritic.apps.pass.autoSync.notify.enable = false`.
 
 QtPass keeps `autoPull`/`autoPush` off so the watcher owns git traffic. Manual
 `pass git push` / `pull` still works.
 
-Disable with `dendritic.apps.pass.autoSync.enable = false`.
-
 **CI canary caveat:** QtPass/`pass insert` encrypts only to `.gpg-id` (Alex).
 Template paths used by private-repo smoke (`_bootstrap/*`, `test/*`,
 `secretspec/shared/default/DEMO_*`) must stay dual-encrypted to Alex +
-`.ci-gpg-id`. Auto-sync re-applies the CI recipient only on those paths — real
-secrets under `secretspec/` (e.g. `GH_TOKEN`) stay Alex-only.
+`.ci-gpg-id`. Full sync re-applies the CI recipient only on those paths — real
+secrets under `secretspec/` (e.g. `GH_TOKEN`) stay Alex-only. Notify/`MODE=pull`
+never runs that walk.
+
+### Remote verify from mba (sliceanddice over SSH)
+
+No walk-over. After flake changes:
+
+```bash
+nh darwin switch . -H mba
+ssh sliceanddice 'cd /etc/nixos/.dotfiles && git pull --ff-only origin development && nh os switch'
+```
+
+Probes:
+
+```bash
+# mba
+tail -f ~/.cache/pass-store-sync-notify.log
+pgrep -lf 'pass-store-sync-notify|ntfy.sh/.*/json' || true
+
+# sliceanddice
+ssh sliceanddice 'systemctl --user status pass-store-sync-notify.service; pgrep -af "ntfy.sh/.*/json"'
+ssh sliceanddice 'cd ~/.password-store && git rev-parse --short HEAD'
+```
 
 ### QtPass GUI (macOS + NixOS)
 
@@ -121,8 +161,10 @@ pass insert some/secret
 pass show _bootstrap/ok
 cd testdata/secretspec-demo && secretspec run -- printenv DEMO_API_KEY
 
-# Watcher logs (macOS launchd / Linux journalctl --user -u pass-store-sync)
+# Watcher / notify logs
 tail -f ~/.cache/pass-store-sync.log
+tail -f ~/.cache/pass-store-sync-notify.log
+# Linux: journalctl --user -u pass-store-sync -u pass-store-sync-notify -f
 ```
 
 Current fingerprint is recorded in [`pass-gpg-fingerprint.txt`](./pass-gpg-fingerprint.txt)

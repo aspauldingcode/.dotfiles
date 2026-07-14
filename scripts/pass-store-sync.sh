@@ -1,14 +1,29 @@
 #!/usr/bin/env bash
-# Debounced password-store ↔ GitHub sync (invoked by watchexec).
+# Debounced password-store ↔ GitHub sync.
+#
+# Modes (PASS_STORE_SYNC_MODE):
+#   full (default) — watchexec path: pull → CI dual-encrypt → commit → push
+#   pull           — notify/catch-up: cheap ls-remote gate → pull only
+#
 # Never hard-fails the watcher: log and exit 0 on recoverable errors.
 set -euo pipefail
 
 PASSWORD_STORE_DIR="${PASSWORD_STORE_DIR:-$HOME/.password-store}"
 LOCK_DIR="${PASS_STORE_SYNC_LOCK:-$HOME/.cache/pass-store-sync.lock}"
 LOG_PREFIX="pass-store-sync"
+MODE="${PASS_STORE_SYNC_MODE:-full}"
 
 log() { printf '%s %s: %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$LOG_PREFIX" "$*"; }
 warn() { log "warning: $*" >&2; }
+
+# True if remote HEAD differs from local HEAD (needs pack transfer).
+# Empty remote (network/auth) → treat as "not behind" and skip quietly.
+remote_ahead() {
+  local remote local_head
+  remote="$(git ls-remote origin -q HEAD 2>/dev/null | cut -f1 || true)"
+  local_head="$(git rev-parse HEAD 2>/dev/null || true)"
+  [[ -n $remote && -n $local_head && $remote != "$local_head" ]]
+}
 
 # QtPass/pass re-encrypts to .gpg-id only. CI smoke needs Alex + CI canary on
 # reserved template paths — restore dual recipients before commit/push.
@@ -79,6 +94,26 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   exit 0
 fi
 
+# ── pull-only (ntfy notify / agent catch-up) ─────────────────────────
+if [[ $MODE == pull ]]; then
+  if ! remote_ahead; then
+    log "pull: up to date (ls-remote)"
+    exit 0
+  fi
+  if ! git pull --rebase --autostash >/dev/null 2>&1; then
+    warn "git pull --rebase failed (network/auth/conflict); will retry on next ping"
+    exit 0
+  fi
+  log "pull: fetched remote updates"
+  exit 0
+fi
+
+if [[ $MODE != full ]]; then
+  warn "unknown PASS_STORE_SYNC_MODE=$MODE (use full|pull); skip"
+  exit 0
+fi
+
+# ── full (watchexec local→push) ──────────────────────────────────────
 # Pull remote first so local commits rebase cleanly.
 if ! git pull --rebase --autostash >/dev/null 2>&1; then
   warn "git pull --rebase failed (network/auth/conflict); will retry on next event"

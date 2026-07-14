@@ -5,8 +5,10 @@
 #
 # GUI: QtPass (macOS .app via HM linkApps + Dock pin; Linux desktop entry).
 #
-# Auto-sync: watchexec (FSEvents / inotify) → debounced git pull/commit/push.
-# Not a periodic timer — kernel FS events only.
+# Auto-sync:
+#   - watchexec (FSEvents / inotify) → MODE=full pull/commit/push (local edits)
+#   - curl ntfy JSON long-poll → MODE=pull (upstream-only; near-zero idle)
+# Not a periodic timer — kernel FS events + one sleeping HTTP stream.
 #
 # Activation is best-effort when sops material is missing (pre-genesis) so
 # a fresh clone of public .dotfiles still evaluates/builds.
@@ -27,20 +29,22 @@
       gpgBin = "${pkgs.gnupg}/bin/gpg";
       gitBin = "${pkgs.git}/bin/git";
       pwgenBin = "${pkgs.pwgen}/bin/pwgen";
+      syncPath = lib.makeBinPath [
+        pkgs.git
+        pkgs.coreutils
+        pkgs.gnupg
+        pkgs.findutils
+        pkgs.gnugrep
+        pkgs.curl
+      ];
       syncScript = pkgs.writeShellScript "pass-store-sync" ''
-        export PATH="${
-          lib.makeBinPath [
-            pkgs.git
-            pkgs.coreutils
-            pkgs.gnupg
-            pkgs.findutils
-            pkgs.gnugrep
-          ]
-        }:$PATH"
+        export PATH="${syncPath}:$PATH"
         export PASSWORD_STORE_DIR=${lib.escapeShellArg storeDir}
+        export PASS_STORE_SYNC_MODE="''${PASS_STORE_SYNC_MODE:-full}"
         exec ${pkgs.bash}/bin/bash ${../../scripts/pass-store-sync.sh}
       '';
       watchScript = pkgs.writeShellScript "pass-store-watch" ''
+        export PASS_STORE_SYNC_MODE=full
         exec ${pkgs.watchexec}/bin/watchexec \
           --watch ${lib.escapeShellArg storeDir} \
           --debounce ${lib.escapeShellArg cfg.autoSync.debounce} \
@@ -50,6 +54,15 @@
           --on-busy-update do-nothing \
           -- \
           ${syncScript}
+      '';
+      notifyScript = pkgs.writeShellScript "pass-store-sync-notify" ''
+        export PATH="${syncPath}:$PATH"
+        export PASSWORD_STORE_DIR=${lib.escapeShellArg storeDir}
+        export PASS_STORE_SYNC_SCRIPT=${syncScript}
+        export PASS_STORE_NTFY_SERVER=${lib.escapeShellArg cfg.autoSync.notify.server}
+        export PASS_STORE_NOTIFY_DEBOUNCE_SEC=${lib.escapeShellArg (toString cfg.autoSync.notify.debounceSec)}
+        # PASS_STORE_NTFY_TOPIC_FILE must be set by the agent (sops path).
+        exec ${pkgs.bash}/bin/bash ${../../scripts/pass-store-sync-notify.sh}
       '';
       syncLogDir = "${config.home.homeDirectory}/.cache";
       # Qt ini / QSettings keys (IJHack/QtPass).
@@ -124,6 +137,27 @@
             default = "10sec";
             description = "watchexec --debounce duration before sync runs.";
           };
+          notify = {
+            enable = lib.mkOption {
+              type = lib.types.bool;
+              default = true;
+              description = ''
+                Upstream-only sync via one curl JSON long-poll to ntfy (no ntfy
+                CLI). Catch-up pull on agent start; MODE=pull on each message.
+                Topic from sops secret pass_store_ntfy_topic.
+              '';
+            };
+            server = lib.mkOption {
+              type = lib.types.str;
+              default = "https://ntfy.sh";
+              description = "ntfy server base URL (no trailing slash required).";
+            };
+            debounceSec = lib.mkOption {
+              type = lib.types.ints.positive;
+              default = 1;
+              description = "Minimum seconds between pull runs after ntfy messages.";
+            };
+          };
         };
 
         materializeShitFile = lib.mkOption {
@@ -150,6 +184,9 @@
               sopsFile = ../../secrets/secrets.yaml;
             };
             gpg_passphrase_previous = {
+              sopsFile = ../../secrets/secrets.yaml;
+            };
+            pass_store_ntfy_topic = {
               sopsFile = ../../secrets/secrets.yaml;
             };
           };
@@ -406,6 +443,7 @@
               EnvironmentVariables = {
                 HOME = config.home.homeDirectory;
                 PASSWORD_STORE_DIR = storeDir;
+                PASS_STORE_SYNC_MODE = "full";
               };
             };
           };
@@ -423,6 +461,49 @@
               RestartSec = 10;
               Environment = [
                 "PASSWORD_STORE_DIR=${storeDir}"
+                "PASS_STORE_SYNC_MODE=full"
+              ];
+            };
+            Install.WantedBy = [ "default.target" ];
+          };
+        })
+
+        # ntfy JSON long-poll → MODE=pull (upstream-only; one sleeping curl).
+        (lib.mkIf (cfg.enable && cfg.autoSync.enable && cfg.autoSync.notify.enable && pkgs.stdenv.isDarwin)
+          {
+            launchd.agents.pass-store-sync-notify = {
+              enable = true;
+              config = {
+                Label = "com.aspaulding.pass-store-sync-notify";
+                ProgramArguments = [ "${notifyScript}" ];
+                RunAtLoad = true;
+                KeepAlive = true;
+                ThrottleInterval = 5;
+                StandardOutPath = "${syncLogDir}/pass-store-sync-notify.log";
+                StandardErrorPath = "${syncLogDir}/pass-store-sync-notify.err.log";
+                EnvironmentVariables = {
+                  HOME = config.home.homeDirectory;
+                  PASSWORD_STORE_DIR = storeDir;
+                  PASS_STORE_NTFY_TOPIC_FILE = config.sops.secrets.pass_store_ntfy_topic.path;
+                };
+              };
+            };
+          }
+        )
+
+        (lib.mkIf (cfg.enable && cfg.autoSync.enable && cfg.autoSync.notify.enable && pkgs.stdenv.isLinux) {
+          systemd.user.services.pass-store-sync-notify = {
+            Unit = {
+              Description = "ntfy long-poll → pull ~/.password-store (upstream-only)";
+              After = [ "default.target" ];
+            };
+            Service = {
+              ExecStart = "${notifyScript}";
+              Restart = "always";
+              RestartSec = 5;
+              Environment = [
+                "PASSWORD_STORE_DIR=${storeDir}"
+                "PASS_STORE_NTFY_TOPIC_FILE=${config.sops.secrets.pass_store_ntfy_topic.path}"
               ];
             };
             Install.WantedBy = [ "default.target" ];
