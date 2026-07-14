@@ -195,15 +195,23 @@
             exit 0
           fi
           /usr/sbin/networksetup -setairportpower "$DEV" on 2>/dev/null || true
-          # Preferred list + keychain (WPA2 Personal — matches live association).
-          /usr/sbin/networksetup -removepreferredwirelessnetwork "$DEV" "$SSID" 2>/dev/null || true
-          /usr/sbin/networksetup -addpreferredwirelessnetworkatindex "$DEV" "$SSID" 0 WPA2 "$PSK" \
-            || warn "addpreferredwirelessnetwork failed (admin/TCC?)"
-          # Join now if not already on this SSID.
-          CUR="$(/usr/sbin/networksetup -getairportnetwork "$DEV" 2>/dev/null || true)"
-          if ! printf '%s' "$CUR" | ${pkgs.gnugrep}/bin/grep -Fq "$SSID"; then
+          # Prefer upsert without remove/re-add — remove requires admin and hangs
+          # non-interactive agents waiting on a password dialog.
+          PREF="$(/usr/sbin/networksetup -listpreferredwirelessnetworks "$DEV" 2>/dev/null || true)"
+          if ! printf '%s' "$PREF" | ${pkgs.gnugrep}/bin/grep -Fq "$SSID"; then
+            /usr/sbin/networksetup -addpreferredwirelessnetworkatindex "$DEV" "$SSID" 0 WPA2 "$PSK" \
+              || warn "addpreferredwirelessnetwork failed (admin/TCC?)"
+          else
+            log "darwin: $SSID already preferred on $DEV"
+          fi
+          # macOS Sequoia+ often lies via -getairportnetwork ("not associated") while
+          # en0 is up with DHCP. Skip join when the Wi-Fi iface already has IPv4.
+          if ifconfig "$DEV" 2>/dev/null | ${pkgs.gnugrep}/bin/grep -q 'status: active' \
+            && ifconfig "$DEV" 2>/dev/null | ${pkgs.gnugrep}/bin/grep -Eq 'inet [0-9]'; then
+            log "darwin: $DEV already active with IPv4; skipping join"
+          else
             /usr/sbin/networksetup -setairportnetwork "$DEV" "$SSID" "$PSK" \
-              || warn "setairportnetwork failed"
+              || warn "setairportnetwork failed (admin/TCC?)"
           fi
           log "darwin: preferred + join ensured for $SSID on $DEV"
           exit 0
