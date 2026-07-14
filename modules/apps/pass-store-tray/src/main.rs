@@ -19,6 +19,8 @@ use winit::application::ApplicationHandler;
 use winit::event::StartCause;
 #[cfg(target_os = "macos")]
 use winit::event_loop::{ActiveEventLoop, ControlFlow, EventLoop};
+#[cfg(target_os = "macos")]
+use winit::platform::macos::{ActivationPolicy, EventLoopBuilderExtMacOS};
 
 #[derive(Debug, Clone, Default, Deserialize)]
 struct SyncStatus {
@@ -422,7 +424,11 @@ fn main() {
 
     #[cfg(target_os = "macos")]
     {
-        let event_loop = EventLoop::new().expect("event loop");
+        // Accessory = menubar agent: no Dock tile, no Cmd-Tab app entry.
+        // Default Regular policy is why `.pass-store-tray-wrapped` showed in Dock.
+        let mut builder = EventLoop::builder();
+        builder.with_activation_policy(ActivationPolicy::Accessory);
+        let event_loop = builder.build().expect("event loop");
         let mut app = App {
             tray: None,
             quit,
