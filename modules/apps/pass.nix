@@ -110,7 +110,14 @@
                 pkgs.bash
                 pkgs.coreutils
               ]
-            }
+            }${lib.optionalString pkgs.stdenv.isLinux '' \
+            --prefix LD_LIBRARY_PATH : ${
+              lib.makeLibraryPath [
+                pkgs.gtk3
+                pkgs.libayatana-appindicator
+                pkgs.xdotool
+              ]
+            }''}
         '';
         meta = {
           description = "Pass store sync native tray applet (Rust)";
