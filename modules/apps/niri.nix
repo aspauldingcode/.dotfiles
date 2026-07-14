@@ -163,9 +163,13 @@
               nestGap = 3;
               # Inner chip radius — concentric with island.
               chipRadius = lib.max 0 (islandRadius - nestGap);
-              # Tooltip border is 1px; keep the outer chrome concentric with
-              # the island language (stroke eats 1px of the curve).
-              tooltipRadius = lib.max 0 (islandRadius - 1);
+              # Calendar / module tooltips: match island radius. GTK keeps a
+              # separate `decoration` node square unless styled the same —
+              # that causes weird corners on first hover (Waybar #5130).
+              tooltipRadius = islandRadius;
+              # Optional inset between tooltip chrome and label content.
+              tooltipPad = 6;
+              tooltipLabelRadius = lib.max 0 (tooltipRadius - tooltipPad);
               islandPadX = 12;
               px = n: "${toString n}px";
             in
@@ -178,9 +182,16 @@
                   background-color: @base00;
                   border: 1px solid @base0D;
                   border-radius: ${px tooltipRadius};
+                  padding: ${px tooltipPad};
+              }
+              /* GTK decoration stays square by default → corner artifacts
+                 on first paint under niri/wlroots. Keep concentric with tooltip. */
+              tooltip decoration {
+                  border-radius: ${px tooltipRadius};
               }
               tooltip label {
                   color: @base05;
+                  border-radius: ${px tooltipLabelRadius};
               }
 
               #workspaces,
