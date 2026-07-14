@@ -51,6 +51,7 @@ in
     mutableExtensionsDir = false;
     profiles.default.userSettings = {
       "cursor.composer.enabled" = false;
+      "cursor.composer.shouldChimeAfterChatFinishes" = true;
       "files.readonlyFromPermissions" = true;
       "window.titleBarStyle" = "custom";
       "window.autoDetectColorScheme" = true;

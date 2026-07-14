@@ -11,6 +11,10 @@
       sharedSettings = config.programs.vscode.profiles.default.userSettings;
       sharedExtensions = config.programs.vscode.profiles.default.extensions;
 
+      enableAgentSoundsScript = pkgs.writeText "antigravity-enable-agent-sounds.py" (
+        builtins.readFile ../../scripts/antigravity-enable-agent-sounds.py
+      );
+
       # Build extension symlinks by reading each extension's directory
       extensionFiles = lib.foldl' (
         acc: ext:
@@ -56,6 +60,12 @@
             ".antigravity/User/settings.json".text = builtins.toJSON sharedSettings;
             ".config/Antigravity/User/settings.json".text = builtins.toJSON sharedSettings;
           };
+
+        # Antigravity stores agent completion sounds in USS agent preferences
+        # (state.vscdb), not settings.json. Patch the sentinel on activation.
+        home.activation.antigravityEnableAgentCompletionSound = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          ${pkgs.python3}/bin/python3 ${enableAgentSoundsScript}
+        '';
       };
     };
 

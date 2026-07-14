@@ -2,7 +2,7 @@
   "name": "dendritic-cli-auth",
   "url": "https://github.com/aspauldingcode/.dotfiles",
   "description": "Dendritic pass-backed gh CLI auth (researched manifest allowlist)",
-  "public": false,
+  "public": true,
   "request_oauth_on_install": true,
   "hook_attributes": {
     "url": "https://example.com/dendritic-cli-auth-webhook",
