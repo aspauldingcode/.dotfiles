@@ -71,7 +71,17 @@
       };
 
       networking.networkmanager.enable = true;
-      services.avahi.enable = true;
+      services.avahi = {
+        enable = true;
+        nssmdns4 = true;
+        openFirewall = true;
+        publish = {
+          enable = true;
+          addresses = true;
+          domain = true;
+          workstation = true;
+        };
+      };
       time.timeZone = "America/Los_Angeles";
 
       i18n.defaultLocale = "en_US.UTF-8";
