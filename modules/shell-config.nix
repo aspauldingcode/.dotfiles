@@ -54,7 +54,57 @@
         # 120 min: authenticate once, then reuse for a long session.
         Defaults timestamp_timeout=120
         Defaults env_keep += "SUDO_ASKPASS SSH_ASKPASS DISPLAY WAYLAND_DISPLAY XAUTHORITY"
+        # Allow headless SSH agents (Cursor / nh) to activate without a TTY.
+        Defaults!/run/current-system/sw/bin/nh !requiretty
+        Defaults!/run/current-system/sw/bin/nixos-rebuild !requiretty
+        Defaults!/nix/store/*/bin/switch-to-configuration !requiretty
+        Defaults!/nix/var/nix/profiles/system/bin/switch-to-configuration !requiretty
       '';
+
+      # Passwordless system switches for wheel — required for `nh os switch`
+      # over SSH (BatchMode / no TTY) and Cursor Remote agent rebuilds.
+      security.sudo.extraRules = [
+        {
+          groups = [ "wheel" ];
+          commands = [
+            {
+              command = "/run/current-system/sw/bin/nh";
+              options = [
+                "NOPASSWD"
+                "SETENV"
+              ];
+            }
+            {
+              command = "/run/current-system/sw/bin/nixos-rebuild";
+              options = [
+                "NOPASSWD"
+                "SETENV"
+              ];
+            }
+            {
+              command = "/run/current-system/sw/bin/nix";
+              options = [
+                "NOPASSWD"
+                "SETENV"
+              ];
+            }
+            {
+              command = "/nix/store/*/bin/switch-to-configuration";
+              options = [
+                "NOPASSWD"
+                "SETENV"
+              ];
+            }
+            {
+              command = "/nix/var/nix/profiles/system/bin/switch-to-configuration";
+              options = [
+                "NOPASSWD"
+                "SETENV"
+              ];
+            }
+          ];
+        }
+      ];
     };
 
   flake.modules.darwin.dendritic =
