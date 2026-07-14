@@ -23,6 +23,14 @@ pull_once() {
 log "catch-up pull"
 pull_once
 
+# sops-nix may decrypt after this agent starts (launchd/systemd race).
+if [[ -n $TOPIC_FILE ]]; then
+  for _ in $(seq 1 60); do
+    [[ -r $TOPIC_FILE ]] && break
+    sleep 1
+  done
+fi
+
 if [[ -z $TOPIC_FILE || ! -r $TOPIC_FILE ]]; then
   warn "ntfy topic file missing/unreadable ($TOPIC_FILE); sleeping (no subscribe)"
   exec sleep infinity
