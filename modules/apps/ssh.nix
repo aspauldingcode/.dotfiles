@@ -105,14 +105,12 @@
               IdentitiesOnly = true;
             };
           }
-          // lib.mapAttrs (
-            _name: peer: {
-              HostName = peer.hostname;
-              User = peer.user;
-              IdentityFile = cfg.identityFile;
-              IdentitiesOnly = true;
-            }
-          ) cfg.peerHosts;
+          // lib.mapAttrs (_name: peer: {
+            HostName = peer.hostname;
+            User = peer.user;
+            IdentityFile = cfg.identityFile;
+            IdentitiesOnly = true;
+          }) cfg.peerHosts;
         };
       };
     };
@@ -127,17 +125,13 @@
       sshKeys = import ../../home/ssh-keys.nix;
       allPubkeys = lib.unique (lib.attrValues sshKeys);
       hmUsers = config.home-manager.users or { };
-      enabledUsers = lib.filterAttrs (
-        _n: u: (u.dendritic.ssh.enable or false)
-      ) hmUsers;
+      enabledUsers = lib.filterAttrs (_n: u: (u.dendritic.ssh.enable or false)) hmUsers;
     in
     {
       config = lib.mkIf (enabledUsers != { } && allPubkeys != [ ]) {
-        users.users = lib.mapAttrs (
-          _u: _: {
-            openssh.authorizedKeys.keys = lib.mkDefault allPubkeys;
-          }
-        ) enabledUsers;
+        users.users = lib.mapAttrs (_u: _: {
+          openssh.authorizedKeys.keys = lib.mkDefault allPubkeys;
+        }) enabledUsers;
       };
     };
 }
