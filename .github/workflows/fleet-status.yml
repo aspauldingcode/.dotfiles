@@ -1,0 +1,63 @@
+# Regenerate public-safe fleet status in README + docs/fleet-status.json.
+# Reads private aspauldingcode/dendritic-fleet-status (no IPs in output).
+name: fleet-status
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - development
+    paths:
+      - home/fleet-hosts.nix
+      - scripts/fleet-status-render.sh
+      - .github/workflows/fleet-status.yml
+      - docs/fleet-status.md
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install tools
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq jq
+
+      - name: Render fleet status
+        env:
+          GH_TOKEN: ${{ secrets.FLEET_STATUS_READ_TOKEN }}
+          FLEET_STATUS_OWNER: aspauldingcode
+          FLEET_STATUS_REPO: dendritic-fleet-status
+          FLEET_DOTFILES_ROOT: ${{ github.workspace }}
+        run: |
+          set -euo pipefail
+          test -n "${GH_TOKEN}"
+          chmod +x scripts/fleet-status-render.sh
+          ./scripts/fleet-status-render.sh
+          # Fail if any IP-like string landed in public outputs
+          if grep -EIq \
+            '(^|[^0-9])([0-9]{1,3}\.){3}[0-9]{1,3}([^0-9]|$)|([0-9a-fA-F]{1,4}:){5,7}[0-9a-fA-F]{1,4}' \
+            README.md docs/fleet-status.json; then
+            echo "FATAL: IP-like content in public fleet outputs" >&2
+            exit 1
+          fi
+
+      - name: Commit if changed
+        run: |
+          set -euo pipefail
+          git config user.name "dendritic-fleet-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md docs/fleet-status.json
+          if git diff --cached --quiet; then
+            echo "no changes"
+            exit 0
+          fi
+          git commit -m "chore(fleet): refresh public presence status"
+          git push

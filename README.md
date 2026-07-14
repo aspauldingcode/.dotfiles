@@ -2,6 +2,21 @@
 
 Personal, declarative system configuration built by **Alex Spaulding (aspauldingcode)** using Nix Flakes.
 
+<!-- fleet-status:start -->
+## Fleet
+
+[![mba](https://img.shields.io/badge/mba-online-brightgreen)](docs/fleet-status.md) [![sliceanddice](https://img.shields.io/badge/sliceanddice-online-brightgreen)](docs/fleet-status.md)
+
+Host presence via private heartbeats (no public IPs). See [docs/fleet-status.md](docs/fleet-status.md).
+
+| Host | Platform | Tip | Status | Last seen |
+| ---- | -------- | --- | ------ | --------- |
+| `mba` | darwin | `a92aac9f` | **online** | 59s ago |
+| `sliceanddice` | nixos | `a92aac9f` | **online** | 22s ago |
+
+_Updated 2026-07-14T18:43:16Z (UTC). online ≤30m · stale ≤24h · else offline._
+<!-- fleet-status:end -->
+
 ## Clone Location
 
 Following the [dendritic pattern](https://github.com/mightyiam/dendritic), this repository should be cloned to the system configuration directory for your platform. The config is system-wide and shared across all users — editing requires admin privileges.

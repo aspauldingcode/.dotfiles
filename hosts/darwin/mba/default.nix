@@ -196,6 +196,9 @@
           dendritic.apps.pass.enable = true;
           dendritic.apps.pass.fingerprint = "80AB4D8EFE29CE2ABD3BD0445C04154FC8950A8B";
           dendritic.ssh.enable = true;
+          dendritic.fleet.enable = true;
+          dendritic.fleet.hostId = "mba";
+          dendritic.fleet.dotfilesRoot = "/etc/nix-darwin/.dotfiles";
           dendritic.mobile.enable = true;
           dendritic.wallpaper.enable = true;
           dendritic.python.enable = true;

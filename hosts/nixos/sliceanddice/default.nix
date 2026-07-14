@@ -235,6 +235,9 @@
         dendritic.ssh.enable = true;
         # Host already defines programs.ssh Host blocks below.
         dendritic.ssh.manageClientConfig = false;
+        dendritic.fleet.enable = true;
+        dendritic.fleet.hostId = "sliceanddice";
+        dendritic.fleet.dotfilesRoot = "/etc/nixos/.dotfiles";
         dendritic.python.enable = true;
 
         # niri user config: terminal → ghostty, launcher → fuzzel.
