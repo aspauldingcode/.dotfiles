@@ -1,18 +1,22 @@
 # Fleet presence (public-safe)
 
 Enrolled hosts phone home to the **private** repo
-`aspauldingcode/dendritic-fleet-status`. Public CI copies only allowlisted
-fields into this README and [`fleet-status.json`](./fleet-status.json).
+`aspauldingcode/dendritic-fleet-status`. Public CI rewrites **status badges only**
+in the root README (and a machine-readable snapshot in
+[`fleet-status.json`](./fleet-status.json)).
+
+The README does **not** embed last-seen clocks or tip tables — those go stale
+between commits. Shields badges (`online` / `stale` / `offline`) are the public
+signal; CI updates them about every 30 minutes when status changes.
 
 ## Threat model
 
 | Public                         | Never public               |
 | ------------------------------ | -------------------------- |
 | Host id (`mba`, …)             | Public/private IP, CIDR    |
-| Platform                       | mDNS / FQDN beyond host id |
-| Flake tip short SHA            | WiFi SSID / BSSID / geo    |
+| Platform (in JSON snapshot)    | mDNS / FQDN beyond host id |
+| Flake tip short SHA (JSON)     | WiFi SSID / BSSID / geo    |
 | `online` / `stale` / `offline` | MAC, home paths            |
-| Relative last-seen             | Raw request metadata       |
 
 “Online” means the host agent can reach GitHub — not LAN reachability.
 

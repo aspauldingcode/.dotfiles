@@ -83,16 +83,6 @@ hosts_dir = pathlib.Path(tmpdir) / "hosts"
 def parse_seen(iso: str) -> int:
     return int(datetime.strptime(iso, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc).timestamp())
 
-def relative_age(iso: str) -> str:
-    age = max(0, now - parse_seen(iso))
-    if age < 60:
-        return f"{age}s ago"
-    if age < 3600:
-        return f"{age // 60}m ago"
-    if age < 86400:
-        return f"{age // 3600}h ago"
-    return f"{age // 86400}d ago"
-
 def status_for(iso: str | None) -> str:
     if not iso:
         return "offline"
@@ -108,7 +98,6 @@ def badge_color(st: str) -> str:
 
 rows = []
 badges = []
-md_rows = []
 for host in roster:
     path = hosts_dir / f"{host}.json"
     data = json.loads(path.read_text()) if path.exists() else None
@@ -116,19 +105,16 @@ for host in roster:
     plat = data["platform"] if data else "unknown"
     tip = data["flake_rev"] if data else "—"
     st = status_for(seen)
-    age = relative_age(seen) if seen else "never"
     color = badge_color(st)
     badges.append(
         f"[![{host}](https://img.shields.io/badge/{host}-{st}-{color})](docs/fleet-status.md)"
     )
-    md_rows.append(f"| `{host}` | {plat} | `{tip}` | **{st}** | {age} |")
     rows.append(
         {
             "host": host,
             "platform": plat,
             "flake_rev": tip,
             "status": st,
-            "last_seen_relative": age,
             "seen_at": seen,
         }
     )
@@ -138,6 +124,8 @@ pathlib.Path(out_json).write_text(
     json.dumps({"schema": 1, "generated_at": generated_at, "hosts": rows}, indent=2) + "\n"
 )
 
+# README: badges only — no table / relative ages (those go stale until the next
+# CI commit; badges are the only public signal worth rewriting).
 block = "\n".join(
     [
         "",
@@ -145,13 +133,9 @@ block = "\n".join(
         "",
         " ".join(badges),
         "",
-        "Host presence via private heartbeats (no public IPs). See [docs/fleet-status.md](docs/fleet-status.md).",
-        "",
-        "| Host | Platform | Tip | Status | Last seen |",
-        "| ---- | -------- | --- | ------ | --------- |",
-        *md_rows,
-        "",
-        f"_Updated {generated_at} (UTC). online ≤30m · stale ≤24h · else offline._",
+        "Host presence via private heartbeats (no public IPs). "
+        "Badges: online ≤30m · stale ≤24h · else offline. "
+        "See [docs/fleet-status.md](docs/fleet-status.md).",
         "",
     ]
 )
@@ -174,5 +158,5 @@ else:
     lines.insert(insert_at, section + "\n")
     text = "".join(lines)
 readme.write_text(text)
-print(f"ok: rendered {len(rows)} hosts")
+print(f"ok: rendered {len(rows)} hosts (badges only)")
 PY
