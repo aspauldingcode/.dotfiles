@@ -1,13 +1,13 @@
 {
   "schema": 1,
-  "generated_at": "2026-07-14T18:43:16Z",
+  "generated_at": "2026-07-14T18:45:19Z",
   "hosts": [
     {
       "host": "mba",
       "platform": "darwin",
       "flake_rev": "a92aac9f",
       "status": "online",
-      "last_seen_relative": "59s ago",
+      "last_seen_relative": "3m ago",
       "seen_at": "2026-07-14T18:42:15Z"
     },
     {
@@ -15,7 +15,7 @@
       "platform": "nixos",
       "flake_rev": "a92aac9f",
       "status": "online",
-      "last_seen_relative": "22s ago",
+      "last_seen_relative": "2m ago",
       "seen_at": "2026-07-14T18:42:52Z"
     }
   ]

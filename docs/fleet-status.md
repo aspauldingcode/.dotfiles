@@ -6,23 +6,23 @@ fields into this README and [`fleet-status.json`](./fleet-status.json).
 
 ## Threat model
 
-| Public | Never public |
-| ------ | ------------ |
-| Host id (`mba`, …) | Public/private IP, CIDR |
-| Platform | mDNS / FQDN beyond host id |
-| Flake tip short SHA | WiFi SSID / BSSID / geo |
-| `online` / `stale` / `offline` | MAC, home paths |
-| Relative last-seen | Raw request metadata |
+| Public                         | Never public               |
+| ------------------------------ | -------------------------- |
+| Host id (`mba`, …)             | Public/private IP, CIDR    |
+| Platform                       | mDNS / FQDN beyond host id |
+| Flake tip short SHA            | WiFi SSID / BSSID / geo    |
+| `online` / `stale` / `offline` | MAC, home paths            |
+| Relative last-seen             | Raw request metadata       |
 
 “Online” means the host agent can reach GitHub — not LAN reachability.
 
 ## Thresholds
 
-| Status | Meaning |
-| ------ | ------- |
-| **online** | Heartbeat within 30 minutes |
-| **stale** | Heartbeat within 24 hours |
-| **offline** | Older or missing |
+| Status      | Meaning                     |
+| ----------- | --------------------------- |
+| **online**  | Heartbeat within 30 minutes |
+| **stale**   | Heartbeat within 24 hours   |
+| **offline** | Older or missing            |
 
 ## Enrollment
 

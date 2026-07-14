@@ -19,7 +19,7 @@ command -v jq >/dev/null
 command -v python3 >/dev/null
 
 roster_hosts="$(
-  python3 - <<'PY' "$ROSTER"
+  python3 - "$ROSTER" <<'PY'
 import re, sys
 text = open(sys.argv[1]).read()
 keys = re.findall(r"(?m)^  ([a-z0-9][a-z0-9-]*)\s*=\s*\{", text)
@@ -69,7 +69,7 @@ while IFS= read -r name; do
   printf '%s\n' "$raw" >"$tmpdir/hosts/${host}.json"
 done < <(printf '%s' "$listing" | jq -r '.[].name // empty')
 
-python3 - <<'PY' "$tmpdir" "$roster_hosts" "$README" "$OUT_JSON" "$NOW" "$ONLINE_SEC" "$STALE_SEC"
+python3 - "$tmpdir" "$roster_hosts" "$README" "$OUT_JSON" "$NOW" "$ONLINE_SEC" "$STALE_SEC" <<'PY'
 import json, pathlib, sys
 from datetime import datetime, timezone
 
@@ -140,6 +140,7 @@ pathlib.Path(out_json).write_text(
 
 block = "\n".join(
     [
+        "",
         "## Fleet",
         "",
         " ".join(badges),

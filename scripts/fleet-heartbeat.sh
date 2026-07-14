@@ -6,7 +6,10 @@ set -euo pipefail
 LOG_PREFIX="fleet-heartbeat"
 log() { printf '%s %s: %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$LOG_PREFIX" "$*"; }
 warn() { log "warning: $*" >&2; }
-die() { log "error: $*" >&2; exit 1; }
+die() {
+  log "error: $*" >&2
+  exit 1
+}
 
 HOST_ID="${FLEET_HOST_ID:?FLEET_HOST_ID required}"
 PLATFORM="${FLEET_PLATFORM:?FLEET_PLATFORM required}"
