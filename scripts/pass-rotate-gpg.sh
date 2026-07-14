@@ -219,19 +219,58 @@ EOF
 }
 
 phase2() {
-  local fpr old pending
+  local fpr old pending prev_key prev_pp grace_hours age_sec gen
   [[ -f $STATE_FILE ]] || die "missing $STATE_FILE"
   pending="$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('pending_finalize', False))")"
   [[ $pending == "True" || $pending == "true" ]] || die "no pending finalize; run phase 1 first"
   fpr="$(python3 -c "import json; print(json.load(open('$STATE_FILE'))['fingerprint'])")"
   old="$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('previous_fingerprint',''))")"
+  gen="$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('generated_at',''))")"
 
-  echo "Phase 2: finalizing to $fpr only..."
+  # Hard guards against burning the old key while hosts still need it.
+  if [[ ${CONFIRM_FINALIZE:-} != yes ]]; then
+    die "refusing finalize: set CONFIRM_FINALIZE=yes after EVERY host has activated phase 1 (imports new GPG + pulled dual-encrypted store)"
+  fi
+
+  prev_key="$(sops -d --extract '["gpg_private_key_previous"]' "$SOPS_FILE" 2>/dev/null || true)"
+  prev_pp="$(sops -d --extract '["gpg_passphrase_previous"]' "$SOPS_FILE" 2>/dev/null || true)"
+  if [[ -z $prev_key || $prev_key == placeholder || -z $prev_pp || $prev_pp == placeholder ]]; then
+    die "refusing finalize: sops previous GPG slots are empty/placeholder — would burn recovery path"
+  fi
+
+  if [[ ! -f $PASSWORD_STORE_DIR/.gpg-id ]]; then
+    die "refusing finalize: missing .gpg-id"
+  fi
+  if [[ $(grep -cve '^[[:space:]]*$' "$PASSWORD_STORE_DIR/.gpg-id" || true) -lt 2 ]]; then
+    die "refusing finalize: .gpg-id must still list BOTH old and new fingerprints (dual-encrypt grace)"
+  fi
+  if ! grep -qxF "$fpr" "$PASSWORD_STORE_DIR/.gpg-id"; then
+    die "refusing finalize: new fingerprint $fpr not in .gpg-id"
+  fi
+  if [[ -n $old ]] && ! grep -qxF "$old" "$PASSWORD_STORE_DIR/.gpg-id"; then
+    die "refusing finalize: previous fingerprint $old missing from .gpg-id — abort to avoid burning keys"
+  fi
+
+  # Default 24h grace unless explicitly overridden (FORCE_FINALIZE=yes).
+  grace_hours="${FINALIZE_GRACE_HOURS:-24}"
+  if [[ ${FORCE_FINALIZE:-} != yes && -n $gen ]]; then
+    age_sec="$(python3 -c "
+from datetime import datetime, timezone
+gen = datetime.strptime('$gen', '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc)
+print(int((datetime.now(timezone.utc) - gen).total_seconds()))
+")"
+    if ((age_sec < grace_hours * 3600)); then
+      die "refusing finalize: only $((age_sec / 3600))h since phase 1 (need ${grace_hours}h). Set FORCE_FINALIZE=yes to override after all hosts are confirmed."
+    fi
+  fi
+
+  echo "Phase 2: finalizing to $fpr only (CONFIRM_FINALIZE=yes)..."
   pass show _bootstrap/ok >/dev/null || die "canary decrypt failed; abort finalize"
 
   printf '%s\n' "$fpr" >"$PASSWORD_STORE_DIR/.gpg-id"
   reencrypt_all
 
+  # Only clear previous slots AFTER reencrypt succeeds.
   sops set "$SOPS_FILE" '["gpg_private_key_previous"]' '"placeholder"'
   sops set "$SOPS_FILE" '["gpg_passphrase_previous"]' '"placeholder"'
 
@@ -246,6 +285,7 @@ phase2() {
   git -C "$PASSWORD_STORE_DIR" push || echo "warn: pass git push failed; push manually"
 
   echo "Phase 2 complete. Commit updated secrets/secrets.yaml in .dotfiles."
+  echo "Do NOT delete age/GPG backups until every host decrypts _bootstrap/ok."
 }
 
 case "$MODE" in
@@ -254,6 +294,7 @@ case "$MODE" in
 "" | --phase1 | phase1) phase1 ;;
 -h | --help | help)
   echo "Usage: $0 [--status|--finalize]"
+  echo "  Finalize requires CONFIRM_FINALIZE=yes (and ${FINALIZE_GRACE_HOURS:-24}h grace unless FORCE_FINALIZE=yes)."
   ;;
 *)
   die "unknown argument: $MODE (try --status or --finalize)"

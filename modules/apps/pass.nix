@@ -469,6 +469,8 @@
         })
 
         # ntfy JSON long-poll → MODE=pull (upstream-only; one sleeping curl).
+        # Race: sops-nix may decrypt after RunAtLoad. WatchPaths restarts when
+        # the secrets dir changes; the script also waits then exits 1 for KeepAlive.
         (lib.mkIf (cfg.enable && cfg.autoSync.enable && cfg.autoSync.notify.enable && pkgs.stdenv.isDarwin)
           {
             launchd.agents.pass-store-sync-notify = {
@@ -478,13 +480,18 @@
                 ProgramArguments = [ "${notifyScript}" ];
                 RunAtLoad = true;
                 KeepAlive = true;
-                ThrottleInterval = 5;
+                # Back off while waiting for sops; WatchPaths covers late decrypt.
+                ThrottleInterval = 15;
+                WatchPaths = [
+                  "${config.home.homeDirectory}/.config/sops-nix/secrets"
+                ];
                 StandardOutPath = "${syncLogDir}/pass-store-sync-notify.log";
                 StandardErrorPath = "${syncLogDir}/pass-store-sync-notify.err.log";
                 EnvironmentVariables = {
                   HOME = config.home.homeDirectory;
                   PASSWORD_STORE_DIR = storeDir;
                   PASS_STORE_NTFY_TOPIC_FILE = config.sops.secrets.pass_store_ntfy_topic.path;
+                  PASS_STORE_NTFY_WAIT_SEC = "120";
                 };
               };
             };
@@ -496,14 +503,18 @@
             Unit = {
               Description = "ntfy long-poll → pull ~/.password-store (upstream-only)";
               After = [ "default.target" ];
+              # Soft dep: present when HM sops uses a user unit; ignored otherwise.
+              Wants = [ "sops-nix.service" ];
             };
             Service = {
               ExecStart = "${notifyScript}";
               Restart = "always";
-              RestartSec = 5;
+              RestartSec = 15;
+              # Fail fast into Restart if topic still missing after script wait.
               Environment = [
                 "PASSWORD_STORE_DIR=${storeDir}"
                 "PASS_STORE_NTFY_TOPIC_FILE=${config.sops.secrets.pass_store_ntfy_topic.path}"
+                "PASS_STORE_NTFY_WAIT_SEC=120"
               ];
             };
             Install.WantedBy = [ "default.target" ];

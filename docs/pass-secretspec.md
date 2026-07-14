@@ -68,9 +68,10 @@ reserved paths → commit if dirty → `push`. Failures log under
 `~/.cache/pass-store-sync*.log` and retry on the next event.
 
 **Upstream (ntfy):** idle cost is one sleeping HTTPS long-poll (no timers, no
-`ntfy` CLI). On each published message, cheap `git ls-remote` vs `HEAD`; pull
-only if behind. Catch-up on agent start covers months offline (ntfy does not
-retain). Keepalive/`open` events are ignored.
+`ntfy` CLI). Agent order: **wait for sops topic file** (up to 120s, then exit
+so KeepAlive retries; Darwin also `WatchPaths` the secrets dir) → catch-up
+`MODE=pull` → subscribe. On each published message, cheap `git ls-remote` vs
+`HEAD`; pull only if behind. Keepalive/`open` events are ignored.
 
 Topic: sops `pass_store_ntfy_topic` (Alex-only) → HM writes a `0600` file the
 agent reads. Same value → Actions secret `PASS_STORE_NTFY_TOPIC` on the private
@@ -202,8 +203,17 @@ If CI fails after rotation: ensure test paths were re-dual-encrypted to
 3. `nix run .#pass-rotate -- --finalize` — single recipient, clear previous sops slots.
 4. Commit updated `secrets/secrets.yaml` + rotation state in `.dotfiles`.
 
-Do not finalize until all hosts have pulled phase 1. Annual reminder agents
-notify to start phase 1; finalize stays explicit.
+Do not finalize until all hosts have pulled phase 1. Finalize is gated:
+
+```bash
+CONFIRM_FINALIZE=yes nix run .#pass-rotate -- --finalize
+# optional: FORCE_FINALIZE=yes to skip the default 24h grace
+```
+
+Guards (refuse otherwise): previous sops GPG slots still present, `.gpg-id`
+still lists **both** fingerprints, canary decrypt works. Annual reminder
+agents notify to start phase 1; finalize stays explicit — never burn the old
+key early.
 
 Age recipient changes remain separate (`scripts/sops-updatekeys.sh`).
 
