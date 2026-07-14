@@ -97,28 +97,34 @@
           pkgs.xdotool # libxdo — tray-icon/muda link dep
         ];
         doCheck = false;
-        postInstall = ''
-          wrapProgram $out/bin/pass-store-tray \
-            --set PASS_STORE_SYNC_SCRIPT ${syncScript} \
-            --set PASS_MATERIALIZE_SCRIPT ${materializeScript} \
-            --set PASSWORD_STORE_DIR ${lib.escapeShellArg storeDir} \
-            --set PASS_STORE_SYNC_STATUS ${lib.escapeShellArg "${config.home.homeDirectory}/.cache/pass-store-sync.status"} \
-            --set PASS_STORE_SYNC_LOCK ${lib.escapeShellArg "${config.home.homeDirectory}/.cache/pass-store-sync.lock"} \
-            --prefix PATH : ${
-              lib.makeBinPath [
-                pkgs.procps
-                pkgs.bash
-                pkgs.coreutils
-              ]
-            }${lib.optionalString pkgs.stdenv.isLinux '' \
-            --prefix LD_LIBRARY_PATH : ${
-              lib.makeLibraryPath [
-                pkgs.gtk3
-                pkgs.libayatana-appindicator
-                pkgs.xdotool
-              ]
-            }''}
-        '';
+        postInstall =
+          let
+            wrapLibPath = lib.optionalString pkgs.stdenv.isLinux ''
+              --prefix LD_LIBRARY_PATH : ${
+                lib.makeLibraryPath [
+                  pkgs.gtk3
+                  pkgs.libayatana-appindicator
+                  pkgs.xdotool
+                ]
+              }
+            '';
+          in
+          ''
+            wrapProgram $out/bin/pass-store-tray \
+              --set PASS_STORE_SYNC_SCRIPT ${syncScript} \
+              --set PASS_MATERIALIZE_SCRIPT ${materializeScript} \
+              --set PASSWORD_STORE_DIR ${lib.escapeShellArg storeDir} \
+              --set PASS_STORE_SYNC_STATUS ${lib.escapeShellArg "${config.home.homeDirectory}/.cache/pass-store-sync.status"} \
+              --set PASS_STORE_SYNC_LOCK ${lib.escapeShellArg "${config.home.homeDirectory}/.cache/pass-store-sync.lock"} \
+              --prefix PATH : ${
+                lib.makeBinPath [
+                  pkgs.procps
+                  pkgs.bash
+                  pkgs.coreutils
+                ]
+              } \
+              ${wrapLibPath}
+          '';
         meta = {
           description = "Pass store sync native tray applet (Rust)";
           mainProgram = "pass-store-tray";
