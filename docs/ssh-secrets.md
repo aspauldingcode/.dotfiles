@@ -42,12 +42,12 @@ Alex-only, no Actions, MFA on GitHub. Do **not** put the GPG private key in
 
 ## Declarative SSH
 
-| Piece | Location |
-| ----- | -------- |
-| Pubkeys | [`home/ssh-keys.nix`](../home/ssh-keys.nix) |
-| Module | [`modules/apps/ssh.nix`](../modules/apps/ssh.nix) (`dendritic.ssh.enable`) |
-| Enroll | `nix run .#ssh-enroll -- --name HOST --pubkey PATH` |
-| Rotate | `nix run .#ssh-rotate -- --name HOST --pubkey PATH` then `--finalize` |
+| Piece   | Location                                                                   |
+| ------- | -------------------------------------------------------------------------- |
+| Pubkeys | [`home/ssh-keys.nix`](../home/ssh-keys.nix)                                |
+| Module  | [`modules/apps/ssh.nix`](../modules/apps/ssh.nix) (`dendritic.ssh.enable`) |
+| Enroll  | `nix run .#ssh-enroll -- --name HOST --pubkey PATH`                        |
+| Rotate  | `nix run .#ssh-rotate -- --name HOST --pubkey PATH` then `--finalize`      |
 
 NixOS hosts with `dendritic.ssh.enable` get the union of pubkeys as
 `openssh.authorizedKeys`. Private keys are generated on disk if missing
