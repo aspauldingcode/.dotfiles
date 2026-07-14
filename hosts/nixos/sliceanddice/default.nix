@@ -222,6 +222,9 @@
         dendritic.apps.beeper.enable = true;
         dendritic.apps.pass.enable = true;
         dendritic.apps.pass.fingerprint = "80AB4D8EFE29CE2ABD3BD0445C04154FC8950A8B";
+        dendritic.ssh.enable = true;
+        # Host already defines programs.ssh Host blocks below.
+        dendritic.ssh.manageClientConfig = false;
         dendritic.python.enable = true;
 
         # niri user config: terminal → ghostty, launcher → fuzzel.

@@ -16,7 +16,14 @@
 # Add new sops-encrypted files to FILES below as the surface grows.
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+REPO_ROOT="${DOTFILES_ROOT:-}"
+if [[ -z $REPO_ROOT || ! -f $REPO_ROOT/.sops.yaml ]]; then
+  REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+fi
+if [[ -z $REPO_ROOT || ! -f $REPO_ROOT/.sops.yaml ]]; then
+  echo "fatal: cannot find .dotfiles root (set DOTFILES_ROOT or run from the checkout)" >&2
+  exit 1
+fi
 cd "$REPO_ROOT"
 
 if [ ! -f .sops.yaml ]; then
@@ -33,9 +40,11 @@ fi
 
 FILES=(
   "secrets/secrets.yaml"
+  "secrets/sliceanddice-secrets.yaml"
 )
 
 failed=()
+skipped=()
 for f in "${FILES[@]}"; do
   if [ ! -f "$f" ]; then
     echo "skip: $f (missing)"
@@ -43,15 +52,21 @@ for f in "${FILES[@]}"; do
   fi
   echo "==> sops updatekeys $f"
   if ! sops updatekeys --yes "$f"; then
-    failed+=("$f")
+    echo "warn: could not rewrap $f (no local identity can decrypt — run updatekeys on a host that can)" >&2
+    skipped+=("$f")
   fi
 done
 
-if [ ${#failed[@]} -gt 0 ]; then
+if [ ${#skipped[@]} -gt 0 ]; then
   echo >&2
-  echo "fatal: updatekeys failed for ${#failed[@]} file(s):" >&2
-  printf '       - %s\n' "${failed[@]}" >&2
-  exit 1
+  echo "note: ${#skipped[@]} file(s) not rewrapped here:" >&2
+  printf '       - %s\n' "${skipped[@]}" >&2
+  # Fail hard only if the primary shared secrets file was among them.
+  for f in "${skipped[@]}"; do
+    if [ "$f" = "secrets/secrets.yaml" ]; then
+      exit 1
+    fi
+  done
 fi
 
 echo

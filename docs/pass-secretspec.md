@@ -6,9 +6,11 @@ private GitHub password-store. Machine/home secrets stay on sops-nix.
 ## Trust model
 
 ```
-SSH ed25519 (Alex machines only)
+gh auth login (Alex GitHub + MFA)
         │
-   ssh-to-age
+ private aspauldingcode/dendritic-age-master  (age master only)
+        │
+ secrets-bootstrap → sops age keys file
         │
  sops ciphertext in public .dotfiles
  (gpg_private_key / gpg_passphrase)
@@ -22,11 +24,15 @@ SSH ed25519 (Alex machines only)
    app env vars at runtime
 ```
 
+Grace: SSH ed25519 → ssh-to-age recipients still listed in [`.sops.yaml`](../.sops.yaml)
+until all hosts use GitHub bootstrap. See [`ssh-secrets.md`](./ssh-secrets.md).
+
 - Public `.dotfiles` never holds plaintext secrets.
-- Age recipients for GPG material are Alex-only (see [`.sops.yaml`](../.sops.yaml)).
-- Possession of Alex’s SSH private key unlocks the vault (same as existing sops).
+- Age recipients for GPG material are Alex-only (age master + temporary SSH age).
 - GitHub Actions on the **private** password-store uses a **CI-only** GPG canary
   key that can decrypt template paths only — never Alex’s personal GPG key.
+- Do **not** store GPG private key in `.password-store` or grant CI access to
+  `dendritic-age-master`.
 
 ## Layers
 
@@ -124,10 +130,15 @@ and [`pass-rotation-state.json`](./pass-rotation-state.json).
 
 ## New machine
 
-1. SSH key present and able to decrypt sops (same as today).
-2. `nix run github:aspauldingcode/.dotfiles#install` (or local switch).
-3. HM activation imports GPG from sops, presets passphrase, clones
+1. `gh auth login` as Alex (MFA/passkeys on the GitHub account).
+2. `nix run .#secrets-bootstrap` — fetches age master from private
+   `aspauldingcode/dendritic-age-master` into the local sops age keys file.
+3. `nix run github:aspauldingcode/.dotfiles#install` (or local switch).
+4. HM activation imports GPG from sops, presets passphrase, clones
    `aspauldingcode/.password-store` into `~/.password-store`.
+5. Optional: enroll host SSH pubkey for login — see [`ssh-secrets.md`](./ssh-secrets.md).
+
+Do not bootstrap GPG from the password-store git repo (circular / weak).
 
 ## Secrets smoke CI
 

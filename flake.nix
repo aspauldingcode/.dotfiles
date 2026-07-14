@@ -246,6 +246,81 @@
               "${uninstallScript}/bin/uninstall-system";
           };
 
+          apps.secrets-bootstrap = {
+            type = "app";
+            program =
+              let
+                script = pkgs.writeShellApplication {
+                  name = "secrets-bootstrap";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    gh
+                    python3
+                    gnugrep
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
+                    exec bash ${./scripts/secrets-bootstrap.sh} "$@"
+                  '';
+                };
+              in
+              "${script}/bin/secrets-bootstrap";
+          };
+
+          apps.ssh-enroll = {
+            type = "app";
+            program =
+              let
+                script = pkgs.writeShellApplication {
+                  name = "ssh-enroll";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    ssh-to-age
+                    sops
+                    age
+                    python3
+                    git
+                    gnugrep
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-${toString ./.}}"
+                    exec bash ${./scripts/ssh-enroll.sh} "$@"
+                  '';
+                };
+              in
+              "${script}/bin/ssh-enroll";
+          };
+
+          apps.ssh-rotate = {
+            type = "app";
+            program =
+              let
+                script = pkgs.writeShellApplication {
+                  name = "ssh-rotate";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    ssh-to-age
+                    sops
+                    age
+                    python3
+                    git
+                    gnugrep
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-${toString ./.}}"
+                    exec bash ${./scripts/ssh-rotate.sh} "$@"
+                  '';
+                };
+              in
+              "${script}/bin/ssh-rotate";
+          };
+
           apps.pass-genesis = {
             type = "app";
             program =
