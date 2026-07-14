@@ -19,6 +19,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: fleet-status-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   render:
     runs-on: ubuntu-latest
@@ -60,4 +64,6 @@ jobs:
             exit 0
           fi
           git commit -m "chore(fleet): refresh public presence status"
+          # Avoid races with concurrent pushes to the same branch.
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
           git push
