@@ -69,6 +69,9 @@
             window-theme = config.dendritic.theme.variant;
             macos-option-as-alt = true;
             shell-integration = "detect";
+            # Highlight → system clipboard (and selection clipboard where it exists).
+            # `true` alone only fills primary selection on Linux / is flaky on macOS.
+            copy-on-select = "clipboard";
             # Use absolute path for zsh to ensure it launches correctly on macOS
             command = "${pkgs.zsh}/bin/zsh";
 
