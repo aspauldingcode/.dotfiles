@@ -12,10 +12,10 @@ Host presence via private heartbeats (no public IPs). See [docs/fleet-status.md]
 
 | Host           | Platform | Tip        | Status     | Last seen |
 | -------------- | -------- | ---------- | ---------- | --------- |
-| `mba`          | darwin   | `c02b7ad9` | **online** | 13s ago   |
-| `sliceanddice` | nixos    | `c02b7ad9` | **online** | 9s ago    |
+| `mba`          | darwin   | `c02b7ad9` | **online** | 6m ago    |
+| `sliceanddice` | nixos    | `c02b7ad9` | **online** | 5m ago    |
 
-_Updated 2026-07-14T19:05:18Z (UTC). online ≤30m · stale ≤24h · else offline._
+_Updated 2026-07-14T19:11:03Z (UTC). online ≤30m · stale ≤24h · else offline._
 
 <!-- fleet-status:end -->
 
