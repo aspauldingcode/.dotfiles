@@ -106,11 +106,6 @@
                 message = "dendritic.fleet.hostId '${cfg.hostId}' is not in home/fleet-hosts.nix";
               }
             ];
-
-            home.packages = [
-              pkgs.gh
-              pkgs.jq
-            ];
           }
 
           (lib.mkIf cfg.useSopsToken {
