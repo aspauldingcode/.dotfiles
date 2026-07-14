@@ -57,10 +57,10 @@ and a **watchexec auto-sync agent** (default on).
 
 `dendritic.apps.pass.autoSync.enable` defaults to `true`.
 
-| Path | Agent | Mechanism |
-| ---- | ----- | --------- |
-| Local edits → GitHub | `pass-store-sync` (launchd / systemd user) | watchexec → `PASS_STORE_SYNC_MODE=full` |
-| GitHub → local | `pass-store-sync-notify` | one `curl` JSON long-poll to ntfy → `MODE=pull` |
+| Path                 | Agent                                      | Mechanism                                       |
+| -------------------- | ------------------------------------------ | ----------------------------------------------- |
+| Local edits → GitHub | `pass-store-sync` (launchd / systemd user) | watchexec → `PASS_STORE_SYNC_MODE=full`         |
+| GitHub → local       | `pass-store-sync-notify`                   | one `curl` JSON long-poll to ntfy → `MODE=pull` |
 
 **Local (watchexec):** on store changes (ignoring `.git`), waits `autoSync.debounce`
 (default `10sec`), then `git pull --rebase --autostash` → CI dual-encrypt on
