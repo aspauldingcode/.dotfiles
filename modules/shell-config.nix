@@ -35,6 +35,7 @@
         systemPackages = [
           pkgs.nh
           pkgs.yazi
+          pkgs.fh # FlakeHub CLI (Determinate Systems)
           sudoAskpass
         ];
         sessionVariables = {
@@ -65,6 +66,7 @@
       environment.systemPackages = [
         pkgs.nh
         pkgs.yazi
+        pkgs.fh # FlakeHub CLI (Determinate Systems)
         inputs.determinate-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
       ];
 

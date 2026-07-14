@@ -245,6 +245,186 @@
               in
               "${uninstallScript}/bin/uninstall-system";
           };
+
+          apps.pass-genesis = {
+            type = "app";
+            program =
+              let
+                script = pkgs.writeShellApplication {
+                  name = "pass-genesis";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    gnupg
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    sops
+                    openssl
+                    git
+                    python3
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    exec bash ${./scripts/pass-genesis.sh} "$@"
+                  '';
+                };
+              in
+              "${script}/bin/pass-genesis";
+          };
+
+          apps.pass-rotate = {
+            type = "app";
+            program =
+              let
+                script = pkgs.writeShellApplication {
+                  name = "pass-rotate";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    findutils
+                    gawk
+                    gnupg
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    sops
+                    openssl
+                    git
+                    python3
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    exec bash ${./scripts/pass-rotate-gpg.sh} "$@"
+                  '';
+                };
+              in
+              "${script}/bin/pass-rotate";
+          };
+
+          apps.pass-rotate-cli-auth = {
+            type = "app";
+            program =
+              let
+                mint = pkgs.writeShellApplication {
+                  name = "github-app-mint-token";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    curl
+                    gnugrep
+                    gnupg
+                    git
+                    python3
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    exec bash ${./scripts/github-app-mint-token.sh} "$@"
+                  '';
+                };
+                script = pkgs.writeShellApplication {
+                  name = "pass-rotate-cli-auth";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    curl
+                    gnugrep
+                    gnupg
+                    git
+                    python3
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    fh
+                    gh
+                    bash
+                    mint
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export FLAKEHUB_ORG="''${FLAKEHUB_ORG:-aspauldingcode}"
+                    exec bash ${./scripts/pass-rotate-cli-auth.sh} "$@"
+                  '';
+                };
+              in
+              "${script}/bin/pass-rotate-cli-auth";
+          };
+
+          apps.pass-github-app-bootstrap = {
+            type = "app";
+            program =
+              let
+                mint = pkgs.writeShellApplication {
+                  name = "github-app-mint-token";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    curl
+                    gnugrep
+                    gnupg
+                    git
+                    python3
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    exec bash ${./scripts/github-app-mint-token.sh} "$@"
+                  '';
+                };
+                script = pkgs.writeShellApplication {
+                  name = "pass-github-app-bootstrap";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    curl
+                    gnupg
+                    git
+                    python3
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    bash
+                    mint
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    export MANIFEST_PATH=${./home/github-app-manifest.json}
+                    export SERVER_PY=${./scripts/github-app-manifest-server.py}
+                    exec bash ${./scripts/pass-github-app-bootstrap.sh} "$@"
+                  '';
+                };
+              in
+              "${script}/bin/pass-github-app-bootstrap";
+          };
+
+          apps.pass-provision = {
+            type = "app";
+            program =
+              let
+                script = pkgs.writeShellApplication {
+                  name = "pass-provision";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    findutils
+                    gawk
+                    gnupg
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    sops
+                    openssl
+                    git
+                    gh
+                    python3
+                    nix
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    exec bash ${./scripts/pass-provision.sh} "$@"
+                  '';
+                };
+              in
+              "${script}/bin/pass-provision";
+          };
         };
 
     };

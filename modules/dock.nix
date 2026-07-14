@@ -22,6 +22,7 @@
       #   120  Spotify (`apps/spotify.nix`)
       #   130  Vesktop (`apps/vesktop.nix`)
       #   140  Ghostty (`apps/ghostty.nix`)
+      #   145  QtPass (`apps/pass.nix`)
       #   150  JetBrains IDEs (`apps/jetbrains.nix`)
       #   160  Cursor (`apps/cursor.nix`)
       #   170  Antigravity (`apps/antigravity.nix`)

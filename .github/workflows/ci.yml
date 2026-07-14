@@ -65,8 +65,32 @@ jobs:
              nix build .#${{ matrix.attr }} --print-build-logs
           fi
 
+  secretspec-demo:
+    name: secretspec demo declarations
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Validate secretspec.toml declarations (no decrypt)
+        run: |
+          set -euo pipefail
+          nix profile install nixpkgs#secretspec
+          test -f testdata/secretspec-demo/secretspec.toml
+          # Ensure required keys are declared; do not require provider values in public CI.
+          grep -q 'DEMO_API_KEY' testdata/secretspec-demo/secretspec.toml
+          grep -q 'DEMO_DATABASE_URL' testdata/secretspec-demo/secretspec.toml
+          grep -q 'pass://secretspec/shared' testdata/secretspec-demo/secretspec.toml
+          if secretspec check --help >/dev/null 2>&1; then
+            (cd testdata/secretspec-demo && secretspec check) || true
+          fi
+          echo "OK secretspec demo declarations"
+
   publish:
-    needs: matrix
+    needs: [matrix, secretspec-demo]
     if: github.event_name == 'push' && (github.ref == 'refs/heads/development' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     steps:
