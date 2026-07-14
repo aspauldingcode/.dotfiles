@@ -1,6 +1,6 @@
 //! Native menubar / tray applet — no window, no iced.
-//! macOS: NSStatusItem + NSMenu via tray-icon/muda.
-//! Linux: StatusNotifier/AppIndicator + gtk menu via tray-icon + gtk.
+//! macOS: NSStatusItem + NSMenu via tray-icon/muda (+ winit runloop).
+//! Linux: StatusNotifier + gtk menu via tray-icon (gtk main thread only).
 mod ui_contract;
 
 use serde::Deserialize;
@@ -12,8 +12,12 @@ use std::time::Duration;
 use tray_icon::menu::{Menu, MenuEvent, MenuItem, PredefinedMenuItem};
 use tray_icon::{Icon, TrayIcon, TrayIconBuilder};
 use ui_contract::{Action, TOOLTIP_IDLE};
+
+#[cfg(target_os = "macos")]
 use winit::application::ApplicationHandler;
+#[cfg(target_os = "macos")]
 use winit::event::StartCause;
+#[cfg(target_os = "macos")]
 use winit::event_loop::{ActiveEventLoop, ControlFlow, EventLoop};
 
 #[derive(Debug, Clone, Default, Deserialize)]
@@ -356,18 +360,17 @@ impl NativeTray {
     }
 }
 
+#[cfg(target_os = "macos")]
 struct App {
     tray: Option<NativeTray>,
     quit: Arc<AtomicBool>,
 }
 
+#[cfg(target_os = "macos")]
 impl ApplicationHandler for App {
     fn new_events(&mut self, event_loop: &ActiveEventLoop, cause: StartCause) {
         if cause == StartCause::Init {
-            #[cfg(not(target_os = "linux"))]
-            {
-                self.tray = Some(NativeTray::build(Env::from_env(), self.quit.clone()));
-            }
+            self.tray = Some(NativeTray::build(Env::from_env(), self.quit.clone()));
             event_loop.set_control_flow(ControlFlow::WaitUntil(
                 std::time::Instant::now() + Duration::from_secs(2),
             ));
@@ -404,36 +407,26 @@ fn main() {
 
     #[cfg(target_os = "linux")]
     {
+        // tray-icon requires gtk on the same thread as the icon.
         gtk::init().expect("gtk init");
-        let quit_gtk = quit.clone();
-        let env = Env::from_env();
-        std::thread::spawn(move || {
-            let mut tray = NativeTray::build(env, quit_gtk.clone());
-            loop {
-                if quit_gtk.load(Ordering::SeqCst) {
-                    break;
-                }
-                tray.handle_menu();
-                tray.refresh();
-                while gtk::events_pending() {
-                    gtk::main_iteration_do(false);
-                }
-                std::thread::sleep(Duration::from_millis(200));
+        let mut tray = NativeTray::build(Env::from_env(), quit.clone());
+        while !quit.load(Ordering::SeqCst) {
+            tray.handle_menu();
+            tray.refresh();
+            while gtk::events_pending() {
+                gtk::main_iteration_do(false);
             }
-        });
-        let event_loop = EventLoop::new().unwrap();
-        let mut app = App {
-            tray: None,
-            quit: quit.clone(),
-        };
-        let _ = event_loop.run_app(&mut app);
-        return;
+            std::thread::sleep(Duration::from_millis(200));
+        }
     }
 
-    #[cfg(not(target_os = "linux"))]
+    #[cfg(target_os = "macos")]
     {
-        let event_loop = EventLoop::new().unwrap();
-        let mut app = App { tray: None, quit };
+        let event_loop = EventLoop::new().expect("event loop");
+        let mut app = App {
+            tray: None,
+            quit,
+        };
         if let Err(err) = event_loop.run_app(&mut app) {
             eprintln!("pass-store-tray: event loop error: {err:?}");
             std::process::exit(1);
