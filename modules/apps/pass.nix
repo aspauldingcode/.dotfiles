@@ -29,6 +29,8 @@
       gpgBin = "${pkgs.gnupg}/bin/gpg";
       gitBin = "${pkgs.git}/bin/git";
       pwgenBin = "${pkgs.pwgen}/bin/pwgen";
+      secretspecToml = ../../home/secretspec.toml;
+      materializeMap = ../../home/pass-materialize.json;
       syncPath = lib.makeBinPath [
         pkgs.git
         pkgs.coreutils
@@ -36,11 +38,26 @@
         pkgs.findutils
         pkgs.gnugrep
         pkgs.curl
+        pkgs.jq
+        pkgs.secretspec
+        passPackage
       ];
+      materializeScript = pkgs.writeShellScript "pass-secretspec-materialize" ''
+        export PATH="${syncPath}:$PATH"
+        export PASSWORD_STORE_DIR=${lib.escapeShellArg storeDir}
+        export PASS_MATERIALIZE_MAP=${lib.escapeShellArg "${materializeMap}"}
+        export PASS_SECRETSPEC_TOML=${lib.escapeShellArg "${secretspecToml}"}
+        export PASS_STORE_SYNC_STATUS=${lib.escapeShellArg "${config.home.homeDirectory}/.cache/pass-store-sync.status"}
+        exec ${pkgs.bash}/bin/bash ${../../scripts/pass-secretspec-materialize.sh}
+      '';
       syncScript = pkgs.writeShellScript "pass-store-sync" ''
         export PATH="${syncPath}:$PATH"
         export PASSWORD_STORE_DIR=${lib.escapeShellArg storeDir}
         export PASS_STORE_SYNC_MODE="''${PASS_STORE_SYNC_MODE:-full}"
+        export PASS_STORE_SYNC_STATUS=${lib.escapeShellArg "${config.home.homeDirectory}/.cache/pass-store-sync.status"}
+        export PASS_MATERIALIZE_SCRIPT=${materializeScript}
+        export PASS_MATERIALIZE_MAP=${lib.escapeShellArg "${materializeMap}"}
+        export PASS_SECRETSPEC_TOML=${lib.escapeShellArg "${secretspecToml}"}
         exec ${pkgs.bash}/bin/bash ${../../scripts/pass-store-sync.sh}
       '';
       watchScript = pkgs.writeShellScript "pass-store-watch" ''
@@ -64,6 +81,37 @@
         # PASS_STORE_NTFY_TOPIC_FILE must be set by the agent (sops path).
         exec ${pkgs.bash}/bin/bash ${../../scripts/pass-store-sync-notify.sh}
       '';
+      trayPython = pkgs.python3.withPackages (ps: [ ps.pyside6 ]);
+      trayPkg = pkgs.stdenvNoCC.mkDerivation {
+        pname = "pass-store-tray";
+        version = "1.0.0";
+        dontUnpack = true;
+        nativeBuildInputs = [ pkgs.makeWrapper ];
+        # pyside6 bundles Qt; skip wrapQtAppsHook (needs qtPluginPrefix/qtbase).
+        dontWrapQtApps = true;
+        installPhase = ''
+          mkdir -p $out/share/pass-store-tray $out/bin
+          cp ${./pass-store-tray/pass_store_tray.py} $out/share/pass-store-tray/pass_store_tray.py
+          makeWrapper ${trayPython}/bin/python $out/bin/pass-store-tray \
+            --add-flags "$out/share/pass-store-tray/pass_store_tray.py" \
+            --set PASS_STORE_SYNC_SCRIPT ${syncScript} \
+            --set PASS_MATERIALIZE_SCRIPT ${materializeScript} \
+            --set PASSWORD_STORE_DIR ${lib.escapeShellArg storeDir} \
+            --set PASS_STORE_SYNC_STATUS ${lib.escapeShellArg "${config.home.homeDirectory}/.cache/pass-store-sync.status"} \
+            --set PASS_STORE_SYNC_LOCK ${lib.escapeShellArg "${config.home.homeDirectory}/.cache/pass-store-sync.lock"} \
+            --prefix PATH : ${
+              lib.makeBinPath [
+                pkgs.procps
+                pkgs.bash
+                pkgs.coreutils
+              ]
+            }
+        '';
+        meta = {
+          description = "Pass store sync menubar/tray applet";
+          mainProgram = "pass-store-tray";
+        };
+      };
       syncLogDir = "${config.home.homeDirectory}/.cache";
       # Qt ini / QSettings keys (IJHack/QtPass).
       qtpassConf = ''
@@ -160,14 +208,35 @@
           };
         };
 
+        materialize = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = ''
+              Materialize SecretSpec keys listed in home/pass-materialize.json
+              into $HOME paths (e.g. SHIT_PASSWORD → ~/.shit). Runs on HM
+              activation and after pass-store sync when secretspec/ changes.
+            '';
+          };
+        };
+
+        # Deprecated alias — prefer materialize.enable.
         materializeShitFile = lib.mkOption {
           type = lib.types.bool;
           default = true;
-          description = ''
-            On activation, read SHIT_PASSWORD from pass via SecretSpec and write
-            ~/.shit (0600). Declarations in home/secretspec.toml; value in
-            secretspec/shared/default/SHIT_PASSWORD. Eval never sees plaintext.
-          '';
+          visible = false;
+          description = "Deprecated; use dendritic.apps.pass.materialize.enable.";
+        };
+
+        tray = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = ''
+              Unified PySide6 menubar/tray applet showing pass sync ↑/↓/idle
+              and system rebuild status (Darwin + Linux).
+            '';
+          };
         };
       };
 
@@ -199,8 +268,15 @@
               secretspec
               gnupg
               pwgen
+              jq
             ]
-            ++ lib.optionals cfg.gui.enable [ qtpass ];
+            ++ lib.optionals cfg.gui.enable [ qtpass ]
+            ++ lib.optionals cfg.tray.enable [ trayPkg ]
+            ++ lib.optionals cfg.materialize.enable [
+              (pkgs.writeShellScriptBin "pass-materialize" ''
+                exec ${materializeScript}
+              '')
+            ];
 
           programs.gpg = {
             enable = true;
@@ -324,35 +400,11 @@
           );
         })
 
-        # SecretSpec → ~/.shit (activation-time only; never in the Nix store).
-        (lib.mkIf (cfg.enable && cfg.materializeShitFile) {
-          home.activation.materializeShitFile = lib.hm.dag.entryAfter [ "passBootstrap" ] (
-            let
-              secretspecBin = "${pkgs.secretspec}/bin/secretspec";
-              secretspecToml = ../../home/secretspec.toml;
-            in
-            ''
-              export PASSWORD_STORE_DIR=${lib.escapeShellArg storeDir}
-              export PATH="${
-                lib.makeBinPath [
-                  passPackage
-                  pkgs.gnupg
-                  pkgs.secretspec
-                  pkgs.coreutils
-                ]
-              }:$PATH"
-              _shit_out="${config.home.homeDirectory}/.shit"
-              _val="$(${secretspecBin} get -f ${secretspecToml} SHIT_PASSWORD 2>/dev/null || true)"
-              if [ -z "$_val" ]; then
-                echo "pass: SHIT_PASSWORD not available yet; skipping ~/.shit" >&2
-              else
-                umask 077
-                printf '%s\n' "$_val" > "$_shit_out"
-                chmod 600 "$_shit_out"
-                echo "pass: materialized $_shit_out from SecretSpec/pass"
-              fi
-            ''
-          );
+        # SecretSpec → $HOME files (activation + post-sync share one script).
+        (lib.mkIf (cfg.enable && cfg.materialize.enable) {
+          home.activation.passMaterialize = lib.hm.dag.entryAfter [ "passBootstrap" ] ''
+            ${materializeScript} || echo "pass: materialize skipped/failed" >&2
+          '';
         })
 
         # QtPass GUI: Linux uses Qt .conf; macOS uses native preferences domain.
@@ -518,6 +570,45 @@
               ];
             };
             Install.WantedBy = [ "default.target" ];
+          };
+        })
+
+        # Unified pass sync tray (↑ / ↓ / green / rebuild).
+        (lib.mkIf (cfg.enable && cfg.tray.enable && pkgs.stdenv.isDarwin) {
+          launchd.agents.pass-store-tray = {
+            enable = true;
+            config = {
+              Label = "com.aspaulding.pass-store-tray";
+              ProgramArguments = [ "${trayPkg}/bin/pass-store-tray" ];
+              RunAtLoad = true;
+              KeepAlive = true;
+              ThrottleInterval = 5;
+              StandardOutPath = "${syncLogDir}/pass-store-tray.log";
+              StandardErrorPath = "${syncLogDir}/pass-store-tray.err.log";
+              EnvironmentVariables = {
+                HOME = config.home.homeDirectory;
+                PASSWORD_STORE_DIR = storeDir;
+              };
+            };
+          };
+        })
+
+        (lib.mkIf (cfg.enable && cfg.tray.enable && pkgs.stdenv.isLinux) {
+          systemd.user.services.pass-store-tray = {
+            Unit = {
+              Description = "Pass store sync tray (↑/↓/idle)";
+              After = [ "graphical-session.target" ];
+              PartOf = [ "graphical-session.target" ];
+            };
+            Service = {
+              ExecStart = "${trayPkg}/bin/pass-store-tray";
+              Restart = "on-failure";
+              RestartSec = 5;
+              Environment = [
+                "PASSWORD_STORE_DIR=${storeDir}"
+              ];
+            };
+            Install.WantedBy = [ "graphical-session.target" ];
           };
         })
       ];

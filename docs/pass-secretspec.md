@@ -88,6 +88,48 @@ curl -fsS -d "1" "https://ntfy.sh/${TOPIC}"
 Disable watcher with `dendritic.apps.pass.autoSync.enable = false`.
 Disable ntfy only with `dendritic.apps.pass.autoSync.notify.enable = false`.
 
+### Tray applet (Darwin + Linux)
+
+`dendritic.apps.pass.tray.enable` defaults to `true`. One PySide6 applet:
+
+| Icon | Meaning                                              |
+| ---- | ---------------------------------------------------- |
+| ↑    | Uploading local store changes to GitHub              |
+| ↓    | Downloading remote updates                           |
+| ✓    | Idle / last sync completed (green)                   |
+| ↻    | `nh` / `*-rebuild` in progress (amber)               |
+| !    | Error (see menu / `~/.cache/pass-store-sync.status`) |
+
+Status file (no plaintext secrets): `~/.cache/pass-store-sync.status`.
+
+Menu actions: Pull now, Rematerialize secrets, Open QtPass, Open sync log.
+
+### Fast rematerialize (no `nh` switch)
+
+Pass sync updates `~/.password-store` only. Home files that HM used to write
+only on activation (e.g. `~/.shit`) are rematerialized **immediately** when
+`secretspec/` paths change in a sync, via
+[`scripts/pass-secretspec-materialize.sh`](../scripts/pass-secretspec-materialize.sh)
+and the map [`home/pass-materialize.json`](../home/pass-materialize.json):
+
+| SecretSpec key  | Home file |
+| --------------- | --------- |
+| `SHIT_PASSWORD` | `~/.shit` |
+| `PEE_PASSWORD`  | `~/.pee`  |
+
+```bash
+# Change a mapped secret — after sync, home file updates without rebuild
+printf '%s\n' 'new value' | pass insert -e secretspec/shared/default/SHIT_PASSWORD
+# wait for watchexec debounce (~10s) or: pass-materialize
+cat ~/.shit
+
+# Still need nh * switch when you change Nix *declarations*, add a new map
+# entry, or update sops age secrets — not for routine pass value edits.
+```
+
+Runtime secrets (`GH_*`, `FLAKEHUB_TOKEN`) stay live via wrappers — not copied to
+home files. Pass never writes into `secrets/secrets.yaml`.
+
 QtPass keeps `autoPull`/`autoPush` off so the watcher owns git traffic. Manual
 `pass git push` / `pull` still works.
 
@@ -274,11 +316,12 @@ Do not commit `.env` values. Commit `secretspec.toml` declarations only.
 Nix **evaluation** never decrypts pass (no plaintext in `/nix/store`). Instead,
 HM **activation** reads via SecretSpec after GPG unlock + store pull.
 
-Demo: [`home/secretspec.toml`](../home/secretspec.toml) declares `SHIT_PASSWORD`.
-With `dendritic.apps.pass.materializeShitFile` (default `true`), activation runs
-`secretspec get SHIT_PASSWORD` and writes `~/.shit` mode `0600`.
+Demo: [`home/secretspec.toml`](../home/secretspec.toml) declares `SHIT_PASSWORD`
+and `PEE_PASSWORD`. With `dendritic.apps.pass.materialize.enable` (default
+`true`), activation and post-sync rematerialize write `~/.shit` / `~/.pee`
+(mode `0600`) per [`home/pass-materialize.json`](../home/pass-materialize.json).
 
 ```bash
 printf '%s\n' 'poo password' | pass insert -e secretspec/shared/default/SHIT_PASSWORD
-# then: nh darwin switch / nh os switch — check cat ~/.shit
+# after sync (or pass-materialize): cat ~/.shit — no nh switch required
 ```
