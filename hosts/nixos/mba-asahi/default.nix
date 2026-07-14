@@ -17,7 +17,10 @@
 
       users.users."8amps" = {
         isNormalUser = true;
-        extraGroups = [ "wheel" ];
+        extraGroups = [
+          "wheel"
+          "networkmanager"
+        ];
         shell = pkgs.zsh;
       };
 

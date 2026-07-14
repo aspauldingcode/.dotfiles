@@ -128,8 +128,9 @@
               format-wifi = "󰤨 {essid}";
               format-ethernet = "󰈀 {ifname}";
               format-disconnected = "󰤭 offline";
-              tooltip-format = "{ifname}: {ipaddr}";
+              tooltip-format = "{ifname}: {ipaddr}\nClick: network settings";
               interval = 5;
+              on-click = lib.getExe' pkgs.networkmanagerapplet "nm-connection-editor";
             };
             pulseaudio = {
               format = "{icon} {volume}%";
@@ -343,7 +344,11 @@
           systemdTarget = "graphical-session.target";
         };
 
-        home.packages = [ nightToggle ];
+        home.packages = [
+          nightToggle
+          pkgs.networkmanagerapplet # waybar network → nm-connection-editor
+          pkgs.pavucontrol
+        ];
 
         # ── swayidle (lock + DPMS off on idle) ────────────────────────
         services.swayidle = {
@@ -462,6 +467,10 @@
           // Float the audio mixer.
           window-rule {
               match app-id="pavucontrol"
+              open-floating true
+          }
+          window-rule {
+              match app-id="nm-connection-editor"
               open-floating true
           }
 
