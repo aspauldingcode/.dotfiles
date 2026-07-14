@@ -110,6 +110,8 @@
             User = peer.user;
             IdentityFile = cfg.identityFile;
             IdentitiesOnly = true;
+            # Cursor Remote SSH + git-over-SSH on peers.
+            ForwardAgent = true;
           }) cfg.peerHosts;
         };
       };
