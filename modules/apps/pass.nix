@@ -94,6 +94,7 @@
         buildInputs = lib.optionals pkgs.stdenv.isLinux [
           pkgs.gtk3
           pkgs.libayatana-appindicator
+          pkgs.xdotool # libxdo — tray-icon/muda link dep
         ];
         doCheck = false;
         postInstall = ''
