@@ -142,37 +142,65 @@ fn icon_kind(status: &SyncStatus, rebuilding: bool, lock: bool) -> IconKind {
 }
 
 fn make_icon(kind: IconKind) -> Icon {
+    // macOS menu-bar style: black silhouette + alpha. Marked as template so
+    // AppKit tints for light/dark menu bar (no baked-in green/blue/amber).
+    // Linux: light ink for typical dark panels (no template API).
     let size = 32u32;
     let mut rgba = vec![0u8; (size * size * 4) as usize];
-    let (r, g, b) = match kind {
-        IconKind::Idle => (0x22, 0xc5, 0x5e),
-        IconKind::Up | IconKind::Down => (0x3b, 0x82, 0xf6),
-        IconKind::Error => (0xef, 0x44, 0x44),
-        IconKind::Rebuild => (0xf5, 0x9e, 0x0b),
-    };
-    let put = |rgba: &mut [u8], x: i32, y: i32| {
-        if !(0..size as i32).contains(&x) || !(0..size as i32).contains(&y) {
+    #[cfg(target_os = "macos")]
+    let (r, g, b) = (0u8, 0u8, 0u8);
+    #[cfg(not(target_os = "macos"))]
+    let (r, g, b) = (0xe8u8, 0xe8u8, 0xe8u8);
+
+    let put = |rgba: &mut [u8], x: i32, y: i32, a: u8| {
+        if !(0..size as i32).contains(&x) || !(0..size as i32).contains(&y) || a == 0 {
             return;
         }
         let i = ((y as u32 * size + x as u32) * 4) as usize;
-        rgba[i] = r;
-        rgba[i + 1] = g;
-        rgba[i + 2] = b;
-        rgba[i + 3] = 255;
+        // Max-alpha composite so overlapping strokes stay solid silhouette.
+        if a > rgba[i + 3] {
+            rgba[i] = r;
+            rgba[i + 1] = g;
+            rgba[i + 2] = b;
+            rgba[i + 3] = a;
+        }
     };
     let fill_rect = |rgba: &mut [u8], x0: i32, y0: i32, x1: i32, y1: i32| {
         for y in y0..y1 {
             for x in x0..x1 {
-                put(rgba, x, y);
+                put(rgba, x, y, 255);
             }
         }
     };
+    // Soft edge for a cleaner SF-Symbol-like silhouette.
+    let stroke_disk = |rgba: &mut [u8], cx: f32, cy: f32, rad: f32| {
+        let r0 = rad - 0.6;
+        let r1 = rad + 0.6;
+        let min_x = (cx - r1).floor() as i32;
+        let max_x = (cx + r1).ceil() as i32;
+        let min_y = (cy - r1).floor() as i32;
+        let max_y = (cy + r1).ceil() as i32;
+        for y in min_y..=max_y {
+            for x in min_x..=max_x {
+                let dx = x as f32 + 0.5 - cx;
+                let dy = y as f32 + 0.5 - cy;
+                let d = (dx * dx + dy * dy).sqrt();
+                if d <= r0 {
+                    put(rgba, x, y, 255);
+                } else if d < r1 {
+                    let t = (r1 - d) / (r1 - r0);
+                    put(rgba, x, y, (t * 255.0) as u8);
+                }
+            }
+        }
+    };
+
     match kind {
         IconKind::Up => {
             for y in 4..16 {
                 let half = (y - 4) / 2;
                 for x in (16 - half)..(16 + half) {
-                    put(&mut rgba, x, y);
+                    put(&mut rgba, x, y, 255);
                 }
             }
             fill_rect(&mut rgba, 13, 14, 19, 28);
@@ -181,7 +209,7 @@ fn make_icon(kind: IconKind) -> Icon {
             for y in 16..28 {
                 let half = (28 - y) / 2;
                 for x in (16 - half)..(16 + half) {
-                    put(&mut rgba, x, y);
+                    put(&mut rgba, x, y, 255);
                 }
             }
             fill_rect(&mut rgba, 13, 4, 19, 18);
@@ -191,30 +219,49 @@ fn make_icon(kind: IconKind) -> Icon {
             fill_rect(&mut rgba, 14, 22, 18, 26);
         }
         IconKind::Rebuild => {
+            // Open circular arrow (silhouette spinner).
             for y in 4..28 {
                 for x in 4..28 {
                     let dx = x - 16;
                     let dy = y - 16;
                     let d2 = dx * dx + dy * dy;
                     if (64..121).contains(&d2) && !(x > 16 && y < 16) {
-                        put(&mut rgba, x, y);
+                        put(&mut rgba, x, y, 255);
                     }
                 }
             }
             fill_rect(&mut rgba, 16, 4, 26, 10);
         }
         IconKind::Idle => {
+            // Checkmark silhouette (no green fill).
             for t in 0..10 {
-                put(&mut rgba, 8 + t, 16 + t / 2);
-                put(&mut rgba, 8 + t, 17 + t / 2);
+                put(&mut rgba, 8 + t, 16 + t / 2, 255);
+                put(&mut rgba, 8 + t, 17 + t / 2, 255);
+                put(&mut rgba, 8 + t, 18 + t / 2, 255);
             }
             for t in 0..16 {
-                put(&mut rgba, 18 + t, 20 - t);
-                put(&mut rgba, 18 + t, 21 - t);
+                put(&mut rgba, 18 + t, 20 - t, 255);
+                put(&mut rgba, 18 + t, 21 - t, 255);
+                put(&mut rgba, 18 + t, 22 - t, 255);
             }
+            // Soft tips (AA) — end of check is ~(32,5) clipped by put.
+            stroke_disk(&mut rgba, 8.5, 16.5, 1.3);
+            stroke_disk(&mut rgba, 31.0, 6.0, 1.3);
         }
     }
     Icon::from_rgba(rgba, size, size).expect("icon rgba")
+}
+
+fn apply_icon(tray: &TrayIcon, kind: IconKind) {
+    let icon = make_icon(kind);
+    #[cfg(target_os = "macos")]
+    {
+        let _ = tray.set_icon_with_as_template(Some(icon), true);
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        let _ = tray.set_icon(Some(icon));
+    }
 }
 
 fn open_qtpass() {
@@ -288,6 +335,7 @@ impl NativeTray {
             .with_menu(Box::new(menu))
             .with_tooltip(TOOLTIP_IDLE)
             .with_icon(make_icon(IconKind::Idle))
+            .with_icon_as_template(cfg!(target_os = "macos"))
             .build()
             .expect("create tray icon");
 
@@ -314,7 +362,7 @@ impl NativeTray {
         let kind = icon_kind(&status, rebuilding, lock);
         if kind != self.icon_kind {
             self.icon_kind = kind;
-            let _ = self.tray.set_icon(Some(make_icon(kind)));
+            apply_icon(&self.tray, kind);
         }
 
         let err = status.error.as_deref().filter(|e| !e.is_empty());

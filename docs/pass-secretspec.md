@@ -104,9 +104,13 @@ windowed GUI: status lives in the menu; actions are only **Open QtPass** and
 | ---- | ---------------------------------------------------- |
 | ↑    | Uploading local store changes to GitHub              |
 | ↓    | Downloading remote updates                           |
-| ✓    | Idle / last sync completed (green)                   |
-| ↻    | `nh` / `*-rebuild` in progress (amber)               |
+| ✓    | Idle / last sync completed                           |
+| ↻    | `nh` / `*-rebuild` in progress                       |
 | !    | Error (see menu / `~/.cache/pass-store-sync.status`) |
+
+Icons are **macOS menu-bar silhouettes** (template / monochrome — no green/blue
+fills). AppKit tints them for light/dark menu bar; Linux uses a light symbolic
+ink for dark panels.
 
 Status file (no plaintext secrets): `~/.cache/pass-store-sync.status`.
 
