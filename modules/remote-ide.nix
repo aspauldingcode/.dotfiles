@@ -26,6 +26,9 @@
       };
 
       environment.systemPackages = [
+        # programs.nix-ld enables the linker/libs but does not put the
+        # `nix-ld` binary on PATH; Cursor Remote smoke checks expect it.
+        pkgs.nix-ld
         pkgs.wget
         pkgs.nodejs_22
       ];
