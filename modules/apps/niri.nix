@@ -170,97 +170,97 @@
               px = n: "${toString n}px";
             in
             lib.mkAfter ''
-            window#waybar {
-                background: transparent;
-            }
+              window#waybar {
+                  background: transparent;
+              }
 
-            tooltip {
-                background-color: @base00;
-                border: 1px solid @base0D;
-                border-radius: ${px tooltipRadius};
-            }
-            tooltip label {
-                color: @base05;
-            }
+              tooltip {
+                  background-color: @base00;
+                  border: 1px solid @base0D;
+                  border-radius: ${px tooltipRadius};
+              }
+              tooltip label {
+                  color: @base05;
+              }
 
-            #workspaces,
-            #window,
-            #clock,
-            #cpu,
-            #memory,
-            #battery,
-            #network,
-            #pulseaudio,
-            #tray {
-                background-color: alpha(@base01, 0.92);
-                padding: 0 ${px islandPadX};
-                margin: 4px 3px;
-                border-radius: ${px islandRadius};
-            }
+              #workspaces,
+              #window,
+              #clock,
+              #cpu,
+              #memory,
+              #battery,
+              #network,
+              #pulseaudio,
+              #tray {
+                  background-color: alpha(@base01, 0.92);
+                  padding: 0 ${px islandPadX};
+                  margin: 4px 3px;
+                  border-radius: ${px islandRadius};
+              }
 
-            /* Nested chips: gap is parent padding only (uniform on all sides)
-               so r_chip = r_island − gap holds around the full corner. */
-            #workspaces {
-                padding: ${px nestGap};
-            }
-            #workspaces button {
-                padding: 0 8px;
-                margin: 0;
-                color: @base04;
-                background: transparent;
-                border-radius: ${px chipRadius};
-                transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-            #workspaces button:hover {
-                background: alpha(@base0D, 0.2);
-                color: @base06;
-            }
-            #workspaces button.active,
-            #workspaces button.focused {
-                background: @base0D;
-                color: @base00;
-            }
-            #workspaces button.urgent {
-                background: @base08;
-                color: @base00;
-            }
+              /* Nested chips: gap is parent padding only (uniform on all sides)
+                 so r_chip = r_island − gap holds around the full corner. */
+              #workspaces {
+                  padding: ${px nestGap};
+              }
+              #workspaces button {
+                  padding: 0 8px;
+                  margin: 0;
+                  color: @base04;
+                  background: transparent;
+                  border-radius: ${px chipRadius};
+                  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+              }
+              #workspaces button:hover {
+                  background: alpha(@base0D, 0.2);
+                  color: @base06;
+              }
+              #workspaces button.active,
+              #workspaces button.focused {
+                  background: @base0D;
+                  color: @base00;
+              }
+              #workspaces button.urgent {
+                  background: @base08;
+                  color: @base00;
+              }
 
-            #window {
-                color: @base05;
-            }
-            window#waybar.empty #window {
-                background: transparent;
-            }
+              #window {
+                  color: @base05;
+              }
+              window#waybar.empty #window {
+                  background: transparent;
+              }
 
-            #clock {
-                color: @base0D;
-                font-weight: bold;
-            }
-            #cpu {
-                color: @base0C;
-            }
-            #memory {
-                color: @base0E;
-            }
-            #network {
-                color: @base0D;
-            }
-            #pulseaudio {
-                color: @base0A;
-            }
-            #pulseaudio.muted {
-                color: @base04;
-            }
-            #battery {
-                color: @base0B;
-            }
-            #battery.warning:not(.charging) {
-                color: @base0A;
-            }
-            #battery.critical:not(.charging) {
-                color: @base08;
-            }
-          '';
+              #clock {
+                  color: @base0D;
+                  font-weight: bold;
+              }
+              #cpu {
+                  color: @base0C;
+              }
+              #memory {
+                  color: @base0E;
+              }
+              #network {
+                  color: @base0D;
+              }
+              #pulseaudio {
+                  color: @base0A;
+              }
+              #pulseaudio.muted {
+                  color: @base04;
+              }
+              #battery {
+                  color: @base0B;
+              }
+              #battery.warning:not(.charging) {
+                  color: @base0A;
+              }
+              #battery.critical:not(.charging) {
+                  color: @base08;
+              }
+            '';
         };
 
         # ── fuzzel (launcher) ─────────────────────────────────────────
