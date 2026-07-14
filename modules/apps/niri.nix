@@ -149,7 +149,27 @@
             };
           };
 
-          style = lib.mkAfter ''
+          # Concentric corners (macOS Tahoe / Apple ConcentricRectangle):
+          #   r_inner = max(0, r_outer - gap)  ⇔  r_outer = r_inner + gap
+          # Arc centers share one origin so inset thickness stays constant
+          # through the curve. GTK3/Waybar has no CSS custom props, so radii
+          # are computed in Nix. Refs: bettercorners.io, Cloud Four nested
+          # radii, SwiftUI ConcentricRectangle / .concentric(minimum:).
+          style =
+            let
+              # Outer island radius (module pills).
+              islandRadius = 12;
+              # Uniform inset between island edge and nested chip (all sides).
+              nestGap = 3;
+              # Inner chip radius — concentric with island.
+              chipRadius = lib.max 0 (islandRadius - nestGap);
+              # Tooltip border is 1px; keep the outer chrome concentric with
+              # the island language (stroke eats 1px of the curve).
+              tooltipRadius = lib.max 0 (islandRadius - 1);
+              islandPadX = 12;
+              px = n: "${toString n}px";
+            in
+            lib.mkAfter ''
             window#waybar {
                 background: transparent;
             }
@@ -157,7 +177,7 @@
             tooltip {
                 background-color: @base00;
                 border: 1px solid @base0D;
-                border-radius: 10px;
+                border-radius: ${px tooltipRadius};
             }
             tooltip label {
                 color: @base05;
@@ -173,20 +193,22 @@
             #pulseaudio,
             #tray {
                 background-color: alpha(@base01, 0.92);
-                padding: 0 12px;
+                padding: 0 ${px islandPadX};
                 margin: 4px 3px;
-                border-radius: 12px;
+                border-radius: ${px islandRadius};
             }
 
+            /* Nested chips: gap is parent padding only (uniform on all sides)
+               so r_chip = r_island − gap holds around the full corner. */
             #workspaces {
-                padding: 0 4px;
+                padding: ${px nestGap};
             }
             #workspaces button {
                 padding: 0 8px;
-                margin: 3px 2px;
+                margin: 0;
                 color: @base04;
                 background: transparent;
-                border-radius: 9px;
+                border-radius: ${px chipRadius};
                 transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             }
             #workspaces button:hover {
