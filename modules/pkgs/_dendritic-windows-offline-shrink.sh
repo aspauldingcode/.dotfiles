@@ -73,7 +73,8 @@ parted -s "$DISK" unit MiB \
   mkpart swap linux-swap "$swap_start" "100%"
 
 sgdisk -c 1:ESP -c 2:nixos -c 3:windows -c 4:wininstall -c 5:swap "$DISK" >/dev/null || true
-partprobe "$DISK" 2>/dev/null || true
+# Give the kernel a moment to see new partitions (no partprobe in initrd).
+sleep 2 || true
 
 swap_dev="${DISK}-part5"
 if [[ -b $swap_dev ]]; then

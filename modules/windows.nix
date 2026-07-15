@@ -205,12 +205,12 @@
               "${pkgs.parted}/bin/parted"
               "${pkgs.gptfdisk}/bin/sgdisk"
               "${pkgs.util-linux}/bin/mkswap"
-              "${pkgs.util-linux}/bin/partprobe"
               "${pkgs.coreutils}/bin/cat"
               "${pkgs.coreutils}/bin/mkdir"
               "${pkgs.coreutils}/bin/rm"
               "${pkgs.coreutils}/bin/sync"
               "${pkgs.coreutils}/bin/basename"
+              "${pkgs.bash}/bin/bash"
               "${pkgs.util-linux}/bin/mount"
               "${pkgs.util-linux}/bin/umount"
             ];
