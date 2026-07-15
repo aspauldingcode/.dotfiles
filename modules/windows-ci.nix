@@ -7,6 +7,7 @@
         ./pkgs/_dendritic-windows-bootstrap.sh
         ./pkgs/_dendritic-windows-finalize.sh
         ./pkgs/_dendritic-windows-label-gpt.sh
+        ./pkgs/_dendritic-windows-offline-shrink.sh
       ];
       unattend = ./pkgs/_dendritic-windows-unattend.xml;
       expectedSha = "67cec5865eaa037a72ddc633a717a10a2bed50778862267223ddb9c60ef5da68";
@@ -45,6 +46,8 @@
             grep -q 'shutdown /r' ${unattend}
 
             echo "== bootstrap uses wininstall media + BootNext =="
+            grep -q 'pending-shrink' ${./pkgs/_dendritic-windows-bootstrap.sh}
+            grep -q 'offline shrink' ${./pkgs/_dendritic-windows-bootstrap.sh}
             grep -q 'wininstall' ${./pkgs/_dendritic-windows-bootstrap.sh}
             grep -q -- '--bootnext' ${./pkgs/_dendritic-windows-bootstrap.sh}
             grep -q 'Windows Setup (dendritic)' ${./pkgs/_dendritic-windows-bootstrap.sh}

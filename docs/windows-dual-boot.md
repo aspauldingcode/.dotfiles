@@ -14,8 +14,10 @@ See [`hosts/nixos/sliceanddice/disko.nix`](../hosts/nixos/sliceanddice/disko.nix
 - 8G NTFS `PARTLABEL=wininstall` → `/mnt/wininstall` (extracted Setup media, stays)
 - ~9G swap (same UUID across recreate)
 
-No USB / optical media. Bootstrap extracts the ISO onto **wininstall** and boots
-that partition once via EFI BootNext.
+No USB / optical media. Bootstrap downloads the ISO, schedules an **initrd
+offline shrink** (ext4 cannot shrink while mounted), carves windows +
+wininstall, extracts Setup onto **wininstall**, then BootNexts into silent
+Setup once.
 
 `nh os switch` never repartitions or reinstalls Windows. Markers:
 

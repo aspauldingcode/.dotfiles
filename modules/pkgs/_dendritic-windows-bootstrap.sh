@@ -195,12 +195,19 @@ nparts="$(lsblk -n -o NAME "$DISK" | wc -l)"
 nparts=$((nparts - 1))
 
 if [[ $nparts -lt 5 ]]; then
-  log "repartitioning: carve ${SIZE_GIB}G windows + ${INSTALL_GIB}G wininstall + ~9G swap"
-  swapoff -a || true
-
-  parted -s "$DISK" rm 3 || true
-  partprobe "$DISK" || true
-  udevadm settle || true
+  # ext4 cannot online-shrink while mounted as /. Schedule offline shrink in initrd.
+  ESP_BOOT="${DENDRITIC_WINDOWS_ESP:-/boot}"
+  pending_dir="$ESP_BOOT/dendritic-windows"
+  pending="$pending_dir/pending-shrink"
+  if [[ -f $pending_dir/shrink-done ]] && [[ $nparts -ge 5 ]]; then
+    log "shrink-done present and partitions ready"
+  elif [[ -f $pending ]]; then
+    log "offline shrink already pending at $pending; reboot to finish"
+    if [[ $AUTO_REBOOT == "1" ]]; then
+      systemctl reboot
+    fi
+    exit 0
+  fi
 
   root_part="${DISK}-part2"
   [[ $root_src == "$(readlink -f "$root_part")" ]] || die "root $root_src is not $root_part"
@@ -211,48 +218,39 @@ if [[ $nparts -lt 5 ]]; then
   new_fs_mib=$((fs_mib - NEED_MIB))
   [[ $new_fs_mib -gt 50000 ]] || die "refusing to shrink root below 50G (would be ${new_fs_mib}M)"
 
-  log "resize2fs $root_part -> ${new_fs_mib}M"
-  e2fsck -f -y "$root_part" || true
-  resize2fs "$root_part" "${new_fs_mib}M"
+  mkdir -p "$pending_dir" "$STATE_DIR"
+  {
+    echo "DISK=$DISK"
+    echo "NEW_FS_MIB=$new_fs_mib"
+    echo "WINDOWS_MIB=$WINDOWS_MIB"
+    echo "INSTALL_MIB=$INSTALL_MIB"
+    echo "SWAP_UUID=c570ec29-6025-456b-99d1-8f16b677835a"
+  } >"$pending"
+  echo "pending-shrink $(date -Iseconds)" >"$STATE_DIR/pending-shrink"
+  log "wrote $pending (offline shrink ${fs_mib}M -> ${new_fs_mib}M)"
+  log "rebooting into initrd shrink (ext4 cannot shrink while mounted)"
+  if [[ $AUTO_REBOOT == "1" ]]; then
+    systemctl reboot
+  else
+    log "AUTO_REBOOT=0 — reboot to run offline shrink"
+  fi
+  exit 0
+fi
 
-  start_b="$(cat "/sys/block/$(basename "$DISK")/$(basename "$root_part")/start")"
-  sect_b=512
-  start_mib=$((start_b * sect_b / 1024 / 1024))
-  part2_end_mib=$((start_mib + new_fs_mib + 16))
-  win_start=$part2_end_mib
-  win_end=$((win_start + WINDOWS_MIB))
-  inst_start=$win_end
-  inst_end=$((inst_start + INSTALL_MIB))
-  swap_start=$inst_end
+log "five partitions present; continue with Setup media"
+win_dev="$(readlink -f /dev/disk/by-partlabel/windows)"
+install_dev="$(readlink -f /dev/disk/by-partlabel/wininstall)"
+[[ -b $win_dev ]] || die "partlabel windows missing"
+[[ -b $install_dev ]] || die "partlabel wininstall missing"
 
-  log "parted: resize 2; mkpart windows; mkpart wininstall; mkpart swap"
-  parted -s "$DISK" unit MiB \
-    resizepart 2 "$part2_end_mib" \
-    mkpart windows ntfs "$win_start" "$win_end" \
-    mkpart wininstall ntfs "$inst_start" "$inst_end" \
-    mkpart swap linux-swap "$swap_start" "100%"
-
-  sgdisk -c 1:ESP -c 2:nixos -c 3:windows -c 4:wininstall -c 5:swap "$DISK" >/dev/null
-  partprobe "$DISK" || true
-  udevadm settle || true
-
-  win_dev="${DISK}-part3"
-  install_dev="${DISK}-part4"
-  swap_dev="${DISK}-part5"
-  [[ -b $win_dev ]] || die "windows partition missing"
-  [[ -b $install_dev ]] || die "wininstall partition missing"
-  [[ -b $swap_dev ]] || die "swap partition missing"
-
+# Format NTFS targets if empty (first boot after shrink).
+if ! blkid -o value -s TYPE "$win_dev" 2>/dev/null | grep -qi ntfs; then
+  log "mkfs.ntfs windows"
   mkfs.ntfs -f -L windows "$win_dev"
+fi
+if ! blkid -o value -s TYPE "$install_dev" 2>/dev/null | grep -qi ntfs; then
+  log "mkfs.ntfs wininstall"
   mkfs.ntfs -f -L wininstall "$install_dev"
-  mkswap -U c570ec29-6025-456b-99d1-8f16b677835a -L swap "$swap_dev"
-  swapon "$swap_dev" || true
-else
-  log "five partitions already present; skip shrink"
-  win_dev="$(readlink -f /dev/disk/by-partlabel/windows)"
-  install_dev="$(readlink -f /dev/disk/by-partlabel/wininstall)"
-  [[ -b $win_dev ]] || die "partlabel windows missing"
-  [[ -b $install_dev ]] || die "partlabel wininstall missing"
 fi
 
 # ── Extract ISO → wininstall (Setup media; stays after install) ────────
