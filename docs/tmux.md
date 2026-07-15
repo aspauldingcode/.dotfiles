@@ -37,20 +37,24 @@ Changed from stock `Ctrl-b` for ergonomics (Screen-style; common power-user defa
 
 ---
 
-## Sessions & windows (dual tab bar)
+## Sessions & windows (one row)
 
-Top status row = **sessions** · bottom = **windows** inside the current session.
-Both are clickable (tmux `range=session` / `range=window`). Stylix-colored.
+Universal pattern: **one status row = window tabs**. Sessions are not a second
+tab strip — they’re a badge + picker (same idea as browser profiles vs tabs).
 
-| Action         | How                                                                      |
-| -------------- | ------------------------------------------------------------------------ |
-| Switch session | click session pill · `prefix` `(`/`)` · `prefix` `o` (sessionx fuzzy)    |
-| New session    | green **+** on top row · `prefix` `C` · right-click status → New Session |
-| Kill session   | right-click session pill → Kill · `prefix` `X`                           |
-| Switch window  | click window pill · `prefix` `n`/`p` · `Ctrl-Tab`                        |
-| New window     | green **+** on bottom row · `prefix` `c`                                 |
-| Kill window    | middle-click window pill · right-click → Kill · `prefix` `&`             |
-| Rename         | right-click pill → Rename · `prefix` `,` (window) / `$` (session)        |
+```
+ [ main ]   1:zsh  [2:nvim]  3:git     +   20:55
+   ^session     ^window tabs (click)   ^new
+   badge
+```
+
+| Action             | How                                                     |
+| ------------------ | ------------------------------------------------------- |
+| Switch window      | click tab · `Ctrl-Tab` · `prefix` `n`/`p`/`1`…`9`       |
+| New window         | green **+** · `prefix` `c`                              |
+| Kill window        | middle-click tab · right-click → Kill                   |
+| Switch session     | click session badge · `prefix` `o` (sessionx) · `(`/`)` |
+| New / kill session | `prefix` `C` / `X` · right-click session badge          |
 
 ## Panes
 

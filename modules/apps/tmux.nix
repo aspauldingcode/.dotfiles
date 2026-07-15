@@ -2,7 +2,7 @@
 #
 # Goals (popular modern defaults across macOS/Linux):
 #   - Ctrl-a prefix, vi keys, mouse, truecolor
-#   - Dual status: clickable session pills + window tabs (unixporn / stylix)
+#   - Single status row: window tabs + session badge (sessions via sessionx, not a 2nd bar)
 #   - | / - splits, vim-tmux-navigator, yank → system clipboard
 #   - resurrect + continuum, sessionx fuzzy sessions (prefix+o)
 #   - which-key interactive menu (prefix+Space / prefix+?) — Nix-safe prebuild
@@ -233,10 +233,9 @@
             set -g status-position top
             set -g status-justify absolute-centre
 
-            # Dual status: sessions (top) + windows (bottom).
-            # #{S:}/#{W:} with range=session|window → clickable pills (tmux 3.2+).
-            # Right-click pill → Kill / Rename / New. Green "+" → new session/window.
-            set -g status 2
+            # Single status row: window tabs only (no dual bars).
+            # Sessions: left badge + prefix o (sessionx) / ( ) — not a second tab strip.
+            set -g status on
 
             set -g status-style "bg=${c.base01},fg=${c.base05}"
             set -g message-style "bg=${c.base02},fg=${c.base05}"
@@ -245,38 +244,40 @@
             set -g pane-active-border-style "fg=${c.base0D}"
             set -g mode-style "bg=${c.base0D},fg=${c.base00}"
 
-            set -g session-status-style "fg=${c.base04},bg=${c.base01}"
-            set -g session-status-current-style "fg=${c.base00},bg=${c.base0D},bold"
-
             set -g window-status-style "fg=${c.base04},bg=${c.base01}"
-            set -g window-status-current-style "fg=${c.base00},bg=${c.base0A},bold"
+            set -g window-status-current-style "fg=${c.base00},bg=${c.base0D},bold"
             set -g window-status-activity-style "fg=${c.base0A},bg=${c.base01}"
             set -g window-status-bell-style "fg=${c.base00},bg=${c.base08},bold"
             set -g window-status-separator ""
             set -g window-status-format " #I∶#W#{?window_zoomed_flag, 󰁌,} "
             set -g window-status-current-format " #I∶#W#{?window_zoomed_flag, 󰁌,} "
 
-            set -g status-left-length 0
-            set -g status-right-length 64
-            set -g status-left ""
-            set -g status-right "#[fg=${c.base03}]#{prefix_highlight}#[fg=${c.base04}] %H:%M "
+            set -g status-left-length 24
+            set -g status-right-length 48
+            # Session name is a badge (click → sessionx), not a second tab row.
+            set -g status-left "#[fg=${c.base00},bg=${c.base0E},bold] #S #[default]"
+            set -g status-right "#[fg=${c.base03}]#{prefix_highlight}#[range=right fg=${c.base00},bg=${c.base0B},bold] + #[norange]#[fg=${c.base04},bg=${c.base01}] %H:%M "
 
-            set -g status-format[0] "#[align=left]#[fg=${c.base03},bg=${c.base01}] 󰓩 #[default]#[list=on align=left]#[list=left-marker]<#[list=right-marker]>#[list=on]#{S:#[range=session|#{session_id} #{E:session-status-style}]#[push-default] #S#{session_alert} #[pop-default]#[norange list=on default],#[range=session|#{session_id} list=focus #{?#{!=:#{E:session-status-current-style},default},#{E:session-status-current-style},#{E:session-status-style}}]#[push-default] #S#{session_alert} #[pop-default]#[norange list=on default]}#[nolist]#[range=right fg=${c.base0B},bg=${c.base01},bold] + #[norange]#[align=right]#{T:status-right}"
-
-            set -g status-format[1] "#[align=left]#[fg=${c.base03}] 󰖯 #[default]#[list=on align=#{status-justify}]#[list=left-marker]<#[list=right-marker]>#[list=on]#{W:#[range=window|#{window_index} #{E:window-status-style}#{?#{&&:#{window_last_flag},#{!=:#{E:window-status-last-style},default}}, #{E:window-status-last-style},}#{?#{&&:#{window_bell_flag},#{!=:#{E:window-status-bell-style},default}}, #{E:window-status-bell-style},#{?#{&&:#{||:#{window_activity_flag},#{window_silence_flag}},#{!=:#{E:window-status-activity-style},default}}, #{E:window-status-activity-style},}}]#[push-default]#{T:window-status-format}#[pop-default]#[norange default]#{?loop_last_flag,,#{window-status-separator}},#[range=window|#{window_index} list=focus #{?#{!=:#{E:window-status-current-style},default},#{E:window-status-current-style},#{E:window-status-style}}#{?#{&&:#{window_last_flag},#{!=:#{E:window-status-last-style},default}}, #{E:window-status-last-style},}#{?#{&&:#{window_bell_flag},#{!=:#{E:window-status-bell-style},default}}, #{E:window-status-bell-style},#{?#{&&:#{||:#{window_activity_flag},#{window_silence_flag}},#{!=:#{E:window-status-activity-style},default}}, #{E:window-status-activity-style},}}]#[push-default]#{T:window-status-current-format}#[pop-default]#[norange list=on default]#{?loop_last_flag,,#{window-status-separator}}}#[nolist]#[range=right fg=${c.base0B},bg=${c.base01},bold] + #[norange]"
+            # Drop any leftover dual-line formats from prior configs.
+            set -gu status-format[0]
+            set -gu status-format[1]
 
             setw -g monitor-activity on
             set -g visual-activity off
 
+            # Mouse: click window tab; middle-click kill; "+" new window;
+            # click session badge → fuzzy session switcher.
             bind -n MouseDown2Status kill-window
-            bind -n MouseDown1StatusRight {
-              if-shell -F '#{==:#{mouse_status_line},0}' {
-                command-prompt -p 'new session:' { new-session -A -s "%%" }
-              } {
-                new-window -c "#{pane_current_path}"
-              }
-            }
-
+            bind -n MouseDown1StatusRight new-window -c "#{pane_current_path}"
+            bind -n MouseDown1StatusLeft choose-tree -Zs
+            bind -n MouseDown3StatusLeft display-menu -T "session #S" -x M -y W \
+              "Switch session…" o { choose-tree -Zs } \
+              "Next session" n { switch-client -n } \
+              "Previous session" p { switch-client -p } \
+              "" \
+              "New session" s { command-prompt -p 'new session:' { new-session -A -s "%%" } } \
+              "Rename session" r { command-prompt -I "#S" { rename-session "%%" } } \
+              "Kill session" X { confirm-before -p "Kill #S?" kill-session }
             bind -N "New window (tab)" c new-window -c "#{pane_current_path}"
             bind -N "New session" C command-prompt -p 'new session:' { new-session -A -s "%%" }
             bind -N "Kill session" X confirm-before -p "Kill session #S?" kill-session
