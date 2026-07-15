@@ -9,7 +9,7 @@
         ./pkgs/_dendritic-windows-label-gpt.sh
       ];
       unattend = ./pkgs/_dendritic-windows-unattend.xml;
-      expectedSha = "8abf91c9cd408368dc73aab3425d5e3c02dae74900742072eb5c750fc637c195";
+      expectedSha = "67cec5865eaa037a72ddc633a717a10a2bed50778862267223ddb9c60ef5da68";
       expectedFwlink = "https://go.microsoft.com/fwlink/?linkid=2289029";
 
       scriptsArgs = lib.concatMapStringsSep " " (p: "${p}") scripts;
@@ -53,7 +53,7 @@
             ! grep -q 'wimlib-imagex apply' ${./pkgs/_dendritic-windows-bootstrap.sh}
 
             echo "== module defaults (pinned) =="
-            test "${expectedSha}" = "8abf91c9cd408368dc73aab3425d5e3c02dae74900742072eb5c750fc637c195"
+            test "${expectedSha}" = "67cec5865eaa037a72ddc633a717a10a2bed50778862267223ddb9c60ef5da68"
             test "${expectedFwlink}" = "https://go.microsoft.com/fwlink/?linkid=2289029"
 
             echo "== bootstrap self-test =="

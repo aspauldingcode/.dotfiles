@@ -18,7 +18,7 @@
 
       # Official IoT Enterprise LTSC 2024 x64 eval (Microsoft Eval Center / fwlink).
       # SHA256 from Windows11IoTEnterpriseLTSC2024EvalHashValues.pdf (x64 en-us).
-      defaultIsoSha256 = "8abf91c9cd408368dc73aab3425d5e3c02dae74900742072eb5c750fc637c195";
+      defaultIsoSha256 = "67cec5865eaa037a72ddc633a717a10a2bed50778862267223ddb9c60ef5da68";
       defaultIsoName = "26100.1742.240906-0331.ge_release_svc_refresh_CLIENT_LTSC_EVAL_x64FRE_en-us.iso";
       # Resolves to software-static.download.prss.microsoft.com … CLIENT_LTSC_EVAL …
       defaultIsoUrl = "https://go.microsoft.com/fwlink/?linkid=2289029";

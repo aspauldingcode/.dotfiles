@@ -31,7 +31,7 @@ defaults):
 2. Plug in **AC power**; keep ≳20 GiB free on `/` after carving 64+8+9 GiB.
 3. Timer starts ~90s after boot and:
    - downloads the IoT LTSC 2024 x64 eval ISO (fwlink → CDN),
-   - verifies SHA256 `8abf91c9cd408368dc73aab3425d5e3c02dae74900742072eb5c750fc637c195`,
+   - verifies SHA256 `67cec5865eaa037a72ddc633a717a10a2bed50778862267223ddb9c60ef5da68`,
    - shrinks root; creates windows + wininstall + swap,
    - extracts ISO → wininstall, writes `Autounattend.xml` (InstallTo partition 3),
    - deletes the ISO cache (media lives on wininstall),
