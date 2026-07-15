@@ -355,9 +355,11 @@
               format-wifi = "󰤨 {essid}";
               format-ethernet = "󰈀 {ifname}";
               format-disconnected = "󰤭 offline";
-              tooltip-format = "{ifname}: {ipaddr}\nClick: network settings";
+              tooltip-format = "{ifname}: {ipaddr}\nClick: iwgtk (connect / manage Wi-Fi)";
               interval = 5;
-              on-click = lib.getExe' pkgs.networkmanagerapplet "nm-connection-editor";
+              # nm-connection-editor only edits profiles (no Connect).
+              # iwgtk talks to iwd/NM and can scan + connect.
+              on-click = lib.getExe pkgs.iwgtk;
             };
             backlight = {
               format = "{icon} {percent}%";

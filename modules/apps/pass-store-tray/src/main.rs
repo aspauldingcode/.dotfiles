@@ -11,7 +11,7 @@ use std::sync::Arc;
 use std::time::Duration;
 use tray_icon::menu::{Menu, MenuEvent, MenuItem, PredefinedMenuItem};
 use tray_icon::{Icon, TrayIcon, TrayIconBuilder};
-use ui_contract::{Action, TOOLTIP_IDLE};
+use ui_contract::{Action, TOOLTIP_IDLE, build_status_lines};
 
 #[cfg(target_os = "macos")]
 use winit::application::ApplicationHandler;
@@ -304,35 +304,35 @@ fn open_sync_log(path: &Path) {
 struct NativeTray {
     env: Env,
     tray: TrayIcon,
-    status_headline: MenuItem,
-    status_detail: MenuItem,
-    status_mat: MenuItem,
-    status_warn: MenuItem,
+    status_rows: Vec<MenuItem>,
     item_qtpass: MenuItem,
     item_log: MenuItem,
     item_quit: MenuItem,
     icon_kind: IconKind,
+    /// Rebuild when status row set changes (omit zero/ok rows).
+    rows_fp: String,
     quit: Arc<AtomicBool>,
 }
 
 impl NativeTray {
-    fn build(env: Env, quit: Arc<AtomicBool>) -> Self {
-        let status_headline = MenuItem::new(ui_contract::status::HEADLINE, false, None);
-        let status_detail = MenuItem::new(ui_contract::status::DETAIL, false, None);
-        let status_mat = MenuItem::new(ui_contract::status::MATERIALIZED, false, None);
-        let status_warn = MenuItem::new(ui_contract::status::WARNINGS, false, None);
+    fn compose_menu(
+        status_texts: &[String],
+    ) -> (Menu, Vec<MenuItem>, MenuItem, MenuItem, MenuItem) {
+        let status_rows: Vec<MenuItem> = status_texts
+            .iter()
+            .map(|t| MenuItem::new(t, false, None))
+            .collect();
         let item_qtpass = MenuItem::new(Action::OpenQtPass.label(), true, None);
         let item_log = MenuItem::new(Action::OpenSyncLog.label(), true, None);
         let item_quit = MenuItem::new(Action::Quit.label(), true, None);
 
         let menu = Menu::new();
-        // Status block (read-only)
-        let _ = menu.append(&status_headline);
-        let _ = menu.append(&status_detail);
-        let _ = menu.append(&status_mat);
-        let _ = menu.append(&status_warn);
-        let _ = menu.append(&PredefinedMenuItem::separator());
-        // Actions from shared contract order (QtPass, sync log, then Quit)
+        for row in &status_rows {
+            let _ = menu.append(row);
+        }
+        if !status_rows.is_empty() {
+            let _ = menu.append(&PredefinedMenuItem::separator());
+        }
         debug_assert_eq!(Action::ALL[0], Action::OpenQtPass);
         debug_assert_eq!(Action::ALL[1], Action::OpenSyncLog);
         debug_assert_eq!(Action::ALL[2], Action::Quit);
@@ -340,6 +340,12 @@ impl NativeTray {
         let _ = menu.append(&item_log);
         let _ = menu.append(&PredefinedMenuItem::separator());
         let _ = menu.append(&item_quit);
+
+        (menu, status_rows, item_qtpass, item_log, item_quit)
+    }
+
+    fn build(env: Env, quit: Arc<AtomicBool>) -> Self {
+        let (menu, status_rows, item_qtpass, item_log, item_quit) = Self::compose_menu(&[]);
 
         let tray = TrayIconBuilder::new()
             .with_menu(Box::new(menu))
@@ -352,18 +358,35 @@ impl NativeTray {
         let mut app = Self {
             env,
             tray,
-            status_headline,
-            status_detail,
-            status_mat,
-            status_warn,
+            status_rows,
             item_qtpass,
             item_log,
             item_quit,
             icon_kind: IconKind::Idle,
+            rows_fp: String::new(),
             quit,
         };
         app.refresh();
         app
+    }
+
+    fn apply_lines(&mut self, lines: &ui_contract::StatusLines) {
+        let fp = ui_contract::rows_fingerprint(&lines.rows);
+        if fp != self.rows_fp {
+            let (menu, status_rows, item_qtpass, item_log, item_quit) =
+                Self::compose_menu(&lines.rows);
+            self.status_rows = status_rows;
+            self.item_qtpass = item_qtpass;
+            self.item_log = item_log;
+            self.item_quit = item_quit;
+            self.rows_fp = fp;
+            self.tray.set_menu(Some(Box::new(menu)));
+        } else {
+            for (item, text) in self.status_rows.iter().zip(lines.rows.iter()) {
+                item.set_text(text.clone());
+            }
+        }
+        let _ = self.tray.set_tooltip(Some(lines.tooltip.clone()));
     }
 
     fn refresh(&mut self) {
@@ -376,57 +399,20 @@ impl NativeTray {
             apply_icon(&self.tray, kind);
         }
 
-        let err = status.error.as_deref().filter(|e| !e.is_empty());
-        let warn_n = status.materialize_warnings.len();
-        let headline = if rebuilding {
-            "Rebuilding system…".to_string()
-        } else if lock {
-            format!("Syncing ({})…", status.direction)
-        } else if let Some(e) = err {
-            format!("Error: {e}")
-        } else if warn_n > 0 {
-            format!("Warning: {warn_n} secret issue(s)")
-        } else {
-            format!("{} · {}", status.state, status.direction)
-        };
-
-        let ab = status.ahead_behind.as_deref().unwrap_or("unknown");
-        let updated = status.updated_at.as_deref().unwrap_or("—");
-        let detail = format!("{} · {} · {}", status.message, ab, updated);
-
-        let mats = if status.materialized.is_empty() {
-            "(none)".into()
-        } else {
-            status.materialized.join(", ")
-        };
-        let last_mat = status.last_materialize_at.as_deref().unwrap_or("—");
-        let mat_line = format!("Materialized: {mats} @ {last_mat}");
-
-        let warn_line = if status.materialize_warnings.is_empty() {
-            "Secrets: ok".to_string()
-        } else {
-            // Show first warning; tooltip gets the full set.
-            let first = &status.materialize_warnings[0];
-            if warn_n == 1 {
-                format!("⚠ {first}")
-            } else {
-                format!("⚠ {first} (+{})", warn_n - 1)
-            }
-        };
-
-        self.status_headline.set_text(headline.clone());
-        self.status_detail.set_text(detail);
-        self.status_mat.set_text(mat_line);
-        self.status_warn.set_text(warn_line);
-        let tip = if status.materialize_warnings.is_empty() {
-            format!("pass sync: {headline}")
-        } else {
-            format!(
-                "pass sync: {headline}\n{}",
-                status.materialize_warnings.join("\n")
-            )
-        };
-        let _ = self.tray.set_tooltip(Some(tip));
+        let lines = build_status_lines(
+            rebuilding,
+            lock,
+            &status.state,
+            &status.direction,
+            &status.message,
+            status.ahead_behind.as_deref(),
+            status.updated_at.as_deref(),
+            status.error.as_deref(),
+            &status.materialized,
+            status.last_materialize_at.as_deref(),
+            &status.materialize_warnings,
+        );
+        self.apply_lines(&lines);
     }
 
     fn handle_menu(&mut self) {

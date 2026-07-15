@@ -1,0 +1,106 @@
+[
+  {
+    "id": "Bubbles",
+    "ssid": "Bubbles",
+    "uuid": "775e836e-1345-4579-bb55-17e84423aa5b",
+    "passKey": "Bubbles",
+    "keyMgmt": "wpa-psk",
+    "autoconnectPriority": 100
+  },
+  {
+    "id": "LukeSkydumper",
+    "ssid": "Luke Skydumper",
+    "uuid": "9d703d8c-580d-4d22-8896-f1f7a8fbcda4",
+    "passKey": "WIFI_Luke_Skydumper",
+    "keyMgmt": "wpa-psk",
+    "autoconnectPriority": 80
+  },
+  {
+    "id": "Myanmar5G",
+    "ssid": "Myanmar-5G",
+    "uuid": "ce2930c1-6cdf-47fb-9360-7565d26e9b9e",
+    "passKey": "WIFI_Myanmar_5G",
+    "keyMgmt": "wpa-psk",
+    "autoconnectPriority": 80
+  },
+  {
+    "id": "Myanmar",
+    "ssid": "Myanmar",
+    "uuid": "512ba467-689c-40a5-ba8a-9b5522130f5b",
+    "passKey": "WIFI_Myanmar",
+    "keyMgmt": "wpa-psk",
+    "autoconnectPriority": 75
+  },
+  {
+    "id": "EverydayImBuffering",
+    "ssid": "Everyday Im Buffering",
+    "uuid": "8725883f-38ee-4b52-a7fb-a06785fde786",
+    "passKey": "WIFI_Everyday_Im_Buffering",
+    "keyMgmt": "wpa-psk",
+    "autoconnectPriority": 70
+  },
+  {
+    "id": "Sunburst",
+    "ssid": "Sunburst",
+    "uuid": "a959e176-47f8-4f92-9fe5-5ff206ba669d",
+    "passKey": "WIFI_Sunburst",
+    "keyMgmt": "wpa-psk",
+    "autoconnectPriority": 70
+  },
+  {
+    "id": "WifiFromHeaven",
+    "ssid": "Wifi-From-Heaven",
+    "uuid": "545d4e35-bf46-42d6-aa2b-4058b0523023",
+    "passKey": "WIFI_Wifi_From_Heaven",
+    "keyMgmt": "wpa-psk",
+    "autoconnectPriority": 70
+  },
+  {
+    "id": "IndabaGuest",
+    "ssid": "Indaba Guest",
+    "uuid": "8c94bae1-3600-41a0-953c-78903070eeac",
+    "passKey": "WIFI_Indaba_Guest",
+    "keyMgmt": "wpa-psk",
+    "autoconnectPriority": 40
+  },
+  {
+    "id": "ArctosCoffee",
+    "ssid": "Arctos Coffee",
+    "uuid": "3b9ec71d-583a-4b17-99a5-8727f77acd15",
+    "passKey": "WIFI_Arctos_Coffee",
+    "keyMgmt": "wpa-psk",
+    "autoconnectPriority": 40
+  },
+  {
+    "id": "BreakEspresso5",
+    "ssid": "BreakEspresso-5",
+    "uuid": "bf4cc3df-634b-4599-9a9b-8636e2c8ff37",
+    "passKey": "WIFI_BreakEspresso_5",
+    "keyMgmt": "wpa-psk",
+    "autoconnectPriority": 40
+  },
+  {
+    "id": "LadderCoffee5",
+    "ssid": "LadderCoffee_5",
+    "uuid": "df50454b-7714-4570-a0dc-9d819252428d",
+    "passKey": "WIFI_LadderCoffee_5",
+    "keyMgmt": "wpa-psk",
+    "autoconnectPriority": 40
+  },
+  {
+    "id": "ClydeCoffeeGuest",
+    "ssid": "Clyde Coffee Guest",
+    "uuid": "dcf30dd7-4b8b-47e2-8195-c578109e0770",
+    "passKey": "WIFI_Clyde_Coffee_Guest",
+    "keyMgmt": "wpa-psk",
+    "autoconnectPriority": 40
+  },
+  {
+    "id": "PFGuestWiFi",
+    "ssid": "PF Guest WiFi",
+    "uuid": "006c245a-28bb-45db-8ea9-faaafb24f55c",
+    "passKey": "WIFI_PF_Guest_WiFi",
+    "keyMgmt": "wpa-psk",
+    "autoconnectPriority": 30
+  }
+]

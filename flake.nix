@@ -23,6 +23,13 @@
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
 
+    # Master-only: programs.mas (PR #1668). Keep main nix-darwin on 26.05;
+    # import just modules/programs/mas.nix from this input.
+    nix-darwin-unstable = {
+      url = "github:nix-darwin/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -511,6 +518,31 @@
                 };
               in
               "${script}/bin/pass-flakehub-bootstrap";
+          };
+
+          apps.pass-wifi-bootstrap = {
+            type = "app";
+            program =
+              let
+                script = pkgs.writeShellApplication {
+                  name = "pass-wifi-bootstrap";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    gnugrep
+                    gnupg
+                    git
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export WIFI_NETWORKS_JSON=${./home/wifi-networks.json}
+                    exec bash ${./scripts/pass-wifi-bootstrap.sh} "$@"
+                  '';
+                };
+              in
+              "${script}/bin/pass-wifi-bootstrap";
           };
 
           apps.pass-gcloud-bootstrap = {

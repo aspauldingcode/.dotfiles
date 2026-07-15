@@ -120,15 +120,34 @@
         variant = "";
       };
 
-      # MSI Sword 15 A11UD (board MS-1582): single-color blue keyboard backlight.
-      # Same EC family as Katana GF66 11UC/UD — force that profile until the exact
-      # EC string for BIOS E1582IMS.315 is upstreamed in msi-ec.
-      # Exposes /sys/class/leds/msiacpi::kbd_backlight (0–3). Requires reboot.
-      boot.extraModulePackages = [ config.boot.kernelPackages.msi-ec ];
+      # MSI Sword 15 A11UD: Fn+backlight is AT scancode 0x8e (unknown to atkbd).
+      # Map it to KEY_KBDILLUMTOGGLE so niri/compositors can bind it.
+      # Note: Fn already cycles EC 0xd3 in firmware; that alone does not light
+      # the LEDs on this board (same class of MSI issue as some Katanas).
+      services.udev.extraHwdb = ''
+        evdev:atkbd:dmi:bvn*:bvr*:bd*:svnMicro-Star*:pnSword*
+         KEYBOARD_KEY_8e=kbdillumtoggle
+      '';
+
+      # MSI Sword 15 A11UD (MS-1582): EC firmware is really 1582EMS1.107 (ENE),
+      # while BIOS is E1582IMS.315. Stock Katana CONF_G2_1 writes kbd BL at 0xd3;
+      # Linux ec_write there hard-hung this machine. Patch points sysfs LED at
+      # 0xf3 instead. Keep systemd-backlight off. Fn+F8 still cycles 0xd3 in
+      # firmware; LEDs staying dark means the LED path is not driven by that
+      # register alone (do not re-enable brightnessctl → msiacpi::kbd_backlight).
+      boot.extraModulePackages = [
+        (config.boot.kernelPackages.msi-ec.overrideAttrs (old: {
+          patches = (old.patches or [ ]) ++ [
+            ./msi-ec-sword-kbd-f3.patch
+          ];
+        }))
+      ];
       boot.kernelModules = [ "msi-ec" ];
       boot.extraModprobeConfig = ''
         options msi-ec firmware=1582EMS1.107
       '';
+      # systemd-backlight restores LED brightness on boot = EC write. Mask it.
+      systemd.services."systemd-backlight@leds:msiacpi::kbd_backlight".enable = false;
 
       users.users.alex = {
         isNormalUser = true;
@@ -136,7 +155,7 @@
         extraGroups = [
           "networkmanager"
           "wheel"
-          "video" # brightnessctl: panel + msiacpi::kbd_backlight
+          "video" # brightnessctl: panel backlight
         ];
         shell = pkgs.zsh;
       };

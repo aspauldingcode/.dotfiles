@@ -41,13 +41,18 @@
           pkgs.socat
         ];
 
-        nix.enable = false;
-        nix.settings = {
-          experimental-features = [
-            "nix-command"
-            "flakes"
-          ];
+        # Determinate owns /etc/nix/nix.conf (`nix.enable = false`). Custom
+        # knobs must go through determinateNix.customSettings → nix.custom.conf.
+        # Plain `nix.settings` is a no-op here and never silenced warn-dirty.
+        determinateNix.customSettings = {
           warn-dirty = false;
+          trusted-users = [
+            "@wheel"
+            "root"
+            "8amps"
+          ];
+          # Keep cache.nixos.org explicit; FlakeHub is already in Determinate's
+          # base nix.conf as extra-substituters / extra-trusted-*.
           substituters = [
             "https://cache.nixos.org"
             "https://cache.flakehub.com"
@@ -62,12 +67,6 @@
             "cache.flakehub.com-8:moO+OVS0mnTjBTcOUh2kYLQEd59ExzyoW1QgQ8XAARQ="
             "cache.flakehub.com-9:wChaSeTI6TeCuV/Sg2513ZIM9i0qJaYsF+lZCXg0J6o="
             "cache.flakehub.com-10:2GqeNlIp6AKp4EF2MVbE1kBOp9iBSyo0UPR9KoR0o1Y="
-          ];
-          netrc-file = "/nix/var/determinate/netrc";
-          trusted-users = [
-            "@wheel"
-            "root"
-            "8amps"
           ];
         };
 
@@ -213,37 +212,24 @@
         };
     }
 
-    # 5. Mac App Store — declarative apps via mas CLI
+    # 5. Mac App Store — upstream programs.mas (nix-darwin master module)
     {
-      dendritic.mas = {
+      programs.mas = {
         enable = true;
+        # pkgs.mas is overlaid from nixpkgs-unstable (7.x)
+        update = true;
+        cleanup = true;
 
-        # ── App Store Applications ──────────────────────────────────
-        apps = {
+        packages = {
           Xcode = 497799835;
-        };
 
-        # ── Safari Extensions ───────────────────────────────────────
-        # Installed via mas, just like Brave/Firefox extensions but
-        # for Safari. Enable them in: Safari → Settings → Extensions
-        safari.extensions = [
-          {
-            name = "Momentum";
-            id = 1564329434;
-          }
-          {
-            name = "uBlock Origin Lite";
-            id = 6745342698;
-          }
-          {
-            name = "SponsorBlock for Safari";
-            id = 1573461917;
-          }
-          {
-            name = "Dark Reader for Safari";
-            id = 1438243180;
-          }
-        ];
+          # Safari extensions (mas installs them like apps; enable in
+          # Safari → Settings → Extensions)
+          Momentum = 1564329434;
+          "uBlock Origin Lite" = 6745342698;
+          "SponsorBlock for Safari" = 1573461917;
+          "Dark Reader for Safari" = 1438243180;
+        };
       };
     }
   ];

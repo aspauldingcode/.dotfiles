@@ -23,6 +23,15 @@
       vesktop = unstable.vesktop;
       firefox = unstable.firefox;
 
+      # mas 7.x (JSON CLI, App Store management) — programs.mas needs this;
+      # 26.05 still ships 6.x.
+      mas = unstable.mas;
+
+      # macos-instantview 3.24R0004 ([nixpkgs#530053](https://github.com/NixOS/nixpkgs/pull/530053))
+      # — 26.05 still has 3.22R0002 (broken Applications symlink + shebang
+      # fixup). No custom derivation; pull the merged upstream package.
+      macos-instantview = unstable.macos-instantview;
+
       # ── vimPlugins.blink-cmp: patch upstream "No fuzzy matching
       # library found!" false-positive on Nix ─────────────────────
       #

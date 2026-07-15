@@ -490,6 +490,27 @@
         "type": "github"
       }
     },
+    "nix-darwin-unstable": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-darwin"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784123936,
+        "narHash": "sha256-IOWwQMJhUxcojm0MRvuKs1fKLH727u4+hHeEOPhdUyA=",
+        "owner": "nix-darwin",
+        "repo": "nix-darwin",
+        "rev": "a4cf1d10853b0d2be19b9eca35d749e201d70b55",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-darwin",
+        "ref": "master",
+        "repo": "nix-darwin",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1782767157,
@@ -743,6 +764,7 @@
         "microvm": "microvm",
         "nix-darwin": "nix-darwin",
         "nix-darwin-fork": "nix-darwin-fork",
+        "nix-darwin-unstable": "nix-darwin-unstable",
         "nixpkgs": "nixpkgs_5",
         "nixpkgs-darwin": "nixpkgs-darwin",
         "nixpkgs-unstable": "nixpkgs-unstable",

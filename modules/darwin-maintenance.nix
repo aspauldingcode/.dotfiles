@@ -60,11 +60,8 @@
              fi
           fi
 
-          # 3. Mac App Store Sync
-          if [ -x ${config.dendritic.mas.syncScript}/bin/mas-sync ]; then
-             echo "  🍎 Synchronizing Mac App Store..."
-             sudo -u ${config.system.primaryUser} ${pkgs.bash}/bin/bash -c "source /etc/profile; ${config.dendritic.mas.syncScript}/bin/mas-sync"
-          fi
+          # 3. Mac App Store — handled by programs.mas activation
+          #    (upstream nix-darwin module; see modules/apps/mas.nix)
 
           echo "──────────────────────────────────────────────────────────"
         }

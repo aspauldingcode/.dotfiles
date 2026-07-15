@@ -53,11 +53,11 @@ while IFS= read -r key; do
   if [[ -z $val ]]; then
     if [[ -e $out ]]; then
       # Edge case: removed from pass but home file still present (stale secret).
-      w="$key missing from pass; stale file remains (~/$rel)"
+      w="${key} empty → ~/${rel} (stale file)"
       warn "$w"
       warnings="$(jq -nc --argjson arr "$warnings" --arg w "$w" '$arr + [$w]')"
     else
-      w="$key missing from pass; not materialized (~/$rel)"
+      w="${key} empty → ~/${rel}"
       warn "$w"
       warnings="$(jq -nc --argjson arr "$warnings" --arg w "$w" '$arr + [$w]')"
     fi
@@ -125,7 +125,8 @@ if [[ -n $ENV_MAP_FILE && -f $ENV_MAP_FILE ]]; then
       val="$(secretspec get -f "$SECRETSPEC_TOML" "$key" 2>/dev/null || true)"
       if [[ -z $val ]]; then
         missing=1
-        w="$key missing from pass; env file incomplete (~/$rel)"
+        # Short, scannable: tray wraps/caps width; keep key + target obvious.
+        w="${key} empty → ~/${rel}"
         warn "$w"
         warnings="$(jq -nc --argjson arr "$warnings" --arg w "$w" '$arr + [$w]')"
         continue
@@ -142,7 +143,7 @@ if [[ -n $ENV_MAP_FILE && -f $ENV_MAP_FILE ]]; then
       count=$((count + 1))
       log "wrote env $out"
     elif [[ $missing -ne 0 && -e $out ]]; then
-      w="stale env file remains (~/$rel) — some keys missing from pass"
+      w="stale env remains → ~/${rel}"
       warn "$w"
       warnings="$(jq -nc --argjson arr "$warnings" --arg w "$w" '$arr + [$w]')"
     fi

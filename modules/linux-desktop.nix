@@ -48,7 +48,8 @@
           environment.sessionVariables.FREETYPE_PROPERTIES = "cff:no-stem-darkening=0 autofitter:no-stem-darkening=0";
 
           environment.systemPackages = with pkgs; [
-            networkmanagerapplet # nm-connection-editor (waybar network on-click)
+            networkmanagerapplet # nm-connection-editor (profile editor)
+            iwgtk # iwd/NM Wi-Fi UI with Connect (waybar network click)
           ];
 
           services.printing.enable = true;

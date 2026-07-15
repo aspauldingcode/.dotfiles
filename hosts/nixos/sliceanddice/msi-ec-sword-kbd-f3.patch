@@ -1,0 +1,12 @@
+--- a/msi-ec.c
++++ b/msi-ec.c
+@@ -1103,7 +1103,8 @@
+ 		.bl_mode_address  = 0x2c,
+ 		.bl_modes         = { 0x00, 0x08 },
+ 		.max_mode         = 1,
+-		.bl_state_address = 0xd3, // mix of single and RGB
++		/* Sword 15 A11UD: writing 0xd3 hard-hung EC; 0xf3=0x80 in RO dump. */
++		.bl_state_address = 0xf3,
+ 		.state_base_value = 0x80,
+ 		.max_state        = 3,
+ 	},

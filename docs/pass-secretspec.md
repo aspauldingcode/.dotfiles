@@ -110,15 +110,15 @@ Grace: SSH ed25519 → ssh-to-age recipients may still appear in
 | Developer vault | `pass` + private GH store   | GPG-encrypted values                    |
 | Runtime         | `secretspec run` / wrappers | Env vars for child processes            |
 | Home files      | materialize map             | Optional `$HOME` files (e.g. `~/.shit`) |
+| Machine/home    | sops-nix                    | GPG key, ntfy topic, other host secrets |
+| Peer wake       | ntfy (+ CI backup)          | Empty ping — not the password itself    |
+| CI canaries     | private-repo Actions        | Template decrypt smoke (CI-only GPG)    |
 
-If a mapped key is **deleted from pass**, materialize leaves any existing home
-file in place (stale) and records `materialize_warnings` in
-`~/.cache/pass-store-sync.status`. The pass-store tray shows those warnings
-(error glyph + menu line / tooltip) until the entry returns or the file is
-removed.
-| Machine/home | sops-nix | GPG key, ntfy topic, other host secrets |
-| Peer wake | ntfy (+ CI backup) | Empty ping — not the password itself |
-| CI canaries | private-repo Actions | Template decrypt smoke (CI-only GPG) |
+If a mapped key is **empty or missing in pass**, materialize records a short
+warning (`KEY empty → ~/path`) in `materialize_warnings` inside
+`~/.cache/pass-store-sync.status`. The tray uses an error glyph when warnings
+exist; the menu only lists non-zero issues (one row each — key truncated, no
+path dump, no “Secrets: ok” filler). Healthy idle = actions only.
 
 ---
 
@@ -215,6 +215,7 @@ files when `secretspec/` changes:
 | `SHIT_PASSWORD`    | `~/.shit`                                                           |
 | `PEE_PASSWORD`     | `~/.pee`                                                            |
 | `Bubbles`          | `~/.config/dendritic/wifi/Bubbles.psk` (dendritic.wifi)             |
+| `WIFI_*`           | `~/.config/dendritic/wifi/<key>.psk` (see [`wifi.md`](wifi.md))     |
 | `EDUROAM_IDENTITY` | `~/.config/dendritic/wifi/eduroam/identity`                         |
 | `EDUROAM_PASSWORD` | `~/.config/dendritic/wifi/eduroam/password`                         |
 | `EDUROAM_CA`       | `~/.config/dendritic/wifi/eduroam/ca.pem`                           |
@@ -240,7 +241,8 @@ to home files (except gcloud ADC rewritten under `~/.config/gcloud/` on activati
 ## Tray + QtPass
 
 Tray (`dendritic.apps.pass.tray.enable`): ↑ upload · ↓ download · ✓ idle · ↻
-rebuild · ! error. Menu: Pull now, Rematerialize, Open QtPass, Open sync log.
+rebuild · ! error/warnings. Menu: only non-zero status rows (one fact each),
+then Open QtPass · Open sync log · Quit. Healthy → actions only.
 
 QtPass: Spotlight / Dock / `qtpass`. Auto pull/push **off** so watchexec owns
 git. Store path: `~/.password-store`.
