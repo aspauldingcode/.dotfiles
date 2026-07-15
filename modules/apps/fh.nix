@@ -4,10 +4,13 @@
   # Login: activation reads FLAKEHUB_TOKEN from pass → determinate-nixd login.
   # Rotate: fully automated via `determinate-nixd auth token device create`
   #   (weekly agent + activation when within autoRotate.daysBefore of expiry).
+  #   Also refreshes GitHub App + gcloud OAuth access (same agent).
   #   nix run .#pass-rotate-cli-auth -- --status
   #   nix run .#pass-rotate-cli-auth -- --auto
   # GitHub classic PATs still need a one-shot paste when due:
   #   nix run .#pass-rotate-cli-auth -- --github
+  # gcloud one-time: nix run .#pass-gcloud-bootstrap
+  #   nix run .#pass-rotate-cli-auth -- --gcloud
   flake.modules.homeManager.dendritic =
     {
       pkgs,
@@ -60,6 +63,26 @@
               exec bash ${../../scripts/github-app-mint-token.sh} "$@"
             '';
           })
+          (pkgs.writeShellApplication {
+            name = "gcloud-mint-token";
+            runtimeInputs = with pkgs; [
+              coreutils
+              curl
+              gnugrep
+              gnupg
+              git
+              python3
+              passPackage
+              bash
+            ];
+            text = ''
+              set -euo pipefail
+              export PASSWORD_STORE_DIR=${lib.escapeShellArg storeDir}
+              export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"
+              export OAUTH_SERVER_PY=${../../scripts/gcloud-oauth-server.py}
+              exec bash ${../../scripts/gcloud-mint-token.sh} "$@"
+            '';
+          })
         ];
         text = ''
           set -euo pipefail
@@ -67,6 +90,7 @@
           export FLAKEHUB_ORG=${lib.escapeShellArg org}
           # Live checkout (writable); never bake flake source via toString (strips context).
           export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"
+          export OAUTH_SERVER_PY=${../../scripts/gcloud-oauth-server.py}
           exec bash ${../../scripts/pass-rotate-cli-auth.sh} "$@"
         '';
       };
@@ -199,7 +223,7 @@
         systemd.user.services.pass-rotate-cli-auth =
           lib.mkIf (passCfg.enable && cfg.autoRotate.enable && pkgs.stdenv.isLinux)
             {
-              Unit.Description = "Auto-rotate FlakeHub (and remind GitHub) CLI tokens in pass";
+              Unit.Description = "Auto-rotate FlakeHub / GitHub / gcloud CLI tokens in pass";
               Service = {
                 Type = "oneshot";
                 ExecStart = "${autoRotateCmd}";

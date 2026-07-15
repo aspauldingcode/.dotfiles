@@ -401,6 +401,26 @@
                     exec bash ${./scripts/github-app-mint-token.sh} "$@"
                   '';
                 };
+                gcloudMint = pkgs.writeShellApplication {
+                  name = "gcloud-mint-token";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    curl
+                    gnugrep
+                    gnupg
+                    git
+                    python3
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    export OAUTH_SERVER_PY=${./scripts/gcloud-oauth-server.py}
+                    exec bash ${./scripts/gcloud-mint-token.sh} "$@"
+                  '';
+                };
                 script = pkgs.writeShellApplication {
                   name = "pass-rotate-cli-auth";
                   runtimeInputs = with pkgs; [
@@ -415,17 +435,67 @@
                     gh
                     bash
                     mint
+                    gcloudMint
                   ];
                   text = ''
                     set -euo pipefail
                     export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
                     export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
                     export FLAKEHUB_ORG="''${FLAKEHUB_ORG:-aspauldingcode}"
+                    export OAUTH_SERVER_PY=${./scripts/gcloud-oauth-server.py}
                     exec bash ${./scripts/pass-rotate-cli-auth.sh} "$@"
                   '';
                 };
               in
               "${script}/bin/pass-rotate-cli-auth";
+          };
+
+          apps.pass-gcloud-bootstrap = {
+            type = "app";
+            program =
+              let
+                mint = pkgs.writeShellApplication {
+                  name = "gcloud-mint-token";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    curl
+                    gnugrep
+                    gnupg
+                    git
+                    python3
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    export OAUTH_SERVER_PY=${./scripts/gcloud-oauth-server.py}
+                    exec bash ${./scripts/gcloud-mint-token.sh} "$@"
+                  '';
+                };
+                script = pkgs.writeShellApplication {
+                  name = "pass-gcloud-bootstrap";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    curl
+                    gnupg
+                    git
+                    python3
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    bash
+                    mint
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    export OAUTH_SERVER_PY=${./scripts/gcloud-oauth-server.py}
+                    exec bash ${./scripts/pass-gcloud-bootstrap.sh} "$@"
+                  '';
+                };
+              in
+              "${script}/bin/pass-gcloud-bootstrap";
           };
 
           apps.pass-github-app-bootstrap = {

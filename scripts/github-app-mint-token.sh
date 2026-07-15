@@ -201,16 +201,27 @@ refresh_access() {
 }
 
 device_flow() {
-  local client_id client_secret json device_code user_code verify_url interval expires_in
+  local client_id client_secret json device_code user_code verify_url interval expires_in http_code
   client_id="$(pass_get "$CLIENT_ID_PATH")"
   client_secret="$(pass_get "$CLIENT_SECRET_PATH")"
   [[ -n $client_id ]] || die "missing $CLIENT_ID_PATH — run bootstrap first"
 
-  json="$(curl -fsS -X POST \
-    -H "Accept: application/json" \
-    -H "Content-Type: application/x-www-form-urlencoded" \
-    --data "client_id=${client_id}" \
-    "https://github.com/login/device/code")"
+  # Prefer Device Flow when enabled; otherwise localhost OAuth (callback registered at bootstrap).
+  http_code="$(
+    curl -sS -o /tmp/gh-device-code.json -w '%{http_code}' -X POST \
+      -H "Accept: application/json" \
+      -H "Content-Type: application/x-www-form-urlencoded" \
+      --data "client_id=${client_id}" \
+      "https://github.com/login/device/code" || true
+  )"
+  json="$(cat /tmp/gh-device-code.json 2>/dev/null || true)"
+  rm -f /tmp/gh-device-code.json
+
+  if [[ $http_code != 200 ]] || printf '%s' "$json" | grep -q 'device_flow_disabled'; then
+    log "Device Flow unavailable (HTTP ${http_code:-?}) — using localhost OAuth"
+    oauth_localhost_flow
+    return
+  fi
 
   eval "$(python3 -c '
 import json,sys,shlex
@@ -262,6 +273,114 @@ for k in ("device_code","user_code","verification_uri","interval","expires_in"):
     fi
   done
   die "device flow timed out"
+}
+
+# Localhost OAuth using the App's registered callback from bootstrap
+# (http://127.0.0.1:8741/oauth-callback). Used when Device Flow is disabled.
+oauth_localhost_flow() {
+  local client_id client_secret port host redirect auth_url code state json
+  need python3
+  client_id="$(pass_get "$CLIENT_ID_PATH")"
+  client_secret="$(pass_get "$CLIENT_SECRET_PATH")"
+  [[ -n $client_id && -n $client_secret ]] || die "missing App client credentials in pass"
+  host="127.0.0.1"
+  port="${GH_OAUTH_PORT:-8741}"
+  redirect="http://${host}:${port}/oauth-callback"
+  state="$(python3 -c 'import secrets; print(secrets.token_urlsafe(24))')"
+
+  log "Starting localhost OAuth on $redirect"
+  json="$(
+    GH_OAUTH_CLIENT_ID="$client_id" \
+      GH_OAUTH_CLIENT_SECRET="$client_secret" \
+      GH_OAUTH_HOST="$host" \
+      GH_OAUTH_PORT="$port" \
+      GH_OAUTH_STATE="$state" \
+      python3 - <<'PY'
+import json, os, secrets, sys, threading, time, urllib.parse, urllib.request, webbrowser
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+HOST = os.environ["GH_OAUTH_HOST"]
+PORT = int(os.environ["GH_OAUTH_PORT"])
+CLIENT_ID = os.environ["GH_OAUTH_CLIENT_ID"]
+CLIENT_SECRET = os.environ["GH_OAUTH_CLIENT_SECRET"]
+STATE = os.environ.get("GH_OAUTH_STATE") or secrets.token_urlsafe(24)
+REDIRECT = f"http://{HOST}:{PORT}/oauth-callback"
+result = {"done": False, "error": None, "oauth": None}
+
+def exchange(code: str) -> dict:
+    body = urllib.parse.urlencode({
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET,
+        "code": code,
+        "redirect_uri": REDIRECT,
+    }).encode()
+    req = urllib.request.Request(
+        "https://github.com/login/oauth/access_token",
+        data=body,
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "dendritic-github-app-mint",
+        },
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        return json.loads(resp.read().decode())
+
+class H(BaseHTTPRequestHandler):
+    def log_message(self, *args):
+        return
+    def do_GET(self):
+        parsed = urllib.parse.urlparse(self.path)
+        if parsed.path != "/oauth-callback":
+            self.send_response(404); self.end_headers(); return
+        qs = urllib.parse.parse_qs(parsed.query)
+        if qs.get("error"):
+            result["error"] = qs["error"][0]; result["done"] = True
+            self.send_response(400); self.end_headers(); return
+        if (qs.get("state") or [None])[0] != STATE:
+            result["error"] = "state mismatch"; result["done"] = True
+            self.send_response(400); self.end_headers(); return
+        code = (qs.get("code") or [None])[0]
+        if not code:
+            result["error"] = "missing code"; result["done"] = True
+            self.send_response(400); self.end_headers(); return
+        try:
+            result["oauth"] = exchange(code)
+            result["done"] = True
+            body = b"<html><body><h1>GitHub auth OK</h1><p>Close this tab.</p></body></html>"
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers(); self.wfile.write(body)
+        except Exception as e:
+            result["error"] = str(e); result["done"] = True
+            self.send_response(500); self.end_headers()
+
+httpd = HTTPServer((HOST, PORT), H)
+auth = "https://github.com/login/oauth/authorize?" + urllib.parse.urlencode({
+    "client_id": CLIENT_ID,
+    "redirect_uri": REDIRECT,
+    "state": STATE,
+})
+print(f"github-app-mint: opening browser for OAuth…", file=sys.stderr)
+print(f"github-app-mint: {auth}", file=sys.stderr)
+threading.Thread(target=httpd.serve_forever, daemon=True).start()
+webbrowser.open(auth)
+deadline = time.time() + 600
+while time.time() < deadline and not result["done"]:
+    time.sleep(0.2)
+httpd.shutdown()
+if result["error"] or not result["oauth"]:
+    print(json.dumps({"error": result["error"] or "timeout"}), file=sys.stderr)
+    raise SystemExit(1)
+json.dump(result["oauth"], sys.stdout)
+print()
+PY
+  )" || die "localhost OAuth failed"
+
+  apply_token_response "$json"
+  log "localhost OAuth complete"
 }
 
 status() {

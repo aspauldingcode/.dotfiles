@@ -1,16 +1,20 @@
 #!/usr/bin/env bash
 # Rotate CLI auth tokens into pass (no path memorization).
 #
-#   nix run .#pass-rotate-cli-auth              # rotate what's due / both
+#   nix run .#pass-rotate-cli-auth              # rotate what's due / all
 #   nix run .#pass-rotate-cli-auth -- --status
 #   nix run .#pass-rotate-cli-auth -- --flakehub
 #   nix run .#pass-rotate-cli-auth -- --github
+#   nix run .#pass-rotate-cli-auth -- --gcloud
 #   nix run .#pass-rotate-cli-auth -- --auto    # only if within --days of expiry
 #
 # FlakeHub: fully automated via `determinate-nixd auth token device create`.
 # GitHub: fully automated via GitHub App refresh_token in pass
 #   (one-time: nix run .#pass-github-app-bootstrap). Legacy classic PAT paste
 #   still works with --from-clipboard / stdin if App is not configured.
+# Google Cloud: fully automated via OAuth refresh_token in pass
+#   (one-time: nix run .#pass-gcloud-bootstrap). Access tokens mint on demand;
+#   --gcloud forces refresh (or localhost re-auth if refresh revoked).
 set -euo pipefail
 
 DOTFILES_ROOT="${DOTFILES_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
@@ -18,6 +22,8 @@ PASSWORD_STORE_DIR="${PASSWORD_STORE_DIR:-$HOME/.password-store}"
 GH_PASS_PATH="secretspec/shared/default/GH_TOKEN"
 GH_REFRESH_PATH="secretspec/shared/default/GH_REFRESH_TOKEN"
 FH_PASS_PATH="secretspec/shared/default/FLAKEHUB_TOKEN"
+GCLOUD_REFRESH_PATH="secretspec/shared/default/GCLOUD_REFRESH_TOKEN"
+GCLOUD_SA_PATH="secretspec/shared/default/GCLOUD_SA_KEY"
 FH_DESC_PREFIX="dendritic-cli-auth"
 ORG="${FLAKEHUB_ORG:-aspauldingcode}"
 DAYS=14
@@ -25,11 +31,13 @@ DO_STATUS=false
 DO_AUTO=false
 DO_FH=false
 DO_GH=false
+DO_GCLOUD=false
 DO_BOTH=true
 FROM_CLIPBOARD=false
 FROM_GH_AUTH=false
 YES=false
 REVOKE_OLD=true
+FAILED=0
 
 export PASSWORD_STORE_DIR
 
@@ -41,7 +49,7 @@ need() { command -v "$1" >/dev/null 2>&1 || die "missing required command: $1"; 
 log() { printf '%s\n' "$*"; }
 
 usage() {
-  sed -n '2,16p' "$0" | sed 's/^# //; s/^#//'
+  sed -n '2,20p' "$0" | sed 's/^# //; s/^#//'
 }
 
 while [[ $# -gt 0 ]]; do
@@ -57,6 +65,10 @@ while [[ $# -gt 0 ]]; do
     ;;
   --github | --gh)
     DO_GH=true
+    DO_BOTH=false
+    ;;
+  --gcloud | --gcp)
+    DO_GCLOUD=true
     DO_BOTH=false
     ;;
   --days)
@@ -83,6 +95,7 @@ done
 if $DO_BOTH; then
   DO_FH=true
   DO_GH=true
+  DO_GCLOUD=true
 fi
 
 need pass
@@ -150,6 +163,34 @@ gh_mint_token() {
   fi
 }
 
+gcloud_configured() {
+  pass show "$GCLOUD_REFRESH_PATH" >/dev/null 2>&1
+}
+
+gcloud_sa_configured() {
+  pass show "$GCLOUD_SA_PATH" >/dev/null 2>&1
+}
+
+gcloud_mint_token() {
+  if command -v gcloud-mint-token >/dev/null 2>&1; then
+    gcloud-mint-token "$@"
+  else
+    bash "${DOTFILES_ROOT}/scripts/gcloud-mint-token.sh" "$@"
+  fi
+}
+
+gcloud_access_left_secs() {
+  local cache="${GCLOUD_CACHE_DIR:-$HOME/.cache/dendritic}/gcloud-token.json"
+  python3 - "$cache" <<'PY' 2>/dev/null || echo 0
+import json,sys,time
+try:
+  d=json.load(open(sys.argv[1]))
+  print(max(0, int(d.get("expires_at",0))-int(time.time())))
+except Exception:
+  print(0)
+PY
+}
+
 gh_expiry_from_api() {
   local token="" hdr
   if gh_app_configured; then
@@ -168,7 +209,7 @@ gh_expiry_from_api() {
 }
 
 status() {
-  local fh_exp gh_exp fh_days gh_days
+  local fh_exp gh_exp fh_days gh_days gcloud_left
   fh_exp="$(fh_expiry_from_status)"
   gh_exp="$(gh_expiry_from_api)"
   fh_days="$(printf '%s' "$fh_exp" | days_until)"
@@ -185,6 +226,19 @@ status() {
   fi
   log "  access expiry: ${gh_exp:-unknown} (${gh_days}d)"
   log "  pass paths: $GH_REFRESH_PATH / $GH_PASS_PATH"
+  log "Google Cloud"
+  if gcloud_configured; then
+    log "  mode: OAuth (pass refresh_token) — API mint enabled"
+    gcloud_mint_token --status 2>/dev/null | sed 's/^/  /' || true
+    gcloud_left="$(gcloud_access_left_secs)"
+    log "  access cache left: ${gcloud_left}s"
+  elif gcloud_sa_configured; then
+    log "  mode: service-account JSON (legacy) — run: pass-gcloud-bootstrap for OAuth minting"
+    log "  pass path: $GCLOUD_SA_PATH"
+  else
+    log "  mode: unset — run: pass-gcloud-bootstrap"
+  fi
+  log "  pass path: $GCLOUD_REFRESH_PATH"
   log "Auto threshold: ${DAYS}d"
 }
 
@@ -194,8 +248,19 @@ rotate_flakehub() {
   host="$(hostname -s 2>/dev/null || hostname || echo host)"
   desc="${FH_DESC_PREFIX} ${host} $(date -u +%Y-%m-%d)"
   log "FlakeHub: creating device token ($desc)…"
-  token="$(determinate-nixd auth token device create --org "$ORG" --description "$desc" | tr -d '\r\n')"
-  [[ -n $token ]] || die "device create returned empty token"
+  if ! token="$(determinate-nixd auth token device create --org "$ORG" --description "$desc" 2>/tmp/fh-rotate.err | tr -d '\r\n')"; then
+    log "FlakeHub: device create failed:"
+    sed 's/^/  /' /tmp/fh-rotate.err 2>/dev/null || true
+    log "  Note: create requires FlakeHub *admin user* auth; a coarse device JWT can list but not mint."
+    log "  Create via UI: https://flakehub.com/${ORG}/settings?editview=device-tokens"
+    log "  Then: printf 'TOKEN\\n' | pass insert -e -f $FH_PASS_PATH && determinate-nixd login token --token-file <(pass show $FH_PASS_PATH)"
+    return 1
+  fi
+  [[ -n $token ]] || {
+    log "FlakeHub: device create returned empty token"
+    sed 's/^/  /' /tmp/fh-rotate.err 2>/dev/null || true
+    return 1
+  }
   pass_insert_secret "$FH_PASS_PATH" "$token"
 
   local tf
@@ -207,7 +272,8 @@ rotate_flakehub() {
     log "FlakeHub: logged in with new token"
   else
     rm -f "$tf"
-    die "login with new FlakeHub token failed"
+    log "FlakeHub: login with new token failed"
+    return 1
   fi
   rm -f "$tf"
 
@@ -288,6 +354,37 @@ rotate_github() {
   log "GitHub: classic PAT stored in pass"
 }
 
+rotate_gcloud() {
+  local token adc_dir
+  if gcloud_configured; then
+    log "gcloud: refreshing OAuth access via API (pass-backed)…"
+    token="$(gcloud_mint_token --refresh 2>/dev/null || true)"
+    if [[ -z $token ]]; then
+      log "gcloud: refresh failed — starting localhost OAuth"
+      token="$(gcloud_mint_token --device)"
+    fi
+    [[ -n $token ]] || die "gcloud: mint returned empty token"
+    adc_dir="${CLOUDSDK_CONFIG:-$HOME/.config/gcloud}"
+    mkdir -p "$adc_dir"
+    umask 077
+    gcloud_mint_token --adc >"$adc_dir/application_default_credentials.json"
+    chmod 0600 "$adc_dir/application_default_credentials.json"
+    log "gcloud: access OK; ADC rewritten"
+    return 0
+  fi
+  if gcloud_sa_configured; then
+    log "gcloud: SA key present — OAuth mint not configured."
+    log "  Prefer: nix run .#pass-gcloud-bootstrap"
+    if command -v osascript >/dev/null 2>&1; then
+      osascript -e 'display notification "Run pass-gcloud-bootstrap for OAuth minting" with title "gcloud SA mode"' 2>/dev/null || true
+    elif command -v notify-send >/dev/null 2>&1; then
+      notify-send "gcloud SA mode" "pass-gcloud-bootstrap" || true
+    fi
+    return 0
+  fi
+  die "gcloud: not configured — run: nix run .#pass-gcloud-bootstrap"
+}
+
 due_for_rotate() {
   local exp days
   exp="$1"
@@ -335,6 +432,17 @@ if $DO_AUTO; then
       log "GitHub: not due (threshold ${DAYS}d)"
     fi
   fi
+  if $DO_GCLOUD; then
+    if gcloud_configured; then
+      # Access tokens live ~1h; weekly agent just proves refresh still works + refreshes cache/ADC.
+      log "gcloud: verifying OAuth refresh + rewriting ADC"
+      rotate_gcloud
+    elif gcloud_sa_configured; then
+      log "gcloud: SA mode — no auto OAuth rotate (run pass-gcloud-bootstrap)"
+    else
+      log "gcloud: not configured — skip"
+    fi
+  fi
   exit 0
 fi
 
@@ -343,9 +451,32 @@ if $DO_FH; then
     read -r -p "Rotate FlakeHub device token for org '$ORG'? [y/N] " ans
     [[ $ans == [yY]* ]] || die "aborted"
   fi
-  rotate_flakehub
+  rotate_flakehub || {
+    log "FlakeHub: rotation FAILED"
+    FAILED=1
+  }
 fi
 
 if $DO_GH; then
-  rotate_github
+  rotate_github || {
+    log "GitHub: rotation FAILED"
+    FAILED=1
+  }
 fi
+
+if $DO_GCLOUD; then
+  if ! gcloud_configured && ! gcloud_sa_configured; then
+    if $DO_BOTH; then
+      log "gcloud: not configured — skip (run: nix run .#pass-gcloud-bootstrap)"
+    else
+      die "gcloud: not configured — run: nix run .#pass-gcloud-bootstrap"
+    fi
+  else
+    rotate_gcloud || {
+      log "gcloud: rotation FAILED"
+      FAILED=1
+    }
+  fi
+fi
+
+exit "${FAILED:-0}"

@@ -232,8 +232,8 @@ cat ~/.shit
 Adding a **new** map entry still needs a flake commit + rebuild. Changing a
 mapped **value** does not.
 
-Runtime tokens (`GH_*`, `FLAKEHUB_TOKEN`) stay in pass / wrappers — not copied
-to home files.
+Runtime tokens (`GH_*`, `FLAKEHUB_TOKEN`, `GCLOUD_*`) stay in pass / wrappers — not copied
+to home files (except gcloud ADC rewritten under `~/.config/gcloud/` on activation).
 
 ---
 
@@ -327,8 +327,16 @@ Do **not** bootstrap GPG from the password-store git repo (circular / weak).
 
 ### CLI auth secrets (declarations public, values private)
 
-See [`home/secretspec.toml`](../home/secretspec.toml): `GH_*`, `FLAKEHUB_TOKEN`.
-Helpers: `nix run .#pass-github-app-bootstrap`, `pass-rotate-cli-auth`, etc.
+See [`home/secretspec.toml`](../home/secretspec.toml): `GH_*`, `FLAKEHUB_TOKEN`, `GCLOUD_*`.
+Helpers:
+
+| CLI      | One-time bootstrap                    | Mint / rotate                                             |
+| -------- | ------------------------------------- | --------------------------------------------------------- |
+| `gh`     | `nix run .#pass-github-app-bootstrap` | `github-app-mint-token` · `pass-rotate-cli-auth --github` |
+| `fh`     | (token via rotate)                    | `pass-rotate-cli-auth --flakehub`                         |
+| `gcloud` | `nix run .#pass-gcloud-bootstrap`     | `gcloud-mint-token` · `pass-rotate-cli-auth --gcloud`     |
+
+**gcloud:** OAuth refresh_token in pass → access token on each `gcloud` invoke (cached ~1h). Activation rewrites `~/.config/gcloud/application_default_credentials.json` for client libraries. Optional SA JSON fallback: `pass-gcloud-bootstrap --from-sa key.json`. Optional default project: `--project my-gcp-project`.
 
 ### Rotation runbook
 
