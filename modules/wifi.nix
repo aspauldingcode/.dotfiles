@@ -197,10 +197,28 @@
           /usr/sbin/networksetup -setairportpower "$DEV" on 2>/dev/null || true
           # Prefer upsert without remove/re-add — remove requires admin and hangs
           # non-interactive agents waiting on a password dialog.
+          with_timeout() {
+            # usage: with_timeout SECONDS cmd...
+            local secs="$1"; shift
+            "$@" &
+            local pid=$!
+            local i=0
+            while kill -0 "$pid" 2>/dev/null; do
+              i=$((i + 1))
+              if [[ "$i" -ge "$secs" ]]; then
+                kill -9 "$pid" 2>/dev/null || true
+                wait "$pid" 2>/dev/null || true
+                return 124
+              fi
+              sleep 1
+            done
+            wait "$pid"
+          }
           PREF="$(/usr/sbin/networksetup -listpreferredwirelessnetworks "$DEV" 2>/dev/null || true)"
           if ! printf '%s' "$PREF" | ${pkgs.gnugrep}/bin/grep -Fq "$SSID"; then
-            /usr/sbin/networksetup -addpreferredwirelessnetworkatindex "$DEV" "$SSID" 0 WPA2 "$PSK" \
-              || warn "addpreferredwirelessnetwork failed (admin/TCC?)"
+            if ! with_timeout 12 /usr/sbin/networksetup -addpreferredwirelessnetworkatindex "$DEV" "$SSID" 0 WPA2 "$PSK"; then
+              warn "addpreferredwirelessnetwork failed/timed out (approve admin dialog or run once in Terminal)"
+            fi
           else
             log "darwin: $SSID already preferred on $DEV"
           fi
@@ -210,8 +228,9 @@
             && ifconfig "$DEV" 2>/dev/null | ${pkgs.gnugrep}/bin/grep -Eq 'inet [0-9]'; then
             log "darwin: $DEV already active with IPv4; skipping join"
           else
-            /usr/sbin/networksetup -setairportnetwork "$DEV" "$SSID" "$PSK" \
-              || warn "setairportnetwork failed (admin/TCC?)"
+            if ! with_timeout 15 /usr/sbin/networksetup -setairportnetwork "$DEV" "$SSID" "$PSK"; then
+              warn "setairportnetwork failed/timed out (admin/TCC?)"
+            fi
           fi
           log "darwin: preferred + join ensured for $SSID on $DEV"
           exit 0
