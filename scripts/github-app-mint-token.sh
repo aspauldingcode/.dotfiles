@@ -25,11 +25,14 @@ LOCK_DIR="${CACHE_DIR}/gh-app-mint.lock"
 CLIENT_ID_PATH="secretspec/shared/default/GH_APP_CLIENT_ID"
 CLIENT_SECRET_PATH="secretspec/shared/default/GH_APP_CLIENT_SECRET"
 REFRESH_PATH="secretspec/shared/default/GH_REFRESH_TOKEN"
+REFRESH_GPG="${PASSWORD_STORE_DIR}/${REFRESH_PATH}.gpg"
 FORCE_REFRESH=false
 FORCE_DEVICE=false
 DO_STATUS=false
 # Skew: refresh 5 minutes before expiry
 SKEW_SECS=300
+# Re-probe cached access tokens against api.github.com at most this often
+VERIFY_SECS="${GH_APP_VERIFY_SECS:-600}"
 
 export PASSWORD_STORE_DIR
 
@@ -90,8 +93,22 @@ with_lock() {
   trap 'rmdir "$LOCK_DIR" 2>/dev/null || true' EXIT
 }
 
+invalidate_cache() {
+  rm -f "$CACHE_FILE"
+}
+
+# True when pass refresh ciphertext is newer than the access cache (cross-host rotate).
+refresh_newer_than_cache() {
+  [[ -f $CACHE_FILE && -f $REFRESH_GPG && $REFRESH_GPG -nt $CACHE_FILE ]]
+}
+
 cache_valid() {
   [[ -f $CACHE_FILE ]] || return 1
+  if refresh_newer_than_cache; then
+    log "refresh token in pass newer than access cache — invalidating"
+    invalidate_cache
+    return 1
+  fi
   python3 - "$CACHE_FILE" "$SKEW_SECS" <<'PY'
 import json, sys, time
 path, skew = sys.argv[1], int(sys.argv[2])
@@ -107,6 +124,56 @@ print(tok)
 PY
 }
 
+# Exit 0 if cache verified_at is fresh enough to skip an API probe.
+cache_verified_fresh() {
+  [[ -f $CACHE_FILE ]] || return 1
+  python3 - "$CACHE_FILE" "$VERIFY_SECS" <<'PY'
+import json, sys, time
+path, verify = sys.argv[1], int(sys.argv[2])
+try:
+    d = json.load(open(path))
+except Exception:
+    raise SystemExit(1)
+verified = int(d.get("verified_at") or 0)
+if verified <= 0 or time.time() - verified >= verify:
+    raise SystemExit(1)
+raise SystemExit(0)
+PY
+}
+
+mark_verified() {
+  [[ -f $CACHE_FILE ]] || return 0
+  python3 - "$CACHE_FILE" <<'PY'
+import json, sys, time
+path = sys.argv[1]
+try:
+    d = json.load(open(path))
+except Exception:
+    raise SystemExit(0)
+d["verified_at"] = int(time.time())
+json.dump(d, open(path, "w"))
+PY
+}
+
+# Probe cached access token; 0 = usable, 1 = dead/unreachable (caller should refresh).
+probe_access_token() {
+  local tok="$1" code
+  code="$(
+    curl -sS -o /dev/null -w '%{http_code}' --connect-timeout 5 --max-time 10 \
+      -H "Authorization: Bearer ${tok}" \
+      -H "Accept: application/vnd.github+json" \
+      -H "User-Agent: dendritic-github-app-mint" \
+      "https://api.github.com/user" 2>/dev/null || echo 000
+  )"
+  case "$code" in
+  2*) return 0 ;;
+  *)
+    log "cached access token rejected by GitHub (HTTP ${code}) — refreshing"
+    return 1
+    ;;
+  esac
+}
+
 write_cache() {
   local access="$1" expires_in="$2"
   mkdir -p "$CACHE_DIR"
@@ -114,10 +181,12 @@ write_cache() {
   python3 - "$CACHE_FILE" "$access" "$expires_in" <<'PY'
 import json, sys, time
 path, access, exp_in = sys.argv[1], sys.argv[2], int(sys.argv[3] or 28800)
+now = int(time.time())
 data = {
     "access_token": access,
-    "expires_at": int(time.time()) + max(exp_in - 0, 60),
+    "expires_at": now + max(exp_in - 0, 60),
     "token_type": "bearer",
+    "verified_at": now,
 }
 json.dump(data, open(path, "w"))
 PY
@@ -168,12 +237,13 @@ apply_token_response() {
   done < <(parse_token_response "$json")
 
   [[ -n $access ]] || return 1
-  write_cache "$access" "$expires"
+  # Persist refresh before access cache so REFRESH_GPG is not -nt CACHE_FILE.
   if [[ -n $refresh ]]; then
     pass_put "$REFRESH_PATH" "$refresh"
     pass_commit "rotate: GH_REFRESH_TOKEN (GitHub App)"
     log "updated $REFRESH_PATH in pass"
   fi
+  write_cache "$access" "$expires"
   printf '%s\n' "$access"
 }
 
@@ -417,8 +487,16 @@ with_lock
 
 if ! $FORCE_REFRESH && ! $FORCE_DEVICE; then
   if tok="$(cache_valid)"; then
-    printf '%s\n' "$tok"
-    exit 0
+    if cache_verified_fresh; then
+      printf '%s\n' "$tok"
+      exit 0
+    fi
+    if probe_access_token "$tok"; then
+      mark_verified
+      printf '%s\n' "$tok"
+      exit 0
+    fi
+    invalidate_cache
   fi
 fi
 

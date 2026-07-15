@@ -78,8 +78,14 @@ write_cache_access() {
   python3 - "$cache_dir/gh-app-token.json" "$access" "$expires_in" <<'PY'
 import json, sys, time
 path, access, exp_in = sys.argv[1], sys.argv[2], int(sys.argv[3])
+now = int(time.time())
 json.dump(
-    {"access_token": access, "expires_at": int(time.time()) + exp_in, "token_type": "bearer"},
+    {
+        "access_token": access,
+        "expires_at": now + exp_in,
+        "token_type": "bearer",
+        "verified_at": now,
+    },
     open(path, "w"),
 )
 PY
