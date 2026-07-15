@@ -43,10 +43,17 @@ partprobe "$DISK" 2>/dev/null || true
 udevadm settle || true
 
 if [[ -b $SWAP_DEV ]]; then
-  if ! swapon --show=NAME --noheadings 2>/dev/null | grep -qx "$SWAP_DEV"; then
-    swaplabel -L swap "$SWAP_DEV" 2>/dev/null || mkswap -L swap "$SWAP_DEV"
-  else
+  swap_real="$(readlink -f "$SWAP_DEV")"
+  active=0
+  while read -r name; do
+    [[ -n $name ]] || continue
+    [[ "$(readlink -f "$name")" == "$swap_real" ]] && active=1 && break
+  done < <(swapon --show=NAME --noheadings 2>/dev/null || true)
+  if [[ $active -eq 1 ]]; then
+    # Active swap: label only (never mkswap).
     swaplabel -L swap "$SWAP_DEV" 2>/dev/null || true
+  else
+    swaplabel -L swap "$SWAP_DEV" 2>/dev/null || mkswap -L swap "$SWAP_DEV" || true
   fi
 fi
 

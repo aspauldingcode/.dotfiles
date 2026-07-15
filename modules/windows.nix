@@ -227,11 +227,13 @@
                   pw=${lib.escapeShellArg passwordPath}
                   mkdir -p "$(dirname "$pw")"
                   if [ ! -s "$pw" ]; then
-                    # Prefer sops secret materialization path; otherwise generate.
                     if [ -s /run/secrets/windows_local_password ]; then
                       cp /run/secrets/windows_local_password "$pw"
                     else
+                      # pipefail + head closing early makes tr exit 141; disable for this line.
+                      set +o pipefail
                       tr -dc 'A-Za-z0-9' </dev/urandom | head -c 20 >"$pw"
+                      set -o pipefail
                       echo "dendritic-windows: generated Windows password at $pw" >&2
                     fi
                     chmod 600 "$pw"
