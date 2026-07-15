@@ -55,6 +55,7 @@
       # extractPeripheralFirmware=false: firmware already on the ESP from the
       # Asahi installer; set true only if you need the module to copy it again.
       hardware.asahi = {
+        enable = true;
         extractPeripheralFirmware = false;
         # useExperimentalGPUDriver = true; # uncomment for newer AGX if needed
       };
