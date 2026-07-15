@@ -536,8 +536,10 @@ let
                 mkdir -p "$BRAVE_ROOT/Managed Policies" "$BRAVE_ROOT/Policies/Managed"
                 rm -f "$POLICY_MAIN" "$POLICY_ALT"
                 printf '%s\n' '${bravePolicyJson}' > "$POLICY_MAIN"
-                cp "$POLICY_MAIN" "$POLICY_ALT"
-                chmod 0644 "$POLICY_MAIN" "$POLICY_ALT" || true
+                # Prefer rewrite over cp — macOS can leave an undeletable
+                # opaque "File exists" when Policies/Managed is root-owned.
+                printf '%s\n' '${bravePolicyJson}' > "$POLICY_ALT" || true
+                chmod 0644 "$POLICY_MAIN" "$POLICY_ALT" 2>/dev/null || true
 
                 ${lib.concatMapStringsSep "\n" (ext: ''
                   rm -f "$BRAVE_ROOT/External Extensions/${ext.id}.json"
