@@ -210,13 +210,18 @@ Disable: `autoSync.enable = false` or `autoSync.notify.enable = false`.
 Pass sync updates `~/.password-store` only. Mapped keys are written to home
 files when `secretspec/` changes:
 
-| SecretSpec key  | Home file                                               |
-| --------------- | ------------------------------------------------------- |
-| `SHIT_PASSWORD` | `~/.shit`                                               |
-| `PEE_PASSWORD`  | `~/.pee`                                                |
-| `Bubbles`       | `~/.config/dendritic/wifi/Bubbles.psk` (dendritic.wifi) |
+| SecretSpec key     | Home file                                                           |
+| ------------------ | ------------------------------------------------------------------- |
+| `SHIT_PASSWORD`    | `~/.shit`                                                           |
+| `PEE_PASSWORD`     | `~/.pee`                                                            |
+| `Bubbles`          | `~/.config/dendritic/wifi/Bubbles.psk` (dendritic.wifi)             |
+| `EDUROAM_IDENTITY` | `~/.config/dendritic/wifi/eduroam/identity`                         |
+| `EDUROAM_PASSWORD` | `~/.config/dendritic/wifi/eduroam/password`                         |
+| `EDUROAM_CA`       | `~/.config/dendritic/wifi/eduroam/ca.pem`                           |
+| `EDUROAM_PROFILE`  | `~/.config/dendritic/wifi/eduroam/profile.json` (dendritic.eduroam) |
 
 Map: [`home/pass-materialize.json`](../home/pass-materialize.json).
+Eduroam apply: [`docs/wifi-eduroam.md`](wifi-eduroam.md).
 
 ```bash
 printf '%s\n' 'new value' | pass insert -e secretspec/shared/default/SHIT_PASSWORD

@@ -108,5 +108,9 @@ log "done (${count} file(s), ${warn_count} warning(s))"
 if command -v dendritic-wifi-ensure >/dev/null 2>&1; then
   dendritic-wifi-ensure || warn "dendritic-wifi-ensure failed"
 fi
+# EWU eduroam (dendritic.eduroam) — Keychain / iwd after identity+CA materialize.
+if command -v dendritic-eduroam-ensure >/dev/null 2>&1; then
+  dendritic-eduroam-ensure || warn "dendritic-eduroam-ensure failed"
+fi
 
 exit 0

@@ -40,3 +40,8 @@ dendritic-wifi-ensure     # applies OS profile + connects
 ```
 
 Agents: launchd `com.dendritic.wifi-ensure` (macOS), systemd user path/service (NixOS).
+
+## EWU eduroam (802.1X)
+
+Campus Wi‑Fi is a separate module — pass-backed PEAP/MSCHAPv2, not PSK.
+See [`docs/wifi-eduroam.md`](wifi-eduroam.md) (`dendritic.eduroam`).

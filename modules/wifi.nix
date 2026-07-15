@@ -263,10 +263,10 @@
         # Prefer NAME/UUID listing — `connection show <id>` can fail for perms
         # even when the profile exists (then we wrongly hit `add` and error).
         HAVE_CONN=0
-        if ${pkgs.networkmanager}/bin/nmcli -t -f NAME connection show 2>/dev/null \
+        if nmcli -t -f NAME connection show 2>/dev/null \
           | ${pkgs.gnugrep}/bin/grep -Fxq "$SSID"; then
           HAVE_CONN=1
-        elif ${pkgs.networkmanager}/bin/nmcli -t -f UUID connection show 2>/dev/null \
+        elif nmcli -t -f UUID connection show 2>/dev/null \
           | ${pkgs.gnugrep}/bin/grep -Fxq "$UUID"; then
           HAVE_CONN=1
         fi

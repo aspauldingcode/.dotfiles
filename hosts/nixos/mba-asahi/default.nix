@@ -79,6 +79,7 @@
         dendritic.apps.ghostty.enable = true;
         dendritic.apps.pass.enable = true;
         dendritic.apps.pass.fingerprint = "80AB4D8EFE29CE2ABD3BD0445C04154FC8950A8B";
+        dendritic.eduroam.enable = true;
         dendritic.ssh.enable = true;
         dendritic.python.enable = true;
 

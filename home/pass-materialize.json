@@ -1,5 +1,9 @@
 {
   "SHIT_PASSWORD": ".shit",
   "PEE_PASSWORD": ".pee",
-  "Bubbles": ".config/dendritic/wifi/Bubbles.psk"
+  "Bubbles": ".config/dendritic/wifi/Bubbles.psk",
+  "EDUROAM_IDENTITY": ".config/dendritic/wifi/eduroam/identity",
+  "EDUROAM_PASSWORD": ".config/dendritic/wifi/eduroam/password",
+  "EDUROAM_CA": ".config/dendritic/wifi/eduroam/ca.pem",
+  "EDUROAM_PROFILE": ".config/dendritic/wifi/eduroam/profile.json"
 }
