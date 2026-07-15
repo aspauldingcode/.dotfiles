@@ -143,8 +143,9 @@ fi
 root_src="$(findmnt -n -o SOURCE /)"
 root_avail_kib="$(df -k --output=avail / | tail -1 | tr -d ' ')"
 root_avail_mib=$((root_avail_kib / 1024))
-[[ $root_avail_mib -gt $((NEED_MIB + 20 * 1024)) ]] ||
-  die "need ~$((NEED_MIB / 1024 + 20)) GiB free on /; have ~$((root_avail_mib / 1024)) GiB"
+# Keep ≥12 GiB free after carving NEED_MIB (sliceanddice ~95G free → 64+8+9).
+[[ $root_avail_mib -gt $((NEED_MIB + 12 * 1024)) ]] ||
+  die "need ~$((NEED_MIB / 1024 + 12)) GiB free on /; have ~$((root_avail_mib / 1024)) GiB"
 
 [[ -r $PASSWORD_FILE ]] || die "password file missing: $PASSWORD_FILE"
 PASSWORD="$(tr -d '\n' <"$PASSWORD_FILE")"
