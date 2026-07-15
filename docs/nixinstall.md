@@ -9,14 +9,14 @@ and a **vault** (SSH, GnuPG, `pass`). systemd-boot entry **NixOS Installer
 
 See [`hosts/nixos/sliceanddice/disko.nix`](../hosts/nixos/sliceanddice/disko.nix):
 
-| Part | Label | Role |
-|------|--------|------|
-| 1 | ESP | systemd-boot (shared) |
-| 2 | nixos | Main OS (btrfs `@` `@nix` `@home` `@log`) — wipeable |
-| 3 | nixinstall | Installer root + `/vault` — **never wipe** |
-| 4 | windows | Windows NTFS |
-| 5 | wininstall | Windows Setup media |
-| 6 | swap | Stable UUID |
+| Part | Label      | Role                                                 |
+| ---- | ---------- | ---------------------------------------------------- |
+| 1    | ESP        | systemd-boot (shared)                                |
+| 2    | nixos      | Main OS (btrfs `@` `@nix` `@home` `@log`) — wipeable |
+| 3    | nixinstall | Installer root + `/vault` — **never wipe**           |
+| 4    | windows    | Windows NTFS                                         |
+| 5    | wininstall | Windows Setup media                                  |
+| 6    | swap       | Stable UUID                                          |
 
 ## First-time (current ext4 machine)
 
