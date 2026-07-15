@@ -4,24 +4,30 @@ Unified across **macOS** and **NixOS** via [`modules/apps/tmux.nix`](../modules/
 
 ## Quick start
 
+Ghostty (and other interactive shells) **auto-attach** session `main`.
+Escape hatch: `DENDRITIC_NO_TMUX=1` · Cursor/VS Code terminals are skipped.
+
 ```bash
-t              # attach or create session "main"
+t              # attach or create session "main" (manual)
 tmux-learn     # interactive tutorial (popup)
 ```
 
-Inside tmux:
+Inside tmux (you will not remember F1 — use these):
 
 | Keys                  | What                                    |
 | --------------------- | --------------------------------------- |
-| `Ctrl-a` then `Space` | **Which-key** menu (searchable actions) |
+| _(first attach)_      | Tutorial opens automatically once       |
+| `Ctrl-a` then `T`     | Interactive tutorial (memorable)        |
+| `Ctrl-a` then `Space` | **Which-key** menu — press `t` Tutorial |
 | `Ctrl-a` then `?`     | Same which-key menu                     |
-| `Ctrl-a` then `F1`    | Interactive tutorial popup              |
-| Which-key → `t`       | Tutorial from the menu                  |
+| `Ctrl-a` then `F1`    | Tutorial (same as `T`)                  |
+
+From any shell: `tmuxhelp` or `tmux-learn`.
 
 > `prefix` means: press `Ctrl-a`, release, then the next key.
 
-On first attach you’ll see a tip until you’ve completed the tutorial once
-(`~/.cache/tmux-tutorial-seen`).
+First attach auto-opens the tutorial until you finish it once
+(`~/.cache/tmux-tutorial-seen`). After that, `Ctrl-a` `T` or `tmuxhelp`.
 
 ---
 
@@ -31,17 +37,21 @@ Changed from stock `Ctrl-b` for ergonomics (Screen-style; common power-user defa
 
 ---
 
-## Panes & windows
+## Panes & windows (tabs)
 
-| Action                 | Keybind                  |
-| ---------------------- | ------------------------ |
-| Split vertical         | `prefix` `\|`            |
-| Split horizontal       | `prefix` `-`             |
-| Kill pane              | `prefix` `x`             |
-| Zoom pane              | `prefix` `z`             |
-| New window             | `prefix` `c`             |
-| Next / previous window | `prefix` `n` / `p`       |
-| Resize pane            | `prefix` `H` `J` `K` `L` |
+Windows are the **tabs** along the top status bar (click to switch).
+
+| Action              | Keybind                                            |
+| ------------------- | -------------------------------------------------- |
+| Split vertical      | `prefix` `\|`                                      |
+| Split horizontal    | `prefix` `-`                                       |
+| Kill pane           | `prefix` `x`                                       |
+| Zoom pane           | `prefix` `z`                                       |
+| New tab (window)    | `prefix` `c`                                       |
+| Next / previous tab | `prefix` `n` / `p` · `Ctrl-Tab` / `Ctrl-Shift-Tab` |
+| Jump to tab 1–9     | `prefix` `1`…`9`                                   |
+| Rename tab          | `prefix` `,`                                       |
+| Resize pane         | `prefix` `H` `J` `K` `L`                           |
 
 Mouse: click panes, drag borders, scroll → copy-mode.
 

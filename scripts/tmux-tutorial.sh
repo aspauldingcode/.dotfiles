@@ -30,11 +30,14 @@ pause
 cat <<EOF
 ── 1. The cheat sheet (which-key) ──────────────────────────
 
-  ${PREFIX}  then  Space     → searchable action menu (best way to learn)
-  ${PREFIX}  then  ?         → same menu (alias)
-  ${PREFIX}  then  F1        → this tutorial again
+  ${PREFIX}  then  T         → this tutorial again (easy to remember)
+  ${PREFIX}  then  Space     → searchable action menu (best day-to-day)
+  ${PREFIX}  then  ?         → same menu
+  which-key → t              → tutorial from the menu
 
-Try it after you finish: press ${PREFIX}, release, then Space.
+  From any shell:  tmuxhelp
+
+Try after you finish: ${PREFIX}, release, then Space.
 Navigate with letters shown in the menu. Esc closes it.
 
 EOF
@@ -59,10 +62,14 @@ pause
 cat <<EOF
 ── 3. Windows (tabs) ───────────────────────────────────────
 
-  ${PREFIX}  c     → new window
-  ${PREFIX}  n / p → next / previous
-  ${PREFIX}  1..9  → jump to window number
-  ${PREFIX}  ,     → rename window
+  Top status bar shows tabs:  1:zsh  [2:nvim]  3:ssh
+  Click a tab with the mouse to switch.
+
+  ${PREFIX}  c     → new tab (window)
+  ${PREFIX}  n / p → next / previous tab
+  Ctrl-Tab / Ctrl-Shift-Tab → next / previous (no prefix)
+  ${PREFIX}  1..9  → jump to tab number
+  ${PREFIX}  ,     → rename tab
 
 EOF
 pause
@@ -99,11 +106,12 @@ cat <<EOF
 ── 6. Quick start from the shell ───────────────────────────
 
   t              → enter/create session "main"
-  tmux-learn     → this tutorial
+  tmuxhelp       → this tutorial (also: tmux-learn)
   tmux ls        → list sessions
 
 Done. Closing this popup returns you to tmux.
 
+Remember: ${PREFIX} then T  opens this tutorial anytime.
 Next: ${PREFIX} then Space  → explore the which-key menu.
 EOF
 

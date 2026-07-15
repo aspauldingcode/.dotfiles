@@ -62,9 +62,12 @@
             splashTheming = true; # Stylix themes the splash screen too
             staticTitle = true;
             discordBranch = "stable";
-            # Stylix: inject palette colors into the splash/loading panel
+            # Stylix: inject palette colors into the splash/loading panel.
+            # Vesktop's splash .wrapper uses `border: 1px solid var(--fg-semi-trans)`.
+            # Hex splashColor skips the rgb→rgba conversion, so that border becomes a
+            # solid accent outline. Append a CSS override so the border is invisible.
             splashBackground = "#${config.lib.stylix.colors.base00}";
-            splashColor = "#${config.lib.stylix.colors.base0D}";
+            splashColor = "#${config.lib.stylix.colors.base0D}; --fg-semi-trans: transparent";
           };
 
           # Vencord plugin / theme settings
