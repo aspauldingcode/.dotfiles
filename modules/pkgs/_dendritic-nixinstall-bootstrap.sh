@@ -47,7 +47,7 @@ if [[ ! -b /dev/disk/by-partlabel/nixinstall ]]; then
   end=$((start + size_sect - 1))
   [[ $end -lt $disk_sects ]] || die "not enough free sectors (need ~${SIZE_GIB}G at end of disk)"
 
-  echo "start=$start size=$size_sect type=8300 name=nixinstall" | sfdisk -a "$DISK"
+  echo "start=$start size=$size_sect type=8300 name=nixinstall" | sfdisk --force -a "$DISK"
   partprobe "$DISK" 2>/dev/null || true
   udevadm settle || true
   sleep 1
