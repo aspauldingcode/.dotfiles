@@ -35,7 +35,8 @@
       '';
     in
     {
-      options.dendritic.apps.niri.enable = lib.mkEnableOption "niri Wayland compositor (system session + greeter)";
+      options.dendritic.apps.niri.enable =
+        lib.mkEnableOption "niri Wayland compositor (system session + greeter)";
 
       config = lib.mkIf cfg.enable {
         programs.niri.enable = true;
