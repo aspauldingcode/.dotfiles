@@ -23,8 +23,11 @@ if [[ $YES != "1" ]]; then
   [[ $ans == "reinstall" ]] || die "aborted"
 fi
 
-command -v dendritic-vault-sync >/dev/null && dendritic-vault-sync check ||
-  die "vault check failed — boot main OS and run dendritic-vault-sync first"
+if command -v dendritic-vault-sync >/dev/null; then
+  dendritic-vault-sync check || die "vault check failed — boot main OS and run dendritic-vault-sync first"
+else
+  die "dendritic-vault-sync missing from PATH"
+fi
 
 [[ -e $FLAKE/flake.nix ]] || die "flake not found at $FLAKE — bootstrap should copy .dotfiles here"
 

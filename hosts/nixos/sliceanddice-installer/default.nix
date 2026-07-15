@@ -140,6 +140,7 @@
       excludeShellChecks = [
         "SC2086"
         "SC2164"
+        "SC2015"
       ];
       text = builtins.readFile ../../../modules/pkgs/_dendritic-reinstall.sh;
     })
