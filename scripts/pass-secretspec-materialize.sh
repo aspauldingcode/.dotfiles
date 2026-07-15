@@ -34,6 +34,7 @@ fi
 export PASSWORD_STORE_DIR
 
 materialized='[]'
+warnings='[]'
 count=0
 while IFS= read -r key; do
   [[ -n $key ]] || continue
@@ -43,13 +44,23 @@ while IFS= read -r key; do
   case "$rel" in
   /* | *..*)
     warn "skip unsafe path for $key: $rel"
+    warnings="$(jq -nc --argjson arr "$warnings" --arg w "skip unsafe path: $key" '$arr + [$w]')"
     continue
     ;;
   esac
   out="${HOME_DIR}/${rel}"
   val="$(secretspec get -f "$SECRETSPEC_TOML" "$key" 2>/dev/null || true)"
   if [[ -z $val ]]; then
-    warn "$key not available yet; skip $out"
+    if [[ -e $out ]]; then
+      # Edge case: removed from pass but home file still present (stale secret).
+      w="$key missing from pass; stale file remains (~/$rel)"
+      warn "$w"
+      warnings="$(jq -nc --argjson arr "$warnings" --arg w "$w" '$arr + [$w]')"
+    else
+      w="$key missing from pass; not materialized (~/$rel)"
+      warn "$w"
+      warnings="$(jq -nc --argjson arr "$warnings" --arg w "$w" '$arr + [$w]')"
+    fi
     continue
   fi
   umask 077
@@ -61,31 +72,37 @@ while IFS= read -r key; do
   log "wrote $out"
 done < <(jq -r 'keys[]' "$MAP_FILE")
 
-# Merge materialize fields into status if present (best-effort; no plaintext).
-if [[ -f $STATUS_FILE ]] && command -v jq >/dev/null 2>&1; then
-  now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-  tmp="$(mktemp "${STATUS_FILE}.XXXXXX")"
-  if jq -nc \
-    --slurpfile prev "$STATUS_FILE" \
-    --argjson materialized "$materialized" \
-    --arg now "$now" \
-    --arg msg "materialized ${count} file(s)" \
-    '
-      ($prev[0] // {})
-      + {
-          last_materialize_at: $now,
-          materialized: $materialized,
-          updated_at: $now,
-          message: $msg
-        }
-    ' >"$tmp" 2>/dev/null; then
-    mv "$tmp" "$STATUS_FILE"
-  else
-    rm -f "$tmp"
-  fi
+# Merge materialize fields into status (best-effort; no plaintext).
+# Create the status file if missing so tray can still see warnings.
+now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+warn_count="$(jq -nr --argjson w "$warnings" '$w | length')"
+mkdir -p "$(dirname "$STATUS_FILE")"
+if [[ ! -f $STATUS_FILE ]]; then
+  printf '%s\n' '{"state":"idle","direction":"none","message":"materialize only"}' >"$STATUS_FILE"
+fi
+tmp="$(mktemp "${STATUS_FILE}.XXXXXX")"
+if jq -nc \
+  --slurpfile prev "$STATUS_FILE" \
+  --argjson materialized "$materialized" \
+  --argjson materialize_warnings "$warnings" \
+  --arg now "$now" \
+  --arg msg "materialized ${count} file(s); ${warn_count} warning(s)" \
+  '
+    ($prev[0] // {})
+    + {
+        last_materialize_at: $now,
+        materialized: $materialized,
+        materialize_warnings: $materialize_warnings,
+        updated_at: $now,
+        message: $msg
+      }
+  ' >"$tmp" 2>/dev/null; then
+  mv "$tmp" "$STATUS_FILE"
+else
+  rm -f "$tmp"
 fi
 
-log "done (${count} file(s))"
+log "done (${count} file(s), ${warn_count} warning(s))"
 
 # Optional: apply Wi-Fi profiles after PSK materialize (dendritic.wifi).
 if command -v dendritic-wifi-ensure >/dev/null 2>&1; then

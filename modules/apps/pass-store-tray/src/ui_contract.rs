@@ -6,6 +6,7 @@ pub mod status {
     pub const HEADLINE: &str = "…";
     pub const DETAIL: &str = " ";
     pub const MATERIALIZED: &str = " ";
+    pub const WARNINGS: &str = " ";
 }
 
 /// Clickable actions — keep this set tiny (native menu, not a window).

@@ -40,6 +40,9 @@ struct SyncStatus {
     materialized: Vec<String>,
     #[serde(default)]
     last_materialize_at: Option<String>,
+    /// Soft edge cases from pass-materialize (missing/stale secrets) — not sync hard errors.
+    #[serde(default)]
+    materialize_warnings: Vec<String>,
 }
 
 fn default_state() -> String {
@@ -124,6 +127,10 @@ fn icon_kind(status: &SyncStatus, rebuilding: bool, lock: bool) -> IconKind {
         return IconKind::Rebuild;
     }
     if status.error.as_ref().is_some_and(|e| !e.is_empty()) || status.state == "error" {
+        return IconKind::Error;
+    }
+    // Missing/stale materialize secrets — same attention glyph as error (no amber on template icons).
+    if !status.materialize_warnings.is_empty() {
         return IconKind::Error;
     }
     if status.state == "uploading" || (lock && status.direction == "up") {
@@ -300,6 +307,7 @@ struct NativeTray {
     status_headline: MenuItem,
     status_detail: MenuItem,
     status_mat: MenuItem,
+    status_warn: MenuItem,
     item_qtpass: MenuItem,
     item_log: MenuItem,
     item_quit: MenuItem,
@@ -312,6 +320,7 @@ impl NativeTray {
         let status_headline = MenuItem::new(ui_contract::status::HEADLINE, false, None);
         let status_detail = MenuItem::new(ui_contract::status::DETAIL, false, None);
         let status_mat = MenuItem::new(ui_contract::status::MATERIALIZED, false, None);
+        let status_warn = MenuItem::new(ui_contract::status::WARNINGS, false, None);
         let item_qtpass = MenuItem::new(Action::OpenQtPass.label(), true, None);
         let item_log = MenuItem::new(Action::OpenSyncLog.label(), true, None);
         let item_quit = MenuItem::new(Action::Quit.label(), true, None);
@@ -321,6 +330,7 @@ impl NativeTray {
         let _ = menu.append(&status_headline);
         let _ = menu.append(&status_detail);
         let _ = menu.append(&status_mat);
+        let _ = menu.append(&status_warn);
         let _ = menu.append(&PredefinedMenuItem::separator());
         // Actions from shared contract order (QtPass, sync log, then Quit)
         debug_assert_eq!(Action::ALL[0], Action::OpenQtPass);
@@ -345,6 +355,7 @@ impl NativeTray {
             status_headline,
             status_detail,
             status_mat,
+            status_warn,
             item_qtpass,
             item_log,
             item_quit,
@@ -366,12 +377,15 @@ impl NativeTray {
         }
 
         let err = status.error.as_deref().filter(|e| !e.is_empty());
+        let warn_n = status.materialize_warnings.len();
         let headline = if rebuilding {
             "Rebuilding system…".to_string()
         } else if lock {
             format!("Syncing ({})…", status.direction)
         } else if let Some(e) = err {
             format!("Error: {e}")
+        } else if warn_n > 0 {
+            format!("Warning: {warn_n} secret issue(s)")
         } else {
             format!("{} · {}", status.state, status.direction)
         };
@@ -388,12 +402,31 @@ impl NativeTray {
         let last_mat = status.last_materialize_at.as_deref().unwrap_or("—");
         let mat_line = format!("Materialized: {mats} @ {last_mat}");
 
+        let warn_line = if status.materialize_warnings.is_empty() {
+            "Secrets: ok".to_string()
+        } else {
+            // Show first warning; tooltip gets the full set.
+            let first = &status.materialize_warnings[0];
+            if warn_n == 1 {
+                format!("⚠ {first}")
+            } else {
+                format!("⚠ {first} (+{})", warn_n - 1)
+            }
+        };
+
         self.status_headline.set_text(headline.clone());
         self.status_detail.set_text(detail);
         self.status_mat.set_text(mat_line);
-        let _ = self
-            .tray
-            .set_tooltip(Some(format!("pass sync: {headline}")));
+        self.status_warn.set_text(warn_line);
+        let tip = if status.materialize_warnings.is_empty() {
+            format!("pass sync: {headline}")
+        } else {
+            format!(
+                "pass sync: {headline}\n{}",
+                status.materialize_warnings.join("\n")
+            )
+        };
+        let _ = self.tray.set_tooltip(Some(tip));
     }
 
     fn handle_menu(&mut self) {

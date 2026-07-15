@@ -110,9 +110,15 @@ Grace: SSH ed25519 → ssh-to-age recipients may still appear in
 | Developer vault | `pass` + private GH store   | GPG-encrypted values                    |
 | Runtime         | `secretspec run` / wrappers | Env vars for child processes            |
 | Home files      | materialize map             | Optional `$HOME` files (e.g. `~/.shit`) |
-| Machine/home    | sops-nix                    | GPG key, ntfy topic, other host secrets |
-| Peer wake       | ntfy (+ CI backup)          | Empty ping — not the password itself    |
-| CI canaries     | private-repo Actions        | Template decrypt smoke (CI-only GPG)    |
+
+If a mapped key is **deleted from pass**, materialize leaves any existing home
+file in place (stale) and records `materialize_warnings` in
+`~/.cache/pass-store-sync.status`. The pass-store tray shows those warnings
+(error glyph + menu line / tooltip) until the entry returns or the file is
+removed.
+| Machine/home | sops-nix | GPG key, ntfy topic, other host secrets |
+| Peer wake | ntfy (+ CI backup) | Empty ping — not the password itself |
+| CI canaries | private-repo Actions | Template decrypt smoke (CI-only GPG) |
 
 ---
 
