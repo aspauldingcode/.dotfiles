@@ -78,22 +78,11 @@
         };
       };
 
-      # ── Wayland desktop: niri (same as sliceanddice) ───────────────────
-      # greetd + gtkgreet (Wayland) → niri-session; see modules/greetd-gtk.nix.
-      programs.sway.enable = lib.mkForce false;
-      programs.niri.enable = true;
-
-      services.printing.enable = true;
-      security.rtkit.enable = true;
-      services.pipewire = {
-        enable = true;
-        alsa.enable = true;
-        pulse.enable = true;
-      };
+      # ── Dendritic desktop features ─────────────────────────────────────
+      dendritic.apps.niri.enable = true;
+      dendritic.apps.linux-desktop.enable = true;
 
       programs.firefox.enable = true;
-      services.openssh.enable = true;
-      networking.firewall.allowedTCPPorts = [ 22 ];
 
       programs.nh = {
         enable = true;
@@ -103,7 +92,6 @@
       environment.variables = {
         NH_FLAKE = "/etc/nixos/.dotfiles#mba-asahi";
         NH_OS_FLAKE = "/etc/nixos/.dotfiles#mba-asahi";
-        NIXOS_OZONE_WL = "1";
       };
 
       environment.interactiveShellInit = ''
@@ -114,17 +102,7 @@
       environment.systemPackages = with pkgs; [
         git
         waypipe
-        libnotify
-        swaybg
-        wl-clipboard
-        cliphist
-        brightnessctl
-        playerctl
-        pavucontrol
-        grim
-        slurp
-        xwayland-satellite
-        foot
+        # niri plumbing pkgs come from modules/apps/niri.nix.
       ];
     }
 

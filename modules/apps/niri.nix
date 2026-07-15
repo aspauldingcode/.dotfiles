@@ -1,14 +1,80 @@
 {
-  # niri — scrollable-tiling Wayland compositor + a full "unixporn"-style rice.
+  # niri — scrollable-tiling Wayland compositor + rice (HM) and system
+  # session (NixOS: programs.niri, greetd+gtkgreet, gtklock PAM, plumbing).
   #
-  # Coloring comes from the shared Stylix base16 palette (identical mechanism to
-  # the nix-darwin config: `config.lib.stylix.colors`), and the wallpaper is the
-  # same `stylix.image` (mountain-sunset) used everywhere else. waybar / fuzzel /
-  # mako / gtklock are driven through Home Manager `programs.*`/`services.*` so
-  # Stylix themes them automatically; a floating-islands design is layered on top.
+  # Coloring comes from the shared Stylix base16 palette; wallpaper is the
+  # same `stylix.image` (mountain-sunset). gtkgreet (login) and gtklock
+  # (session lock) share CSS from `_gtk-auth-style.nix`.
   #
   # niri does NOT merge a user config.kdl with its built-in defaults — a present
-  # config fully replaces them — so this defines a complete keymap + look.
+  # config fully replaces them — so the HM half defines a complete keymap + look.
+
+  flake.modules.nixos.dendritic =
+    {
+      pkgs,
+      lib,
+      config,
+      ...
+    }:
+    let
+      cfg = config.dendritic.apps.niri;
+      colors = config.lib.stylix.colors.withHashtag;
+      wallpaper = config.stylix.image or null;
+      authCss = import ../_gtk-auth-style.nix {
+        inherit colors wallpaper;
+      };
+      gtkgreet = pkgs.gtkgreet;
+      swayGreeterConfig = pkgs.writeText "greetd-sway-gtkgreet" ''
+        # Minimal kiosk compositor for gtkgreet (desktop sway stays disabled).
+        exec "${gtkgreet}/bin/gtkgreet -l -s /etc/greetd/gtkgreet.css; ${pkgs.sway}/bin/swaymsg exit"
+        bindsym Mod4+shift+e exec ${pkgs.sway}/bin/swaynag \
+          -t warning \
+          -m 'Power?' \
+          -b 'Poweroff' 'systemctl poweroff' \
+          -b 'Reboot' 'systemctl reboot'
+      '';
+    in
+    {
+      options.dendritic.apps.niri.enable = lib.mkEnableOption "niri Wayland compositor (system session + greeter)";
+
+      config = lib.mkIf cfg.enable {
+        programs.niri.enable = true;
+        # Desktop sway off; greeter still uses pkgs.sway as a kiosk binary.
+        programs.sway.enable = lib.mkForce false;
+
+        services.greetd = {
+          enable = true;
+          settings.default_session = {
+            command = "${pkgs.sway}/bin/sway --config ${swayGreeterConfig}";
+            user = "greeter";
+          };
+        };
+
+        environment.etc."greetd/environments".text = ''
+          niri-session
+        '';
+        environment.etc."greetd/gtkgreet.css".text = authCss;
+
+        security.pam.services.gtklock = { };
+
+        environment.variables.NIXOS_OZONE_WL = "1";
+
+        environment.systemPackages = with pkgs; [
+          libnotify
+          swaybg
+          wl-clipboard
+          cliphist
+          brightnessctl
+          playerctl
+          pavucontrol
+          grim
+          slurp
+          xwayland-satellite
+          foot
+        ];
+      };
+    };
+
   flake.modules.homeManager.dendritic =
     {
       pkgs,

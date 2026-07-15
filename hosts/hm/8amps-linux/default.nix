@@ -21,7 +21,6 @@
       dendritic.apps.ghostty.enable = true;
       dendritic.apps.vscode.enable = false;
       dendritic.apps.cursor.enable = false;
-      dendritic.apps.linux-desktop.enable = true;
       dendritic.apps.antigravity.enable = false;
       dendritic.apps.jetbrains.enable = false;
       dendritic.apps.pass.enable = true;

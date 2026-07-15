@@ -97,10 +97,9 @@
         LC_TIME = "en_US.UTF-8";
       };
 
-      # ── Wayland desktop: niri ────────────────────────────────────────────
-      # greetd + gtkgreet (Wayland) → niri-session; see modules/greetd-gtk.nix.
-      programs.sway.enable = lib.mkForce false;
-      programs.niri.enable = true;
+      # ── Dendritic desktop features ─────────────────────────────────────
+      dendritic.apps.niri.enable = true;
+      dendritic.apps.linux-desktop.enable = true;
 
       # NVIDIA drm for Xwayland/offload. videoDrivers pulls in the driver even
       # though niri itself is a native Wayland compositor on Intel.
@@ -110,15 +109,6 @@
       services.xserver.xkb = {
         layout = "us";
         variant = "";
-      };
-
-      services.printing.enable = true;
-      security.rtkit.enable = true;
-      services.pipewire = {
-        enable = true;
-        alsa.enable = true;
-        alsa.support32Bit = true;
-        pulse.enable = true;
       };
 
       users.users.alex = {
@@ -132,8 +122,6 @@
       };
 
       programs.firefox.enable = true;
-      services.openssh.enable = true;
-      networking.firewall.allowedTCPPorts = [ 22 ];
 
       programs.nh = {
         enable = true;
@@ -143,8 +131,6 @@
       environment.variables = {
         NH_FLAKE = "/etc/nixos/.dotfiles#sliceanddice";
         NH_OS_FLAKE = "/etc/nixos/.dotfiles#sliceanddice";
-        # Prefer Wayland for toolkits; fall back to Xwayland where needed.
-        NIXOS_OZONE_WL = "1";
       };
 
       environment.interactiveShellInit = ''
@@ -162,22 +148,7 @@
         # NOTE: cursor + antigravity are installed via Home Manager
         # (dendritic.apps.cursor/antigravity → the FHS builds on Linux), so they
         # are intentionally NOT listed here to avoid a non-FHS PATH duplicate.
-
-        # ── niri Wayland userland ──
-        # NOTE: waybar / fuzzel / mako / gtklock / swayidle are configured &
-        # installed via Home Manager in modules/apps/niri.nix (so Stylix themes
-        # them). Only the "plumbing" tools live here.
-        libnotify # notify-send (for mako)
-        swaybg # wallpaper (spawned by niri)
-        wl-clipboard # clipboard
-        cliphist # clipboard history (Mod+V)
-        brightnessctl # backlight keys (needs system install for udev)
-        playerctl # media keys
-        pavucontrol # audio GUI
-        grim # screenshot capture
-        slurp # region selector
-        xwayland-satellite # X11 app support under niri
-        foot # lightweight fallback terminal (if ghostty ever fails to start)
+        # niri plumbing pkgs come from modules/apps/niri.nix.
       ];
     }
 
