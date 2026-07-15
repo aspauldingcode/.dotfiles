@@ -141,11 +141,6 @@ elif [[ -r /sys/class/power_supply/ADP1/online ]]; then
 fi
 
 root_src="$(findmnt -n -o SOURCE /)"
-root_avail_kib="$(df -k --output=avail / | tail -1 | tr -d ' ')"
-root_avail_mib=$((root_avail_kib / 1024))
-# Keep ≥12 GiB free after carving NEED_MIB (sliceanddice ~95G free → 64+8+9).
-[[ $root_avail_mib -gt $((NEED_MIB + 12 * 1024)) ]] ||
-  die "need ~$((NEED_MIB / 1024 + 12)) GiB free on /; have ~$((root_avail_mib / 1024)) GiB"
 
 [[ -r $PASSWORD_FILE ]] || die "password file missing: $PASSWORD_FILE"
 PASSWORD="$(tr -d '\n' <"$PASSWORD_FILE")"
@@ -184,6 +179,16 @@ if ! iso_ok; then
   iso_ok || die "ISO sha256 mismatch after download (expected $ISO_SHA256)"
   log "ISO verified OK"
 fi
+
+# Free-space for carve: ISO is reclaimable after extract onto wininstall.
+root_avail_kib="$(df -k --output=avail / | tail -1 | tr -d ' ')"
+root_avail_mib=$((root_avail_kib / 1024))
+if [[ -f $ISO_PATH ]]; then
+  iso_kib="$(du -k "$ISO_PATH" | awk '{print $1}')"
+  root_avail_mib=$((root_avail_mib + iso_kib / 1024))
+fi
+[[ $root_avail_mib -gt $((NEED_MIB + 4 * 1024)) ]] ||
+  die "need ~$((NEED_MIB / 1024 + 4)) GiB free on / (incl. reclaimable ISO); have ~$((root_avail_mib / 1024)) GiB"
 
 # ── Repartition (once): windows + wininstall + swap ───────────────────
 nparts="$(lsblk -n -o NAME "$DISK" | wc -l)"

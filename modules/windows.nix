@@ -292,24 +292,25 @@
                 TimeoutStartSec = "6h";
                 Restart = "on-failure";
                 RestartSec = "120s";
-                Environment = [
-                  "DENDRITIC_WINDOWS_DISK=${cfg.disk}"
-                  "DENDRITIC_WINDOWS_MOUNT=${cfg.mountPoint}"
-                  "DENDRITIC_WINDOWS_INSTALL_MOUNT=${cfg.installMountPoint}"
-                  "DENDRITIC_WINDOWS_SIZE_GIB=${toString cfg.sizeGiB}"
-                  "DENDRITIC_WINDOWS_INSTALL_GIB=${toString cfg.installSizeGiB}"
-                  "DENDRITIC_WINDOWS_EDITION_NAME=${cfg.editionName}"
-                  "DENDRITIC_WINDOWS_CACHE=${cacheDir}"
-                  "DENDRITIC_WINDOWS_STATE=${stateDir}"
-                  "DENDRITIC_WINDOWS_UNATTEND_TEMPLATE=${unattendTemplate}"
-                  "DENDRITIC_WINDOWS_PASSWORD_FILE=${passwordPath}"
-                  "DENDRITIC_WINDOWS_ISO_SHA256=${cfg.isoSha256}"
-                  "DENDRITIC_WINDOWS_ISO_URL=${cfg.isoUrl}"
-                  "DENDRITIC_WINDOWS_ISO_NAME=${cfg.isoName}"
-                  "DENDRITIC_WINDOWS_FORCE=${if cfg.forceRedeploy then "1" else "0"}"
-                  "DENDRITIC_WINDOWS_AUTO_REBOOT=${if cfg.autoReboot then "1" else "0"}"
-                ];
                 ExecStart = "${bootstrap}/bin/dendritic-windows-bootstrap";
+              };
+              # Attrset form quotes values with spaces (edition name).
+              environment = {
+                DENDRITIC_WINDOWS_DISK = cfg.disk;
+                DENDRITIC_WINDOWS_MOUNT = cfg.mountPoint;
+                DENDRITIC_WINDOWS_INSTALL_MOUNT = cfg.installMountPoint;
+                DENDRITIC_WINDOWS_SIZE_GIB = toString cfg.sizeGiB;
+                DENDRITIC_WINDOWS_INSTALL_GIB = toString cfg.installSizeGiB;
+                DENDRITIC_WINDOWS_EDITION_NAME = cfg.editionName;
+                DENDRITIC_WINDOWS_CACHE = cacheDir;
+                DENDRITIC_WINDOWS_STATE = stateDir;
+                DENDRITIC_WINDOWS_UNATTEND_TEMPLATE = toString unattendTemplate;
+                DENDRITIC_WINDOWS_PASSWORD_FILE = passwordPath;
+                DENDRITIC_WINDOWS_ISO_SHA256 = cfg.isoSha256;
+                DENDRITIC_WINDOWS_ISO_URL = cfg.isoUrl;
+                DENDRITIC_WINDOWS_ISO_NAME = cfg.isoName;
+                DENDRITIC_WINDOWS_FORCE = if cfg.forceRedeploy then "1" else "0";
+                DENDRITIC_WINDOWS_AUTO_REBOOT = if cfg.autoReboot then "1" else "0";
               };
             };
 
