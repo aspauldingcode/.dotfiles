@@ -109,7 +109,7 @@
         gnugrep
         hostname
       ];
-      text = builtins.readFile ../../modules/pkgs/_dendritic-vault.sh;
+      text = builtins.readFile ../../../modules/pkgs/_dendritic-vault.sh;
     })
     (writeShellApplication {
       name = "dendritic-vault-restore";
@@ -122,7 +122,7 @@
       ];
       text = ''
         # shellcheck disable=SC1091
-        exec bash ${../../modules/pkgs/_dendritic-vault.sh} restore "$@"
+        exec bash ${../../../modules/pkgs/_dendritic-vault.sh} restore "$@"
       '';
     })
     (writeShellApplication {
@@ -141,7 +141,7 @@
         "SC2086"
         "SC2164"
       ];
-      text = builtins.readFile ../../modules/pkgs/_dendritic-reinstall.sh;
+      text = builtins.readFile ../../../modules/pkgs/_dendritic-reinstall.sh;
     })
   ];
 
