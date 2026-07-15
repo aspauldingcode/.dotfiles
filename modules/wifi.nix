@@ -260,8 +260,17 @@
 
         UUID="775e836e-1345-4579-bb55-17e84423aa5b"
         # Upsert system connection matching live Bubbles (WPA2-PSK, DHCP DNS).
-        if ! nmcli -t -f UUID connection show "$SSID" &>/dev/null \
-          && ! nmcli -t -f UUID connection show uuid "$UUID" &>/dev/null; then
+        # Prefer NAME/UUID listing — `connection show <id>` can fail for perms
+        # even when the profile exists (then we wrongly hit `add` and error).
+        HAVE_CONN=0
+        if ${pkgs.networkmanager}/bin/nmcli -t -f NAME connection show 2>/dev/null \
+          | ${pkgs.gnugrep}/bin/grep -Fxq "$SSID"; then
+          HAVE_CONN=1
+        elif ${pkgs.networkmanager}/bin/nmcli -t -f UUID connection show 2>/dev/null \
+          | ${pkgs.gnugrep}/bin/grep -Fxq "$UUID"; then
+          HAVE_CONN=1
+        fi
+        if [[ "$HAVE_CONN" -eq 0 ]]; then
           nmcli connection add type wifi con-name "$SSID" ifname '*' ssid "$SSID" \
             wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$PSK" \
             connection.autoconnect yes connection.autoconnect-priority 100 \
@@ -269,7 +278,7 @@
             ipv4.method auto ipv6.method auto ipv6.addr-gen-mode stable-privacy \
             || warn "nmcli connection add failed"
         else
-          nmcli connection modify "$SSID" \
+          nmcli connection modify id "$SSID" \
             wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$PSK" \
             connection.autoconnect yes connection.autoconnect-priority 100 \
             ipv4.method auto ipv6.method auto ipv6.addr-gen-mode stable-privacy \
