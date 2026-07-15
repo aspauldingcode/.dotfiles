@@ -33,8 +33,10 @@
       # manual / `man configuration.nix` is dropped.
       documentation.nixos.enable = false;
 
-      # Bootloader
+      # Bootloader — 511M EFI; each generation can add ~50MB initrd when it
+      # changes. Cap generations so /boot cannot fill and block switches.
       boot.loader.systemd-boot.enable = true;
+      boot.loader.systemd-boot.configurationLimit = 5;
       boot.loader.efi.canTouchEfiVariables = true;
 
       # Latest mainline kernel from nixpkgs 26.05 (>= 7.0). The NVIDIA open
