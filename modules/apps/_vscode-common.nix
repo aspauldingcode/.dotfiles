@@ -2,11 +2,23 @@
   pkgs,
   lib,
   config,
+  inputs,
   ...
 }:
 let
   fontName = config.stylix.fonts.monospace.name;
   appFontSize = config.stylix.fonts.sizes.applications;
+
+  # Stylix's VS Code *extension* theme (themes/stylix.json) does NOT hot-reload
+  # when the store path / symlink flips on specialization switch — VS Code only
+  # re-reads extension themes on window reload. Titlebar already worked because
+  # it lived in workbench.colorCustomizations (settings.json is watched live).
+  #
+  # Mirror the full Stylix palette into settings customizations so light/dark
+  # activation updates Cursor / Antigravity / VS Code without Reload Window.
+  # Docs: https://code.visualstudio.com/api/extension-guides/color-theme
+  stylixTheme = import "${inputs.stylix}/modules/vscode/templates/theme.nix" config.lib.stylix.colors;
+  stylixWorkbenchColors = lib.filterAttrs (_: v: v != null) stylixTheme.colors;
 
   modern-pdf-preview = pkgs.vscode-utils.extensionFromVscodeMarketplace {
     publisher = "chocolatedesue";
@@ -59,11 +71,10 @@ in
       "workbench.colorTheme" = lib.mkForce "Stylix";
       "workbench.preferredDarkColorTheme" = lib.mkForce "Stylix";
       "workbench.preferredLightColorTheme" = lib.mkForce "Stylix";
-      "workbench.colorCustomizations" = {
-        "titleBar.activeBackground" = "#${config.lib.stylix.colors.base00}";
-        "titleBar.inactiveBackground" = "#${config.lib.stylix.colors.base00}";
-        "titleBar.activeForeground" = "#${config.lib.stylix.colors.base05}";
-        "titleBar.inactiveForeground" = "#${config.lib.stylix.colors.base04}";
+      # Full palette here (not just titleBar) so specialization flips hot-apply.
+      "workbench.colorCustomizations" = lib.mkForce stylixWorkbenchColors;
+      "editor.tokenColorCustomizations" = lib.mkForce {
+        textMateRules = stylixTheme.tokenColors;
       };
       "editor.fontFamily" = lib.mkForce "'${fontName}', monospace";
       "editor.fontSize" = lib.mkForce appFontSize;

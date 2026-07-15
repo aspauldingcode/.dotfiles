@@ -397,25 +397,13 @@
                     end tell
           APPLESCRIPT
 
-                    # VS Code/Cursor/Antigravity: intentionally NOT auto-reloading
-                    # editor windows on appearance flip.
-                    #
-                    # The previous implementation tried `Cmd+Shift+P → keystroke
-                    # "Developer: Reload Window"` as a fallback when the menu-bar
-                    # path failed. But VSCode-based editors don't expose a
-                    # top-level `Developer` menu — `Reload Window` is a
-                    # command-palette command — so the menu path ALWAYS errors
-                    # and ALWAYS falls through to the keystroke. If the editor
-                    # isn't actually the focused window at that instant (e.g.
-                    # you're typing in an integrated terminal), AppleScript
-                    # types the literal string into your shell, polluting
-                    # prompts and breaking CLI sessions.
-                    #
-                    # Stylix already re-renders theme files at activation; the
-                    # editors pick up palette changes on their next manual
-                    # reload (Cmd+R / Developer: Reload Window from the user's
-                    # command palette). Tradeoff: one manual keypress vs.
-                    # garbled terminals — keep it manual.
+                    # VS Code / Cursor / Antigravity: do NOT AppleScript-reload
+                    # windows. Extension theme files (stylix.stylix) do not
+                    # hot-reload in production, but HM writes the full Stylix
+                    # palette into workbench.colorCustomizations +
+                    # editor.tokenColorCustomizations in settings.json — VS Code
+                    # watches that file and applies live on both Darwin and
+                    # Linux. See modules/apps/_vscode-common.nix.
 
                     # Neovim now watches ~/colors.toml directly for Stylix palette changes.
 
