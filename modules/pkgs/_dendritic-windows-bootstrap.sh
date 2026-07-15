@@ -293,7 +293,7 @@ rsync -aH --info=stats2 "$isomnt"/ "$INSTALL_MOUNT"/
 
 [[ -e $INSTALL_MOUNT/sources/setup.exe ]] || die "setup.exe missing after extract"
 [[ -e $INSTALL_MOUNT/EFI/BOOT/bootx64.efi || -e $INSTALL_MOUNT/efi/boot/bootx64.efi ]] ||
-  die "EFI\\BOOT\\bootx64.efi missing after extract"
+  die 'EFI\BOOT\bootx64.efi missing after extract'
 
 xml_pass="$(printf '%s' "$PASSWORD" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g')"
 sed -e "s|__DENDRITIC_PASSWORD__|${xml_pass}|g" \
