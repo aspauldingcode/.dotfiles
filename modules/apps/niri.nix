@@ -18,10 +18,10 @@
     }:
     let
       cfg = config.dendritic.apps.niri;
-      colors = config.lib.stylix.colors.withHashtag;
       wallpaper = config.stylix.image or null;
       authCss = import ../_gtk-auth-style.nix {
-        inherit colors wallpaper;
+        inherit lib pkgs wallpaper;
+        colors = config.lib.stylix.colors;
       };
       gtkgreet = pkgs.gtkgreet;
       swayGreeterConfig = pkgs.writeText "greetd-sway-gtkgreet" ''
@@ -88,11 +88,23 @@
       c = config.lib.stylix.colors.withHashtag;
       wallpaper = config.stylix.image or null;
       authCss = import ../_gtk-auth-style.nix {
-        colors = c;
-        inherit wallpaper;
+        inherit lib pkgs wallpaper;
+        colors = config.lib.stylix.colors;
       };
       gtklockStyle = pkgs.writeText "gtklock-style.css" authCss;
-      lock = "${lib.getExe pkgs.gtklock} -s ${gtklockStyle}";
+      gtklockIcons = import ../_gtk-auth-icons.nix { inherit pkgs; };
+      # Dedicated gtk-3 settings so we can force our icon theme without
+      # clobbering the user's normal ~/.config/gtk-3.0.
+      gtklockGtkConfig = pkgs.writeTextDir "gtk-3.0/settings.ini" ''
+        [Settings]
+        gtk-icon-theme-name=gtklock-auth
+      '';
+      # String path — swayidle events require `null or string`, not a derivation.
+      lock = "${pkgs.writeShellScript "gtklock-auth" ''
+        export XDG_DATA_DIRS=${lib.escapeShellArg "${gtklockIcons}/share"}''${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}
+        export XDG_CONFIG_HOME=${lib.escapeShellArg gtklockGtkConfig}
+        exec ${lib.getExe pkgs.gtklock} -s ${gtklockStyle} "$@"
+      ''}";
 
       # Night-light toggle: wlsunset runs on an auto schedule (see
       # services.wlsunset below); this flips it on/off from the keyboard.
@@ -613,7 +625,7 @@
               Ctrl+Print { screenshot-screen; }
               Alt+Print { screenshot-window; }
 
-              // Session
+              // Session (wrapper sets bold reveal icons + style)
               Super+Alt+L { spawn "${lock}"; }
               Mod+Shift+E { quit; }
           }
