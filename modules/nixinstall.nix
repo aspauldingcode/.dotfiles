@@ -106,16 +106,8 @@
           "d ${cfg.mountPoint} 0755 root root -"
         ];
 
-        # Mount nixinstall when the partition exists (after first bootstrap).
-        fileSystems.${cfg.mountPoint} = {
-          device = "/dev/disk/by-partlabel/nixinstall";
-          fsType = "ext4";
-          options = [
-            "nofail"
-            "noatime"
-            "x-systemd.device-timeout=5s"
-          ];
-        };
+        # Do not declare a fstab mount for nixinstall here — the partition may
+        # not exist yet. Bootstrap mounts it; after disko install, disko owns it.
 
         systemd.timers.dendritic-nixinstall-bootstrap = lib.mkIf cfg.autoBootstrap {
           wantedBy = [ "timers.target" ];

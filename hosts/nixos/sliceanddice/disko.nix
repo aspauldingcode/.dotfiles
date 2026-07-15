@@ -42,6 +42,11 @@ in
   };
 
   config = {
+    # While still on the old ext4 root, do NOT let disko emit btrfs subvol
+    # mounts (/nix /home /var/log) or missing-partition mounts as required —
+    # that is what put us in emergency mode.
+    disko.enableConfig = !liveExt4;
+
     disko.devices.disk.main = {
       type = "disk";
       device = disk;
