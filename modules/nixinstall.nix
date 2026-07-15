@@ -125,6 +125,12 @@
             "network-online.target"
           ];
           wants = [ "network-online.target" ];
+          path = [
+            pkgs.nix
+            pkgs.git
+            pkgs.coreutils
+            config.nix.package
+          ];
           unitConfig = {
             ConditionPathExists = "!${stateDir}/ready";
           };
