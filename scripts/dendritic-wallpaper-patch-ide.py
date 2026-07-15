@@ -75,15 +75,24 @@ def main() -> None:
             continue
         try:
             data = json.loads(path.read_text())
-        except Exception:
+        except Exception as exc:
+            print(f"dendritic-wallpaper: skip {path}: read failed ({exc})")
             continue
         existing = data.get("workbench.colorCustomizations") or {}
         if not isinstance(existing, dict):
             existing = {}
         existing.update(patch)
         data["workbench.colorCustomizations"] = existing
-        path.write_text(json.dumps(data, indent=2) + "\n")
-        print(f"dendritic-wallpaper: patched {path}")
+        try:
+            path.chmod(path.stat().st_mode | 0o200)
+            path.write_text(json.dumps(data, indent=2) + "\n")
+            print(f"dendritic-wallpaper: patched {path}")
+        except PermissionError:
+            # HM/nix often leaves IDE settings read-only; palette still applies
+            # via colors.toml. Don't abort the wallpaper apply.
+            print(f"dendritic-wallpaper: skip {path}: permission denied")
+        except Exception as exc:
+            print(f"dendritic-wallpaper: skip {path}: {exc}")
 
 
 if __name__ == "__main__":
