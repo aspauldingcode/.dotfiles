@@ -1,73 +1,87 @@
 #!/usr/bin/env bash
-# Label existing GPT partitions + swap so disko-oriented by-label mounts work
-# before Windows bootstrap repartitions the disk.
+# Label existing GPT partitions so by-partlabel mounts work.
+# NEVER invent a swap label on an unknown 3rd partition — that destroyed nixinstall.
 set -euo pipefail
 
 DISK="${DENDRITIC_WINDOWS_DISK:?}"
-ESP_PART="${DISK}-part1"
-ROOT_PART="${DISK}-part2"
-SWAP_PART="${DISK}-part3"
 
 if [[ ! -b $DISK ]]; then
   echo "dendritic-windows-label-gpt: disk $DISK not found" >&2
   exit 1
 fi
 
-# Layouts:
-#   2: ESP + nixos (swap deleted; liveExt4Compat / pre-nixinstall)
-#   3: ESP + nixos + swap (legacy)
-#   4: ESP + nixos + windows + swap (legacy dual-boot)
-#   6+: ESP + nixos + nixinstall + windows + wininstall + swap (target)
-nparts="$(lsblk -n -o NAME "$DISK" | wc -l)"
-nparts=$((nparts - 1))
+nparts="$(lsblk -nro NAME,TYPE "$DISK" | awk '$2=="part"{c++} END{print c+0}')"
 
 sgdisk -c 1:ESP "$DISK" >/dev/null
 sgdisk -c 2:nixos "$DISK" >/dev/null
 
 SWAP_DEV=""
-if [[ $nparts -ge 6 ]]; then
-  sgdisk -c 3:nixinstall "$DISK" >/dev/null
-  sgdisk -c 4:windows "$DISK" >/dev/null
-  sgdisk -c 5:wininstall "$DISK" >/dev/null
-  sgdisk -c 6:swap "$DISK" >/dev/null
+case "$nparts" in
+6)
+  # Target: ESP nixos windows|nixinstall… — detect by existing PARTLABEL/FS
+  # Prefer fixed target order if windows exists or sizes match; else label by content.
+  sgdisk -c 3:nixinstall "$DISK" >/dev/null || true
+  sgdisk -c 4:windows "$DISK" >/dev/null || true
+  sgdisk -c 5:wininstall "$DISK" >/dev/null || true
+  sgdisk -c 6:swap "$DISK" >/dev/null || true
   SWAP_DEV="${DISK}-part6"
-elif [[ $nparts -eq 5 ]]; then
-  # Pre-nixinstall windows layout: ESP nixos windows wininstall swap
+  ;;
+5)
+  # ESP nixos windows wininstall swap  OR  ESP nixos windows wininstall nixinstall
+  # If part5 is already swap-type or labeled swap, keep; if ext4 nixinstall, don't mkswap.
   sgdisk -c 3:windows "$DISK" >/dev/null
   sgdisk -c 4:wininstall "$DISK" >/dev/null
-  sgdisk -c 5:swap "$DISK" >/dev/null
-  SWAP_DEV="${DISK}-part5"
-elif [[ $nparts -eq 4 ]]; then
-  # Legacy dual-boot without wininstall
-  sgdisk -c 3:windows "$DISK" >/dev/null
-  sgdisk -c 4:swap "$DISK" >/dev/null
-  SWAP_DEV="${DISK}-part4"
-elif [[ $nparts -eq 3 ]]; then
-  sgdisk -c 3:swap "$DISK" >/dev/null
-  SWAP_DEV="$SWAP_PART"
-elif [[ $nparts -eq 2 ]]; then
-  # ESP + nixos only — nothing else to label
+  if blkid "${DISK}-part5" 2>/dev/null | grep -q 'TYPE="ext4"'; then
+    sgdisk -c 5:nixinstall "$DISK" >/dev/null
+  else
+    sgdisk -c 5:swap "$DISK" >/dev/null
+    SWAP_DEV="${DISK}-part5"
+  fi
+  ;;
+4)
+  # Legacy dual-boot without wininstall, or ESP nixos nixinstall + something
+  if blkid "${DISK}-part3" 2>/dev/null | grep -q 'TYPE="ext4"\|LABEL="nixinstall"\|TYPE="btrfs"'; then
+    sgdisk -c 3:nixinstall "$DISK" >/dev/null
+    if blkid "${DISK}-part4" 2>/dev/null | grep -q 'TYPE="swap"'; then
+      sgdisk -c 4:swap "$DISK" >/dev/null
+      SWAP_DEV="${DISK}-part4"
+    fi
+  else
+    sgdisk -c 3:windows "$DISK" >/dev/null
+    sgdisk -c 4:swap "$DISK" >/dev/null
+    SWAP_DEV="${DISK}-part4"
+  fi
+  ;;
+3)
+  # ESP + nixos + (nixinstall | swap). Distinguish by filesystem — never mkswap ext4.
+  if blkid "${DISK}-part3" 2>/dev/null | grep -Eq 'TYPE="swap"|TYPE="linux_raid_member"'; then
+    sgdisk -c 3:swap "$DISK" >/dev/null
+    SWAP_DEV="${DISK}-part3"
+  else
+    # Default: third partition is nixinstall (installer + vault)
+    sgdisk -c 3:nixinstall "$DISK" >/dev/null
+  fi
+  ;;
+2)
   :
-else
+  ;;
+*)
   echo "dendritic-windows-label-gpt: unexpected partition count $nparts" >&2
   exit 1
-fi
+  ;;
+esac
 
 partprobe "$DISK" 2>/dev/null || true
 udevadm settle || true
 
 if [[ -n $SWAP_DEV && -b $SWAP_DEV ]]; then
-  swap_real="$(readlink -f "$SWAP_DEV")"
-  active=0
-  while read -r name; do
-    [[ -n $name ]] || continue
-    [[ "$(readlink -f "$name")" == "$swap_real" ]] && active=1 && break
-  done < <(swapon --show=NAME --noheadings 2>/dev/null || true)
-  if [[ $active -eq 1 ]]; then
-    # Active swap: label only (never mkswap).
+  # Only mkswap if already swap or completely blank — never wipe ext4/btrfs/ntfs.
+  if blkid "$SWAP_DEV" 2>/dev/null | grep -q 'TYPE="swap"'; then
     swaplabel -L swap "$SWAP_DEV" 2>/dev/null || true
+  elif ! blkid "$SWAP_DEV" 2>/dev/null | grep -q 'TYPE='; then
+    mkswap -L swap "$SWAP_DEV" || true
   else
-    swaplabel -L swap "$SWAP_DEV" 2>/dev/null || mkswap -L swap "$SWAP_DEV" || true
+    echo "dendritic-windows-label-gpt: refusing mkswap on $SWAP_DEV (has filesystem)" >&2
   fi
 fi
 
