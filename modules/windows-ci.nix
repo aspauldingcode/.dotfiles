@@ -9,7 +9,6 @@
         ./pkgs/_dendritic-windows-label-gpt.sh
       ];
       unattend = ./pkgs/_dendritic-windows-unattend.xml;
-      # Keep in sync with modules/windows.nix defaults.
       expectedSha = "8abf91c9cd408368dc73aab3425d5e3c02dae74900742072eb5c750fc637c195";
       expectedFwlink = "https://go.microsoft.com/fwlink/?linkid=2289029";
 
@@ -30,26 +29,28 @@
           ''
             set -euo pipefail
             echo "== shellcheck =="
-            # SC2154: env vars set by systemd Environment= at runtime
             shellcheck -e SC2154,SC2086,SC2046,SC2034,SC2001,SC2016,SC2207 ${scriptsArgs}
 
-            echo "== unattend.xml (silent) =="
+            echo "== unattend.xml (silent Setup → partition 3) =="
             xmllint --noout ${unattend}
             grep -q 'AcceptEula>true</AcceptEula>' ${unattend}
             grep -q 'WillShowUI>Never</WillShowUI>' ${unattend}
             grep -q 'SkipMachineOOBE>true</SkipMachineOOBE>' ${unattend}
-            grep -q 'SkipUserOOBE>true</SkipUserOOBE>' ${unattend}
+            grep -q 'PartitionID>3</PartitionID>' ${unattend}
+            grep -q '__DENDRITIC_IMAGE_INDEX__' ${unattend}
             grep -q 'HideOnlineAccountScreens>true</HideOnlineAccountScreens>' ${unattend}
             grep -q 'PreventDeviceEncryption' ${unattend}
             grep -q 'dendritic-windows-ready' ${unattend}
             grep -q '__DENDRITIC_PASSWORD__' ${unattend}
-            grep -q 'LocalAccount' ${unattend}
             grep -q 'shutdown /r' ${unattend}
 
-            echo "== bootstrap uses BootNext (not BootOrder flip) =="
+            echo "== bootstrap uses wininstall media + BootNext =="
+            grep -q 'wininstall' ${./pkgs/_dendritic-windows-bootstrap.sh}
             grep -q -- '--bootnext' ${./pkgs/_dendritic-windows-bootstrap.sh}
-            grep -q 'DENDRITIC_WINDOWS_AUTO_REBOOT' ${./pkgs/_dendritic-windows-bootstrap.sh}
-            ! grep -q 'BootOrder prefers Windows' ${./pkgs/_dendritic-windows-bootstrap.sh}
+            grep -q 'Windows Setup (dendritic)' ${./pkgs/_dendritic-windows-bootstrap.sh}
+            grep -q 'media-ready' ${./pkgs/_dendritic-windows-bootstrap.sh}
+            grep -q 'rsync' ${./pkgs/_dendritic-windows-bootstrap.sh}
+            ! grep -q 'wimlib-imagex apply' ${./pkgs/_dendritic-windows-bootstrap.sh}
 
             echo "== module defaults (pinned) =="
             test "${expectedSha}" = "8abf91c9cd408368dc73aab3425d5e3c02dae74900742072eb5c750fc637c195"

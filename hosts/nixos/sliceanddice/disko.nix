@@ -1,11 +1,13 @@
 # Target GPT layout for sliceanddice (Samsung 870 EVO 500GB).
 #
 # disko generates mount units; it does NOT repartition on every nh os switch.
-# Live shrink + Windows NTFS creation is owned by dendritic-windows-bootstrap.
+# Live shrink + Windows/wininstall creation is owned by dendritic-windows-bootstrap.
 #
-# Existing ESP/root keep stable filesystem UUIDs across shrink. Mounts prefer
-# PARTLABEL after bootstrap labels partitions; UUID mkForce below keeps the
-# machine bootable before labels/windows exist.
+# Layout after bootstrap:
+#   1 ESP | 2 nixos | 3 windows (64G) | 4 wininstall (~8G Setup media) | 5 swap
+#
+# wininstall holds extracted IoT LTSC ISO + Autounattend; first bootstrap boots
+# into it once. Partition stays for repair media; bootstrap does not re-run.
 {
   inputs,
   lib,
@@ -44,10 +46,10 @@ in
             ];
           };
         };
-        # Leaves 64G Windows + ~9G swap at the end of the disk.
+        # Leaves 64G Windows + 8G wininstall + ~9G swap at the end of the disk.
         nixos = {
           priority = 2;
-          end = "-73G";
+          end = "-81G";
           label = "nixos";
           content = {
             type = "filesystem";
@@ -74,8 +76,27 @@ in
             ];
           };
         };
-        swap = {
+        # Extracted Setup media (ISO contents + Autounattend). Stays after install.
+        wininstall = {
           priority = 4;
+          size = "8G";
+          label = "wininstall";
+          content = {
+            type = "filesystem";
+            format = "ntfs";
+            mountpoint = "/mnt/wininstall";
+            mountOptions = [
+              "nofail"
+              "ro"
+              "uid=1000"
+              "gid=100"
+              "umask=022"
+              "x-systemd.device-timeout=5s"
+            ];
+          };
+        };
+        swap = {
+          priority = 5;
           size = "100%";
           label = "swap";
           content = {

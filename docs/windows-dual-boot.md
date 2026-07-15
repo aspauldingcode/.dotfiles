@@ -11,58 +11,56 @@ See [`hosts/nixos/sliceanddice/disko.nix`](../hosts/nixos/sliceanddice/disko.nix
 - ESP 512M shared (`/boot`) — systemd-boot generations + Windows Boot Manager
 - NixOS root (shrunk)
 - 64G NTFS `PARTLABEL=windows` → `/mnt/windows` (rw from Linux, `nofail`)
+- 8G NTFS `PARTLABEL=wininstall` → `/mnt/wininstall` (extracted Setup media, stays)
 - ~9G swap (same UUID across recreate)
 
-`nh os switch` never repartitions or reinstalls Windows. Install is a oneshot
-gated by `/var/lib/dendritic-windows/installed`.
+No USB / optical media. Bootstrap extracts the ISO onto **wininstall** and boots
+that partition once via EFI BootNext.
 
-## First-time bootstrap (fully automatic, no GUI)
+`nh os switch` never repartitions or reinstalls Windows. Markers:
 
-Install is **silent end-to-end**: Linux applies the WIM with `wimlib` (no Windows
-Setup), injects Panther `unattend.xml` (`WillShowUI=Never`, `SkipMachineOOBE`,
-`SkipUserOOBE`, AcceptEula, local `alex`, no MSA), then one-shots specialize via
-EFI **BootNext** (BootOrder stays systemd-boot-first).
+- `/var/lib/dendritic-windows/media-ready` — Setup media extracted (skip re-extract)
+- `/var/lib/dendritic-windows/installed` — Windows finished; bootstrap is a permanent no-op
+
+## First-time bootstrap (fully automatic, no GUI, no external media)
 
 With `dendritic.windows.enable = true` and `autoBootstrap = true` (sliceanddice
 defaults):
 
-1. Secure Boot stays **off** (already off on this host).
-2. Plug in **AC power**; keep ≳20 GiB free on `/` after carving 64+9 GiB.
-3. `nh os switch` — a **timer** (`dendritic-windows-bootstrap.timer`) starts ~90s
-   after boot and:
-   - downloads the IoT LTSC 2024 x64 eval ISO from Microsoft
-     (`https://go.microsoft.com/fwlink/?linkid=2289029` → PRSS CDN),
+1. Secure Boot stays **off**.
+2. Plug in **AC power**; keep ≳20 GiB free on `/` after carving 64+8+9 GiB.
+3. Timer starts ~90s after boot and:
+   - downloads the IoT LTSC 2024 x64 eval ISO (fwlink → CDN),
    - verifies SHA256 `8abf91c9cd408368dc73aab3425d5e3c02dae74900742072eb5c750fc637c195`,
-   - shrinks root, creates NTFS + swap, `wimlib` apply, injects unattend,
-   - installs Windows Boot Manager on the shared ESP,
-   - sets `efibootmgr --bootnext` to Windows and **reboots** (`autoReboot`).
-4. Windows boots once for unattended specialize (progress splash only — no OOBE
-   prompts). FirstLogon writes `C:\dendritic-windows-ready` and reboots.
-5. Next boot is NixOS. `dendritic-windows-finalize` clears BootNext and keeps
-   **systemd-boot first**. Menu still lists NixOS generations + Windows.
+   - shrinks root; creates windows + wininstall + swap,
+   - extracts ISO → wininstall, writes `Autounattend.xml` (InstallTo partition 3),
+   - deletes the ISO cache (media lives on wininstall),
+   - `efibootmgr --bootnext` → `Windows Setup (dendritic)` on wininstall,
+   - reboots (`autoReboot`).
+4. Silent Setup installs onto **windows**; FirstLogon writes
+   `C:\dendritic-windows-ready` and reboots to NixOS.
+5. `dendritic-windows-finalize` clears BootNext, keeps systemd-boot first, writes
+   **installed**. wininstall stays for repair; bootstrap never runs again.
 
-Manual kick (optional):
+Manual kick:
 
 ```bash
 sudo systemctl start dendritic-windows-bootstrap.service
 ```
 
-Set `dendritic.windows.autoReboot = false` if you want to reboot yourself after
-the unit finishes (`journalctl -u dendritic-windows-bootstrap -f`).
-
-ISO cache path: `/var/cache/dendritic-windows/<isoName>`.
+`dendritic.windows.autoReboot = false` — reboot yourself after media prep.
 
 ## Password
 
-Default: auto-generated at `/var/lib/dendritic-windows/password` (mode 0600).
-Override with `dendritic.windows.passwordFile`.
+Default: `/var/lib/dendritic-windows/password` (mode 0600).
+Override: `dendritic.windows.passwordFile`.
 
 ## Idempotency / force
 
-- Marker `/var/lib/dendritic-windows/installed` or existing `ntoskrnl.exe` → skip.
-- `dendritic.windows.forceRedeploy = true` re-applies (destructive).
+- `installed` or existing `ntoskrnl.exe` → skip forever.
+- `media-ready` without Windows → refresh BootNext only (no re-download).
+- `dendritic.windows.forceRedeploy = true` re-extracts / re-runs Setup (destructive).
 
 ## Writing from Linux
 
-`/mnt/windows` is ntfs3 rw. Only mount after a clean Windows shutdown
-(Fast Startup disabled by unattend).
+`/mnt/windows` is ntfs3 rw after a clean Windows shutdown (Fast Startup off).

@@ -1,7 +1,8 @@
 # dendritic.windows — declarative dual-boot helper for Windows 11 IoT Enterprise LTSC.
 #
-# Disk layout: hosts/.../disko.nix. Bootstrap oneshot applies the WIM once;
-# later nh os switch is a no-op for install (marker-gated).
+# Disk layout: hosts/.../disko.nix. Bootstrap oneshot extracts Setup media onto
+# a persistent wininstall partition and BootNexts into silent Setup once;
+# later nh os switch is a no-op (media-ready / installed markers).
 {
   flake.modules.nixos.dendritic =
     {
@@ -57,6 +58,8 @@
           gawk
           gnused
           gnugrep
+          rsync
+          findutils
         ];
         excludeShellChecks = [
           "SC2086"
@@ -102,10 +105,22 @@
           description = "Where the Windows NTFS volume is mounted from NixOS.";
         };
 
+        installMountPoint = lib.mkOption {
+          type = lib.types.str;
+          default = "/mnt/wininstall";
+          description = "Where the persistent Setup media (extracted ISO) is mounted.";
+        };
+
         sizeGiB = lib.mkOption {
           type = lib.types.ints.positive;
           default = 64;
           description = "Windows partition size in GiB.";
+        };
+
+        installSizeGiB = lib.mkOption {
+          type = lib.types.ints.positive;
+          default = 8;
+          description = "wininstall Setup-media partition size in GiB (extracted ISO + Autounattend).";
         };
 
         editionName = lib.mkOption {
@@ -167,9 +182,10 @@
           type = lib.types.bool;
           default = true;
           description = ''
-            After silent wimlib apply, reboot once via EFI BootNext into Windows
-            for unattended specialize (no Setup GUI / no OOBE prompts). Windows
-            then auto-reboots back to systemd-boot.
+            After extracting Setup media to wininstall, reboot once via EFI
+            BootNext into silent Windows Setup (no USB). Setup installs to the
+            windows partition; FirstLogon then reboots back to systemd-boot.
+            Retries (media already ready) do not auto-reboot.
           '';
         };
       };
@@ -195,6 +211,7 @@
               "d ${stateDir} 0750 root root -"
               "d ${cacheDir} 0750 root root -"
               "d ${cfg.mountPoint} 0755 root root -"
+              "d ${cfg.installMountPoint} 0755 root root -"
             ];
 
             # Ensure a password file exists before bootstrap (sops or generated).
@@ -250,7 +267,7 @@
             };
 
             systemd.services.dendritic-windows-bootstrap = lib.mkIf cfg.autoBootstrap {
-              description = "Bootstrap Windows 11 IoT Enterprise LTSC (idempotent)";
+              description = "Bootstrap Windows 11 IoT LTSC via wininstall Setup media (idempotent)";
               after = [
                 "dendritic-windows-label-gpt.service"
                 "dendritic-windows-ensure-password.service"
@@ -262,7 +279,7 @@
                 "dendritic-windows-ensure-password.service"
                 "dendritic-windows-label-gpt.service"
               ];
-              # Skip when installed (unless force).
+              # Skip when finalize wrote installed (unless force).
               unitConfig = lib.mkIf (!cfg.forceRedeploy) {
                 ConditionPathExists = "!${stateDir}/installed";
                 StartLimitIntervalSec = 3600;
@@ -271,13 +288,14 @@
               serviceConfig = {
                 Type = "oneshot";
                 TimeoutStartSec = "6h";
-                # Retry download / transient network failures.
                 Restart = "on-failure";
                 RestartSec = "120s";
                 Environment = [
                   "DENDRITIC_WINDOWS_DISK=${cfg.disk}"
                   "DENDRITIC_WINDOWS_MOUNT=${cfg.mountPoint}"
+                  "DENDRITIC_WINDOWS_INSTALL_MOUNT=${cfg.installMountPoint}"
                   "DENDRITIC_WINDOWS_SIZE_GIB=${toString cfg.sizeGiB}"
+                  "DENDRITIC_WINDOWS_INSTALL_GIB=${toString cfg.installSizeGiB}"
                   "DENDRITIC_WINDOWS_EDITION_NAME=${cfg.editionName}"
                   "DENDRITIC_WINDOWS_CACHE=${cacheDir}"
                   "DENDRITIC_WINDOWS_STATE=${stateDir}"
@@ -287,7 +305,6 @@
                   "DENDRITIC_WINDOWS_ISO_URL=${cfg.isoUrl}"
                   "DENDRITIC_WINDOWS_ISO_NAME=${cfg.isoName}"
                   "DENDRITIC_WINDOWS_FORCE=${if cfg.forceRedeploy then "1" else "0"}"
-                  "DENDRITIC_WINDOWS_ESP=/boot"
                   "DENDRITIC_WINDOWS_AUTO_REBOOT=${if cfg.autoReboot then "1" else "0"}"
                 ];
                 ExecStart = "${bootstrap}/bin/dendritic-windows-bootstrap";
@@ -295,7 +312,7 @@
             };
 
             systemd.services.dendritic-windows-finalize = {
-              description = "Clear BootNext / ensure systemd-boot-first after Windows specialize";
+              description = "Mark Windows installed; clear BootNext after silent Setup";
               wantedBy = [ "multi-user.target" ];
               after = [ "local-fs.target" ];
               unitConfig = {
