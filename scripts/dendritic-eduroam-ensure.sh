@@ -197,14 +197,13 @@ if command -v nmcli >/dev/null 2>&1; then
   # still try autoconnect eduroam if visible.
   nmcli connection reload 2>/dev/null || true
   if ! nmcli -t -f NAME,DEVICE connection show --active 2>/dev/null | grep -q "^${SSID}:"; then
-    # iwd provisioning file is the source of truth; nmcli device wifi connect may work
-    nmcli device wifi connect "$SSID" 2>/dev/null ||
-      iwctl station list 2>/dev/null | true
-    # Try each wifi device via iwctl
+    # iwd provisioning file is the source of truth; connect is best-effort
+    # (SSID may be out of range). Avoid `cmd | true` under pipefail — SIGPIPE → 141.
+    nmcli device wifi connect "$SSID" >/dev/null 2>&1 || true
     if command -v iwctl >/dev/null 2>&1; then
       while read -r _dev; do
         [[ -n $_dev ]] || continue
-        iwctl station "$_dev" connect "$SSID" 2>/dev/null || true
+        iwctl station "$_dev" connect "$SSID" >/dev/null 2>&1 || true
       done < <(iwctl device list 2>/dev/null | awk '/station/{print $2}' || true)
     fi
   fi
