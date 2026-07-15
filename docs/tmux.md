@@ -37,21 +37,30 @@ Changed from stock `Ctrl-b` for ergonomics (Screen-style; common power-user defa
 
 ---
 
-## Panes & windows (tabs)
+## Sessions & windows (dual tab bar)
 
-Windows are the **tabs** along the top status bar (click to switch).
+Top status row = **sessions** · bottom = **windows** inside the current session.
+Both are clickable (tmux `range=session` / `range=window`). Stylix-colored.
 
-| Action              | Keybind                                            |
-| ------------------- | -------------------------------------------------- |
-| Split vertical      | `prefix` `\|`                                      |
-| Split horizontal    | `prefix` `-`                                       |
-| Kill pane           | `prefix` `x`                                       |
-| Zoom pane           | `prefix` `z`                                       |
-| New tab (window)    | `prefix` `c`                                       |
-| Next / previous tab | `prefix` `n` / `p` · `Ctrl-Tab` / `Ctrl-Shift-Tab` |
-| Jump to tab 1–9     | `prefix` `1`…`9`                                   |
-| Rename tab          | `prefix` `,`                                       |
-| Resize pane         | `prefix` `H` `J` `K` `L`                           |
+| Action         | How                                                                      |
+| -------------- | ------------------------------------------------------------------------ |
+| Switch session | click session pill · `prefix` `(`/`)` · `prefix` `o` (sessionx fuzzy)    |
+| New session    | green **+** on top row · `prefix` `C` · right-click status → New Session |
+| Kill session   | right-click session pill → Kill · `prefix` `X`                           |
+| Switch window  | click window pill · `prefix` `n`/`p` · `Ctrl-Tab`                        |
+| New window     | green **+** on bottom row · `prefix` `c`                                 |
+| Kill window    | middle-click window pill · right-click → Kill · `prefix` `&`             |
+| Rename         | right-click pill → Rename · `prefix` `,` (window) / `$` (session)        |
+
+## Panes
+
+| Action           | Keybind                  |
+| ---------------- | ------------------------ |
+| Split vertical   | `prefix` `\|`            |
+| Split horizontal | `prefix` `-`             |
+| Kill pane        | `prefix` `x`             |
+| Zoom pane        | `prefix` `z`             |
+| Resize pane      | `prefix` `H` `J` `K` `L` |
 
 Mouse: click panes, drag borders, scroll → copy-mode.
 
