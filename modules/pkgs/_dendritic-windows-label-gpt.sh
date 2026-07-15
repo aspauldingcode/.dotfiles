@@ -13,27 +13,41 @@ if [[ ! -b $DISK ]]; then
   exit 1
 fi
 
-# Current layout (pre-bootstrap): 1=ESP 2=root 3=swap
-# Post-bootstrap: 1=ESP 2=nixos 3=windows 4=wininstall 5=swap
+# Layouts:
+#   2: ESP + nixos (swap deleted; liveExt4Compat / pre-nixinstall)
+#   3: ESP + nixos + swap (legacy)
+#   4: ESP + nixos + windows + swap (legacy dual-boot)
+#   6+: ESP + nixos + nixinstall + windows + wininstall + swap (target)
 nparts="$(lsblk -n -o NAME "$DISK" | wc -l)"
 nparts=$((nparts - 1))
 
 sgdisk -c 1:ESP "$DISK" >/dev/null
 sgdisk -c 2:nixos "$DISK" >/dev/null
 
-if [[ $nparts -ge 5 ]]; then
+SWAP_DEV=""
+if [[ $nparts -ge 6 ]]; then
+  sgdisk -c 3:nixinstall "$DISK" >/dev/null
+  sgdisk -c 4:windows "$DISK" >/dev/null
+  sgdisk -c 5:wininstall "$DISK" >/dev/null
+  sgdisk -c 6:swap "$DISK" >/dev/null
+  SWAP_DEV="${DISK}-part6"
+elif [[ $nparts -eq 5 ]]; then
+  # Pre-nixinstall windows layout: ESP nixos windows wininstall swap
   sgdisk -c 3:windows "$DISK" >/dev/null
   sgdisk -c 4:wininstall "$DISK" >/dev/null
   sgdisk -c 5:swap "$DISK" >/dev/null
   SWAP_DEV="${DISK}-part5"
 elif [[ $nparts -eq 4 ]]; then
-  # Legacy dual-boot layout without wininstall
+  # Legacy dual-boot without wininstall
   sgdisk -c 3:windows "$DISK" >/dev/null
   sgdisk -c 4:swap "$DISK" >/dev/null
   SWAP_DEV="${DISK}-part4"
 elif [[ $nparts -eq 3 ]]; then
   sgdisk -c 3:swap "$DISK" >/dev/null
   SWAP_DEV="$SWAP_PART"
+elif [[ $nparts -eq 2 ]]; then
+  # ESP + nixos only — nothing else to label
+  :
 else
   echo "dendritic-windows-label-gpt: unexpected partition count $nparts" >&2
   exit 1
@@ -42,7 +56,7 @@ fi
 partprobe "$DISK" 2>/dev/null || true
 udevadm settle || true
 
-if [[ -b $SWAP_DEV ]]; then
+if [[ -n $SWAP_DEV && -b $SWAP_DEV ]]; then
   swap_real="$(readlink -f "$SWAP_DEV")"
   active=0
   while read -r name; do
@@ -57,4 +71,4 @@ if [[ -b $SWAP_DEV ]]; then
   fi
 fi
 
-echo "dendritic-windows-label-gpt: labeled ESP/nixos/swap (parts=$nparts)"
+echo "dendritic-windows-label-gpt: labeled GPT (parts=$nparts)"
