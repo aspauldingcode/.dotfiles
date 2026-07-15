@@ -114,18 +114,11 @@ options root=PARTUUID=$partuuid rootfstype=ext4 rw init=/nix/var/nix/profiles/sy
 EOF
 
 # Copy kernel/initrd from the installer toplevel into ESP
-kern="$(echo "$INSTALLER_TOPLEVEL"/kernel)"
-initrd="$(echo "$INSTALLER_TOPLEVEL"/initrd)"
-[[ -e $kern ]] || kern="$INSTALLER_TOPLEVEL/bzImage"
 if [[ -e $INSTALLER_TOPLEVEL/kernel ]]; then
   cp -f "$(readlink -f "$INSTALLER_TOPLEVEL/kernel")" "$ESP/EFI/dendritic-installer/bzImage"
   cp -f "$(readlink -f "$INSTALLER_TOPLEVEL/initrd")" "$ESP/EFI/dendritic-installer/initrd"
 else
-  # nixos system closure layout
-  cp -f "$(readlink -f "$INSTALLER_TOPLEVEL/kernel")" "$ESP/EFI/dendritic-installer/bzImage" 2>/dev/null ||
-    cp -f "$INSTALLER_TOPLEVEL/kernel" "$ESP/EFI/dendritic-installer/bzImage"
-  cp -f "$(readlink -f "$INSTALLER_TOPLEVEL/initrd")" "$ESP/EFI/dendritic-installer/initrd" 2>/dev/null ||
-    cp -f "$INSTALLER_TOPLEVEL/initrd" "$ESP/EFI/dendritic-installer/initrd"
+  die "installer toplevel missing kernel/initrd"
 fi
 
 umount "$MOUNT/boot" 2>/dev/null || true

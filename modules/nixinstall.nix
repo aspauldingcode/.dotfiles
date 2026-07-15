@@ -58,6 +58,7 @@
           "SC2046"
           "SC2034"
           "SC2012"
+          "SC2116"
         ];
         text = builtins.readFile ./pkgs/_dendritic-nixinstall-bootstrap.sh;
       };
