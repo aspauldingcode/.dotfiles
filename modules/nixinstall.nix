@@ -142,6 +142,9 @@
             ExecStart = pkgs.writeShellScript "dendritic-nixinstall-bootstrap-wrap" ''
               set -euo pipefail
               echo "dendritic-nixinstall: building sliceanddice-installer toplevel…"
+              # systemd runs as root; flake tree is owned by the interactive user.
+              export HOME=/root
+              ${pkgs.git}/bin/git config --global --add safe.directory ${lib.escapeShellArg cfg.flakeDir} || true
               top="$(nix build --no-link --print-out-paths ${lib.escapeShellArg cfg.flakeDir}#nixosConfigurations.sliceanddice-installer.config.system.build.toplevel)"
               export DENDRITIC_NIXINSTALL_DISK=${lib.escapeShellArg cfg.disk}
               export DENDRITIC_NIXINSTALL_MOUNT=${lib.escapeShellArg cfg.mountPoint}
