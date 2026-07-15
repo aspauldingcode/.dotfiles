@@ -512,9 +512,13 @@
           spawn-at-startup "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
           spawn-at-startup "xwayland-satellite" ":0"
           spawn-at-startup "sh" "-c" "wl-paste --watch cliphist store"
+          # When dendritic.wallpaper manages the desktop, its apply script owns
+          # swaybg (daily cycle). Otherwise fall back to stylix.image.
           ${lib.optionalString (
-            wallpaper != null
+            wallpaper != null && !(config.dendritic.wallpaper.enable or false)
           ) ''spawn-at-startup "swaybg" "-i" "${wallpaper}" "-m" "fill"''}
+          ${lib.optionalString (config.dendritic.wallpaper.enable or false
+          ) ''spawn-at-startup "dendritic-wallpaper" "apply" "daily"''}
 
           // xwayland-satellite provides X11 support; point X clients at it.
           environment {

@@ -199,6 +199,7 @@
         dendritic.fleet.hostId = "sliceanddice";
         dendritic.fleet.dotfilesRoot = "/etc/nixos/.dotfiles";
         dendritic.python.enable = true;
+        dendritic.wallpaper.enable = true;
 
         # niri user config: terminal → ghostty, launcher → fuzzel.
         dendritic.apps.niri.enable = true;
