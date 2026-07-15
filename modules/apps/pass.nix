@@ -35,6 +35,7 @@
       pwgenBin = "${pkgs.pwgen}/bin/pwgen";
       secretspecToml = ../../home/secretspec.toml;
       materializeMap = ../../home/pass-materialize.json;
+      materializeEnvMap = ../../home/pass-materialize-env.json;
       # GUI-less pinentry: GETPIN → sops gpg_passphrase file (fail closed).
       dendriticPinentry =
         let
@@ -86,6 +87,7 @@
         export PATH="${syncPath}:$PATH"
         export PASSWORD_STORE_DIR=${lib.escapeShellArg storeDir}
         export PASS_MATERIALIZE_MAP=${lib.escapeShellArg "${materializeMap}"}
+        export PASS_MATERIALIZE_ENV_MAP=${lib.escapeShellArg "${materializeEnvMap}"}
         export PASS_SECRETSPEC_TOML=${lib.escapeShellArg "${secretspecToml}"}
         export PASS_STORE_SYNC_STATUS=${lib.escapeShellArg "${config.home.homeDirectory}/.cache/pass-store-sync.status"}
         exec ${pkgs.bash}/bin/bash ${../../scripts/pass-secretspec-materialize.sh}
@@ -97,6 +99,7 @@
         export PASS_STORE_SYNC_STATUS=${lib.escapeShellArg "${config.home.homeDirectory}/.cache/pass-store-sync.status"}
         export PASS_MATERIALIZE_SCRIPT=${materializeScript}
         export PASS_MATERIALIZE_MAP=${lib.escapeShellArg "${materializeMap}"}
+        export PASS_MATERIALIZE_ENV_MAP=${lib.escapeShellArg "${materializeEnvMap}"}
         export PASS_SECRETSPEC_TOML=${lib.escapeShellArg "${secretspecToml}"}
         ${
           if cfg.enable then

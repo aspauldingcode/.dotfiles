@@ -1,40 +1,49 @@
-# Appearance sync (activation-only)
+# Appearance state machine (activation-only)
 
-Cross-platform light/dark + wallpaper palette switching without rebuilds.
+Pure-Rust light/dark + wallpaper sync. Host appearance and global theme layers
+must never desync.
 
-## Tool: `dendritic-appearance` (Rust)
+## Tool: `dendritic-appearance`
 
-| Command                                              | Effect                                                                             |
-| ---------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `detect`                                             | Host appearance (`defaults` on macOS, gsettings/state on Linux) — **no osascript** |
-| `set light\|dark`                                    | Set host appearance (SkyLight on macOS) + apply matching wallpaper scheme          |
-| `toggle`                                             | Flip + apply                                                                       |
-| `apply --variant V --wallpaper current\|daily\|NAME` | Hot-reload palette/wallpaper only                                                  |
-| `tint`                                               | macOS accent/highlight/selection from `~/colors.toml` `base0D`                     |
-| `status --waybar`                                    | Waybar JSON module                                                                 |
+| Command                                                        | Effect                                                      |
+| -------------------------------------------------------------- | ----------------------------------------------------------- |
+| `detect`                                                       | Host appearance (`defaults` / gsettings) — **no osascript** |
+| `reconcile` / `sync`                                           | Observe → apply until host == colors == wallpaper variant   |
+| `supervise [SECS]`                                             | Daemon: poll + reconcile forever (launchd / systemd)        |
+| `set light\|dark`                                              | Force host + global apply                                   |
+| `toggle`                                                       | Flip host + global apply                                    |
+| `apply [--variant V] [--wallpaper current\|daily\|next\|NAME]` | Hot-reload                                                  |
+| `wallpaper <daily\|next\|NAME\|current>`                       | Pack apply in Rust (replaces bash/python)                   |
+| `tint`                                                         | macOS accent/highlight from `~/colors.toml` `base0D`        |
+| `status [--waybar]`                                            | Machine status / Waybar JSON                                |
+| `list-wallpapers`                                              | Pack entries                                                |
 
-## Light vs dark wallpaper
+## Invariant
 
-Each pack entry has flavours **dark** and **light** schemes. Toggle uses:
+After every reconcile:
 
-- dark mode → dark scheme + same wallpaper image
-- light mode → light scheme + same wallpaper image
+`host == recorded == colors.toml variant == wallpaper.json variant`
+
+Phases: `Synced` → idle; `Desynced` → `Applying` → verify (max 3) → `Synced` or `Failed`.
+
+## Authority
+
+- **macOS**: `AppleInterfaceStyle` / SkyLight (detect + set; no AppleScript)
+- **Linux**: dendritic state + gsettings follow
+
+## Services
+
+- **HM launchd agent** `com.aspaulding.dendritic-appearance` → `supervise`
+- **systemd user** `dendritic-appearance.service` → `supervise`
+- **Darwin system watch** (tiny `/etc/dendritic-appearance-watch.sh` shim) → `reconcile` on GlobalPreferences flips
+- Legacy bash `dendritic-appearance-sync` launchd daemon is **force-disabled**
 
 ## No rebuild path
 
-1. **Hot layer** (always): `colors.toml`, IDE patch, swaybg/macos-wallpaper, macOS tint
-2. **Prebuilt activate** (Darwin): `/etc/dendritic-appearance-activate-prebuilt.sh` swaps cached `mba`/`mba-dark` profiles
-3. **Specialisation** (NixOS): `switch-to-configuration test` under `specialisation/{light,dark}` when present
-
-Full `nh switch` only needed to refresh prebuild cache after flake changes.
+1. **Hot layer**: `colors.toml`, IDE patch (Rust), swaybg / macos-wallpaper, macOS tint
+2. **Prebuilt activate** (Darwin): cached light/dark profiles from postActivation
+3. **Specialisation** (NixOS): when present
 
 ## Waybar
 
-`custom/appearance`: click = toggle, right-click = next wallpaper.
-
-## macOS without AppleScript
-
-- Detect: `defaults read -g AppleInterfaceStyle`
-- Set: SkyLight `SLSSetAppearanceThemeLegacy` via `libloading`
-- Tint: `defaults write` accent/highlight + killall Dock/Finder/SystemUIServer
-- Ghostty: `pkill -USR2`; Spotify: `pkill -x Spotify`
+`custom/appearance`: click = toggle, right-click = next wallpaper. Desync shows `!`.

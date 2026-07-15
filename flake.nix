@@ -421,6 +421,23 @@
                     exec bash ${./scripts/gcloud-mint-token.sh} "$@"
                   '';
                 };
+                fhMint = pkgs.writeShellApplication {
+                  name = "flakehub-mint-token";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    gnugrep
+                    gnupg
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    fh
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export FLAKEHUB_ORG="''${FLAKEHUB_ORG:-aspauldingcode}"
+                    exec bash ${./scripts/flakehub-mint-token.sh} "$@"
+                  '';
+                };
                 script = pkgs.writeShellApplication {
                   name = "pass-rotate-cli-auth";
                   runtimeInputs = with pkgs; [
@@ -436,6 +453,7 @@
                     bash
                     mint
                     gcloudMint
+                    fhMint
                   ];
                   text = ''
                     set -euo pipefail
@@ -448,6 +466,51 @@
                 };
               in
               "${script}/bin/pass-rotate-cli-auth";
+          };
+
+          apps.pass-flakehub-bootstrap = {
+            type = "app";
+            program =
+              let
+                fhMint = pkgs.writeShellApplication {
+                  name = "flakehub-mint-token";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    gnugrep
+                    gnupg
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    fh
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export FLAKEHUB_ORG="''${FLAKEHUB_ORG:-aspauldingcode}"
+                    exec bash ${./scripts/flakehub-mint-token.sh} "$@"
+                  '';
+                };
+                script = pkgs.writeShellApplication {
+                  name = "pass-flakehub-bootstrap";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    gnugrep
+                    gnupg
+                    git
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    fh
+                    bash
+                    fhMint
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export FLAKEHUB_ORG="''${FLAKEHUB_ORG:-aspauldingcode}"
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    exec bash ${./scripts/pass-flakehub-bootstrap.sh} "$@"
+                  '';
+                };
+              in
+              "${script}/bin/pass-flakehub-bootstrap";
           };
 
           apps.pass-gcloud-bootstrap = {

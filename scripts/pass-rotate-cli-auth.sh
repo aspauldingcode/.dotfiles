@@ -8,7 +8,9 @@
 #   nix run .#pass-rotate-cli-auth -- --gcloud
 #   nix run .#pass-rotate-cli-auth -- --auto    # only if within --days of expiry
 #
-# FlakeHub: fully automated via `determinate-nixd auth token device create`.
+# FlakeHub: mint device JWT via flakehub-mint-token (admin elevate when needed).
+#   One-time: nix run .#pass-flakehub-bootstrap
+#   Rotate:   pass-rotate-cli-auth --flakehub  (TTY elevates; agents notify)
 # GitHub: fully automated via GitHub App refresh_token in pass
 #   (one-time: nix run .#pass-github-app-bootstrap). Legacy classic PAT paste
 #   still works with --from-clipboard / stdin if App is not configured.
@@ -204,8 +206,17 @@ gh_expiry_from_api() {
   else
     hdr="$(gh api -i /user 2>/dev/null || true)"
   fi
+  # No expiration header for some token types — must not trip pipefail.
   printf '%s\n' "$hdr" | grep -i '^github-authentication-token-expiration:' |
-    head -n1 | sed -E 's/^[^:]*:[[:space:]]*//; s/\r$//'
+    head -n1 | sed -E 's/^[^:]*:[[:space:]]*//; s/\r$//' || true
+}
+
+fh_mint_token() {
+  if command -v flakehub-mint-token >/dev/null 2>&1; then
+    flakehub-mint-token "$@"
+  else
+    bash "${DOTFILES_ROOT}/scripts/flakehub-mint-token.sh" "$@"
+  fi
 }
 
 status() {
@@ -244,38 +255,47 @@ status() {
 
 rotate_flakehub() {
   need determinate-nixd
-  local host desc token list_before
+  local host desc token list_before tf
   host="$(hostname -s 2>/dev/null || hostname || echo host)"
   desc="${FH_DESC_PREFIX} ${host} $(date -u +%Y-%m-%d)"
-  log "FlakeHub: creating device token ($desc)…"
-  if ! token="$(determinate-nixd auth token device create --org "$ORG" --description "$desc" 2>/tmp/fh-rotate.err | tr -d '\r\n')"; then
-    log "FlakeHub: device create failed:"
-    sed 's/^/  /' /tmp/fh-rotate.err 2>/dev/null || true
-    log "  Note: create requires FlakeHub *admin user* auth; a coarse device JWT can list but not mint."
-    log "  Create via UI: https://flakehub.com/${ORG}/settings?editview=device-tokens"
-    log "  Then: printf 'TOKEN\\n' | pass insert -e -f $FH_PASS_PATH && determinate-nixd login token --token-file <(pass show $FH_PASS_PATH)"
+  log "FlakeHub: minting device token ($desc)…"
+
+  # Keep stderr on TTY so admin elevate prompts are visible.
+  if ! token="$(
+    FLAKEHUB_ORG="$ORG" fh_mint_token --org "$ORG" --description "$desc" | tr -d '[:space:]'
+  )" || [[ -z $token ]]; then
+    log "FlakeHub: mint failed"
+    if [[ ! -t 0 ]]; then
+      log "FlakeHub: non-interactive — need admin elevate once:"
+      log "  nix run .#pass-flakehub-bootstrap"
+      log "  or: pass-rotate-cli-auth --flakehub  (TTY)"
+      if command -v osascript >/dev/null 2>&1; then
+        osascript -e 'display notification "Run pass-flakehub-bootstrap to remint device token" with title "FlakeHub token"' 2>/dev/null || true
+      elif command -v notify-send >/dev/null 2>&1; then
+        notify-send "FlakeHub token" "pass-flakehub-bootstrap" || true
+      fi
+    else
+      log "  Bootstrap: nix run .#pass-flakehub-bootstrap"
+      log "  Or UI device token: https://flakehub.com/${ORG}/settings?editview=device-tokens"
+    fi
     return 1
   fi
-  [[ -n $token ]] || {
-    log "FlakeHub: device create returned empty token"
-    sed 's/^/  /' /tmp/fh-rotate.err 2>/dev/null || true
-    return 1
-  }
+
   pass_insert_secret "$FH_PASS_PATH" "$token"
 
-  local tf
   tf="$(mktemp)"
   umask 077
   printf '%s\n' "$token" >"$tf"
   if determinate-nixd login token --token-file "$tf" >/dev/null 2>&1 ||
     determinate-nixd auth login token --token-file "$tf" >/dev/null 2>&1; then
-    log "FlakeHub: logged in with new token"
+    log "FlakeHub: logged in with new device token"
   else
     rm -f "$tf"
     log "FlakeHub: login with new token failed"
     return 1
   fi
   rm -f "$tf"
+  determinate-nixd auth bind "$ORG" >/dev/null 2>&1 || true
 
   if $REVOKE_OLD; then
     list_before="$(determinate-nixd auth token device list --org "$ORG" -n 50 2>/dev/null || true)"
@@ -402,7 +422,10 @@ if $DO_AUTO; then
   if $DO_FH; then
     if due_for_rotate "$(fh_expiry_from_status)"; then
       log "FlakeHub: within ${DAYS}d of expiry — rotating"
-      rotate_flakehub
+      rotate_flakehub || {
+        log "FlakeHub: auto-rotate FAILED (admin elevate may be required)"
+        FAILED=1
+      }
     else
       log "FlakeHub: not due (threshold ${DAYS}d)"
     fi

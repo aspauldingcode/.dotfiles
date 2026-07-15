@@ -26,6 +26,27 @@
           networking.wireless.enable = lib.mkDefault false;
           networking.wireless.iwd.enable = true;
 
+          # Font rasterization (FreeType via fontconfig) — not the compositor.
+          # macOS Mojave+: grayscale AA (not RGB subpixel) + slight hinting.
+          # Stem-darkening via FREETYPE_PROPERTIES thickens LoDPI stems.
+          # Electron/Chrome/Ghostty may partially ignore these.
+          fonts.fontconfig = {
+            enable = true;
+            antialias = true;
+            hinting = {
+              enable = true;
+              style = "slight";
+              autohint = false; # prefer TrueType bytecode when present
+            };
+            subpixel = {
+              rgba = "none";
+              lcdfilter = "none";
+            };
+          };
+
+          # Match macOS-ish stem weight on FreeType (CFF + autofitter).
+          environment.sessionVariables.FREETYPE_PROPERTIES = "cff:no-stem-darkening=0 autofitter:no-stem-darkening=0";
+
           environment.systemPackages = with pkgs; [
             networkmanagerapplet # nm-connection-editor (waybar network on-click)
           ];

@@ -64,6 +64,9 @@ in
     profiles.default.userSettings = {
       "cursor.composer.enabled" = false;
       "cursor.composer.shouldChimeAfterChatFinishes" = true;
+      # Prefer allowlist/approval path over agent sandbox. Electron still sets
+      # NoNewPrivs (sudo stays broken); use `dendritic-os-switch` for rebuilds.
+      "cursor.terminal.useLegacyTerminalTool" = true;
       "files.readonlyFromPermissions" = true;
       "window.titleBarStyle" = "custom";
       "window.autoDetectColorScheme" = true;

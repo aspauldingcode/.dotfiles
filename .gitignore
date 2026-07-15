@@ -3,3 +3,5 @@ result
 *.pkg
 .cache/
 modules/apps/pass-store-tray/target/
+.cursor/
+modules/apps/dendritic-appearance/target/

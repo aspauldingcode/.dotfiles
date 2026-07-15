@@ -330,11 +330,13 @@ Do **not** bootstrap GPG from the password-store git repo (circular / weak).
 See [`home/secretspec.toml`](../home/secretspec.toml): `GH_*`, `FLAKEHUB_TOKEN`, `GCLOUD_*`.
 Helpers:
 
-| CLI      | One-time bootstrap                    | Mint / rotate                                             |
-| -------- | ------------------------------------- | --------------------------------------------------------- |
-| `gh`     | `nix run .#pass-github-app-bootstrap` | `github-app-mint-token` · `pass-rotate-cli-auth --github` |
-| `fh`     | (token via rotate)                    | `pass-rotate-cli-auth --flakehub`                         |
-| `gcloud` | `nix run .#pass-gcloud-bootstrap`     | `gcloud-mint-token` · `pass-rotate-cli-auth --gcloud`     |
+| CLI      | One-time bootstrap                      | Mint / rotate                                                              |
+| -------- | --------------------------------------- | -------------------------------------------------------------------------- |
+| `gh`     | `nix run .#pass-github-app-bootstrap`   | `github-app-mint-token` · `pass-rotate-cli-auth --github`                  |
+| `fh`     | `nix run .#pass-flakehub-bootstrap`     | `flakehub-mint-token` · `pass-rotate-cli-auth --flakehub`                  |
+| `gcloud` | `nix run .#pass-gcloud-bootstrap`       | `gcloud-mint-token` · `pass-rotate-cli-auth --gcloud`                      |
+
+**FlakeHub:** Device JWTs (what lives in pass) can *list* but not *create* tokens. Bootstrap / rotate elevates with a short-lived FlakeHub *user* token from https://flakehub.com/user/settings?editview=tokens, mints a device JWT into `FLAKEHUB_TOKEN`, logs determinate-nixd back in as the device token, and optionally revokes older `dendritic-cli-auth*` tokens. Weekly auto-rotate notifies if elevation is needed.
 
 **gcloud:** OAuth refresh_token in pass → access token on each `gcloud` invoke (cached ~1h). Activation rewrites `~/.config/gcloud/application_default_credentials.json` for client libraries. Optional SA JSON fallback: `pass-gcloud-bootstrap --from-sa key.json`. Optional default project: `--project my-gcp-project`.
 

@@ -102,6 +102,77 @@ else
   rm -f "$tmp"
 fi
 
+# Optional: KEY=value env files (e.g. ~/.config/guildforge/env).
+# Map shape: { "<relpath>": { "ENV_NAME": "SECRETSPEC_KEY", ... } }
+ENV_MAP_FILE="${PASS_MATERIALIZE_ENV_MAP:-}"
+if [[ -n $ENV_MAP_FILE && -f $ENV_MAP_FILE ]]; then
+  while IFS= read -r rel; do
+    [[ -n $rel ]] || continue
+    case "$rel" in
+    /* | *..*)
+      warn "skip unsafe env path: $rel"
+      warnings="$(jq -nc --argjson arr "$warnings" --arg w "skip unsafe env path: $rel" '$arr + [$w]')"
+      continue
+      ;;
+    esac
+    out="${HOME_DIR}/${rel}"
+    missing=0
+    body=""
+    while IFS= read -r env_name; do
+      [[ -n $env_name ]] || continue
+      key="$(jq -r --arg p "$rel" --arg e "$env_name" '.[$p][$e] // empty' "$ENV_MAP_FILE")"
+      [[ -n $key ]] || continue
+      val="$(secretspec get -f "$SECRETSPEC_TOML" "$key" 2>/dev/null || true)"
+      if [[ -z $val ]]; then
+        missing=1
+        w="$key missing from pass; env file incomplete (~/$rel)"
+        warn "$w"
+        warnings="$(jq -nc --argjson arr "$warnings" --arg w "$w" '$arr + [$w]')"
+        continue
+      fi
+      # Escape for shell env files: quote if needed.
+      body+="${env_name}=${val}"$'\n'
+    done < <(jq -r --arg p "$rel" '.[$p] | keys[]' "$ENV_MAP_FILE")
+    if [[ $missing -eq 0 && -n $body ]]; then
+      umask 077
+      mkdir -p "$(dirname "$out")"
+      printf '%s' "$body" >"$out"
+      chmod 600 "$out"
+      materialized="$(jq -nc --argjson arr "$materialized" --arg p "$rel" '$arr + [$p]')"
+      count=$((count + 1))
+      log "wrote env $out"
+    elif [[ $missing -ne 0 && -e $out ]]; then
+      w="stale env file remains (~/$rel) — some keys missing from pass"
+      warn "$w"
+      warnings="$(jq -nc --argjson arr "$warnings" --arg w "$w" '$arr + [$w]')"
+    fi
+  done < <(jq -r 'keys[]' "$ENV_MAP_FILE")
+
+  # Refresh status after env materialize.
+  warn_count="$(jq -nr --argjson w "$warnings" '$w | length')"
+  tmp="$(mktemp "${STATUS_FILE}.XXXXXX")"
+  if jq -nc \
+    --slurpfile prev "$STATUS_FILE" \
+    --argjson materialized "$materialized" \
+    --argjson materialize_warnings "$warnings" \
+    --arg now "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+    --arg msg "materialized ${count} file(s); ${warn_count} warning(s)" \
+    '
+      ($prev[0] // {})
+      + {
+          last_materialize_at: $now,
+          materialized: $materialized,
+          materialize_warnings: $materialize_warnings,
+          updated_at: $now,
+          message: $msg
+        }
+    ' >"$tmp" 2>/dev/null; then
+    mv "$tmp" "$STATUS_FILE"
+  else
+    rm -f "$tmp"
+  fi
+fi
+
 log "done (${count} file(s), ${warn_count} warning(s))"
 
 # Optional: apply Wi-Fi profiles after PSK materialize (dendritic.wifi).

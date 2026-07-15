@@ -118,12 +118,23 @@
         variant = "";
       };
 
+      # MSI Sword 15 A11UD (board MS-1582): single-color blue keyboard backlight.
+      # Same EC family as Katana GF66 11UC/UD — force that profile until the exact
+      # EC string for BIOS E1582IMS.315 is upstreamed in msi-ec.
+      # Exposes /sys/class/leds/msiacpi::kbd_backlight (0–3). Requires reboot.
+      boot.extraModulePackages = [ config.boot.kernelPackages.msi-ec ];
+      boot.kernelModules = [ "msi-ec" ];
+      boot.extraModprobeConfig = ''
+        options msi-ec firmware=1582EMS1.107
+      '';
+
       users.users.alex = {
         isNormalUser = true;
         description = "Alex Spaulding";
         extraGroups = [
           "networkmanager"
           "wheel"
+          "video" # brightnessctl: panel + msiacpi::kbd_backlight
         ];
         shell = pkgs.zsh;
       };

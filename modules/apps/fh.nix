@@ -2,15 +2,14 @@
   # FlakeHub / Determinate Nix auth from pass (SecretSpec).
   #
   # Login: activation reads FLAKEHUB_TOKEN from pass → determinate-nixd login.
-  # Rotate: fully automated via `determinate-nixd auth token device create`
-  #   (weekly agent + activation when within autoRotate.daysBefore of expiry).
-  #   Also refreshes GitHub App + gcloud OAuth access (same agent).
+  # Bootstrap (admin elevate → mint device JWT → pass):
+  #   nix run .#pass-flakehub-bootstrap
+  # Rotate: mint via flakehub-mint-token (TTY elevates; weekly agent notifies if 401)
   #   nix run .#pass-rotate-cli-auth -- --status
+  #   nix run .#pass-rotate-cli-auth -- --flakehub --yes
   #   nix run .#pass-rotate-cli-auth -- --auto
-  # GitHub classic PATs still need a one-shot paste when due:
-  #   nix run .#pass-rotate-cli-auth -- --github
+  # Also refreshes GitHub App + gcloud OAuth (same agent).
   # gcloud one-time: nix run .#pass-gcloud-bootstrap
-  #   nix run .#pass-rotate-cli-auth -- --gcloud
   flake.modules.homeManager.dendritic =
     {
       pkgs,
@@ -32,6 +31,23 @@
         pkgs.coreutils
       ];
       org = if cfg.organization != null then cfg.organization else "aspauldingcode";
+      flakehubMint = pkgs.writeShellApplication {
+        name = "flakehub-mint-token";
+        runtimeInputs = with pkgs; [
+          coreutils
+          gnugrep
+          gnupg
+          passPackage
+          fh
+          bash
+        ];
+        text = ''
+          set -euo pipefail
+          export PASSWORD_STORE_DIR=${lib.escapeShellArg storeDir}
+          export FLAKEHUB_ORG=${lib.escapeShellArg org}
+          exec bash ${../../scripts/flakehub-mint-token.sh} "$@"
+        '';
+      };
       rotateCliAuth = pkgs.writeShellApplication {
         name = "pass-rotate-cli-auth";
         runtimeInputs = with pkgs; [
@@ -45,6 +61,7 @@
           fh
           gh
           bash
+          flakehubMint
           (pkgs.writeShellApplication {
             name = "github-app-mint-token";
             runtimeInputs = with pkgs; [
@@ -92,6 +109,26 @@
           export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"
           export OAUTH_SERVER_PY=${../../scripts/gcloud-oauth-server.py}
           exec bash ${../../scripts/pass-rotate-cli-auth.sh} "$@"
+        '';
+      };
+      passFlakehubBootstrap = pkgs.writeShellApplication {
+        name = "pass-flakehub-bootstrap";
+        runtimeInputs = with pkgs; [
+          coreutils
+          gnugrep
+          gnupg
+          git
+          passPackage
+          fh
+          bash
+          flakehubMint
+        ];
+        text = ''
+          set -euo pipefail
+          export PASSWORD_STORE_DIR=${lib.escapeShellArg storeDir}
+          export FLAKEHUB_ORG=${lib.escapeShellArg org}
+          export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"
+          exec bash ${../../scripts/pass-flakehub-bootstrap.sh} "$@"
         '';
       };
       autoRotateCmd = pkgs.writeShellScript "pass-rotate-cli-auth-auto" ''
@@ -175,9 +212,11 @@
             type = lib.types.bool;
             default = true;
             description = ''
-              Automatically mint a new FlakeHub device token into pass when the
-              current token is within daysBefore of expiry (activation + weekly agent).
-              GitHub classic PATs cannot be auto-minted; you get a notification instead.
+              Attempt to mint a new FlakeHub device token into pass when within
+              daysBefore of expiry (activation + weekly agent). Minting needs
+              FlakeHub *admin* auth once (device JWTs cannot create); on failure
+              you get a notification to run pass-flakehub-bootstrap.
+              GitHub App / gcloud OAuth refresh in the same agent.
             '';
           };
           daysBefore = lib.mkOption {
@@ -192,6 +231,8 @@
         home.packages = [
           fh
           rotateCliAuth
+          flakehubMint
+          passFlakehubBootstrap
         ];
 
         home.activation.flakehubPassAuth = lib.mkIf passCfg.enable (

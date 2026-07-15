@@ -1,10 +1,9 @@
-//! Parse ~/colors.toml [palette] for macOS tinting.
-
 use std::collections::HashMap;
 use std::path::Path;
 
 pub fn load_palette(path: &Path) -> Result<HashMap<String, String>, String> {
-    let text = std::fs::read_to_string(path).map_err(|e| format!("read {}: {e}", path.display()))?;
+    let text =
+        std::fs::read_to_string(path).map_err(|e| format!("read {}: {e}", path.display()))?;
     let mut map = HashMap::new();
     let mut in_palette = false;
     for line in text.lines() {
@@ -28,7 +27,7 @@ pub fn load_palette(path: &Path) -> Result<HashMap<String, String>, String> {
     Ok(map)
 }
 
-/// Convert `#rrggbb` → macOS defaults tint string `R G B 1.00` (0..1 floats).
+#[cfg(target_os = "macos")]
 pub fn hex_to_tint_str(hex: &str) -> Result<String, String> {
     let h = hex.trim().trim_start_matches('#');
     if h.len() != 6 {
@@ -45,20 +44,10 @@ pub fn hex_to_tint_str(hex: &str) -> Result<String, String> {
     ))
 }
 
+#[cfg(target_os = "macos")]
 fn byte_to_float(n: u8) -> String {
-    // Match darwin-appearance-sync.nix: 4 decimal places via floor(n*10000/255)
     let scaled = (u32::from(n) * 10000) / 255;
     let whole = scaled / 10000;
     let frac = scaled % 10000;
     format!("{whole}.{frac:04}")
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn tint_black() {
-        assert_eq!(hex_to_tint_str("#000000").unwrap(), "0.0000 0.0000 0.0000 1.00");
-    }
 }

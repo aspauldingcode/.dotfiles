@@ -87,6 +87,18 @@
       cfg = config.dendritic.apps.niri;
       c = config.lib.stylix.colors.withHashtag;
       wallpaper = config.stylix.image or null;
+      # Cycle MSI keyboard backlight 0→1→2→3→0 (msi-ec LED class).
+      kbdBacklightCycle = pkgs.writeShellScript "kbd-backlight-cycle" ''
+        set -euo pipefail
+        d=msiacpi::kbd_backlight
+        if ! ${lib.getExe pkgs.brightnessctl} -d "$d" info >/dev/null 2>&1; then
+          echo "kbd-backlight-cycle: $d not present (is msi-ec loaded?)" >&2
+          exit 1
+        fi
+        cur="$(${lib.getExe pkgs.brightnessctl} -d "$d" g)"
+        max="$(${lib.getExe pkgs.brightnessctl} -d "$d" m)"
+        ${lib.getExe pkgs.brightnessctl} -d "$d" set $(( (cur + 1) % (max + 1) ))
+      '';
       # gtklock's reveal/conceal icons need Adwaita on the icon search path.
       # Force a raster eye into CSS too — SVG/`currentColor` symbolic lookup
       # often shows up as an empty/"missing font" box in GTK3 entries.
@@ -140,6 +152,115 @@
           notify "On"
         fi
       '';
+
+      # Integer Retina-like output scale for every connected display.
+      # Mutter/niri DPI targets (135 mobile / 110 desktop), snapped to 1..4.
+      # Watches niri's event stream so hotplug / config reload re-applies.
+      retinaScale = pkgs.writeShellApplication {
+        name = "dendritic-retina-scale";
+        runtimeInputs = [
+          pkgs.niri
+          pkgs.jq
+          pkgs.coreutils
+        ];
+        text = ''
+          set -euo pipefail
+
+          MOBILE_TARGET_DPI=135
+          LARGE_TARGET_DPI=110
+          LARGE_MIN_SIZE_INCHES=20
+          MIN_LOGICAL_AREA=$((800 * 480))
+
+          # Args: width_mm height_mm res_w res_h → integer scale (or empty to skip)
+          guess_integer_scale() {
+            local w_mm=$1 h_mm=$2 rw=$3 rh=$4
+            if [ "$w_mm" -eq 0 ] || [ "$h_mm" -eq 0 ]; then
+              return 0
+            fi
+            local diag perfect target best s d bestd
+            best=
+            bestd=
+            diag="$(jq -n --argjson w "$w_mm" --argjson h "$h_mm" \
+              '((($w * $w) + ($h * $h)) | sqrt) / 25.4')"
+            if jq -ne --argjson d "$diag" --argjson lim "$LARGE_MIN_SIZE_INCHES" \
+              '$d < $lim' >/dev/null; then
+              target=$MOBILE_TARGET_DPI
+            else
+              target=$LARGE_TARGET_DPI
+            fi
+            perfect="$(jq -n \
+              --argjson w "$rw" --argjson h "$rh" --argjson diag "$diag" --argjson t "$target" \
+              '((($w * $w) + ($h * $h)) | sqrt) / $diag / $t')"
+            for s in 1 2 3 4; do
+              if ! jq -ne \
+                --argjson rw "$rw" --argjson rh "$rh" --argjson s "$s" --argjson min "$MIN_LOGICAL_AREA" \
+                '((($rw / $s) | round) * (($rh / $s) | round)) >= $min' >/dev/null; then
+                continue
+              fi
+              d="$(jq -n --argjson s "$s" --argjson p "$perfect" '($s - $p) | fabs')"
+              if [ -z "$best" ] || jq -ne --argjson d "$d" --argjson bd "$bestd" '$d < $bd' >/dev/null; then
+                best=$s
+                bestd=$d
+              fi
+            done
+            printf '%s' "$best"
+          }
+
+          apply_scales() {
+            local json name w_mm h_mm rw rh cur want
+            json="$(niri msg -j outputs)"
+            while IFS=$'\t' read -r name w_mm h_mm rw rh cur; do
+              [ -n "$name" ] || continue
+              want="$(guess_integer_scale "$w_mm" "$h_mm" "$rw" "$rh" || true)"
+              if [ -z "$want" ]; then
+                continue
+              fi
+              if jq -ne --argjson cur "$cur" --argjson want "$want" '$cur == $want' >/dev/null; then
+                continue
+              fi
+              echo "dendritic-retina-scale: $name $rw×$rh @ ''${w_mm}×''${h_mm}mm → scale $want (was $cur)" >&2
+              niri msg output "$name" scale "$want"
+            done < <(
+              jq -r '
+                to_entries[]
+                | .key as $name
+                | .value as $o
+                | ($o.current_mode) as $cm
+                | select($cm != null)
+                | ($o.modes[$cm]) as $m
+                | [
+                    $name,
+                    ($o.physical_size[0] // 0),
+                    ($o.physical_size[1] // 0),
+                    $m.width,
+                    $m.height,
+                    ($o.logical.scale // 1)
+                  ]
+                | @tsv
+              ' <<<"$json"
+            )
+          }
+
+          # spawn-at-startup can race the IPC socket briefly.
+          for _ in 1 2 3 4 5 6 7 8 9 10; do
+            if niri msg -j outputs >/dev/null 2>&1; then
+              break
+            fi
+            sleep 0.2
+          done
+          apply_scales || true
+
+          # niri has no OutputsChanged event; WorkspacesChanged / ConfigLoaded
+          # cover hotplug and config reload. apply_scales is a no-op when scales match.
+          niri msg -j event-stream | while IFS= read -r line; do
+            case "$line" in
+              *'"ConfigLoaded"'* | *'"WorkspacesChanged"'*)
+                apply_scales || true
+                ;;
+            esac
+          done
+        '';
+      };
     in
     {
       options.dendritic.apps.niri = {
@@ -184,6 +305,7 @@
               "tray"
               "custom/appearance"
               "custom/power"
+              "backlight"
               "pulseaudio"
               "network"
               "cpu"
@@ -237,6 +359,17 @@
               interval = 5;
               on-click = lib.getExe' pkgs.networkmanagerapplet "nm-connection-editor";
             };
+            backlight = {
+              format = "{icon} {percent}%";
+              format-icons = [
+                "󰃞"
+                "󰃟"
+                "󰃠"
+              ];
+              tooltip-format = "Brightness: {percent}%\nScroll to adjust";
+              on-scroll-up = "brightnessctl set 5%+";
+              on-scroll-down = "brightnessctl set 5%-";
+            };
             pulseaudio = {
               format = "{icon} {volume}%";
               format-muted = "󰝟 muted";
@@ -254,14 +387,7 @@
               spacing = 10;
             };
             "custom/appearance" = {
-              exec = "${pkgs.writeShellScript "waybar-dendritic-appearance" ''
-                set -euo pipefail
-                if command -v dendritic-appearance >/dev/null 2>&1; then
-                  dendritic-appearance status --waybar
-                else
-                  echo '{"text":"󰔎","tooltip":"dendritic-appearance missing","class":"unknown"}'
-                fi
-              ''}";
+              exec = "${lib.getExe (pkgs.callPackage ./dendritic-appearance/_package.nix { })} status --waybar";
               return-type = "json";
               interval = 5;
               on-click = "dendritic-appearance toggle";
@@ -350,6 +476,7 @@
               #memory,
               #battery,
               #network,
+              #backlight,
               #pulseaudio,
               #custom-power,
               #custom-appearance,
@@ -407,8 +534,11 @@
               #network {
                   color: @base0D;
               }
-              #pulseaudio {
+              #backlight {
                   color: @base0A;
+              }
+              #pulseaudio {
+                  color: @base09;
               }
               #pulseaudio.muted {
                   color: @base04;
@@ -463,6 +593,7 @@
         # ── gtklock (matches gtkgreet login CSS; no HM module on this pin) ──
         home.packages = [
           nightToggle
+          retinaScale
           pkgs.gtklock
           pkgs.networkmanagerapplet # waybar network → nm-connection-editor
           pkgs.pavucontrol
@@ -529,9 +660,9 @@
           }
 
           // Hybrid graphics: the internal panel is on the Intel iGPU.
-          // Run `niri msg outputs` to list connectors and tune scale here.
+          // Scale is owned by dendritic-retina-scale (integer Retina policy
+          // from physical size + resolution). Do not hardcode `scale` here.
           output "eDP-1" {
-              // scale 1.0
               // transform "normal"
           }
 
@@ -580,16 +711,17 @@
 
           spawn-at-startup "waybar"
           spawn-at-startup "mako"
+          spawn-at-startup "dendritic-retina-scale"
           spawn-at-startup "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
           spawn-at-startup "xwayland-satellite" ":0"
           spawn-at-startup "sh" "-c" "wl-paste --watch cliphist store"
-          # When dendritic.wallpaper manages the desktop, its apply script owns
-          # swaybg (daily cycle). Otherwise fall back to stylix.image.
+          // When dendritic.wallpaper manages the desktop, its apply script owns
+          // swaybg (daily cycle). Otherwise fall back to stylix.image.
           ${lib.optionalString (
             wallpaper != null && !(config.dendritic.wallpaper.enable or false)
           ) ''spawn-at-startup "swaybg" "-i" "${wallpaper}" "-m" "fill"''}
           ${lib.optionalString (config.dendritic.wallpaper.enable or false
-          ) ''spawn-at-startup "dendritic-wallpaper" "apply" "daily"''}
+          ) ''spawn-at-startup "dendritic-appearance" "wallpaper" "daily"''}
 
           // xwayland-satellite provides X11 support; point X clients at it.
           environment {
@@ -684,6 +816,14 @@
               // Brightness (work while locked)
               XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "set" "10%+"; }
               XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "set" "10%-"; }
+
+              // Keyboard backlight via msi-ec (msiacpi::kbd_backlight, levels 0–3).
+              // Sword 15 Fn+backlight is EC-firmware-only: wev/MSI-WMI emit no
+              // KEY_KBDILLUM* (confirmed) — XF86 binds kept as no-ops if a
+              // future firmware starts sending them; Mod+F9 is the real control.
+              XF86KbdBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "-d" "msiacpi::kbd_backlight" "set" "+1"; }
+              XF86KbdBrightnessDown allow-when-locked=true { spawn "brightnessctl" "-d" "msiacpi::kbd_backlight" "set" "1-"; }
+              Mod+F9 allow-when-locked=true { spawn "${kbdBacklightCycle}"; }
 
               // Media transport
               XF86AudioPlay  { spawn "playerctl" "play-pause"; }

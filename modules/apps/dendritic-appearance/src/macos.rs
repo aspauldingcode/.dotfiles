@@ -1,6 +1,4 @@
-//! macOS: detect/set appearance without osascript.
-//! Detect: `defaults read -g AppleInterfaceStyle`
-//! Set: SkyLight `SLSSetAppearanceThemeSwitchesAutomatically` / Legacy via dlopen
+//! macOS: detect/set without osascript. Tint from colors.toml.
 
 use std::path::Path;
 use std::process::Command;
@@ -9,33 +7,32 @@ use crate::palette::{hex_to_tint_str, load_palette};
 use crate::state::Variant;
 
 pub fn detect() -> Result<Variant, i32> {
-    // AppleInterfaceStyle is "Dark" when dark; missing/empty means light.
+    // NSGlobalDomain / -g is the live host truth. Avoid passing a bare
+    // `.GlobalPreferences` path (defaults treats that as a missing domain).
     let output = Command::new("/usr/bin/defaults")
         .args(["read", "-g", "AppleInterfaceStyle"])
         .output();
     match output {
         Ok(o) if o.status.success() => {
             let s = String::from_utf8_lossy(&o.stdout).to_ascii_lowercase();
-            if s.contains("dark") {
-                Ok(Variant::Dark)
+            Ok(if s.contains("dark") {
+                Variant::Dark
             } else {
-                Ok(Variant::Light)
-            }
+                Variant::Light
+            })
         }
+        // Key missing ⇒ light
         _ => Ok(Variant::Light),
     }
 }
 
 pub fn set(v: Variant) -> Result<(), i32> {
-    // Prefer SkyLight private API (live switch, no AppleScript).
     if skylight_set(v) {
-        // Keep defaults key coherent for our detect() and other tools.
         sync_defaults_key(v);
         return Ok(());
     }
-    eprintln!("dendritic-appearance: SkyLight unavailable; falling back to defaults write");
+    eprintln!("dendritic-appearance: SkyLight unavailable; defaults fallback");
     sync_defaults_key(v);
-    // Bounce preference daemons so readers notice (does not always flip chrome).
     let _ = Command::new("/usr/bin/killall")
         .args(["cfprefsd", "SystemUIServer"])
         .status();
@@ -61,9 +58,6 @@ fn sync_defaults_key(v: Variant) {
 }
 
 fn skylight_set(v: Variant) -> bool {
-    // Soft-link SkyLight (private). Symbols differ across macOS versions.
-    // SLSSetAppearanceThemeLegacy(bool) — true = dark.
-    // SLSSetAppearanceThemeSwitchesAutomatically(bool) — disable auto first.
     unsafe {
         let lib = match libloading::Library::new(
             "/System/Library/PrivateFrameworks/SkyLight.framework/SkyLight",
@@ -71,14 +65,11 @@ fn skylight_set(v: Variant) -> bool {
             Ok(l) => l,
             Err(_) => return false,
         };
-
-        // Disable automatic switching when forcing a mode.
-        if let Ok(f) = lib.get::<unsafe extern "C" fn(u8)>(
-            b"SLSSetAppearanceThemeSwitchesAutomatically",
-        ) {
+        if let Ok(f) = lib
+            .get::<unsafe extern "C" fn(u8)>(b"SLSSetAppearanceThemeSwitchesAutomatically")
+        {
             f(0);
         }
-
         if let Ok(f) = lib.get::<unsafe extern "C" fn(u8)>(b"SLSSetAppearanceThemeLegacy") {
             f(match v {
                 Variant::Dark => 1,
@@ -86,10 +77,7 @@ fn skylight_set(v: Variant) -> bool {
             });
             return true;
         }
-
-        // Newer macOS: SLSSetAppearanceTheme(type)
         if let Ok(f) = lib.get::<unsafe extern "C" fn(i64)>(b"SLSSetAppearanceTheme") {
-            // 0 light, 1 dark (observed on recent macOS)
             f(match v {
                 Variant::Dark => 1,
                 Variant::Light => 0,
@@ -105,18 +93,11 @@ pub fn apply_tint_from_colors_toml(path: &Path) -> Result<(), i32> {
         eprintln!("dendritic-appearance: {e}");
         1
     })?;
-    // Primary / selection / accent: prefer base0D (blue), fall back base0E.
     let hex = palette
         .get("base0D")
         .or_else(|| palette.get("base0E"))
-        .ok_or_else(|| {
-            eprintln!("dendritic-appearance: no base0D/base0E in colors.toml");
-            1
-        })?;
-    let tint = hex_to_tint_str(hex).map_err(|e| {
-        eprintln!("dendritic-appearance: {e}");
-        1
-    })?;
+        .ok_or(1)?;
+    let tint = hex_to_tint_str(hex).map_err(|_| 1)?;
 
     defaults_write_str("AppleIconAppearanceTintColor", "Other")?;
     defaults_write_str("AppleIconAppearanceCustomTintColor", &tint)?;
