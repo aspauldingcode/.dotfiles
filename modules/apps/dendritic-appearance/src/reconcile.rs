@@ -3,7 +3,6 @@
 use crate::activate;
 use crate::machine::{MachineStatus, Phase};
 use crate::observe;
-#[cfg(target_os = "macos")]
 use crate::observe::colors_toml_path;
 use crate::state::{self, Variant};
 use crate::wallpaper;
@@ -122,6 +121,9 @@ fn apply_global(variant: Variant, wallpaper_target: &str) -> Result<(), String> 
             .args(["-USR2", "-x", "Ghostty"])
             .status();
     }
+
+    // Ensure tmux tracks colors.toml even if wallpaper layer was a no-op.
+    let _ = crate::tmux::apply_from_colors(&colors_toml_path());
 
     // Prebuilt / specialisation (best-effort; hot layer already applied)
     if let Err(e) = activate::activate(variant) {

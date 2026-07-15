@@ -23,29 +23,33 @@
       cfg = config.dendritic.apps.tmux;
       whichKeySrc = "${pkgs.tmuxPlugins.tmux-which-key}/share/tmux-plugins/tmux-which-key";
 
-      # Stylix palette when available (dendritic styling); else neutral defaults.
-      c =
-        if config ? lib && config.lib ? stylix && config.lib.stylix ? colors then
-          config.lib.stylix.colors.withHashtag
-        else
-          {
-            base00 = "#1e1e2e";
-            base01 = "#313244";
-            base02 = "#45475a";
-            base03 = "#6c7086";
-            base04 = "#a6adc8";
-            base05 = "#cdd6f4";
-            base06 = "#f5e0dc";
-            base07 = "#b4befe";
-            base08 = "#f38ba8";
-            base09 = "#fab387";
-            base0A = "#f9e2af";
-            base0B = "#a6e3a1";
-            base0C = "#94e2d5";
-            base0D = "#89b4fa";
-            base0E = "#cba6f7";
-            base0F = "#f2cdcd";
-          };
+      # Seed theme from Stylix (wallpaper-derived base16). Runtime wallpaper /
+      # appearance flips rewrite ~/.config/tmux/theme.conf from ~/colors.toml.
+      c = config.lib.stylix.colors.withHashtag;
+      themeConf = ''
+        # Seeded by HM from stylix.base16Scheme; overwritten at runtime by
+        # dendritic-appearance from ~/colors.toml (same palette as wallpaper).
+        set -g status-style "fg=${c.base05},bg=${c.base00}"
+        set -g message-style "fg=${c.base06},bg=${c.base02}"
+        set -g message-command-style "fg=${c.base06},bg=${c.base02}"
+        set -g pane-border-style "fg=${c.base02}"
+        set -g pane-active-border-style "fg=${c.base04}"
+        set -g mode-style "fg=${c.base04},bg=${c.base02}"
+
+        set -g window-status-style "fg=${c.base05},bg=${c.base00}"
+        set -g window-status-current-style "fg=${c.base0A},bg=${c.base00}"
+        set -g window-status-activity-style "fg=${c.base05},bg=${c.base00}"
+        set -g window-status-bell-style "fg=${c.base00},bg=${c.base08}"
+        set -g window-status-separator ""
+        set -g window-status-format "#[fg=${c.base00},bg=${c.base02},noitalics]#[fg=${c.base06},bg=${c.base02}] #I  #W#{?window_zoomed_flag,*Z,} #[fg=${c.base02},bg=${c.base00},noitalics]"
+        set -g window-status-current-format "#[fg=${c.base00},bg=${c.base0A},nobold,noitalics,nounderscore]#[fg=${c.base02},bg=${c.base0A}] #I #[fg=${c.base02},bg=${c.base0A},bold] #W#{?window_zoomed_flag,*Z,} #[fg=${c.base0A},bg=${c.base00},nobold,noitalics,nounderscore]"
+
+        set -g status-left "#[fg=${c.base05},bg=${c.base02}] #S #[fg=${c.base02},bg=${c.base00},nobold,noitalics,nounderscore]"
+        set -g status-right "#[fg=${c.base03}]#{prefix_highlight}#[fg=${c.base02},bg=${c.base00}]#[fg=${c.base04},bg=${c.base02}] %H:%M #[range=right fg=${c.base00},bg=${c.base0B},bold] + #[norange]"
+
+        set -g @prefix_highlight_fg '${c.base00}'
+        set -g @prefix_highlight_bg '${c.base0E}'
+      '';
 
       tutorialBin = pkgs.writeShellScriptBin "tmux-tutorial" ''
         exec ${pkgs.bash}/bin/bash ${../../scripts/tmux-tutorial.sh}
@@ -129,6 +133,10 @@
       };
 
       config = lib.mkIf cfg.enable {
+        # We own theming via theme.conf (Stylix seed + runtime colors.toml).
+        # Stylix's tinted-tmux target would double-source a build-time-only theme.
+        stylix.targets.tmux.enable = false;
+
         home.packages = [
           tutorialBin
           learnBin
@@ -138,6 +146,11 @@
         # Keep YAML discoverable for humans; runtime uses the Nix-built init.
         xdg.configFile."tmux/plugins/tmux-which-key/config.yaml".source = whichKeyConfig;
         xdg.dataFile."tmux/plugins/tmux-which-key/init.tmux".source = "${whichKeyInit}/init.tmux";
+        # Force so wallpaper/appearance rewrites aren't blocked by HM backup clash.
+        xdg.configFile."tmux/theme.conf" = {
+          text = themeConf;
+          force = true;
+        };
 
         # Ghostty: land in tmux immediately (no bare-zsh flash).
         programs.ghostty.settings.command = lib.mkIf (
@@ -248,27 +261,12 @@
             set -g status on
             set -g status-format[0] "#[align=left range=left #{E:status-left-style}]#[push-default]#{T;=/#{status-left-length}:status-left}#[pop-default]#[norange default]#[list=on align=#{status-justify}]#[list=left-marker]<#[list=right-marker]>#[list=on]#{W:#[range=window|#{window_index} #{E:window-status-style}#{?#{&&:#{window_last_flag},#{!=:#{E:window-status-last-style},default}}, #{E:window-status-last-style},}#{?#{&&:#{window_bell_flag},#{!=:#{E:window-status-bell-style},default}}, #{E:window-status-bell-style},#{?#{&&:#{||:#{window_activity_flag},#{window_silence_flag}},#{!=:#{E:window-status-activity-style},default}}, #{E:window-status-activity-style},}}]#[push-default]#{T:window-status-format}#[pop-default]#[norange default]#{?loop_last_flag,,#{window-status-separator}},#[range=window|#{window_index} list=focus #{?#{!=:#{E:window-status-current-style},default},#{E:window-status-current-style},#{E:window-status-style}}#{?#{&&:#{window_last_flag},#{!=:#{E:window-status-last-style},default}}, #{E:window-status-last-style},}#{?#{&&:#{window_bell_flag},#{!=:#{E:window-status-bell-style},default}}, #{E:window-status-bell-style},#{?#{&&:#{||:#{window_activity_flag},#{window_silence_flag}},#{!=:#{E:window-status-activity-style},default}}, #{E:window-status-activity-style},}}]#[push-default]#{T:window-status-current-format}#[pop-default]#[norange list=on default]#{?loop_last_flag,,#{window-status-separator}}}#[nolist align=right range=right #{E:status-right-style}]#[push-default]#{T;=/#{status-right-length}:status-right}#[pop-default]#[norange default]"
 
-            # Match stylix/base16 powerline tabs (TINTED_TMUX_OPTION_STATUSBAR shape).
-            set -g status-style "fg=${c.base05},bg=${c.base00}"
-            set -g message-style "fg=${c.base06},bg=${c.base02}"
-            set -g message-command-style "fg=${c.base06},bg=${c.base02}"
-            set -g pane-border-style "fg=${c.base02}"
-            set -g pane-active-border-style "fg=${c.base04}"
-            set -g mode-style "fg=${c.base04},bg=${c.base02}"
-
-            set -g window-status-style "fg=${c.base05},bg=${c.base00}"
-            set -g window-status-current-style "fg=${c.base0A},bg=${c.base00}"
-            set -g window-status-activity-style "fg=${c.base05},bg=${c.base00}"
-            set -g window-status-bell-style "fg=${c.base00},bg=${c.base08}"
-            set -g window-status-separator ""
-            set -g window-status-format "#[fg=${c.base00},bg=${c.base02},noitalics]#[fg=${c.base06},bg=${c.base02}] #I  #W#{?window_zoomed_flag,*Z,} #[fg=${c.base02},bg=${c.base00},noitalics]"
-            set -g window-status-current-format "#[fg=${c.base00},bg=${c.base0A},nobold,noitalics,nounderscore]#[fg=${c.base02},bg=${c.base0A}] #I #[fg=${c.base02},bg=${c.base0A},bold] #W#{?window_zoomed_flag,*Z,} #[fg=${c.base0A},bg=${c.base00},nobold,noitalics,nounderscore]"
-
             set -g status-left-length 40
             set -g status-right-length 60
-            # Session badge (click → picker); not a second tab strip.
-            set -g status-left "#[fg=${c.base05},bg=${c.base02}] #S #[fg=${c.base02},bg=${c.base00},nobold,noitalics,nounderscore]"
-            set -g status-right "#[fg=${c.base03}]#{prefix_highlight}#[fg=${c.base02},bg=${c.base00}]#[fg=${c.base04},bg=${c.base02}] %H:%M #[range=right fg=${c.base00},bg=${c.base0B},bold] + #[norange]"
+
+            # Base16 colors from Stylix (wallpaper scheme) — live file rewritten
+            # by dendritic-appearance when wallpaper / light-dark flips.
+            source-file -q ~/.config/tmux/theme.conf
 
             setw -g monitor-activity on
             set -g visual-activity off
@@ -302,8 +300,6 @@
             set -g @sessionx-filter-current 'false'
             set -g @sessionx-window-mode 'off'
 
-            set -g @prefix_highlight_fg '${c.base00}'
-            set -g @prefix_highlight_bg '${c.base0E}'
             set -g @prefix_highlight_show_copy_mode 'on'
 
             set -g @continuum-restore 'on'

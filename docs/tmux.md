@@ -44,8 +44,12 @@ tab strip — they’re a badge + picker (same idea as browser profiles vs tabs)
 ```
  main ▌ 1  zsh ▌ 2  nvim ▌ …   20:55 [+]
   ^session     ^powerline window tabs     ^new
-   badge        (stylix colors)
+   badge        (stylix / wallpaper base16)
 ```
+
+Status colors come from Stylix’s wallpaper-derived base16 (`stylix.base16Scheme`),
+seeded into `~/.config/tmux/theme.conf`. Wallpaper / light–dark flips rewrite that
+file from `~/colors.toml` and reload live tmux servers.
 
 | Action             | How                                                     |
 | ------------------ | ------------------------------------------------------- |
