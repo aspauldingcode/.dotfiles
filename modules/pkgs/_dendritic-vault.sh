@@ -60,6 +60,21 @@ sync_vault() {
     log "WARNING: password-store missing at $passdir"
   fi
 
+  # Materialized Wi-Fi PSKs for installer NetworkManager (no pass unlock needed).
+  local wifi_dir="$home/.config/dendritic/wifi"
+  if [[ -d $wifi_dir ]]; then
+    mkdir -p "$VAULT/wifi"
+    rsync -a --delete --exclude eduroam --exclude '*.8021x' "$wifi_dir/" "$VAULT/wifi/"
+    if [[ -f /etc/nixos/.dotfiles/home/wifi-networks.json ]]; then
+      cp -f /etc/nixos/.dotfiles/home/wifi-networks.json "$VAULT/wifi/networks.json"
+    elif [[ -f /mnt/nixinstall/flake/home/wifi-networks.json ]]; then
+      cp -f /mnt/nixinstall/flake/home/wifi-networks.json "$VAULT/wifi/networks.json"
+    fi
+    log "synced wifi PSKs"
+  else
+    log "WARNING: $wifi_dir missing — installer will need nmtui"
+  fi
+
   {
     echo "user=$USER_NAME"
     echo "synced_at=$(date -Iseconds)"

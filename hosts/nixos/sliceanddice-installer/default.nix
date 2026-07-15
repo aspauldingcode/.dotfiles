@@ -1,6 +1,5 @@
 # Minimal on-disk installer OS for sliceanddice.
-# Root = PARTLABEL=nixinstall; shares ESP. Runs disko against the flake to
-# reformat PARTLABEL=nixos as btrfs without wiping this partition.
+# Root = PARTLABEL=nixinstall; shares ESP. Safe reinstall preserves this partition.
 {
   inputs,
   pkgs,
@@ -8,6 +7,23 @@
   ...
 }:
 
+let
+  installerWifi = pkgs.writeShellApplication {
+    name = "dendritic-installer-wifi";
+    runtimeInputs = with pkgs; [
+      networkmanager
+      jq
+      util-linux
+      coreutils
+      gnugrep
+    ];
+    excludeShellChecks = [
+      "SC2086"
+      "SC2046"
+    ];
+    text = builtins.readFile ../../../modules/pkgs/_dendritic-installer-wifi.sh;
+  };
+in
 {
   imports = [
     inputs.determinate-nix.nixosModules.default
@@ -18,8 +34,17 @@
   system.stateVersion = "24.11";
 
   networking.hostName = "sliceanddice-installer";
-  networking.networkmanager.enable = true;
+  networking.networkmanager = {
+    enable = true;
+    wifi.backend = "iwd";
+    wifi.powersave = false;
+  };
+  networking.wireless.enable = false;
+  networking.wireless.iwd.enable = true;
   networking.firewall.allowedTCPPorts = [ 22 ];
+
+  # Wi-Fi / NIC firmware (Sword 15 Intel).
+  hardware.enableRedistributableFirmware = true;
 
   fileSystems."/" = {
     device = "/dev/disk/by-partlabel/nixinstall";
@@ -48,7 +73,10 @@
     "sd_mod"
     "rtsx_pci_sdmmc"
   ];
-  boot.kernelModules = [ "kvm-intel" ];
+  boot.kernelModules = [
+    "kvm-intel"
+    "iwlwifi"
+  ];
 
   services.openssh = {
     enable = true;
@@ -99,6 +127,8 @@
     tmux
     curl
     jq
+    networkmanager # nmtui + nmcli
+    installerWifi
     nixos-install-tools
     (writeShellApplication {
       name = "dendritic-vault-sync";
@@ -130,12 +160,17 @@
       runtimeInputs = [
         coreutils
         util-linux
-        disko
+        gptfdisk
+        parted
+        e2fsprogs
+        btrfs-progs
+        ntfs3g
         nixos-install-tools
         git
         rsync
         nix
         bash
+        systemd
       ];
       excludeShellChecks = [
         "SC2086"
@@ -147,6 +182,52 @@
       text = builtins.readFile ../../../modules/pkgs/_dendritic-reinstall.sh;
     })
   ];
+
+  # Declarative Wi-Fi from /vault/wifi (synced from main OS). Fallback: nmtui.
+  systemd.services.dendritic-installer-wifi = {
+    description = "Apply vault Wi-Fi profiles on installer";
+    after = [
+      "NetworkManager.service"
+      "iwd.service"
+    ];
+    wants = [
+      "NetworkManager.service"
+      "iwd.service"
+    ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${installerWifi}/bin/dendritic-installer-wifi";
+    };
+  };
+
+  # Allow SSH as root with the same keys vault-synced for alex.
+  systemd.services.dendritic-installer-root-keys = {
+    description = "Install root authorized_keys from vault";
+    wantedBy = [ "multi-user.target" ];
+    before = [ "sshd.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = pkgs.writeShellScript "dendritic-installer-root-keys" ''
+        set -euo pipefail
+        if [[ -f /vault/ssh/authorized_keys ]]; then
+          mkdir -p /root/.ssh
+          cp -f /vault/ssh/authorized_keys /root/.ssh/authorized_keys
+          chmod 700 /root/.ssh
+          chmod 600 /root/.ssh/authorized_keys
+        fi
+        if [[ -f /vault/ssh/id_ed25519.pub ]]; then
+          mkdir -p /root/.ssh
+          touch /root/.ssh/authorized_keys
+          grep -qxF "$(cat /vault/ssh/id_ed25519.pub)" /root/.ssh/authorized_keys 2>/dev/null ||
+            cat /vault/ssh/id_ed25519.pub >> /root/.ssh/authorized_keys
+          chmod 600 /root/.ssh/authorized_keys
+        fi
+      '';
+    };
+  };
 
   services.xserver.enable = false;
   documentation.enable = false;

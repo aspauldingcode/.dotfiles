@@ -35,13 +35,16 @@ See [`hosts/nixos/sliceanddice/disko.nix`](../hosts/nixos/sliceanddice/disko.nix
 **Do not** run stock `disko --mode destroy` while booted from nixinstall — that
 clears the GPT and would destroy the live installer + vault.
 
-## Commands
+## Network (installer)
 
-```bash
-dendritic-vault-sync              # main OS → vault
-dendritic-vault-restore /mnt      # after nixos-install
-dendritic-reinstall               # installer only; destroys nixos partition
-```
+Installer uses **NetworkManager + iwd** (same as main OS). After
+`dendritic-vault-sync` on the main OS, `/vault/wifi/*.psk` + `networks.json`
+autoconnect via `dendritic-installer-wifi` (Bubbles preferred).
+
+Fallback on the installer console: `nmtui` (or `nmcli device wifi connect …`).
+
+`dendritic-reinstall` does **not** need GitHub for disko (local carve + mkfs),
+but `nixos-install` still wants cache/network for substitutes.
 
 ## Safety
 
