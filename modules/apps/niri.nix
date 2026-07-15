@@ -24,7 +24,8 @@
         colors = c;
         inherit wallpaper;
       };
-      lock = lib.getExe pkgs.gtklock;
+      gtklockStyle = pkgs.writeText "gtklock-style.css" authCss;
+      lock = "${lib.getExe pkgs.gtklock} -s ${gtklockStyle}";
 
       # Night-light toggle: wlsunset runs on an auto schedule (see
       # services.wlsunset below); this flips it on/off from the keyboard.
@@ -314,11 +315,14 @@
           };
         };
 
-        # ── gtklock (matches gtkgreet login CSS) ──────────────────────
-        programs.gtklock = {
-          enable = true;
-          style = authCss;
-        };
+        # ── gtklock (matches gtkgreet login CSS; no HM module on this pin) ──
+        home.packages = [
+          nightToggle
+          pkgs.gtklock
+          pkgs.networkmanagerapplet # waybar network → nm-connection-editor
+          pkgs.pavucontrol
+        ];
+        xdg.configFile."gtklock/style.css".source = gtklockStyle;
 
         # ── night light (wlsunset) ────────────────────────────────────
         # Auto colour-temperature schedule based on location (America/
@@ -335,12 +339,6 @@
           };
           systemdTarget = "graphical-session.target";
         };
-
-        home.packages = [
-          nightToggle
-          pkgs.networkmanagerapplet # waybar network → nm-connection-editor
-          pkgs.pavucontrol
-        ];
 
         # ── swayidle (lock + DPMS off on idle) ────────────────────────
         services.swayidle = {
