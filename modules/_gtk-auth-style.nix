@@ -1,6 +1,9 @@
 # Shared GTK CSS for gtkgreet (login) and gtklock (session lock).
 # Call as: (import ./_gtk-auth-style.nix) { colors = …; wallpaper = …; }
-{ colors, wallpaper ? null }:
+{
+  colors,
+  wallpaper ? null,
+}:
 let
   wallpaperCss =
     if wallpaper == null then
