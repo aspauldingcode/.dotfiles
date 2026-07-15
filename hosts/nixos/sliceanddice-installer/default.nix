@@ -141,6 +141,8 @@
         "SC2086"
         "SC2164"
         "SC2015"
+        "SC2046"
+        "SC2004"
       ];
       text = builtins.readFile ../../../modules/pkgs/_dendritic-reinstall.sh;
     })

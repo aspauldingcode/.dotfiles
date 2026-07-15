@@ -18,6 +18,12 @@ die() {
 }
 
 ensure_mount() {
+  # When booted from nixinstall, vault is on the installer's own root.
+  if [[ $VAULT_MNT == / ]]; then
+    VAULT="/vault"
+    [[ -d $VAULT ]] || die "vault missing at /vault (booted from nixinstall?)"
+    return
+  fi
   mkdir -p "$VAULT_MNT"
   if ! findmnt -n "$VAULT_MNT" >/dev/null 2>&1; then
     dev="$(readlink -f /dev/disk/by-partlabel/nixinstall 2>/dev/null || true)"

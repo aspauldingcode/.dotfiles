@@ -3,12 +3,10 @@
 # disko generates mount units; it does NOT format on nh os switch.
 # Full wipe/reinstall is done from the on-disk installer (PARTLABEL=nixinstall).
 #
-# Layout:
-#   1 ESP | 2 nixos (btrfs subvols) | 3 nixinstall (installer+vault)
-#   | 4 windows | 5 wininstall | 6 swap
+# Layout (partlabels; physical nixinstall stays last so reinstall can preserve it):
+#   ESP | nixos (btrfs) | windows | wininstall | swap | nixinstall
 #
-# liveExt4Compat: until the installer reformats nixos to btrfs, force `/` to the
-# existing ext4 UUID so nh os switch stays bootable.
+# liveExt4Compat: only for the pre-migration ext4 root. Reinstall sets this false.
 {
   inputs,
   lib,
@@ -19,7 +17,6 @@
 let
   disk = "/dev/disk/by-id/ata-Samsung_SSD_870_EVO_500GB_S62ANJ0R238724D";
   espUuid = "8824-4C5F";
-  swapUuid = "c570ec29-6025-456b-99d1-8f16b677835a";
   liveExt4Uuid = "b89f5dca-4b37-4062-bf1d-9e4ebfd61916";
   btrfsOpts = [
     "compress=zstd"
@@ -36,8 +33,8 @@ in
     type = lib.types.bool;
     default = true;
     description = ''
-      Keep / on the pre-migration ext4 UUID. Set false after btrfs install
-      from nixinstall so disko btrfs subvolume mounts apply.
+      Keep / on the pre-migration ext4 UUID. Must be false on btrfs installs
+      (dendritic-reinstall expects false in the flake it installs).
     '';
   };
 
@@ -95,23 +92,10 @@ in
               };
             };
           };
-          nixinstall = {
-            priority = 3;
-            size = "8G";
-            label = "nixinstall";
-            content = {
-              type = "filesystem";
-              format = "ext4";
-              mountpoint = "/mnt/nixinstall";
-              mountOptions = [
-                "nofail"
-                "noatime"
-                "x-systemd.device-timeout=5s"
-              ];
-            };
-          };
+          # After nixos: windows / wininstall / swap, then nixinstall last so an
+          # existing nixinstall at end-of-disk can be preserved by reinstall.
           windows = {
-            priority = 4;
+            priority = 3;
             size = "64G";
             label = "windows";
             content = {
@@ -129,7 +113,7 @@ in
             };
           };
           wininstall = {
-            priority = 5;
+            priority = 4;
             size = "8G";
             label = "wininstall";
             content = {
@@ -147,12 +131,27 @@ in
             };
           };
           swap = {
-            priority = 6;
-            size = "100%";
+            priority = 5;
+            size = "9G";
             label = "swap";
             content = {
               type = "swap";
               discardPolicy = "both";
+            };
+          };
+          nixinstall = {
+            priority = 6;
+            size = "100%";
+            label = "nixinstall";
+            content = {
+              type = "filesystem";
+              format = "ext4";
+              mountpoint = "/mnt/nixinstall";
+              mountOptions = [
+                "nofail"
+                "noatime"
+                "x-systemd.device-timeout=5s"
+              ];
             };
           };
         };
@@ -178,9 +177,8 @@ in
 
     # When not in liveExt4Compat, disko owns / and subvols; do not mkForce.
 
-    # liveExt4: swap partition is gone (deleted during shrink attempt) and
-    # boot.zswap asserts a physical backing store — use a temporary swapfile
-    # until the installer creates PARTLABEL=swap.
+    # liveExt4: swap partition may be missing — temp swapfile for zswap.
+    # After reinstall: PARTLABEL=swap (UUID changes on mkswap).
     swapDevices =
       if liveExt4 then
         [
@@ -191,7 +189,7 @@ in
         ]
       else
         lib.mkForce [
-          { device = "/dev/disk/by-uuid/${swapUuid}"; }
+          { device = "/dev/disk/by-partlabel/swap"; }
         ];
   };
 }

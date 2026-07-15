@@ -115,6 +115,9 @@
       dendritic.nixinstall.enable = true;
       dendritic.nixinstall.autoBootstrap = true;
 
+      # After dendritic-reinstall (btrfs). Keep true only while still on live ext4.
+      dendritic.disk.liveExt4Compat = false;
+
       # Windows dual-boot media (after installer/disko creates partitions).
       # Keep disabled until nixinstall reinstall has carved windows/wininstall.
       dendritic.windows.enable = true;

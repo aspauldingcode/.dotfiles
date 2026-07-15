@@ -25,10 +25,15 @@ See [`hosts/nixos/sliceanddice/disko.nix`](../hosts/nixos/sliceanddice/disko.nix
 2. `sudo dendritic-vault-sync` — copy `~/.ssh`, `~/.gnupg`, `~/.password-store`
    to `/mnt/nixinstall/vault`.
 3. Reboot → pick **NixOS Installer (dendritic)**.
-4. `sudo dendritic-reinstall` (or SSH in with Cursor) — disko formats `nixos` as
-   btrfs, installs `#sliceanddice`, restores vault.
-5. Reboot into main OS. Set `dendritic.disk.liveExt4Compat = false` and switch.
-6. Enable `dendritic.windows.autoBootstrap = true` when ready for Windows media.
+4. `sudo dendritic-reinstall` (or SSH in with Cursor) — shrinks/reformats `nixos`
+   as btrfs, carves windows/wininstall/swap **without wiping nixinstall**,
+   installs `#sliceanddice`, restores vault. Requires
+   `dendritic.disk.liveExt4Compat = false` in the flake being installed.
+5. Reboot into main OS (btrfs). Enable `dendritic.windows.autoBootstrap = true`
+   when ready for Windows media.
+
+**Do not** run stock `disko --mode destroy` while booted from nixinstall — that
+clears the GPT and would destroy the live installer + vault.
 
 ## Commands
 
