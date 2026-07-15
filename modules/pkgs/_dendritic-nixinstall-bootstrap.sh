@@ -47,16 +47,22 @@ if [[ ! -b /dev/disk/by-partlabel/nixinstall ]]; then
   end=$((start + size_sect - 1))
   [[ $end -lt $disk_sects ]] || die "not enough free sectors (need ~${SIZE_GIB}G at end of disk)"
 
-  echo "start=$start size=$size_sect type=8300 name=nixinstall" | sfdisk --force -a "$DISK"
-  partprobe "$DISK" 2>/dev/null || true
+  # Comma-separated fields required; type=8300 alone can EINVAL on this util-linux.
+  echo "start=$start, size=$size_sect, type=0FC63DAF-8483-4772-8E79-3D69D8477DE4, name=nixinstall" |
+    sfdisk --force --no-reread -a "$DISK"
+  partprobe "$DISK" 2>/dev/null || partx -u "$DISK" 2>/dev/null || true
   udevadm settle || true
   sleep 1
+  # Ensure kernel partition node exists even if reread failed
+  if [[ ! -b ${DISK}-part3 && ! -b /dev/disk/by-partlabel/nixinstall ]]; then
+    partx -a "$DISK" 2>/dev/null || true
+    udevadm settle || true
+  fi
   [[ -b /dev/disk/by-partlabel/nixinstall ]] || {
     # Fallback label via sgdisk if sfdisk name didn't stick
-    nparts="$(lsblk -n -o NAME "$DISK" | wc -l)"
-    nparts=$((nparts - 1))
+    nparts="$(lsblk -nro NAME,TYPE "$DISK" | awk '$2=="part"{c++} END{print c+0}')"
     sgdisk -c "$nparts:nixinstall" "$DISK" || true
-    partprobe "$DISK" 2>/dev/null || true
+    partprobe "$DISK" 2>/dev/null || partx -u "$DISK" 2>/dev/null || true
     udevadm settle || true
   }
   [[ -b /dev/disk/by-partlabel/nixinstall ]] || die "nixinstall partition still missing"

@@ -42,7 +42,7 @@
         name = "dendritic-nixinstall-bootstrap";
         runtimeInputs = with pkgs; [
           coreutils
-          util-linux
+          util-linux # sfdisk, partx, blkid, mount
           gptfdisk
           parted
           e2fsprogs
