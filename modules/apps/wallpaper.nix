@@ -74,7 +74,9 @@
       selectedScheme = "${selectedEntry}/scheme-${variant}.yaml";
       selectedImage = "${selectedEntry}/wallpaper.png";
 
-      patchIde = ../../scripts/dendritic-wallpaper-patch-ide.py;
+      patchIde = pkgs.writeText "dendritic-wallpaper-patch-ide.py" (
+        builtins.readFile ../../scripts/dendritic-wallpaper-patch-ide.py
+      );
 
       wallpaperBin = pkgs.writeShellApplication {
         name = "dendritic-wallpaper";
