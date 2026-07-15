@@ -344,10 +344,12 @@
             stylix.image = lib.mkForce selectedImage;
             stylix.base16Scheme = lib.mkIf cfg.themeFromImage (lib.mkOverride 40 selectedScheme);
 
-            # Seed colors.toml from selected wallpaper; daily apply replaces with a
-            # mutable copy so neovim can hot-reload without writing the nix store.
+            # Seed colors.toml from selected wallpaper. `force` avoids HM backup
+            # fights when the daily apply replaces the store symlink with a
+            # mutable copy for neovim hot-reload.
             home.file."colors.toml" = lib.mkForce {
               source = "${selectedEntry}/colors-${variant}.toml";
+              force = true;
             };
 
             home.packages = [
