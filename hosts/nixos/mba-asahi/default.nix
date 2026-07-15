@@ -9,6 +9,10 @@
 # Soft stack mirrors sliceanddice (niri + iwd + pass/eduroam).
 # Differs only where hardware/platform requires it: aarch64-linux, Asahi
 # drivers, this Mac's disks/user (8amps), no NVIDIA/x86 bits.
+#
+# Drivers: `inputs.apple-silicon` = github:tpwrules/nixos-apple-silicon
+# (linux-asahi + peripheral firmware). Do not switch this host to
+# pkgs.linuxPackages / mainline — Wi-Fi, GPU, and Speakers still need Asahi.
 {
   imports = [
     # 1. Base identity and platform
@@ -46,7 +50,14 @@
         device = "/dev/disk/by-label/asahi";
         fsType = "vfat";
       };
-      hardware.asahi.extractPeripheralFirmware = false;
+
+      # hardware.asahi.* comes from nixos-apple-silicon (imported below).
+      # extractPeripheralFirmware=false: firmware already on the ESP from the
+      # Asahi installer; set true only if you need the module to copy it again.
+      hardware.asahi = {
+        extractPeripheralFirmware = false;
+        # useExperimentalGPUDriver = true; # uncomment for newer AGX if needed
+      };
 
       time.timeZone = "America/Los_Angeles";
       i18n.defaultLocale = "en_US.UTF-8";
@@ -124,7 +135,7 @@
       ];
     }
 
-    # 2. Support modules
+    # 2. Asahi support (out-of-tree kernel/firmware) + HM + dendritic
     inputs.apple-silicon.nixosModules.apple-silicon-support
     inputs.home-manager.nixosModules.home-manager
     inputs.self.modules.nixos.dendritic

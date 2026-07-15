@@ -42,6 +42,8 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
+    # Asahi Linux out-of-tree kernel + firmware (not yet fully upstream).
+    # Host mba-asahi imports apple-silicon-support → boot.kernelPackages = linux-asahi.
     apple-silicon = {
       url = "github:tpwrules/nixos-apple-silicon";
       inputs.nixpkgs.follows = "nixpkgs";
