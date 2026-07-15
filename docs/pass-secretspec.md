@@ -58,7 +58,7 @@ in private GitHub repos you cannot access. To replicate, you create
                 ▼                             ▼
 ┌──────────────────────────┐    ┌─────────────────────────────────┐
 │  Host (mba / NixOS / …)  │    │  Agents (launchd / systemd)     │
-│  gpg-agent (preset)      │    │  pass-store-sync (watchexec)    │
+│  gpg-agent (preset + dendritic-pinentry) │    │  pass-store-sync (watchexec)    │
 │  ~/.password-store       │◄──►│  pass-store-sync-notify (ntfy)  │
 │  SecretSpec / QtPass     │    │  pass-store-tray (status)       │
 └────────────┬─────────────┘    └───────────────┬─────────────────┘
@@ -86,12 +86,16 @@ gh auth login (owner MFA)
  sops decrypt in public .dotfiles
  (gpg_private_key / gpg_passphrase / pass_store_ntfy_topic)
         │
-   gpg-agent (preset passphrase)
+   gpg-agent (preset + dendritic-pinentry — never GUI/Keychain)
         │
  ~/.password-store  ←→  private .password-store
         │
    SecretSpec (pass://…) / materialize / QtPass
 ```
+
+**No human GPG passphrase prompts.** `dendritic-pinentry` serves
+`gpg_passphrase` from sops; a launchd/systemd timer re-presets the agent and
+(on macOS) deletes GnuPG Keychain items so pinentry-mac cannot come back.
 
 Grace: SSH ed25519 → ssh-to-age recipients may still appear in
 [`.sops.yaml`](../.sops.yaml). See [`ssh-secrets.md`](./ssh-secrets.md).

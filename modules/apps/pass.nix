@@ -1,7 +1,10 @@
 # Dendritic pass + GPG + SecretSpec feature (HM-only).
 #
 # Trust chain: SSH ed25519 → sops age → gpg_private_key/gpg_passphrase →
-# gpg-agent preset → ~/.password-store (private GitHub) → SecretSpec.
+# gpg-agent preset (+ dendritic-pinentry, no GUI) → ~/.password-store → SecretSpec.
+#
+# Humans never type the GPG passphrase. pinentry-mac/Keychain is intentionally
+# not used — it prompted for a secret the user is not meant to know.
 #
 # GUI: QtPass (macOS .app via HM linkApps + Dock pin; Linux desktop entry).
 #
@@ -25,7 +28,6 @@
     let
       cfg = config.dendritic.apps.pass;
       storeDir = "${config.home.homeDirectory}/.password-store";
-      pinentryPackage = if pkgs.stdenv.isDarwin then pkgs.pinentry_mac else pkgs.pinentry-curses;
       passPackage = pkgs.pass.withExtensions (exts: [ exts.pass-otp ]);
       passBin = "${passPackage}/bin/pass";
       gpgBin = "${pkgs.gnupg}/bin/gpg";
@@ -33,6 +35,42 @@
       pwgenBin = "${pkgs.pwgen}/bin/pwgen";
       secretspecToml = ../../home/secretspec.toml;
       materializeMap = ../../home/pass-materialize.json;
+      # GUI-less pinentry: GETPIN → sops gpg_passphrase file (fail closed).
+      dendriticPinentry =
+        let
+          passPath = config.sops.secrets.gpg_passphrase.path;
+          prevPassPath = config.sops.secrets.gpg_passphrase_previous.path;
+          wrapper = pkgs.writeShellScript "dendritic-pinentry-wrap" ''
+            export DENDRITIC_GPG_PASSPHRASE_FILE=${lib.escapeShellArg passPath}
+            export DENDRITIC_GPG_PASSPHRASE_PREVIOUS_FILE=${lib.escapeShellArg prevPassPath}
+            exec ${pkgs.bash}/bin/bash ${../../scripts/dendritic-pinentry.sh}
+          '';
+        in
+        pkgs.runCommand "dendritic-pinentry" { } ''
+          mkdir -p $out/bin
+          ln -s ${wrapper} $out/bin/pinentry
+          ln -s ${wrapper} $out/bin/pinentry-dendritic
+        '';
+      gpgPresetScript =
+        let
+          passPath = config.sops.secrets.gpg_passphrase.path;
+          prevPassPath = config.sops.secrets.gpg_passphrase_previous.path;
+        in
+        pkgs.writeShellScript "gpg-preset-from-sops" ''
+          export PATH=${
+            lib.makeBinPath [
+              pkgs.coreutils
+              pkgs.gnugrep
+              pkgs.gawk
+              pkgs.gnupg
+            ]
+          }''${PATH:+:$PATH}
+          export GPG=${lib.escapeShellArg gpgBin}
+          export GPG_PRESET_PASSPHRASE=${lib.escapeShellArg "${pkgs.gnupg}/libexec/gpg-preset-passphrase"}
+          export DENDRITIC_GPG_PASSPHRASE_FILE=${lib.escapeShellArg passPath}
+          export DENDRITIC_GPG_PASSPHRASE_PREVIOUS_FILE=${lib.escapeShellArg prevPassPath}
+          exec ${pkgs.bash}/bin/bash ${../../scripts/gpg-preset-from-sops.sh}
+        '';
       syncPath = lib.makeBinPath [
         pkgs.git
         pkgs.coreutils
@@ -325,7 +363,8 @@
             enableSshSupport = false;
             defaultCacheTtl = 31536000;
             maxCacheTtl = 31536000;
-            pinentry.package = pinentryPackage;
+            # Never pinentry-mac / curses — those ask humans for a sops secret.
+            pinentry.package = dendriticPinentry;
             extraConfig = ''
               allow-preset-passphrase
               allow-loopback-pinentry
@@ -411,6 +450,9 @@
 
               _pass_import_and_preset ${lib.escapeShellArg keyPath} ${lib.escapeShellArg passPath}
               _pass_import_and_preset ${lib.escapeShellArg prevKeyPath} ${lib.escapeShellArg prevPassPath}
+
+              # Keep agent + Keychain aligned with sops (idempotent).
+              ${gpgPresetScript} || true
 
               export PASSWORD_STORE_DIR=${lib.escapeShellArg storeDir}
               mkdir -p "$PASSWORD_STORE_DIR"
@@ -601,6 +643,64 @@
                 "PASS_STORE_NTFY_TOPIC_FILE=${config.sops.secrets.pass_store_ntfy_topic.path}"
                 "PASS_STORE_NTFY_WAIT_SEC=120"
               ];
+            };
+            Install.WantedBy = [ "default.target" ];
+          };
+        })
+
+        # Keep gpg-agent passphrase preset from sops; purge Darwin Keychain
+        # GnuPG items so pinentry-mac cannot reappear after a manual install.
+        (lib.mkIf (cfg.enable && pkgs.stdenv.isDarwin) {
+          launchd.agents.gpg-preset-from-sops = {
+            enable = true;
+            config = {
+              Label = "com.dendritic.gpg-preset-from-sops";
+              ProgramArguments = [ "${gpgPresetScript}" ];
+              RunAtLoad = true;
+              # Re-preset after sleep / agent restart; cheap idempotent op.
+              StartInterval = 300;
+              WatchPaths = [
+                "${config.home.homeDirectory}/.config/sops-nix/secrets"
+              ];
+              StandardOutPath = "${syncLogDir}/gpg-preset-from-sops.log";
+              StandardErrorPath = "${syncLogDir}/gpg-preset-from-sops.err.log";
+              EnvironmentVariables = {
+                HOME = config.home.homeDirectory;
+                PATH = "/usr/bin:/bin:/usr/sbin:/sbin";
+              };
+            };
+          };
+        })
+
+        (lib.mkIf (cfg.enable && pkgs.stdenv.isLinux) {
+          systemd.user.services.gpg-preset-from-sops = {
+            Unit = {
+              Description = "Preset GPG passphrase from sops into gpg-agent";
+              After = [
+                "default.target"
+                "gpg-agent.service"
+              ];
+              Wants = [ "gpg-agent.service" ];
+            };
+            Service = {
+              Type = "oneshot";
+              ExecStart = "${gpgPresetScript}";
+            };
+          };
+          systemd.user.timers.gpg-preset-from-sops = {
+            Unit.Description = "Re-preset GPG passphrase from sops every 5m";
+            Timer = {
+              OnBootSec = "30s";
+              OnUnitActiveSec = "5m";
+              Unit = "gpg-preset-from-sops.service";
+            };
+            Install.WantedBy = [ "timers.target" ];
+          };
+          systemd.user.paths.gpg-preset-from-sops = {
+            Unit.Description = "Re-preset GPG when sops secrets change";
+            Path = {
+              PathModified = "${config.home.homeDirectory}/.config/sops-nix/secrets";
+              PathExists = config.sops.secrets.gpg_passphrase.path;
             };
             Install.WantedBy = [ "default.target" ];
           };
