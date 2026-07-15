@@ -87,21 +87,40 @@
       cfg = config.dendritic.apps.niri;
       c = config.lib.stylix.colors.withHashtag;
       wallpaper = config.stylix.image or null;
+      # gtklock's reveal/conceal icons need Adwaita on the icon search path.
+      # Force a raster eye into CSS too — SVG/`currentColor` symbolic lookup
+      # often shows up as an empty/"missing font" box in GTK3 entries.
+      gtklockRevealIcon =
+        let
+          svg = "${pkgs.adwaita-icon-theme}/share/icons/Adwaita/symbolic/actions/view-reveal-symbolic.svg";
+          accent = config.lib.stylix.colors.withHashtag.base0D;
+        in
+        pkgs.runCommand "gtklock-reveal-eye.png"
+          {
+            nativeBuildInputs = [
+              pkgs.imagemagick
+              pkgs.librsvg
+            ];
+            preferLocalBuild = true;
+          }
+          ''
+            # Rasterize Adwaita's eye, then tint to the Stylix accent.
+            rsvg-convert -w 64 -h 64 -o "$out.tmp.png" ${lib.escapeShellArg svg}
+            magick "$out.tmp.png" -fill ${lib.escapeShellArg accent} -colorize 100 PNG32:"$out"
+            rm -f "$out.tmp.png"
+          '';
       authCss = import ../_gtk-auth-style.nix {
         inherit lib pkgs wallpaper;
         colors = config.lib.stylix.colors;
+        revealIcon = gtklockRevealIcon;
       };
       gtklockStyle = pkgs.writeText "gtklock-style.css" authCss;
-      gtklockIcons = import ../_gtk-auth-icons.nix { inherit pkgs; };
-      # Dedicated gtk-3 settings so we can force our icon theme without
-      # clobbering the user's normal ~/.config/gtk-3.0.
       gtklockGtkConfig = pkgs.writeTextDir "gtk-3.0/settings.ini" ''
         [Settings]
-        gtk-icon-theme-name=gtklock-auth
+        gtk-icon-theme-name=Adwaita
       '';
-      # String path — swayidle events require `null or string`, not a derivation.
       lock = "${pkgs.writeShellScript "gtklock-auth" ''
-        export XDG_DATA_DIRS=${lib.escapeShellArg "${gtklockIcons}/share"}''${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}
+        export XDG_DATA_DIRS=${lib.escapeShellArg "${pkgs.adwaita-icon-theme}/share"}''${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}
         export XDG_CONFIG_HOME=${lib.escapeShellArg gtklockGtkConfig}
         exec ${lib.getExe pkgs.gtklock} -s ${gtklockStyle} "$@"
       ''}";
@@ -163,6 +182,8 @@
             modules-center = [ "clock" ];
             modules-right = [
               "tray"
+              "custom/appearance"
+              "custom/power"
               "pulseaudio"
               "network"
               "cpu"
@@ -232,6 +253,49 @@
             tray = {
               spacing = 10;
             };
+            "custom/appearance" = {
+              exec = "${pkgs.writeShellScript "waybar-dendritic-appearance" ''
+                set -euo pipefail
+                if command -v dendritic-appearance >/dev/null 2>&1; then
+                  dendritic-appearance status --waybar
+                else
+                  echo '{"text":"󰔎","tooltip":"dendritic-appearance missing","class":"unknown"}'
+                fi
+              ''}";
+              return-type = "json";
+              interval = 5;
+              on-click = "dendritic-appearance toggle";
+              on-click-right = "dendritic-appearance apply --wallpaper next";
+            };
+            "custom/power" = {
+              exec = pkgs.writeShellScript "waybar-dendritic-power" ''
+                set -euo pipefail
+                f=/run/dendritic-power/status.json
+                if [ ! -r "$f" ]; then
+                  echo '{"text":"󰓅 —","tooltip":"dendritic-powerd starting"}'
+                  exit 0
+                fi
+                ${pkgs.jq}/bin/jq -c '
+                  {
+                    text: (
+                      (if .state == "quiet" then "󰒮 "
+                       elif .state == "audible" then "󰓅 "
+                       else "󰈸 " end)
+                      + (.pl1_w|tostring) + "W"
+                    ),
+                    tooltip: (
+                      "state=\(.state) reason=\(.reason)\n"
+                      + "PL1=\(.pl1_w)W pkg=\(.pkg_w)W temp=\(.pkg_temp)C fan=\(.fan_rpm)\n"
+                      + "EPP=\(.epp) workload=\(.workload) docked=\(.docked) AC=\(.ac_online)\n"
+                      + "budget=\(.budget_used)"
+                    ),
+                    class: .state
+                  }
+                ' "$f"
+              '';
+              return-type = "json";
+              interval = 3;
+            };
           };
 
           # Concentric corners (macOS Tahoe / Apple ConcentricRectangle):
@@ -287,6 +351,8 @@
               #battery,
               #network,
               #pulseaudio,
+              #custom-power,
+              #custom-appearance,
               #tray {
                   background-color: alpha(@base01, 0.92);
                   padding: 0 ${px islandPadX};
@@ -419,7 +485,7 @@
           systemdTarget = "graphical-session.target";
         };
 
-        # ── swayidle (lock + DPMS off on idle) ────────────────────────
+        # ── swayidle (lock + DPMS + suspend) ───────────────────────────
         services.swayidle = {
           enable = true;
           events = {
@@ -433,6 +499,11 @@
             {
               timeout = 360;
               command = "${lib.getExe pkgs.niri} msg action power-off-monitors";
+            }
+            {
+              # Quiet when away: fans to zero via deep suspend (mem_sleep=deep).
+              timeout = 900;
+              command = "${pkgs.systemd}/bin/systemctl suspend";
             }
           ];
         };

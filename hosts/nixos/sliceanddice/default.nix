@@ -54,8 +54,10 @@
         modesetting.enable = true;
         # Keep the dGPU powered but idle (no finegrained runtime-PM): finegrained
         # aggressively suspends the GPU and has been a black-screen source here.
+        # CPU/fan quiet policy lives in dendritic.power (RAPL/EPP), not here.
         powerManagement.enable = true;
         powerManagement.finegrained = false;
+        # dynamicBoost/nvidia-powerd fights quiet EPP/RAPL — leave default (off).
         # Ampere (RTX 30xx) → the open kernel modules are recommended and build
         # cleanly against mainline kernels; the proprietary blob lags new kernels.
         open = true;
@@ -100,6 +102,11 @@
       # ── Dendritic desktop features ─────────────────────────────────────
       dendritic.apps.niri.enable = true;
       dendritic.apps.linux-desktop.enable = true;
+
+      # Quiet-first power: RAPL/EPP feedback controller, zswap, lid/idle suspend.
+      # Owns CPU power policy — do not enable TLP / auto-cpufreq / PPD alongside.
+      # NVIDIA finegrained stays off (black-screen history); dGPU already runtime-suspends.
+      dendritic.power.enable = true;
 
       # NVIDIA drm for Xwayland/offload. videoDrivers pulls in the driver even
       # though niri itself is a native Wayland compositor on Intel.

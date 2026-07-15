@@ -113,6 +113,11 @@
               tr -d '[:space:]' < /var/lib/dendritic/appearance-variant
               return
             fi
+            user_variant="''${XDG_STATE_HOME:-$HOME/.local/state}/dendritic/appearance-variant"
+            if [ -r "$user_variant" ]; then
+              tr -d '[:space:]' < "$user_variant"
+              return
+            fi
             echo "$DEFAULT_VARIANT"
           }
 

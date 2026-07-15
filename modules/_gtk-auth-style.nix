@@ -22,12 +22,14 @@
 #   (import ./_gtk-auth-style.nix) {
 #     inherit lib pkgs wallpaper;
 #     colors = config.lib.stylix.colors;
+#     revealIcon = "/nix/store/.../view-reveal-symbolic.svg"; # optional
 #   }
 {
   lib,
   pkgs,
   colors,
   wallpaper ? null,
+  revealIcon ? null,
 }:
 let
   # ── Concentric radius tokens ────────────────────────────────────────
@@ -283,22 +285,26 @@ in
     color: ${hex "base07"};
   }
 
-  /* Password show/hide (gtklock secondary icon). Tint + size so the eye
-     reads clearly on the dark entry; icons themselves come from the
-     gtklock-auth icon theme wrapper. */
+  /* Password show/hide. Force a raster eye via -gtk-icon-source — GTK3
+     symbolic theme lookup often paints a blank/"missing glyph" box here. */
   #input-field image.right,
   entry image.right {
     color: ${hex "base0D"};
-    min-width: 22px;
-    min-height: 22px;
-    margin: 0 6px 0 2px;
+    min-width: 24px;
+    min-height: 24px;
+    margin: 0 8px 0 4px;
     opacity: 1;
-    -gtk-icon-style: symbolic;
+    ${
+      if revealIcon == null then
+        "-gtk-icon-style: symbolic;"
+      else
+        ''-gtk-icon-source: url("file://${toString revealIcon}");''
+    }
   }
 
   #input-field image.right:hover,
   entry image.right:hover {
-    color: ${hex "base0C"};
+    opacity: 0.85;
   }
 
   button,

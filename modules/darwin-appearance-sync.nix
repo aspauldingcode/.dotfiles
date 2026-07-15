@@ -138,18 +138,14 @@
           }
 
           detect_desired() {
-            # Prefer GUI appearance API via osascript (most reliable).
-            # Fallback to defaults key if GUI query is unavailable.
-            mode="$("$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" /usr/bin/osascript -e 'tell application "System Events" to tell appearance preferences to get dark mode' 2>/dev/null || true)"
-            if printf '%s' "$mode" | /usr/bin/grep -Eiq '^(true|1)$'; then
-              printf "dark\n"
-              return
+            # No osascript: use dendritic-appearance (defaults / host state).
+            if command -v dendritic-appearance >/dev/null 2>&1; then
+              mode="$("$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" \
+                /usr/bin/env HOME="/Users/$user" dendritic-appearance detect 2>/dev/null || true)"
+              case "$mode" in
+                dark|light) printf '%s\n' "$mode"; return ;;
+              esac
             fi
-            if printf '%s' "$mode" | /usr/bin/grep -Eiq '^(false|0)$'; then
-              printf "light\n"
-              return
-            fi
-
             if /usr/bin/defaults read "/Users/$user/Library/Preferences/.GlobalPreferences" AppleInterfaceStyle 2>/dev/null | /usr/bin/grep -qi dark; then
               printf "dark\n"
             else
@@ -158,16 +154,15 @@
           }
 
           notify() {
+            # Prefer terminal-notifier / log — never osascript.
             title="$1"
             message="$2"
             subtitle="$3"
-            "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" /usr/bin/osascript \
-              -e "set t to \"$title\"" \
-              -e "set s to \"$subtitle\"" \
-              -e "set m to \"$message\"" \
-              -e "try" \
-              -e "  display notification m with title t subtitle s" \
-              -e "end try" >/dev/null 2>&1 || true
+            if command -v terminal-notifier >/dev/null 2>&1; then
+              "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" \
+                terminal-notifier -title "$title" -subtitle "$subtitle" -message "$message" >/dev/null 2>&1 || true
+            fi
+            printf '%s\n' "notify: $title — $message ($subtitle)" >>"$log_file"
           }
 
           write_status() {
@@ -251,6 +246,12 @@
               printf "%s\n" "$desired" > "$applied_file"
               chmod 644 "$applied_file"
               /bin/sh /etc/dendritic-appearance-reload-hooks.sh >>"$log_file" 2>>"$err_log_file" || true
+              # Match wallpaper + palette variant to host appearance (no rebuild).
+              "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" /usr/bin/env \
+                HOME="/Users/$user" \
+                DENDRITIC_THEME_VARIANT="$desired" \
+                dendritic-appearance apply --variant "$desired" --wallpaper current \
+                >>"$log_file" 2>>"$err_log_file" || true
               /usr/bin/printf '%s\n' \
                 "Applications with limited hot-reload may still need restart." \
                 "Common candidates: Firefox, some Electron apps, GTK apps." > "$restart_hints_file"
@@ -338,124 +339,103 @@
         '';
 
         environment.etc."dendritic-appearance-reload-hooks.sh".text = ''
-                    #!/bin/sh
-                    # App reload hooks after fast activation.
-                    set -eu
+          #!/bin/sh
+          # App reload hooks after fast activation.
+          set -eu
 
-                    user="${user}"
-                    uid="$(${pkgs.coreutils}/bin/id -u "$user")"
-                    launchctl="/bin/launchctl"
+          user="${user}"
+          uid="$(${pkgs.coreutils}/bin/id -u "$user")"
+          launchctl="/bin/launchctl"
 
-                    # ── macOS Tahoe tinting (base0D blue accent from Stylix palette) ─────
-                    # Tint string is pre-computed at Nix eval time from Stylix colors.
-                    apply_tahoe_tinting() {
-                      _tint="${tahoeTint}"
-                      # Icon / widget / folder tint color
-                      "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" \
-                        /usr/bin/defaults write -g AppleIconAppearanceTintColor -string "Other"
-                      "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" \
-                        /usr/bin/defaults write -g AppleIconAppearanceCustomTintColor -string "$_tint"
-                      # Text highlight color
-                      "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" \
-                        /usr/bin/defaults write -g AppleHighlightColor -string "$_tint"
-                      # Accent / theme color (explicit macOS blue + custom variant tint)
-                      "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" \
-                        /usr/bin/defaults write -g AppleAccentColor -int 4
-                      "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" \
-                        /usr/bin/defaults write -g AppleAccentColorVariant -string "$_tint"
-                      # Icon style = tinted, auto light/dark switch
-                      "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" \
-                        /usr/bin/defaults write -g AppleIconAppearanceStyle -string "Tinted"
-                      "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" \
-                        /usr/bin/defaults write -g AppleIconAppearanceMode -string "Auto"
-                      # Bounce UI services so the tint takes effect immediately.
-                      "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" \
-                        /usr/bin/killall Dock Finder SystemUIServer >/dev/null 2>&1 || true
-                    }
+          # ── macOS Tahoe tinting (base0D blue accent from Stylix palette) ─────
+          # Tint string is pre-computed at Nix eval time from Stylix colors.
+          apply_tahoe_tinting() {
+            _tint="${tahoeTint}"
+            # Icon / widget / folder tint color
+            "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" \
+              /usr/bin/defaults write -g AppleIconAppearanceTintColor -string "Other"
+            "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" \
+              /usr/bin/defaults write -g AppleIconAppearanceCustomTintColor -string "$_tint"
+            # Text highlight color
+            "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" \
+              /usr/bin/defaults write -g AppleHighlightColor -string "$_tint"
+            # Accent / theme color (explicit macOS blue + custom variant tint)
+            "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" \
+              /usr/bin/defaults write -g AppleAccentColor -int 4
+            "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" \
+              /usr/bin/defaults write -g AppleAccentColorVariant -string "$_tint"
+            # Icon style = tinted, auto light/dark switch
+            "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" \
+              /usr/bin/defaults write -g AppleIconAppearanceStyle -string "Tinted"
+            "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" \
+              /usr/bin/defaults write -g AppleIconAppearanceMode -string "Auto"
+            # Bounce UI services so the tint takes effect immediately.
+            "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" \
+              /usr/bin/killall Dock Finder SystemUIServer >/dev/null 2>&1 || true
+          }
 
-                    apply_tahoe_tinting
+          apply_tahoe_tinting
 
-                    # Force Ghostty config/theme reload after each mode switch.
-                    # Preferred path for newer Ghostty builds.
-                    if "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" /usr/bin/pkill -USR2 -x "Ghostty" >/dev/null 2>&1; then
-                      :
-                    fi
+          # Prefer live tint from today's wallpaper palette (colors.toml).
+          if command -v dendritic-appearance >/dev/null 2>&1; then
+            "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" \
+              /usr/bin/env HOME="/Users/$user" dendritic-appearance tint >/dev/null 2>&1 || true
+          fi
 
-                    # Fallback path for builds/environment where signal reload is unavailable.
-                    "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" /usr/bin/osascript <<'APPLESCRIPT' >/dev/null 2>&1 || true
-                    tell application "System Events"
-                      if not (exists process "Ghostty") then return
-                      tell process "Ghostty"
-                        try
-                          click menu item "Reload Configuration" of menu "Ghostty" of menu bar item "Ghostty" of menu bar 1
-                        on error
-                          try
-                            click menu item "Reload Configuration" of menu "File" of menu bar item "File" of menu bar 1
-                          end try
-                        end try
-                      end tell
-                    end tell
-          APPLESCRIPT
+          # Force Ghostty config/theme reload after each mode switch.
+          # Preferred path for newer Ghostty builds (no osascript).
+          if "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" /usr/bin/pkill -USR2 -x "Ghostty" >/dev/null 2>&1; then
+            :
+          fi
 
-                    # VS Code / Cursor / Antigravity: do NOT AppleScript-reload
-                    # windows. Extension theme files (stylix.stylix) do not
-                    # hot-reload in production, but HM writes the full Stylix
-                    # palette into workbench.colorCustomizations +
-                    # editor.tokenColorCustomizations in settings.json — VS Code
-                    # watches that file and applies live on both Darwin and
-                    # Linux. See modules/apps/_vscode-common.nix.
+          # VS Code / Cursor / Antigravity: settings.json hot-reload (no AppleScript).
 
-                    # Neovim now watches ~/colors.toml directly for Stylix palette changes.
+          # Neovim watches ~/colors.toml directly for Stylix palette changes.
 
-                    # Spotify/Spicetify: apply style changes via CLI after quitting the
-                    # client, then reopen if it was previously running.
-                    "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" /bin/zsh -lc '
-                      export PATH="/etc/profiles/per-user/'"${user}"'/bin:/run/current-system/sw/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
-                      spicetify_bin="${
-                        config.home-manager.users.${user}.programs.spicetify.spicetifyPackage
-                      }/bin/spicetify"
-                      spotify_app="$HOME/Applications/Home Manager Apps/Spotify.app"
-                      was_running=0
-                      if /usr/bin/pgrep -x "Spotify" >/dev/null 2>&1; then
-                        was_running=1
-                        /usr/bin/osascript <<'"'"'APPLESCRIPT'"'"' >/dev/null 2>&1 || true
-                        tell application "Spotify" to quit
-          APPLESCRIPT
+          # Spotify/Spicetify: refresh via CLI; quit with pkill (no osascript).
+          "$launchctl" asuser "$uid" /usr/bin/sudo -u "$user" /bin/zsh -lc '
+            export PATH="/etc/profiles/per-user/'"${user}"'/bin:/run/current-system/sw/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+            spicetify_bin="${
+              config.home-manager.users.${user}.programs.spicetify.spicetifyPackage
+            }/bin/spicetify"
+            spotify_app="$HOME/Applications/Home Manager Apps/Spotify.app"
+            was_running=0
+            if /usr/bin/pgrep -x "Spotify" >/dev/null 2>&1; then
+              was_running=1
+              /usr/bin/pkill -x "Spotify" >/dev/null 2>&1 || true
+              i=0
+              while /usr/bin/pgrep -x "Spotify" >/dev/null 2>&1 && [ "$i" -lt 40 ]; do
+                /bin/sleep 0.25
+                i=$((i + 1))
+              done
+            fi
 
-                        # Wait for full shutdown before touching Spotify files.
-                        i=0
-                        while /usr/bin/pgrep -x "Spotify" >/dev/null 2>&1 && [ "$i" -lt 40 ]; do
-                          /bin/sleep 0.25
-                          i=$((i + 1))
-                        done
-                      fi
+            if [ -x "$spicetify_bin" ]; then
+              "$spicetify_bin" refresh --style --no-restart >/dev/null 2>&1 \
+                || "$spicetify_bin" apply --no-restart >/dev/null 2>&1 \
+                || "$spicetify_bin" apply >/dev/null 2>&1 \
+                || true
+            fi
 
-                      if [ -x "$spicetify_bin" ]; then
-                        "$spicetify_bin" refresh --style --no-restart >/dev/null 2>&1 \
-                          || "$spicetify_bin" apply --no-restart >/dev/null 2>&1 \
-                          || "$spicetify_bin" apply >/dev/null 2>&1 \
-                          || true
-                      fi
+            if [ "$was_running" -eq 1 ]; then
+              /bin/sleep 0.5
+              if [ -d "$spotify_app" ]; then
+                /usr/bin/open "$spotify_app" >/dev/null 2>&1 || true
+              else
+                /usr/bin/open -a "Spotify" >/dev/null 2>&1 || true
+              fi
+            fi
+          ' >/dev/null 2>&1 || true
 
-                      if [ "$was_running" -eq 1 ]; then
-                        /bin/sleep 0.5
-                        if [ -d "$spotify_app" ]; then
-                          /usr/bin/open "$spotify_app" >/dev/null 2>&1 || true
-                        else
-                          /usr/bin/open -a "Spotify" >/dev/null 2>&1 || true
-                        fi
-                      fi
-                    ' >/dev/null 2>&1 || true
+          # Brave: re-materialize the Stylix manifest + variant for the
+          # newly active appearance, then quit and relaunch the wrapper
+          # app so Brave re-reads the theme on startup. The reload
+          # script is generated by `modules/apps/brave.nix` so the
+          # exact same theme pipeline runs at HM activation time AND
+          # at runtime — no duplicated logic.
+          ${braveReloadScript}/bin/brave-stylix-reload >/dev/null 2>&1 || true
 
-                    # Brave: re-materialize the Stylix manifest + variant for the
-                    # newly active appearance, then quit and relaunch the wrapper
-                    # app so Brave re-reads the theme on startup. The reload
-                    # script is generated by `modules/apps/brave.nix` so the
-                    # exact same theme pipeline runs at HM activation time AND
-                    # at runtime — no duplicated logic.
-                    ${braveReloadScript}/bin/brave-stylix-reload >/dev/null 2>&1 || true
-
-                    exit 0
+          exit 0
         '';
 
         environment.etc."dendritic-appearance-status.sh".text = ''
@@ -553,23 +533,19 @@
               echo "warning: dendritic appearance prebuild failed; keeping previous prebuilt cache" >&2
             fi
 
-            # macOS appearance is the source of truth. On every switch, request the
-            # current system appearance and trigger the sync daemon immediately so we
-            # land on the matching specialization (light/dark) after activation.
+            # macOS appearance is the source of truth (no osascript).
             desired_variant="$(
               /bin/launchctl asuser "$(${pkgs.coreutils}/bin/id -u "${user}")" \
                 /usr/bin/sudo -u "${user}" \
-                /usr/bin/osascript -e 'tell application "System Events" to tell appearance preferences to get dark mode' 2>/dev/null \
-                | /usr/bin/awk '{print tolower($0)}' \
-                | /usr/bin/awk '($0=="true" || $0=="1"){print "dark"; ok=1} ($0=="false" || $0=="0"){print "light"; ok=1} END{if(!ok) print ""}'
+                /usr/bin/env HOME="/Users/${user}" dendritic-appearance detect 2>/dev/null || true
             )"
-            if [ -z "$desired_variant" ]; then
+            case "$desired_variant" in dark|light) ;; *)
               if /usr/bin/defaults read "/Users/${user}/Library/Preferences/.GlobalPreferences" AppleInterfaceStyle 2>/dev/null | /usr/bin/grep -qi dark; then
                 desired_variant="dark"
               else
                 desired_variant="light"
               fi
-            fi
+            ;; esac
             printf '%s\n' "$desired_variant" > "$state_dir/appearance-requested"
             chmod 644 "$state_dir/appearance-requested"
 
