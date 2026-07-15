@@ -178,9 +178,17 @@ in
 
     # When not in liveExt4Compat, disko owns / and subvols; do not mkForce.
 
+    # liveExt4: swap partition is gone (deleted during shrink attempt) and
+    # boot.zswap asserts a physical backing store — use a temporary swapfile
+    # until the installer creates PARTLABEL=swap.
     swapDevices =
       if liveExt4 then
-        [ ]
+        [
+          {
+            device = "/var/lib/swapfile";
+            size = 8 * 1024; # MiB
+          }
+        ]
       else
         lib.mkForce [
           { device = "/dev/disk/by-uuid/${swapUuid}"; }
