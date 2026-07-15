@@ -24,7 +24,6 @@
       defaultIsoUrl = "https://go.microsoft.com/fwlink/?linkid=2289029";
 
       unattendTemplate = ./pkgs/_dendritic-windows-unattend.xml;
-      offlineShrinkScript = ./pkgs/_dendritic-windows-offline-shrink.sh;
 
       labelGpt = pkgs.writeShellApplication {
         name = "dendritic-windows-label-gpt";
@@ -197,43 +196,6 @@
             boot.supportedFilesystems = [ "ntfs" ];
             boot.loader.timeout = lib.mkDefault 5;
 
-            # Offline ext4 shrink must run before sysroot.mount (root is still unmounted).
-            boot.initrd.systemd.enable = true;
-            boot.initrd.systemd.storePaths = [
-              "${pkgs.e2fsprogs}/bin/e2fsck"
-              "${pkgs.e2fsprogs}/bin/resize2fs"
-              "${pkgs.parted}/bin/parted"
-              "${pkgs.gptfdisk}/bin/sgdisk"
-              "${pkgs.util-linux}/bin/mkswap"
-              "${pkgs.coreutils}/bin/cat"
-              "${pkgs.coreutils}/bin/mkdir"
-              "${pkgs.coreutils}/bin/rm"
-              "${pkgs.coreutils}/bin/sync"
-              "${pkgs.coreutils}/bin/basename"
-              "${pkgs.bash}/bin/bash"
-              "${pkgs.util-linux}/bin/mount"
-              "${pkgs.util-linux}/bin/umount"
-            ];
-            boot.initrd.systemd.services.dendritic-windows-offline-shrink = {
-              description = "Dendritic offline root shrink for Windows dual-boot";
-              wantedBy = [ "initrd.target" ];
-              after = [ "systemd-udev-settle.service" ];
-              before = [ "sysroot.mount" ];
-              unitConfig = {
-                DefaultDependencies = false;
-              };
-              serviceConfig = {
-                Type = "oneshot";
-                RemainAfterExit = true;
-                StandardOutput = "journal+console";
-                ExecStart = pkgs.writeShellScript "dendritic-windows-offline-shrink-initrd" ''
-                  set -euo pipefail
-                  export PATH="${pkgs.e2fsprogs}/bin:${pkgs.parted}/bin:${pkgs.gptfdisk}/bin:${pkgs.util-linux}/bin:${pkgs.coreutils}/bin''${PATH:+:$PATH}"
-                  exec ${pkgs.bash}/bin/bash ${offlineShrinkScript}
-                '';
-              };
-            };
-
             environment.systemPackages = [
               labelGpt
               bootstrap
@@ -243,6 +205,19 @@
               pkgs.efibootmgr
             ];
 
+            # Clear legacy ext4 offline-shrink marker (superseded by nixinstall/disko).
+            systemd.services.dendritic-windows-clear-legacy-shrink = {
+              description = "Remove legacy pending-shrink marker from ESP";
+              wantedBy = [ "multi-user.target" ];
+              serviceConfig = {
+                Type = "oneshot";
+                RemainAfterExit = true;
+                ExecStart = pkgs.writeShellScript "clear-legacy-shrink" ''
+                  rm -f /boot/dendritic-windows/pending-shrink
+                  rm -f /var/lib/dendritic-windows/pending-shrink
+                '';
+              };
+            };
             # /mnt/windows mount comes from disko.nix (PARTLABEL=windows, nofail).
 
             systemd.tmpfiles.rules = [

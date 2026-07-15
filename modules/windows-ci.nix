@@ -46,14 +46,14 @@
             grep -q 'shutdown /r' ${unattend}
 
             echo "== bootstrap uses wininstall media + BootNext =="
-            grep -q 'pending-shrink' ${./pkgs/_dendritic-windows-bootstrap.sh}
-            grep -q 'offline shrink' ${./pkgs/_dendritic-windows-bootstrap.sh}
             grep -q 'wininstall' ${./pkgs/_dendritic-windows-bootstrap.sh}
             grep -q -- '--bootnext' ${./pkgs/_dendritic-windows-bootstrap.sh}
             grep -q 'Windows Setup (dendritic)' ${./pkgs/_dendritic-windows-bootstrap.sh}
             grep -q 'media-ready' ${./pkgs/_dendritic-windows-bootstrap.sh}
             grep -q 'rsync' ${./pkgs/_dendritic-windows-bootstrap.sh}
+            grep -q 'PARTLABEL=windows missing' ${./pkgs/_dendritic-windows-bootstrap.sh}
             ! grep -q 'wimlib-imagex apply' ${./pkgs/_dendritic-windows-bootstrap.sh}
+            ! grep -q 'pending-shrink' ${./pkgs/_dendritic-windows-bootstrap.sh}
 
             echo "== module defaults (pinned) =="
             test "${expectedSha}" = "67cec5865eaa037a72ddc633a717a10a2bed50778862267223ddb9c60ef5da68"

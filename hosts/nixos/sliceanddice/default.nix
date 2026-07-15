@@ -111,10 +111,14 @@
       # NVIDIA finegrained stays off (black-screen history); dGPU already runtime-suspends.
       dendritic.power.enable = true;
 
-      # Windows 11 IoT Enterprise LTSC dual-boot (disko + auto ISO download +
-      # timer-scheduled first-run bootstrap). See docs/windows-dual-boot.md.
+      # On-disk NixOS installer (nixinstall) + vault. See docs/nixinstall.md.
+      dendritic.nixinstall.enable = true;
+      dendritic.nixinstall.autoBootstrap = true;
+
+      # Windows dual-boot media (after installer/disko creates partitions).
+      # Keep disabled until nixinstall reinstall has carved windows/wininstall.
       dendritic.windows.enable = true;
-      dendritic.windows.autoBootstrap = true;
+      dendritic.windows.autoBootstrap = false;
 
       # NVIDIA drm for Xwayland/offload. videoDrivers pulls in the driver even
       # though niri itself is a native Wayland compositor on Intel.

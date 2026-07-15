@@ -180,70 +180,18 @@ if ! iso_ok; then
   log "ISO verified OK"
 fi
 
-# Free-space for carve: ISO is reclaimable after extract onto wininstall.
+# Free space for ISO download only (partitioning is owned by nixinstall/disko).
 root_avail_kib="$(df -k --output=avail / | tail -1 | tr -d ' ')"
 root_avail_mib=$((root_avail_kib / 1024))
-if [[ -f $ISO_PATH ]]; then
-  iso_kib="$(du -k "$ISO_PATH" | awk '{print $1}')"
-  root_avail_mib=$((root_avail_mib + iso_kib / 1024))
-fi
-[[ $root_avail_mib -gt $((NEED_MIB + 4 * 1024)) ]] ||
-  die "need ~$((NEED_MIB / 1024 + 4)) GiB free on / (incl. reclaimable ISO); have ~$((root_avail_mib / 1024)) GiB"
+[[ $root_avail_mib -gt 8192 ]] || die "need ≳8 GiB free on / for ISO; have ~$((root_avail_mib / 1024)) GiB"
 
-# ── Repartition (once): windows + wininstall + swap ───────────────────
-nparts="$(lsblk -n -o NAME "$DISK" | wc -l)"
-nparts=$((nparts - 1))
+# ── Partitions must already exist (disko from sliceanddice-installer) ──
+win_dev="$(readlink -f /dev/disk/by-partlabel/windows 2>/dev/null || true)"
+install_dev="$(readlink -f /dev/disk/by-partlabel/wininstall 2>/dev/null || true)"
+[[ -b $win_dev ]] || die "PARTLABEL=windows missing — boot NixOS Installer and run dendritic-reinstall first"
+[[ -b $install_dev ]] || die "PARTLABEL=wininstall missing — boot NixOS Installer and run dendritic-reinstall first"
 
-if [[ $nparts -lt 5 ]]; then
-  # ext4 cannot online-shrink while mounted as /. Schedule offline shrink in initrd.
-  ESP_BOOT="${DENDRITIC_WINDOWS_ESP:-/boot}"
-  pending_dir="$ESP_BOOT/dendritic-windows"
-  pending="$pending_dir/pending-shrink"
-  if [[ -f $pending_dir/shrink-done ]] && [[ $nparts -ge 5 ]]; then
-    log "shrink-done present and partitions ready"
-  elif [[ -f $pending ]]; then
-    log "offline shrink already pending at $pending; reboot to finish"
-    if [[ $AUTO_REBOOT == "1" ]]; then
-      systemctl reboot
-    fi
-    exit 0
-  fi
-
-  root_part="${DISK}-part2"
-  [[ $root_src == "$(readlink -f "$root_part")" ]] || die "root $root_src is not $root_part"
-
-  block_size="$(tune2fs -l "$root_part" | awk -F: '/Block size/ {gsub(/ /,"",$2); print $2}')"
-  block_count="$(tune2fs -l "$root_part" | awk -F: '/Block count/ {gsub(/ /,"",$2); print $2}')"
-  fs_mib=$((block_count * block_size / 1024 / 1024))
-  new_fs_mib=$((fs_mib - NEED_MIB))
-  [[ $new_fs_mib -gt 50000 ]] || die "refusing to shrink root below 50G (would be ${new_fs_mib}M)"
-
-  mkdir -p "$pending_dir" "$STATE_DIR"
-  {
-    echo "DISK=$DISK"
-    echo "NEW_FS_MIB=$new_fs_mib"
-    echo "WINDOWS_MIB=$WINDOWS_MIB"
-    echo "INSTALL_MIB=$INSTALL_MIB"
-    echo "SWAP_UUID=c570ec29-6025-456b-99d1-8f16b677835a"
-  } >"$pending"
-  echo "pending-shrink $(date -Iseconds)" >"$STATE_DIR/pending-shrink"
-  log "wrote $pending (offline shrink ${fs_mib}M -> ${new_fs_mib}M)"
-  log "rebooting into initrd shrink (ext4 cannot shrink while mounted)"
-  if [[ $AUTO_REBOOT == "1" ]]; then
-    systemctl reboot
-  else
-    log "AUTO_REBOOT=0 — reboot to run offline shrink"
-  fi
-  exit 0
-fi
-
-log "five partitions present; continue with Setup media"
-win_dev="$(readlink -f /dev/disk/by-partlabel/windows)"
-install_dev="$(readlink -f /dev/disk/by-partlabel/wininstall)"
-[[ -b $win_dev ]] || die "partlabel windows missing"
-[[ -b $install_dev ]] || die "partlabel wininstall missing"
-
-# Format NTFS targets if empty (first boot after shrink).
+# Format NTFS targets if empty.
 if ! blkid -o value -s TYPE "$win_dev" 2>/dev/null | grep -qi ntfs; then
   log "mkfs.ntfs windows"
   mkfs.ntfs -f -L windows "$win_dev"
