@@ -40,6 +40,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     determinate-nix.url = "github:DeterminateSystems/determinate";
 
     stylix.url = "github:danth/stylix/release-26.05";

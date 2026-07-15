@@ -1,0 +1,317 @@
+# dendritic.windows — declarative dual-boot helper for Windows 11 IoT Enterprise LTSC.
+#
+# Disk layout: hosts/.../disko.nix. Bootstrap oneshot applies the WIM once;
+# later nh os switch is a no-op for install (marker-gated).
+{
+  flake.modules.nixos.dendritic =
+    {
+      pkgs,
+      lib,
+      config,
+      ...
+    }:
+    let
+      cfg = config.dendritic.windows;
+      stateDir = "/var/lib/dendritic-windows";
+      cacheDir = "/var/cache/dendritic-windows";
+
+      # Official IoT Enterprise LTSC 2024 x64 eval (Microsoft Eval Center / fwlink).
+      # SHA256 from Windows11IoTEnterpriseLTSC2024EvalHashValues.pdf (x64 en-us).
+      defaultIsoSha256 = "8abf91c9cd408368dc73aab3425d5e3c02dae74900742072eb5c750fc637c195";
+      defaultIsoName = "26100.1742.240906-0331.ge_release_svc_refresh_CLIENT_LTSC_EVAL_x64FRE_en-us.iso";
+      # Resolves to software-static.download.prss.microsoft.com … CLIENT_LTSC_EVAL …
+      defaultIsoUrl = "https://go.microsoft.com/fwlink/?linkid=2289029";
+
+      unattendTemplate = ./pkgs/_dendritic-windows-unattend.xml;
+
+      labelGpt = pkgs.writeShellApplication {
+        name = "dendritic-windows-label-gpt";
+        runtimeInputs = with pkgs; [
+          gptfdisk
+          util-linux
+          parted
+          e2fsprogs
+        ];
+        excludeShellChecks = [
+          "SC2086"
+          "SC2046"
+          "SC2034"
+        ];
+        text = builtins.readFile ./pkgs/_dendritic-windows-label-gpt.sh;
+      };
+
+      bootstrap = pkgs.writeShellApplication {
+        name = "dendritic-windows-bootstrap";
+        runtimeInputs = with pkgs; [
+          coreutils
+          util-linux
+          parted
+          gptfdisk
+          e2fsprogs
+          ntfs3g
+          wimlib
+          aria2
+          curl
+          jq
+          efibootmgr
+          gawk
+          gnused
+          gnugrep
+        ];
+        excludeShellChecks = [
+          "SC2086"
+          "SC2046"
+          "SC2034"
+          "SC2001"
+          "SC2016"
+        ];
+        text = builtins.readFile ./pkgs/_dendritic-windows-bootstrap.sh;
+      };
+
+      finalize = pkgs.writeShellApplication {
+        name = "dendritic-windows-finalize";
+        runtimeInputs = with pkgs; [
+          coreutils
+          efibootmgr
+          gnused
+          util-linux
+        ];
+        excludeShellChecks = [
+          "SC2086"
+          "SC2207"
+        ];
+        text = builtins.readFile ./pkgs/_dendritic-windows-finalize.sh;
+      };
+
+      passwordPath =
+        if cfg.passwordFile != null then toString cfg.passwordFile else "${stateDir}/password";
+    in
+    {
+      options.dendritic.windows = {
+        enable = lib.mkEnableOption "Windows 11 IoT Enterprise LTSC dual-boot bootstrap + mounts";
+
+        disk = lib.mkOption {
+          type = lib.types.str;
+          default = "/dev/disk/by-id/ata-Samsung_SSD_870_EVO_500GB_S62ANJ0R238724D";
+          description = "Target disk by-id (stable).";
+        };
+
+        mountPoint = lib.mkOption {
+          type = lib.types.str;
+          default = "/mnt/windows";
+          description = "Where the Windows NTFS volume is mounted from NixOS.";
+        };
+
+        sizeGiB = lib.mkOption {
+          type = lib.types.ints.positive;
+          default = 64;
+          description = "Windows partition size in GiB.";
+        };
+
+        editionName = lib.mkOption {
+          type = lib.types.str;
+          default = "IoT Enterprise LTSC";
+          description = "WIM image Name substring matched by wimlib-imagex info.";
+        };
+
+        localUser = lib.mkOption {
+          type = lib.types.str;
+          default = "alex";
+          description = "Local Windows administrator account (must match unattend template).";
+        };
+
+        passwordFile = lib.mkOption {
+          type = lib.types.nullOr lib.types.path;
+          default = null;
+          description = ''
+            Plaintext password file for the Windows local account. When null,
+            uses ${stateDir}/password (auto-created with a random password on
+            first boot). Optionally copy from sops into that path yourself.
+          '';
+        };
+
+        isoName = lib.mkOption {
+          type = lib.types.str;
+          default = defaultIsoName;
+          description = "Filename under /var/cache/dendritic-windows/.";
+        };
+
+        isoSha256 = lib.mkOption {
+          type = lib.types.str;
+          default = defaultIsoSha256;
+          description = "Expected SHA256 of the IoT Enterprise LTSC ISO (lowercase hex).";
+        };
+
+        isoUrl = lib.mkOption {
+          type = lib.types.str;
+          default = defaultIsoUrl;
+          description = ''
+            Microsoft download URL (default: Eval Center fwlink for IoT LTSC 2024
+            x64). Bootstrap follows redirects and verifies isoSha256.
+          '';
+        };
+
+        forceRedeploy = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Wipe/re-apply Windows even if install marker exists. Dangerous.";
+        };
+
+        autoBootstrap = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Run dendritic-windows-bootstrap.service after switch when not installed.";
+        };
+
+        autoReboot = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = ''
+            After silent wimlib apply, reboot once via EFI BootNext into Windows
+            for unattended specialize (no Setup GUI / no OOBE prompts). Windows
+            then auto-reboots back to systemd-boot.
+          '';
+        };
+      };
+
+      config = lib.mkIf cfg.enable (
+        lib.mkMerge [
+          {
+            boot.supportedFilesystems = [ "ntfs" ];
+            boot.loader.timeout = lib.mkDefault 5;
+
+            environment.systemPackages = [
+              labelGpt
+              bootstrap
+              finalize
+              pkgs.wimlib
+              pkgs.ntfs3g
+              pkgs.efibootmgr
+            ];
+
+            # /mnt/windows mount comes from disko.nix (PARTLABEL=windows, nofail).
+
+            systemd.tmpfiles.rules = [
+              "d ${stateDir} 0750 root root -"
+              "d ${cacheDir} 0750 root root -"
+              "d ${cfg.mountPoint} 0755 root root -"
+            ];
+
+            # Ensure a password file exists before bootstrap (sops or generated).
+            systemd.services.dendritic-windows-ensure-password = {
+              description = "Ensure Windows local-account password file exists";
+              wantedBy = [ "multi-user.target" ];
+              before = [ "dendritic-windows-bootstrap.service" ];
+              serviceConfig = {
+                Type = "oneshot";
+                RemainAfterExit = true;
+                ExecStart = pkgs.writeShellScript "dendritic-windows-ensure-password" ''
+                  set -euo pipefail
+                  pw=${lib.escapeShellArg passwordPath}
+                  mkdir -p "$(dirname "$pw")"
+                  if [ ! -s "$pw" ]; then
+                    # Prefer sops secret materialization path; otherwise generate.
+                    if [ -s /run/secrets/windows_local_password ]; then
+                      cp /run/secrets/windows_local_password "$pw"
+                    else
+                      tr -dc 'A-Za-z0-9' </dev/urandom | head -c 20 >"$pw"
+                      echo "dendritic-windows: generated Windows password at $pw" >&2
+                    fi
+                    chmod 600 "$pw"
+                  fi
+                '';
+              };
+            };
+
+            # Harmless GPT/swap labeling so by-label swap works pre-bootstrap.
+            systemd.services.dendritic-windows-label-gpt = {
+              description = "Label GPT partitions for dendritic Windows dual-boot";
+              wantedBy = [ "multi-user.target" ];
+              after = [ "dendritic-windows-ensure-password.service" ];
+              before = [ "dendritic-windows-bootstrap.service" ];
+              serviceConfig = {
+                Type = "oneshot";
+                RemainAfterExit = true;
+                Environment = [
+                  "DENDRITIC_WINDOWS_DISK=${cfg.disk}"
+                ];
+                ExecStart = "${labelGpt}/bin/dendritic-windows-label-gpt";
+              };
+            };
+
+            systemd.timers.dendritic-windows-bootstrap = lib.mkIf cfg.autoBootstrap {
+              description = "Schedule first-run Windows IoT LTSC bootstrap";
+              wantedBy = [ "timers.target" ];
+              timerConfig = {
+                OnBootSec = "90s";
+                Persistent = true;
+                Unit = "dendritic-windows-bootstrap.service";
+              };
+            };
+
+            systemd.services.dendritic-windows-bootstrap = lib.mkIf cfg.autoBootstrap {
+              description = "Bootstrap Windows 11 IoT Enterprise LTSC (idempotent)";
+              after = [
+                "dendritic-windows-label-gpt.service"
+                "dendritic-windows-ensure-password.service"
+                "local-fs.target"
+                "network-online.target"
+              ];
+              wants = [
+                "network-online.target"
+                "dendritic-windows-ensure-password.service"
+                "dendritic-windows-label-gpt.service"
+              ];
+              # Skip when installed (unless force).
+              unitConfig = lib.mkIf (!cfg.forceRedeploy) {
+                ConditionPathExists = "!${stateDir}/installed";
+                StartLimitIntervalSec = 3600;
+                StartLimitBurst = 5;
+              };
+              serviceConfig = {
+                Type = "oneshot";
+                TimeoutStartSec = "6h";
+                # Retry download / transient network failures.
+                Restart = "on-failure";
+                RestartSec = "120s";
+                Environment = [
+                  "DENDRITIC_WINDOWS_DISK=${cfg.disk}"
+                  "DENDRITIC_WINDOWS_MOUNT=${cfg.mountPoint}"
+                  "DENDRITIC_WINDOWS_SIZE_GIB=${toString cfg.sizeGiB}"
+                  "DENDRITIC_WINDOWS_EDITION_NAME=${cfg.editionName}"
+                  "DENDRITIC_WINDOWS_CACHE=${cacheDir}"
+                  "DENDRITIC_WINDOWS_STATE=${stateDir}"
+                  "DENDRITIC_WINDOWS_UNATTEND_TEMPLATE=${unattendTemplate}"
+                  "DENDRITIC_WINDOWS_PASSWORD_FILE=${passwordPath}"
+                  "DENDRITIC_WINDOWS_ISO_SHA256=${cfg.isoSha256}"
+                  "DENDRITIC_WINDOWS_ISO_URL=${cfg.isoUrl}"
+                  "DENDRITIC_WINDOWS_ISO_NAME=${cfg.isoName}"
+                  "DENDRITIC_WINDOWS_FORCE=${if cfg.forceRedeploy then "1" else "0"}"
+                  "DENDRITIC_WINDOWS_ESP=/boot"
+                  "DENDRITIC_WINDOWS_AUTO_REBOOT=${if cfg.autoReboot then "1" else "0"}"
+                ];
+                ExecStart = "${bootstrap}/bin/dendritic-windows-bootstrap";
+              };
+            };
+
+            systemd.services.dendritic-windows-finalize = {
+              description = "Clear BootNext / ensure systemd-boot-first after Windows specialize";
+              wantedBy = [ "multi-user.target" ];
+              after = [ "local-fs.target" ];
+              unitConfig = {
+                ConditionPathExists = "${cfg.mountPoint}/dendritic-windows-ready";
+              };
+              serviceConfig = {
+                Type = "oneshot";
+                RemainAfterExit = true;
+                Environment = [
+                  "DENDRITIC_WINDOWS_MOUNT=${cfg.mountPoint}"
+                ];
+                ExecStart = "${finalize}/bin/dendritic-windows-finalize";
+              };
+            };
+          }
+        ]
+      );
+    };
+}

@@ -9,6 +9,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./disko.nix
 
     inputs.determinate-nix.nixosModules.default
 
@@ -110,6 +111,11 @@
       # NVIDIA finegrained stays off (black-screen history); dGPU already runtime-suspends.
       dendritic.power.enable = true;
 
+      # Windows 11 IoT Enterprise LTSC dual-boot (disko + auto ISO download +
+      # timer-scheduled first-run bootstrap). See docs/windows-dual-boot.md.
+      dendritic.windows.enable = true;
+      dendritic.windows.autoBootstrap = true;
+
       # NVIDIA drm for Xwayland/offload. videoDrivers pulls in the driver even
       # though niri itself is a native Wayland compositor on Intel.
       services.xserver.videoDrivers = [ "nvidia" ];
@@ -121,33 +127,36 @@
       };
 
       # MSI Sword 15 A11UD: Fn+backlight is AT scancode 0x8e (unknown to atkbd).
-      # Map it to KEY_KBDILLUMTOGGLE so niri/compositors can bind it.
-      # Note: Fn already cycles EC 0xd3 in firmware; that alone does not light
-      # the LEDs on this board (same class of MSI issue as some Katanas).
+      # Map it for compositors; Fn firmware already cycles EC 0xd3 itself.
       services.udev.extraHwdb = ''
         evdev:atkbd:dmi:bvn*:bvr*:bd*:svnMicro-Star*:pnSword*
          KEYBOARD_KEY_8e=kbdillumtoggle
       '';
 
-      # MSI Sword 15 A11UD (MS-1582): EC firmware is really 1582EMS1.107 (ENE),
-      # while BIOS is E1582IMS.315. Stock Katana CONF_G2_1 writes kbd BL at 0xd3;
-      # Linux ec_write there hard-hung this machine. Patch points sysfs LED at
-      # 0xf3 instead. Keep systemd-backlight off. Fn+F8 still cycles 0xd3 in
-      # firmware; LEDs staying dark means the LED path is not driven by that
-      # register alone (do not re-enable brightnessctl → msiacpi::kbd_backlight).
+      # MSI Sword 15 A11UD (MS-1582): EC firmware 1582EMS1.107.
+      # HARD RULE: never Linux-write EC 0xd3, 0xf3, or kbd mode 0x2c on this
+      # board — each has hard-hung the EC (no oops; forced reboot). Fn firmware
+      # still cycles 0xd3; LEDs stay dark under Linux. Patch marks kbd_bl
+      # unsupported so msiacpi::kbd_backlight is never registered. Do not
+      # live-reload msi-ec; do not modprobe ec_sys write_support=1 for BL tests.
+      # Next real lead: Windows EC dump while the light is on.
       boot.extraModulePackages = [
         (config.boot.kernelPackages.msi-ec.overrideAttrs (old: {
           patches = (old.patches or [ ]) ++ [
-            ./msi-ec-sword-kbd-f3.patch
+            ./msi-ec-sword-kbd-disable.patch
           ];
         }))
       ];
       boot.kernelModules = [ "msi-ec" ];
       boot.extraModprobeConfig = ''
         options msi-ec firmware=1582EMS1.107
+        # Read-only EC dumps only; writes hang this Sword's EC.
+        options ec_sys write_support=0
       '';
-      # systemd-backlight restores LED brightness on boot = EC write. Mask it.
+      # Belt-and-suspenders if an old generation still registers the LED.
       systemd.services."systemd-backlight@leds:msiacpi::kbd_backlight".enable = false;
+      # Keep ec_sys out unless explicitly needed for a read-only dump.
+      boot.blacklistedKernelModules = [ "ec_sys" ];
 
       users.users.alex = {
         isNormalUser = true;
@@ -184,6 +193,8 @@
         git
         android-tools
         waypipe
+        # Interactive Yes/No for keyboard-backlight probe cycles.
+        (import ./kbd-bl-ask.nix { inherit pkgs; })
         # NOTE: cursor + antigravity are installed via Home Manager
         # (dendritic.apps.cursor/antigravity → the FHS builds on Linux), so they
         # are intentionally NOT listed here to avoid a non-FHS PATH duplicate.

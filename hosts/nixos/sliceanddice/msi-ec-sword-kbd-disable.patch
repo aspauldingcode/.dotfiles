@@ -1,0 +1,14 @@
+--- a/msi-ec.c
++++ b/msi-ec.c
+@@ -1103,7 +1103,10 @@
+ 		.bl_mode_address  = 0x2c,
+ 		.bl_modes         = { 0x00, 0x08 },
+ 		.max_mode         = 1,
+-		.bl_state_address = 0xd3, // mix of single and RGB
++		/* Sword 15 A11UD: Linux writes to 0xd3, 0xf3, or probing kbd
++		 * mode via EC hang the machine. Fn still cycles 0xd3; LEDs stay
++		 * dark. Never register msiacpi::kbd_backlight on this firmware. */
++		.bl_state_address = MSI_EC_ADDR_UNSUPP,
+ 		.state_base_value = 0x80,
+ 		.max_state        = 3,
+ 	},
