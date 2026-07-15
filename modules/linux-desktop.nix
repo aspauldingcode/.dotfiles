@@ -6,7 +6,8 @@
       ...
     }:
     {
-      services.displayManager.ly.enable = true;
+      # DM for niri hosts: greetd + gtkgreet (see modules/greetd-gtk.nix).
+      # gtkgreet runs under a sway kiosk; the user session is Wayland (niri).
 
       # NetworkManager + iwd on every NixOS host (wifi.backend = iwd).
       # Hosts may still set hostname/firewall/users; do not reintroduce
@@ -26,7 +27,6 @@
         enable = true;
         package = pkgs.swayfx;
         extraPackages = with pkgs; [
-          swaylock
           swayidle
           wl-clipboard
           mako # notification daemon

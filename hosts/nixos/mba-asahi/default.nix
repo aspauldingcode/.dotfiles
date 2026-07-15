@@ -79,17 +79,9 @@
       };
 
       # ── Wayland desktop: niri (same as sliceanddice) ───────────────────
-      services.displayManager.ly.enable = lib.mkForce false;
+      # greetd + gtkgreet (Wayland) → niri-session; see modules/greetd-gtk.nix.
       programs.sway.enable = lib.mkForce false;
       programs.niri.enable = true;
-
-      services.greetd = {
-        enable = true;
-        settings.default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --asterisks --cmd niri-session";
-          user = "greeter";
-        };
-      };
 
       services.printing.enable = true;
       security.rtkit.enable = true;

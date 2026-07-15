@@ -98,22 +98,9 @@
       };
 
       # ── Wayland desktop: niri ────────────────────────────────────────────
-      # Disable the dendritic Sway + ly defaults; we run niri (scrollable
-      # tiling Wayland compositor) with greetd + tuigreet as a minimal DM.
-      services.displayManager.ly.enable = lib.mkForce false;
+      # greetd + gtkgreet (Wayland) → niri-session; see modules/greetd-gtk.nix.
       programs.sway.enable = lib.mkForce false;
-
       programs.niri.enable = true;
-
-      # greetd + tuigreet: tiny, reliable console greeter that launches the
-      # niri session directly on the Intel GPU. No SDDM/X server required.
-      services.greetd = {
-        enable = true;
-        settings.default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --asterisks --cmd niri-session";
-          user = "greeter";
-        };
-      };
 
       # NVIDIA drm for Xwayland/offload. videoDrivers pulls in the driver even
       # though niri itself is a native Wayland compositor on Intel.
@@ -177,7 +164,7 @@
         # are intentionally NOT listed here to avoid a non-FHS PATH duplicate.
 
         # ── niri Wayland userland ──
-        # NOTE: waybar / fuzzel / mako / swaylock / swayidle are configured &
+        # NOTE: waybar / fuzzel / mako / gtklock / swayidle are configured &
         # installed via Home Manager in modules/apps/niri.nix (so Stylix themes
         # them). Only the "plumbing" tools live here.
         libnotify # notify-send (for mako)

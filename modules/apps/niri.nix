@@ -4,7 +4,7 @@
   # Coloring comes from the shared Stylix base16 palette (identical mechanism to
   # the nix-darwin config: `config.lib.stylix.colors`), and the wallpaper is the
   # same `stylix.image` (mountain-sunset) used everywhere else. waybar / fuzzel /
-  # mako / swaylock are driven through Home Manager `programs.*`/`services.*` so
+  # mako / gtklock are driven through Home Manager `programs.*`/`services.*` so
   # Stylix themes them automatically; a floating-islands design is layered on top.
   #
   # niri does NOT merge a user config.kdl with its built-in defaults — a present
@@ -20,7 +20,11 @@
       cfg = config.dendritic.apps.niri;
       c = config.lib.stylix.colors.withHashtag;
       wallpaper = config.stylix.image or null;
-      lock = "${lib.getExe pkgs.swaylock-effects} -f";
+      authCss = import ../_gtk-auth-style.nix {
+        colors = c;
+        inherit wallpaper;
+      };
+      lock = lib.getExe pkgs.gtklock;
 
       # Night-light toggle: wlsunset runs on an auto schedule (see
       # services.wlsunset below); this flips it on/off from the keyboard.
@@ -310,22 +314,10 @@
           };
         };
 
-        # ── swaylock (blurred lock) ───────────────────────────────────
-        # swaylock-effects adds blur/vignette; Stylix themes the colors.
-        programs.swaylock = {
+        # ── gtklock (matches gtkgreet login CSS) ──────────────────────
+        programs.gtklock = {
           enable = true;
-          package = pkgs.swaylock-effects;
-          settings = {
-            clock = true;
-            indicator = true;
-            screenshots = true;
-            effect-blur = "7x5";
-            effect-vignette = "0.5:0.5";
-            fade-in = 0.2;
-            indicator-radius = 110;
-            indicator-thickness = 8;
-            grace = 2;
-          };
+          style = authCss;
         };
 
         # ── night light (wlsunset) ────────────────────────────────────
@@ -557,7 +549,7 @@
               Alt+Print { screenshot-window; }
 
               // Session
-              Super+Alt+L { spawn "${lib.getExe pkgs.swaylock-effects}"; }
+              Super+Alt+L { spawn "${lock}"; }
               Mod+Shift+E { quit; }
           }
         '';
