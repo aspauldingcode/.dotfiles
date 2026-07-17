@@ -138,11 +138,32 @@
       dendritic.apps.rdp.enable = true;
       dendritic.apps.rdp.bonjourName = "sliceanddice";
 
+      # Shared NixOS + Windows local login from private pass (LOGIN_PASSWORD).
+      dendritic.identity.enable = true;
+      dendritic.identity.username = "alex";
+      dendritic.identity.passwordFile = "/home/alex/.config/dendritic/identity/login.password";
+
       # Windows dual-boot: IoT Enterprise LTSC (bloatless). Partitions already
       # carved (ESP→nixos→windows→wininstall→swap→nixinstall). Bootstrap
       # downloads ISO → wininstall → BootNext silent Setup → LBA windows part.
       dendritic.windows.enable = true;
       dendritic.windows.autoBootstrap = true;
+      # Sword 15 A11UD: pin NVIDIA notebook INF tree; drop Intel/MSI packs into
+      # /var/cache/dendritic-windows/drivers-extra when CDN fetchurl is blocked.
+      dendritic.windows.drivers.enable = true;
+      dendritic.windows.drivers.packs = [
+        {
+          name = "nvidia-notebook";
+          url = "https://us.download.nvidia.com/Windows/572.60/572.60-notebook-win10-win11-64bit-international-dch-whql.exe";
+          sha256 = "1c6i92x71ygz7g9677xaxby2rbha60hk1xf7pyg293953yf8wkvw";
+        }
+        # MSI Sword keyboard backlight: ACPI MSI0007 (ssps2.inf) + SteelSeries Engine /S.
+        {
+          name = "steelseries-engine";
+          url = "https://download.msi.com/uti_exe/nb/SteelSeriesEngine3.19.2Setup_3.19.2_0xeec30749.zip";
+          sha256 = "1w5x3p8ly685983xvll0wwz1ndcg8fgbc9m638vabiaw7qkm7kqs";
+        }
+      ];
 
       # NVIDIA drm for Xwayland/offload. videoDrivers pulls in the driver even
       # though niri itself is a native Wayland compositor on Intel.
@@ -167,7 +188,8 @@
       # still cycles 0xd3; LEDs stay dark under Linux. Patch marks kbd_bl
       # unsupported so msiacpi::kbd_backlight is never registered. Do not
       # live-reload msi-ec; do not modprobe ec_sys write_support=1 for BL tests.
-      # Next real lead: Windows EC dump while the light is on.
+      # Lighting path: Windows SteelSeries HID — see docs/re/sword-kbd-bl/.
+      dendritic.swordKbdBl.enable = true;
       boot.extraModulePackages = [
         (config.boot.kernelPackages.msi-ec.overrideAttrs (old: {
           patches = (old.patches or [ ]) ++ [
@@ -195,6 +217,7 @@
           "video" # brightnessctl: panel backlight
         ];
         shell = pkgs.zsh;
+        # Password: pass LOGIN_PASSWORD → materialize → dendritic.identity.
       };
 
       programs.firefox.enable = true;

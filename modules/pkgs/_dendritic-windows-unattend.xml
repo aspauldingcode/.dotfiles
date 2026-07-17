@@ -14,7 +14,7 @@
     <component name="Microsoft-Windows-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
       <UserData>
         <AcceptEula>true</AcceptEula>
-        <FullName>alex</FullName>
+        <FullName>__DENDRITIC_USERNAME__</FullName>
         <Organization>dendritic</Organization>
       </UserData>
       <WillShowUI>Never</WillShowUI>
@@ -58,7 +58,7 @@
     <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
       <!-- NetBIOS max 15 chars; sliceanddice-win (16) made specialize fail 0x80220005. -->
       <ComputerName>sliceanddice</ComputerName>
-      <RegisteredOwner>alex</RegisteredOwner>
+      <RegisteredOwner>__DENDRITIC_USERNAME__</RegisteredOwner>
       <RegisteredOrganization>dendritic</RegisteredOrganization>
       <TimeZone>Pacific Standard Time</TimeZone>
     </component>
@@ -115,8 +115,8 @@
       <UserAccounts>
         <LocalAccounts>
           <LocalAccount wcm:action="add">
-            <Name>alex</Name>
-            <DisplayName>alex</DisplayName>
+            <Name>__DENDRITIC_USERNAME__</Name>
+            <DisplayName>__DENDRITIC_USERNAME__</DisplayName>
             <Group>Administrators</Group>
             <Password>
               <Value>__DENDRITIC_PASSWORD__</Value>
@@ -127,7 +127,7 @@
       </UserAccounts>
       <AutoLogon>
         <Enabled>true</Enabled>
-        <Username>alex</Username>
+        <Username>__DENDRITIC_USERNAME__</Username>
         <Password>
           <Value>__DENDRITIC_PASSWORD__</Value>
           <PlainText>true</PlainText>
@@ -152,16 +152,31 @@
         </SynchronousCommand>
         <SynchronousCommand wcm:action="add">
           <Order>4</Order>
+          <CommandLine>cmd /c if exist X:\dendritic-drivers xcopy /E /I /Y X:\dendritic-drivers C:\dendritic-drivers\</CommandLine>
+          <Description>Copy dendritic drivers from wininstall</Description>
+        </SynchronousCommand>
+        <SynchronousCommand wcm:action="add">
+          <Order>5</Order>
+          <CommandLine>cmd /c if exist C:\dendritic-drivers pnputil /add-driver C:\dendritic-drivers\*.inf /subdirs /install</CommandLine>
+          <Description>Install dendritic INF drivers</Description>
+        </SynchronousCommand>
+        <SynchronousCommand wcm:action="add">
+          <Order>6</Order>
+          <CommandLine>cmd /c for /r C:\dendritic-drivers %F in (*Setup*.exe) do start /wait "" "%F" /S</CommandLine>
+          <Description>Silent SteelSeries/MSI Setup (keyboard backlight)</Description>
+        </SynchronousCommand>
+        <SynchronousCommand wcm:action="add">
+          <Order>7</Order>
           <CommandLine>cmd /c echo dendritic-windows-ready&gt; C:\dendritic-windows-ready</CommandLine>
           <Description>Ready marker for NixOS finalize</Description>
         </SynchronousCommand>
         <SynchronousCommand wcm:action="add">
-          <Order>5</Order>
+          <Order>8</Order>
           <CommandLine>reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoLogonCount /t REG_DWORD /d 0 /f</CommandLine>
           <Description>Disable further autologon</Description>
         </SynchronousCommand>
         <SynchronousCommand wcm:action="add">
-          <Order>6</Order>
+          <Order>9</Order>
           <CommandLine>shutdown /r /t 15 /f /c "dendritic: specialize done, returning to NixOS"</CommandLine>
           <Description>Reboot to NixOS (BootOrder stays systemd-boot-first)</Description>
         </SynchronousCommand>

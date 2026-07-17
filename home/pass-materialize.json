@@ -1,6 +1,7 @@
 {
   "SHIT_PASSWORD": ".shit",
   "PEE_PASSWORD": ".pee",
+  "LOGIN_PASSWORD": ".config/dendritic/identity/login.password",
   "Bubbles": ".config/dendritic/wifi/Bubbles.psk",
   "WIFI_Luke_Skydumper": ".config/dendritic/wifi/WIFI_Luke_Skydumper.psk",
   "WIFI_Myanmar_5G": ".config/dendritic/wifi/WIFI_Myanmar_5G.psk",

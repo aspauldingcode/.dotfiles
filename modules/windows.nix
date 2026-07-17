@@ -105,8 +105,75 @@
         text = builtins.readFile ./pkgs/_dendritic-windows-continue-setup.sh;
       };
 
+      identityEnabled = config.dendritic.identity.enable or false;
+      identityCfg = config.dendritic.identity or { };
+      identityPasswordPath = if identityEnabled then identityCfg.passwordFile or null else null;
+
       passwordPath =
-        if cfg.passwordFile != null then toString cfg.passwordFile else "${stateDir}/password";
+        if cfg.passwordFile != null then
+          toString cfg.passwordFile
+        else if identityPasswordPath != null then
+          identityPasswordPath
+        else
+          "${stateDir}/password";
+
+      localUser = if identityEnabled then identityCfg.username or cfg.localUser else cfg.localUser;
+
+      driverPackType = lib.types.submodule {
+        options = {
+          name = lib.mkOption {
+            type = lib.types.str;
+            description = "Subdirectory name under the staged driver tree.";
+          };
+          url = lib.mkOption {
+            type = lib.types.str;
+            description = "fetchurl download URL (zip or vendor EXE with INF payload).";
+          };
+          sha256 = lib.mkOption {
+            type = lib.types.str;
+            description = "Nix sha256 of the download (nix-prefetch-url / SRI).";
+          };
+        };
+      };
+
+      driversTree =
+        if cfg.drivers.enable && cfg.drivers.packs != [ ] then
+          pkgs.callPackage ./pkgs/_windows-drivers.nix { packs = cfg.drivers.packs; }
+        else
+          null;
+
+      syncLogin = pkgs.writeShellApplication {
+        name = "dendritic-windows-sync-login";
+        runtimeInputs = with pkgs; [
+          coreutils
+          util-linux
+          gnused
+          gawk
+        ];
+        excludeShellChecks = [
+          "SC2086"
+          "SC2016"
+        ];
+        text = builtins.readFile ./pkgs/_dendritic-windows-sync-login.sh;
+      };
+
+      stageDrivers = pkgs.writeShellApplication {
+        name = "dendritic-windows-stage-drivers";
+        runtimeInputs = with pkgs; [
+          coreutils
+          util-linux
+          rsync
+          findutils
+          gnugrep
+          gawk
+          ntfs3g
+        ];
+        excludeShellChecks = [
+          "SC2086"
+          "SC2016"
+        ];
+        text = builtins.readFile ./pkgs/_dendritic-windows-stage-drivers.sh;
+      };
     in
     {
       options.dendritic.windows = {
@@ -153,16 +220,26 @@
         localUser = lib.mkOption {
           type = lib.types.str;
           default = "alex";
-          description = "Local Windows administrator account (must match unattend template).";
+          description = "Local Windows administrator account (stamped into Autounattend).";
         };
 
         passwordFile = lib.mkOption {
           type = lib.types.nullOr lib.types.path;
           default = null;
           description = ''
-            Plaintext password file for the Windows local account. When null,
-            uses ${stateDir}/password (auto-created with a random password on
-            first boot). Optionally copy from sops into that path yourself.
+            Plaintext password file for the Windows local account. When null and
+            dendritic.identity is enabled, uses the pass-materialized
+            dendritic.identity.passwordFile. Otherwise uses ${stateDir}/password
+            (random on first boot).
+          '';
+        };
+
+        syncLogin = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = ''
+            Stage a one-shot Windows Startup script that runs net user with the
+            shared password (for the already-installed volume).
           '';
         };
 
@@ -209,6 +286,25 @@
             Retries (media already ready) do not auto-reboot.
           '';
         };
+
+        drivers = {
+          enable = lib.mkEnableOption "declarative Windows driver packs (C: + wininstall + FirstLogon)";
+
+          packs = lib.mkOption {
+            type = lib.types.listOf driverPackType;
+            default = [ ];
+            description = "Pinned fetchurl driver packs expanded into the staged INF tree.";
+          };
+
+          extraDir = lib.mkOption {
+            type = lib.types.str;
+            default = "${cacheDir}/drivers-extra";
+            description = ''
+              Optional host-local INF/zip tree merged at stage time (e.g. Intel Wi-Fi
+              or MSI packs when CDN fetchurl is unavailable).
+            '';
+          };
+        };
       };
 
       config = lib.mkIf cfg.enable (
@@ -222,10 +318,13 @@
               bootstrap
               finalize
               continueSetup
+              syncLogin
+              stageDrivers
               pkgs.wimlib
               pkgs.ntfs3g
               pkgs.efibootmgr
-            ];
+            ]
+            ++ lib.optional (driversTree != null) driversTree;
 
             # Clear legacy ext4 offline-shrink marker (superseded by nixinstall/disko).
             systemd.services.dendritic-windows-clear-legacy-shrink = {
@@ -246,36 +345,96 @@
             systemd.tmpfiles.rules = [
               "d ${stateDir} 0750 root root -"
               "d ${cacheDir} 0750 root root -"
+              "d ${cfg.drivers.extraDir} 0750 root root -"
               "d ${cfg.mountPoint} 0755 root root -"
             ];
 
-            # Ensure a password file exists before bootstrap (sops or generated).
+            # Ensure a password file exists before bootstrap (pass materialize or generated).
             systemd.services.dendritic-windows-ensure-password = {
               description = "Ensure Windows local-account password file exists";
               wantedBy = [ "multi-user.target" ];
-              before = [ "dendritic-windows-bootstrap.service" ];
+              before = [
+                "dendritic-windows-bootstrap.service"
+                "dendritic-windows-sync-login.service"
+              ];
               serviceConfig = {
                 Type = "oneshot";
                 RemainAfterExit = true;
                 ExecStart = pkgs.writeShellScript "dendritic-windows-ensure-password" ''
                   set -euo pipefail
                   pw=${lib.escapeShellArg passwordPath}
-                  mkdir -p "$(dirname "$pw")"
-                  if [ ! -s "$pw" ]; then
-                    if [ -s /run/secrets/windows_local_password ]; then
-                      cp /run/secrets/windows_local_password "$pw"
-                    else
-                      # pipefail + head closing early makes tr exit 141; disable for this line.
-                      set +o pipefail
-                      tr -dc 'A-Za-z0-9' </dev/urandom | head -c 20 >"$pw"
-                      set -o pipefail
-                      echo "dendritic-windows: generated Windows password at $pw" >&2
+                  # Pass-materialized under $HOME: never mkdir/chown as root.
+                  if [[ "$pw" == /home/* ]]; then
+                    if [ -s "$pw" ]; then
+                      exit 0
                     fi
-                    chmod 600 "$pw"
+                    echo "dendritic-windows: waiting for pass-materialized password at $pw" >&2
+                    exit 1
                   fi
+                  mkdir -p "$(dirname "$pw")"
+                  if [ -s "$pw" ]; then
+                    chmod 600 "$pw" 2>/dev/null || true
+                    exit 0
+                  fi
+                  if [ -s /run/secrets/windows_local_password ]; then
+                    cp /run/secrets/windows_local_password "$pw"
+                    chmod 600 "$pw"
+                    exit 0
+                  fi
+                  set +o pipefail
+                  tr -dc 'A-Za-z0-9' </dev/urandom | head -c 20 >"$pw"
+                  set -o pipefail
+                  chmod 600 "$pw"
+                  echo "dendritic-windows: generated Windows password at $pw" >&2
                 '';
               };
             };
+
+            systemd.services.dendritic-windows-sync-login = lib.mkIf cfg.syncLogin {
+              description = "Stage Windows Startup login password sync";
+              wantedBy = [ "multi-user.target" ];
+              after = [
+                "local-fs.target"
+                "dendritic-windows-ensure-password.service"
+              ];
+              wants = [ "dendritic-windows-ensure-password.service" ];
+              unitConfig.ConditionPathExists = [
+                "${cfg.mountPoint}/Windows"
+                passwordPath
+              ];
+              serviceConfig = {
+                Type = "oneshot";
+                RemainAfterExit = true;
+                ExecStart = "${syncLogin}/bin/dendritic-windows-sync-login";
+              };
+              environment = {
+                DENDRITIC_WINDOWS_MOUNT = cfg.mountPoint;
+                DENDRITIC_WINDOWS_PASSWORD_FILE = passwordPath;
+                DENDRITIC_WINDOWS_LOCAL_USER = localUser;
+                DENDRITIC_WINDOWS_STATE = stateDir;
+              };
+            };
+
+            systemd.services.dendritic-windows-stage-drivers =
+              lib.mkIf (cfg.drivers.enable && driversTree != null)
+                {
+                  description = "Stage Windows drivers onto C: and wininstall";
+                  wantedBy = [ "multi-user.target" ];
+                  after = [ "local-fs.target" ];
+                  serviceConfig = {
+                    Type = "oneshot";
+                    RemainAfterExit = true;
+                    TimeoutStartSec = "30m";
+                    ExecStart = "${stageDrivers}/bin/dendritic-windows-stage-drivers";
+                  };
+                  environment = {
+                    DENDRITIC_WINDOWS_MOUNT = cfg.mountPoint;
+                    DENDRITIC_WINDOWS_INSTALL_MOUNT = cfg.installMountPoint;
+                    DENDRITIC_WINDOWS_DRIVERS_SRC = "${driversTree}";
+                    DENDRITIC_WINDOWS_DRIVERS_EXTRA = cfg.drivers.extraDir;
+                    DENDRITIC_WINDOWS_STATE = stateDir;
+                  };
+                };
 
             # Harmless GPT/swap labeling so by-label swap works pre-bootstrap.
             systemd.services.dendritic-windows-label-gpt = {
@@ -341,12 +500,14 @@
                 DENDRITIC_WINDOWS_STATE = stateDir;
                 DENDRITIC_WINDOWS_UNATTEND_TEMPLATE = toString unattendTemplate;
                 DENDRITIC_WINDOWS_PASSWORD_FILE = passwordPath;
+                DENDRITIC_WINDOWS_LOCAL_USER = localUser;
                 DENDRITIC_WINDOWS_ISO_SHA256 = cfg.isoSha256;
                 DENDRITIC_WINDOWS_ISO_URL = cfg.isoUrl;
                 DENDRITIC_WINDOWS_ISO_NAME = cfg.isoName;
                 DENDRITIC_WINDOWS_FORCE = if cfg.forceRedeploy then "1" else "0";
                 DENDRITIC_WINDOWS_AUTO_REBOOT = if cfg.autoReboot then "1" else "0";
                 DENDRITIC_WINDOWS_ESP = "/boot";
+                DENDRITIC_WINDOWS_DRIVERS_SRC = if driversTree != null then "${driversTree}" else "";
               };
             };
 

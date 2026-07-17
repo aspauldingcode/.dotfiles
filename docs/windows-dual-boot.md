@@ -69,10 +69,51 @@ Autounattend sets `ComputerName` to **`sliceanddice`** (≤15 NetBIOS chars).
 Longer names (e.g. `sliceanddice-win`) make specialize fail with `0x80220005` /
 `0x8007001F`.
 
-## Password
+## Shared login (NixOS + Windows)
 
-Default: `/var/lib/dendritic-windows/password` (mode 0600).
-Override: `dendritic.windows.passwordFile`.
+Password lives in the **private pass store** only
+(`secretspec/shared/default/LOGIN_PASSWORD`). It is never in sops or the flake.
+`pass-materialize` writes `~/.config/dendritic/identity/login.password` (0600);
+systemd applies it to NixOS and stages Windows sync from that file.
+
+| Side               | Mechanism                                                |
+| ------------------ | -------------------------------------------------------- |
+| pass               | `LOGIN_PASSWORD` (SecretSpec / pass)                     |
+| Materialize        | `~/.config/dendritic/identity/login.password`            |
+| NixOS              | `dendritic-identity-apply-nixos-password` → `chpasswd`   |
+| Windows (install)  | Autounattend stamps the same password + username         |
+| Windows (existing) | `dendritic-windows-sync-login` → Startup `net user` once |
+
+Change the shared password:
+
+```bash
+./scripts/dendritic-identity-set-password.sh          # prompts (hidden)
+# or pipe stdin — do not put the value in shell history / scripts in git
+pass-materialize   # if units did not pick up the file yet
+# boot Windows once so sync-login applies
+```
+
+Fallback (identity off): `/var/lib/dendritic-windows/password`, or
+`dendritic.windows.passwordFile`.
+
+## Declarative drivers (Sword 15)
+
+`dendritic.windows.drivers.enable` builds a pinned INF tree and stages it to
+**both**:
+
+- `C:\dendritic-drivers\` (current install) + Startup `pnputil` once
+- `X:\dendritic-drivers\` on wininstall + Autounattend FirstLogon `pnputil`
+
+Pinned on sliceanddice:
+
+- NVIDIA notebook 572.60 (RTX 3050 Ti / GA107)
+- SteelSeries Engine 3.19.2 (keyboard backlight — `ssps2.inf` / `ACPI\\MSI0007` + silent `/S` install)
+
+Linux keyboard backlight RE (no EC writes): [`docs/re/sword-kbd-bl/`](re/sword-kbd-bl/).
+Capture kit stages to `C:\dendritic\re\` when `dendritic.swordKbdBl.enable` is on.
+
+Drop additional Intel Wi‑Fi / chipset INF zips under
+`/var/cache/dendritic-windows/drivers-extra/` when needed.
 
 ## Idempotency / force
 

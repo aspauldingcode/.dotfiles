@@ -186,13 +186,24 @@
       cfg = config.dendritic.apps.niri;
       c = config.lib.stylix.colors.withHashtag;
       wallpaper = config.stylix.image or null;
-      # Cycle MSI keyboard backlight 0→1→2→3→0 (msi-ec LED class).
+      # Cycle Sword keyboard backlight via HID tool (never EC / msi-ec LED).
+      # Exit 2 = no HID device yet (Windows factory path); soft-fail for keybinds.
       kbdBacklightCycle = pkgs.writeShellScript "kbd-backlight-cycle" ''
         set -euo pipefail
+        if command -v dendritic-sword-kbd-bl >/dev/null 2>&1; then
+          dendritic-sword-kbd-bl cycle && exit 0
+          ec=$?
+          if [ "$ec" = 2 ]; then
+            echo "kbd-backlight-cycle: no SteelSeries/MSIKLM HID (see docs/re/sword-kbd-bl/STATUS.md)" >&2
+            exit 0
+          fi
+          exit "$ec"
+        fi
+        # Legacy fallback: msi-ec LED (disabled on Sword 15 A11UD).
         d=msiacpi::kbd_backlight
         if ! ${lib.getExe pkgs.brightnessctl} -d "$d" info >/dev/null 2>&1; then
-          echo "kbd-backlight-cycle: $d not present (is msi-ec loaded?)" >&2
-          exit 1
+          echo "kbd-backlight-cycle: no HID tool and no $d" >&2
+          exit 0
         fi
         cur="$(${lib.getExe pkgs.brightnessctl} -d "$d" g)"
         max="$(${lib.getExe pkgs.brightnessctl} -d "$d" m)"
@@ -1107,12 +1118,10 @@
               XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "set" "10%+"; }
               XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "set" "10%-"; }
 
-              // Keyboard backlight via msi-ec (msiacpi::kbd_backlight, levels 0–3).
-              // Sword 15 Fn+backlight is EC-firmware-only: wev/MSI-WMI emit no
-              // KEY_KBDILLUM* (confirmed) — XF86 binds kept as no-ops if a
-              // future firmware starts sending them; Mod+F9 is the real control.
-              XF86KbdBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "-d" "msiacpi::kbd_backlight" "set" "+1"; }
-              XF86KbdBrightnessDown allow-when-locked=true { spawn "brightnessctl" "-d" "msiacpi::kbd_backlight" "set" "1-"; }
+              // Keyboard backlight: dendritic-sword-kbd-bl (HID). Sword Fn may
+              // not emit KEY_KBDILLUM*; Mod+F9 cycles. Soft-fails if no HID yet.
+              XF86KbdBrightnessUp   allow-when-locked=true { spawn "dendritic-sword-kbd-bl" "cycle"; }
+              XF86KbdBrightnessDown allow-when-locked=true { spawn "dendritic-sword-kbd-bl" "cycle"; }
               Mod+F9 allow-when-locked=true { spawn "${kbdBacklightCycle}"; }
 
               // Media transport

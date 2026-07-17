@@ -16,11 +16,13 @@ CACHE_DIR="${DENDRITIC_WINDOWS_CACHE:?}"
 STATE_DIR="${DENDRITIC_WINDOWS_STATE:?}"
 UNATTEND_TEMPLATE="${DENDRITIC_WINDOWS_UNATTEND_TEMPLATE:?}"
 PASSWORD_FILE="${DENDRITIC_WINDOWS_PASSWORD_FILE:?}"
+LOCAL_USER="${DENDRITIC_WINDOWS_LOCAL_USER:-alex}"
 ISO_SHA256="${DENDRITIC_WINDOWS_ISO_SHA256:?}"
 ISO_URL="${DENDRITIC_WINDOWS_ISO_URL:-}"
 ISO_NAME="${DENDRITIC_WINDOWS_ISO_NAME:?}"
 FORCE="${DENDRITIC_WINDOWS_FORCE:-0}"
 AUTO_REBOOT="${DENDRITIC_WINDOWS_AUTO_REBOOT:-1}"
+DRIVERS_SRC="${DENDRITIC_WINDOWS_DRIVERS_SRC:-}"
 
 INSTALLED="$STATE_DIR/installed"
 MEDIA_READY="$STATE_DIR/media-ready"
@@ -40,8 +42,10 @@ die() {
 if [[ ${DENDRITIC_WINDOWS_SELFTEST:-0} == "1" ]]; then
   [[ -f $UNATTEND_TEMPLATE ]] || die "unattend template missing: $UNATTEND_TEMPLATE"
   grep -q '__DENDRITIC_PASSWORD__' "$UNATTEND_TEMPLATE" || die "password placeholder missing"
+  grep -q '__DENDRITIC_USERNAME__' "$UNATTEND_TEMPLATE" || die "username placeholder missing"
   grep -q '__DENDRITIC_IMAGE_INDEX__' "$UNATTEND_TEMPLATE" || die "image index placeholder missing"
   grep -q '__DENDRITIC_WINDOWS_PARTITION_ID__' "$UNATTEND_TEMPLATE" || die "windows PartitionID placeholder missing"
+  grep -q 'pnputil /add-driver' "$UNATTEND_TEMPLATE" || die "missing FirstLogon pnputil drivers step"
   grep -q 'SkipMachineOOBE>true</SkipMachineOOBE>' "$UNATTEND_TEMPLATE" || die "missing SkipMachineOOBE"
   grep -q 'WillShowUI>Never</WillShowUI>' "$UNATTEND_TEMPLATE" || die "missing WillShowUI Never"
   grep -q 'shutdown /r' "$UNATTEND_TEMPLATE" || die "missing post-specialize reboot"
@@ -173,7 +177,9 @@ reset_windows_for_setup() {
   fi
   win_part_id="$(windows_lba_partition_id)" || die "cannot resolve windows LBA PartitionID"
   xml_pass="$(printf '%s' "$PASSWORD" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g')"
+  xml_user="$(printf '%s' "$LOCAL_USER" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g')"
   sed -e "s|__DENDRITIC_PASSWORD__|${xml_pass}|g" \
+    -e "s|__DENDRITIC_USERNAME__|${xml_user}|g" \
     -e "s|__DENDRITIC_IMAGE_INDEX__|${idx}|g" \
     -e "s|__DENDRITIC_WINDOWS_PARTITION_ID__|${win_part_id}|g" \
     "$UNATTEND_TEMPLATE" >"$INSTALL_MOUNT/Autounattend.xml"
@@ -182,6 +188,11 @@ reset_windows_for_setup() {
     die "failed to stamp PartitionID into Autounattend"
   cname="$(sed -n 's/.*<ComputerName>\([^<]*\)<\/ComputerName>.*/\1/p' "$INSTALL_MOUNT/Autounattend.xml" | head -1)"
   [[ -n $cname && ${#cname} -le 15 ]] || die "ComputerName '$cname' empty or >15 NetBIOS chars"
+  if [[ -n $DRIVERS_SRC && -d $DRIVERS_SRC ]]; then
+    mkdir -p "$INSTALL_MOUNT/dendritic-drivers"
+    rsync -a --delete "$DRIVERS_SRC/" "$INSTALL_MOUNT/dendritic-drivers/"
+    log "copied driver tree onto wininstall for FirstLogon"
+  fi
   sync
   umount "$INSTALL_MOUNT" || true
 
@@ -388,13 +399,20 @@ win_part_id="$(windows_lba_partition_id)" || die "PARTLABEL=windows not in lsblk
 log "Autounattend InstallTo Disk 0 PartitionID $win_part_id (LBA order of PARTLABEL=windows)"
 
 xml_pass="$(printf '%s' "$PASSWORD" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g')"
+xml_user="$(printf '%s' "$LOCAL_USER" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g')"
 sed -e "s|__DENDRITIC_PASSWORD__|${xml_pass}|g" \
+  -e "s|__DENDRITIC_USERNAME__|${xml_user}|g" \
   -e "s|__DENDRITIC_IMAGE_INDEX__|${idx}|g" \
   -e "s|__DENDRITIC_WINDOWS_PARTITION_ID__|${win_part_id}|g" \
   "$UNATTEND_TEMPLATE" >"$INSTALL_MOUNT/Autounattend.xml"
 cp -f "$INSTALL_MOUNT/Autounattend.xml" "$INSTALL_MOUNT/autounattend.xml"
 grep -q "PartitionID>${win_part_id}</PartitionID>" "$INSTALL_MOUNT/Autounattend.xml" ||
   die "failed to stamp PartitionID $win_part_id into Autounattend.xml"
+if [[ -n $DRIVERS_SRC && -d $DRIVERS_SRC ]]; then
+  mkdir -p "$INSTALL_MOUNT/dendritic-drivers"
+  rsync -a --delete "$DRIVERS_SRC/" "$INSTALL_MOUNT/dendritic-drivers/"
+  log "copied driver tree onto wininstall for FirstLogon"
+fi
 
 sync
 umount "$isomnt" || true
