@@ -397,7 +397,7 @@
         PY
                 )
 
-                if [[ "$(uname -s)" == Darwin ]]; then
+                ${lib.optionalString pkgs.stdenv.isDarwin ''
                   DEV="$(/usr/sbin/networksetup -listallhardwareports \
                     | /usr/bin/awk '/Wi-Fi|AirPort/{getline; print $2; exit}')"
                   [[ -n "''${DEV:-}" ]] && /usr/sbin/networksetup -setairportpower "$DEV" on 2>/dev/null || true
@@ -430,35 +430,36 @@
                       done
                     fi
                   fi
-                  exit 0
-                fi
+                ''}
 
-                # ── Linux (NetworkManager + iwd) ─────────────────────────────
-                if ! command -v nmcli >/dev/null 2>&1; then
-                  warn "nmcli missing"
-                  exit 0
-                fi
-                nmcli radio wifi on || true
-                ${pkgs.util-linux}/bin/rfkill unblock wifi 2>/dev/null || true
-
-                for row in "''${ROWS[@]}"; do
-                  IFS='|' read -r ssid uuid key_mgmt prio pass_key <<<"$row"
-                  psk=""
-                  if [[ "$key_mgmt" != none && -n "$pass_key" ]]; then
-                    psk="$(read_psk "$pass_key" || true)"
+                ${lib.optionalString pkgs.stdenv.isLinux ''
+                  # ── Linux (NetworkManager + iwd) ─────────────────────────────
+                  if ! command -v nmcli >/dev/null 2>&1; then
+                    warn "nmcli missing"
+                    exit 0
                   fi
-                  ensure_one_linux "$ssid" "$uuid" "$key_mgmt" "$prio" "$psk" "$pass_key"
-                  log "linux: ensured $ssid"
-                done
+                  nmcli radio wifi on || true
+                  ${pkgs.util-linux}/bin/rfkill unblock wifi 2>/dev/null || true
 
-                # Prefer root reload — unprivileged D-Bus ReloadConnections is polkit-denied.
-                if command -v sudo >/dev/null 2>&1; then
-                  sudo -n ${pkgs.networkmanager}/bin/nmcli connection reload 2>/dev/null \
-                    || ${pkgs.networkmanager}/bin/nmcli connection reload 2>/dev/null \
-                    || true
-                else
-                  ${pkgs.networkmanager}/bin/nmcli connection reload 2>/dev/null || true
-                fi
+                  for row in "''${ROWS[@]}"; do
+                    IFS='|' read -r ssid uuid key_mgmt prio pass_key <<<"$row"
+                    psk=""
+                    if [[ "$key_mgmt" != none && -n "$pass_key" ]]; then
+                      psk="$(read_psk "$pass_key" || true)"
+                    fi
+                    ensure_one_linux "$ssid" "$uuid" "$key_mgmt" "$prio" "$psk" "$pass_key"
+                    log "linux: ensured $ssid"
+                  done
+
+                  # Prefer root reload — unprivileged D-Bus ReloadConnections is polkit-denied.
+                  if command -v sudo >/dev/null 2>&1; then
+                    sudo -n ${pkgs.networkmanager}/bin/nmcli connection reload 2>/dev/null \
+                      || ${pkgs.networkmanager}/bin/nmcli connection reload 2>/dev/null \
+                      || true
+                  else
+                    ${pkgs.networkmanager}/bin/nmcli connection reload 2>/dev/null || true
+                  fi
+                ''}
       '';
     in
     {
