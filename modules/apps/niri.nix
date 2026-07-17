@@ -556,7 +556,8 @@
           settings.mainBar = {
             layer = "top";
             position = "top";
-            height = 34;
+            # Island margins + box-shadow need ≥56px; 34 triggers waybar min-height warn.
+            height = 56;
             spacing = 4;
             # Extra chrome so island box-shadows (match niri layout.shadow) are
             # not clipped by the waybar surface.

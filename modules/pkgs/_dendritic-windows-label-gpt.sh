@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Label existing GPT partitions so by-partlabel mounts work.
 # NEVER invent a swap label on an unknown 3rd partition — that destroyed nixinstall.
+# Prefer content/size detection over fixed indices (Windows Setup may add MSR and
+# renumber so LBA order is ESP→nixos→windows→wininstall→swap→nixinstall[+MSR]).
 set -euo pipefail
 
 DISK="${DENDRITIC_WINDOWS_DISK:?}"
@@ -16,48 +18,109 @@ nparts="$(lsblk -nro TYPE "$DISK" | grep -c '^part$' || true)"
 sgdisk -c 1:ESP "$DISK" >/dev/null
 sgdisk -c 2:nixos "$DISK" >/dev/null
 
+# Resolve /dev/sdXN or /dev/nvme0n1pN for GPT index i on $DISK.
+part_dev() {
+  local i="$1" base cand
+  base="$(readlink -f "$DISK")"
+  for cand in "${base}-part${i}" "${base}p${i}" "${base}${i}"; do
+    if [[ -b $cand ]]; then
+      printf '%s' "$cand"
+      return 0
+    fi
+  done
+  return 1
+}
+
+label_by_content() {
+  # Label parts 3..n by fstype + size. Leaves Microsoft reserved alone (or names it).
+  local i dev sz_b type label
+  SWAP_DEV=""
+  for i in $(seq 3 "$nparts"); do
+    dev="$(part_dev "$i")" || continue
+    type="$(blkid -o value -s TYPE "$dev" 2>/dev/null || true)"
+    label="$(blkid -o value -s PARTLABEL "$dev" 2>/dev/null || true)"
+    sz_b="$(lsblk -nbdo SIZE "$dev" 2>/dev/null || echo 0)"
+
+    # ~16 MiB MSR created by Windows Setup
+    if [[ $sz_b -gt 0 && $sz_b -lt 33554432 ]] ||
+      [[ $label == *[Mm]icrosoft*reserved* ]]; then
+      sgdisk -c "$i:msr" "$DISK" >/dev/null || true
+      continue
+    fi
+
+    case "$type" in
+    swap)
+      sgdisk -c "$i:swap" "$DISK" >/dev/null
+      SWAP_DEV="$dev"
+      ;;
+    ext4)
+      sgdisk -c "$i:nixinstall" "$DISK" >/dev/null
+      ;;
+    ntfs | ntfs3)
+      # windows ≈ 64 GiB; wininstall ≈ 8 GiB (allow slack)
+      if [[ $sz_b -ge 40000000000 ]]; then
+        sgdisk -c "$i:windows" "$DISK" >/dev/null
+      else
+        sgdisk -c "$i:wininstall" "$DISK" >/dev/null
+      fi
+      ;;
+    btrfs)
+      # Should only be nixos (#2); ignore extras
+      :
+      ;;
+    vfat | fat32 | fat16 | msdos)
+      :
+      ;;
+    *)
+      # Blank / unknown: size heuristics matching disko carve
+      if [[ $sz_b -ge 40000000000 ]]; then
+        sgdisk -c "$i:windows" "$DISK" >/dev/null
+      elif [[ $sz_b -ge 6000000000 && $sz_b -le 12000000000 ]]; then
+        # 8G wininstall or nixinstall — prefer existing PARTLABEL / leave if labeled
+        if [[ $label == nixinstall ]]; then
+          sgdisk -c "$i:nixinstall" "$DISK" >/dev/null
+        elif [[ $label == wininstall || $label == windows ]]; then
+          sgdisk -c "$i:wininstall" "$DISK" >/dev/null
+        elif [[ -z $type ]]; then
+          # Ambiguous empty 8G: skip rather than mislabel
+          echo "dendritic-windows-label-gpt: skip unlabeled blank part $i ($dev)" >&2
+        else
+          sgdisk -c "$i:wininstall" "$DISK" >/dev/null
+        fi
+      elif [[ $sz_b -ge 2000000000 && $sz_b -le 12000000000 && -z $type ]]; then
+        sgdisk -c "$i:swap" "$DISK" >/dev/null
+        SWAP_DEV="$dev"
+      fi
+      ;;
+    esac
+  done
+}
+
 SWAP_DEV=""
 case "$nparts" in
-6)
-  # Target: ESP nixos windows|nixinstall… — detect by existing PARTLABEL/FS
-  # Prefer fixed target order if windows exists or sizes match; else label by content.
-  sgdisk -c 3:nixinstall "$DISK" >/dev/null || true
-  sgdisk -c 4:windows "$DISK" >/dev/null || true
-  sgdisk -c 5:wininstall "$DISK" >/dev/null || true
-  sgdisk -c 6:swap "$DISK" >/dev/null || true
-  SWAP_DEV="${DISK}-part6"
-  ;;
-5)
-  # ESP nixos windows wininstall swap  OR  ESP nixos windows wininstall nixinstall
-  # If part5 is already swap-type or labeled swap, keep; if ext4 nixinstall, don't mkswap.
-  sgdisk -c 3:windows "$DISK" >/dev/null
-  sgdisk -c 4:wininstall "$DISK" >/dev/null
-  if blkid "${DISK}-part5" 2>/dev/null | grep -q 'TYPE="ext4"'; then
-    sgdisk -c 5:nixinstall "$DISK" >/dev/null
-  else
-    sgdisk -c 5:swap "$DISK" >/dev/null
-    SWAP_DEV="${DISK}-part5"
-  fi
+7 | 6 | 5)
+  # Content-based: survives Windows MSR insert + GPT renumber.
+  label_by_content
   ;;
 4)
   # Legacy dual-boot without wininstall, or ESP nixos nixinstall + something
-  if blkid "${DISK}-part3" 2>/dev/null | grep -q 'TYPE="ext4"\|LABEL="nixinstall"\|TYPE="btrfs"'; then
+  if blkid "$(part_dev 3)" 2>/dev/null | grep -q 'TYPE="ext4"\|LABEL="nixinstall"\|TYPE="btrfs"'; then
     sgdisk -c 3:nixinstall "$DISK" >/dev/null
-    if blkid "${DISK}-part4" 2>/dev/null | grep -q 'TYPE="swap"'; then
+    if blkid "$(part_dev 4)" 2>/dev/null | grep -q 'TYPE="swap"'; then
       sgdisk -c 4:swap "$DISK" >/dev/null
-      SWAP_DEV="${DISK}-part4"
+      SWAP_DEV="$(part_dev 4)"
     fi
   else
     sgdisk -c 3:windows "$DISK" >/dev/null
     sgdisk -c 4:swap "$DISK" >/dev/null
-    SWAP_DEV="${DISK}-part4"
+    SWAP_DEV="$(part_dev 4)"
   fi
   ;;
 3)
   # ESP + nixos + (nixinstall | swap). Distinguish by filesystem — never mkswap ext4.
-  if blkid "${DISK}-part3" 2>/dev/null | grep -Eq 'TYPE="swap"|TYPE="linux_raid_member"'; then
+  if blkid "$(part_dev 3)" 2>/dev/null | grep -Eq 'TYPE="swap"|TYPE="linux_raid_member"'; then
     sgdisk -c 3:swap "$DISK" >/dev/null
-    SWAP_DEV="${DISK}-part3"
+    SWAP_DEV="$(part_dev 3)"
   else
     # Default: third partition is nixinstall (installer + vault)
     sgdisk -c 3:nixinstall "$DISK" >/dev/null
@@ -75,7 +138,7 @@ esac
 partprobe "$DISK" 2>/dev/null || true
 udevadm settle || true
 
-if [[ -n $SWAP_DEV && -b $SWAP_DEV ]]; then
+if [[ -n ${SWAP_DEV:-} && -b $SWAP_DEV ]]; then
   # Only mkswap if already swap or completely blank — never wipe ext4/btrfs/ntfs.
   if blkid "$SWAP_DEV" 2>/dev/null | grep -q 'TYPE="swap"'; then
     swaplabel -L swap "$SWAP_DEV" 2>/dev/null || true

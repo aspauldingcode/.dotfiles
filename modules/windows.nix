@@ -130,7 +130,9 @@
 
         editionName = lib.mkOption {
           type = lib.types.str;
-          default = "IoT Enterprise LTSC";
+          # Eval Center fwlink ISO ships "Windows 11 Enterprise LTSC 2024 Evaluation"
+          # (not an "IoT" substring in the WIM Name). Prefer non-N index via match order.
+          default = "Enterprise LTSC";
           description = "WIM image Name substring matched by wimlib-imagex info.";
         };
 

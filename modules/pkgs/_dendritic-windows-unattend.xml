@@ -26,8 +26,8 @@
           <ModifyPartitions>
             <ModifyPartition wcm:action="add">
               <Order>1</Order>
-              <!-- GPT #4 = PARTLABEL=windows (nixinstall is #3 at end of disk). -->
-              <PartitionID>4</PartitionID>
+              <!-- LBA/diskpart index of PARTLABEL=windows (not GPT number). -->
+              <PartitionID>__DENDRITIC_WINDOWS_PARTITION_ID__</PartitionID>
               <Format>NTFS</Format>
               <Label>windows</Label>
               <Letter>C</Letter>
@@ -45,7 +45,7 @@
           </InstallFrom>
           <InstallTo>
             <DiskID>0</DiskID>
-            <PartitionID>4</PartitionID>
+            <PartitionID>__DENDRITIC_WINDOWS_PARTITION_ID__</PartitionID>
           </InstallTo>
           <InstallToAvailablePartition>false</InstallToAvailablePartition>
           <WillShowUI>OnError</WillShowUI>

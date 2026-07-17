@@ -32,12 +32,12 @@
             echo "== shellcheck =="
             shellcheck -e SC2154,SC2086,SC2046,SC2034,SC2001,SC2016,SC2207 ${scriptsArgs}
 
-            echo "== unattend.xml (silent Setup → GPT partition 4 = windows) =="
+            echo "== unattend.xml (silent Setup → LBA PartitionID placeholder = windows) =="
             xmllint --noout ${unattend}
             grep -q 'AcceptEula>true</AcceptEula>' ${unattend}
             grep -q 'WillShowUI>Never</WillShowUI>' ${unattend}
             grep -q 'SkipMachineOOBE>true</SkipMachineOOBE>' ${unattend}
-            grep -q 'PartitionID>4</PartitionID>' ${unattend}
+            grep -q '__DENDRITIC_WINDOWS_PARTITION_ID__' ${unattend}
             grep -q '__DENDRITIC_IMAGE_INDEX__' ${unattend}
             grep -q 'HideOnlineAccountScreens>true</HideOnlineAccountScreens>' ${unattend}
             grep -q 'PreventDeviceEncryption' ${unattend}
@@ -64,7 +64,7 @@
             export DENDRITIC_WINDOWS_DISK=/dev/null
             export DENDRITIC_WINDOWS_MOUNT=/tmp
             export DENDRITIC_WINDOWS_SIZE_GIB=64
-            export DENDRITIC_WINDOWS_EDITION_NAME='IoT Enterprise LTSC'
+            export DENDRITIC_WINDOWS_EDITION_NAME='Enterprise LTSC'
             export DENDRITIC_WINDOWS_CACHE=/tmp
             export DENDRITIC_WINDOWS_STATE=/tmp
             export DENDRITIC_WINDOWS_UNATTEND_TEMPLATE=${unattend}

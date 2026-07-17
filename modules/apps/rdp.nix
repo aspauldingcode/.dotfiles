@@ -62,11 +62,9 @@
 
         networking.firewall.allowedTCPPorts = lib.mkIf cfg.openFirewall [ port ];
 
-        # niri already pulls xdg-desktop-portal-gnome; keep RemoteDesktop usable.
-        xdg.portal = {
-          enable = true;
-          extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
-        };
+        # niri already enables portals + xdg-desktop-portal-gnome for RemoteDesktop.
+        # Do not re-add the portal here — duplicate dbus service files spam the session bus.
+        xdg.portal.enable = true;
 
         # Bonjour/mDNS discovery for iPhone Microsoft Remote Desktop (and dns-sd).
         # Force-on when RDP is enabled — do not leave this as a soft default.

@@ -19,9 +19,10 @@ See [`hosts/nixos/sliceanddice/disko.nix`](../hosts/nixos/sliceanddice/disko.nix
 | swap       | ~4–9G | hibernate / swap                                                    |
 | nixinstall | 8G    | On-disk NixOS installer (end of disk; never wiped)                  |
 
-**GPT numbering quirk:** nixinstall is created first as partition **#3** at the end
-of the disk; windows/wininstall/swap are **#4/#5/#6**. Autounattend installs to
-**PartitionID 4** (`PARTLABEL=windows`).
+**Install target:** Windows Setup / diskpart use **LBA order**, not GPT index.
+Physical ESP→nixos→windows→… means Autounattend `InstallTo` is usually
+**PartitionID 3** (`PARTLABEL=windows`). Bootstrap stamps the live LBA index into
+`Autounattend.xml` (do not hard-code GPT numbers — Setup may also create MSR).
 
 `nh os switch` never repartitions or reinstalls Windows. Markers under
 `/var/lib/dendritic-windows/`:
@@ -43,7 +44,7 @@ With `dendritic.windows.enable = true` and `autoBootstrap = true`:
 1. Timer starts ~90s after boot and runs `dendritic-windows-bootstrap.service`
 2. Downloads IoT LTSC 2024 x64 eval ISO (fwlink → CDN), SHA256
    `67cec5865eaa037a72ddc633a717a10a2bed50778862267223ddb9c60ef5da68`
-3. Extracts ISO → wininstall, writes `Autounattend.xml` (InstallTo GPT **#4**)
+3. Extracts ISO → wininstall, writes `Autounattend.xml` (InstallTo LBA index of **windows**)
 4. Deletes ISO cache (media lives on wininstall)
 5. `efibootmgr --bootnext` → `Windows Setup (dendritic)`
 6. Reboots (`autoReboot`); silent Setup installs onto **windows**

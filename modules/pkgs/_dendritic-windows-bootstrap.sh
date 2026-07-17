@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # One-shot: extract Setup media onto existing wininstall, BootNext into silent
-# Windows Setup (InstallTo GPT #4 = PARTLABEL=windows). Partition carve is owned
-# by dendritic-reinstall / disko. Idempotent after media-ready / installed.
+# Windows Setup (InstallTo = LBA/diskpart index of PARTLABEL=windows). Partition
+# carve is owned by dendritic-reinstall / disko. Idempotent after media-ready /
+# installed. NOTE: Windows Setup numbers partitions in on-disk (LBA) order — not
+# GPT index — so with physical ESP→nixos→windows→… windows is usually #3.
 set -euo pipefail
 
 DISK="${DENDRITIC_WINDOWS_DISK:?}"
@@ -39,13 +41,34 @@ if [[ ${DENDRITIC_WINDOWS_SELFTEST:-0} == "1" ]]; then
   [[ -f $UNATTEND_TEMPLATE ]] || die "unattend template missing: $UNATTEND_TEMPLATE"
   grep -q '__DENDRITIC_PASSWORD__' "$UNATTEND_TEMPLATE" || die "password placeholder missing"
   grep -q '__DENDRITIC_IMAGE_INDEX__' "$UNATTEND_TEMPLATE" || die "image index placeholder missing"
+  grep -q '__DENDRITIC_WINDOWS_PARTITION_ID__' "$UNATTEND_TEMPLATE" || die "windows PartitionID placeholder missing"
   grep -q 'SkipMachineOOBE>true</SkipMachineOOBE>' "$UNATTEND_TEMPLATE" || die "missing SkipMachineOOBE"
   grep -q 'WillShowUI>Never</WillShowUI>' "$UNATTEND_TEMPLATE" || die "missing WillShowUI Never"
-  grep -q 'PartitionID>4</PartitionID>' "$UNATTEND_TEMPLATE" || die "missing InstallTo partition 4 (windows)"
   grep -q 'shutdown /r' "$UNATTEND_TEMPLATE" || die "missing post-specialize reboot"
   log "self-test OK"
   exit 0
 fi
+
+# Windows Setup / diskpart PartitionID = 1-based index in LBA (start-sector) order.
+# Do not use GPT PARTN — dendritic-reinstall can place nixinstall as GPT #3 at the
+# end of the disk while windows is still the 3rd partition physically.
+windows_lba_partition_id() {
+  local disk_base win_dev win_name id name
+  disk_base="$(basename "$(readlink -f "$DISK")")"
+  win_dev="$(readlink -f /dev/disk/by-partlabel/windows 2>/dev/null || true)"
+  [[ -n $win_dev && -b $win_dev ]] || return 1
+  win_name="$(basename "$win_dev")"
+  id=0
+  while IFS= read -r name; do
+    [[ -n $name && $name != "$disk_base" ]] || continue
+    id=$((id + 1))
+    if [[ $name == "$win_name" ]]; then
+      printf '%s' "$id"
+      return 0
+    fi
+  done < <(lsblk -nro START,NAME "$DISK" | sort -n -k1,1 | awk '{ print $2 }')
+  return 1
+}
 
 already_windows() {
   local dev
@@ -86,13 +109,16 @@ mark_installed() {
 }
 
 set_bootnext_setup() {
-  local setup_boot part
+  local setup_boot part bootnum
   part="${1:?}"
-  if ! efibootmgr | grep -qi 'Windows Setup (dendritic)'; then
-    efibootmgr --create --disk "$DISK" --part "$part" \
-      --label 'Windows Setup (dendritic)' \
-      --loader '\EFI\BOOT\bootx64.efi' || die "failed to create Setup EFI entry"
-  fi
+  # Drop stale entries — GPT numbers shift after Windows creates MSR.
+  while IFS= read -r bootnum; do
+    [[ -n $bootnum ]] || continue
+    efibootmgr -b "$bootnum" -B >/dev/null || true
+  done < <(efibootmgr | sed -n 's/^Boot\([0-9A-Fa-f]*\).*Windows Setup (dendritic).*/\1/p')
+  efibootmgr --create --disk "$DISK" --part "$part" \
+    --label 'Windows Setup (dendritic)' \
+    --loader '\EFI\BOOT\bootx64.efi' || die "failed to create Setup EFI entry"
   setup_boot="$(efibootmgr | sed -n 's/^Boot\([0-9A-Fa-f]*\).*Windows Setup (dendritic).*/\1/p' | head -1)"
   [[ -n $setup_boot ]] || die "Setup EFI Boot#### not found"
   efibootmgr --bootnext "$setup_boot" || die "efibootmgr --bootnext $setup_boot failed"
@@ -112,7 +138,12 @@ if [[ $FORCE != "1" ]]; then
 fi
 
 # Media already prepared: only refresh BootNext (no re-download / re-extract / no reboot loop).
-if [[ $FORCE != "1" ]] && { [[ -f $MEDIA_READY ]] || media_populated; }; then
+# Stale media-ready after a failed Setup (wininstall wiped) must re-extract.
+if [[ $FORCE != "1" ]] && [[ -f $MEDIA_READY ]] && ! media_populated; then
+  log "stale media-ready (wininstall missing setup.exe) — clearing for re-extract"
+  rm -f "$MEDIA_READY"
+fi
+if [[ $FORCE != "1" ]] && media_populated; then
   log "wininstall media ready; Windows not installed yet — refresh BootNext only"
   install_dev="$(readlink -f /dev/disk/by-partlabel/wininstall)"
   [[ -b $install_dev ]] || die "partlabel wininstall missing"
@@ -229,18 +260,32 @@ wim="${isomnt}/sources/install.wim"
 [[ -f $wim ]] || wim="${isomnt}/sources/install.esd"
 [[ -f $wim ]] || die "install.wim/esd not in ISO"
 
+# Match editionName substring; else first non-N image (Eval ISOs label
+# "Enterprise LTSC 2024 Evaluation", not "IoT …"). Empty/"any" → same fallback.
 idx="$(wimlib-imagex info "$wim" | awk -v name="$EDITION_NAME" '
+  BEGIN { ignore = (name == "" || name == "any" || name == "*") }
   /^Index:/ { idx=$2 }
   /^Name:/ {
     $1=""; sub(/^ /,"");
-    if (index($0, name) || $0 == name) { print idx; exit }
+    names[idx]=$0
+    if (!ignore && (index($0, name) || $0 == name)) { print idx; found=1; exit }
+  }
+  END {
+    if (found) exit
+    for (i = 1; i <= idx; i++) {
+      if (names[i] == "") continue
+      if (names[i] ~ / N /) continue
+      print i
+      exit
+    }
   }
 ')"
 if [[ -z $idx ]]; then
   log "available images:"
   wimlib-imagex info "$wim" | sed -n '/^Index:/,/^Architecture:/p' >&2 || true
-  die "could not find WIM image matching '$EDITION_NAME'"
+  die "could not find WIM image matching '$EDITION_NAME' (or any non-N fallback)"
 fi
+log "selected WIM index $idx (wanted '$EDITION_NAME')"
 log "extracting Setup media (image index $idx) → $install_dev"
 
 rsync -aH --info=stats2 "$isomnt"/ "$INSTALL_MOUNT"/
@@ -249,11 +294,18 @@ rsync -aH --info=stats2 "$isomnt"/ "$INSTALL_MOUNT"/
 [[ -e $INSTALL_MOUNT/EFI/BOOT/bootx64.efi || -e $INSTALL_MOUNT/efi/boot/bootx64.efi ]] ||
   die 'EFI\BOOT\bootx64.efi missing after extract'
 
+win_part_id="$(windows_lba_partition_id)" || die "PARTLABEL=windows not in lsblk LBA order on $DISK"
+[[ $win_part_id =~ ^[0-9]+$ && $win_part_id -ge 1 ]] || die "invalid windows LBA PartitionID: $win_part_id"
+log "Autounattend InstallTo Disk 0 PartitionID $win_part_id (LBA order of PARTLABEL=windows)"
+
 xml_pass="$(printf '%s' "$PASSWORD" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g')"
 sed -e "s|__DENDRITIC_PASSWORD__|${xml_pass}|g" \
   -e "s|__DENDRITIC_IMAGE_INDEX__|${idx}|g" \
+  -e "s|__DENDRITIC_WINDOWS_PARTITION_ID__|${win_part_id}|g" \
   "$UNATTEND_TEMPLATE" >"$INSTALL_MOUNT/Autounattend.xml"
 cp -f "$INSTALL_MOUNT/Autounattend.xml" "$INSTALL_MOUNT/autounattend.xml"
+grep -q "PartitionID>${win_part_id}</PartitionID>" "$INSTALL_MOUNT/Autounattend.xml" ||
+  die "failed to stamp PartitionID $win_part_id into Autounattend.xml"
 
 sync
 umount "$isomnt" || true
@@ -277,10 +329,11 @@ set_bootnext_setup "$install_part"
   echo "sku=IoTEnterpriseLTSC"
   echo "method=wininstall-setup"
   echo "install_part=$install_part"
+  echo "windows_lba_partition_id=$win_part_id"
 } >"$MEDIA_READY"
 
 log "done — Setup media on wininstall (part $install_part); no USB/external media"
-log "next boot (BootNext): silent Setup → windows (GPT #4) → marker → reboot to NixOS"
+log "next boot (BootNext): silent Setup → windows (LBA #$win_part_id) → marker → reboot to NixOS"
 if [[ $AUTO_REBOOT == "1" ]]; then
   log "rebooting into Windows Setup now"
   systemctl reboot

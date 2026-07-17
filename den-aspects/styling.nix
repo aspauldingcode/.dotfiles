@@ -1314,10 +1314,17 @@ let
           };
 
         # ── GTK Theming ─────────────────────────────────────────────
+        # Prefer dconf color-scheme (Adwaita/libadwaita). Setting
+        # gtk-application-prefer-dark-theme makes xdg-desktop-portal-gnome warn.
         gtk = {
           gtk4.theme = lib.mkForce null;
           enable = lib.mkDefault (!isDarwin);
-          gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
+        };
+        dconf.settings = lib.mkIf (!isDarwin) {
+          "org/gnome/desktop/interface" = {
+            color-scheme =
+              if desiredVariant == "light" then "prefer-light" else "prefer-dark";
+          };
         };
 
         # ── Qt Theming (Linux only) ─────────────────────────────────

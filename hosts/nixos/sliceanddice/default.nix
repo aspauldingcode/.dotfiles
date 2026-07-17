@@ -140,7 +140,7 @@
 
       # Windows dual-boot: IoT Enterprise LTSC (bloatless). Partitions already
       # carved (ESP→nixos→windows→wininstall→swap→nixinstall). Bootstrap
-      # downloads ISO → wininstall → BootNext silent Setup → GPT #4.
+      # downloads ISO → wininstall → BootNext silent Setup → LBA windows part.
       dendritic.windows.enable = true;
       dendritic.windows.autoBootstrap = true;
 
