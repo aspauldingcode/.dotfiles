@@ -32,11 +32,16 @@
           util-linux
           parted
           e2fsprogs
+          gnugrep
+          gawk
+          coreutils
+          findutils
         ];
         excludeShellChecks = [
           "SC2086"
           "SC2046"
           "SC2034"
+          "SC2002"
         ];
         text = builtins.readFile ./pkgs/_dendritic-windows-label-gpt.sh;
       };
@@ -220,11 +225,11 @@
             };
             # /mnt/windows mount comes from disko.nix (PARTLABEL=windows, nofail).
 
+            # wininstall is often a RO NTFS/fuse mount — do not force owner/mode on it.
             systemd.tmpfiles.rules = [
               "d ${stateDir} 0750 root root -"
               "d ${cacheDir} 0750 root root -"
               "d ${cfg.mountPoint} 0755 root root -"
-              "d ${cfg.installMountPoint} 0755 root root -"
             ];
 
             # Ensure a password file exists before bootstrap (sops or generated).

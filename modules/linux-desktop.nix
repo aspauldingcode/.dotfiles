@@ -48,8 +48,9 @@
           environment.sessionVariables.FREETYPE_PROPERTIES = "cff:no-stem-darkening=0 autofitter:no-stem-darkening=0";
 
           environment.systemPackages = with pkgs; [
+            # GUIs only — niri masks their tray autostarts; waybar network → iwgtk.
             networkmanagerapplet # nm-connection-editor (profile editor)
-            iwgtk # iwd/NM Wi-Fi UI with Connect (waybar network click)
+            iwgtk # connect / manage Wi-Fi (waybar network on-click)
           ];
 
           services.printing.enable = true;
@@ -60,6 +61,11 @@
             alsa.support32Bit = lib.mkDefault pkgs.stdenv.hostPlatform.isx86;
             pulse.enable = true;
           };
+
+          # WirePlumber expects BlueZ when the adapter is present.
+          hardware.bluetooth.enable = true;
+          hardware.bluetooth.powerOnBoot = true;
+          services.blueman.enable = true;
 
           services.openssh.enable = lib.mkDefault true;
           networking.firewall.allowedTCPPorts = lib.mkDefault [ 22 ];

@@ -26,7 +26,8 @@
           <ModifyPartitions>
             <ModifyPartition wcm:action="add">
               <Order>1</Order>
-              <PartitionID>3</PartitionID>
+              <!-- GPT #4 = PARTLABEL=windows (nixinstall is #3 at end of disk). -->
+              <PartitionID>4</PartitionID>
               <Format>NTFS</Format>
               <Label>windows</Label>
               <Letter>C</Letter>
@@ -44,7 +45,7 @@
           </InstallFrom>
           <InstallTo>
             <DiskID>0</DiskID>
-            <PartitionID>3</PartitionID>
+            <PartitionID>4</PartitionID>
           </InstallTo>
           <InstallToAvailablePartition>false</InstallToAvailablePartition>
           <WillShowUI>OnError</WillShowUI>

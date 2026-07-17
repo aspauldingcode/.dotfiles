@@ -31,6 +31,13 @@
         system.defaults.finder.ShowPathbar = true;
         system.defaults.finder.ShowStatusBar = true;
         dendritic.theme.variant = lib.mkDefault "dark";
+        # HM owns apply; system flag documents intent (darwin wallpaper module is a stub).
+        dendritic.wallpaper.enable = true;
+        # Root launchd enforces Picture + JPEGPhoto across reboot.
+        dendritic.profilePhoto.enable = true;
+
+        # macrdp + socat :3389→13389 (Bonjour `_rdp._tcp` via HM agent).
+        dendritic.apps.macrdp.enable = true;
 
         documentation.enable = lib.mkForce false;
         documentation.man.enable = lib.mkForce false;
@@ -202,6 +209,9 @@
           dendritic.fleet.dotfilesRoot = "/etc/nix-darwin/.dotfiles";
           dendritic.mobile.enable = true;
           dendritic.wallpaper.enable = true;
+          dendritic.profilePhoto.enable = true;
+          dendritic.apps.macrdp.enable = true;
+          dendritic.apps.macrdp.bonjourName = "mba";
           dendritic.python.enable = true;
 
           # programs.zsh.shellAliases = {

@@ -10,7 +10,8 @@ if [[ ! -b $DISK ]]; then
   exit 1
 fi
 
-nparts="$(lsblk -nro NAME,TYPE "$DISK" | awk '$2=="part"{c++} END{print c+0}')"
+# Prefer bash counting — systemd PATH may lack awk even when gawk is a runtimeInput.
+nparts="$(lsblk -nro TYPE "$DISK" | grep -c '^part$' || true)"
 
 sgdisk -c 1:ESP "$DISK" >/dev/null
 sgdisk -c 2:nixos "$DISK" >/dev/null

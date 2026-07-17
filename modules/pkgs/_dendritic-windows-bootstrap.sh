@@ -41,7 +41,7 @@ if [[ ${DENDRITIC_WINDOWS_SELFTEST:-0} == "1" ]]; then
   grep -q '__DENDRITIC_IMAGE_INDEX__' "$UNATTEND_TEMPLATE" || die "image index placeholder missing"
   grep -q 'SkipMachineOOBE>true</SkipMachineOOBE>' "$UNATTEND_TEMPLATE" || die "missing SkipMachineOOBE"
   grep -q 'WillShowUI>Never</WillShowUI>' "$UNATTEND_TEMPLATE" || die "missing WillShowUI Never"
-  grep -q 'PartitionID>3</PartitionID>' "$UNATTEND_TEMPLATE" || die "missing InstallTo partition 3"
+  grep -q 'PartitionID>4</PartitionID>' "$UNATTEND_TEMPLATE" || die "missing InstallTo partition 4 (windows)"
   grep -q 'shutdown /r' "$UNATTEND_TEMPLATE" || die "missing post-specialize reboot"
   log "self-test OK"
   exit 0

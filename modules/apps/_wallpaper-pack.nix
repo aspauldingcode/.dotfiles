@@ -46,6 +46,17 @@ let
             "$out/wallpaper.png"
         ''}
 
+        # Pre-blur crop for gtklock glass card (runtime picks ≠ desktop wallpaper).
+        magick "$out/wallpaper.png" \
+          -auto-orient \
+          -resize '1920x1080^' \
+          -gravity center -extent 1920x1080 \
+          -scale 5% \
+          -gaussian-blur 0x1.4 \
+          -resize 1920x1080! \
+          -quality 92 \
+          PNG32:"$out/auth-blur.png"
+
         flavours generate dark  "$out/wallpaper.png" --stdout --slug ${escapeShellArg name}-dark  --name ${escapeShellArg name} > "$out/flavours-dark.yaml"
         flavours generate light "$out/wallpaper.png" --stdout --slug ${escapeShellArg name}-light --name ${escapeShellArg name} > "$out/flavours-light.yaml"
 
@@ -99,6 +110,7 @@ let
       wallpapers = mapAttrsToList (name: drv: {
         inherit name;
         image = "${drv}/wallpaper.png";
+        blur = "${drv}/auth-blur.png";
         schemes = {
           dark = "${drv}/scheme-dark.yaml";
           light = "${drv}/scheme-light.yaml";

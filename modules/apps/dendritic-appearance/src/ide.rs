@@ -52,6 +52,18 @@ pub fn patch_from_colors(colors: &Path) -> Result<usize, String> {
 
     let mut n = 0;
     for path in candidate_settings() {
+        // Skip HM/nix-store symlinks quietly (immutable).
+        if let Ok(meta) = std::fs::symlink_metadata(&path) {
+            if meta.file_type().is_symlink() {
+                if let Ok(target) = std::fs::read_link(&path) {
+                    if target.to_string_lossy().contains("/nix/store/") {
+                        continue;
+                    }
+                }
+            }
+        } else if !path.is_file() {
+            continue;
+        }
         if !path.is_file() {
             continue;
         }
@@ -77,7 +89,6 @@ pub fn patch_from_colors(colors: &Path) -> Result<usize, String> {
         } else {
             *existing = Value::Object(patch.clone());
         }
-        // Best-effort chmod + write; skip RO nix-managed files.
         #[cfg(unix)]
         {
             use std::os::unix::fs::PermissionsExt;
@@ -92,6 +103,9 @@ pub fn patch_from_colors(colors: &Path) -> Result<usize, String> {
             Ok(()) => {
                 eprintln!("dendritic-appearance: patched {}", path.display());
                 n += 1;
+            }
+            Err(e) if e.kind() == std::io::ErrorKind::PermissionDenied || e.raw_os_error() == Some(30) => {
+                // EROFS / EACCES — HM-managed; quiet.
             }
             Err(e) => eprintln!("dendritic-appearance: skip {}: {e}", path.display()),
         }

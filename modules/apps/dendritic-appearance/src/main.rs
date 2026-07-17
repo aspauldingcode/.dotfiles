@@ -8,6 +8,7 @@ mod linux;
 mod macos;
 
 mod activate;
+mod avatar;
 mod ide;
 mod machine;
 mod observe;
@@ -97,6 +98,27 @@ fn run() -> Result<(), i32> {
         }
         "wallpaper" => {
             let target = args.next().unwrap_or_else(|| "daily".into());
+            if target == "auth-path" || target == "resolve-auth" {
+                wallpaper::resolve_auth().map_err(|e| {
+                    eprintln!("{e}");
+                    1
+                })?;
+                return Ok(());
+            }
+            if target == "lock-path" || target == "resolve-lock" {
+                wallpaper::resolve_lock().map_err(|e| {
+                    eprintln!("{e}");
+                    1
+                })?;
+                return Ok(());
+            }
+            if target == "lock" {
+                wallpaper::apply_lock_only().map_err(|e| {
+                    eprintln!("{e}");
+                    1
+                })?;
+                return Ok(());
+            }
             let v = observe_host();
             wallpaper::apply(v, &target).map_err(|e| {
                 eprintln!("{e}");
@@ -131,6 +153,19 @@ fn run() -> Result<(), i32> {
             eprintln!("{e}");
             1
         }),
+        "avatar" => {
+            let sub = args.next().unwrap_or_else(|| "apply".into());
+            if sub != "apply" {
+                eprintln!("usage: dendritic-appearance avatar apply [--user NAME] [--image PATH]");
+                return Err(2);
+            }
+            let rest: Vec<String> = args.collect();
+            avatar::apply(&rest).map_err(|e| {
+                eprintln!("{e}");
+                1
+            })?;
+            Ok(())
+        }
         "help" | "-h" | "--help" => {
             print_help();
             Ok(())
@@ -200,7 +235,8 @@ dendritic-appearance — pure Rust light/dark state machine (no desync)
   set <light|dark>       Force host + global apply
   toggle                 Flip host + global apply
   apply [--variant V] [--wallpaper current|daily|next|NAME]
-  wallpaper <daily|next|NAME|current>
+  wallpaper <daily|next|NAME|current|lock|lock-path|auth-path>
+  avatar apply [--user NAME] [--image PATH]
   tint                   macOS accent/highlight from colors.toml
   status [--waybar]
   list-wallpapers

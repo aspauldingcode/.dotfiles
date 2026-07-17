@@ -98,12 +98,16 @@
       #   dendritic-os-switch [host]
       systemd.services."dendritic-os-switch@" = {
         description = "NixOS switch for flake host %i (NoNewPrivs / Cursor safe)";
+        # Manual only — never restart/stop mid-activation (nested switch deadlock).
+        restartIfChanged = false;
+        stopIfChanged = false;
         path = [
           pkgs.nh
           pkgs.nix
           pkgs.git
           pkgs.coreutils
           pkgs.bash
+          pkgs.util-linux
         ];
         serviceConfig = {
           Type = "oneshot";
@@ -115,8 +119,19 @@
           set -euo pipefail
           host="$1"
           flake="''${DENDRITIC_FLAKE:-/etc/nixos/.dotfiles}"
-          echo "dendritic-os-switch: nh os switch ''${flake}#''${host}"
-          exec nh os switch "''${flake}#''${host}"
+          # System unit runs as root. nh refuses root; nh-as-user cannot
+          # activate (polkit). Build as the flake owner (libgit2 ownership),
+          # then activate as root via switch-to-configuration.
+          echo "dendritic-os-switch: build ''${flake}#''${host} as alex; activate as root"
+          out="$(${pkgs.util-linux}/bin/runuser -u alex -- ${pkgs.nix}/bin/nix build \
+            --extra-experimental-features 'nix-command flakes' \
+            --print-out-paths --no-link \
+            "''${flake}#nixosConfigurations.''${host}.config.system.build.toplevel")"
+          echo "dendritic-os-switch: activating $out"
+          # Activation may stop this unit (definition changed) — ignore TERM so
+          # switch-to-configuration can finish; otherwise USB/etc fixes never land.
+          trap true TERM INT HUP
+          exec "$out/bin/switch-to-configuration" switch
         '';
       };
 

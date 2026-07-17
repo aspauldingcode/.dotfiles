@@ -118,6 +118,16 @@
       # After dendritic-reinstall (btrfs). Keep true only while still on live ext4.
       dendritic.disk.liveExt4Compat = false;
 
+      # System Stylix ← wallpaper pack (gtkgreet). gtklock picks a different pack entry at lock time.
+      dendritic.wallpaper.enable = true;
+
+      # Immutable account + gtk auth avatar (assets/profile_square.jpg).
+      dendritic.profilePhoto.enable = true;
+
+      # Wayland session RDP (lamco) + Bonjour/mDNS `_rdp._tcp` → sliceanddice.local
+      dendritic.apps.rdp.enable = true;
+      dendritic.apps.rdp.bonjourName = "sliceanddice";
+
       # Windows dual-boot media (after installer/disko creates partitions).
       # Keep disabled until nixinstall reinstall has carved windows/wininstall.
       dendritic.windows.enable = true;
@@ -257,6 +267,8 @@
         dendritic.fleet.dotfilesRoot = "/etc/nixos/.dotfiles";
         dendritic.python.enable = true;
         dendritic.wallpaper.enable = true;
+        dendritic.profilePhoto.enable = true;
+        dendritic.apps.rdp.enable = true;
 
         # niri user config: terminal → ghostty, launcher → fuzzel.
         dendritic.apps.niri.enable = true;

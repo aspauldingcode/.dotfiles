@@ -56,11 +56,13 @@
         let
           passPath = config.sops.secrets.gpg_passphrase.path;
           prevPassPath = config.sops.secrets.gpg_passphrase_previous.path;
+          keyPath = config.sops.secrets.gpg_private_key.path;
         in
         pkgs.writeShellScript "gpg-preset-from-sops" ''
           export PATH=${
             lib.makeBinPath [
               pkgs.coreutils
+              pkgs.util-linux
               pkgs.gnugrep
               pkgs.gawk
               pkgs.gnupg
@@ -70,6 +72,7 @@
           export GPG_PRESET_PASSPHRASE=${lib.escapeShellArg "${pkgs.gnupg}/libexec/gpg-preset-passphrase"}
           export DENDRITIC_GPG_PASSPHRASE_FILE=${lib.escapeShellArg passPath}
           export DENDRITIC_GPG_PASSPHRASE_PREVIOUS_FILE=${lib.escapeShellArg prevPassPath}
+          export DENDRITIC_GPG_PRIVATE_KEY_FILE=${lib.escapeShellArg keyPath}
           exec ${pkgs.bash}/bin/bash ${../../scripts/gpg-preset-from-sops.sh}
         '';
       syncPath = lib.makeBinPath [
@@ -684,9 +687,12 @@
                 "gpg-agent.service"
               ];
               Wants = [ "gpg-agent.service" ];
+              StartLimitIntervalSec = 120;
+              StartLimitBurst = 3;
             };
             Service = {
               Type = "oneshot";
+              TimeoutStartSec = "60";
               ExecStart = "${gpgPresetScript}";
             };
           };
@@ -699,11 +705,14 @@
             };
             Install.WantedBy = [ "timers.target" ];
           };
+          # Watch concrete secret files only — directory PathModified storms keyboxd.
+          # PathExists alone would fire on every path-unit start (trigger-limit).
           systemd.user.paths.gpg-preset-from-sops = {
             Unit.Description = "Re-preset GPG when sops secrets change";
             Path = {
-              PathModified = "${config.home.homeDirectory}/.config/sops-nix/secrets";
-              PathExists = config.sops.secrets.gpg_passphrase.path;
+              PathModified = config.sops.secrets.gpg_passphrase.path;
+              TriggerLimitIntervalSec = 120;
+              TriggerLimitBurst = 6;
             };
             Install.WantedBy = [ "default.target" ];
           };

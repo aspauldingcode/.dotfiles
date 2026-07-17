@@ -3,5 +3,10 @@ result
 *.pkg
 .cache/
 modules/apps/pass-store-tray/target/
-.cursor/
+.cursor/*
+# Track attribution lockdown (CLI + agent rule); rest of .cursor/ stays ignored.
+!.cursor/cli.json
+!.cursor/rules/
+!.cursor/rules/no-cursor-attribution.mdc
+
 modules/apps/dendritic-appearance/target/

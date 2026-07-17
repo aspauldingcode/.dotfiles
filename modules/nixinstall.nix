@@ -132,7 +132,10 @@
             config.nix.package
           ];
           unitConfig = {
-            ConditionPathExists = "!${stateDir}/ready";
+            ConditionPathExists = [
+              "!${stateDir}/ready"
+              cfg.flakeDir
+            ];
           };
           serviceConfig = {
             Type = "oneshot";
@@ -141,15 +144,20 @@
             # Built by the service at start so we don't eval installer at module time for every host.
             ExecStart = pkgs.writeShellScript "dendritic-nixinstall-bootstrap-wrap" ''
               set -euo pipefail
+              flake=${lib.escapeShellArg cfg.flakeDir}
+              if [ ! -e "$flake" ]; then
+                echo "dendritic-nixinstall: flake path missing ($flake); skipping" >&2
+                exit 0
+              fi
               echo "dendritic-nixinstall: building sliceanddice-installer toplevel…"
               # systemd runs as root; flake tree is owned by the interactive user.
               export HOME=/root
-              ${pkgs.git}/bin/git config --global --add safe.directory ${lib.escapeShellArg cfg.flakeDir} || true
-              top="$(nix build --no-link --print-out-paths ${lib.escapeShellArg cfg.flakeDir}#nixosConfigurations.sliceanddice-installer.config.system.build.toplevel)"
+              ${pkgs.git}/bin/git config --global --add safe.directory "$flake" || true
+              top="$(nix build --no-link --print-out-paths "$flake"#nixosConfigurations.sliceanddice-installer.config.system.build.toplevel)"
               export DENDRITIC_NIXINSTALL_DISK=${lib.escapeShellArg cfg.disk}
               export DENDRITIC_NIXINSTALL_MOUNT=${lib.escapeShellArg cfg.mountPoint}
               export DENDRITIC_NIXINSTALL_STATE=${lib.escapeShellArg stateDir}
-              export DENDRITIC_FLAKE_DIR=${lib.escapeShellArg cfg.flakeDir}
+              export DENDRITIC_FLAKE_DIR="$flake"
               export DENDRITIC_INSTALLER_TOPLEVEL="$top"
               export DENDRITIC_NIXINSTALL_SIZE_GIB=${toString cfg.sizeGiB}
               export DENDRITIC_NIXINSTALL_ESP=/boot

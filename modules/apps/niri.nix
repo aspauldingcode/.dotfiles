@@ -2,9 +2,10 @@
   # niri — scrollable-tiling Wayland compositor + rice (HM) and system
   # session (NixOS: programs.niri, greetd+gtkgreet, gtklock PAM, plumbing).
   #
-  # Coloring comes from the shared Stylix base16 palette; wallpaper is the
-  # same `stylix.image` (mountain-sunset). gtkgreet (login) and gtklock
-  # (session lock) share CSS from `_gtk-auth-style.nix`.
+  # Coloring comes from the shared Stylix base16 palette. gtkgreet and
+  # gtklock both use the *desktop-current* wallpaper (1:1) via runtime CSS
+  # placeholders + `/var/lib/dendritic/auth/current.tsv`. Chrome (avatar,
+  # buttons, fonts) comes from `_gtk-auth-style.nix`.
   #
   # niri does NOT merge a user config.kdl with its built-in defaults — a present
   # config fully replaces them — so the HM half defines a complete keymap + look.
@@ -19,14 +20,84 @@
     let
       cfg = config.dendritic.apps.niri;
       wallpaper = config.stylix.image or null;
+      wallpaperFallback = if wallpaper == null then "" else toString wallpaper;
+      # Same raster eye as HM gtklock so greetd/gtklock CSS stay aligned.
+      greetRevealIcon =
+        let
+          svg = "${pkgs.adwaita-icon-theme}/share/icons/Adwaita/symbolic/actions/view-reveal-symbolic.svg";
+          accent = config.lib.stylix.colors.withHashtag.base0D;
+        in
+        pkgs.runCommand "gtkgreet-reveal-eye.png"
+          {
+            nativeBuildInputs = [
+              pkgs.imagemagick
+              pkgs.librsvg
+            ];
+            preferLocalBuild = true;
+          }
+          ''
+            rsvg-convert -w 64 -h 64 -o "$out.tmp.png" ${lib.escapeShellArg svg}
+            magick "$out.tmp.png" -fill ${lib.escapeShellArg accent} -colorize 100 PNG32:"$out"
+            rm -f "$out.tmp.png"
+          '';
+      # Prefer declarative dendritic profile photo when enabled.
+      authAvatar =
+        if (config.dendritic.profilePhoto.enable or false) then
+          pkgs.runCommand "dendritic-auth-profile.jpg"
+            {
+              nativeBuildInputs = [ pkgs.imagemagick ];
+              src = config.dendritic.profilePhoto.source;
+            }
+            ''
+              magick "$src" \
+                -auto-orient -resize '512x512^' -gravity center -extent 512x512 \
+                -strip -quality 92 JPEG:"$out"
+            ''
+        else
+          null;
+      # Runtime wallpaper placeholders — filled by gtkgreet-auth from desktop current.
       authCss = import ../_gtk-auth-style.nix {
-        inherit lib pkgs wallpaper;
+        inherit lib pkgs;
         colors = config.lib.stylix.colors;
+        revealIcon = greetRevealIcon;
+        fontFamily = config.stylix.fonts.sansSerif.name or "Inter";
+        runtimeWallpaper = true;
+        wallpaper = null;
+        avatar = authAvatar;
       };
+      gtkgreetStyleTemplate = pkgs.writeText "gtkgreet-style.template.css" authCss;
       gtkgreet = pkgs.gtkgreet;
+      appearanceBin = lib.getExe (pkgs.callPackage ./dendritic-appearance/_package.nix { });
+      gtkgreetAuth = pkgs.writeShellScript "gtkgreet-auth" ''
+        set -euo pipefail
+        runtime="''${XDG_RUNTIME_DIR:-/tmp}"
+        css="$runtime/gtkgreet-style.css"
+        image=""
+        blur=""
+        if [ -r /var/lib/dendritic/auth/current.tsv ]; then
+          IFS=$'\t' read -r image blur < /var/lib/dendritic/auth/current.tsv || true
+        fi
+        if [ -z "''${image:-}" ] || [ ! -f "$image" ]; then
+          if paths="$(${appearanceBin} wallpaper auth-path 2>/dev/null | ${pkgs.coreutils}/bin/tail -n1)"; then
+            IFS=$'\t' read -r image blur <<< "$paths" || true
+          fi
+        fi
+        if [ -z "''${image:-}" ] || [ ! -f "$image" ]; then
+          image=${lib.escapeShellArg wallpaperFallback}
+          blur="$image"
+        fi
+        if [ -z "''${blur:-}" ] || [ ! -f "$blur" ]; then
+          blur="$image"
+        fi
+        ${pkgs.gnused}/bin/sed \
+          -e "s|__DENDRITIC_AUTH_WALLPAPER__|file://''${image}|g" \
+          -e "s|__DENDRITIC_AUTH_WALLPAPER_BLUR__|file://''${blur}|g" \
+          ${gtkgreetStyleTemplate} > "$css"
+        exec ${gtkgreet}/bin/gtkgreet -l -s "$css" "$@"
+      '';
       swayGreeterConfig = pkgs.writeText "greetd-sway-gtkgreet" ''
         # Minimal kiosk compositor for gtkgreet (desktop sway stays disabled).
-        exec "${gtkgreet}/bin/gtkgreet -l -s /etc/greetd/gtkgreet.css; ${pkgs.sway}/bin/swaymsg exit"
+        exec "${gtkgreetAuth}; ${pkgs.sway}/bin/swaymsg exit"
         bindsym Mod4+shift+e exec ${pkgs.sway}/bin/swaynag \
           -t warning \
           -m 'Power?' \
@@ -43,6 +114,33 @@
         # Desktop sway off; greeter still uses pkgs.sway as a kiosk binary.
         programs.sway.enable = lib.mkForce false;
 
+        # Greeter needs a real home (not /var/empty) so wireplumber/state can exist;
+        # we still mask portals/pipewire so the kiosk stays quiet.
+        users.users.greeter = {
+          home = "/var/lib/greeter";
+          createHome = true;
+        };
+
+        systemd.tmpfiles.rules = [
+          "d /var/lib/greeter 0755 greeter greeter -"
+          "d /var/lib/greeter/.config 0755 greeter greeter -"
+          "d /var/lib/greeter/.config/systemd 0755 greeter greeter -"
+          "d /var/lib/greeter/.config/systemd/user 0755 greeter greeter -"
+          "d /var/lib/dendritic/auth 0775 root users -"
+        ];
+
+        # Mask heavy desktop user units for the greeter kiosk session.
+        system.activationScripts.dendriticGreeterMasks.text = ''
+          maskdir=/var/lib/greeter/.config/systemd/user
+          mkdir -p "$maskdir"
+          for u in xdg-desktop-portal.service xdg-desktop-portal-gtk.service \
+                   xdg-desktop-portal-gnome.service pipewire.service \
+                   pipewire-pulse.service wireplumber.service; do
+            ln -sfn /dev/null "$maskdir/$u"
+          done
+          chown -R greeter:greeter /var/lib/greeter/.config 2>/dev/null || true
+        '';
+
         services.greetd = {
           enable = true;
           settings.default_session = {
@@ -54,6 +152,7 @@
         environment.etc."greetd/environments".text = ''
           niri-session
         '';
+        # Fallback baked CSS (placeholders unresolved) — live path uses gtkgreet-auth.
         environment.etc."greetd/gtkgreet.css".text = authCss;
 
         security.pam.services.gtklock = { };
@@ -99,6 +198,67 @@
         max="$(${lib.getExe pkgs.brightnessctl} -d "$d" m)"
         ${lib.getExe pkgs.brightnessctl} -d "$d" set $(( (cur + 1) % (max + 1) ))
       '';
+      # Waybar scroll + XF86 volume keys: adjust sink, then play the freedesktop
+      # volume-change click (same cue as GNOME/KDE volume sliders).
+      volumeAdjust =
+        let
+          click = "${pkgs.sound-theme-freedesktop}/share/sounds/freedesktop/stereo/audio-volume-change.oga";
+          wpctl = "${pkgs.wireplumber}/bin/wpctl";
+          # Detached player — must outlive waybar's scroll helper (SIGHUP on exit).
+          volumeClick = pkgs.writeShellScript "dendritic-volume-click" ''
+            set -eu
+            click=${lib.escapeShellArg click}
+            paplay=${lib.escapeShellArg "${pkgs.pulseaudio}/bin/paplay"}
+            pactl=${lib.escapeShellArg "${pkgs.pulseaudio}/bin/pactl"}
+            preferred=""
+            speaker=""
+            other=""
+            while IFS=$'\t' read -r _ name _; do
+              case "$name" in
+                *[Hh][Dd][Mm][Ii]*|*DisplayPort*|*SMI*|*Silicon_Motion*|*usb-*[Dd]isplay*)
+                  continue
+                  ;;
+                *[Ss]carlett*|*Focusrite*|*Headphones*|*Headphone*)
+                  preferred="$name"
+                  ;;
+                *[Ss]peaker*)
+                  speaker="$name"
+                  ;;
+                *)
+                  [ -n "$other" ] || other="$name"
+                  ;;
+              esac
+            done < <("$pactl" list short sinks 2>/dev/null || true)
+            target="''${preferred:-''${speaker:-$other}}"
+            if [ -z "$target" ]; then
+              # Last resort: whatever is currently default (may be silent USB display).
+              "$paplay" "$click" >/dev/null 2>&1 || true
+              exit 0
+            fi
+            "$paplay" -d "$target" "$click" >/dev/null 2>&1 || true
+          '';
+        in
+        pkgs.writeShellScript "dendritic-volume" ''
+          set -euo pipefail
+          case "''${1:-}" in
+            up)   ${wpctl} set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ ;;
+            down) ${wpctl} set-volume @DEFAULT_AUDIO_SINK@ 5%- ;;
+            mute) ${wpctl} set-mute @DEFAULT_AUDIO_SINK@ toggle ;;
+            *)
+              echo "usage: dendritic-volume up|down|mute" >&2
+              exit 2
+              ;;
+          esac
+          if [ "''${1}" = mute ]; then
+            if ${wpctl} get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null | ${pkgs.gnugrep}/bin/grep -q MUTED; then
+              exit 0
+            fi
+          fi
+          # systemd-run keeps the click alive after waybar's helper exits.
+          ${pkgs.systemd}/bin/systemd-run --user --quiet --collect \
+            --unit="dendritic-vol-click-$RANDOM" \
+            ${volumeClick}
+        '';
       # gtklock's reveal/conceal icons need Adwaita on the icon search path.
       # Force a raster eye into CSS too — SVG/`currentColor` symbolic lookup
       # often shows up as an empty/"missing font" box in GTK3 entries.
@@ -121,21 +281,115 @@
             magick "$out.tmp.png" -fill ${lib.escapeShellArg accent} -colorize 100 PNG32:"$out"
             rm -f "$out.tmp.png"
           '';
+      authAvatar =
+        if (config.dendritic.profilePhoto.enable or false) then
+          pkgs.runCommand "dendritic-auth-profile.jpg"
+            {
+              nativeBuildInputs = [ pkgs.imagemagick ];
+              src = config.dendritic.profilePhoto.source;
+            }
+            ''
+              magick "$src" \
+                -auto-orient -resize '512x512^' -gravity center -extent 512x512 \
+                -strip -quality 92 JPEG:"$out"
+            ''
+        else
+          null;
       authCss = import ../_gtk-auth-style.nix {
-        inherit lib pkgs wallpaper;
+        inherit lib pkgs;
         colors = config.lib.stylix.colors;
         revealIcon = gtklockRevealIcon;
+        fontFamily = config.stylix.fonts.sansSerif.name or "Inter";
+        # Wallpaper injected at lock time = desktop current (1:1).
+        runtimeWallpaper = true;
+        wallpaper = null;
+        avatar = authAvatar;
       };
-      gtklockStyle = pkgs.writeText "gtklock-style.css" authCss;
+      gtklockStyleTemplate = pkgs.writeText "gtklock-style.template.css" authCss;
       gtklockGtkConfig = pkgs.writeTextDir "gtk-3.0/settings.ini" ''
         [Settings]
         gtk-icon-theme-name=Adwaita
       '';
+      appearanceBin = lib.getExe (pkgs.callPackage ./dendritic-appearance/_package.nix { });
+      wallpaperFallback = if wallpaper == null then "" else toString wallpaper;
       lock = "${pkgs.writeShellScript "gtklock-auth" ''
+        set -euo pipefail
         export XDG_DATA_DIRS=${lib.escapeShellArg "${pkgs.adwaita-icon-theme}/share"}''${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}
         export XDG_CONFIG_HOME=${lib.escapeShellArg gtklockGtkConfig}
-        exec ${lib.getExe pkgs.gtklock} -s ${gtklockStyle} "$@"
+
+        runtime="''${XDG_RUNTIME_DIR:-/tmp}"
+        css="$runtime/gtklock-style.css"
+        image=""
+        blur=""
+        if [ -r /var/lib/dendritic/auth/current.tsv ]; then
+          IFS=$'\t' read -r image blur < /var/lib/dendritic/auth/current.tsv || true
+        fi
+        if [ -z "''${image:-}" ] || [ ! -f "$image" ]; then
+          if paths="$(${appearanceBin} wallpaper auth-path 2>/dev/null | ${pkgs.coreutils}/bin/tail -n1)"; then
+            IFS=$'\t' read -r image blur <<< "$paths" || true
+          fi
+        fi
+        if [ -z "''${image:-}" ] || [ ! -f "$image" ]; then
+          # Pack/daemon unavailable — fall back to stylix.image if present.
+          image=${lib.escapeShellArg wallpaperFallback}
+          blur="$image"
+        fi
+        if [ -z "''${blur:-}" ] || [ ! -f "$blur" ]; then
+          blur="$image"
+        fi
+
+        ${pkgs.gnused}/bin/sed \
+          -e "s|__DENDRITIC_AUTH_WALLPAPER__|file://''${image}|g" \
+          -e "s|__DENDRITIC_AUTH_WALLPAPER_BLUR__|file://''${blur}|g" \
+          ${gtklockStyleTemplate} > "$css"
+
+        # Block sleep while locked — gtklock is invisible to Wayland idle, so
+        # swayidle would otherwise queue suspend during the password prompt.
+        exec ${pkgs.systemd}/bin/systemd-inhibit \
+          --what=sleep --who=gtklock --why='session locked' --mode=block \
+          ${lib.getExe pkgs.gtklock} -s "$css" "$@"
       ''}";
+
+      # gtklock does not talk to the Wayland idle protocol, so swayidle keeps
+      # counting idle while the lock screen is up. At unlock the 900s timer is
+      # often already expired → suspend in the same second as unlock (bounce).
+      # Inhibit sleep for the whole lock; hold a post-unlock inhibit too.
+      idleSuspend =
+        let
+          graceSec = 180;
+          postUnlockInhibit = pkgs.writeShellScript "dendritic-post-unlock-inhibit" ''
+            exec ${pkgs.systemd}/bin/systemd-inhibit \
+              --what=sleep --who=dendritic --why='post-unlock grace' --mode=block \
+              ${pkgs.coreutils}/bin/sleep ${toString graceSec}
+          '';
+        in
+        {
+          mark = pkgs.writeShellScript "dendritic-suspend-grace-mark" ''
+            set -euo pipefail
+            runtime="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}"
+            ${pkgs.coreutils}/bin/date +%s >"$runtime/dendritic-suspend-grace"
+            ${lib.getExe pkgs.niri} msg action power-on-monitors >/dev/null 2>&1 || true
+            ${pkgs.procps}/bin/pkill -f 'dendritic-post-unlock-inhibit' 2>/dev/null || true
+            ${postUnlockInhibit} &
+          '';
+          suspend = pkgs.writeShellScript "dendritic-idle-suspend" ''
+            set -euo pipefail
+            # Never suspend while gtklock is up (idle timer lies during lock).
+            if ${pkgs.procps}/bin/pgrep -x gtklock >/dev/null 2>&1; then
+              exit 0
+            fi
+            runtime="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}"
+            grace="$runtime/dendritic-suspend-grace"
+            if [ -r "$grace" ]; then
+              ts="$(${pkgs.coreutils}/bin/cat "$grace" 2>/dev/null || echo 0)"
+              now="$(${pkgs.coreutils}/bin/date +%s)"
+              if [ $((now - ts)) -lt ${toString graceSec} ]; then
+                exit 0
+              fi
+            fi
+            exec ${pkgs.systemd}/bin/systemctl suspend
+          '';
+        };
 
       # Night-light toggle: wlsunset runs on an auto schedule (see
       # services.wlsunset below); this flips it on/off from the keyboard.
@@ -272,8 +526,9 @@
         };
         launcher = lib.mkOption {
           type = lib.types.str;
-          default = "fuzzel";
-          description = "Command niri spawns for the application launcher (Mod+D).";
+          default = "${pkgs.fuzzel}/bin/fuzzel";
+          defaultText = lib.literalExpression "\${pkgs.fuzzel}/bin/fuzzel";
+          description = "Command niri spawns for the application launcher (Mod+D). Absolute path preferred so systemd spawn works at teardown.";
         };
       };
 
@@ -286,7 +541,8 @@
 
         programs.waybar = {
           enable = true;
-          systemd.enable = false; # spawned by niri instead, for determinism
+          # Sole starter — do not also spawn-at-startup (that doubles the bar).
+          systemd.enable = true;
           settings.mainBar = {
             layer = "top";
             position = "top";
@@ -383,7 +639,10 @@
                 ];
               };
               on-click = "pavucontrol";
-              scroll-step = 5;
+              # Custom scrolls (built-in scroll-step is silent).
+              on-scroll-up = "${volumeAdjust} up";
+              on-scroll-down = "${volumeAdjust} down";
+              on-click-right = "${volumeAdjust} mute";
             };
             tray = {
               spacing = 10;
@@ -559,6 +818,7 @@
 
         # ── fuzzel (launcher) ─────────────────────────────────────────
         # Colors + font come from Stylix; we set the layout/geometry.
+        programs.fuzzel.enable = true;
         programs.fuzzel.settings = {
           main = {
             layer = "overlay";
@@ -592,7 +852,7 @@
           };
         };
 
-        # ── gtklock (matches gtkgreet login CSS; no HM module on this pin) ──
+        # ── gtklock (chrome matches gtkgreet; wallpaper = desktop via auth-path) ──
         home.packages = [
           nightToggle
           retinaScale
@@ -600,7 +860,7 @@
           pkgs.networkmanagerapplet # waybar network → nm-connection-editor
           pkgs.pavucontrol
         ];
-        xdg.configFile."gtklock/style.css".source = gtklockStyle;
+        # Style is written at lock time by gtklock-auth (placeholders → desktop current).
 
         # ── night light (wlsunset) ────────────────────────────────────
         # Auto colour-temperature schedule based on location (America/
@@ -619,10 +879,13 @@
         };
 
         # ── swayidle (lock + DPMS + suspend) ───────────────────────────
+        # Grace window on resume/unlock prevents unlock→instant-suspend bounce.
         services.swayidle = {
           enable = true;
           events = {
             before-sleep = lock;
+            after-resume = "${idleSuspend.mark}";
+            unlock = "${idleSuspend.mark}";
           };
           timeouts = [
             {
@@ -632,11 +895,12 @@
             {
               timeout = 360;
               command = "${lib.getExe pkgs.niri} msg action power-off-monitors";
+              resumeCommand = "${lib.getExe pkgs.niri} msg action power-on-monitors";
             }
             {
-              # Quiet when away: fans to zero via deep suspend (mem_sleep=deep).
+              # Quiet when away (s2idle — deep S3 breaks TB4 xHCI on this board).
               timeout = 900;
-              command = "${pkgs.systemd}/bin/systemctl suspend";
+              command = "${idleSuspend.suspend}";
             }
           ];
         };
@@ -711,7 +975,6 @@
 
           prefer-no-csd
 
-          spawn-at-startup "waybar"
           spawn-at-startup "mako"
           spawn-at-startup "dendritic-retina-scale"
           spawn-at-startup "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
@@ -756,7 +1019,7 @@
               Mod+Return { spawn "${cfg.terminal}"; }
               Mod+T { spawn "${cfg.terminal}"; }
               Mod+D { spawn "${cfg.launcher}"; }
-              Mod+V { spawn "sh" "-c" "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"; }
+              Mod+V { spawn "sh" "-c" "cliphist list | ${pkgs.fuzzel}/bin/fuzzel --dmenu | cliphist decode | wl-copy"; }
               Mod+Q { close-window; }
 
               Mod+Shift+Slash { show-hotkey-overlay; }
@@ -809,10 +1072,10 @@
               Mod+Comma { consume-window-into-column; }
               Mod+Period { expel-window-from-column; }
 
-              // Volume / mic (work while locked); capped so volume can't blow past 100%
-              XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "-l" "1.0" "@DEFAULT_AUDIO_SINK@" "0.05+"; }
-              XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.05-"; }
-              XF86AudioMute        allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+              // Volume / mic (work while locked); audible click on change
+              XF86AudioRaiseVolume allow-when-locked=true { spawn "${volumeAdjust}" "up"; }
+              XF86AudioLowerVolume allow-when-locked=true { spawn "${volumeAdjust}" "down"; }
+              XF86AudioMute        allow-when-locked=true { spawn "${volumeAdjust}" "mute"; }
               XF86AudioMicMute     allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
 
               // Brightness (work while locked)

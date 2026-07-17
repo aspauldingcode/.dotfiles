@@ -176,6 +176,19 @@ fi
 
 log "done (${count} file(s), ${warn_count} warning(s))"
 
+# Single sentinel touches for systemd.path units (avoid PathModified storms on
+# every .psk write). Ensure scripts below still run directly for sync hooks.
+wifi_dir="${HOME_DIR}/.config/dendritic/wifi"
+eduroam_dir="${wifi_dir}/eduroam"
+if compgen -G "${wifi_dir}/*.psk" >/dev/null 2>&1; then
+  mkdir -p "$wifi_dir"
+  : >"${wifi_dir}/.ready"
+fi
+if [[ -e ${eduroam_dir}/password ]]; then
+  mkdir -p "$eduroam_dir"
+  : >"${eduroam_dir}/.ready"
+fi
+
 # Optional: apply Wi-Fi profiles after PSK materialize (dendritic.wifi).
 if command -v dendritic-wifi-ensure >/dev/null 2>&1; then
   dendritic-wifi-ensure || warn "dendritic-wifi-ensure failed"

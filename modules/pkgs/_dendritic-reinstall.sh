@@ -130,8 +130,37 @@ mount -t btrfs -o "subvol=@home,$btrfs_opts" /dev/disk/by-partlabel/nixos /mnt/h
 mount -t btrfs -o "subvol=@log,$btrfs_opts" /dev/disk/by-partlabel/nixos /mnt/var/log
 mount /dev/disk/by-partlabel/ESP /mnt/boot
 
-log "nixos-install $FLAKE#$TARGET_ATTR (liveExt4Compat must be false in flake)"
-nixos-install --flake "$FLAKE#$TARGET_ATTR" --root "$DISK_ROOT" --no-root-password --no-channel-copy
+# Build into the target store — never the 8G nixinstall root (ENOSPC + OOM).
+mkdir -p "$DISK_ROOT/tmp"
+export TMPDIR="$DISK_ROOT/tmp" TMP="$DISK_ROOT/tmp" TEMP="$DISK_ROOT/tmp"
+export NIX_BUILD_CORES="${NIX_BUILD_CORES:-2}"
+
+# Temporary swap on btrfs (nodatacow) so flake eval/builds survive 16G RAM.
+build_swap="$DISK_ROOT/build-swap"
+if [[ ! -f $build_swap ]]; then
+  log "creating 16G nodatacow build-swap on target"
+  truncate -s 0 "$build_swap"
+  chattr +C "$build_swap" 2>/dev/null || true
+  fallocate -l 16G "$build_swap"
+  chmod 600 "$build_swap"
+  mkswap "$build_swap"
+fi
+swapon "$build_swap" 2>/dev/null || true
+swapon /dev/disk/by-partlabel/swap 2>/dev/null || true
+
+log "nix build $FLAKE#$TARGET_ATTR → store=$DISK_ROOT (max-jobs=1 cores=$NIX_BUILD_CORES)"
+top="$(nix build --store "$DISK_ROOT" --no-link --print-out-paths \
+  --max-jobs 1 \
+  --cores "$NIX_BUILD_CORES" \
+  --option builders-use-substitutes true \
+  "$FLAKE#nixosConfigurations.${TARGET_ATTR}.config.system.build.toplevel")"
+log "toplevel=$top"
+
+log "nixos-install --system (liveExt4Compat must be false in flake)"
+nixos-install --system "$top" --root "$DISK_ROOT" --no-root-password --no-channel-copy
+
+swapoff "$build_swap" 2>/dev/null || true
+rm -f "$build_swap"
 
 log "vault-restore into $DISK_ROOT"
 dendritic-vault-restore "$DISK_ROOT" || die "vault-restore failed"

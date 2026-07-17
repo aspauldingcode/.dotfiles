@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Strip Cursor agent attribution that cursor-agent-exec may inject into commits.
+# Observed payloads (Cursor 3.9.x cursor-agent-exec):
+#   --trailer "Co-authored-by: Cursor <cursoragent@cursor.com>"
+#   Made-with: Cursor
+#   Made with [Cursor](https://cursor.com)  (PR bodies; also strip if present)
+# Install: git config core.hooksPath .githooks
+set -euo pipefail
+msg_file="${1:-}"
+[[ -n $msg_file && -f $msg_file ]] || exit 0
+
+tmp="$(mktemp)"
+# Drop Cursor credit lines (any casing) and blank-only leftovers from stripping.
+grep -viE \
+  -e '^[[:space:]]*Co-authored-by:[[:space:]]*Cursor([[:space:]]|$|<)' \
+  -e '^[[:space:]]*Made-with:[[:space:]]*Cursor' \
+  -e 'cursoragent@cursor\.com' \
+  -e 'Made with \[Cursor\]\(https://cursor\.com\)' \
+  "$msg_file" >"$tmp" || true
+# Trim trailing blank lines
+python3 - "$tmp" "$msg_file" <<'PY'
+import sys
+src, dst = sys.argv[1], sys.argv[2]
+text = open(src, encoding="utf-8", errors="replace").read()
+text = text.rstrip() + ("\n" if text.strip() else "")
+open(dst, "w", encoding="utf-8").write(text)
+PY
+rm -f "$tmp"

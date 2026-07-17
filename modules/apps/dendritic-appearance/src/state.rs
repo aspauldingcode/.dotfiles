@@ -146,16 +146,30 @@ pub fn read_wallpaper_variant() -> Option<Variant> {
     Variant::parse(v.get("variant")?.as_str()?)
 }
 
-pub fn write_wallpaper_state(name: &str, image: &str, variant: Variant, mode: &str, index: usize) {
+pub fn write_wallpaper_state(
+    name: &str,
+    image: &str,
+    variant: Variant,
+    mode: &str,
+    index: usize,
+    lock_name: Option<&str>,
+    lock_image: Option<&str>,
+) {
     let _ = std::fs::create_dir_all(user_state_dir());
-    let obj = serde_json::json!({
+    let mut obj = serde_json::json!({
         "name": name,
         "image": image,
         "variant": variant.as_str(),
         "mode": mode,
         "index": index,
-        "applied": chrono_secs(),
+        "applied": now_secs(),
     });
+    if let Some(n) = lock_name {
+        obj["lock_name"] = serde_json::json!(n);
+    }
+    if let Some(i) = lock_image {
+        obj["lock_image"] = serde_json::json!(i);
+    }
     let _ = std::fs::write(
         wallpaper_state_path(),
         serde_json::to_string_pretty(&obj).unwrap_or_default(),
@@ -169,7 +183,7 @@ pub fn write_phase_snapshot(status: &impl Serialize) {
     }
 }
 
-fn chrono_secs() -> String {
+fn now_secs() -> String {
     use std::time::{SystemTime, UNIX_EPOCH};
     let secs = SystemTime::now()
         .duration_since(UNIX_EPOCH)

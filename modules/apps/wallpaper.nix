@@ -5,6 +5,9 @@
 #   2. Runtime: pure-Rust `dendritic-appearance wallpaper …` (no bash/python).
 #   3. Hot-reload: ~/colors.toml + IDE settings watchers pick up the palette.
 #   4. Stylix: when themeFromImage, base16Scheme = selected wallpaper's scheme.
+#   5. Lock ≠ desktop (same rule both platforms):
+#        macOS  → Idle nodes in com.apple.wallpaper Index.plist
+#        NixOS  → gtklock scrapes `wallpaper lock-path` at lock time
 #
 # gowall: optional manual tint tool — not used by the daily cycle.
 #
@@ -76,14 +79,15 @@
     in
     {
       options.dendritic.wallpaper = {
-        enable = lib.mkEnableOption "Declarative cross-platform wallpaper + daily palette cycle";
+        enable = lib.mkEnableOption "Declarative cross-platform wallpaper + daily palette cycle (desktop + lock)";
 
         selected = lib.mkOption {
           type = lib.types.str;
-          default = "mountain-sunset";
+          default = "moonscape";
           description = ''
             Wallpaper used for Stylix build-time scheme injection (themeFromImage).
-            Daily cycle still rotates the full pack at runtime.
+            Daily cycle still rotates the full pack at runtime. Lockscreen picks a
+            different pack entry via dendritic-appearance (not the desktop current).
           '';
         };
 
@@ -248,15 +252,115 @@
       );
     };
 
-  # Host-level enable stubs (actual work is HM).
+  # Host-level: sync Stylix image+scheme (chrome tokens) from the pack.
+  # Linux gtkgreet/gtklock use desktop-current wallpaper at runtime (auth-path).
   flake.modules.darwin.dendritic =
     { lib, ... }:
     {
-      options.dendritic.wallpaper.enable = lib.mkEnableOption "Wallpaper management";
+      # Option mirror only — HM `dendritic.wallpaper.enable` owns pack, daily
+      # desktop (macos-wallpaper), and lock (Idle Index.plist) on Darwin.
+      options.dendritic.wallpaper.enable = lib.mkEnableOption "Wallpaper management (desktop + lock)";
     };
   flake.modules.nixos.dendritic =
-    { lib, ... }:
     {
-      options.dendritic.wallpaper.enable = lib.mkEnableOption "Wallpaper management";
+      pkgs,
+      lib,
+      config,
+      ...
+    }:
+    let
+      cfg = config.dendritic.wallpaper;
+      variant = config.dendritic.theme.variant;
+
+      localWallpapersDir = ../../wallpapers;
+      localFiles =
+        if builtins.pathExists localWallpapersDir then builtins.readDir localWallpapersDir else { };
+      isImage =
+        name:
+        lib.any (ext: lib.hasSuffix ext name) [
+          ".png"
+          ".jpg"
+          ".jpeg"
+          ".webp"
+        ];
+      localImages = lib.filterAttrs (name: type: type == "regular" && isImage name) localFiles;
+      localDatabase = lib.mapAttrs' (name: _: {
+        name = lib.removeSuffix ".webp" (
+          lib.removeSuffix ".jpeg" (lib.removeSuffix ".jpg" (lib.removeSuffix ".png" name))
+        );
+        value = localWallpapersDir + "/${name}";
+      }) localImages;
+
+      artwork = pkgs.nixos-artwork.wallpapers;
+      curatedDatabase = {
+        nineish = artwork.nineish.gnomeFilePath;
+        nineish-dark-gray = artwork.nineish-dark-gray.gnomeFilePath;
+        nineish-solarized-dark = artwork.nineish-solarized-dark.gnomeFilePath;
+        nineish-solarized-light = artwork.nineish-solarized-light.gnomeFilePath;
+        simple-dark-gray = artwork.simple-dark-gray.gnomeFilePath;
+        simple-light-gray = artwork.simple-light-gray.gnomeFilePath;
+        mosaic-blue = artwork.mosaic-blue.gnomeFilePath;
+        stripes = artwork.stripes.gnomeFilePath;
+        gradient-grey = artwork.gradient-grey.gnomeFilePath;
+        waterfall = artwork.waterfall.gnomeFilePath;
+        moonscape = artwork.moonscape.gnomeFilePath;
+        catppuccin-mocha = artwork.catppuccin-mocha.gnomeFilePath;
+        catppuccin-latte = artwork.catppuccin-latte.gnomeFilePath;
+        dracula = artwork.dracula.gnomeFilePath;
+      };
+
+      database = curatedDatabase // localDatabase // cfg.extraDatabase;
+
+      pack = import ./_wallpaper-pack.nix {
+        inherit pkgs lib;
+        wallpapers = database;
+        effects = cfg.effects;
+      };
+
+      selectedEntry = "${pack}/wallpapers/${cfg.selected}";
+      selectedScheme = "${selectedEntry}/scheme-${variant}.yaml";
+      selectedImage = "${selectedEntry}/wallpaper.png";
+    in
+    {
+      options.dendritic.wallpaper = {
+        enable = lib.mkEnableOption "Declarative wallpaper + Stylix sync (greetd/gtkgreet); lock via gtklock";
+
+        selected = lib.mkOption {
+          type = lib.types.str;
+          default = "moonscape";
+          description = "Wallpaper for system Stylix / gtkgreet (from wallpaper pack).";
+        };
+
+        extraDatabase = lib.mkOption {
+          type = lib.types.attrsOf lib.types.path;
+          default = { };
+        };
+
+        themeFromImage = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+        };
+
+        effects = {
+          enable = lib.mkEnableOption "Build-time vignette";
+          vignette = lib.mkOption {
+            type = lib.types.str;
+            default = "0x40";
+          };
+        };
+      };
+
+      config = lib.mkIf cfg.enable {
+        assertions = [
+          {
+            assertion = database ? ${cfg.selected};
+            message = "dendritic.wallpaper.selected '${cfg.selected}' not in wallpaper database";
+          }
+        ];
+
+        # Same pack image + flavours scheme as HM → gtkgreet theming.
+        stylix.image = lib.mkForce selectedImage;
+        stylix.base16Scheme = lib.mkIf cfg.themeFromImage (lib.mkOverride 40 selectedScheme);
+      };
     };
 }

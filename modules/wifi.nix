@@ -451,7 +451,14 @@
                   log "linux: ensured $ssid"
                 done
 
-                nmcli connection reload 2>/dev/null || true
+                # Prefer root reload — unprivileged D-Bus ReloadConnections is polkit-denied.
+                if command -v sudo >/dev/null 2>&1; then
+                  sudo -n ${pkgs.networkmanager}/bin/nmcli connection reload 2>/dev/null \
+                    || ${pkgs.networkmanager}/bin/nmcli connection reload 2>/dev/null \
+                    || true
+                else
+                  ${pkgs.networkmanager}/bin/nmcli connection reload 2>/dev/null || true
+                fi
       '';
     in
     {
@@ -515,17 +522,25 @@
 
         systemd.user.paths.dendritic-wifi-ensure = lib.mkIf pkgs.stdenv.isLinux {
           Unit.Description = "Watch dendritic Wi-Fi PSK directory";
-          Path.PathModified = wifiDir;
-          Path.DirectoryNotEmpty = wifiDir;
-          Install.WantedBy = [ "default.target" ];
-        };
-        systemd.user.services.dendritic-wifi-ensure = lib.mkIf pkgs.stdenv.isLinux {
-          Unit.Description = "Ensure declarative Wi-Fi profiles via NetworkManager/iwd";
-          Service = {
-            Type = "oneshot";
-            ExecStart = "${ensureBin}/bin/dendritic-wifi-ensure";
+          Path = {
+            # Sentinel from pass-secretspec-materialize (not every .psk write).
+            PathModified = "${wifiDir}/.ready";
+            TriggerLimitIntervalSec = 120;
+            TriggerLimitBurst = 6;
           };
           Install.WantedBy = [ "default.target" ];
+        };
+        # Path unit + HM activation start this — no WantedBy (avoids start-limit storms).
+        systemd.user.services.dendritic-wifi-ensure = lib.mkIf pkgs.stdenv.isLinux {
+          Unit = {
+            Description = "Ensure declarative Wi-Fi profiles via NetworkManager/iwd";
+            StartLimitIntervalSec = 120;
+            StartLimitBurst = 3;
+          };
+          Service = {
+            Type = "oneshot";
+            ExecStart = "${pkgs.util-linux}/bin/flock -n %t/dendritic-wifi-ensure.lock ${ensureBin}/bin/dendritic-wifi-ensure";
+          };
         };
 
         launchd.agents.dendritic-wifi-ensure = lib.mkIf pkgs.stdenv.isDarwin {
@@ -534,7 +549,7 @@
             Label = "com.dendritic.wifi-ensure";
             ProgramArguments = [ "${ensureBin}/bin/dendritic-wifi-ensure" ];
             RunAtLoad = true;
-            WatchPaths = [ wifiDir ];
+            WatchPaths = [ "${wifiDir}/.ready" ];
             StandardOutPath = "${config.home.homeDirectory}/.cache/dendritic-wifi-ensure.log";
             StandardErrorPath = "${config.home.homeDirectory}/.cache/dendritic-wifi-ensure.err.log";
           };

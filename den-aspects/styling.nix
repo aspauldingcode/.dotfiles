@@ -81,7 +81,8 @@ let
             slug = "stylix";
             scheme = "stylix";
           };
-          image = lib.mkDefault ../wallpapers/mountain-sunset.png;
+          # Prefer curated nixos-artwork; dendritic.wallpaper overrides when enabled.
+          image = lib.mkDefault pkgs.nixos-artwork.wallpapers.moonscape.gnomeFilePath;
 
           targets.vscode.enable = true;
           targets.ghostty.enable = true;
@@ -1411,7 +1412,8 @@ in
             slug = "stylix";
             scheme = "stylix";
           };
-          image = lib.mkDefault ../wallpapers/mountain-sunset.png;
+          # Prefer curated nixos-artwork; dendritic.wallpaper overrides when enabled.
+          image = lib.mkDefault pkgs.nixos-artwork.wallpapers.moonscape.gnomeFilePath;
 
           fonts = {
             monospace = {

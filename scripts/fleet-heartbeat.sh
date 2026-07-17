@@ -99,9 +99,18 @@ body="$(jq -nc \
   --arg sha "$sha" \
   'if $sha != "" then {message:$msg, content:$content, sha:$sha} else {message:$msg, content:$content} end')"
 
-if ! printf '%s' "$body" | gh api --method PUT "$api" --input - >/dev/null; then
+put_err="$(mktemp)"
+if ! printf '%s' "$body" | gh api --method PUT "$api" --input - >/dev/null 2>"$put_err"; then
+  if grep -qiE 'rate limit|API rate limit|HTTP 403' "$put_err"; then
+    warn "GitHub API rate-limited; skipping PUT ${PATH_IN_REPO}"
+    rm -f "$put_err"
+    exit 0
+  fi
+  cat "$put_err" >&2 || true
+  rm -f "$put_err"
   die "failed to PUT ${PATH_IN_REPO}"
 fi
+rm -f "$put_err"
 
 log "ok ${HOST_ID} tip=${flake_rev} seen_at=${seen_at}"
 exit 0

@@ -1,28 +1,28 @@
 # Shared GTK CSS for gtkgreet (login) and gtklock (session lock).
 #
-# Concentric corner radius (same model as waybar islands):
-#   r_outer = r_inner + gap
-# Arc centers share one origin so inset thickness stays constant through the
-# curve. GTK3 has no CSS custom properties, so radii are computed in Nix.
-# Refs: bettercorners.io, Cloud Four nested radii, Apple ConcentricRectangle.
+# Identical surface language on both apps:
+#   gtkgreet glass → box#body   (upstream greetd docs)
+#   gtklock  glass → #window-box
+# Wallpaper is desktop-current 1:1 on both (runtime placeholders or baked).
+# Stylix base16 + fonts + optional profile avatar are shared chrome.
 #
-# Wallpaper blur: GTK3 has no `backdrop-filter`, so we pre-blur the Stylix
-# wallpaper with ImageMagick (downsample → blur → upsample = frosted look)
-# and paint that into the glass panel. Window keeps the sharp image + scrim.
+# Design: "dendritic glass" — full-bleed wallpaper, one floating frosted
+# card, accent hairline, soft pill controls. GTK3 has no backdrop-filter,
+# so the card fill is a pre-blurred wallpaper crop.
+# Do NOT use text-transform — gtklock rejects the whole stylesheet.
+# Do NOT use non-standard font-weight (e.g. 650) — GTK3 CSS only accepts
+# keyword weights or the classic 100…900 hundreds.
 #
-# GTK3 gotchas this file works around:
-#   - Theme `background-image` / `border-image` paint over `background-color`
-#     and ignore radius → square “ghost” corners. Always clear both.
-#   - Outer `box-shadow` is not clipped to `border-radius` → halo at corners.
-#     No elevation/focus rings via shadow on controls; use border color only.
-#   - Separate `decoration` nodes stay square unless given the same radius
-#     (same bug as Waybar tooltips).
+# Concentric corners: r_panel = r_control + panelGap.
 #
 # Call as:
 #   (import ./_gtk-auth-style.nix) {
 #     inherit lib pkgs wallpaper;
 #     colors = config.lib.stylix.colors;
-#     revealIcon = "/nix/store/.../view-reveal-symbolic.svg"; # optional
+#     revealIcon = "/nix/store/.../eye.png"; # optional
+#     fontFamily = "Inter";                  # optional
+#     runtimeWallpaper = true;               # gtklock: __DENDRITIC_AUTH_*__
+#     avatar = "/nix/store/.../profile.jpg"; # optional circular photo
 #   }
 {
   lib,
@@ -30,31 +30,27 @@
   colors,
   wallpaper ? null,
   revealIcon ? null,
+  fontFamily ? "Inter",
+  # When true, CSS uses placeholders substituted by gtklock-auth at lock time.
+  runtimeWallpaper ? false,
+  avatar ? null,
 }:
 let
-  # ── Concentric radius tokens ────────────────────────────────────────
-  # Inner controls define the base curve; the glass panel grows outward
-  # by its (uniform) padding so corners stay concentric.
-  controlRadius = 10;
-  panelGap = 16;
-  panelRadius = controlRadius + panelGap; # 26
-
-  # Secondary nest: message / error chips inside the panel.
-  chipGap = 6;
+  controlRadius = 14;
+  panelGap = 22;
+  panelRadius = controlRadius + panelGap; # 36
+  chipGap = 8;
   chipRadius = lib.max 0 (controlRadius - chipGap);
+  avatarSize = 88;
 
   px = n: "${toString n}px";
-
   hex = name: "#${colors.${name}}";
-  # `alpha` is a string (e.g. "0.55") so CSS stays clean — Nix floats print noisy.
   rgba =
     name: alpha:
     "rgba(${colors."${name}-rgb-r"}, ${colors."${name}-rgb-g"}, ${colors."${name}-rgb-b"}, ${alpha})";
 
-  # Frosted backdrop stand-in for the glass card. Heavy downsample + light
-  # blur + upsample approximates a stack blur without a huge build cost.
   wallpaperBlur =
-    if wallpaper == null then
+    if runtimeWallpaper || wallpaper == null then
       null
     else
       pkgs.runCommand "gtk-auth-wallpaper-blur.png"
@@ -66,53 +62,121 @@ let
             -auto-orient \
             -resize '1920x1080^' \
             -gravity center -extent 1920x1080 \
-            -scale 6% \
-            -gaussian-blur 0x1.2 \
+            -scale 5% \
+            -gaussian-blur 0x1.4 \
             -resize 1920x1080! \
             -quality 92 \
             PNG32:"$out"
         '';
 
+  wallpaperUrl =
+    if runtimeWallpaper then
+      "__DENDRITIC_AUTH_WALLPAPER__"
+    else if wallpaper == null then
+      null
+    else
+      "file://${toString wallpaper}";
+
+  wallpaperBlurUrl =
+    if runtimeWallpaper then
+      "__DENDRITIC_AUTH_WALLPAPER_BLUR__"
+    else if wallpaperBlur == null then
+      null
+    else
+      "file://${toString wallpaperBlur}";
+
+  # Circular crop via ImageMagick for GTK CSS border-radius friendliness.
+  avatarRound =
+    if avatar == null then
+      null
+    else
+      pkgs.runCommand "dendritic-auth-avatar.png"
+        {
+          nativeBuildInputs = [ pkgs.imagemagick ];
+        }
+        ''
+          magick ${lib.escapeShellArg (toString avatar)} \
+            -auto-orient \
+            -resize '${toString avatarSize}x${toString avatarSize}^' \
+            -gravity center -extent ${toString avatarSize}x${toString avatarSize} \
+            \( +clone -size ${toString avatarSize}x${toString avatarSize} xc:none \
+               -fill white -draw 'circle ${toString (avatarSize / 2)},${toString (avatarSize / 2)} ${toString (avatarSize / 2)},1' \) \
+            -alpha off -compose CopyOpacity -composite \
+            PNG32:"$out"
+        '';
+
+  avatarRoundUrl = if avatarRound == null then null else "file://${toString avatarRound}";
+
+  # Room: sharp wallpaper + deep vignette so the card reads as the hero.
   wallpaperLayer =
-    if wallpaper == null then
+    if wallpaperUrl == null then
       "background-color: ${hex "base00"};"
     else
       ''
         background-image:
-          linear-gradient(
-            ${rgba "base00" "0.42"},
-            ${rgba "base00" "0.58"}
+          radial-gradient(
+            ellipse 90% 70% at 50% 42%,
+            ${rgba "base00" "0.18"} 0%,
+            ${rgba "base00" "0.62"} 70%,
+            ${rgba "base00" "0.82"} 100%
           ),
-          url("file://${toString wallpaper}");
+          url("${wallpaperUrl}");
         background-size: cover, cover;
         background-position: center, center;
         background-repeat: no-repeat, no-repeat;
         background-color: ${hex "base00"};
       '';
 
-  # Blurred wallpaper under a light frosted tint. Tint stays low so the
-  # blur reads through; border-radius clips the image to the card.
+  # Card: frosted blur crop + translucent Stylix wash + accent top edge.
+  # Optional avatar layered at the top center of the glass card.
   panelBackground =
-    if wallpaperBlur == null then
+    if wallpaperBlurUrl == null && avatarRoundUrl == null then
       ''
-        background-color: ${rgba "base01" "0.88"};
+        background-color: ${rgba "base01" "0.90"};
         background-image: none;
       ''
-    else
+    else if avatarRoundUrl == null then
       ''
-        background-color: ${rgba "base01" "0.35"};
+        background-color: ${rgba "base01" "0.28"};
         background-image:
           linear-gradient(
-            ${rgba "base01" "0.48"},
-            ${rgba "base00" "0.55"}
+            165deg,
+            ${rgba "base01" "0.55"} 0%,
+            ${rgba "base00" "0.62"} 55%,
+            ${rgba "base00" "0.72"} 100%
           ),
-          url("file://${toString wallpaperBlur}");
+          url("${wallpaperBlurUrl}");
         background-size: cover, cover;
         background-position: center, center;
         background-repeat: no-repeat, no-repeat;
+      ''
+    else if wallpaperBlurUrl == null then
+      ''
+        background-color: ${rgba "base01" "0.90"};
+        background-image: url("${avatarRoundUrl}");
+        background-size: ${px avatarSize} ${px avatarSize};
+        background-position: center ${px panelGap};
+        background-repeat: no-repeat;
+      ''
+    else
+      ''
+        background-color: ${rgba "base01" "0.28"};
+        background-image:
+          url("${avatarRoundUrl}"),
+          linear-gradient(
+            165deg,
+            ${rgba "base01" "0.55"} 0%,
+            ${rgba "base00" "0.62"} 55%,
+            ${rgba "base00" "0.72"} 100%
+          ),
+          url("${wallpaperBlurUrl}");
+        background-size: ${px avatarSize} ${px avatarSize}, cover, cover;
+        background-position: center ${px panelGap}, center, center;
+        background-repeat: no-repeat, no-repeat, no-repeat;
       '';
 
-  # Shared reset for anything that themes paint with images/shadows.
+  panelPaddingTop = if avatarRoundUrl == null then panelGap else panelGap + avatarSize + 16;
+
   controlReset = ''
     background-image: none;
     border-image: none;
@@ -121,32 +185,56 @@ let
     outline: none;
     outline-offset: 0;
   '';
+
+  # Shared glass card — MUST target both app roots.
+  glassPanel = ''
+    ${panelBackground}
+    border: 1px solid ${rgba "base05" "0.16"};
+    border-top: 1px solid ${rgba "base0D" "0.55"};
+    border-radius: ${px panelRadius};
+    padding: ${px panelPaddingTop} ${px (panelGap + 6)} ${px panelGap} ${px (panelGap + 6)};
+    min-width: 320px;
+    box-shadow:
+      0 1px 0 ${rgba "base07" "0.06"} inset,
+      0 18px 48px ${rgba "base00" "0.55"},
+      0 0 0 1px ${rgba "base00" "0.25"};
+  '';
 in
 ''
-  /* ── Session auth surfaces (gtkgreet + gtklock) ───────────────────── */
+  /* ── Dendritic glass: gtkgreet + gtklock (identical tokens) ───────── */
 
   window {
     ${wallpaperLayer}
     color: ${hex "base05"};
-    font-family: Inter, sans-serif;
+    font-family: ${fontFamily}, "SF Pro Display", "Segoe UI", sans-serif;
     font-size: 14px;
   }
 
-  /* Glass panel — sharp room + pre-blurred wallpaper fill (no backdrop-filter). */
-  box#window,
-  #window-box {
-    ${panelBackground}
-    border: 1px solid ${rgba "base05" "0.14"};
-    border-radius: ${px panelRadius};
-    padding: ${px panelGap};
-    /* Soft drop only — large surface, less visible corner bleed than
-       control-sized shadows. Keep spread modest. */
-    box-shadow: 0 12px 32px ${rgba "base00" "0.40"};
+  window.focused {
+    /* no-op hook for multi-monitor gtklock focus class */
   }
 
-  /* gtkgreet: #body sits inside box#window — never double-glass. */
+  window.hidden {
+    opacity: 1;
+  }
+
+  /*
+   * Glass card roots
+   *   gtkgreet → box#body
+   *   gtklock  → #window-box
+   * Do NOT clear box#body — that was why greet looked broken.
+   */
   box#body,
-  box#window box#body {
+  #window-box {
+    ${glassPanel}
+  }
+
+  /* gtklock nests body inside #window-box — keep inner revealer transparent */
+  #window-box #body-revealer,
+  #window-box #body-grid,
+  #window-box box#body,
+  revealer#body-revealer,
+  grid#body-grid {
     background-color: transparent;
     background-image: none;
     border: none;
@@ -156,39 +244,36 @@ in
     box-shadow: none;
   }
 
-  /* Match decoration nodes to the panel (GTK paints these square by default). */
-  box#window decoration,
+  box#body decoration,
   #window-box decoration {
     border-radius: ${px panelRadius};
   }
 
-  /* ── Clock / date ─────────────────────────────────────────────────── */
-  #clock,
-  #clock-label {
-    color: ${hex "base06"};
-    font-size: 52px;
-    font-weight: 300;
-    letter-spacing: 1px;
+  /* ── Clock / date (gtklock; harmless no-ops on gtkgreet) ──────────── */
+  #clock-label,
+  #clock {
+    color: ${hex "base07"};
+    font-size: 64px;
+    font-weight: 200;
+    letter-spacing: 2px;
     padding: 0;
     margin: 0;
   }
 
   #date-label {
-    color: ${rgba "base05" "0.70"};
-    font-size: 14px;
+    color: ${rgba "base05" "0.72"};
+    font-size: 13px;
     font-weight: 500;
-    letter-spacing: 0.4px;
+    letter-spacing: 1.2px;
     padding: 0;
-    margin: 2px 0 0 0;
+    margin: 6px 0 0 0;
   }
 
-  /* Space between time block and password row (sibling margin, not pad —
-     keeps panel↔control concentric math intact). */
   #info-box {
     background: transparent;
     border: none;
     padding: 0;
-    margin: 0 0 18px 0;
+    margin: 0 0 22px 0;
   }
 
   #time-box {
@@ -200,18 +285,20 @@ in
 
   /* ── Labels ───────────────────────────────────────────────────────── */
   label {
-    color: ${rgba "base05" "0.88"};
+    color: ${rgba "base05" "0.90"};
     font-size: 13px;
     font-weight: 500;
     background: none;
     box-shadow: none;
   }
 
+  /* Soften the literal "Password:" prompt — card already implies it. */
   #input-label {
-    color: ${rgba "base05" "0.70"};
-    font-size: 12px;
-    font-weight: 500;
-    padding: 0 12px 0 0;
+    color: ${rgba "base05" "0.55"};
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    padding: 0 14px 0 2px;
     min-width: 0;
   }
 
@@ -221,12 +308,12 @@ in
     color: ${hex "base08"};
     font-size: 12px;
     font-weight: 600;
-    padding: 0;
+    letter-spacing: 0.2px;
+    padding: 4px 0 0 0;
     margin: 0;
   }
 
-  /* ── Nested controls (concentric with panel) ────────────────────────
-     r_control = r_panel − panelGap. No outer shadows — GTK won't clip them. */
+  /* ── Nested controls (concentric with panel) ──────────────────────── */
   entry,
   #input-field,
   #command-selector,
@@ -235,13 +322,13 @@ in
   combobox button,
   combobox entry {
     ${controlReset}
-    background-color: ${rgba "base00" "0.72"};
+    background-color: ${rgba "base00" "0.62"};
     color: ${hex "base05"};
-    border: 1px solid ${rgba "base05" "0.18"};
+    border: 1px solid ${rgba "base05" "0.14"};
     border-radius: ${px controlRadius};
     border-style: solid;
-    padding: 10px 14px;
-    min-height: 18px;
+    padding: 12px 16px;
+    min-height: 22px;
     caret-color: ${hex "base0D"};
   }
 
@@ -254,7 +341,6 @@ in
     background-image: none;
   }
 
-  /* Undershoot/overshoot edges are a common source of square corner ghosts. */
   entry undershoot.left,
   entry undershoot.right,
   entry overshoot.left,
@@ -274,26 +360,25 @@ in
   #command-selector:focus,
   combobox:focus-within {
     ${controlReset}
-    background-color: ${rgba "base00" "0.88"};
+    background-color: ${rgba "base00" "0.82"};
     border-color: ${hex "base0D"};
     border-radius: ${px controlRadius};
   }
 
   entry selection,
   #input-field selection {
-    background-color: ${rgba "base0D" "0.45"};
+    background-color: ${rgba "base0D" "0.42"};
     color: ${hex "base07"};
   }
 
-  /* Password show/hide. Force a raster eye via -gtk-icon-source — GTK3
-     symbolic theme lookup often paints a blank/"missing glyph" box here. */
+  /* Password reveal eye */
   #input-field image.right,
   entry image.right {
     color: ${hex "base0D"};
-    min-width: 24px;
-    min-height: 24px;
-    margin: 0 8px 0 4px;
-    opacity: 1;
+    min-width: 22px;
+    min-height: 22px;
+    margin: 0 6px 0 2px;
+    opacity: 0.95;
     ${
       if revealIcon == null then
         "-gtk-icon-style: symbolic;"
@@ -304,28 +389,40 @@ in
 
   #input-field image.right:hover,
   entry image.right:hover {
-    opacity: 0.85;
+    opacity: 0.75;
   }
 
+  /* Kill Adwaita gradient chrome — background-image must stay none. */
   button,
+  button.default,
+  button.suggested-action,
+  button.destructive-action,
   #unlock-button,
-  button.suggested-action {
+  box#body button,
+  #window-box button {
     ${controlReset}
     background-color: ${hex "base0D"};
+    background-image: none;
     color: ${hex "base00"};
     border: 1px solid ${hex "base0D"};
     border-radius: ${px controlRadius};
     border-style: solid;
-    padding: 8px 18px;
+    padding: 11px 20px;
     font-weight: 600;
-    letter-spacing: 0.2px;
-    min-height: 18px;
-    margin: 4px 0 0 0;
+    letter-spacing: 0.4px;
+    min-height: 20px;
+    margin: 10px 0 0 0;
+    box-shadow: none;
+    text-shadow: none;
+    -gtk-icon-shadow: none;
   }
 
   button decoration,
+  button.default decoration,
+  button.suggested-action decoration,
   #unlock-button decoration,
-  button.suggested-action decoration {
+  box#body button decoration,
+  #window-box button decoration {
     border-radius: ${px controlRadius};
     box-shadow: none;
     background-image: none;
@@ -333,8 +430,11 @@ in
   }
 
   button label,
+  button.default label,
+  button.suggested-action label,
   #unlock-button label,
-  button.suggested-action label {
+  box#body button label,
+  #window-box button label {
     color: inherit;
     background: none;
     background-image: none;
@@ -344,42 +444,93 @@ in
   }
 
   button:hover,
+  button.default:hover,
+  button.suggested-action:hover,
   #unlock-button:hover,
-  button.suggested-action:hover {
+  box#body button:hover,
+  #window-box button:hover {
     ${controlReset}
     background-color: ${hex "base0C"};
+    background-image: none;
     border-color: ${hex "base0C"};
     border-radius: ${px controlRadius};
     color: ${hex "base00"};
+    box-shadow: none;
   }
 
   button:active,
+  button.default:active,
+  button.suggested-action:active,
   #unlock-button:active,
-  button.suggested-action:active {
+  box#body button:active,
+  #window-box button:active {
     ${controlReset}
     background-color: ${hex "base0D"};
+    background-image: none;
     border-color: ${hex "base0D"};
     border-radius: ${px controlRadius};
+    box-shadow: none;
   }
 
   button:disabled,
-  #unlock-button:disabled {
+  button.default:disabled,
+  button.suggested-action:disabled,
+  #unlock-button:disabled,
+  box#body button:disabled,
+  #window-box button:disabled {
     ${controlReset}
-    background-color: ${rgba "base02" "0.85"};
-    border-color: ${rgba "base02" "0.85"};
-    color: ${rgba "base05" "0.45"};
+    background-color: ${rgba "base02" "0.80"};
+    background-image: none;
+    border-color: ${rgba "base02" "0.80"};
+    color: ${rgba "base05" "0.40"};
     border-radius: ${px controlRadius};
+    box-shadow: none;
   }
 
-  /* Message / error strip — secondary concentric nest */
+  /* Message / error strip */
   #message-box,
-  #message-scrolled-window {
-    background-color: ${rgba "base00" "0.35"};
+  #message-scrolled-window,
+  #window-box infobar,
+  box#body infobar {
+    background-color: ${rgba "base00" "0.40"};
     background-image: none;
     border-radius: ${px chipRadius};
     padding: ${px chipGap};
-    margin: 6px 0 0 0;
-    border: 1px solid ${rgba "base08" "0.22"};
+    margin: 8px 0 0 0;
+    border: 1px solid ${rgba "base08" "0.28"};
     box-shadow: none;
+  }
+
+  #window-box infobar label,
+  box#body infobar label {
+    color: ${hex "base05"};
+  }
+
+  /* ── gtklock-userinfo-module (optional; AccountsService icon) ─────── */
+  #user-box,
+  #user-revealer {
+    background: transparent;
+    background-image: none;
+    border: none;
+    box-shadow: none;
+    margin: 0 0 12px 0;
+    padding: 0;
+  }
+
+  #user-image {
+    border-radius: 999px;
+    min-width: ${px avatarSize};
+    min-height: ${px avatarSize};
+    margin: 0 0 8px 0;
+    box-shadow:
+      0 0 0 2px ${rgba "base0D" "0.45"},
+      0 8px 24px ${rgba "base00" "0.45"};
+  }
+
+  #user-name {
+    color: ${rgba "base05" "0.85"};
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
   }
 ''

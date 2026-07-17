@@ -65,11 +65,19 @@
               }
             ];
 
-            # ── Kernel / ASPM / deep sleep (verified present on Sword 15) ──
+            # ── Kernel / ASPM / sleep (Sword 15 Tiger Lake) ──
+            # deep (S3) resume breaks the TB4 xHCI at 00:0d.0:
+            #   xHC error in resume, USBSTS 0x401, Reinit
+            #   usb usb4-port6: Cannot enable. Maybe the USB cable is bad?
+            # That "bad cable" line is a kernel red herring (known on TGL TB4
+            # 8086:9a13/9a17) — the controller failed restore, not the cable.
+            # s2idle avoids the S3 power-loss path that triggers the reinit.
+            # Quiet CPU policy stays in RAPL/EPP (powerd), not ASPM.
             boot.kernelParams = [
               "intel_pstate=active"
-              "mem_sleep_default=deep"
-              "pcie_aspm.policy=powersave"
+              "mem_sleep_default=s2idle"
+              "pcie_aspm.policy=default"
+              "usbcore.autosuspend=-1"
             ];
 
             boot.blacklistedKernelModules = lib.mkIf cfg.blacklistUnusedXe [ "xe" ];
@@ -121,13 +129,27 @@
             systemd.services.systemd-hibernate.environment.SYSTEMD_SLEEP_FREEZE_USER_SESSIONS = "false";
             systemd.services.systemd-hybrid-sleep.environment.SYSTEMD_SLEEP_FREEZE_USER_SESSIONS = "false";
 
-            # ── Runtime PM: Realtek NIC + SATA ALPM ──
+            # ── Runtime PM: Realtek NIC + SATA ALPM + USB/xHCI keep-awake ──
             services.udev.extraRules = ''
               # RTL8168: allow runtime suspend when link is down; disable WOL
               ACTION=="add|change", SUBSYSTEM=="pci", ATTR{vendor}=="0x10ec", ATTR{device}=="0x8168", ATTR{power/control}="auto"
               ACTION=="add|change", SUBSYSTEM=="net", KERNEL=="enp2s0", RUN+="${pkgs.ethtool}/bin/ethtool -s %k wol d"
-              # SATA ALPM (Samsung 870 on this host already uses med_power_with_dipm)
-              ACTION=="add", SUBSYSTEM=="scsi_host", KERNEL=="host*", ATTR{link_power_management_policy}="med_power_with_dipm"
+              # SATA ALPM — only hosts that expose the sysfs attribute (avoids ENOTSUP noise).
+              ACTION=="add", SUBSYSTEM=="scsi_host", KERNEL=="host*", TEST=="link_power_management_policy", ATTR{link_power_management_policy}="med_power_with_dipm"
+
+              # Tiger Lake-H: keep both xHCI controllers awake across suspend.
+              # 8086:9a17 = TB4 USB (00:0d.0) — source of USBSTS 0x401 reinit storms
+              # 8086:43ed = USB 3.2 xHCI (00:14.0)
+              ACTION=="add|change", SUBSYSTEM=="pci", ATTR{vendor}=="0x8086", ATTR{device}=="0x9a17", TEST=="power/control", ATTR{power/control}="on"
+              ACTION=="add|change", SUBSYSTEM=="pci", ATTR{vendor}=="0x8086", ATTR{device}=="0x43ed", TEST=="power/control", ATTR{power/control}="on"
+
+              # Root hubs + external hubs: never autosuspend (dock/kbd vanish on resume).
+              ACTION=="add|change", SUBSYSTEM=="usb", KERNEL=="usb[0-9]*", TEST=="power/control", ATTR{power/control}="on"
+              ACTION=="add|change", SUBSYSTEM=="usb", ATTR{bDeviceClass}=="09", TEST=="power/control", ATTR{power/control}="on"
+
+              # HID (keyboard/mouse) stay powered — needed for gtklock after resume.
+              ACTION=="add|change", SUBSYSTEM=="usb", ENV{ID_USB_INTERFACES}=="*:0301*:*", TEST=="power/control", ATTR{power/control}="on"
+              ACTION=="add|change", SUBSYSTEM=="usb", ENV{ID_USB_INTERFACES}=="*:0302*:*", TEST=="power/control", ATTR{power/control}="on"
             '';
 
             environment.systemPackages = with pkgs; [
