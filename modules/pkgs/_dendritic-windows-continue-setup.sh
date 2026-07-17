@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# After Setup's downlevel phase, Firmware must boot Windows Boot Manager (not
-# systemd-boot) so specialize/OOBE/FirstLogon can finish. If NixOS comes back
-# first with an in-progress install, BootNext WBM and reboot once.
+# After Setup's downlevel phase, firmware must boot Windows Boot Manager (not
+# systemd-boot) so specialize/OOBE/FirstLogon can finish.
+#
+# Do NOT WantedBy=multi-user during os-switch — that reboots mid-activation and
+# leaves /nix/var/nix/profiles/system on an old generation. Prefer a boot timer.
 set -euo pipefail
 
 MOUNT="${DENDRITIC_WINDOWS_MOUNT:?}"
@@ -10,6 +12,7 @@ STATE_DIR="${DENDRITIC_WINDOWS_STATE:-/var/lib/dendritic-windows}"
 INSTALLED="$STATE_DIR/installed"
 MARKER_WIN="$MOUNT/dendritic-windows-ready"
 BT_DIR="$MOUNT/\$Windows.~BT"
+SETUPERR="$MOUNT/Windows/Panther/setuperr.log"
 
 log() { echo "dendritic-windows-continue-setup: $*"; }
 
@@ -22,15 +25,17 @@ if [[ -e $MARKER_WIN ]]; then
   exit 0
 fi
 
-# In-progress: Setup wrote $Windows.~BT and/or a partial Windows tree, and WBM exists.
+# Poisoned specialize (e.g. ComputerName >15 chars → 0x80220005). WBM will only
+# fail again — bootstrap must wipe + re-run Setup with a fixed Autounattend.
+if [[ -f $SETUPERR ]] && grep -qE '80220005|unattend file is not valid' "$SETUPERR"; then
+  log "poisoned specialize in $SETUPERR — skip WBM (bootstrap should reset windows)"
+  exit 0
+fi
+
 in_progress=0
 if [[ -d $BT_DIR ]]; then
   in_progress=1
-elif [[ -d $MOUNT/Windows && ! -e $MOUNT/Windows/System32/ntoskrnl.exe ]]; then
-  # Compact/WIM reparse ntoskrnl may not look like a regular file from Linux.
-  in_progress=1
 elif [[ -d $MOUNT/Windows && -d $MOUNT/Users ]]; then
-  # Partial apply without ready marker — still needs specialize.
   in_progress=1
 fi
 

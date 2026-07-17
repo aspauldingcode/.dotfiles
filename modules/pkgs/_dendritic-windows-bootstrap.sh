@@ -137,17 +137,88 @@ if [[ $FORCE != "1" ]]; then
   fi
 fi
 
+# Specialize poisoned by invalid unattend (e.g. ComputerName >15 → 0x80220005).
+poisoned_specialize() {
+  local err="$MOUNT/Windows/Panther/setuperr.log"
+  [[ -f $err ]] || return 1
+  grep -qE '80220005|unattend file is not valid' "$err"
+}
+
+# Wipe windows + restamp Autounattend on existing wininstall media (no ISO).
+reset_windows_for_setup() {
+  local win_dev install_dev install_part win_part_id idx xml_pass
+  win_dev="$(readlink -f /dev/disk/by-partlabel/windows)"
+  install_dev="$(readlink -f /dev/disk/by-partlabel/wininstall)"
+  [[ -b $win_dev && -b $install_dev ]] || die "windows/wininstall partlabels missing"
+  [[ -r $PASSWORD_FILE ]] || die "password file missing: $PASSWORD_FILE"
+  PASSWORD="$(tr -d '\n' <"$PASSWORD_FILE")"
+  [[ -n $PASSWORD ]] || die "password file empty"
+
+  log "resetting poisoned/partial windows on $win_dev (keeping wininstall media)"
+  umount "$MOUNT" 2>/dev/null || true
+  umount "$win_dev" 2>/dev/null || true
+  mkfs.ntfs -f -L windows "$win_dev" || die "mkfs.ntfs windows failed"
+
+  umount "$INSTALL_MOUNT" 2>/dev/null || true
+  umount "$install_dev" 2>/dev/null || true
+  mkdir -p "$INSTALL_MOUNT"
+  mount -t ntfs3 -o rw,uid=0,gid=0 "$install_dev" "$INSTALL_MOUNT" ||
+    mount -t ntfs-3g -o rw,uid=0,gid=0 "$install_dev" "$INSTALL_MOUNT" ||
+    die "cannot mount wininstall rw"
+
+  idx=1
+  if [[ -f $MEDIA_READY ]]; then
+    idx="$(sed -n 's/^wim_index=//p' "$MEDIA_READY" | head -1)"
+    [[ -n $idx ]] || idx=1
+  fi
+  win_part_id="$(windows_lba_partition_id)" || die "cannot resolve windows LBA PartitionID"
+  xml_pass="$(printf '%s' "$PASSWORD" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g')"
+  sed -e "s|__DENDRITIC_PASSWORD__|${xml_pass}|g" \
+    -e "s|__DENDRITIC_IMAGE_INDEX__|${idx}|g" \
+    -e "s|__DENDRITIC_WINDOWS_PARTITION_ID__|${win_part_id}|g" \
+    "$UNATTEND_TEMPLATE" >"$INSTALL_MOUNT/Autounattend.xml"
+  cp -f "$INSTALL_MOUNT/Autounattend.xml" "$INSTALL_MOUNT/autounattend.xml"
+  grep -q "PartitionID>${win_part_id}</PartitionID>" "$INSTALL_MOUNT/Autounattend.xml" ||
+    die "failed to stamp PartitionID into Autounattend"
+  cname="$(sed -n 's/.*<ComputerName>\([^<]*\)<\/ComputerName>.*/\1/p' "$INSTALL_MOUNT/Autounattend.xml" | head -1)"
+  [[ -n $cname && ${#cname} -le 15 ]] || die "ComputerName '$cname' empty or >15 NetBIOS chars"
+  sync
+  umount "$INSTALL_MOUNT" || true
+
+  install_part="$(cat "/sys/class/block/$(basename "$install_dev")/partition")"
+  set_bootnext_setup "$install_part"
+  {
+    echo "edition=$EDITION_NAME"
+    echo "wim_index=$idx"
+    echo "reset_at=$(date -Iseconds)"
+    echo "method=wininstall-setup-reset"
+    echo "install_part=$install_part"
+    echo "windows_lba_partition_id=$win_part_id"
+  } >"$MEDIA_READY"
+  log "reset done — BootNext Setup (part $install_part), InstallTo LBA #$win_part_id"
+}
+
 # Media already prepared: only refresh BootNext (no re-download / re-extract / no reboot loop).
 # Stale media-ready after a failed Setup (wininstall wiped) must re-extract.
 if [[ $FORCE != "1" ]] && [[ -f $MEDIA_READY ]] && ! media_populated; then
   log "stale media-ready (wininstall missing setup.exe) — clearing for re-extract"
   rm -f "$MEDIA_READY"
 fi
+# FORCE or poisoned specialize: wipe windows, restamp Autounattend, BootNext Setup.
+if media_populated && { [[ $FORCE == "1" ]] || poisoned_specialize; }; then
+  reset_windows_for_setup
+  if [[ $AUTO_REBOOT == "1" ]]; then
+    log "rebooting into Windows Setup (clean Autounattend)"
+    systemctl reboot
+  fi
+  exit 0
+fi
 if [[ $FORCE != "1" ]] && media_populated; then
   # Downlevel Setup may have finished and left $Windows.~BT + WBM — do NOT
   # BootNext wininstall again (that restarts Setup). Hand off to WBM.
   if [[ -d $MOUNT/\$Windows.~BT || -d $MOUNT/Windows ]] &&
-    [[ ! -e $MOUNT/dendritic-windows-ready ]]; then
+    [[ ! -e $MOUNT/dendritic-windows-ready ]] &&
+    ! poisoned_specialize; then
     wbm="$(efibootmgr | sed -n 's/^Boot\([0-9A-Fa-f]*\).*Windows Boot Manager.*/\1/p' | head -1)"
     if [[ -n $wbm ]]; then
       log "in-progress Setup detected; BootNext Windows Boot Manager ($wbm) instead of wininstall"

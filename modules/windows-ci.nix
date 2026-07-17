@@ -59,6 +59,8 @@
             grep -q 'PARTLABEL=windows missing' ${./pkgs/_dendritic-windows-bootstrap.sh}
             grep -q 'Windows Boot Manager' ${./pkgs/_dendritic-windows-bootstrap.sh}
             grep -q 'Windows Boot Manager' ${./pkgs/_dendritic-windows-continue-setup.sh}
+            grep -q 'poisoned_specialize\|80220005' ${./pkgs/_dendritic-windows-bootstrap.sh}
+            grep -q 'reset_windows_for_setup\|mkfs.ntfs' ${./pkgs/_dendritic-windows-bootstrap.sh}
             ! grep -q 'wimlib-imagex apply' ${./pkgs/_dendritic-windows-bootstrap.sh}
             ! grep -q 'pending-shrink' ${./pkgs/_dendritic-windows-bootstrap.sh}
 

@@ -350,11 +350,20 @@
               };
             };
 
-            # Setup downlevel → reboot often lands on systemd-boot first. Resume
-            # specialize via Windows Boot Manager before bootstrap re-arms Setup.
+            # Resume specialize via WBM. Timer-only — never WantedBy multi-user or
+            # os-switch gets SIGTERM mid-activation and the system profile sticks
+            # on an old generation (seen repeatedly after BootNext).
+            systemd.timers.dendritic-windows-continue-setup = {
+              description = "Schedule Windows Setup continue (WBM BootNext)";
+              wantedBy = [ "timers.target" ];
+              timerConfig = {
+                OnBootSec = "3min";
+                Unit = "dendritic-windows-continue-setup.service";
+              };
+            };
+
             systemd.services.dendritic-windows-continue-setup = {
               description = "Continue in-progress Windows Setup via Windows Boot Manager";
-              wantedBy = [ "multi-user.target" ];
               after = [
                 "local-fs.target"
                 "dendritic-windows-label-gpt.service"
