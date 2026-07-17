@@ -127,6 +127,11 @@
             --extra-experimental-features 'nix-command flakes' \
             --print-out-paths --no-link \
             "''${flake}#nixosConfigurations.''${host}.config.system.build.toplevel")"
+          # switch-to-configuration alone does NOT advance /nix/var/nix/profiles/system
+          # or systemd-boot's default entry — without this, the next reboot falls back
+          # to an older generation (seen after Windows Setup BootNext).
+          echo "dendritic-os-switch: setting system profile → $out"
+          ${pkgs.nix}/bin/nix-env --profile /nix/var/nix/profiles/system --set "$out"
           echo "dendritic-os-switch: activating $out"
           # Activation may stop this unit (definition changed) — ignore TERM so
           # switch-to-configuration can finish; otherwise USB/etc fixes never land.

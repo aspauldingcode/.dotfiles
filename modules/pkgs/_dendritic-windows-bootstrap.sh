@@ -144,6 +144,24 @@ if [[ $FORCE != "1" ]] && [[ -f $MEDIA_READY ]] && ! media_populated; then
   rm -f "$MEDIA_READY"
 fi
 if [[ $FORCE != "1" ]] && media_populated; then
+  # Downlevel Setup may have finished and left $Windows.~BT + WBM — do NOT
+  # BootNext wininstall again (that restarts Setup). Hand off to WBM.
+  if [[ -d $MOUNT/\$Windows.~BT || -d $MOUNT/Windows ]] &&
+    [[ ! -e $MOUNT/dendritic-windows-ready ]]; then
+    wbm="$(efibootmgr | sed -n 's/^Boot\([0-9A-Fa-f]*\).*Windows Boot Manager.*/\1/p' | head -1)"
+    if [[ -n $wbm ]]; then
+      log "in-progress Setup detected; BootNext Windows Boot Manager ($wbm) instead of wininstall"
+      efibootmgr --bootnext "$wbm" || die "efibootmgr --bootnext $wbm failed"
+      mkdir -p "$STATE_DIR"
+      [[ -f $MEDIA_READY ]] || echo "recovered $(date -Iseconds)" >"$MEDIA_READY"
+      if [[ $AUTO_REBOOT == "1" ]]; then
+        log "rebooting into Windows Boot Manager to finish specialize"
+        systemctl reboot
+      fi
+      log "reboot when ready to continue specialize (AUTO_REBOOT skipped)"
+      exit 0
+    fi
+  fi
   log "wininstall media ready; Windows not installed yet — refresh BootNext only"
   install_dev="$(readlink -f /dev/disk/by-partlabel/wininstall)"
   [[ -b $install_dev ]] || die "partlabel wininstall missing"

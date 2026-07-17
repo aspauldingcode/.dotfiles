@@ -48,8 +48,11 @@ With `dendritic.windows.enable = true` and `autoBootstrap = true`:
 4. Deletes ISO cache (media lives on wininstall)
 5. `efibootmgr --bootnext` → `Windows Setup (dendritic)`
 6. Reboots (`autoReboot`); silent Setup installs onto **windows**
-7. FirstLogon writes `C:\dendritic-windows-ready` and reboots to NixOS
-8. `dendritic-windows-finalize` clears BootNext, keeps systemd-boot first, writes
+7. Setup’s downlevel phase reboots into **Windows Boot Manager** for specialize /
+   OOBE / FirstLogon. If systemd-boot wins that reboot, `continue-setup` BootNexts
+   WBM once more.
+8. FirstLogon writes `C:\dendritic-windows-ready` and reboots to NixOS
+9. `dendritic-windows-finalize` clears BootNext, keeps systemd-boot first, writes
    **installed**
 
 Manual kick:

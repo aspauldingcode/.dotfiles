@@ -91,6 +91,20 @@
         text = builtins.readFile ./pkgs/_dendritic-windows-finalize.sh;
       };
 
+      continueSetup = pkgs.writeShellApplication {
+        name = "dendritic-windows-continue-setup";
+        runtimeInputs = with pkgs; [
+          coreutils
+          efibootmgr
+          gnused
+          systemd
+        ];
+        excludeShellChecks = [
+          "SC2086"
+        ];
+        text = builtins.readFile ./pkgs/_dendritic-windows-continue-setup.sh;
+      };
+
       passwordPath =
         if cfg.passwordFile != null then toString cfg.passwordFile else "${stateDir}/password";
     in
@@ -207,6 +221,7 @@
               labelGpt
               bootstrap
               finalize
+              continueSetup
               pkgs.wimlib
               pkgs.ntfs3g
               pkgs.efibootmgr
@@ -332,6 +347,36 @@
                 DENDRITIC_WINDOWS_FORCE = if cfg.forceRedeploy then "1" else "0";
                 DENDRITIC_WINDOWS_AUTO_REBOOT = if cfg.autoReboot then "1" else "0";
                 DENDRITIC_WINDOWS_ESP = "/boot";
+              };
+            };
+
+            # Setup downlevel → reboot often lands on systemd-boot first. Resume
+            # specialize via Windows Boot Manager before bootstrap re-arms Setup.
+            systemd.services.dendritic-windows-continue-setup = {
+              description = "Continue in-progress Windows Setup via Windows Boot Manager";
+              wantedBy = [ "multi-user.target" ];
+              after = [
+                "local-fs.target"
+                "dendritic-windows-label-gpt.service"
+              ];
+              before = [ "dendritic-windows-bootstrap.service" ];
+              unitConfig = lib.mkIf (!cfg.forceRedeploy) {
+                # Both must be absent (NixOS emits one ConditionPathExists= per list entry).
+                ConditionPathExists = [
+                  "!${stateDir}/installed"
+                  "!${cfg.mountPoint}/dendritic-windows-ready"
+                ];
+              };
+              serviceConfig = {
+                Type = "oneshot";
+                TimeoutStartSec = "2m";
+                Restart = "no";
+                ExecStart = "${continueSetup}/bin/dendritic-windows-continue-setup";
+              };
+              environment = {
+                DENDRITIC_WINDOWS_MOUNT = cfg.mountPoint;
+                DENDRITIC_WINDOWS_STATE = stateDir;
+                DENDRITIC_WINDOWS_AUTO_REBOOT = if cfg.autoReboot then "1" else "0";
               };
             };
 

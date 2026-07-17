@@ -5,6 +5,7 @@
     let
       scripts = [
         ./pkgs/_dendritic-windows-bootstrap.sh
+        ./pkgs/_dendritic-windows-continue-setup.sh
         ./pkgs/_dendritic-windows-finalize.sh
         ./pkgs/_dendritic-windows-label-gpt.sh
         ./pkgs/_dendritic-windows-offline-shrink.sh
@@ -52,6 +53,8 @@
             grep -q 'media-ready' ${./pkgs/_dendritic-windows-bootstrap.sh}
             grep -q 'rsync' ${./pkgs/_dendritic-windows-bootstrap.sh}
             grep -q 'PARTLABEL=windows missing' ${./pkgs/_dendritic-windows-bootstrap.sh}
+            grep -q 'Windows Boot Manager' ${./pkgs/_dendritic-windows-bootstrap.sh}
+            grep -q 'Windows Boot Manager' ${./pkgs/_dendritic-windows-continue-setup.sh}
             ! grep -q 'wimlib-imagex apply' ${./pkgs/_dendritic-windows-bootstrap.sh}
             ! grep -q 'pending-shrink' ${./pkgs/_dendritic-windows-bootstrap.sh}
 
