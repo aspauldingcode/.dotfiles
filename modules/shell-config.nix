@@ -135,13 +135,18 @@
         '';
       };
 
-      # Allow wheel to start/stop only this template without interactive polkit.
+      # Allow wheel to start/stop Cursor-safe units without an interactive polkit agent
+      # (NoNewPrivs sessions have no auth prompt — StartUnit otherwise times out).
       security.polkit.extraConfig = ''
         polkit.addRule(function(action, subject) {
           if (!subject.isInGroup("wheel")) return;
           if (action.id !== "org.freedesktop.systemd1.manage-units") return;
           var unit = action.lookup("unit");
-          if (unit && unit.indexOf("dendritic-os-switch@") === 0) {
+          if (!unit) return;
+          if (unit.indexOf("dendritic-os-switch@") === 0) {
+            return polkit.Result.YES;
+          }
+          if (unit.indexOf("dendritic-windows-") === 0) {
             return polkit.Result.YES;
           }
         });
