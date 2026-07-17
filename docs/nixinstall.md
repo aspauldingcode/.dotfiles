@@ -42,6 +42,7 @@ Installer uses **NetworkManager + iwd** (same as main OS). After
 autoconnect via `dendritic-installer-wifi` (Bubbles preferred).
 
 **SSH** is on by default (`services.openssh`, port 22):
+
 - Pubkeys from [`home/ssh-keys.nix`](../home/ssh-keys.nix) for `alex` and `root`
 - Extra keys from `/vault/ssh/authorized_keys` + `/vault/ssh/id_ed25519.pub`
 - Password auth off — sync the vault before relying on remote Cursor
