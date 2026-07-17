@@ -35,11 +35,21 @@ See [`hosts/nixos/sliceanddice/disko.nix`](../hosts/nixos/sliceanddice/disko.nix
 **Do not** run stock `disko --mode destroy` while booted from nixinstall — that
 clears the GPT and would destroy the live installer + vault.
 
-## Network (installer)
+## Network + SSH (installer)
 
 Installer uses **NetworkManager + iwd** (same as main OS). After
 `dendritic-vault-sync` on the main OS, `/vault/wifi/*.psk` + `networks.json`
 autoconnect via `dendritic-installer-wifi` (Bubbles preferred).
+
+**SSH** is on by default (`services.openssh`, port 22):
+- Pubkeys from [`home/ssh-keys.nix`](../home/ssh-keys.nix) for `alex` and `root`
+- Extra keys from `/vault/ssh/authorized_keys` + `/vault/ssh/id_ed25519.pub`
+- Password auth off — sync the vault before relying on remote Cursor
+
+```bash
+ssh alex@sliceanddice-installer.local   # or the LAN IP from the console
+sudo dendritic-reinstall
+```
 
 Fallback on the installer console: `nmtui` (or `nmcli device wifi connect …`).
 

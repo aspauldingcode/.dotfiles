@@ -57,9 +57,13 @@ label_by_content() {
       sgdisk -c "$i:nixinstall" "$DISK" >/dev/null
       ;;
     ntfs | ntfs3)
-      # windows ≈ 64 GiB; wininstall ≈ 8 GiB (allow slack)
+      # windows ≈ 64 GiB; wininstall ≈ 8 GiB; WinRE ≈ 300–700 MiB
       if [[ $sz_b -ge 40000000000 ]]; then
         sgdisk -c "$i:windows" "$DISK" >/dev/null
+      elif [[ $sz_b -ge 6000000000 && $sz_b -le 12000000000 ]]; then
+        sgdisk -c "$i:wininstall" "$DISK" >/dev/null
+      elif [[ $sz_b -ge 100000000 && $sz_b -lt 2000000000 ]]; then
+        sgdisk -c "$i:winre" "$DISK" >/dev/null || true
       else
         sgdisk -c "$i:wininstall" "$DISK" >/dev/null
       fi
@@ -98,8 +102,8 @@ label_by_content() {
 
 SWAP_DEV=""
 case "$nparts" in
-7 | 6 | 5)
-  # Content-based: survives Windows MSR insert + GPT renumber.
+8 | 7 | 6 | 5)
+  # Content-based: survives Windows MSR / WinRE insert + GPT renumber.
   label_by_content
   ;;
 4)

@@ -132,6 +132,10 @@
           # to an older generation (seen after Windows Setup BootNext).
           echo "dendritic-os-switch: setting system profile → $out"
           ${pkgs.nix}/bin/nix-env --profile /nix/var/nix/profiles/system --set "$out"
+          # Install boot entries before switch so a mid-activation reboot (e.g.
+          # dendritic-windows-continue-setup) still lands on this generation.
+          echo "dendritic-os-switch: installing bootloader for $out"
+          "$out/bin/switch-to-configuration" boot
           echo "dendritic-os-switch: activating $out"
           # Activation may stop this unit (definition changed) — ignore TERM so
           # switch-to-configuration can finish; otherwise USB/etc fixes never land.

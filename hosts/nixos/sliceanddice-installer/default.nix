@@ -8,6 +8,9 @@
 }:
 
 let
+  sshKeys = import ../../../home/ssh-keys.nix;
+  allPubkeys = lib.unique (lib.attrValues sshKeys);
+
   installerWifi = pkgs.writeShellApplication {
     name = "dendritic-installer-wifi";
     runtimeInputs = with pkgs; [
@@ -78,10 +81,13 @@ in
     "iwlwifi"
   ];
 
+  # SSH for Cursor / remote `dendritic-reinstall` once vault Wi-Fi is up.
+  # Keys: flake home/ssh-keys.nix + optional /vault/ssh (see root-keys service).
   services.openssh = {
     enable = true;
     settings = {
       PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
       PermitRootLogin = "prohibit-password";
     };
   };
@@ -93,8 +99,12 @@ in
       "networkmanager"
     ];
     initialHashedPassword = "";
+    openssh.authorizedKeys.keys = allPubkeys;
   };
-  users.users.root.initialHashedPassword = "";
+  users.users.root = {
+    initialHashedPassword = "";
+    openssh.authorizedKeys.keys = allPubkeys;
+  };
   security.sudo.wheelNeedsPassword = false;
 
   nix.settings = {
@@ -202,29 +212,38 @@ in
     };
   };
 
-  # Allow SSH as root with the same keys vault-synced for alex.
-  systemd.services.dendritic-installer-root-keys = {
-    description = "Install root authorized_keys from vault";
+  # Merge vault SSH keys onto root + alex (in addition to flake pubkeys above).
+  systemd.services.dendritic-installer-ssh-keys = {
+    description = "Install authorized_keys from vault for root and alex";
     wantedBy = [ "multi-user.target" ];
     before = [ "sshd.service" ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-      ExecStart = pkgs.writeShellScript "dendritic-installer-root-keys" ''
+      ExecStart = pkgs.writeShellScript "dendritic-installer-ssh-keys" ''
         set -euo pipefail
-        if [[ -f /vault/ssh/authorized_keys ]]; then
-          mkdir -p /root/.ssh
-          cp -f /vault/ssh/authorized_keys /root/.ssh/authorized_keys
-          chmod 700 /root/.ssh
-          chmod 600 /root/.ssh/authorized_keys
-        fi
-        if [[ -f /vault/ssh/id_ed25519.pub ]]; then
-          mkdir -p /root/.ssh
-          touch /root/.ssh/authorized_keys
-          grep -qxF "$(cat /vault/ssh/id_ed25519.pub)" /root/.ssh/authorized_keys 2>/dev/null ||
-            cat /vault/ssh/id_ed25519.pub >> /root/.ssh/authorized_keys
-          chmod 600 /root/.ssh/authorized_keys
-        fi
+        install_keys() {
+          local home="$1"
+          local uid gid
+          uid="$(id -u "$(basename "$home")" 2>/dev/null || echo 0)"
+          gid="$(id -g "$(basename "$home")" 2>/dev/null || echo 0)"
+          mkdir -p "$home/.ssh"
+          touch "$home/.ssh/authorized_keys"
+          if [[ -f /vault/ssh/authorized_keys ]]; then
+            cat /vault/ssh/authorized_keys >>"$home/.ssh/authorized_keys"
+          fi
+          if [[ -f /vault/ssh/id_ed25519.pub ]]; then
+            cat /vault/ssh/id_ed25519.pub >>"$home/.ssh/authorized_keys"
+          fi
+          if [[ -s $home/.ssh/authorized_keys ]]; then
+            sort -u -o "$home/.ssh/authorized_keys" "$home/.ssh/authorized_keys"
+          fi
+          chmod 700 "$home/.ssh"
+          chmod 600 "$home/.ssh/authorized_keys"
+          chown -R "$uid:$gid" "$home/.ssh"
+        }
+        install_keys /root
+        install_keys /home/alex
       '';
     };
   };
