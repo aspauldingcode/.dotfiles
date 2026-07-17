@@ -63,6 +63,12 @@ sudo systemctl start dendritic-windows-bootstrap.service
 
 `dendritic.windows.autoReboot = false` — prepare media only; reboot yourself.
 
+## Computer name
+
+Autounattend sets `ComputerName` to **`sliceanddice`** (≤15 NetBIOS chars).
+Longer names (e.g. `sliceanddice-win`) make specialize fail with `0x80220005` /
+`0x8007001F`.
+
 ## Password
 
 Default: `/var/lib/dendritic-windows/password` (mode 0600).

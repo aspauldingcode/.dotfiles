@@ -45,6 +45,10 @@
             grep -q 'dendritic-windows-ready' ${unattend}
             grep -q '__DENDRITIC_PASSWORD__' ${unattend}
             grep -q 'shutdown /r' ${unattend}
+            # NetBIOS ComputerName must be ≤15 chars (specialize rejects longer).
+            name="$(sed -n 's/.*<ComputerName>\([^<]*\)<\/ComputerName>.*/\1/p' ${unattend} | head -1)"
+            test -n "$name"
+            test "''${#name}" -le 15
 
             echo "== bootstrap uses wininstall media + BootNext =="
             grep -q 'wininstall' ${./pkgs/_dendritic-windows-bootstrap.sh}
