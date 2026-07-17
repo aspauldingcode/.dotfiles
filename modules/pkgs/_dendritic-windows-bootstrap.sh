@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# One-shot: shrink NixOS root, create windows + wininstall + swap, extract Setup media
-# onto wininstall, BootNext into silent Windows Setup. Idempotent after media-ready /
-# installed markers (wininstall partition stays; no re-bootstrap).
+# One-shot: extract Setup media onto existing wininstall, BootNext into silent
+# Windows Setup (InstallTo GPT #4 = PARTLABEL=windows). Partition carve is owned
+# by dendritic-reinstall / disko. Idempotent after media-ready / installed.
 set -euo pipefail
 
 DISK="${DENDRITIC_WINDOWS_DISK:?}"
@@ -181,9 +181,12 @@ if ! iso_ok; then
 fi
 
 # Free space for ISO download only (partitioning is owned by nixinstall/disko).
-root_avail_kib="$(df -k --output=avail / | tail -1 | tr -d ' ')"
-root_avail_mib=$((root_avail_kib / 1024))
-[[ $root_avail_mib -gt 8192 ]] || die "need ≳8 GiB free on / for ISO; have ~$((root_avail_mib / 1024)) GiB"
+# Check the cache filesystem — `/` may be tmpfs (impermanence) with <8 GiB.
+mkdir -p "$CACHE_DIR"
+cache_avail_kib="$(df -k --output=avail "$CACHE_DIR" | tail -1 | tr -d ' ')"
+cache_avail_mib=$((cache_avail_kib / 1024))
+[[ $cache_avail_mib -gt 8192 ]] ||
+  die "need ≳8 GiB free on $CACHE_DIR for ISO; have ~$((cache_avail_mib / 1024)) GiB"
 
 # ── Partitions must already exist (disko from sliceanddice-installer) ──
 win_dev="$(readlink -f /dev/disk/by-partlabel/windows 2>/dev/null || true)"
@@ -277,7 +280,7 @@ set_bootnext_setup "$install_part"
 } >"$MEDIA_READY"
 
 log "done — Setup media on wininstall (part $install_part); no USB/external media"
-log "next boot (BootNext): silent Setup → windows (part 3) → marker → reboot to NixOS"
+log "next boot (BootNext): silent Setup → windows (GPT #4) → marker → reboot to NixOS"
 if [[ $AUTO_REBOOT == "1" ]]; then
   log "rebooting into Windows Setup now"
   systemctl reboot

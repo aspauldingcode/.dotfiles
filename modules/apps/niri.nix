@@ -515,6 +515,16 @@
           done
         '';
       };
+
+      # Shared window / island drop shadow — niri `layout.shadow` and waybar
+      # module `box-shadow` stay in lockstep (color + offset + blur + spread).
+      windowShadow = {
+        softness = 30;
+        spread = 4;
+        offsetX = 0;
+        offsetY = 6;
+        color = "#00000060";
+      };
     in
     {
       options.dendritic.apps.niri = {
@@ -548,9 +558,11 @@
             position = "top";
             height = 34;
             spacing = 4;
-            margin-top = 6;
-            margin-left = 10;
-            margin-right = 10;
+            # Extra chrome so island box-shadows (match niri layout.shadow) are
+            # not clipped by the waybar surface.
+            margin-top = 8;
+            margin-left = 12;
+            margin-right = 12;
 
             modules-left = [
               "niri/workspaces"
@@ -707,6 +719,11 @@
               tooltipPad = 6;
               tooltipLabelRadius = lib.max 0 (tooltipRadius - tooltipPad);
               islandPadX = 12;
+              # Match niri layout.shadow (see windowShadow above).
+              # CSS: offset-x offset-y blur spread color
+              islandShadow = "${toString windowShadow.offsetX}px ${toString windowShadow.offsetY}px ${toString windowShadow.softness}px ${toString windowShadow.spread}px ${windowShadow.color}";
+              # Room under/around islands so GTK doesn't clip the soft shadow.
+              islandMargin = "6px 6px 18px 6px";
               px = n: "${toString n}px";
             in
             lib.mkAfter ''
@@ -719,6 +736,7 @@
                   border: 1px solid @base0D;
                   border-radius: ${px tooltipRadius};
                   padding: ${px tooltipPad};
+                  box-shadow: ${islandShadow};
               }
               /* GTK decoration stays square by default → corner artifacts
                  on first paint under niri/wlroots. Keep concentric with tooltip. */
@@ -744,8 +762,9 @@
               #tray {
                   background-color: alpha(@base01, 0.92);
                   padding: 0 ${px islandPadX};
-                  margin: 4px 3px;
+                  margin: ${islandMargin};
                   border-radius: ${px islandRadius};
+                  box-shadow: ${islandShadow};
               }
 
               /* Nested chips: gap is parent padding only (uniform on all sides)
@@ -759,11 +778,15 @@
                   color: @base04;
                   background: transparent;
                   border-radius: ${px chipRadius};
+                  box-shadow: none;
+                  text-shadow: none;
                   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
               }
               #workspaces button:hover {
                   background: alpha(@base0D, 0.2);
                   color: @base06;
+                  box-shadow: none;
+                  text-shadow: none;
               }
               #workspaces button.active,
               #workspaces button.focused {
@@ -780,6 +803,7 @@
               }
               window#waybar.empty #window {
                   background: transparent;
+                  box-shadow: none;
               }
 
               #clock {
@@ -959,10 +983,10 @@
 
               shadow {
                   on
-                  softness 30
-                  spread 4
-                  offset x=0 y=6
-                  color "#00000060"
+                  softness ${toString windowShadow.softness}
+                  spread ${toString windowShadow.spread}
+                  offset x=${toString windowShadow.offsetX} y=${toString windowShadow.offsetY}
+                  color "${windowShadow.color}"
               }
 
               struts {

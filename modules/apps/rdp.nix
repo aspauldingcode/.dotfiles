@@ -183,8 +183,14 @@
           };
           Service = {
             Type = "simple";
-            # Avoid EADDRINUSE restart storms when a previous instance still holds :3389.
-            ExecStartPre = "${pkgs.bash}/bin/bash -c '${pkgs.procps}/bin/pkill -x lamco-rdp-server || ${pkgs.procps}/bin/pkill -f lamco-rdp-server || true; sleep 0.3'";
+            # Free stale listeners. Match the store binary path only — never
+            # `pkill -f lamco-rdp-server` (matches this pre-script and SIGTERMs itself).
+            # Kernel comm is truncated to 15 chars (`lamco-rdp-serv`), so -x alone is unreliable.
+            ExecStartPre = pkgs.writeShellScript "lamco-rdp-pre" ''
+              set -eu
+              ${pkgs.procps}/bin/pkill -f ${lib.escapeShellArg (lib.getExe lamco)} 2>/dev/null || true
+              sleep 0.3
+            '';
             ExecStart = "${lib.getExe lamco} --config ${cfgDir}/config.toml";
             # Crash-looping on SIGTERM/session teardown is not "failure worth retry".
             Restart = "on-abnormal";

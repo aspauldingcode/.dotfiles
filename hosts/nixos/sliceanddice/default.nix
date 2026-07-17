@@ -111,6 +111,16 @@
       # NVIDIA finegrained stays off (black-screen history); dGPU already runtime-suspends.
       dendritic.power.enable = true;
 
+      # Local free LLMs (Ollama CUDA). Models from scripts/local-ai-bench winners.
+      # Cloud OpenAI / Cursor stay available; helpers never force OPENAI_API_BASE globally.
+      dendritic.local-ai.enable = true;
+      dendritic.local-ai.loadModels = [
+        "gemma3:1b" # fastest (outperform)
+        "llama3.2:3b" # best coding among fast (outperform)
+        "qwen2.5-coder:3b" # coder specialist
+        "qwen2.5-coder:7b" # quality coder (usable; role diversity over llama3.2:1b)
+      ];
+
       # On-disk NixOS installer (nixinstall) + vault. See docs/nixinstall.md.
       dendritic.nixinstall.enable = true;
       dendritic.nixinstall.autoBootstrap = true;
@@ -128,10 +138,11 @@
       dendritic.apps.rdp.enable = true;
       dendritic.apps.rdp.bonjourName = "sliceanddice";
 
-      # Windows dual-boot media (after installer/disko creates partitions).
-      # Keep disabled until nixinstall reinstall has carved windows/wininstall.
+      # Windows dual-boot: IoT Enterprise LTSC (bloatless). Partitions already
+      # carved (ESP→nixos→windows→wininstall→swap→nixinstall). Bootstrap
+      # downloads ISO → wininstall → BootNext silent Setup → GPT #4.
       dendritic.windows.enable = true;
-      dendritic.windows.autoBootstrap = false;
+      dendritic.windows.autoBootstrap = true;
 
       # NVIDIA drm for Xwayland/offload. videoDrivers pulls in the driver even
       # though niri itself is a native Wayland compositor on Intel.
@@ -273,6 +284,9 @@
         # niri user config: terminal → ghostty, launcher → fuzzel.
         dendritic.apps.niri.enable = true;
         dendritic.apps.niri.terminal = "ghostty";
+
+        dendritic.local-ai.enable = true;
+        dendritic.local-ai.defaultLocalModel = "qwen2.5-coder:3b";
 
         programs.nh = {
           enable = true;

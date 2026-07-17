@@ -32,12 +32,12 @@
             echo "== shellcheck =="
             shellcheck -e SC2154,SC2086,SC2046,SC2034,SC2001,SC2016,SC2207 ${scriptsArgs}
 
-            echo "== unattend.xml (silent Setup → partition 3) =="
+            echo "== unattend.xml (silent Setup → GPT partition 4 = windows) =="
             xmllint --noout ${unattend}
             grep -q 'AcceptEula>true</AcceptEula>' ${unattend}
             grep -q 'WillShowUI>Never</WillShowUI>' ${unattend}
             grep -q 'SkipMachineOOBE>true</SkipMachineOOBE>' ${unattend}
-            grep -q 'PartitionID>3</PartitionID>' ${unattend}
+            grep -q 'PartitionID>4</PartitionID>' ${unattend}
             grep -q '__DENDRITIC_IMAGE_INDEX__' ${unattend}
             grep -q 'HideOnlineAccountScreens>true</HideOnlineAccountScreens>' ${unattend}
             grep -q 'PreventDeviceEncryption' ${unattend}

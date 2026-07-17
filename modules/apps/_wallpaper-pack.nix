@@ -46,7 +46,7 @@ let
             "$out/wallpaper.png"
         ''}
 
-        # Pre-blur crop for gtklock glass card (runtime picks ≠ desktop wallpaper).
+        # Pre-blur crop for gtkgreet/gtklock glass card (Linux: desktop-current).
         magick "$out/wallpaper.png" \
           -auto-orient \
           -resize '1920x1080^' \

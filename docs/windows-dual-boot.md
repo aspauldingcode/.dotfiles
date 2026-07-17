@@ -2,47 +2,54 @@
 
 NixOS remains the default OS. Windows is a peer boot entry for firmware tooling
 (e.g. keyboard EC dumps). Edition is **Windows 11 IoT Enterprise LTSC 2024**
-(no Store / consumer inbox apps).
+(no Store / consumer inbox apps — the “bloatless enterprise” SKU).
 
-## Layout (disko)
+## Layout (disko / dendritic-reinstall)
 
-See [`hosts/nixos/sliceanddice/disko.nix`](../hosts/nixos/sliceanddice/disko.nix):
+See [`hosts/nixos/sliceanddice/disko.nix`](../hosts/nixos/sliceanddice/disko.nix).
 
-- ESP 512M shared (`/boot`) — systemd-boot generations + Windows Boot Manager
-- NixOS root (shrunk)
-- 64G NTFS `PARTLABEL=windows` → `/mnt/windows` (rw from Linux, `nofail`)
-- 8G NTFS `PARTLABEL=wininstall` → `/mnt/wininstall` (extracted Setup media, stays)
-- ~9G swap (same UUID across recreate)
+**Physical order on disk:**
 
-No USB / optical media. Bootstrap downloads the ISO, schedules an **initrd
-offline shrink** (ext4 cannot shrink while mounted), carves windows +
-wininstall, extracts Setup onto **wininstall**, then BootNexts into silent
-Setup once.
+| PARTLABEL  | Size  | Role                                                                |
+| ---------- | ----- | ------------------------------------------------------------------- |
+| ESP        | 512M  | Shared `/boot` (systemd-boot + Windows Boot Manager)                |
+| nixos      | rest  | btrfs (`@` `@nix` `@home` `@log`)                                   |
+| windows    | 64G   | NTFS → `/mnt/windows` (rw, `nofail`)                                |
+| wininstall | 8G    | Extracted Setup media → `/mnt/wininstall` (`nofail`, ro after prep) |
+| swap       | ~4–9G | hibernate / swap                                                    |
+| nixinstall | 8G    | On-disk NixOS installer (end of disk; never wiped)                  |
 
-`nh os switch` never repartitions or reinstalls Windows. Markers:
+**GPT numbering quirk:** nixinstall is created first as partition **#3** at the end
+of the disk; windows/wininstall/swap are **#4/#5/#6**. Autounattend installs to
+**PartitionID 4** (`PARTLABEL=windows`).
 
-- `/var/lib/dendritic-windows/media-ready` — Setup media extracted (skip re-extract)
-- `/var/lib/dendritic-windows/installed` — Windows finished; bootstrap is a permanent no-op
+`nh os switch` never repartitions or reinstalls Windows. Markers under
+`/var/lib/dendritic-windows/`:
 
-## First-time bootstrap (fully automatic, no GUI, no external media)
+- `media-ready` — Setup media extracted (skip re-extract)
+- `installed` — Windows finished; bootstrap is a permanent no-op
 
-With `dendritic.windows.enable = true` and `autoBootstrap = true` (sliceanddice
-defaults):
+## First-time bootstrap (no USB)
 
-1. Secure Boot stays **off**.
-2. Plug in **AC power**; keep ≳20 GiB free on `/` after carving 64+8+9 GiB.
-3. Timer starts ~90s after boot and:
-   - downloads the IoT LTSC 2024 x64 eval ISO (fwlink → CDN),
-   - verifies SHA256 `67cec5865eaa037a72ddc633a717a10a2bed50778862267223ddb9c60ef5da68`,
-   - shrinks root; creates windows + wininstall + swap,
-   - extracts ISO → wininstall, writes `Autounattend.xml` (InstallTo partition 3),
-   - deletes the ISO cache (media lives on wininstall),
-   - `efibootmgr --bootnext` → `Windows Setup (dendritic)` on wininstall,
-   - reboots (`autoReboot`).
-4. Silent Setup installs onto **windows**; FirstLogon writes
-   `C:\dendritic-windows-ready` and reboots to NixOS.
-5. `dendritic-windows-finalize` clears BootNext, keeps systemd-boot first, writes
-   **installed**. wininstall stays for repair; bootstrap never runs again.
+Prerequisites (already true on current sliceanddice carve):
+
+1. Secure Boot **off**
+2. AC power
+3. `PARTLABEL=windows` + `PARTLABEL=wininstall` present (from `dendritic-reinstall`)
+4. ≳8 GiB free on `/var/cache` for the ISO download
+
+With `dendritic.windows.enable = true` and `autoBootstrap = true`:
+
+1. Timer starts ~90s after boot and runs `dendritic-windows-bootstrap.service`
+2. Downloads IoT LTSC 2024 x64 eval ISO (fwlink → CDN), SHA256
+   `67cec5865eaa037a72ddc633a717a10a2bed50778862267223ddb9c60ef5da68`
+3. Extracts ISO → wininstall, writes `Autounattend.xml` (InstallTo GPT **#4**)
+4. Deletes ISO cache (media lives on wininstall)
+5. `efibootmgr --bootnext` → `Windows Setup (dendritic)`
+6. Reboots (`autoReboot`); silent Setup installs onto **windows**
+7. FirstLogon writes `C:\dendritic-windows-ready` and reboots to NixOS
+8. `dendritic-windows-finalize` clears BootNext, keeps systemd-boot first, writes
+   **installed**
 
 Manual kick:
 
@@ -50,7 +57,7 @@ Manual kick:
 sudo systemctl start dendritic-windows-bootstrap.service
 ```
 
-`dendritic.windows.autoReboot = false` — reboot yourself after media prep.
+`dendritic.windows.autoReboot = false` — prepare media only; reboot yourself.
 
 ## Password
 
@@ -59,10 +66,10 @@ Override: `dendritic.windows.passwordFile`.
 
 ## Idempotency / force
 
-- `installed` or existing `ntoskrnl.exe` → skip forever.
-- `media-ready` without Windows → refresh BootNext only (no re-download).
-- `dendritic.windows.forceRedeploy = true` re-extracts / re-runs Setup (destructive).
+- `installed` or existing `ntoskrnl.exe` → skip forever
+- `media-ready` without Windows → refresh BootNext only (no re-download / no auto-reboot)
+- `dendritic.windows.forceRedeploy = true` re-extracts / re-runs Setup (destructive)
 
 ## Writing from Linux
 
-`/mnt/windows` is ntfs3 rw after a clean Windows shutdown (Fast Startup off).
+`/mnt/windows` is ntfs3 rw after a clean Windows shutdown (Fast Startup off in unattend).

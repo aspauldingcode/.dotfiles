@@ -1,0 +1,182 @@
+{
+  "host": "sliceanddice",
+  "source": "scripts/local-ai-bench/results/sliceanddice/raw.json",
+  "ranked": [
+    {
+      "model": "gemma3:1b",
+      "role": "small-gemma",
+      "tier": "outperform",
+      "score": 0.9431,
+      "summary": {
+        "best_decode_tps": 48.899853899989694,
+        "ttft_proxy_512_s": 0.6878707649999948,
+        "coding_avg": 3.333333333333333,
+        "tool_score": 5.0
+      }
+    },
+    {
+      "model": "llama3.2:3b",
+      "role": "small-chat",
+      "tier": "outperform",
+      "score": 0.8297,
+      "summary": {
+        "best_decode_tps": 39.51788438420878,
+        "ttft_proxy_512_s": 0.47596705433352327,
+        "coding_avg": 4.166666666666667,
+        "tool_score": 5.0
+      }
+    },
+    {
+      "model": "llama3.2:1b",
+      "role": "ultra-light-chat",
+      "tier": "usable",
+      "score": 0.7256,
+      "summary": {
+        "best_decode_tps": 27.032522324961217,
+        "ttft_proxy_512_s": 0.29891132666671183,
+        "coding_avg": 3.333333333333333,
+        "tool_score": 5.0
+      }
+    },
+    {
+      "model": "qwen2.5-coder:3b",
+      "role": "small-coder",
+      "tier": "usable",
+      "score": 0.6806,
+      "summary": {
+        "best_decode_tps": 22.72122444569332,
+        "ttft_proxy_512_s": 0.24536829033301424,
+        "coding_avg": 3.75,
+        "tool_score": 5.0
+      }
+    },
+    {
+      "model": "qwen2.5-coder:1.5b",
+      "role": "ultra-light-coder",
+      "tier": "usable",
+      "score": 0.6095,
+      "summary": {
+        "best_decode_tps": 11.57908574126744,
+        "ttft_proxy_512_s": 0.17273933666638186,
+        "coding_avg": 3.333333333333333,
+        "tool_score": 5.0
+      }
+    },
+    {
+      "model": "qwen2.5-coder:7b",
+      "role": "daily-coder",
+      "tier": "usable",
+      "score": 0.5203,
+      "summary": {
+        "best_decode_tps": 10.47514897058542,
+        "ttft_proxy_512_s": 2.100227488666557,
+        "coding_avg": 3.75,
+        "tool_score": 5.0
+      }
+    },
+    {
+      "model": "gemma3:4b",
+      "role": "mid-gemma",
+      "tier": "usable",
+      "score": 0.5124,
+      "summary": {
+        "best_decode_tps": 11.883845282318928,
+        "ttft_proxy_512_s": 1.1788882869999118,
+        "coding_avg": 3.333333333333333,
+        "tool_score": 5.0
+      }
+    },
+    {
+      "model": "gpt-oss:20b",
+      "role": "stretch-moe",
+      "tier": "too_slow",
+      "score": 0.1314,
+      "summary": {
+        "best_decode_tps": 9.993362878404774,
+        "ttft_proxy_512_s": 11.832491133333255,
+        "coding_avg": 1.25,
+        "tool_score": 0.0
+      }
+    },
+    {
+      "model": "qwen3:8b",
+      "role": "think-general",
+      "tier": "unable",
+      "score": 0.0,
+      "summary": {
+        "best_decode_tps": 8.928155755759853,
+        "ttft_proxy_512_s": 15.145051489333733,
+        "coding_avg": 0.0,
+        "tool_score": 0.0
+      }
+    }
+  ],
+  "top": [
+    {
+      "model": "gemma3:1b",
+      "role": "small-gemma",
+      "tier": "outperform",
+      "score": 0.9431,
+      "summary": {
+        "best_decode_tps": 48.899853899989694,
+        "ttft_proxy_512_s": 0.6878707649999948,
+        "coding_avg": 3.333333333333333,
+        "tool_score": 5.0
+      }
+    },
+    {
+      "model": "llama3.2:3b",
+      "role": "small-chat",
+      "tier": "outperform",
+      "score": 0.8297,
+      "summary": {
+        "best_decode_tps": 39.51788438420878,
+        "ttft_proxy_512_s": 0.47596705433352327,
+        "coding_avg": 4.166666666666667,
+        "tool_score": 5.0
+      }
+    },
+    {
+      "model": "llama3.2:1b",
+      "role": "ultra-light-chat",
+      "tier": "usable",
+      "score": 0.7256,
+      "summary": {
+        "best_decode_tps": 27.032522324961217,
+        "ttft_proxy_512_s": 0.29891132666671183,
+        "coding_avg": 3.333333333333333,
+        "tool_score": 5.0
+      }
+    },
+    {
+      "model": "qwen2.5-coder:3b",
+      "role": "small-coder",
+      "tier": "usable",
+      "score": 0.6806,
+      "summary": {
+        "best_decode_tps": 22.72122444569332,
+        "ttft_proxy_512_s": 0.24536829033301424,
+        "coding_avg": 3.75,
+        "tool_score": 5.0
+      }
+    }
+  ],
+  "loadModels": [
+    "gemma3:1b",
+    "llama3.2:3b",
+    "llama3.2:1b",
+    "qwen2.5-coder:3b"
+  ],
+  "reject": [
+    {
+      "model": "gpt-oss:20b",
+      "tier": "too_slow",
+      "errors": []
+    },
+    {
+      "model": "qwen3:8b",
+      "tier": "unable",
+      "errors": []
+    }
+  ]
+}

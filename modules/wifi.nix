@@ -70,46 +70,61 @@
         };
       };
 
-      config = lib.mkIf cfg.enable {
-        networking.networkmanager.wifi.powersave = lib.mkDefault false;
-        networking.wireless.iwd.settings = {
-          General.EnableNetworkConfiguration = lib.mkDefault false;
-        };
-        systemd.tmpfiles.rules = [
-          "d ${cfg.stateDir} 0750 root root -"
-        ];
-
-        # Soft-unblock + force radio on at boot (before user session).
-        # Without this, some machines come up with WIFI soft-blocked / nm radio off.
-        systemd.services.dendritic-wifi-radio = {
-          description = "Unblock Wi-Fi radio and enable NetworkManager wifi";
-          after = [
-            "NetworkManager.service"
-            "iwd.service"
-          ];
-          wants = [ "NetworkManager.service" ];
-          wantedBy = [ "multi-user.target" ];
-          serviceConfig = {
-            Type = "oneshot";
-            RemainAfterExit = true;
-            ExecStart = pkgs.writeShellScript "dendritic-wifi-radio" ''
-              set -euo pipefail
-              ${pkgs.util-linux}/bin/rfkill unblock wifi || true
-              ${pkgs.util-linux}/bin/rfkill unblock wlan || true
-              ${pkgs.networkmanager}/bin/nmcli radio wifi on || true
-            '';
-          };
-        };
-
-        environment.systemPackages = [
-          (pkgs.writeShellScriptBin "dendritic-wifi-nm-reload" ''
+      config =
+        let
+          nmReload = pkgs.writeShellScriptBin "dendritic-wifi-nm-reload" ''
             set -euo pipefail
             ${pkgs.util-linux}/bin/rfkill unblock wifi || true
             ${pkgs.networkmanager}/bin/nmcli radio wifi on || true
             ${pkgs.networkmanager}/bin/nmcli connection reload || true
-          '')
-        ];
-      };
+          '';
+        in
+        lib.mkIf cfg.enable {
+          networking.networkmanager.wifi.powersave = lib.mkDefault false;
+          networking.wireless.iwd.settings = {
+            General.EnableNetworkConfiguration = lib.mkDefault false;
+          };
+          systemd.tmpfiles.rules = [
+            "d ${cfg.stateDir} 0750 root root -"
+          ];
+
+          # Soft-unblock + force radio on at boot (before user session).
+          # Without this, some machines come up with WIFI soft-blocked / nm radio off.
+          systemd.services.dendritic-wifi-radio = {
+            description = "Unblock Wi-Fi radio and enable NetworkManager wifi";
+            after = [
+              "NetworkManager.service"
+              "iwd.service"
+            ];
+            wants = [ "NetworkManager.service" ];
+            wantedBy = [ "multi-user.target" ];
+            serviceConfig = {
+              Type = "oneshot";
+              RemainAfterExit = true;
+              ExecStart = pkgs.writeShellScript "dendritic-wifi-radio" ''
+                set -euo pipefail
+                ${pkgs.util-linux}/bin/rfkill unblock wifi || true
+                ${pkgs.util-linux}/bin/rfkill unblock wlan || true
+                ${pkgs.networkmanager}/bin/nmcli radio wifi on || true
+              '';
+            };
+          };
+
+          environment.systemPackages = [ nmReload ];
+
+          # User wifi-ensure must not call unprivileged ReloadConnections (polkit deny spam).
+          security.sudo.extraRules = [
+            {
+              groups = [ "wheel" ];
+              commands = [
+                {
+                  command = "${nmReload}/bin/dendritic-wifi-nm-reload";
+                  options = [ "NOPASSWD" ];
+                }
+              ];
+            }
+          ];
+        };
     };
 
   flake.modules.darwin.dendritic =
@@ -451,13 +466,10 @@
                     log "linux: ensured $ssid"
                   done
 
-                  # Prefer root reload — unprivileged D-Bus ReloadConnections is polkit-denied.
+                  # Root-only reload (NOPASSWD dendritic-wifi-nm-reload). Never call
+                  # unprivileged nmcli reload — polkit denies ReloadConnections.
                   if command -v sudo >/dev/null 2>&1; then
-                    sudo -n ${pkgs.networkmanager}/bin/nmcli connection reload 2>/dev/null \
-                      || ${pkgs.networkmanager}/bin/nmcli connection reload 2>/dev/null \
-                      || true
-                  else
-                    ${pkgs.networkmanager}/bin/nmcli connection reload 2>/dev/null || true
+                    sudo -n dendritic-wifi-nm-reload 2>/dev/null || true
                   fi
                 ''}
       '';

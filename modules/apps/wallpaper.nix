@@ -5,9 +5,9 @@
 #   2. Runtime: pure-Rust `dendritic-appearance wallpaper …` (no bash/python).
 #   3. Hot-reload: ~/colors.toml + IDE settings watchers pick up the palette.
 #   4. Stylix: when themeFromImage, base16Scheme = selected wallpaper's scheme.
-#   5. Lock ≠ desktop (same rule both platforms):
-#        macOS  → Idle nodes in com.apple.wallpaper Index.plist
-#        NixOS  → gtklock scrapes `wallpaper lock-path` at lock time
+#   5. Auth wallpaper:
+#        Linux  → gtkgreet/gtklock = desktop current (auth-path / current.tsv)
+#        macOS  → Idle ≠ desktop (lock-path); desktop via appearance apply
 #
 # gowall: optional manual tint tool — not used by the daily cycle.
 #

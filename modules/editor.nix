@@ -1219,6 +1219,9 @@
             -- no plaintext key in the Nix store.
             local ok, cc = pcall(require, "codecompanion")
             if ok then
+              -- Dual-mode: keep cloud OpenAI as default; add local Ollama
+              -- (openai-compatible) when dendritic.local-ai is enabled on the host.
+              -- Switch in :CodeCompanionChat with adapter `ollama` / `openai`.
               cc.setup({
                 adapters = {
                   http = {
@@ -1226,6 +1229,23 @@
                       return require("codecompanion.adapters").extend("openai", {
                         env = {
                           api_key = "cmd:cat ${config.sops.secrets.openai_api_key.path}",
+                        },
+                      })
+                    end,
+                    ollama = function()
+                      return require("codecompanion.adapters").extend("ollama", {
+                        env = {
+                          url = "http://127.0.0.1:11434",
+                        },
+                        schema = {
+                          model = {
+                            default = "${
+                              if (config.dendritic.local-ai.enable or false) then
+                                config.dendritic.local-ai.defaultLocalModel
+                              else
+                                "qwen2.5-coder:3b"
+                            }",
+                          },
                         },
                       })
                     end,
