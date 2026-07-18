@@ -6,7 +6,7 @@ Personal, declarative system configuration built by **Alex Spaulding (aspaulding
 
 ## Fleet
 
-[![mba](https://img.shields.io/badge/mba-online-brightgreen)](docs/fleet-status.md) [![sliceanddice](https://img.shields.io/badge/sliceanddice-stale-yellow)](docs/fleet-status.md)
+[![mba](https://img.shields.io/badge/mba-online-brightgreen)](docs/fleet-status.md) [![sliceanddice](https://img.shields.io/badge/sliceanddice-offline-lightgrey)](docs/fleet-status.md)
 
 Host presence via private heartbeats (no public IPs). Badges: online ≤30m · stale ≤24h · else offline. See [docs/fleet-status.md](docs/fleet-status.md).
 
