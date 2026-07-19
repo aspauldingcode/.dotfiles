@@ -45,26 +45,24 @@ in
       };
     in
     {
-      packages =
-        {
-          adb-wireless = adbWireless;
-        }
-        // lib.optionalAttrs onController {
-          android-rebuild = inputs.nix-android.packages.${system}.android-rebuild;
-        };
+      packages = {
+        adb-wireless = adbWireless;
+      }
+      // lib.optionalAttrs onController {
+        android-rebuild = inputs.nix-android.packages.${system}.android-rebuild;
+      };
 
-      apps =
-        {
-          adb-wireless = {
-            type = "app";
-            program = "${adbWireless}/bin/adb-wireless";
-          };
-        }
-        // lib.optionalAttrs onController {
-          android-rebuild = {
-            type = "app";
-            program = "${inputs.nix-android.packages.${system}.android-rebuild}/bin/android-rebuild";
-          };
+      apps = {
+        adb-wireless = {
+          type = "app";
+          program = "${adbWireless}/bin/adb-wireless";
         };
+      }
+      // lib.optionalAttrs onController {
+        android-rebuild = {
+          type = "app";
+          program = "${inputs.nix-android.packages.${system}.android-rebuild}/bin/android-rebuild";
+        };
+      };
     };
 }
