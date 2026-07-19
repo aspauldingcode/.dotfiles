@@ -39,7 +39,7 @@
         # macrdp + socat :3389→13389 (Bonjour `_rdp._tcp` via HM agent).
         dendritic.apps.macrdp.enable = true;
 
-        # Local Ollama (Metal) + same Rust CLI as sliceanddice (ai-local / ai-chat-local).
+        # Local Ollama (Metal) + same Rust CLI as sliceanddice (ai-local / chat).
         dendritic.local-ai.enable = true;
         # From scripts/local-ai-bench (mba Metal Ollama, 2026-07-19).
         dendritic.local-ai.loadModels = [

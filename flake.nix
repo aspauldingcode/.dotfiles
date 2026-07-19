@@ -171,15 +171,20 @@
           packages.default = config.packages.dendritic-local-ai;
           apps.default = {
             type = "app";
-            program = "${config.packages.dendritic-local-ai}/bin/ai-chat-local";
+            program = "${config.packages.dendritic-local-ai}/bin/chat";
+          };
+          apps.chat = {
+            type = "app";
+            program = "${config.packages.dendritic-local-ai}/bin/chat";
           };
           apps.ai-local = {
             type = "app";
             program = "${config.packages.dendritic-local-ai}/bin/ai-local";
           };
+          # Back-compat alias
           apps.ai-chat-local = {
             type = "app";
-            program = "${config.packages.dendritic-local-ai}/bin/ai-chat-local";
+            program = "${config.packages.dendritic-local-ai}/bin/chat";
           };
           apps.local-ai-bench = {
             type = "app";

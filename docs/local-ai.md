@@ -23,19 +23,19 @@ Rejected: `qwen3:8b` (unable — empty coding replies / slow TTFT), `gpt-oss:20b
 
 ### CLI
 
-Rust helpers (`modules/apps/local-ai-cli`): `ai-local` + `ai-chat-local`.
+Rust helpers (`modules/apps/local-ai-cli`): `ai-local` + `chat`.
 
 ```bash
 ai-local --help                      # usage
 ai-local --list                      # numbered models
 ai-local                             # status + tags (JSON)
 ai-local aider --model openai/qwen2.5-coder:3b
-ai-chat-local --help                 # usage
-ai-chat-local --list                 # numbered models
-ai-chat-local 'prompt'               # chat with default model
-ai-chat-local -m 1 'prompt'          # pick by list index
-ai-chat-local -m gemma3:1b 'prompt'  # pick by tag
-ai-chat-local --model=qwen2.5-coder:7b -- fix this
+chat --help                          # usage
+chat --list                          # numbered models
+chat 'prompt'                        # chat with default model
+chat -m 1 'prompt'                   # pick by list index
+chat -m gemma3:1b 'prompt'           # pick by tag
+chat --model=qwen2.5-coder:7b -- fix this
 curl -s http://127.0.0.1:11434/v1/models
 ```
 
@@ -66,12 +66,12 @@ Service: `ollama` (`pkgs.ollama`, Metal) via launchd on `127.0.0.1:11434`.
 ```bash
 # Cross-host (no rebuild required)
 nix run .#ai-local -- --list
-nix run .#ai-chat-local -- -m 1 'ping'
+nix run .#chat -- -m 1 'ping'
 nix run .#local-ai-bench -- scripts/local-ai-bench/matrices/mba.yaml
 
-# After darwin switch — same binaries as sliceanddice
+# After darwin / NixOS switch — same binaries on mba + sliceanddice
 ai-local --list
-ai-chat-local 'hello'
+chat 'hello'
 ```
 
 ANE / ANEMLL ranking remains a separate matrix (`matrices/mba-ane.yaml`). Metal Ollama is what the shared CLI talks to today.

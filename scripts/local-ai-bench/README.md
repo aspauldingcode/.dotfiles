@@ -22,8 +22,8 @@ Rust helpers are identical on both hosts (`modules/apps/local-ai-cli`):
 
 ```bash
 nix run .#ai-local -- --list
-nix run .#ai-chat-local -- 'hello'
-# after switch: ai-local / ai-chat-local on PATH
+nix run .#chat -- 'hello'
+# after switch: ai-local / chat on PATH
 ```
 
 ## ANE stub

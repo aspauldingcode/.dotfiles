@@ -2,12 +2,12 @@
 name = "dendritic-local-ai"
 version = "0.1.0"
 edition = "2021"
-description = "Local Ollama CLI helpers (ai-local, ai-chat-local)"
+description = "Local Ollama CLI helpers (ai-local, chat)"
 license = "MIT"
 
 [[bin]]
-name = "ai-chat-local"
-path = "src/bin/ai_chat_local.rs"
+name = "chat"
+path = "src/bin/chat.rs"
 
 [[bin]]
 name = "ai-local"

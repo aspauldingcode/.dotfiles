@@ -7,13 +7,13 @@ use dendritic_local_ai::{
 
 #[derive(Debug, Parser)]
 #[command(
-    name = "ai-chat-local",
+    name = "chat",
     about = "One-shot chat against local Ollama",
     after_help = "Examples:\n  \
-        ai-chat-local 'explain this error'\n  \
-        ai-chat-local -m 1 'summarize in one line'\n  \
-        ai-chat-local -m gemma3:1b 'summarize in one line'\n  \
-        ai-chat-local --model=qwen2.5-coder:7b -- fix this function"
+        chat 'explain this error'\n  \
+        chat -m 1 'summarize in one line'\n  \
+        chat -m gemma3:1b 'summarize in one line'\n  \
+        chat --model=qwen2.5-coder:7b -- fix this function"
 )]
 struct Args {
     /// Model tag or 1-based list index
@@ -46,23 +46,17 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    let mut model_spec = args
-        .model
-        .clone()
-        .unwrap_or_else(default_model);
+    let mut model_spec = args.model.clone().unwrap_or_else(default_model);
 
-    // Legacy: `ai-chat-local MODEL <prompt...>` when MODEL is tag/index.
-    if args.model.is_none()
-        && args.prompt.len() >= 2
-        && looks_like_model_spec(&args.prompt[0])
-    {
+    // Legacy: `chat MODEL <prompt...>` when MODEL is tag/index.
+    if args.model.is_none() && args.prompt.len() >= 2 && looks_like_model_spec(&args.prompt[0]) {
         model_spec = args.prompt.remove(0);
     }
 
     if args.prompt.is_empty() {
         // clap --help already exists; bare run shows usage-ish list like the shell tool.
-        eprintln!("usage: ai-chat-local [options] [--] <prompt...>");
-        eprintln!("       ai-chat-local --list");
+        eprintln!("usage: chat [options] [--] <prompt...>");
+        eprintln!("       chat --list");
         eprintln!();
         eprintln!("default model: {}", default_model());
         eprintln!();

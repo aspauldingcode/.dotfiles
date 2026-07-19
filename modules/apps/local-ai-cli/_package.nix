@@ -14,7 +14,7 @@ rustPlatform.buildRustPackage {
   nativeBuildInputs = [ makeWrapper ];
 
   postInstall = ''
-    wrapProgram $out/bin/ai-chat-local \
+    wrapProgram $out/bin/chat \
       --set-default AI_LOCAL_BASE_URL ${lib.escapeShellArg defaultBaseUrl} \
       --set-default AI_LOCAL_DEFAULT_MODEL ${lib.escapeShellArg defaultModel} \
       --set-default OLLAMA_HOST ${lib.escapeShellArg defaultBaseUrl}
@@ -22,11 +22,13 @@ rustPlatform.buildRustPackage {
       --set-default AI_LOCAL_BASE_URL ${lib.escapeShellArg defaultBaseUrl} \
       --set-default AI_LOCAL_DEFAULT_MODEL ${lib.escapeShellArg defaultModel} \
       --set-default OLLAMA_HOST ${lib.escapeShellArg defaultBaseUrl}
+    # Back-compat alias from the old name.
+    ln -s chat $out/bin/ai-chat-local
   '';
 
   meta = {
-    description = "Local Ollama CLI helpers (ai-local, ai-chat-local)";
-    mainProgram = "ai-chat-local";
+    description = "Local Ollama CLI helpers (ai-local, chat)";
+    mainProgram = "chat";
     license = lib.licenses.mit;
   };
 }

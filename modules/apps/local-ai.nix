@@ -1,5 +1,5 @@
 # Dual-mode local AI: free Ollama alongside existing cloud OpenAI.
-# Same Rust CLI (ai-local / ai-chat-local) on NixOS + Darwin.
+# Same Rust CLI (ai-local / chat) on NixOS + Darwin.
 # NixOS: CUDA ollama. Darwin: Metal ollama via launchd (ANE ranking is separate).
 {
   flake.modules.nixos.dendritic =
@@ -202,7 +202,7 @@
       };
 
       config = lib.mkIf cfg.enable {
-        # Rust CLI (ai-local / ai-chat-local). Same package on NixOS + Darwin.
+        # Rust CLI (ai-local / chat). Same package on NixOS + Darwin.
         home.packages = [
           localAiCli
         ]
@@ -215,7 +215,7 @@
           _ai_ollama_models() {
             local -a models nums
             local i=1
-            models=(''${(f)"$(${localAiCli}/bin/ai-chat-local --list-raw 2>/dev/null)"})
+            models=(''${(f)"$(${localAiCli}/bin/chat --list-raw 2>/dev/null)"})
             # Model tags contain ':' — use compadd, not _describe (colon = desc sep).
             (( ''${#models} )) || models=(${cfg.defaultLocalModel})
             for _ in "''${models[@]}"; do
@@ -226,14 +226,16 @@
             compadd -a nums
           }
 
-          _ai-chat-local() {
+          _dendritic_chat() {
             _arguments -s -S \
               '(-h --help)'{-h,--help}'[show help]' \
               '(-l --list)'{-l,--list}'[list installed models (numbered)]' \
               '(-m --model)'{-m,--model}'[model tag or list index]:model:_ai_ollama_models' \
               '*:prompt:_message'
           }
-          compdef _ai-chat-local ai-chat-local
+          compdef _dendritic_chat chat
+          # Back-compat name
+          compdef _dendritic_chat ai-chat-local
 
           # ai-local is a precommand: complete flags, then the wrapped command.
           _ai-local() {
