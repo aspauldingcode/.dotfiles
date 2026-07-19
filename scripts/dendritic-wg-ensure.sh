@@ -203,6 +203,12 @@ install_conf() {
   if sudo_cmd mkdir -p "$CONF_DIR" && sudo_cmd install -m 0600 "$USER_CONF" "$CONF_PATH"; then
     return 0
   fi
+  if [[ "$(uname -s)" == Darwin ]] && command -v osascript >/dev/null 2>&1; then
+    # Single admin dialog: mkdir + install (agents lack sudo -n / Touch ID TTY).
+    if osascript -e "do shell script \"mkdir -p $(printf '%q' "$CONF_DIR") && install -m 0600 $(printf '%q' "$USER_CONF") $(printf '%q' "$CONF_PATH")\" with administrator privileges" 2>/dev/null; then
+      return 0
+    fi
+  fi
   log "could not install $CONF_PATH (sudo) — user conf at $USER_CONF"
   return 1
 }
@@ -216,12 +222,20 @@ reload_iface() {
   wq="$(wg_quick_bin)"
   if command -v systemctl >/dev/null 2>&1; then
     if systemctl cat "wg-quick-${IFACE}.service" >/dev/null 2>&1; then
-      sudo_cmd systemctl restart "wg-quick-${IFACE}.service" || return 1
-      return 0
+      sudo_cmd systemctl restart "wg-quick-${IFACE}.service" && return 0
     fi
   fi
-  sudo_cmd "$wq" down "$IFACE" 2>/dev/null || true
-  sudo_cmd "$wq" up "$IFACE"
+  if sudo_cmd "$wq" down "$IFACE" 2>/dev/null || true; then
+    :
+  fi
+  if sudo_cmd "$wq" up "$IFACE"; then
+    return 0
+  fi
+  if [[ "$(uname -s)" == Darwin ]] && command -v osascript >/dev/null 2>&1; then
+    osascript -e "do shell script \"$(printf '%q' "$wq") down $(printf '%q' "$IFACE") 2>/dev/null || true; $(printf '%q' "$wq") up $(printf '%q' "$IFACE")\" with administrator privileges" 2>/dev/null
+    return $?
+  fi
+  return 1
 }
 
 install_conf
