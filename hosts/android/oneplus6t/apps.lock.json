@@ -1,5 +1,28 @@
 {
   "abi": "arm64-v8a",
-  "lockedAt": 0,
-  "packages": {}
+  "lockedAt": 1784496435,
+  "packages": {
+    "org.fdroid.fdroid": {
+      "versionCode": 1023052,
+      "versionName": "1.23.2",
+      "url": "https://f-droid.org/repo/org.fdroid.fdroid_1023052.apk",
+      "sha256": "985f5181d48bb6bafd54083a048b391271e0ab28385881cc41294fb01a222762",
+      "repoFingerprint": "43238d512c1e5eb2d6569f4a3afbf5523418b82e0a3ed1552770abb9a9c9ccab",
+      "signerSha256": [
+        "43238d512c1e5eb2d6569f4a3afbf5523418b82e0a3ed1552770abb9a9c9ccab"
+      ],
+      "preferredSigner": "43238d512c1e5eb2d6569f4a3afbf5523418b82e0a3ed1552770abb9a9c9ccab"
+    },
+    "com.termux": {
+      "versionCode": 1002,
+      "versionName": "0.118.3",
+      "url": "https://f-droid.org/repo/com.termux_1002.apk",
+      "sha256": "e6265a57eb5ca363808488e3b01955958bed93bc0c8a0d281849b363b11027ec",
+      "repoFingerprint": "43238d512c1e5eb2d6569f4a3afbf5523418b82e0a3ed1552770abb9a9c9ccab",
+      "signerSha256": [
+        "228fb2cfe90831c1499ec3ccaf61e96e8e1ce70766b9474672ce427334d41c42"
+      ],
+      "preferredSigner": "228fb2cfe90831c1499ec3ccaf61e96e8e1ce70766b9474672ce427334d41c42"
+    }
+  }
 }

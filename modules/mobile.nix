@@ -24,8 +24,16 @@
 
         home.packages =
           lib.optionals cfg.agentDevice.enable [ agentDevicePkg ]
-          ++ lib.optionals pkgs.stdenv.isDarwin [
+          ++ [
             pkgs.android-tools
+            # Wireless adb pair/connect (also: nix run .#adb-wireless).
+            (pkgs.writeShellApplication {
+              name = "adb-wireless";
+              runtimeInputs = [ pkgs.android-tools ];
+              text = ''
+                exec bash ${../scripts/adb-wireless.sh} "$@"
+              '';
+            })
           ];
 
         home.sessionVariables = lib.optionalAttrs pkgs.stdenv.isDarwin {

@@ -1,8 +1,6 @@
 # Wire [nix-android](https://github.com/devindudeman/nix-android) into this
-# flake: androidConfigurations beside darwin/nixos, plus the pinned CLI.
-#
-# Controller systems only (upstream exports): aarch64-darwin, x86_64-linux.
-# Phone ABI lives in hosts/android/oneplus6t — not here.
+# flake: androidConfigurations beside darwin/nixos, plus the pinned CLI and
+# wireless adb helper. Phone ABI lives in hosts/android/oneplus6t.
 { inputs, lib, ... }:
 let
   deviceModule = ../hosts/android/oneplus6t;
@@ -31,13 +29,42 @@ in
   };
 
   perSystem =
-    { system, ... }:
-    lib.optionalAttrs (lib.elem system controllerSystems) {
-      packages.android-rebuild = inputs.nix-android.packages.${system}.android-rebuild;
-
-      apps.android-rebuild = {
-        type = "app";
-        program = "${inputs.nix-android.packages.${system}.android-rebuild}/bin/android-rebuild";
+    {
+      system,
+      pkgs,
+      ...
+    }:
+    let
+      onController = lib.elem system controllerSystems;
+      adbWireless = pkgs.writeShellApplication {
+        name = "adb-wireless";
+        runtimeInputs = [ pkgs.android-tools ];
+        text = ''
+          exec bash ${../scripts/adb-wireless.sh} "$@"
+        '';
       };
+    in
+    {
+      packages =
+        {
+          adb-wireless = adbWireless;
+        }
+        // lib.optionalAttrs onController {
+          android-rebuild = inputs.nix-android.packages.${system}.android-rebuild;
+        };
+
+      apps =
+        {
+          adb-wireless = {
+            type = "app";
+            program = "${adbWireless}/bin/adb-wireless";
+          };
+        }
+        // lib.optionalAttrs onController {
+          android-rebuild = {
+            type = "app";
+            program = "${inputs.nix-android.packages.${system}.android-rebuild}/bin/android-rebuild";
+          };
+        };
     };
 }

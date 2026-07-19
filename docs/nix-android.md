@@ -13,6 +13,7 @@ the OS, no Nix on the device.
 | Config (Apple Silicon controller) | `.#oneplus6t-darwin`                                      |
 | Config (x86_64 Linux controller)  | `.#oneplus6t-linux`                                       |
 | CLI                               | `nix run .#android-rebuild -- …`                          |
+| Wireless adb                      | `nix run .#adb-wireless -- …` / `scripts/adb-wireless.sh` |
 
 ## Support boundary
 
@@ -28,15 +29,61 @@ Controllers: **Apple Silicon macOS** (`mba`) and **x86_64 Linux**
 
 ## Prerequisites
 
-1. USB debugging enabled on the phone; accept the RSA prompt once.
-2. Confirm the serial:
+1. USB debugging enabled on the phone (or Wireless debugging — see below); accept
+   the RSA prompt once.
+2. Confirm the serial (`USB` hardware id, or wireless `IP:PORT`):
 
    ```bash
    adb devices -l
+   # or
+   nix run .#adb-wireless -- status
    ```
 
 3. Declared ABI is `arm64-v8a` (OnePlus 6T). The engine refuses a mismatch with
    `ro.product.cpu.abi`.
+
+## Wireless adb
+
+nix-android only needs a working adb serial — wireless works the same as USB.
+Two setup paths:
+
+### A. USB once → stay on Wi-Fi (`tcpip`)
+
+Same LAN as the controller. Plug in once:
+
+```bash
+nix run .#adb-wireless -- tcpip          # enables adb tcpip 5555, connects
+# unplug USB
+nix run .#adb-wireless -- status
+```
+
+Later reconnects (phone IP may change):
+
+```bash
+nix run .#adb-wireless -- connect 192.168.1.40:5555
+```
+
+### B. Android 11+ Wireless debugging (no cable)
+
+On the phone: **Settings → System → Developer options → Wireless debugging**
+→ enable → **Pair device with pairing code**. Then:
+
+```bash
+nix run .#adb-wireless -- pair 192.168.1.40:37123 123456
+nix run .#adb-wireless -- connect 192.168.1.40:41259   # IP & port from Wireless debugging
+```
+
+LineageOS exposes this when based on Android 11+. Older builds use path A.
+
+### Use with android-rebuild
+
+```bash
+SERIAL=$(nix run .#adb-wireless -- serial)
+nix run .#android-rebuild -- plan --flake .#oneplus6t-darwin --serial "$SERIAL"
+```
+
+`adb-wireless` remembers the last `HOST:PORT` under
+`~/.local/state/adb-wireless/last-endpoint` so bare `connect` works next time.
 
 ## Daily workflow
 
