@@ -247,6 +247,16 @@
         git
         android-tools
         waypipe
+        # KDE Dolphin (Qt/Wayland) — graphical file manager for niri.
+        kdePackages.dolphin
+        kdePackages.qtsvg # icon themes in Dolphin
+        kdePackages.dolphin-plugins # git, mount iso, dropbox, …
+        kdePackages.ffmpegthumbs # video thumbnails
+        kdePackages.ark # archive create/extract from Dolphin
+        kdePackages.kio-extras # network/trash/thumbnail KIO workers
+        # Disks / partition formatting (udisks2 frontends).
+        gnome-disk-utility # “Disks” — format, image, SMART
+        kdePackages.partitionmanager # full partition manager
         # Interactive Yes/No for keyboard-backlight probe cycles.
         (import ./kbd-bl-ask.nix { inherit pkgs; })
         # NOTE: cursor + antigravity are installed via Home Manager
@@ -254,6 +264,12 @@
         # are intentionally NOT listed here to avoid a non-FHS PATH duplicate.
         # niri plumbing pkgs come from modules/apps/niri.nix.
       ];
+
+      # Open folders in Dolphin from browsers / xdg-open.
+      xdg.mime.defaultApplications."inode/directory" = "org.kde.dolphin.desktop";
+
+      # Needed by GNOME Disks / Partition Manager / Dolphin mount plugin.
+      services.udisks2.enable = true;
     }
 
     inputs.home-manager.nixosModules.home-manager
