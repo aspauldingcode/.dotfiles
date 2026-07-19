@@ -46,8 +46,12 @@
         };
 
         # If conf is missing at boot (pre-bootstrap), don't fail the whole system.
+        # Down-before-up: avoid "already exists" when ensure or a prior gen left the iface up.
         systemd.services."wg-quick-${cfg.interface}" = {
           unitConfig.ConditionPathExists = "/etc/wireguard/${cfg.interface}.conf";
+          serviceConfig.ExecStartPre = [
+            "-${pkgs.wireguard-tools}/bin/wg-quick down ${cfg.interface}"
+          ];
         };
       };
     };
