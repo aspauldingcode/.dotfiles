@@ -51,7 +51,11 @@ host_id() {
 }
 
 pass_get() {
-  local key="$1" path="secretspec/shared/default/$key" val=""
+  # Split locals: `local key="$1" path="...$key"` leaves $key unbound under set -u.
+  local key path val
+  key="$1"
+  path="secretspec/shared/default/$key"
+  val=""
   if command -v secretspec >/dev/null 2>&1 && [[ -r $SECRETSPEC_TOML ]]; then
     val="$(secretspec get -f "$SECRETSPEC_TOML" "$key" 2>/dev/null || true)"
   fi
