@@ -5,14 +5,14 @@ Declarative Android apps and reachable device state via
 for your phone**. Converge over authorized `adb` shell; no root, no replacing
 the OS, no Nix on the device.
 
-| Piece                                              | Path / attr                                      |
-| -------------------------------------------------- | ------------------------------------------------ |
-| Device module                                      | [`hosts/android/oneplus6t/`](../hosts/android/oneplus6t/) |
-| APK lock                                           | `hosts/android/oneplus6t/apps.lock.json`         |
-| Flake wiring                                       | [`modules/nix-android.nix`](../modules/nix-android.nix) |
-| Config (Apple Silicon controller)                  | `.#oneplus6t-darwin`                             |
-| Config (x86_64 Linux controller)                   | `.#oneplus6t-linux`                              |
-| CLI                                                | `nix run .#android-rebuild -- …`                 |
+| Piece                             | Path / attr                                               |
+| --------------------------------- | --------------------------------------------------------- |
+| Device module                     | [`hosts/android/oneplus6t/`](../hosts/android/oneplus6t/) |
+| APK lock                          | `hosts/android/oneplus6t/apps.lock.json`                  |
+| Flake wiring                      | [`modules/nix-android.nix`](../modules/nix-android.nix)   |
+| Config (Apple Silicon controller) | `.#oneplus6t-darwin`                                      |
+| Config (x86_64 Linux controller)  | `.#oneplus6t-linux`                                       |
+| CLI                               | `nix run .#android-rebuild -- …`                          |
 
 ## Support boundary
 

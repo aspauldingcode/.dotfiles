@@ -79,7 +79,12 @@
       pullModels = pkgs.writeShellScript "ollama-pull-models" ''
         set -euo pipefail
         export OLLAMA_HOST=${lib.escapeShellArg ollamaHost}
-        export PATH=${lib.makeBinPath [ pkgs.ollama pkgs.coreutils ]}:$PATH
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.ollama
+            pkgs.coreutils
+          ]
+        }:$PATH
         for i in $(seq 1 60); do
           if ollama list >/dev/null 2>&1; then
             break
@@ -113,13 +118,15 @@
       };
 
       config = lib.mkIf cfg.enable {
-        environment.systemPackages = with pkgs; [
-          ollama
-          llama-cpp
-        ]
-        ++ lib.optionals (pkgs ? aider-chat) [ aider-chat ]
-        ++ lib.optionals (pkgs ? opencode) [ opencode ]
-        ++ lib.optionals (pkgs ? oterm) [ oterm ];
+        environment.systemPackages =
+          with pkgs;
+          [
+            ollama
+            llama-cpp
+          ]
+          ++ lib.optionals (pkgs ? aider-chat) [ aider-chat ]
+          ++ lib.optionals (pkgs ? opencode) [ opencode ]
+          ++ lib.optionals (pkgs ? oterm) [ oterm ];
 
         launchd.user.agents.ollama = {
           serviceConfig = {
