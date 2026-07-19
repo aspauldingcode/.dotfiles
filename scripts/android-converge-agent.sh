@@ -33,7 +33,7 @@ need_cmd() { command -v "$1" >/dev/null 2>&1 || {
   warn "missing $1; skip"
   exit 0
 }; }
-need_bin() { [[ -x "$1" ]] || {
+need_bin() { [[ -x $1 ]] || {
   warn "missing executable $1; skip"
   exit 0
 }; }
@@ -68,15 +68,15 @@ now_epoch() { date +%s; }
 resolve_serial() {
   local usb w serial
   usb=$(adb devices | awk 'NR>1 && $2=="device" && $1 !~ /:/ { print $1; exit }')
-  if [[ -n "${usb:-}" ]]; then
+  if [[ -n ${usb:-} ]]; then
     printf '%s\n' "$usb"
     return 0
   fi
 
-  if [[ -n "$ADB_WIRELESS_BIN" && -x "$ADB_WIRELESS_BIN" ]]; then
+  if [[ -n $ADB_WIRELESS_BIN && -x $ADB_WIRELESS_BIN ]]; then
     "$ADB_WIRELESS_BIN" connect >/dev/null 2>&1 || true
     w=$("$ADB_WIRELESS_BIN" serial 2>/dev/null || true)
-    if [[ -n "${w:-}" ]]; then
+    if [[ -n ${w:-} ]]; then
       printf '%s\n' "$w"
       return 0
     fi
@@ -84,7 +84,7 @@ resolve_serial() {
 
   # Fallback: any wireless device already in adb
   serial=$(adb devices | awk 'NR>1 && $2=="device" && $1 ~ /:/ { print $1; exit }')
-  if [[ -n "${serial:-}" ]]; then
+  if [[ -n ${serial:-} ]]; then
     printf '%s\n' "$serial"
     return 0
   fi
@@ -112,11 +112,11 @@ acquire_device_lease() {
   now=$(now_epoch)
   expires=$((now + LEASE_TTL))
   body=$(read_lease "$serial")
-  if [[ -n "$body" ]]; then
+  if [[ -n $body ]]; then
     holder=$(printf '%s\n' "$body" | sed -n 's/^hostId=//p' | head -1)
     exp=$(printf '%s\n' "$body" | sed -n 's/^expires=//p' | head -1)
-    if [[ -n "$holder" && -n "$exp" && "$exp" =~ ^[0-9]+$ && "$exp" -gt "$now" ]]; then
-      if [[ "$holder" == "$HOST_ID" ]]; then
+    if [[ -n $holder && -n $exp && $exp =~ ^[0-9]+$ && $exp -gt $now ]]; then
+      if [[ $holder == "$HOST_ID" ]]; then
         write_lease "$serial" "$expires"
         return 0
       fi
@@ -128,7 +128,7 @@ acquire_device_lease() {
   # Re-read to detect a race (two controllers writing).
   body=$(read_lease "$serial")
   holder=$(printf '%s\n' "$body" | sed -n 's/^hostId=//p' | head -1)
-  if [[ "$holder" != "$HOST_ID" ]]; then
+  if [[ $holder != "$HOST_ID" ]]; then
     log "skip: lost lease race to ${holder:-unknown}"
     return 1
   fi
@@ -159,8 +159,8 @@ main() {
   # shellcheck disable=SC2064
   trap "clear_lease $(printf '%q' "$serial"); release_local_lock" EXIT
 
-  local cmd=( "$BIN" )
-  if [[ "$APPLY" == "1" ]]; then
+  local cmd=("$BIN")
+  if [[ $APPLY == "1" ]]; then
     cmd+=(switch)
   else
     cmd+=(plan)
