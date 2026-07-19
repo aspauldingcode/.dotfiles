@@ -126,6 +126,7 @@
           gnugrep
           gnupg
           git
+          hostname
           wireguard-tools
           python3
           passPackage

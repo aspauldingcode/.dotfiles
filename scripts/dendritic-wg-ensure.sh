@@ -35,18 +35,19 @@ need wg
 [[ -r $PEERS_JSON ]] || die "missing peers JSON: $PEERS_JSON"
 
 host_id() {
+  # Prefer explicit peer id (HM wrapper sets this; root activation may lack hostname on PATH).
+  if [[ -n ${WG_PEER_ID:-} ]]; then
+    printf '%s' "$WG_PEER_ID"
+    return 0
+  fi
   local h
-  h="$(hostname -s 2>/dev/null || hostname | cut -d. -f1)"
+  h="$(
+    { hostname -s 2>/dev/null || hostname 2>/dev/null || uname -n 2>/dev/null; } | cut -d. -f1
+  )"
   h="$(printf '%s' "$h" | tr '[:upper:]' '[:lower:]')"
   case "$h" in
   mba | sliceanddice) printf '%s' "$h" ;;
-  *)
-    if [[ -n ${WG_PEER_ID:-} ]]; then
-      printf '%s' "$WG_PEER_ID"
-    else
-      die "unknown host '$h' — set WG_PEER_ID=mba|sliceanddice"
-    fi
-    ;;
+  *) die "unknown host '$h' — set WG_PEER_ID=mba|sliceanddice" ;;
   esac
 }
 
