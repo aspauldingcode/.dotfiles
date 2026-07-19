@@ -78,9 +78,11 @@ pass_commit() {
   local msg="$1"
   git -C "$PASSWORD_STORE_DIR" add -A
   if git -C "$PASSWORD_STORE_DIR" status --porcelain | grep -q .; then
-    git -C "$PASSWORD_STORE_DIR" -c user.useConfigOnly=true commit -m "$msg" >/dev/null 2>&1 ||
-      git -C "$PASSWORD_STORE_DIR" -c user.name="pass-store-sync" \
-        -c user.email="pass-store-sync@localhost" commit -m "$msg" >/dev/null
+    # Prefer explicit identity: hosts without git user.* fail useConfigOnly and
+    # can leave rotates uncommitted (breaks multi-host refresh sync).
+    git -C "$PASSWORD_STORE_DIR" -c user.name="pass-store-sync" \
+      -c user.email="pass-store-sync@localhost" commit -m "$msg" >/dev/null 2>&1 ||
+      git -C "$PASSWORD_STORE_DIR" -c user.useConfigOnly=true commit -m "$msg" >/dev/null 2>&1 || true
     git -C "$PASSWORD_STORE_DIR" push >/dev/null 2>&1 || true
   fi
 }
@@ -112,6 +114,23 @@ with_lock() {
 
 cache_valid() {
   [[ -f $CACHE_FILE ]] || return 1
+  # Drop local access cache when pass refresh_token moved (peer host rotated).
+  # Serving a pre-rotation access token races with Vercel refresh-token reuse.
+  local pass_refresh cache_refresh
+  pass_refresh="$(pass_get "$REFRESH_PATH")"
+  cache_refresh="$(
+    python3 - "$CACHE_FILE" <<'PY' 2>/dev/null || true
+import json, sys
+try:
+    print(json.load(open(sys.argv[1])).get("refresh_token") or "")
+except Exception:
+    pass
+PY
+  )"
+  if [[ -n $pass_refresh && -n $cache_refresh && $pass_refresh != "$cache_refresh" ]]; then
+    rm -f "$CACHE_FILE"
+    return 1
+  fi
   python3 - "$CACHE_FILE" "$SKEW_SECS" <<'PY'
 import json, sys, time
 path, skew = sys.argv[1], int(sys.argv[2])
@@ -131,6 +150,10 @@ write_cache() {
   local access="$1" expires_in="$2" refresh="${3:-}"
   mkdir -p "$CACHE_DIR"
   umask 077
+  # Always pin the refresh_token we minted with so peers can detect drift.
+  if [[ -z $refresh ]]; then
+    refresh="$(pass_get "$REFRESH_PATH")"
+  fi
   python3 - "$CACHE_FILE" "$access" "$expires_in" "$refresh" <<'PY'
 import json, sys, time
 path, access, exp_in, refresh = sys.argv[1], sys.argv[2], int(sys.argv[3] or 28800), sys.argv[4]
