@@ -18,5 +18,11 @@
   "EDUROAM_IDENTITY": ".config/dendritic/wifi/eduroam/identity",
   "EDUROAM_PASSWORD": ".config/dendritic/wifi/eduroam/password",
   "EDUROAM_CA": ".config/dendritic/wifi/eduroam/ca.pem",
-  "EDUROAM_PROFILE": ".config/dendritic/wifi/eduroam/profile.json"
+  "EDUROAM_PROFILE": ".config/dendritic/wifi/eduroam/profile.json",
+  "WG_PUBLIC_KEY_MBA": ".config/dendritic/wireguard/keys/mba.public",
+  "WG_PUBLIC_KEY_SLICEANDDICE": ".config/dendritic/wireguard/keys/sliceanddice.public",
+  "WG_PSK": ".config/dendritic/wireguard/psk",
+  "WG_ENDPOINT_MBA": ".config/dendritic/wireguard/endpoints/mba",
+  "WG_ENDPOINT_SLICEANDDICE": ".config/dendritic/wireguard/endpoints/sliceanddice",
+  "WG_HOME": ".config/dendritic/wireguard/home"
 }

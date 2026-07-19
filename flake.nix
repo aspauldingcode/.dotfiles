@@ -731,6 +731,57 @@
               "${script}/bin/pass-vercel-bootstrap";
           };
 
+          apps.pass-wg-bootstrap = {
+            type = "app";
+            program =
+              let
+                script = pkgs.writeShellApplication {
+                  name = "pass-wg-bootstrap";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    wireguard-tools
+                    python3
+                    git
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    export WG_PEERS_JSON="''${DOTFILES_ROOT}/home/wireguard-peers.json"
+                    exec bash ${./scripts/pass-wg-bootstrap.sh} "$@"
+                  '';
+                };
+              in
+              "${script}/bin/pass-wg-bootstrap";
+          };
+
+          apps.pass-wg-set-home = {
+            type = "app";
+            program =
+              let
+                script = pkgs.writeShellApplication {
+                  name = "pass-wg-set-home";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    python3
+                    git
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    export WG_PEERS_JSON="''${DOTFILES_ROOT}/home/wireguard-peers.json"
+                    exec bash ${./scripts/pass-wg-set-home.sh} "$@"
+                  '';
+                };
+              in
+              "${script}/bin/pass-wg-set-home";
+          };
+
           apps.pass-github-app-bootstrap = {
             type = "app";
             program =

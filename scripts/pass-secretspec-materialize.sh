@@ -197,5 +197,9 @@ fi
 if command -v dendritic-eduroam-ensure >/dev/null 2>&1; then
   dendritic-eduroam-ensure || warn "dendritic-eduroam-ensure failed"
 fi
+# WireGuard overlay (dendritic.wireguard) — rewrite conf after key/endpoint sync.
+if command -v dendritic-wg-ensure >/dev/null 2>&1; then
+  WG_SUDO_INTERACTIVE=0 dendritic-wg-ensure || warn "dendritic-wg-ensure failed"
+fi
 
 exit 0

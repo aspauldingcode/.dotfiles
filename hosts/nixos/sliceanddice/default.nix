@@ -138,6 +138,9 @@
       dendritic.apps.rdp.enable = true;
       dendritic.apps.rdp.bonjourName = "sliceanddice";
 
+      # WireGuard overlay ↔ mba (pass/SecretSpec keys; see docs/wireguard.md).
+      dendritic.wireguard.enable = true;
+
       # Shared NixOS + Windows local login from private pass (LOGIN_PASSWORD).
       dendritic.identity.enable = true;
       dendritic.identity.username = "alex";
@@ -303,6 +306,8 @@
         dendritic.wallpaper.enable = true;
         dendritic.profilePhoto.enable = true;
         dendritic.apps.rdp.enable = true;
+        dendritic.wireguard.enable = true;
+        dendritic.wireguard.peerId = "sliceanddice";
 
         # niri user config: terminal → ghostty, launcher → fuzzel.
         dendritic.apps.niri.enable = true;

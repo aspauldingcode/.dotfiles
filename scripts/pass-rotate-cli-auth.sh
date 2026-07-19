@@ -7,6 +7,7 @@
 #   nix run .#pass-rotate-cli-auth -- --github
 #   nix run .#pass-rotate-cli-auth -- --gcloud
 #   nix run .#pass-rotate-cli-auth -- --vercel
+#   nix run .#pass-rotate-cli-auth -- --wg
 #   nix run .#pass-rotate-cli-auth -- --auto    # only if within --days of expiry
 #
 # FlakeHub: mint device JWT via flakehub-mint-token (admin elevate when needed).
@@ -21,6 +22,9 @@
 # Vercel: fully automated via OAuth refresh_token in pass
 #   (one-time: nix run .#pass-vercel-bootstrap). Access tokens mint on demand;
 #   --vercel forces refresh (or device re-auth if refresh revoked).
+# WireGuard: rotate pairing keys/PSK in pass (both peers must rematerialize).
+#   One-time: nix run .#pass-wg-bootstrap
+#   Rotate:   pass-rotate-cli-auth --wg   (or pass-wg-rotate)
 set -euo pipefail
 
 DOTFILES_ROOT="${DOTFILES_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
@@ -41,6 +45,7 @@ DO_FH=false
 DO_GH=false
 DO_GCLOUD=false
 DO_VERCEL=false
+DO_WG=false
 DO_BOTH=true
 FROM_CLIPBOARD=false
 FROM_GH_AUTH=false
@@ -82,6 +87,10 @@ while [[ $# -gt 0 ]]; do
     ;;
   --vercel | --vc)
     DO_VERCEL=true
+    DO_BOTH=false
+    ;;
+  --wg | --wireguard)
+    DO_WG=true
     DO_BOTH=false
     ;;
   --days)
@@ -313,6 +322,16 @@ status() {
     log "  mode: unset — run: pass-vercel-bootstrap"
   fi
   log "  pass path: $VERCEL_REFRESH_PATH"
+  log "WireGuard"
+  if pass show secretspec/shared/default/WG_PSK >/dev/null 2>&1; then
+    if command -v pass-wg-bootstrap >/dev/null 2>&1; then
+      pass-wg-bootstrap --status 2>/dev/null | sed 's/^/  /' || true
+    else
+      bash "${DOTFILES_ROOT}/scripts/pass-wg-bootstrap.sh" --status 2>/dev/null | sed 's/^/  /' || true
+    fi
+  else
+    log "  mode: unset — run: nix run .#pass-wg-bootstrap"
+  fi
   log "Auto threshold: ${DAYS}d"
 }
 
@@ -500,6 +519,16 @@ rotate_vercel() {
   die "vercel: not configured — run: nix run .#pass-vercel-bootstrap"
 }
 
+rotate_wg() {
+  log "wireguard: rotating pairing keys + PSK in pass…"
+  if command -v pass-wg-rotate >/dev/null 2>&1; then
+    pass-wg-rotate
+  else
+    bash "${DOTFILES_ROOT}/scripts/pass-wg-rotate.sh"
+  fi
+  log "wireguard: done — both peers: pass-materialize && dendritic-wg-ensure"
+}
+
 due_for_rotate() {
   local exp days
   exp="$1"
@@ -620,6 +649,21 @@ if $DO_VERCEL; then
       FAILED=1
     }
   fi
+fi
+
+# WireGuard is never part of DO_BOTH / --auto (breaks peers until both rematerialize).
+if $DO_WG; then
+  if ! pass show secretspec/shared/default/WG_PSK >/dev/null 2>&1; then
+    die "wireguard: not configured — run: nix run .#pass-wg-bootstrap"
+  fi
+  if ! $YES && [[ -t 0 ]]; then
+    read -r -p "Rotate WireGuard keys+PSK (both peers must rematerialize)? [y/N] " ans
+    [[ $ans == [yY]* ]] || die "aborted"
+  fi
+  rotate_wg || {
+    log "wireguard: rotation FAILED"
+    FAILED=1
+  }
 fi
 
 exit "${FAILED:-0}"

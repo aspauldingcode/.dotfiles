@@ -68,6 +68,7 @@ nh os switch /etc/nixos -H my-nixos-host
 
 - **[Pass + SecretSpec sync](docs/pass-secretspec.md)** — How the private password-store, ntfy peer wake, and SecretSpec work; how to replicate with your own vault (no one else’s secrets).
 - **[Dendritic Wi-Fi](docs/wifi.md)** — Declarative Bubbles (and friends) via pass PSK on macOS + NixOS/iwd.
+- **[Dendritic WireGuard](docs/wireguard.md)** — mba ↔ sliceanddice overlay via pass/SecretSpec; RDP/SSH when one host stays on Bubbles.
 - **[Dendritic Nix Documentation Suite](docs/dendritic-nix/README.md)** — Full multi-file deep dive: foundations, mechanics, repo implementation, real examples, migration, and anti-patterns.
 - **[Dendritic Nix: Patterns, Den, and Dendrix](docs/dendritic-patterns.md)** — Single-file overview of the pattern and ecosystem.
 - **[Den — Deep Reference](docs/den.md)** — Detailed documentation on Den: aspects, hosts, policies, classes, pipeline, and how this flake uses them.
