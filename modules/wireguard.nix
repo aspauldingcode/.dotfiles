@@ -66,7 +66,8 @@
     let
       cfg = config.dendritic.wireguard;
       iface = cfg.interface;
-      wgQuickUp = pkgs.writeShellScript "dendritic-wg-quick-up" ''
+      # writeShellScriptBin so Login Items show `dendritic-wg-quick-up`, not HASH-….
+      wgQuickUp = pkgs.writeShellScriptBin "dendritic-wg-quick-up" ''
         set -euo pipefail
         conf=/etc/wireguard/${iface}.conf
         if [ ! -f "$conf" ]; then
@@ -96,7 +97,7 @@
         launchd.daemons.dendritic-wireguard = {
           serviceConfig = {
             Label = "com.aspaulding.dendritic-wireguard";
-            ProgramArguments = [ "${wgQuickUp}" ];
+            ProgramArguments = [ (lib.getExe wgQuickUp) ];
             RunAtLoad = true;
             KeepAlive = false;
             StandardOutPath = "/var/log/dendritic-wireguard.log";

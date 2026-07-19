@@ -20,7 +20,7 @@
           "linux";
       defaultDotfiles =
         if pkgs.stdenv.isDarwin then "/etc/nix-darwin/.dotfiles" else "/etc/nixos/.dotfiles";
-      heartbeatScript = pkgs.writeShellScript "fleet-heartbeat" ''
+      heartbeatScript = pkgs.writeShellScriptBin "fleet-heartbeat" ''
         export PATH="${
           lib.makeBinPath [
             pkgs.coreutils
@@ -119,7 +119,7 @@
               enable = true;
               config = {
                 Label = "com.aspaulding.fleet-heartbeat";
-                ProgramArguments = [ "${heartbeatScript}" ];
+                ProgramArguments = [ (lib.getExe heartbeatScript) ];
                 RunAtLoad = true;
                 StartInterval = cfg.intervalSec;
                 StandardOutPath = "${logDir}/fleet-heartbeat.log";
@@ -147,7 +147,7 @@
               };
               Service = {
                 Type = "oneshot";
-                ExecStart = "${heartbeatScript}";
+                ExecStart = lib.getExe heartbeatScript;
                 Environment = [ "FLEET_STATUS_TOKEN_WAIT_SEC=120" ];
               };
             };

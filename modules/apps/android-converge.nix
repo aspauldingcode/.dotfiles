@@ -21,7 +21,7 @@
       ];
       androidRebuild = if hasControllerPkgs then inputs.self.packages.${system}.android-rebuild else null;
       adbWireless = if hasControllerPkgs then inputs.self.packages.${system}.adb-wireless else null;
-      convergeScript = pkgs.writeShellScript "android-converge" ''
+      convergeScript = pkgs.writeShellScriptBin "android-converge" ''
         export PATH="${
           lib.makeBinPath [
             pkgs.coreutils
@@ -126,7 +126,7 @@
               enable = true;
               config = {
                 Label = "com.aspaulding.android-converge";
-                ProgramArguments = [ "${convergeScript}" ];
+                ProgramArguments = [ (lib.getExe convergeScript) ];
                 RunAtLoad = true;
                 StartInterval = cfg.intervalSec;
                 StandardOutPath = "${logDir}/android-converge.log";
@@ -146,7 +146,7 @@
               };
               Service = {
                 Type = "oneshot";
-                ExecStart = "${convergeScript}";
+                ExecStart = lib.getExe convergeScript;
               };
             };
             systemd.user.timers.android-converge = {

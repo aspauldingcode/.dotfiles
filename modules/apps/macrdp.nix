@@ -22,7 +22,8 @@
       cfg = config.dendritic.apps.macrdp;
       macrdp = pkgs.callPackage ./macrdp/_package.nix { };
       publicPort = cfg.publicPort;
-      socatFwd = pkgs.writeShellScript "macrdp-portfwd" ''
+      # writeShellScriptBin so Login Items show `macrdp-portfwd`, not HASH-….
+      socatFwd = pkgs.writeShellScriptBin "macrdp-portfwd" ''
         exec ${lib.getExe pkgs.socat} \
           TCP-LISTEN:${toString publicPort},bind=0.0.0.0,fork,reuseaddr \
           TCP:127.0.0.1:${toString cfg.listenPort}
@@ -69,7 +70,7 @@
         launchd.daemons.macrdp-portfwd = {
           serviceConfig = {
             Label = "com.aspaulding.macrdp-portfwd";
-            ProgramArguments = [ "${socatFwd}" ];
+            ProgramArguments = [ (lib.getExe socatFwd) ];
             RunAtLoad = true;
             KeepAlive = true;
             StandardOutPath = "/var/log/macrdp-portfwd.log";
@@ -92,10 +93,10 @@
       secretspecToml = ../../home/secretspec.toml;
       bonjourName = cfg.bonjourName;
       publicPort = cfg.publicPort;
-      dnsSd = pkgs.writeShellScript "macrdp-bonjour" ''
+      dnsSd = pkgs.writeShellScriptBin "macrdp-bonjour" ''
         exec /usr/bin/dns-sd -R ${lib.escapeShellArg bonjourName} _rdp._tcp local ${toString publicPort}
       '';
-      serverStart = pkgs.writeShellScript "macrdp-server-start" ''
+      serverStart = pkgs.writeShellScriptBin "macrdp-server-start" ''
         set -euo pipefail
         cfgdir="${config.home.homeDirectory}/.config/macrdp"
         if [[ ! -f "$cfgdir/config.toml" ]]; then
@@ -173,7 +174,7 @@
           enable = true;
           config = {
             Label = "com.aspaulding.macrdp";
-            ProgramArguments = [ "${serverStart}" ];
+            ProgramArguments = [ (lib.getExe serverStart) ];
             RunAtLoad = true;
             KeepAlive = true;
             StandardOutPath = "${config.home.homeDirectory}/.local/state/macrdp/server.log";
@@ -185,7 +186,7 @@
           enable = true;
           config = {
             Label = "com.aspaulding.macrdp-bonjour";
-            ProgramArguments = [ "${dnsSd}" ];
+            ProgramArguments = [ (lib.getExe dnsSd) ];
             RunAtLoad = true;
             KeepAlive = true;
             StandardOutPath = "${config.home.homeDirectory}/.local/state/macrdp/bonjour.log";

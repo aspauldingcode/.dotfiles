@@ -151,7 +151,7 @@
           exec bash ${../../scripts/pass-flakehub-bootstrap.sh} "$@"
         '';
       };
-      autoRotateCmd = pkgs.writeShellScript "pass-rotate-cli-auth-auto" ''
+      autoRotateCmd = pkgs.writeShellScriptBin "pass-rotate-cli-auth-auto" ''
         export PATH="${
           lib.makeBinPath [
             rotateCliAuth
@@ -259,7 +259,7 @@
           lib.hm.dag.entryAfter [ "passBootstrap" ] ''
             ${loginScript} || true
             ${lib.optionalString cfg.autoRotate.enable ''
-              ${autoRotateCmd} || true
+              ${lib.getExe autoRotateCmd} || true
             ''}
           ''
         );
@@ -270,7 +270,7 @@
               enable = true;
               config = {
                 Label = "com.aspaulding.pass-rotate-cli-auth";
-                ProgramArguments = [ "${autoRotateCmd}" ];
+                ProgramArguments = [ (lib.getExe autoRotateCmd) ];
                 StartCalendarInterval = {
                   Weekday = 1; # Monday
                   Hour = 10;
@@ -287,7 +287,7 @@
               Unit.Description = "Auto-rotate FlakeHub / GitHub / gcloud / vercel CLI tokens in pass";
               Service = {
                 Type = "oneshot";
-                ExecStart = "${autoRotateCmd}";
+                ExecStart = lib.getExe autoRotateCmd;
               };
             };
         systemd.user.timers.pass-rotate-cli-auth =

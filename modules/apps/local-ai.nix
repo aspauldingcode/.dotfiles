@@ -76,7 +76,9 @@
     let
       cfg = config.dendritic.local-ai;
       ollamaHost = "${cfg.host}:${toString cfg.port}";
-      pullModels = pkgs.writeShellScript "ollama-pull-models" ''
+      # writeShellScriptBin → ProgramArguments basename is `ollama-pull-models`
+      # (bare writeShellScript shows as HASH-ollama-pull-models in Login Items).
+      pullModels = pkgs.writeShellScriptBin "ollama-pull-models" ''
         set -euo pipefail
         export OLLAMA_HOST=${lib.escapeShellArg ollamaHost}
         export PATH=${
@@ -150,7 +152,7 @@
         launchd.user.agents.ollama-model-loader = lib.mkIf (cfg.loadModels != [ ]) {
           serviceConfig = {
             Label = "com.aspaulding.ollama-model-loader";
-            ProgramArguments = [ "${pullModels}" ];
+            ProgramArguments = [ (lib.getExe pullModels) ];
             RunAtLoad = true;
             KeepAlive = false;
             StandardOutPath = "/tmp/ollama-model-loader.log";
