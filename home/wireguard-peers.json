@@ -1,0 +1,18 @@
+[
+  {
+    "id": "mba",
+    "address": "10.87.0.1/24",
+    "listenPort": 51820,
+    "mdns": "mba.local",
+    "rdpPort": 3389,
+    "sshPort": 22
+  },
+  {
+    "id": "sliceanddice",
+    "address": "10.87.0.2/24",
+    "listenPort": 51820,
+    "mdns": "sliceanddice.local",
+    "rdpPort": 3389,
+    "sshPort": 22
+  }
+]

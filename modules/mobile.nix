@@ -22,11 +22,17 @@
       config = lib.mkIf cfg.enable {
         dendritic.mobile.agentDevice.enable = lib.mkDefault true;
 
-        home.packages =
-          lib.optionals cfg.agentDevice.enable [ agentDevicePkg ]
-          ++ lib.optionals pkgs.stdenv.isDarwin [
-            pkgs.android-tools
-          ];
+        home.packages = lib.optionals cfg.agentDevice.enable [ agentDevicePkg ] ++ [
+          pkgs.android-tools
+          # Wireless adb pair/connect (also: nix run .#adb-wireless).
+          (pkgs.writeShellApplication {
+            name = "adb-wireless";
+            runtimeInputs = [ pkgs.android-tools ];
+            text = ''
+              exec bash ${../scripts/adb-wireless.sh} "$@"
+            '';
+          })
+        ];
 
         home.sessionVariables = lib.optionalAttrs pkgs.stdenv.isDarwin {
           DEVELOPER_DIR = "/Applications/Xcode.app/Contents/Developer";

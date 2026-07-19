@@ -1,0 +1,85 @@
+# Local AI (dual-mode)
+
+Cloud OpenAI / Cursor stay the default. Local Ollama is additive and free.
+
+## sliceanddice (NixOS) — Phase 1
+
+Enable: `dendritic.local-ai.enable` (system + HM).
+
+Service: `ollama` (`pkgs.ollama-cuda`) on `127.0.0.1:11434`.
+
+### Bench winners (2026-07-16)
+
+See [local-ai-bench-sliceanddice.md](./local-ai-bench-sliceanddice.md).
+
+| Role               | Model              | Notes                             |
+| ------------------ | ------------------ | --------------------------------- |
+| Fastest            | `gemma3:1b`        | ~49 tok/s, outperform             |
+| Best small general | `llama3.2:3b`      | ~40 tok/s, best coding among fast |
+| Coder              | `qwen2.5-coder:3b` | ~23 tok/s                         |
+| Quality coder      | `qwen2.5-coder:7b` | ~10 tok/s, usable hybrid          |
+
+Rejected: `qwen3:8b` (unable — empty coding replies / slow TTFT), `gpt-oss:20b` (too slow / weak tools on 4GB+16GB).
+
+### CLI
+
+Rust helpers (`modules/apps/local-ai-cli`): `ai-local` + `chat`.
+
+```bash
+ai-local --help                      # usage
+ai-local --list                      # numbered models
+ai-local                             # status + tags (JSON)
+ai-local aider --model openai/qwen2.5-coder:3b
+chat --help                          # usage
+chat --list                          # numbered models
+chat 'prompt'                        # chat with default model
+chat -m 1 'prompt'                   # pick by list index
+chat -m gemma3:1b 'prompt'           # pick by tag
+chat --model=qwen2.5-coder:7b -- fix this
+curl -s http://127.0.0.1:11434/v1/models
+```
+
+Never set `OPENAI_API_BASE` globally (breaks chatgpt-cli / cloud defaults).
+
+### Neovim
+
+CodeCompanion defaults to **openai** (sops). Switch to local with adapter `ollama`.
+
+### Cursor
+
+Default: Cursor cloud. Optional: Settings → Models → Override OpenAI Base URL → `http://127.0.0.1:11434/v1` (Tab stays cloud).
+
+### Aider / OpenCode
+
+```bash
+ai-local aider --model openai/qwen2.5-coder:3b
+# or
+OPENAI_API_BASE=http://127.0.0.1:11434/v1 OPENAI_API_KEY=ollama opencode
+```
+
+## mba (macOS) — same CLI as sliceanddice
+
+Enable: `dendritic.local-ai.enable` on Darwin + HM (same options as NixOS).
+
+Service: `ollama` (`pkgs.ollama`, Metal) via launchd on `127.0.0.1:11434`.
+
+```bash
+# Cross-host (no rebuild required)
+nix run .#ai-local -- --list
+nix run .#chat -- -m 1 'ping'
+nix run .#local-ai-bench -- scripts/local-ai-bench/matrices/mba.yaml
+
+# After darwin / NixOS switch — same binaries on mba + sliceanddice
+ai-local --list
+chat 'hello'
+```
+
+ANE / ANEMLL ranking remains a separate matrix (`matrices/mba-ane.yaml`). Metal Ollama is what the shared CLI talks to today.
+
+### Bench
+
+```bash
+nix run .#local-ai-bench   # auto-picks matrices/{mba,sliceanddice}.yaml from hostname
+python3 scripts/local-ai-bench/score.py --host mba
+python3 scripts/local-ai-bench/report.py --host mba
+```

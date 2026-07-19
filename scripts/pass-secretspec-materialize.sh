@@ -53,11 +53,11 @@ while IFS= read -r key; do
   if [[ -z $val ]]; then
     if [[ -e $out ]]; then
       # Edge case: removed from pass but home file still present (stale secret).
-      w="$key missing from pass; stale file remains (~/$rel)"
+      w="${key} empty → ~/${rel} (stale file)"
       warn "$w"
       warnings="$(jq -nc --argjson arr "$warnings" --arg w "$w" '$arr + [$w]')"
     else
-      w="$key missing from pass; not materialized (~/$rel)"
+      w="${key} empty → ~/${rel}"
       warn "$w"
       warnings="$(jq -nc --argjson arr "$warnings" --arg w "$w" '$arr + [$w]')"
     fi
@@ -102,7 +102,92 @@ else
   rm -f "$tmp"
 fi
 
+# Optional: KEY=value env files (e.g. ~/.config/guildforge/env).
+# Map shape: { "<relpath>": { "ENV_NAME": "SECRETSPEC_KEY", ... } }
+ENV_MAP_FILE="${PASS_MATERIALIZE_ENV_MAP:-}"
+if [[ -n $ENV_MAP_FILE && -f $ENV_MAP_FILE ]]; then
+  while IFS= read -r rel; do
+    [[ -n $rel ]] || continue
+    case "$rel" in
+    /* | *..*)
+      warn "skip unsafe env path: $rel"
+      warnings="$(jq -nc --argjson arr "$warnings" --arg w "skip unsafe env path: $rel" '$arr + [$w]')"
+      continue
+      ;;
+    esac
+    out="${HOME_DIR}/${rel}"
+    missing=0
+    body=""
+    while IFS= read -r env_name; do
+      [[ -n $env_name ]] || continue
+      key="$(jq -r --arg p "$rel" --arg e "$env_name" '.[$p][$e] // empty' "$ENV_MAP_FILE")"
+      [[ -n $key ]] || continue
+      val="$(secretspec get -f "$SECRETSPEC_TOML" "$key" 2>/dev/null || true)"
+      if [[ -z $val ]]; then
+        missing=1
+        # Short, scannable: tray wraps/caps width; keep key + target obvious.
+        w="${key} empty → ~/${rel}"
+        warn "$w"
+        warnings="$(jq -nc --argjson arr "$warnings" --arg w "$w" '$arr + [$w]')"
+        continue
+      fi
+      # Escape for shell env files: quote if needed.
+      body+="${env_name}=${val}"$'\n'
+    done < <(jq -r --arg p "$rel" '.[$p] | keys[]' "$ENV_MAP_FILE")
+    if [[ $missing -eq 0 && -n $body ]]; then
+      umask 077
+      mkdir -p "$(dirname "$out")"
+      printf '%s' "$body" >"$out"
+      chmod 600 "$out"
+      materialized="$(jq -nc --argjson arr "$materialized" --arg p "$rel" '$arr + [$p]')"
+      count=$((count + 1))
+      log "wrote env $out"
+    elif [[ $missing -ne 0 && -e $out ]]; then
+      w="stale env remains → ~/${rel}"
+      warn "$w"
+      warnings="$(jq -nc --argjson arr "$warnings" --arg w "$w" '$arr + [$w]')"
+    fi
+  done < <(jq -r 'keys[]' "$ENV_MAP_FILE")
+
+  # Refresh status after env materialize.
+  warn_count="$(jq -nr --argjson w "$warnings" '$w | length')"
+  tmp="$(mktemp "${STATUS_FILE}.XXXXXX")"
+  if jq -nc \
+    --slurpfile prev "$STATUS_FILE" \
+    --argjson materialized "$materialized" \
+    --argjson materialize_warnings "$warnings" \
+    --arg now "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+    --arg msg "materialized ${count} file(s); ${warn_count} warning(s)" \
+    '
+      ($prev[0] // {})
+      + {
+          last_materialize_at: $now,
+          materialized: $materialized,
+          materialize_warnings: $materialize_warnings,
+          updated_at: $now,
+          message: $msg
+        }
+    ' >"$tmp" 2>/dev/null; then
+    mv "$tmp" "$STATUS_FILE"
+  else
+    rm -f "$tmp"
+  fi
+fi
+
 log "done (${count} file(s), ${warn_count} warning(s))"
+
+# Single sentinel touches for systemd.path units (avoid PathModified storms on
+# every .psk write). Ensure scripts below still run directly for sync hooks.
+wifi_dir="${HOME_DIR}/.config/dendritic/wifi"
+eduroam_dir="${wifi_dir}/eduroam"
+if compgen -G "${wifi_dir}/*.psk" >/dev/null 2>&1; then
+  mkdir -p "$wifi_dir"
+  : >"${wifi_dir}/.ready"
+fi
+if [[ -e ${eduroam_dir}/password ]]; then
+  mkdir -p "$eduroam_dir"
+  : >"${eduroam_dir}/.ready"
+fi
 
 # Optional: apply Wi-Fi profiles after PSK materialize (dendritic.wifi).
 if command -v dendritic-wifi-ensure >/dev/null 2>&1; then
@@ -111,6 +196,10 @@ fi
 # EWU eduroam (dendritic.eduroam) — Keychain / iwd after identity+CA materialize.
 if command -v dendritic-eduroam-ensure >/dev/null 2>&1; then
   dendritic-eduroam-ensure || warn "dendritic-eduroam-ensure failed"
+fi
+# WireGuard overlay (dendritic.wireguard) — rewrite conf after key/endpoint sync.
+if command -v dendritic-wg-ensure >/dev/null 2>&1; then
+  WG_SUDO_INTERACTIVE=0 dendritic-wg-ensure || warn "dendritic-wg-ensure failed"
 fi
 
 exit 0

@@ -16,6 +16,13 @@
       sharedSettings = config.programs.vscode.profiles.default.userSettings;
       sharedExtensions = config.programs.vscode.profiles.default.extensions;
 
+      disableAttributionScript = pkgs.writeText "cursor-disable-attribution.py" (
+        builtins.readFile ../../scripts/cursor-disable-attribution.py
+      );
+
+      # Always-apply agent rule: never inject Cursor credit trailers.
+      noAttributionRule = ../../.cursor/rules/no-cursor-attribution.mdc;
+
       # Build extension symlinks by reading each extension's directory
       extensionFiles = lib.foldl' (
         acc: ext:
@@ -51,6 +58,18 @@
         # Link derived extensions (symlinks)
         home.file =
           extensionFiles
+          // {
+            # Always-on: never Co-authored-by / Made-with Cursor in commits/PRs.
+            ".cursor/rules/no-cursor-attribution.mdc".source = noAttributionRule;
+            # Global CLI attribution off (project override: repo `.cursor/cli.json`).
+            ".cursor/cli-config.json".text = builtins.toJSON {
+              version = 1;
+              attribution = {
+                attributeCommitsToAgent = false;
+                attributePRsToAgent = false;
+              };
+            };
+          }
           // lib.optionalAttrs pkgs.stdenv.isDarwin {
             "Library/Application Support/Cursor/User/settings.json" = {
               force = true;
@@ -70,6 +89,12 @@
             };
             ".cursor/User/settings.json".text = builtins.toJSON sharedSettings;
           };
+
+        # Attribution UI toggle is NOT in settings.json — it lives in
+        # state.vscdb as cursor/attributeCommitsToAgent + attributePRsToAgent.
+        home.activation.cursorDisableAttribution = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          ${pkgs.python3}/bin/python3 ${disableAttributionScript}
+        '';
       };
     };
 

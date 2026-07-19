@@ -23,6 +23,13 @@
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
 
+    # Master-only: programs.mas (PR #1668). Keep main nix-darwin on 26.05;
+    # import just modules/programs/mas.nix from this input.
+    nix-darwin-unstable = {
+      url = "github:nix-darwin/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -30,6 +37,11 @@
 
     sops-nix = {
       url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    disko = {
+      url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -53,6 +65,11 @@
       url = "github:astro/microvm.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Declarative Android device state over adb (no root / no Nix on phone).
+    # Keep nix-android's own nixpkgs — it needs androidenv/aapt2 from unstable.
+    # First-class targets are stock Pixel + GrapheneOS; LineageOS/OEM is best-effort.
+    nix-android.url = "github:devindudeman/nix-android";
 
     # ── Spike: aspect-oriented dendritic framework ───────────────────────
     # Scoped experiment: convert `modules/styling.nix` to a `den.aspects.*`
@@ -147,6 +164,68 @@
               sops
               age
             ];
+          };
+
+          # Same Rust CLI on mba + sliceanddice: `nix run .#ai-local` / `nix run`
+          packages.dendritic-local-ai = pkgs.callPackage ./modules/apps/local-ai-cli/_package.nix { };
+          packages.default = config.packages.dendritic-local-ai;
+          apps.default = {
+            type = "app";
+            program = "${config.packages.dendritic-local-ai}/bin/chat";
+          };
+          apps.chat = {
+            type = "app";
+            program = "${config.packages.dendritic-local-ai}/bin/chat";
+          };
+          apps.ai-local = {
+            type = "app";
+            program = "${config.packages.dendritic-local-ai}/bin/ai-local";
+          };
+          # Back-compat alias
+          apps.ai-chat-local = {
+            type = "app";
+            program = "${config.packages.dendritic-local-ai}/bin/chat";
+          };
+          apps.local-ai-bench = {
+            type = "app";
+            program =
+              let
+                script = pkgs.writeShellApplication {
+                  name = "local-ai-bench";
+                  runtimeInputs = with pkgs; [
+                    python3
+                    coreutils
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+                    matrix="''${1:-}"
+                    if [[ -z "$matrix" ]]; then
+                      host="$(hostname -s 2>/dev/null || hostname || echo unknown)"
+                      case "$host" in
+                        mba*) matrix="$root/scripts/local-ai-bench/matrices/mba.yaml" ;;
+                        sliceanddice*) matrix="$root/scripts/local-ai-bench/matrices/sliceanddice.yaml" ;;
+                        *)
+                          echo "usage: nix run .#local-ai-bench -- <matrix.yaml>" >&2
+                          exit 2
+                          ;;
+                      esac
+                      shift || true
+                    else
+                      shift
+                    fi
+                    out_host="$(basename "$(dirname "$matrix")" 2>/dev/null || true)"
+                    # matrix path …/matrices/<host>.yaml → results/<host>/
+                    base="$(basename "$matrix" .yaml)"
+                    mkdir -p "$root/scripts/local-ai-bench/results/$base"
+                    exec python3 "$root/scripts/local-ai-bench/bench.py" \
+                      --matrix "$matrix" \
+                      --out "$root/scripts/local-ai-bench/results/$base/raw.json" \
+                      "$@"
+                  '';
+                };
+              in
+              "${script}/bin/local-ai-bench";
           };
 
           apps.install = {
@@ -401,6 +480,62 @@
                     exec bash ${./scripts/github-app-mint-token.sh} "$@"
                   '';
                 };
+                gcloudMint = pkgs.writeShellApplication {
+                  name = "gcloud-mint-token";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    curl
+                    gnugrep
+                    gnupg
+                    git
+                    python3
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    export OAUTH_SERVER_PY=${./scripts/gcloud-oauth-server.py}
+                    exec bash ${./scripts/gcloud-mint-token.sh} "$@"
+                  '';
+                };
+                vercelMint = pkgs.writeShellApplication {
+                  name = "vercel-mint-token";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    curl
+                    gnugrep
+                    gnupg
+                    git
+                    python3
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    exec bash ${./scripts/vercel-mint-token.sh} "$@"
+                  '';
+                };
+                fhMint = pkgs.writeShellApplication {
+                  name = "flakehub-mint-token";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    gnugrep
+                    gnupg
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    fh
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export FLAKEHUB_ORG="''${FLAKEHUB_ORG:-aspauldingcode}"
+                    exec bash ${./scripts/flakehub-mint-token.sh} "$@"
+                  '';
+                };
                 script = pkgs.writeShellApplication {
                   name = "pass-rotate-cli-auth";
                   runtimeInputs = with pkgs; [
@@ -415,17 +550,236 @@
                     gh
                     bash
                     mint
+                    gcloudMint
+                    vercelMint
+                    fhMint
                   ];
                   text = ''
                     set -euo pipefail
                     export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
                     export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
                     export FLAKEHUB_ORG="''${FLAKEHUB_ORG:-aspauldingcode}"
+                    export OAUTH_SERVER_PY=${./scripts/gcloud-oauth-server.py}
                     exec bash ${./scripts/pass-rotate-cli-auth.sh} "$@"
                   '';
                 };
               in
               "${script}/bin/pass-rotate-cli-auth";
+          };
+
+          apps.pass-flakehub-bootstrap = {
+            type = "app";
+            program =
+              let
+                fhMint = pkgs.writeShellApplication {
+                  name = "flakehub-mint-token";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    gnugrep
+                    gnupg
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    fh
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export FLAKEHUB_ORG="''${FLAKEHUB_ORG:-aspauldingcode}"
+                    exec bash ${./scripts/flakehub-mint-token.sh} "$@"
+                  '';
+                };
+                script = pkgs.writeShellApplication {
+                  name = "pass-flakehub-bootstrap";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    gnugrep
+                    gnupg
+                    git
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    fh
+                    bash
+                    fhMint
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export FLAKEHUB_ORG="''${FLAKEHUB_ORG:-aspauldingcode}"
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    exec bash ${./scripts/pass-flakehub-bootstrap.sh} "$@"
+                  '';
+                };
+              in
+              "${script}/bin/pass-flakehub-bootstrap";
+          };
+
+          apps.pass-wifi-bootstrap = {
+            type = "app";
+            program =
+              let
+                script = pkgs.writeShellApplication {
+                  name = "pass-wifi-bootstrap";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    gnugrep
+                    gnupg
+                    git
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export WIFI_NETWORKS_JSON=${./home/wifi-networks.json}
+                    exec bash ${./scripts/pass-wifi-bootstrap.sh} "$@"
+                  '';
+                };
+              in
+              "${script}/bin/pass-wifi-bootstrap";
+          };
+
+          apps.pass-gcloud-bootstrap = {
+            type = "app";
+            program =
+              let
+                mint = pkgs.writeShellApplication {
+                  name = "gcloud-mint-token";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    curl
+                    gnugrep
+                    gnupg
+                    git
+                    python3
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    export OAUTH_SERVER_PY=${./scripts/gcloud-oauth-server.py}
+                    exec bash ${./scripts/gcloud-mint-token.sh} "$@"
+                  '';
+                };
+                script = pkgs.writeShellApplication {
+                  name = "pass-gcloud-bootstrap";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    curl
+                    gnupg
+                    git
+                    python3
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    bash
+                    mint
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    export OAUTH_SERVER_PY=${./scripts/gcloud-oauth-server.py}
+                    exec bash ${./scripts/pass-gcloud-bootstrap.sh} "$@"
+                  '';
+                };
+              in
+              "${script}/bin/pass-gcloud-bootstrap";
+          };
+
+          apps.pass-vercel-bootstrap = {
+            type = "app";
+            program =
+              let
+                mint = pkgs.writeShellApplication {
+                  name = "vercel-mint-token";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    curl
+                    gnugrep
+                    gnupg
+                    git
+                    python3
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    exec bash ${./scripts/vercel-mint-token.sh} "$@"
+                  '';
+                };
+                script = pkgs.writeShellApplication {
+                  name = "pass-vercel-bootstrap";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    curl
+                    gnupg
+                    git
+                    python3
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    bash
+                    mint
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    exec bash ${./scripts/pass-vercel-bootstrap.sh} "$@"
+                  '';
+                };
+              in
+              "${script}/bin/pass-vercel-bootstrap";
+          };
+
+          apps.pass-wg-bootstrap = {
+            type = "app";
+            program =
+              let
+                script = pkgs.writeShellApplication {
+                  name = "pass-wg-bootstrap";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    wireguard-tools
+                    python3
+                    git
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    export WG_PEERS_JSON="''${DOTFILES_ROOT}/home/wireguard-peers.json"
+                    exec bash ${./scripts/pass-wg-bootstrap.sh} "$@"
+                  '';
+                };
+              in
+              "${script}/bin/pass-wg-bootstrap";
+          };
+
+          apps.pass-wg-set-home = {
+            type = "app";
+            program =
+              let
+                script = pkgs.writeShellApplication {
+                  name = "pass-wg-set-home";
+                  runtimeInputs = with pkgs; [
+                    coreutils
+                    python3
+                    git
+                    (pass.withExtensions (exts: [ exts.pass-otp ]))
+                    bash
+                  ];
+                  text = ''
+                    set -euo pipefail
+                    export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+                    export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel)}"
+                    export WG_PEERS_JSON="''${DOTFILES_ROOT}/home/wireguard-peers.json"
+                    exec bash ${./scripts/pass-wg-set-home.sh} "$@"
+                  '';
+                };
+              in
+              "${script}/bin/pass-wg-set-home";
           };
 
           apps.pass-github-app-bootstrap = {

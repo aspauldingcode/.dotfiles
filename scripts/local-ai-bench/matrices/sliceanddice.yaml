@@ -1,0 +1,38 @@
+# Phase 1 — NixOS / sliceanddice (RTX 3050 Ti 4GB + 16GB RAM)
+host: sliceanddice
+runtimes:
+  - ollama
+models:
+  # Full-GPU candidates (expect fit in 4GB)
+  - id: qwen2.5-coder:1.5b
+    role: ultra-light-coder
+    expect: gpu-full
+  - id: qwen2.5-coder:3b
+    role: small-coder
+    expect: gpu-full
+  - id: llama3.2:1b
+    role: ultra-light-chat
+    expect: gpu-full
+  - id: llama3.2:3b
+    role: small-chat
+    expect: gpu-full
+  - id: gemma3:1b
+    role: small-gemma
+    expect: gpu-full
+  - id: gemma3:4b
+    role: mid-gemma
+    expect: gpu-full-or-hybrid
+  # Hybrid / stretch
+  - id: qwen2.5-coder:7b
+    role: daily-coder
+    expect: hybrid
+  - id: qwen3:8b
+    role: think-general
+    expect: hybrid
+  - id: gpt-oss:20b
+    role: stretch-moe
+    expect: stretch
+prompt_tokens: [128, 512]
+max_new_tokens: 128
+warmup_runs: 1
+measured_runs: 3

@@ -89,8 +89,32 @@ jobs:
           fi
           echo "OK secretspec demo declarations"
 
+  windows-dualboot:
+    name: windows dual-boot check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Rampage Mode (Nothing but Nix)
+        uses: wimpysworld/nothing-but-nix@main
+        with:
+          hatchet-protocol: "rampage"
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            build-dir = /nix/build
+
+      - name: Set up Magic Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Check windows-dualboot
+        run: nix build .#checks.x86_64-linux.windows-dualboot --print-build-logs
+
   publish:
-    needs: [matrix, secretspec-demo]
+    needs: [matrix, secretspec-demo, windows-dualboot]
     if: github.event_name == 'push' && (github.ref == 'refs/heads/development' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     steps:

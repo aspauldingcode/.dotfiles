@@ -1,12 +1,13 @@
 # Dendritic Wi-Fi — declarative known networks (pass-backed PSK).
 #
-# NixOS: NetworkManager + iwd backend (see linux-desktop.nix).
-#   Match live Bubbles: WPA2-PSK, IPv4/IPv6 auto, DHCP DNS, autoconnect.
-#   Applied by dendritic-wifi-ensure (nmcli) after pass materialize — not at rebuild.
-# Darwin: nix-darwin power-on + HM ensure via networksetup (preferred + join).
+# NixOS: NetworkManager + iwd (linux-desktop.nix). Profiles applied by
+#   dendritic-wifi-ensure after pass materialize — never during nixos-rebuild.
+# Darwin: networksetup preferred-network upsert + join (HM ensure / launchd).
 #
-# PSK never enters the Nix store — materialized from pass SecretSpec key
-# `Bubbles` → ~/.config/dendritic/wifi/Bubbles.psk (+ optional root copy).
+# PSK never enters the Nix store — materialized from pass SecretSpec keys →
+#   ~/.config/dendritic/wifi/<passKey>.psk
+#
+# Bootstrap Keychain → pass (mba): nix run .#pass-wifi-bootstrap
 {
   flake.modules.nixos.dendritic =
     {
@@ -17,11 +18,10 @@
     }:
     let
       cfg = config.dendritic.wifi;
-      bubbles = cfg.networks.Bubbles or null;
     in
     {
       options.dendritic.wifi = {
-        enable = lib.mkEnableOption "dendritic declarative Wi-Fi (Bubbles + pass PSK)" // {
+        enable = lib.mkEnableOption "dendritic declarative Wi-Fi (pass PSK)" // {
           default = true;
         };
         networks = lib.mkOption {
@@ -40,62 +40,91 @@
                     description = "Stable NetworkManager connection UUID.";
                   };
                   passKey = lib.mkOption {
-                    type = lib.types.str;
+                    type = lib.types.nullOr lib.types.str;
                     default = name;
-                    description = "SecretSpec / pass key under secretspec/shared/default/<key>.";
+                    description = "SecretSpec key under secretspec/shared/default/ (null if open).";
+                  };
+                  keyMgmt = lib.mkOption {
+                    type = lib.types.enum [
+                      "wpa-psk"
+                      "none"
+                    ];
+                    default = "wpa-psk";
+                    description = "Wi-Fi security: wpa-psk or open (captive portal).";
                   };
                   autoconnectPriority = lib.mkOption {
                     type = lib.types.int;
-                    default = 100;
+                    default = 50;
                   };
                 };
               }
             )
           );
-          default = {
-            Bubbles = {
-              ssid = "Bubbles";
-              # Preserve the existing sliceanddice profile identity.
-              uuid = "775e836e-1345-4579-bb55-17e84423aa5b";
-              passKey = "Bubbles";
-              autoconnectPriority = 100;
-            };
-          };
-          description = "Known Wi-Fi networks to ensure (PSK from pass).";
+          default = { };
+          description = "Known Wi-Fi networks (shared defaults come from HM module).";
         };
-        # Absolute path root uses for NM envsubst (written by wifi-ensure).
         stateDir = lib.mkOption {
           type = lib.types.path;
           default = "/var/lib/dendritic/wifi";
-          description = "Directory for root-owned BUBBLES_PSK env files (not in Nix store).";
+          description = "Root-owned directory for optional PSK copies (not in Nix store).";
         };
       };
 
-      config = lib.mkIf (cfg.enable && bubbles != null) {
-        # Radio on; iwd remains the backend from linux-desktop.nix.
-        networking.networkmanager.wifi.powersave = lib.mkDefault false;
-
-        # Do NOT rewrite NM keyfiles during nixos-rebuild — that races the live
-        # association (we already dropped sliceanddice once this way). Desired
-        # state is applied by `dendritic-wifi-ensure` after pass materialize.
-        networking.wireless.iwd.settings = {
-          # NM owns IP/DNS; iwd is the Wi-Fi stack only (matches current setup).
-          General.EnableNetworkConfiguration = lib.mkDefault false;
-        };
-
-        systemd.tmpfiles.rules = [
-          "d ${cfg.stateDir} 0750 root root -"
-        ];
-
-        environment.systemPackages = [
-          (pkgs.writeShellScriptBin "dendritic-wifi-nm-reload" ''
+      config =
+        let
+          nmReload = pkgs.writeShellScriptBin "dendritic-wifi-nm-reload" ''
             set -euo pipefail
+            ${pkgs.util-linux}/bin/rfkill unblock wifi || true
             ${pkgs.networkmanager}/bin/nmcli radio wifi on || true
             ${pkgs.networkmanager}/bin/nmcli connection reload || true
-            ${pkgs.networkmanager}/bin/nmcli connection up id Bubbles || true
-          '')
-        ];
-      };
+          '';
+        in
+        lib.mkIf cfg.enable {
+          networking.networkmanager.wifi.powersave = lib.mkDefault false;
+          networking.wireless.iwd.settings = {
+            General.EnableNetworkConfiguration = lib.mkDefault false;
+          };
+          systemd.tmpfiles.rules = [
+            "d ${cfg.stateDir} 0750 root root -"
+          ];
+
+          # Soft-unblock + force radio on at boot (before user session).
+          # Without this, some machines come up with WIFI soft-blocked / nm radio off.
+          systemd.services.dendritic-wifi-radio = {
+            description = "Unblock Wi-Fi radio and enable NetworkManager wifi";
+            after = [
+              "NetworkManager.service"
+              "iwd.service"
+            ];
+            wants = [ "NetworkManager.service" ];
+            wantedBy = [ "multi-user.target" ];
+            serviceConfig = {
+              Type = "oneshot";
+              RemainAfterExit = true;
+              ExecStart = pkgs.writeShellScript "dendritic-wifi-radio" ''
+                set -euo pipefail
+                ${pkgs.util-linux}/bin/rfkill unblock wifi || true
+                ${pkgs.util-linux}/bin/rfkill unblock wlan || true
+                ${pkgs.networkmanager}/bin/nmcli radio wifi on || true
+              '';
+            };
+          };
+
+          environment.systemPackages = [ nmReload ];
+
+          # User wifi-ensure must not call unprivileged ReloadConnections (polkit deny spam).
+          security.sudo.extraRules = [
+            {
+              groups = [ "wheel" ];
+              commands = [
+                {
+                  command = "${nmReload}/bin/dendritic-wifi-nm-reload";
+                  options = [ "NOPASSWD" ];
+                }
+              ];
+            }
+          ];
+        };
     };
 
   flake.modules.darwin.dendritic =
@@ -109,7 +138,7 @@
     in
     {
       options.dendritic.wifi = {
-        enable = lib.mkEnableOption "dendritic declarative Wi-Fi (Bubbles + pass PSK)" // {
+        enable = lib.mkEnableOption "dendritic declarative Wi-Fi (pass PSK)" // {
           default = true;
         };
         networks = lib.mkOption {
@@ -122,25 +151,33 @@
                     type = lib.types.str;
                     default = name;
                   };
-                  passKey = lib.mkOption {
+                  uuid = lib.mkOption {
                     type = lib.types.str;
+                    default = "";
+                  };
+                  passKey = lib.mkOption {
+                    type = lib.types.nullOr lib.types.str;
                     default = name;
+                  };
+                  keyMgmt = lib.mkOption {
+                    type = lib.types.enum [
+                      "wpa-psk"
+                      "none"
+                    ];
+                    default = "wpa-psk";
+                  };
+                  autoconnectPriority = lib.mkOption {
+                    type = lib.types.int;
+                    default = 50;
                   };
                 };
               }
             )
           );
-          default = {
-            Bubbles = {
-              ssid = "Bubbles";
-              passKey = "Bubbles";
-            };
-          };
+          default = { };
         };
       };
 
-      # Actual join runs from HM wifi-ensure (needs pass/GPG). System side only
-      # documents the feature; device power-on is best-effort here.
       config = lib.mkIf cfg.enable {
         system.activationScripts.postActivation.text = lib.mkAfter ''
           echo "dendritic.wifi: ensuring Wi-Fi power on (AirPort)"
@@ -161,141 +198,280 @@
     }:
     let
       cfg = config.dendritic.wifi;
-      bubbles = cfg.networks.Bubbles or null;
 
-      pskRel = ".config/dendritic/wifi/Bubbles.psk";
-      pskPath = "${config.home.homeDirectory}/${pskRel}";
+      # Shared fleet defaults — SSIDs/UUIDs/pass keys (never PSKs) live in JSON.
+      defaultNetworksList = builtins.fromJSON (builtins.readFile ../home/wifi-networks.json);
+      defaultNetworks = lib.listToAttrs (
+        map (n: {
+          name = n.id;
+          value = {
+            inherit (n)
+              ssid
+              uuid
+              passKey
+              keyMgmt
+              autoconnectPriority
+              ;
+          };
+        }) defaultNetworksList
+      );
+
+      networks = defaultNetworks // cfg.networks;
+
+      networksJson = pkgs.writeText "dendritic-wifi-networks.json" (
+        builtins.toJSON (
+          lib.mapAttrsToList (_name: net: {
+            inherit (net) ssid uuid autoconnectPriority;
+            keyMgmt = net.keyMgmt or "wpa-psk";
+            passKey = if (net.passKey or null) == null then null else net.passKey;
+          }) networks
+        )
+      );
+
+      wifiDir = "${config.home.homeDirectory}/.config/dendritic/wifi";
 
       ensureBin = pkgs.writeShellScriptBin "dendritic-wifi-ensure" ''
-        set -euo pipefail
-        LOG_PREFIX="dendritic-wifi-ensure"
-        log() { printf '%s %s: %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$LOG_PREFIX" "$*"; }
-        warn() { log "warning: $*" >&2; }
+                set -euo pipefail
+                LOG_PREFIX="dendritic-wifi-ensure"
+                log() { printf '%s %s: %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$LOG_PREFIX" "$*"; }
+                warn() { log "warning: $*" >&2; }
 
-        PSK_FILE="${pskPath}"
-        SSID="Bubbles"
-        STATE_DIR="/var/lib/dendritic/wifi"
+                NETWORKS_JSON="${networksJson}"
+                WIFI_DIR="${wifiDir}"
+                STATE_DIR="/var/lib/dendritic/wifi"
+                PYTHON="${pkgs.python3}/bin/python3"
+                GREP="${pkgs.gnugrep}/bin/grep"
+                TR="${pkgs.coreutils}/bin/tr"
+                MKTEMP="${pkgs.coreutils}/bin/mktemp"
 
-        if [[ ! -r "$PSK_FILE" ]]; then
-          warn "PSK file missing ($PSK_FILE); run pass-materialize after GPG unlock"
-          exit 0
-        fi
-        # Strip a single trailing newline; keep password bytes otherwise intact.
-        PSK="$(${pkgs.coreutils}/bin/tr -d '\n' <"$PSK_FILE")"
-        if [[ -z "$PSK" ]]; then
-          warn "PSK empty"
-          exit 0
-        fi
+                with_timeout() {
+                  local secs="$1"; shift
+                  "$@" &
+                  local pid=$!
+                  local i=0
+                  while kill -0 "$pid" 2>/dev/null; do
+                    i=$((i + 1))
+                    if [[ "$i" -ge "$secs" ]]; then
+                      kill -9 "$pid" 2>/dev/null || true
+                      wait "$pid" 2>/dev/null || true
+                      return 124
+                    fi
+                    sleep 1
+                  done
+                  wait "$pid"
+                }
 
-        if [[ "$(uname -s)" == Darwin ]]; then
-          DEV="$(/usr/sbin/networksetup -listallhardwareports \
-            | /usr/bin/awk '/Wi-Fi|AirPort/{getline; print $2; exit}')"
-          if [[ -z "''${DEV:-}" ]]; then
-            warn "no Wi-Fi hardware port found"
-            exit 0
-          fi
-          /usr/sbin/networksetup -setairportpower "$DEV" on 2>/dev/null || true
-          # Prefer upsert without remove/re-add — remove requires admin and hangs
-          # non-interactive agents waiting on a password dialog.
-          with_timeout() {
-            # usage: with_timeout SECONDS cmd...
-            local secs="$1"; shift
-            "$@" &
-            local pid=$!
-            local i=0
-            while kill -0 "$pid" 2>/dev/null; do
-              i=$((i + 1))
-              if [[ "$i" -ge "$secs" ]]; then
-                kill -9 "$pid" 2>/dev/null || true
-                wait "$pid" 2>/dev/null || true
-                return 124
-              fi
-              sleep 1
-            done
-            wait "$pid"
-          }
-          PREF="$(/usr/sbin/networksetup -listpreferredwirelessnetworks "$DEV" 2>/dev/null || true)"
-          if ! printf '%s' "$PREF" | ${pkgs.gnugrep}/bin/grep -Fq "$SSID"; then
-            if ! with_timeout 12 /usr/sbin/networksetup -addpreferredwirelessnetworkatindex "$DEV" "$SSID" 0 WPA2 "$PSK"; then
-              warn "addpreferredwirelessnetwork failed/timed out (approve admin dialog or run once in Terminal)"
-            fi
-          else
-            log "darwin: $SSID already preferred on $DEV"
-          fi
-          # macOS Sequoia+ often lies via -getairportnetwork ("not associated") while
-          # en0 is up with DHCP. Skip join when the Wi-Fi iface already has IPv4.
-          if ifconfig "$DEV" 2>/dev/null | ${pkgs.gnugrep}/bin/grep -q 'status: active' \
-            && ifconfig "$DEV" 2>/dev/null | ${pkgs.gnugrep}/bin/grep -Eq 'inet [0-9]'; then
-            log "darwin: $DEV already active with IPv4; skipping join"
-          else
-            if ! with_timeout 15 /usr/sbin/networksetup -setairportnetwork "$DEV" "$SSID" "$PSK"; then
-              warn "setairportnetwork failed/timed out (admin/TCC?)"
-            fi
-          fi
-          log "darwin: preferred + join ensured for $SSID on $DEV"
-          exit 0
-        fi
+                read_psk() {
+                  local key="$1"
+                  local f="$WIFI_DIR/''${key}.psk"
+                  if [[ ! -r "$f" ]]; then
+                    return 1
+                  fi
+                  "$TR" -d '\n' <"$f"
+                }
 
-        # ── Linux (NetworkManager + iwd) ─────────────────────────────
-        if ! command -v nmcli >/dev/null 2>&1; then
-          warn "nmcli missing"
-          exit 0
-        fi
-        nmcli radio wifi on || true
+                ensure_one_darwin() {
+                  local ssid="$1" key_mgmt="$2" psk="''${3:-}" pass_key="''${4:-}"
+                  local dev pref
+                  dev="$(/usr/sbin/networksetup -listallhardwareports \
+                    | /usr/bin/awk '/Wi-Fi|AirPort/{getline; print $2; exit}')"
+                  if [[ -z "''${dev:-}" ]]; then
+                    warn "no Wi-Fi hardware port found"
+                    return 0
+                  fi
+                  /usr/sbin/networksetup -setairportpower "$dev" on 2>/dev/null || true
+                  pref="$(/usr/sbin/networksetup -listpreferredwirelessnetworks "$dev" 2>/dev/null || true)"
+                  if ! printf '%s' "$pref" | "$GREP" -Fq "$ssid"; then
+                    if [[ "$key_mgmt" == none ]]; then
+                      # Open / captive — add as Open system if supported; else skip password.
+                      if ! with_timeout 12 /usr/sbin/networksetup -addpreferredwirelessnetworkatindex \
+                        "$dev" "$ssid" 0 Open; then
+                        warn "addpreferred (Open) failed for $ssid"
+                      fi
+                    else
+                      if [[ -z "$psk" ]]; then
+                        warn "PSK missing for $ssid (passKey=$pass_key); run pass-wifi-bootstrap"
+                        return 0
+                      fi
+                      if ! with_timeout 12 /usr/sbin/networksetup -addpreferredwirelessnetworkatindex \
+                        "$dev" "$ssid" 0 WPA2 "$psk"; then
+                        warn "addpreferred failed for $ssid (approve admin dialog?)"
+                      fi
+                    fi
+                  else
+                    log "darwin: $ssid already preferred on $dev"
+                  fi
+                }
 
-        # Root copy of passphrase (0600) for optional tooling / future use.
-        if [[ -d "$STATE_DIR" ]] || sudo mkdir -p "$STATE_DIR" 2>/dev/null; then
-          TMP="$(${pkgs.coreutils}/bin/mktemp)"
-          printf '%s\n' "$PSK" >"$TMP"
-          chmod 600 "$TMP"
-          if sudo cp "$TMP" "$STATE_DIR/Bubbles.psk" 2>/dev/null; then
-            sudo chmod 600 "$STATE_DIR/Bubbles.psk" || true
-            sudo chown root:root "$STATE_DIR/Bubbles.psk" || true
-            log "wrote $STATE_DIR/Bubbles.psk"
-          else
-            warn "could not install $STATE_DIR/Bubbles.psk (sudo?)"
-          fi
-          rm -f "$TMP"
-        fi
+                ensure_one_linux() {
+                  local ssid="$1" uuid="$2" key_mgmt="$3" prio="$4" psk="''${5:-}" pass_key="''${6:-}"
+                  local have=0
 
-        UUID="775e836e-1345-4579-bb55-17e84423aa5b"
-        # Upsert system connection matching live Bubbles (WPA2-PSK, DHCP DNS).
-        # Prefer NAME/UUID listing — `connection show <id>` can fail for perms
-        # even when the profile exists (then we wrongly hit `add` and error).
-        HAVE_CONN=0
-        if nmcli -t -f NAME connection show 2>/dev/null \
-          | ${pkgs.gnugrep}/bin/grep -Fxq "$SSID"; then
-          HAVE_CONN=1
-        elif nmcli -t -f UUID connection show 2>/dev/null \
-          | ${pkgs.gnugrep}/bin/grep -Fxq "$UUID"; then
-          HAVE_CONN=1
-        fi
-        if [[ "$HAVE_CONN" -eq 0 ]]; then
-          nmcli connection add type wifi con-name "$SSID" ifname '*' ssid "$SSID" \
-            wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$PSK" \
-            connection.autoconnect yes connection.autoconnect-priority 100 \
-            connection.uuid "$UUID" \
-            ipv4.method auto ipv6.method auto ipv6.addr-gen-mode stable-privacy \
-            || warn "nmcli connection add failed"
-        else
-          nmcli connection modify id "$SSID" \
-            wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$PSK" \
-            connection.autoconnect yes connection.autoconnect-priority 100 \
-            ipv4.method auto ipv6.method auto ipv6.addr-gen-mode stable-privacy \
-            802-11-wireless.ssid "$SSID" \
-            || nmcli connection modify uuid "$UUID" \
-              wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$PSK" \
-              connection.autoconnect yes \
-            || warn "nmcli connection modify failed"
-        fi
+                  if [[ "$key_mgmt" != none && -z "$psk" ]]; then
+                    warn "PSK missing for $ssid (passKey=$pass_key); skip NM upsert"
+                    return 0
+                  fi
 
-        # Prefer non-interactive up; fall back to wifi connect.
-        if ! nmcli -t -f NAME,DEVICE connection show --active | ${pkgs.gnugrep}/bin/grep -q "^''${SSID}:"; then
-          nmcli connection up id "$SSID" \
-            || nmcli device wifi connect "$SSID" password "$PSK" \
-            || warn "could not activate $SSID"
-        fi
-        log "linux: NM/iwd ensure attempted for $SSID"
+                  if [[ -n "$psk" ]]; then
+                    if [[ -d "$STATE_DIR" ]] || sudo mkdir -p "$STATE_DIR" 2>/dev/null; then
+                      local tmp
+                      tmp="$("$MKTEMP")"
+                      printf '%s\n' "$psk" >"$tmp"
+                      chmod 600 "$tmp"
+                      if sudo cp "$tmp" "$STATE_DIR/''${pass_key}.psk" 2>/dev/null; then
+                        sudo chmod 600 "$STATE_DIR/''${pass_key}.psk" || true
+                        sudo chown root:root "$STATE_DIR/''${pass_key}.psk" || true
+                      fi
+                      rm -f "$tmp"
+                    fi
+                  fi
+
+                  # Prefer UUID match (stable) so we don't create duplicates when
+                  # an old same-SSID profile already exists with a different UUID.
+                  if [[ -n "$uuid" ]] && nmcli -t -f UUID connection show 2>/dev/null | "$GREP" -Fxq "$uuid"; then
+                    have=1
+                  elif nmcli -t -f NAME connection show 2>/dev/null | "$GREP" -Fxq "$ssid"; then
+                    have=1
+                  fi
+
+                  # System profile + NM-owned PSK (psk-flags=0). Agent-owned (1)
+                  # makes nmtui/GUIs re-prompt and leaves /var/lib/iwd/*.psk without
+                  # a Passphrase — Wi-Fi then fails across reboot / before login.
+                  # See: https://networkmanager.dev/docs/api/latest/nm-settings-nmcli.html
+                  if [[ "$have" -eq 0 ]]; then
+                    if [[ "$key_mgmt" == none ]]; then
+                      nmcli connection add type wifi con-name "$ssid" ifname '*' ssid "$ssid" \
+                        wifi-sec.key-mgmt none \
+                        connection.autoconnect yes connection.autoconnect-priority "$prio" \
+                        connection.uuid "$uuid" connection.permissions "" \
+                        ipv4.method auto ipv6.method auto ipv6.addr-gen-mode stable-privacy \
+                        || warn "nmcli add failed for $ssid"
+                    else
+                      nmcli connection add type wifi con-name "$ssid" ifname '*' ssid "$ssid" \
+                        wifi-sec.key-mgmt wpa-psk \
+                        wifi-sec.psk "$psk" wifi-sec.psk-flags 0 \
+                        connection.autoconnect yes connection.autoconnect-priority "$prio" \
+                        connection.uuid "$uuid" connection.permissions "" \
+                        ipv4.method auto ipv6.method auto ipv6.addr-gen-mode stable-privacy \
+                        || warn "nmcli add failed for $ssid"
+                      # NM 1.46+ may omit psk-flags=0 from the keyfile unless forced.
+                      nmcli connection modify uuid "$uuid" \
+                        wifi-sec.psk "$psk" wifi-sec.psk-flags 0 \
+                        connection.permissions "" 2>/dev/null || true
+                    fi
+                  else
+                    if [[ "$key_mgmt" == none ]]; then
+                      nmcli connection modify id "$ssid" \
+                        wifi-sec.key-mgmt none \
+                        connection.autoconnect yes connection.autoconnect-priority "$prio" \
+                        connection.permissions "" \
+                        802-11-wireless.ssid "$ssid" \
+                        || nmcli connection modify uuid "$uuid" \
+                          connection.autoconnect yes connection.permissions "" \
+                        || warn "nmcli modify failed for $ssid"
+                    else
+                      nmcli connection modify id "$ssid" \
+                        wifi-sec.key-mgmt wpa-psk \
+                        wifi-sec.psk "$psk" wifi-sec.psk-flags 0 \
+                        connection.autoconnect yes connection.autoconnect-priority "$prio" \
+                        connection.permissions "" \
+                        ipv4.method auto ipv6.method auto ipv6.addr-gen-mode stable-privacy \
+                        802-11-wireless.ssid "$ssid" \
+                        || nmcli connection modify uuid "$uuid" \
+                          wifi-sec.key-mgmt wpa-psk \
+                          wifi-sec.psk "$psk" wifi-sec.psk-flags 0 \
+                          connection.autoconnect yes connection.permissions "" \
+                        || warn "nmcli modify failed for $ssid"
+                    fi
+                  fi
+
+                  # Drop stale same-SSID duplicates (legacy Bubbles.nmconnection, etc.)
+                  if [[ -n "$uuid" ]]; then
+                    while IFS=: read -r name other_uuid file; do
+                      [[ "$name" == "$ssid" ]] || continue
+                      [[ "$other_uuid" == "$uuid" ]] && continue
+                      log "linux: deleting duplicate profile $name uuid=$other_uuid"
+                      nmcli connection delete uuid "$other_uuid" 2>/dev/null || true
+                    done < <(nmcli -t -f NAME,UUID,FILENAME connection show 2>/dev/null || true)
+                  fi
+                }
+
+                # Parse JSON → lines: ssid|uuid|keyMgmt|prio|passKey
+                mapfile -t ROWS < <("$PYTHON" - "$NETWORKS_JSON" <<'PY'
+        import json, sys
+        for n in json.load(open(sys.argv[1])):
+            pk = n.get("passKey") or ""
+            # SSID must not contain '|'; fleet SSIDs are clean.
+            print("|".join([
+                n["ssid"],
+                n.get("uuid") or "",
+                n.get("keyMgmt") or "wpa-psk",
+                str(n.get("autoconnectPriority") or 50),
+                pk,
+            ]))
+        PY
+                )
+
+                ${lib.optionalString pkgs.stdenv.isDarwin ''
+                  DEV="$(/usr/sbin/networksetup -listallhardwareports \
+                    | /usr/bin/awk '/Wi-Fi|AirPort/{getline; print $2; exit}')"
+                  [[ -n "''${DEV:-}" ]] && /usr/sbin/networksetup -setairportpower "$DEV" on 2>/dev/null || true
+
+                  for row in "''${ROWS[@]}"; do
+                    IFS='|' read -r ssid uuid key_mgmt prio pass_key <<<"$row"
+                    psk=""
+                    if [[ "$key_mgmt" != none && -n "$pass_key" ]]; then
+                      psk="$(read_psk "$pass_key" || true)"
+                    fi
+                    ensure_one_darwin "$ssid" "$key_mgmt" "$psk" "$pass_key"
+                  done
+
+                  # Join only if iface has no IPv4 yet — prefer highest-prio available later via OS.
+                  if [[ -n "''${DEV:-}" ]]; then
+                    if ifconfig "$DEV" 2>/dev/null | "$GREP" -q 'status: active' \
+                      && ifconfig "$DEV" 2>/dev/null | "$GREP" -Eq 'inet [0-9]'; then
+                      log "darwin: $DEV already active with IPv4; profiles ensured"
+                    else
+                      # Try home first (Bubbles), then others — best-effort.
+                      for row in "''${ROWS[@]}"; do
+                        IFS='|' read -r ssid uuid key_mgmt prio pass_key <<<"$row"
+                        [[ "$key_mgmt" == none ]] && continue
+                        psk="$(read_psk "$pass_key" || true)"
+                        [[ -n "$psk" ]] || continue
+                        if with_timeout 12 /usr/sbin/networksetup -setairportnetwork "$DEV" "$ssid" "$psk"; then
+                          log "darwin: joined $ssid"
+                          break
+                        fi
+                      done
+                    fi
+                  fi
+                ''}
+
+                ${lib.optionalString pkgs.stdenv.isLinux ''
+                  # ── Linux (NetworkManager + iwd) ─────────────────────────────
+                  if ! command -v nmcli >/dev/null 2>&1; then
+                    warn "nmcli missing"
+                    exit 0
+                  fi
+                  nmcli radio wifi on || true
+                  ${pkgs.util-linux}/bin/rfkill unblock wifi 2>/dev/null || true
+
+                  for row in "''${ROWS[@]}"; do
+                    IFS='|' read -r ssid uuid key_mgmt prio pass_key <<<"$row"
+                    psk=""
+                    if [[ "$key_mgmt" != none && -n "$pass_key" ]]; then
+                      psk="$(read_psk "$pass_key" || true)"
+                    fi
+                    ensure_one_linux "$ssid" "$uuid" "$key_mgmt" "$prio" "$psk" "$pass_key"
+                    log "linux: ensured $ssid"
+                  done
+
+                  # Root-only reload (NOPASSWD dendritic-wifi-nm-reload). Never call
+                  # unprivileged nmcli reload — polkit denies ReloadConnections.
+                  if command -v sudo >/dev/null 2>&1; then
+                    sudo -n dendritic-wifi-nm-reload 2>/dev/null || true
+                  fi
+                ''}
       '';
     in
     {
@@ -313,45 +489,71 @@
                     type = lib.types.str;
                     default = name;
                   };
-                  passKey = lib.mkOption {
+                  uuid = lib.mkOption {
                     type = lib.types.str;
+                    default = "";
+                  };
+                  passKey = lib.mkOption {
+                    type = lib.types.nullOr lib.types.str;
                     default = name;
+                  };
+                  keyMgmt = lib.mkOption {
+                    type = lib.types.enum [
+                      "wpa-psk"
+                      "none"
+                    ];
+                    default = "wpa-psk";
+                  };
+                  autoconnectPriority = lib.mkOption {
+                    type = lib.types.int;
+                    default = 50;
                   };
                 };
               }
             )
           );
-          default = {
-            Bubbles = {
-              ssid = "Bubbles";
-              passKey = "Bubbles";
-            };
-          };
+          default = { };
+          description = ''
+            Extra / override networks. Fleet defaults (Bubbles, Luke Skydumper,
+            coffee shops, PF Guest, …) are always merged in.
+          '';
         };
       };
 
-      config = lib.mkIf (cfg.enable && bubbles != null) {
-        home.packages = [ ensureBin ];
+      config = lib.mkIf cfg.enable {
+        home.packages = [
+          ensureBin
+          (pkgs.writeShellScriptBin "pass-wifi-bootstrap" ''
+            export WIFI_NETWORKS_JSON=${../home/wifi-networks.json}
+            exec bash ${../scripts/pass-wifi-bootstrap.sh} "$@"
+          '')
+        ];
 
-        # After pass materialize, ensure OS profile + auto-join.
         home.activation.dendriticWifiEnsure = lib.hm.dag.entryAfter [ "passMaterialize" "writeBoundary" ] ''
           ${ensureBin}/bin/dendritic-wifi-ensure || echo "dendritic.wifi: ensure skipped/failed" >&2
         '';
 
-        # User agent: re-run when PSK file changes (pass sync rematerialize).
         systemd.user.paths.dendritic-wifi-ensure = lib.mkIf pkgs.stdenv.isLinux {
-          Unit.Description = "Watch dendritic Wi-Fi PSK file";
-          Path.PathModified = pskPath;
-          Path.PathExists = pskPath;
-          Install.WantedBy = [ "default.target" ];
-        };
-        systemd.user.services.dendritic-wifi-ensure = lib.mkIf pkgs.stdenv.isLinux {
-          Unit.Description = "Ensure declarative Wi-Fi (Bubbles) via NetworkManager/iwd";
-          Service = {
-            Type = "oneshot";
-            ExecStart = "${ensureBin}/bin/dendritic-wifi-ensure";
+          Unit.Description = "Watch dendritic Wi-Fi PSK directory";
+          Path = {
+            # Sentinel from pass-secretspec-materialize (not every .psk write).
+            PathModified = "${wifiDir}/.ready";
+            TriggerLimitIntervalSec = 120;
+            TriggerLimitBurst = 6;
           };
           Install.WantedBy = [ "default.target" ];
+        };
+        # Path unit + HM activation start this — no WantedBy (avoids start-limit storms).
+        systemd.user.services.dendritic-wifi-ensure = lib.mkIf pkgs.stdenv.isLinux {
+          Unit = {
+            Description = "Ensure declarative Wi-Fi profiles via NetworkManager/iwd";
+            StartLimitIntervalSec = 120;
+            StartLimitBurst = 3;
+          };
+          Service = {
+            Type = "oneshot";
+            ExecStart = "${pkgs.util-linux}/bin/flock -n %t/dendritic-wifi-ensure.lock ${ensureBin}/bin/dendritic-wifi-ensure";
+          };
         };
 
         launchd.agents.dendritic-wifi-ensure = lib.mkIf pkgs.stdenv.isDarwin {
@@ -360,7 +562,7 @@
             Label = "com.dendritic.wifi-ensure";
             ProgramArguments = [ "${ensureBin}/bin/dendritic-wifi-ensure" ];
             RunAtLoad = true;
-            WatchPaths = [ pskPath ];
+            WatchPaths = [ "${wifiDir}/.ready" ];
             StandardOutPath = "${config.home.homeDirectory}/.cache/dendritic-wifi-ensure.log";
             StandardErrorPath = "${config.home.homeDirectory}/.cache/dendritic-wifi-ensure.err.log";
           };

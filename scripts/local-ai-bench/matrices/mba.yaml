@@ -1,0 +1,31 @@
+# mba (macOS) — Ollama Metal, same CLI surface as sliceanddice.
+# ANE-only ranking stays in mba-ane.yaml (separate path).
+host: mba
+runtimes:
+  - ollama
+models:
+  - id: gemma3:1b
+    role: small-gemma
+    expect: metal
+  - id: llama3.2:1b
+    role: ultra-light-chat
+    expect: metal
+  - id: llama3.2:3b
+    role: small-chat
+    expect: metal
+  - id: qwen2.5-coder:1.5b
+    role: ultra-light-coder
+    expect: metal
+  - id: qwen2.5-coder:3b
+    role: small-coder
+    expect: metal
+  - id: qwen2.5-coder:7b
+    role: daily-coder
+    expect: metal
+  - id: gemma3:4b
+    role: mid-gemma
+    expect: metal
+prompt_tokens: [128, 512]
+max_new_tokens: 128
+warmup_runs: 1
+measured_runs: 3

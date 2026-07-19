@@ -8,6 +8,9 @@
   #   4. sops-nix gh_token
   #   5. gh hosts.yml / keychain
   #
+  # Mint invalidates stale access cache when pass refresh rotates or GitHub
+  # rejects the cached ghu_ (see scripts/github-app-mint-token.sh).
+  #
   # One-time App setup: nix run .#pass-github-app-bootstrap
   flake.modules.homeManager.dendritic =
     {

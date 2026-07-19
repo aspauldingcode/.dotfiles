@@ -1,0 +1,27 @@
+---
+description: Never inject Cursor/agent credit trailers into git or GitHub
+alwaysApply: true
+---
+
+# No Cursor attribution trailers
+
+**Never** credit Cursor, Cursor Agent, or `cursoragent` in commits or PRs.
+
+## Forbidden (exact payloads Cursor may inject)
+
+- `Co-authored-by: Cursor <cursoragent@cursor.com>`
+- `git commit … --trailer "Co-authored-by: Cursor <cursoragent@cursor.com>"`
+- `Made-with: Cursor`
+- PR body blurb: `Made with [Cursor](https://cursor.com)`
+- Any `Co-authored-by:` line naming Cursor / Cursor Agent (any email)
+- Author/committer identity `cursoragent` / Cursor Agent
+
+## Required behavior
+
+1. Use the human git author only (`user.name` / `user.email`).
+2. Do **not** pass `--trailer` for Cursor co-author lines.
+3. Do **not** append “Made with Cursor” (or markdown link) to commit messages or PR bodies.
+4. If a tool or hook already inserted any of the above, **strip it** before finishing the commit/PR.
+5. Prefer leaving attribution disabled in IDE storage and CLI config; still obey this rule even if those toggles are on.
+
+Attribution UI maps to `state.vscdb` keys `cursor/attributeCommitsToAgent` and `cursor/attributePRsToAgent` (not `settings.json`). CLI: `~/.cursor/cli-config.json` → `attribution.attributeCommitsToAgent` / `attributePRsToAgent` = `false`.

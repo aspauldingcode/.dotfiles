@@ -31,6 +31,26 @@
         system.defaults.finder.ShowPathbar = true;
         system.defaults.finder.ShowStatusBar = true;
         dendritic.theme.variant = lib.mkDefault "dark";
+        # HM owns apply; system flag documents intent (darwin wallpaper module is a stub).
+        dendritic.wallpaper.enable = true;
+        # Root launchd enforces Picture + JPEGPhoto across reboot.
+        dendritic.profilePhoto.enable = true;
+
+        # macrdp + socat :3389→13389 (Bonjour `_rdp._tcp` via HM agent).
+        dendritic.apps.macrdp.enable = true;
+
+        # WireGuard overlay ↔ sliceanddice (pass/SecretSpec keys; see docs/wireguard.md).
+        dendritic.wireguard.enable = true;
+
+        # Local Ollama (Metal) + same Rust CLI as sliceanddice (ai-local / chat).
+        dendritic.local-ai.enable = true;
+        # From scripts/local-ai-bench (mba Metal Ollama, 2026-07-19).
+        dendritic.local-ai.loadModels = [
+          "qwen2.5-coder:3b" # best overall (outperform)
+          "llama3.2:3b" # general / coding (outperform)
+          "gemma3:1b" # fastest
+          "llama3.2:1b" # ultra-light
+        ];
 
         documentation.enable = lib.mkForce false;
         documentation.man.enable = lib.mkForce false;
@@ -41,13 +61,18 @@
           pkgs.socat
         ];
 
-        nix.enable = false;
-        nix.settings = {
-          experimental-features = [
-            "nix-command"
-            "flakes"
-          ];
+        # Determinate owns /etc/nix/nix.conf (`nix.enable = false`). Custom
+        # knobs must go through determinateNix.customSettings → nix.custom.conf.
+        # Plain `nix.settings` is a no-op here and never silenced warn-dirty.
+        determinateNix.customSettings = {
           warn-dirty = false;
+          trusted-users = [
+            "@wheel"
+            "root"
+            "8amps"
+          ];
+          # Keep cache.nixos.org explicit; FlakeHub is already in Determinate's
+          # base nix.conf as extra-substituters / extra-trusted-*.
           substituters = [
             "https://cache.nixos.org"
             "https://cache.flakehub.com"
@@ -62,12 +87,6 @@
             "cache.flakehub.com-8:moO+OVS0mnTjBTcOUh2kYLQEd59ExzyoW1QgQ8XAARQ="
             "cache.flakehub.com-9:wChaSeTI6TeCuV/Sg2513ZIM9i0qJaYsF+lZCXg0J6o="
             "cache.flakehub.com-10:2GqeNlIp6AKp4EF2MVbE1kBOp9iBSyo0UPR9KoR0o1Y="
-          ];
-          netrc-file = "/nix/var/determinate/netrc";
-          trusted-users = [
-            "@wheel"
-            "root"
-            "8amps"
           ];
         };
 
@@ -202,8 +221,19 @@
           dendritic.fleet.hostId = "mba";
           dendritic.fleet.dotfilesRoot = "/etc/nix-darwin/.dotfiles";
           dendritic.mobile.enable = true;
+          # Always-on nix-android converge (shared with sliceanddice; phone lease).
+          dendritic.androidConverge.enable = true;
           dendritic.wallpaper.enable = true;
+          dendritic.profilePhoto.enable = true;
+          dendritic.apps.macrdp.enable = true;
+          dendritic.apps.macrdp.bonjourName = "mba";
+          dendritic.wireguard.enable = true;
+          dendritic.wireguard.peerId = "mba";
           dendritic.python.enable = true;
+
+          # Same Rust helpers as sliceanddice (scoped OPENAI_* only when wrapping).
+          dendritic.local-ai.enable = true;
+          dendritic.local-ai.defaultLocalModel = "qwen2.5-coder:3b";
 
           # programs.zsh.shellAliases = {
           #   microvm-run = "${inputs.self.nixosConfigurations.microvm.config.microvm.runner.vfkit}/bin/microvm-run";
@@ -213,37 +243,24 @@
         };
     }
 
-    # 5. Mac App Store — declarative apps via mas CLI
+    # 5. Mac App Store — upstream programs.mas (nix-darwin master module)
     {
-      dendritic.mas = {
+      programs.mas = {
         enable = true;
+        # pkgs.mas is overlaid from nixpkgs-unstable (7.x)
+        update = true;
+        cleanup = true;
 
-        # ── App Store Applications ──────────────────────────────────
-        apps = {
+        packages = {
           Xcode = 497799835;
-        };
 
-        # ── Safari Extensions ───────────────────────────────────────
-        # Installed via mas, just like Brave/Firefox extensions but
-        # for Safari. Enable them in: Safari → Settings → Extensions
-        safari.extensions = [
-          {
-            name = "Momentum";
-            id = 1564329434;
-          }
-          {
-            name = "uBlock Origin Lite";
-            id = 6745342698;
-          }
-          {
-            name = "SponsorBlock for Safari";
-            id = 1573461917;
-          }
-          {
-            name = "Dark Reader for Safari";
-            id = 1438243180;
-          }
-        ];
+          # Safari extensions (mas installs them like apps; enable in
+          # Safari → Settings → Extensions)
+          Momentum = 1564329434;
+          "uBlock Origin Lite" = 6745342698;
+          "SponsorBlock for Safari" = 1573461917;
+          "Dark Reader for Safari" = 1438243180;
+        };
       };
     }
   ];

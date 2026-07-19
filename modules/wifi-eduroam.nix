@@ -154,18 +154,26 @@
 
         systemd.user.paths.dendritic-eduroam-ensure = lib.mkIf pkgs.stdenv.isLinux {
           Unit.Description = "Watch dendritic eduroam materialize files";
-          Path.PathModified = "${basePath}/password";
-          Path.PathExists = "${basePath}/password";
-          Install.WantedBy = [ "default.target" ];
-        };
-        systemd.user.services.dendritic-eduroam-ensure = lib.mkIf pkgs.stdenv.isLinux {
-          Unit.Description = "Ensure EWU eduroam via iwd 802.1x";
-          Service = {
-            Type = "oneshot";
-            ExecStart = "${ensureBin}/bin/dendritic-eduroam-ensure";
-            Environment = [ "DENDRITIC_EDUROAM_DIR=${basePath}" ];
+          Path = {
+            # Sentinel from pass-secretspec-materialize (not password rewrites).
+            PathModified = "${basePath}/.ready";
+            TriggerLimitIntervalSec = 120;
+            TriggerLimitBurst = 6;
           };
           Install.WantedBy = [ "default.target" ];
+        };
+        # Path unit + HM activation start this — no WantedBy (avoids start-limit storms).
+        systemd.user.services.dendritic-eduroam-ensure = lib.mkIf pkgs.stdenv.isLinux {
+          Unit = {
+            Description = "Ensure EWU eduroam via iwd 802.1x";
+            StartLimitIntervalSec = 120;
+            StartLimitBurst = 3;
+          };
+          Service = {
+            Type = "oneshot";
+            ExecStart = "${pkgs.util-linux}/bin/flock -n %t/dendritic-eduroam-ensure.lock ${ensureBin}/bin/dendritic-eduroam-ensure";
+            Environment = [ "DENDRITIC_EDUROAM_DIR=${basePath}" ];
+          };
         };
 
         systemd.user.timers.dendritic-eduroam-rotate = lib.mkIf (pkgs.stdenv.isLinux && cfg.rotate.enable) {

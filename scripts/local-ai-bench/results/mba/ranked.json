@@ -1,0 +1,163 @@
+{
+  "host": "mba",
+  "source": "/private/etc/nix-darwin/.dotfiles/scripts/local-ai-bench/results/mba/raw.json",
+  "ranked": [
+    {
+      "model": "qwen2.5-coder:3b",
+      "role": "small-coder",
+      "tier": "outperform",
+      "score": 0.7638,
+      "summary": {
+        "best_decode_tps": 8.826998905232164,
+        "ttft_proxy_512_s": 1.2936736529997386,
+        "coding_avg": 3.75,
+        "tool_score": 5.0
+      }
+    },
+    {
+      "model": "llama3.2:3b",
+      "role": "small-chat",
+      "tier": "outperform",
+      "score": 0.7394,
+      "summary": {
+        "best_decode_tps": 8.040953649829975,
+        "ttft_proxy_512_s": 1.3707058056667545,
+        "coding_avg": 3.75,
+        "tool_score": 5.0
+      }
+    },
+    {
+      "model": "gemma3:1b",
+      "role": "small-gemma",
+      "tier": "usable",
+      "score": 0.7069,
+      "summary": {
+        "best_decode_tps": 16.47436756224379,
+        "ttft_proxy_512_s": 1.6449903053330672,
+        "coding_avg": 2.9166666666666665,
+        "tool_score": 5.0
+      }
+    },
+    {
+      "model": "qwen2.5-coder:1.5b",
+      "role": "ultra-light-coder",
+      "tier": "too_slow",
+      "score": 0.65,
+      "summary": {
+        "best_decode_tps": 3.555975674919909,
+        "ttft_proxy_512_s": 0.5724383889999748,
+        "coding_avg": 3.75,
+        "tool_score": 5.0
+      }
+    },
+    {
+      "model": "llama3.2:1b",
+      "role": "ultra-light-chat",
+      "tier": "usable",
+      "score": 0.6324,
+      "summary": {
+        "best_decode_tps": 8.171402771177616,
+        "ttft_proxy_512_s": 1.0117033333334196,
+        "coding_avg": 3.333333333333333,
+        "tool_score": 5.0
+      }
+    },
+    {
+      "model": "gemma3:4b",
+      "role": "mid-gemma",
+      "tier": "too_slow",
+      "score": 0.5328,
+      "summary": {
+        "best_decode_tps": 6.29838613855249,
+        "ttft_proxy_512_s": 2.224843513666807,
+        "coding_avg": 3.333333333333333,
+        "tool_score": 5.0
+      }
+    },
+    {
+      "model": "qwen2.5-coder:7b",
+      "role": "daily-coder",
+      "tier": "too_slow",
+      "score": 0.4692,
+      "summary": {
+        "best_decode_tps": 4.265509104893247,
+        "ttft_proxy_512_s": 5.544142708666944,
+        "coding_avg": 3.75,
+        "tool_score": 5.0
+      }
+    }
+  ],
+  "top": [
+    {
+      "model": "qwen2.5-coder:3b",
+      "role": "small-coder",
+      "tier": "outperform",
+      "score": 0.7638,
+      "summary": {
+        "best_decode_tps": 8.826998905232164,
+        "ttft_proxy_512_s": 1.2936736529997386,
+        "coding_avg": 3.75,
+        "tool_score": 5.0
+      }
+    },
+    {
+      "model": "llama3.2:3b",
+      "role": "small-chat",
+      "tier": "outperform",
+      "score": 0.7394,
+      "summary": {
+        "best_decode_tps": 8.040953649829975,
+        "ttft_proxy_512_s": 1.3707058056667545,
+        "coding_avg": 3.75,
+        "tool_score": 5.0
+      }
+    },
+    {
+      "model": "gemma3:1b",
+      "role": "small-gemma",
+      "tier": "usable",
+      "score": 0.7069,
+      "summary": {
+        "best_decode_tps": 16.47436756224379,
+        "ttft_proxy_512_s": 1.6449903053330672,
+        "coding_avg": 2.9166666666666665,
+        "tool_score": 5.0
+      }
+    },
+    {
+      "model": "llama3.2:1b",
+      "role": "ultra-light-chat",
+      "tier": "usable",
+      "score": 0.6324,
+      "summary": {
+        "best_decode_tps": 8.171402771177616,
+        "ttft_proxy_512_s": 1.0117033333334196,
+        "coding_avg": 3.333333333333333,
+        "tool_score": 5.0
+      }
+    }
+  ],
+  "loadModels": [
+    "qwen2.5-coder:3b",
+    "llama3.2:3b",
+    "gemma3:1b",
+    "llama3.2:1b"
+  ],
+  "reject": [
+    {
+      "model": "qwen2.5-coder:1.5b",
+      "tier": "too_slow",
+      "errors": []
+    },
+    {
+      "model": "gemma3:4b",
+      "tier": "too_slow",
+      "errors": []
+    },
+    {
+      "model": "qwen2.5-coder:7b",
+      "tier": "too_slow",
+      "errors": []
+    }
+  ]
+}

@@ -110,15 +110,15 @@ Grace: SSH ed25519 → ssh-to-age recipients may still appear in
 | Developer vault | `pass` + private GH store   | GPG-encrypted values                    |
 | Runtime         | `secretspec run` / wrappers | Env vars for child processes            |
 | Home files      | materialize map             | Optional `$HOME` files (e.g. `~/.shit`) |
+| Machine/home    | sops-nix                    | GPG key, ntfy topic, other host secrets |
+| Peer wake       | ntfy (+ CI backup)          | Empty ping — not the password itself    |
+| CI canaries     | private-repo Actions        | Template decrypt smoke (CI-only GPG)    |
 
-If a mapped key is **deleted from pass**, materialize leaves any existing home
-file in place (stale) and records `materialize_warnings` in
-`~/.cache/pass-store-sync.status`. The pass-store tray shows those warnings
-(error glyph + menu line / tooltip) until the entry returns or the file is
-removed.
-| Machine/home | sops-nix | GPG key, ntfy topic, other host secrets |
-| Peer wake | ntfy (+ CI backup) | Empty ping — not the password itself |
-| CI canaries | private-repo Actions | Template decrypt smoke (CI-only GPG) |
+If a mapped key is **empty or missing in pass**, materialize records a short
+warning (`KEY empty → ~/path`) in `materialize_warnings` inside
+`~/.cache/pass-store-sync.status`. The tray uses an error glyph when warnings
+exist; the menu only lists non-zero issues (one row each — key truncated, no
+path dump, no “Secrets: ok” filler). Healthy idle = actions only.
 
 ---
 
@@ -215,13 +215,19 @@ files when `secretspec/` changes:
 | `SHIT_PASSWORD`    | `~/.shit`                                                           |
 | `PEE_PASSWORD`     | `~/.pee`                                                            |
 | `Bubbles`          | `~/.config/dendritic/wifi/Bubbles.psk` (dendritic.wifi)             |
+| `WIFI_*`           | `~/.config/dendritic/wifi/<key>.psk` (see [`wifi.md`](wifi.md))     |
 | `EDUROAM_IDENTITY` | `~/.config/dendritic/wifi/eduroam/identity`                         |
 | `EDUROAM_PASSWORD` | `~/.config/dendritic/wifi/eduroam/password`                         |
 | `EDUROAM_CA`       | `~/.config/dendritic/wifi/eduroam/ca.pem`                           |
 | `EDUROAM_PROFILE`  | `~/.config/dendritic/wifi/eduroam/profile.json` (dendritic.eduroam) |
+| `WG_PUBLIC_KEY_*`  | `~/.config/dendritic/wireguard/keys/<peer>.public`                  |
+| `WG_PSK`           | `~/.config/dendritic/wireguard/psk`                                 |
+| `WG_ENDPOINT_*`    | `~/.config/dendritic/wireguard/endpoints/<peer>` (`-` = unset)      |
+| `WG_HOME`          | `~/.config/dendritic/wireguard/home`                                |
 
 Map: [`home/pass-materialize.json`](../home/pass-materialize.json).
 Eduroam apply: [`docs/wifi-eduroam.md`](wifi-eduroam.md).
+WireGuard: [`docs/wireguard.md`](wireguard.md) (`WG_PRIVATE_KEY_*` stay in pass only).
 
 ```bash
 printf '%s\n' 'new value' | pass insert -e secretspec/shared/default/SHIT_PASSWORD
@@ -232,15 +238,16 @@ cat ~/.shit
 Adding a **new** map entry still needs a flake commit + rebuild. Changing a
 mapped **value** does not.
 
-Runtime tokens (`GH_*`, `FLAKEHUB_TOKEN`) stay in pass / wrappers — not copied
-to home files.
+Runtime tokens (`GH_*`, `FLAKEHUB_TOKEN`, `GCLOUD_*`) stay in pass / wrappers — not copied
+to home files (except gcloud ADC rewritten under `~/.config/gcloud/` on activation).
 
 ---
 
 ## Tray + QtPass
 
 Tray (`dendritic.apps.pass.tray.enable`): ↑ upload · ↓ download · ✓ idle · ↻
-rebuild · ! error. Menu: Pull now, Rematerialize, Open QtPass, Open sync log.
+rebuild · ! error/warnings. Menu: only non-zero status rows (one fact each),
+then Open QtPass · Open sync log · Quit. Healthy → actions only.
 
 QtPass: Spotlight / Dock / `qtpass`. Auto pull/push **off** so watchexec owns
 git. Store path: `~/.password-store`.
@@ -327,8 +334,24 @@ Do **not** bootstrap GPG from the password-store git repo (circular / weak).
 
 ### CLI auth secrets (declarations public, values private)
 
-See [`home/secretspec.toml`](../home/secretspec.toml): `GH_*`, `FLAKEHUB_TOKEN`.
-Helpers: `nix run .#pass-github-app-bootstrap`, `pass-rotate-cli-auth`, etc.
+See [`home/secretspec.toml`](../home/secretspec.toml): `GH_*`, `FLAKEHUB_TOKEN`, `GCLOUD_*`, `VERCEL_*`.
+Helpers:
+
+| CLI      | One-time bootstrap                    | Mint / rotate                                              |
+| -------- | ------------------------------------- | ---------------------------------------------------------- |
+| `gh`     | `nix run .#pass-github-app-bootstrap` | `github-app-mint-token` · `pass-rotate-cli-auth --github`  |
+| `fh`     | `nix run .#pass-flakehub-bootstrap`   | `flakehub-mint-token` · `pass-rotate-cli-auth --flakehub`  |
+| `gcloud` | `nix run .#pass-gcloud-bootstrap`     | `gcloud-mint-token` · `pass-rotate-cli-auth --gcloud`      |
+| `vercel` | `nix run .#pass-vercel-bootstrap`     | `vercel-mint-token` · `pass-rotate-cli-auth --vercel`      |
+| `wg`     | `nix run .#pass-wg-bootstrap`         | `dendritic-wg-ensure` · `pass-wg-set-home` · `--wg` rotate |
+
+**FlakeHub:** Device JWTs (what lives in pass) can _list_ but not _create_ tokens. Bootstrap / rotate elevates with a short-lived FlakeHub _user_ token from https://flakehub.com/user/settings?editview=tokens, mints a device JWT into `FLAKEHUB_TOKEN`, logs determinate-nixd back in as the device token, and optionally revokes older `dendritic-cli-auth*` tokens. Weekly auto-rotate notifies if elevation is needed.
+
+**gcloud:** OAuth refresh_token in pass → access token on each `gcloud` invoke (cached ~1h). Activation rewrites `~/.config/gcloud/application_default_credentials.json` for client libraries. Optional SA JSON fallback: `pass-gcloud-bootstrap --from-sa key.json`. Optional default project: `--project my-gcp-project`.
+
+**vercel:** OAuth refresh_token in pass → access token on each `vercel` invoke (cached ~8h). Activation rewrites `auth.json` (`~/Library/Application Support/com.vercel.cli/` on Darwin, `~/.local/share/com.vercel.cli/` on Linux). Import existing login: `pass-vercel-bootstrap --from-auth-json`. Static PAT fallback: `pass-vercel-bootstrap --from-token TOKEN` or SecretSpec `VERCEL_TOKEN`. Optional team: `--team TEAM_ID`.
+
+**wg:** WireGuard pairing keys + PSK in pass → `dendritic-wg-ensure` builds `/etc/wireguard/dendritic.conf`. On Bubbles, endpoints resolve via mDNS when `WG_ENDPOINT_*` is unset (`-`). Remote: `pass-wg-set-home --peer … --endpoint HOST:51820` (never commit public IPs). Rotate with `pass-rotate-cli-auth --wg` (not weekly auto). See [`docs/wireguard.md`](wireguard.md).
 
 ### Rotation runbook
 

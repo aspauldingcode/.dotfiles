@@ -81,7 +81,8 @@ let
             slug = "stylix";
             scheme = "stylix";
           };
-          image = lib.mkDefault ../wallpapers/mountain-sunset.png;
+          # Prefer curated nixos-artwork; dendritic.wallpaper overrides when enabled.
+          image = lib.mkDefault pkgs.nixos-artwork.wallpapers.moonscape.gnomeFilePath;
 
           targets.vscode.enable = true;
           targets.ghostty.enable = true;
@@ -1313,10 +1314,12 @@ let
           };
 
         # ── GTK Theming ─────────────────────────────────────────────
+        # Do not set gtk-application-prefer-dark-theme — libadwaita/portal-gnome
+        # reject it (use AdwStyleManager / org.gnome.desktop.interface color-scheme,
+        # already driven by Stylix / dendritic-appearance).
         gtk = {
           gtk4.theme = lib.mkForce null;
           enable = lib.mkDefault (!isDarwin);
-          gtk4.extraConfig.gtk-application-prefer-dark-theme = 1;
         };
 
         # ── Qt Theming (Linux only) ─────────────────────────────────
@@ -1411,7 +1414,8 @@ in
             slug = "stylix";
             scheme = "stylix";
           };
-          image = lib.mkDefault ../wallpapers/mountain-sunset.png;
+          # Prefer curated nixos-artwork; dendritic.wallpaper overrides when enabled.
+          image = lib.mkDefault pkgs.nixos-artwork.wallpapers.moonscape.gnomeFilePath;
 
           fonts = {
             monospace = {

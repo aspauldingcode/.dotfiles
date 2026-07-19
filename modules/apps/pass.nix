@@ -35,6 +35,7 @@
       pwgenBin = "${pkgs.pwgen}/bin/pwgen";
       secretspecToml = ../../home/secretspec.toml;
       materializeMap = ../../home/pass-materialize.json;
+      materializeEnvMap = ../../home/pass-materialize-env.json;
       # GUI-less pinentry: GETPIN → sops gpg_passphrase file (fail closed).
       dendriticPinentry =
         let
@@ -55,11 +56,13 @@
         let
           passPath = config.sops.secrets.gpg_passphrase.path;
           prevPassPath = config.sops.secrets.gpg_passphrase_previous.path;
+          keyPath = config.sops.secrets.gpg_private_key.path;
         in
         pkgs.writeShellScript "gpg-preset-from-sops" ''
           export PATH=${
             lib.makeBinPath [
               pkgs.coreutils
+              pkgs.util-linux
               pkgs.gnugrep
               pkgs.gawk
               pkgs.gnupg
@@ -69,6 +72,7 @@
           export GPG_PRESET_PASSPHRASE=${lib.escapeShellArg "${pkgs.gnupg}/libexec/gpg-preset-passphrase"}
           export DENDRITIC_GPG_PASSPHRASE_FILE=${lib.escapeShellArg passPath}
           export DENDRITIC_GPG_PASSPHRASE_PREVIOUS_FILE=${lib.escapeShellArg prevPassPath}
+          export DENDRITIC_GPG_PRIVATE_KEY_FILE=${lib.escapeShellArg keyPath}
           exec ${pkgs.bash}/bin/bash ${../../scripts/gpg-preset-from-sops.sh}
         '';
       syncPath = lib.makeBinPath [
@@ -86,6 +90,7 @@
         export PATH="${syncPath}:$PATH"
         export PASSWORD_STORE_DIR=${lib.escapeShellArg storeDir}
         export PASS_MATERIALIZE_MAP=${lib.escapeShellArg "${materializeMap}"}
+        export PASS_MATERIALIZE_ENV_MAP=${lib.escapeShellArg "${materializeEnvMap}"}
         export PASS_SECRETSPEC_TOML=${lib.escapeShellArg "${secretspecToml}"}
         export PASS_STORE_SYNC_STATUS=${lib.escapeShellArg "${config.home.homeDirectory}/.cache/pass-store-sync.status"}
         exec ${pkgs.bash}/bin/bash ${../../scripts/pass-secretspec-materialize.sh}
@@ -97,6 +102,7 @@
         export PASS_STORE_SYNC_STATUS=${lib.escapeShellArg "${config.home.homeDirectory}/.cache/pass-store-sync.status"}
         export PASS_MATERIALIZE_SCRIPT=${materializeScript}
         export PASS_MATERIALIZE_MAP=${lib.escapeShellArg "${materializeMap}"}
+        export PASS_MATERIALIZE_ENV_MAP=${lib.escapeShellArg "${materializeEnvMap}"}
         export PASS_SECRETSPEC_TOML=${lib.escapeShellArg "${secretspecToml}"}
         ${
           if cfg.enable then
@@ -132,7 +138,7 @@
       '';
       trayPkg = pkgs.rustPlatform.buildRustPackage {
         pname = "pass-store-tray";
-        version = "0.3.3";
+        version = "0.3.5";
         src = ./pass-store-tray;
         cargoLock.lockFile = ./pass-store-tray/Cargo.lock;
         nativeBuildInputs = [
@@ -681,9 +687,12 @@
                 "gpg-agent.service"
               ];
               Wants = [ "gpg-agent.service" ];
+              StartLimitIntervalSec = 120;
+              StartLimitBurst = 3;
             };
             Service = {
               Type = "oneshot";
+              TimeoutStartSec = "60";
               ExecStart = "${gpgPresetScript}";
             };
           };
@@ -696,11 +705,14 @@
             };
             Install.WantedBy = [ "timers.target" ];
           };
+          # Watch concrete secret files only — directory PathModified storms keyboxd.
+          # PathExists alone would fire on every path-unit start (trigger-limit).
           systemd.user.paths.gpg-preset-from-sops = {
             Unit.Description = "Re-preset GPG when sops secrets change";
             Path = {
-              PathModified = "${config.home.homeDirectory}/.config/sops-nix/secrets";
-              PathExists = config.sops.secrets.gpg_passphrase.path;
+              PathModified = config.sops.secrets.gpg_passphrase.path;
+              TriggerLimitIntervalSec = 120;
+              TriggerLimitBurst = 6;
             };
             Install.WantedBy = [ "default.target" ];
           };

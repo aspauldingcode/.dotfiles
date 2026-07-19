@@ -1,0 +1,22 @@
+{
+  "fim": {
+    "system": "You are a Nix expert. Reply with code only, no markdown fences.",
+    "user": "Complete this Nix function that returns true if a string starts with \"dendritic\":\n\nlet startsWithDendritic = s: ",
+    "expect_substrings": ["hasPrefix", "dendritic", "lib."]
+  },
+  "edit": {
+    "system": "You are a careful code editor. Reply with the fixed function only.",
+    "user": "This Python function is wrong (off-by-one). Fix it:\n\ndef clamp(x, lo, hi):\n    if x < lo: return lo\n    if x > hi: return hi\n    return x + 1\n",
+    "expect_substrings": ["return x"]
+  },
+  "agent_tools": {
+    "system": "You are a coding agent. When you need a tool, reply with ONLY a JSON object: {\"tool\":\"name\",\"args\":{...}}. Available tools: list_files, read_file, run_shell.",
+    "user": "List files in the current directory, then tell me which tool you would call first.",
+    "expect_json_tool": true
+  },
+  "reason": {
+    "system": "You are a senior engineer. Be concise.",
+    "user": "A NixOS rebuild fails with: error: attribute 'ollama-cuda' missing. Give the most likely cause in one sentence and one fix.",
+    "expect_substrings": ["nixpkgs", "package", "ollama"]
+  }
+}

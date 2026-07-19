@@ -12,12 +12,11 @@ t              # attach or create session "main" (manual)
 tmux-learn     # interactive tutorial (popup)
 ```
 
-Inside tmux (you will not remember F1 — use these):
+Inside tmux:
 
 | Keys                  | What                                    |
 | --------------------- | --------------------------------------- |
-| _(first attach)_      | Tutorial opens automatically once       |
-| `Ctrl-a` then `T`     | Interactive tutorial (memorable)        |
+| `Ctrl-a` then `T`     | Interactive tutorial                    |
 | `Ctrl-a` then `Space` | **Which-key** menu — press `t` Tutorial |
 | `Ctrl-a` then `?`     | Same which-key menu                     |
 | `Ctrl-a` then `F1`    | Tutorial (same as `T`)                  |
@@ -26,8 +25,8 @@ From any shell: `tmuxhelp` or `tmux-learn`.
 
 > `prefix` means: press `Ctrl-a`, release, then the next key.
 
-First attach auto-opens the tutorial until you finish it once
-(`~/.cache/tmux-tutorial-seen`). After that, `Ctrl-a` `T` or `tmuxhelp`.
+Until you finish the tutorial once (`~/.cache/tmux-tutorial-seen`), new zsh
+panes print a one-line tip (`tmuxhelp` / `Ctrl-a T`). No auto-popup.
 
 ---
 
@@ -43,10 +42,14 @@ Universal pattern: **one status row = window tabs**. Sessions are not a second
 tab strip — they’re a badge + picker (same idea as browser profiles vs tabs).
 
 ```
- [ main ]   1:zsh  [2:nvim]  3:git     +   20:55
-   ^session     ^window tabs (click)   ^new
-   badge
+ main ▌ 1  zsh ▌ 2  nvim ▌ …   20:55 [+]
+  ^session     ^powerline window tabs     ^new
+   badge        (stylix / wallpaper base16)
 ```
+
+Status colors come from Stylix’s wallpaper-derived base16 (`stylix.base16Scheme`),
+seeded into `~/.config/tmux/theme.conf`. Wallpaper / light–dark flips rewrite that
+file from `~/colors.toml` and reload live tmux servers.
 
 | Action             | How                                                     |
 | ------------------ | ------------------------------------------------------- |

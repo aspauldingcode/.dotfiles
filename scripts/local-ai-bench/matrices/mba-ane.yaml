@@ -1,0 +1,9 @@
+# Phase 2 stub — DO NOT EXECUTE until interactive OK.
+# macOS local path: ANEMLL / Core ML ANE only (Metal disqualified).
+host: mba
+runtime: anemll-coreml
+status: gated
+models: []
+notes: >
+  Populate and run only after Phase 1 completes and the user explicitly
+  approves Phase 2 macOS ANE benchmarking.
