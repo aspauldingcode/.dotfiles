@@ -18,21 +18,21 @@ loadModels = ["qwen2.5-coder:3b", "llama3.2:3b", "gemma3:1b", "llama3.2:1b"];
 
 ## Full ranking
 
-| Model | Tier | Score | tok/s | Coding | Tools |
-|-------|------|------:|------:|-------:|------:|
-| `qwen2.5-coder:3b` | outperform | 0.7638 | 8.83 | 3.75 | 5.00 |
-| `llama3.2:3b` | outperform | 0.7394 | 8.04 | 3.75 | 5.00 |
-| `gemma3:1b` | usable | 0.7069 | 16.47 | 2.92 | 5.00 |
-| `qwen2.5-coder:1.5b` | too_slow | 0.65 | 3.56 | 3.75 | 5.00 |
-| `llama3.2:1b` | usable | 0.6324 | 8.17 | 3.33 | 5.00 |
-| `gemma3:4b` | too_slow | 0.5328 | 6.30 | 3.33 | 5.00 |
-| `qwen2.5-coder:7b` | too_slow | 0.4692 | 4.27 | 3.75 | 5.00 |
+| Model                | Tier       |  Score | tok/s | Coding | Tools |
+| -------------------- | ---------- | -----: | ----: | -----: | ----: |
+| `qwen2.5-coder:3b`   | outperform | 0.7638 |  8.83 |   3.75 |  5.00 |
+| `llama3.2:3b`        | outperform | 0.7394 |  8.04 |   3.75 |  5.00 |
+| `gemma3:1b`          | usable     | 0.7069 | 16.47 |   2.92 |  5.00 |
+| `qwen2.5-coder:1.5b` | too_slow   |   0.65 |  3.56 |   3.75 |  5.00 |
+| `llama3.2:1b`        | usable     | 0.6324 |  8.17 |   3.33 |  5.00 |
+| `gemma3:4b`          | too_slow   | 0.5328 |  6.30 |   3.33 |  5.00 |
+| `qwen2.5-coder:7b`   | too_slow   | 0.4692 |  4.27 |   3.75 |  5.00 |
 
 ## Rejected / not selected
 
-- `qwen2.5-coder:1.5b` — `too_slow` 
-- `gemma3:4b` — `too_slow` 
-- `qwen2.5-coder:7b` — `too_slow` 
+- `qwen2.5-coder:1.5b` — `too_slow`
+- `gemma3:4b` — `too_slow`
+- `qwen2.5-coder:7b` — `too_slow`
 
 ## Hardware snapshot (start)
 
@@ -44,4 +44,3 @@ loadModels = ["qwen2.5-coder:3b", "llama3.2:3b", "gemma3:1b", "llama3.2:1b"];
   "mem": {}
 }
 ```
-
