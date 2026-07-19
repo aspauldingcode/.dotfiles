@@ -111,8 +111,9 @@
     }:
     let
       cfg = config.dendritic.wireguard;
-      peersJson = ../../home/wireguard-peers.json;
-      secretspecToml = ../../home/secretspec.toml;
+      # This file lives in modules/ (not modules/apps/) — one .. to repo root.
+      peersJson = ../home/wireguard-peers.json;
+      secretspecToml = ../home/secretspec.toml;
       passPackage = pkgs.pass.withExtensions (exts: [ exts.pass-otp ]);
       ensureBin = pkgs.writeShellApplication {
         name = "dendritic-wg-ensure";
@@ -134,7 +135,7 @@
           export SECRETSPEC_TOML=${lib.escapeShellArg "${secretspecToml}"}
           export WG_IFACE=${lib.escapeShellArg cfg.interface}
           export WG_PEER_ID=${lib.escapeShellArg cfg.peerId}
-          exec bash ${../../scripts/dendritic-wg-ensure.sh} "$@"
+          exec bash ${../scripts/dendritic-wg-ensure.sh} "$@"
         '';
       };
       rdpBin = pkgs.writeShellApplication {
@@ -147,7 +148,7 @@
           set -euo pipefail
           export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"
           export WG_PEERS_JSON=${lib.escapeShellArg "${peersJson}"}
-          exec bash ${../../scripts/dendritic-wg-rdp.sh} "$@"
+          exec bash ${../scripts/dendritic-wg-rdp.sh} "$@"
         '';
       };
       bootstrapBin = pkgs.writeShellApplication {
@@ -165,7 +166,7 @@
           export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
           export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"
           export WG_PEERS_JSON=${lib.escapeShellArg "${peersJson}"}
-          exec bash ${../../scripts/pass-wg-bootstrap.sh} "$@"
+          exec bash ${../scripts/pass-wg-bootstrap.sh} "$@"
         '';
       };
       rotateBin = pkgs.writeShellApplication {
@@ -183,7 +184,7 @@
           export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
           export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"
           export WG_PEERS_JSON=${lib.escapeShellArg "${peersJson}"}
-          exec bash ${../../scripts/pass-wg-rotate.sh} "$@"
+          exec bash ${../scripts/pass-wg-rotate.sh} "$@"
         '';
       };
       setHomeBin = pkgs.writeShellApplication {
@@ -200,7 +201,7 @@
           export PASSWORD_STORE_DIR="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
           export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"
           export WG_PEERS_JSON=${lib.escapeShellArg "${peersJson}"}
-          exec bash ${../../scripts/pass-wg-set-home.sh} "$@"
+          exec bash ${../scripts/pass-wg-set-home.sh} "$@"
         '';
       };
     in
