@@ -15,7 +15,19 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent
-DEFAULT_BASE = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434")
+
+
+def normalize_base(url: str) -> str:
+    """Ollama accepts host:port; urllib needs an explicit scheme."""
+    u = (url or "").strip().rstrip("/")
+    if not u:
+        return "http://127.0.0.1:11434"
+    if "://" not in u:
+        u = f"http://{u}"
+    return u
+
+
+DEFAULT_BASE = normalize_base(os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434"))
 
 
 def load_yaml_simple(path: Path) -> dict[str, Any]:
@@ -405,6 +417,7 @@ def main() -> int:
         help="Optional subset of model ids from the matrix",
     )
     args = ap.parse_args()
+    args.base = normalize_base(args.base)
 
     matrix = load_yaml_simple(args.matrix)
     with args.scenarios.open() as f:

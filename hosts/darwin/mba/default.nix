@@ -41,11 +41,12 @@
 
         # Local Ollama (Metal) + same Rust CLI as sliceanddice (ai-local / ai-chat-local).
         dendritic.local-ai.enable = true;
+        # From scripts/local-ai-bench (mba Metal Ollama, 2026-07-19).
         dendritic.local-ai.loadModels = [
-          "gemma3:1b"
-          "llama3.2:3b"
-          "qwen2.5-coder:3b"
-          "qwen2.5-coder:7b"
+          "qwen2.5-coder:3b" # best overall (outperform)
+          "llama3.2:3b" # general / coding (outperform)
+          "gemma3:1b" # fastest
+          "llama3.2:1b" # ultra-light
         ];
 
         documentation.enable = lib.mkForce false;
