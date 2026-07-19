@@ -77,17 +77,20 @@ def promote_outperform(ranked: list[dict]) -> None:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument(
-        "--raw",
-        type=Path,
-        default=ROOT / "results" / "sliceanddice" / "raw.json",
+        "--host",
+        type=str,
+        default="sliceanddice",
+        help="Host results folder under results/ (mba, sliceanddice, …)",
     )
-    ap.add_argument(
-        "--out",
-        type=Path,
-        default=ROOT / "results" / "sliceanddice" / "ranked.json",
-    )
+    ap.add_argument("--raw", type=Path, default=None)
+    ap.add_argument("--out", type=Path, default=None)
     ap.add_argument("--top", type=int, default=4)
     args = ap.parse_args()
+    host_dir = ROOT / "results" / args.host
+    if args.raw is None:
+        args.raw = host_dir / "raw.json"
+    if args.out is None:
+        args.out = host_dir / "ranked.json"
 
     raw = json.loads(args.raw.read_text())
     results = raw.get("results") or []

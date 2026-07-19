@@ -12,24 +12,32 @@ ROOT = Path(__file__).resolve().parent
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--raw", type=Path, default=ROOT / "results" / "sliceanddice" / "raw.json")
     ap.add_argument(
-        "--ranked", type=Path, default=ROOT / "results" / "sliceanddice" / "ranked.json"
+        "--host",
+        type=str,
+        default="sliceanddice",
+        help="Host results folder under results/ (mba, sliceanddice, …)",
     )
-    ap.add_argument(
-        "--out",
-        type=Path,
-        default=ROOT.parents[1] / "docs" / "local-ai-bench-sliceanddice.md",
-    )
+    ap.add_argument("--raw", type=Path, default=None)
+    ap.add_argument("--ranked", type=Path, default=None)
+    ap.add_argument("--out", type=Path, default=None)
     args = ap.parse_args()
+    host_dir = ROOT / "results" / args.host
+    if args.raw is None:
+        args.raw = host_dir / "raw.json"
+    if args.ranked is None:
+        args.ranked = host_dir / "ranked.json"
+    if args.out is None:
+        args.out = ROOT.parents[1] / "docs" / f"local-ai-bench-{args.host}.md"
 
     raw = json.loads(args.raw.read_text())
     ranked = json.loads(args.ranked.read_text())
+    title_host = ranked.get("host") or args.host
 
     lines = [
-        "# Local AI bench — sliceanddice (NixOS)",
+        f"# Local AI bench — {title_host}",
         "",
-        f"- Host: `{ranked.get('host')}`",
+        f"- Host: `{title_host}`",
         f"- Started: `{raw.get('started_at')}`",
         f"- Finished: `{raw.get('finished_at')}`",
         f"- API: `{raw.get('base')}`",

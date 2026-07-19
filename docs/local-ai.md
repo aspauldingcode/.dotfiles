@@ -57,6 +57,29 @@ ai-local aider --model openai/qwen2.5-coder:3b
 OPENAI_API_BASE=http://127.0.0.1:11434/v1 OPENAI_API_KEY=ollama opencode
 ```
 
-## macOS (mba) — Phase 2 gated
+## mba (macOS) — same CLI as sliceanddice
 
-ANE / ANEMLL only. Do not run Metal/Ollama/MLX as the macOS local primary until Phase 2 is approved interactively.
+Enable: `dendritic.local-ai.enable` on Darwin + HM (same options as NixOS).
+
+Service: `ollama` (`pkgs.ollama`, Metal) via launchd on `127.0.0.1:11434`.
+
+```bash
+# Cross-host (no rebuild required)
+nix run .#ai-local -- --list
+nix run .#ai-chat-local -- -m 1 'ping'
+nix run .#local-ai-bench -- scripts/local-ai-bench/matrices/mba.yaml
+
+# After darwin switch — same binaries as sliceanddice
+ai-local --list
+ai-chat-local 'hello'
+```
+
+ANE / ANEMLL ranking remains a separate matrix (`matrices/mba-ane.yaml`). Metal Ollama is what the shared CLI talks to today.
+
+### Bench
+
+```bash
+nix run .#local-ai-bench   # auto-picks matrices/{mba,sliceanddice}.yaml from hostname
+python3 scripts/local-ai-bench/score.py --host mba
+python3 scripts/local-ai-bench/report.py --host mba
+```

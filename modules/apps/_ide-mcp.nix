@@ -218,6 +218,18 @@ let
     ];
   };
 
+  # Rust JSpace RAG MCP (discover/search/index) — Cursor heavy set.
+  ghidraVibeRagMcpServer = {
+    command = nixExe;
+    args = [
+      "shell"
+      "--no-write-lock-file"
+      "${cfg.ghidra.flake}#ghidra-vibe-tools"
+      "-c"
+      "ghidra-vibe-rag-mcp"
+    ];
+  };
+
   guildforgeMcpServer = {
     command = lib.getExe guildforgeMcpPkg;
     args = [ ];
@@ -257,7 +269,10 @@ let
     // instrumentsMcpServer
     // lib.optionalAttrs cfg.lldb.enable { lldb = lldbMcpServer; }
     // lib.optionalAttrs cfg.agentDevice.enable { agent-device = agentDeviceMcpServer; }
-    // lib.optionalAttrs cfg.ghidra.enable { ghidra = ghidraMcpServer; }
+    // lib.optionalAttrs cfg.ghidra.enable {
+      ghidra = ghidraMcpServer;
+      ghidra-vibe-rag = ghidraVibeRagMcpServer;
+    }
     // lib.optionalAttrs cfg.guildforge.enable { guildforge = guildforgeMcpServer; };
 
   wawonaMcpServers =
@@ -324,7 +339,8 @@ in
       };
       serverUrl = lib.mkOption {
         type = lib.types.str;
-        default = "http://127.0.0.1:8080/";
+        # GhidraMCP HTTP plugin default in GhidraVibe docs
+        default = "http://127.0.0.1:8089/";
       };
     };
 

@@ -8,8 +8,9 @@
   #   nix run .#pass-rotate-cli-auth -- --status
   #   nix run .#pass-rotate-cli-auth -- --flakehub --yes
   #   nix run .#pass-rotate-cli-auth -- --auto
-  # Also refreshes GitHub App + gcloud OAuth (same agent).
+  # Also refreshes GitHub App + gcloud + vercel OAuth (same agent).
   # gcloud one-time: nix run .#pass-gcloud-bootstrap
+  # vercel one-time: nix run .#pass-vercel-bootstrap
   flake.modules.homeManager.dendritic =
     {
       pkgs,
@@ -98,6 +99,25 @@
               export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"
               export OAUTH_SERVER_PY=${../../scripts/gcloud-oauth-server.py}
               exec bash ${../../scripts/gcloud-mint-token.sh} "$@"
+            '';
+          })
+          (pkgs.writeShellApplication {
+            name = "vercel-mint-token";
+            runtimeInputs = with pkgs; [
+              coreutils
+              curl
+              gnugrep
+              gnupg
+              git
+              python3
+              passPackage
+              bash
+            ];
+            text = ''
+              set -euo pipefail
+              export PASSWORD_STORE_DIR=${lib.escapeShellArg storeDir}
+              export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"
+              exec bash ${../../scripts/vercel-mint-token.sh} "$@"
             '';
           })
         ];
@@ -216,7 +236,7 @@
               daysBefore of expiry (activation + weekly agent). Minting needs
               FlakeHub *admin* auth once (device JWTs cannot create); on failure
               you get a notification to run pass-flakehub-bootstrap.
-              GitHub App / gcloud OAuth refresh in the same agent.
+              GitHub App / gcloud / vercel OAuth refresh in the same agent.
             '';
           };
           daysBefore = lib.mkOption {
@@ -264,7 +284,7 @@
         systemd.user.services.pass-rotate-cli-auth =
           lib.mkIf (passCfg.enable && cfg.autoRotate.enable && pkgs.stdenv.isLinux)
             {
-              Unit.Description = "Auto-rotate FlakeHub / GitHub / gcloud CLI tokens in pass";
+              Unit.Description = "Auto-rotate FlakeHub / GitHub / gcloud / vercel CLI tokens in pass";
               Service = {
                 Type = "oneshot";
                 ExecStart = "${autoRotateCmd}";

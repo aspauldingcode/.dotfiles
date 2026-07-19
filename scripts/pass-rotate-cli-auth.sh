@@ -6,6 +6,7 @@
 #   nix run .#pass-rotate-cli-auth -- --flakehub
 #   nix run .#pass-rotate-cli-auth -- --github
 #   nix run .#pass-rotate-cli-auth -- --gcloud
+#   nix run .#pass-rotate-cli-auth -- --vercel
 #   nix run .#pass-rotate-cli-auth -- --auto    # only if within --days of expiry
 #
 # FlakeHub: mint device JWT via flakehub-mint-token (admin elevate when needed).
@@ -17,6 +18,9 @@
 # Google Cloud: fully automated via OAuth refresh_token in pass
 #   (one-time: nix run .#pass-gcloud-bootstrap). Access tokens mint on demand;
 #   --gcloud forces refresh (or localhost re-auth if refresh revoked).
+# Vercel: fully automated via OAuth refresh_token in pass
+#   (one-time: nix run .#pass-vercel-bootstrap). Access tokens mint on demand;
+#   --vercel forces refresh (or device re-auth if refresh revoked).
 set -euo pipefail
 
 DOTFILES_ROOT="${DOTFILES_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
@@ -26,6 +30,8 @@ GH_REFRESH_PATH="secretspec/shared/default/GH_REFRESH_TOKEN"
 FH_PASS_PATH="secretspec/shared/default/FLAKEHUB_TOKEN"
 GCLOUD_REFRESH_PATH="secretspec/shared/default/GCLOUD_REFRESH_TOKEN"
 GCLOUD_SA_PATH="secretspec/shared/default/GCLOUD_SA_KEY"
+VERCEL_REFRESH_PATH="secretspec/shared/default/VERCEL_REFRESH_TOKEN"
+VERCEL_TOKEN_PATH="secretspec/shared/default/VERCEL_TOKEN"
 FH_DESC_PREFIX="dendritic-cli-auth"
 ORG="${FLAKEHUB_ORG:-aspauldingcode}"
 DAYS=14
@@ -34,6 +40,7 @@ DO_AUTO=false
 DO_FH=false
 DO_GH=false
 DO_GCLOUD=false
+DO_VERCEL=false
 DO_BOTH=true
 FROM_CLIPBOARD=false
 FROM_GH_AUTH=false
@@ -51,7 +58,7 @@ need() { command -v "$1" >/dev/null 2>&1 || die "missing required command: $1"; 
 log() { printf '%s\n' "$*"; }
 
 usage() {
-  sed -n '2,20p' "$0" | sed 's/^# //; s/^#//'
+  sed -n '2,24p' "$0" | sed 's/^# //; s/^#//'
 }
 
 while [[ $# -gt 0 ]]; do
@@ -71,6 +78,10 @@ while [[ $# -gt 0 ]]; do
     ;;
   --gcloud | --gcp)
     DO_GCLOUD=true
+    DO_BOTH=false
+    ;;
+  --vercel | --vc)
+    DO_VERCEL=true
     DO_BOTH=false
     ;;
   --days)
@@ -98,6 +109,7 @@ if $DO_BOTH; then
   DO_FH=true
   DO_GH=true
   DO_GCLOUD=true
+  DO_VERCEL=true
 fi
 
 need pass
@@ -193,6 +205,44 @@ except Exception:
 PY
 }
 
+vercel_configured() {
+  pass show "$VERCEL_REFRESH_PATH" >/dev/null 2>&1
+}
+
+vercel_static_configured() {
+  pass show "$VERCEL_TOKEN_PATH" >/dev/null 2>&1
+}
+
+vercel_mint_token() {
+  if command -v vercel-mint-token >/dev/null 2>&1; then
+    vercel-mint-token "$@"
+  else
+    bash "${DOTFILES_ROOT}/scripts/vercel-mint-token.sh" "$@"
+  fi
+}
+
+vercel_auth_json_path() {
+  if [[ -n ${VERCEL_AUTH_JSON:-} ]]; then
+    printf '%s' "$VERCEL_AUTH_JSON"
+  elif [[ "$(uname -s)" == Darwin ]]; then
+    printf '%s' "$HOME/Library/Application Support/com.vercel.cli/auth.json"
+  else
+    printf '%s' "${XDG_DATA_HOME:-$HOME/.local/share}/com.vercel.cli/auth.json"
+  fi
+}
+
+vercel_access_left_secs() {
+  local cache="${VERCEL_CACHE_DIR:-$HOME/.cache/dendritic}/vercel-token.json"
+  python3 - "$cache" <<'PY' 2>/dev/null || echo 0
+import json,sys,time
+try:
+  d=json.load(open(sys.argv[1]))
+  print(max(0, int(d.get("expires_at",0))-int(time.time())))
+except Exception:
+  print(0)
+PY
+}
+
 gh_expiry_from_api() {
   local token="" hdr
   if gh_app_configured; then
@@ -220,7 +270,7 @@ fh_mint_token() {
 }
 
 status() {
-  local fh_exp gh_exp fh_days gh_days gcloud_left
+  local fh_exp gh_exp fh_days gh_days gcloud_left vercel_left
   fh_exp="$(fh_expiry_from_status)"
   gh_exp="$(gh_expiry_from_api)"
   fh_days="$(printf '%s' "$fh_exp" | days_until)"
@@ -250,6 +300,19 @@ status() {
     log "  mode: unset — run: pass-gcloud-bootstrap"
   fi
   log "  pass path: $GCLOUD_REFRESH_PATH"
+  log "Vercel"
+  if vercel_configured; then
+    log "  mode: OAuth (pass refresh_token) — API mint enabled"
+    vercel_mint_token --status 2>/dev/null | sed 's/^/  /' || true
+    vercel_left="$(vercel_access_left_secs)"
+    log "  access cache left: ${vercel_left}s"
+  elif vercel_static_configured; then
+    log "  mode: static PAT (legacy) — run: pass-vercel-bootstrap for OAuth minting"
+    log "  pass path: $VERCEL_TOKEN_PATH"
+  else
+    log "  mode: unset — run: pass-vercel-bootstrap"
+  fi
+  log "  pass path: $VERCEL_REFRESH_PATH"
   log "Auto threshold: ${DAYS}d"
 }
 
@@ -405,6 +468,38 @@ rotate_gcloud() {
   die "gcloud: not configured — run: nix run .#pass-gcloud-bootstrap"
 }
 
+rotate_vercel() {
+  local token auth_path auth_dir
+  if vercel_configured; then
+    log "vercel: refreshing OAuth access via API (pass-backed)…"
+    token="$(vercel_mint_token --refresh 2>/dev/null || true)"
+    if [[ -z $token ]]; then
+      log "vercel: refresh failed — starting OAuth device flow"
+      token="$(vercel_mint_token --device)"
+    fi
+    [[ -n $token ]] || die "vercel: mint returned empty token"
+    auth_path="$(vercel_auth_json_path)"
+    auth_dir="$(dirname "$auth_path")"
+    mkdir -p "$auth_dir"
+    umask 077
+    vercel_mint_token --auth-json >"$auth_path"
+    chmod 0600 "$auth_path"
+    log "vercel: access OK; auth.json rewritten"
+    return 0
+  fi
+  if vercel_static_configured; then
+    log "vercel: static PAT present — OAuth mint not configured."
+    log "  Prefer: nix run .#pass-vercel-bootstrap"
+    if command -v osascript >/dev/null 2>&1; then
+      osascript -e 'display notification "Run pass-vercel-bootstrap for OAuth minting" with title "vercel PAT mode"' 2>/dev/null || true
+    elif command -v notify-send >/dev/null 2>&1; then
+      notify-send "vercel PAT mode" "pass-vercel-bootstrap" || true
+    fi
+    return 0
+  fi
+  die "vercel: not configured — run: nix run .#pass-vercel-bootstrap"
+}
+
 due_for_rotate() {
   local exp days
   exp="$1"
@@ -466,6 +561,16 @@ if $DO_AUTO; then
       log "gcloud: not configured — skip"
     fi
   fi
+  if $DO_VERCEL; then
+    if vercel_configured; then
+      log "vercel: verifying OAuth refresh + rewriting auth.json"
+      rotate_vercel
+    elif vercel_static_configured; then
+      log "vercel: static PAT mode — no auto OAuth rotate (run pass-vercel-bootstrap)"
+    else
+      log "vercel: not configured — skip"
+    fi
+  fi
   exit 0
 fi
 
@@ -497,6 +602,21 @@ if $DO_GCLOUD; then
   else
     rotate_gcloud || {
       log "gcloud: rotation FAILED"
+      FAILED=1
+    }
+  fi
+fi
+
+if $DO_VERCEL; then
+  if ! vercel_configured && ! vercel_static_configured; then
+    if $DO_BOTH; then
+      log "vercel: not configured — skip (run: nix run .#pass-vercel-bootstrap)"
+    else
+      die "vercel: not configured — run: nix run .#pass-vercel-bootstrap"
+    fi
+  else
+    rotate_vercel || {
+      log "vercel: rotation FAILED"
       FAILED=1
     }
   fi

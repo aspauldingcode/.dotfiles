@@ -329,7 +329,7 @@ Do **not** bootstrap GPG from the password-store git repo (circular / weak).
 
 ### CLI auth secrets (declarations public, values private)
 
-See [`home/secretspec.toml`](../home/secretspec.toml): `GH_*`, `FLAKEHUB_TOKEN`, `GCLOUD_*`.
+See [`home/secretspec.toml`](../home/secretspec.toml): `GH_*`, `FLAKEHUB_TOKEN`, `GCLOUD_*`, `VERCEL_*`.
 Helpers:
 
 | CLI      | One-time bootstrap                    | Mint / rotate                                             |
@@ -337,10 +337,13 @@ Helpers:
 | `gh`     | `nix run .#pass-github-app-bootstrap` | `github-app-mint-token` · `pass-rotate-cli-auth --github` |
 | `fh`     | `nix run .#pass-flakehub-bootstrap`   | `flakehub-mint-token` · `pass-rotate-cli-auth --flakehub` |
 | `gcloud` | `nix run .#pass-gcloud-bootstrap`     | `gcloud-mint-token` · `pass-rotate-cli-auth --gcloud`     |
+| `vercel` | `nix run .#pass-vercel-bootstrap`     | `vercel-mint-token` · `pass-rotate-cli-auth --vercel`     |
 
 **FlakeHub:** Device JWTs (what lives in pass) can _list_ but not _create_ tokens. Bootstrap / rotate elevates with a short-lived FlakeHub _user_ token from https://flakehub.com/user/settings?editview=tokens, mints a device JWT into `FLAKEHUB_TOKEN`, logs determinate-nixd back in as the device token, and optionally revokes older `dendritic-cli-auth*` tokens. Weekly auto-rotate notifies if elevation is needed.
 
 **gcloud:** OAuth refresh_token in pass → access token on each `gcloud` invoke (cached ~1h). Activation rewrites `~/.config/gcloud/application_default_credentials.json` for client libraries. Optional SA JSON fallback: `pass-gcloud-bootstrap --from-sa key.json`. Optional default project: `--project my-gcp-project`.
+
+**vercel:** OAuth refresh_token in pass → access token on each `vercel` invoke (cached ~8h). Activation rewrites `auth.json` (`~/Library/Application Support/com.vercel.cli/` on Darwin, `~/.local/share/com.vercel.cli/` on Linux). Import existing login: `pass-vercel-bootstrap --from-auth-json`. Static PAT fallback: `pass-vercel-bootstrap --from-token TOKEN` or SecretSpec `VERCEL_TOKEN`. Optional team: `--team TEAM_ID`.
 
 ### Rotation runbook
 

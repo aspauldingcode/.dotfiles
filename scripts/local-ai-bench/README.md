@@ -1,20 +1,31 @@
 # local-ai-bench
 
 Data-driven local LLM bench for the dendritic fleet.
+Same entrypoint on mba (macOS) and sliceanddice (NixOS).
 
-## Phase 1 — sliceanddice (NixOS)
+## Quick (either host)
 
 ```bash
-# On sliceanddice (or via ssh), with Ollama listening on :11434:
-python3 scripts/local-ai-bench/bench.py \
-  --matrix scripts/local-ai-bench/matrices/sliceanddice.yaml \
-  --out scripts/local-ai-bench/results/sliceanddice/raw.json
+# Ollama on :11434, then:
+nix run .#local-ai-bench
+# or explicit matrix:
+nix run .#local-ai-bench -- scripts/local-ai-bench/matrices/mba.yaml
+nix run .#local-ai-bench -- scripts/local-ai-bench/matrices/sliceanddice.yaml
 
-python3 scripts/local-ai-bench/score.py
-python3 scripts/local-ai-bench/report.py
+python3 scripts/local-ai-bench/score.py --host mba
+python3 scripts/local-ai-bench/report.py --host mba
 ```
 
-## Phase 2 — mba (macOS ANE)
+## CLI parity
 
-`matrices/mba-ane.yaml` is a **gated stub**. Do not run until interactive OK.
-Metal / Ollama / MLX / llama.cpp are disqualified for macOS local ranking.
+Rust helpers are identical on both hosts (`modules/apps/local-ai-cli`):
+
+```bash
+nix run .#ai-local -- --list
+nix run .#ai-chat-local -- 'hello'
+# after switch: ai-local / ai-chat-local on PATH
+```
+
+## ANE stub
+
+`matrices/mba-ane.yaml` is reserved for ANEMLL/Core ML ranking (separate from Metal Ollama).

@@ -1,5 +1,6 @@
-# Dual-mode local AI: free Ollama (NixOS CUDA) alongside existing cloud OpenAI.
-# Phase 1: NixOS only. Darwin / ANE path is gated (Phase 2) — do not enable on mba yet.
+# Dual-mode local AI: free Ollama alongside existing cloud OpenAI.
+# Same Rust CLI (ai-local / ai-chat-local) on NixOS + Darwin.
+# NixOS: CUDA ollama. Darwin: Metal ollama via launchd (ANE ranking is separate).
 {
   flake.modules.nixos.dendritic =
     {
@@ -65,6 +66,93 @@
       };
     };
 
+  flake.modules.darwin.dendritic =
+    {
+      pkgs,
+      lib,
+      config,
+      ...
+    }:
+    let
+      cfg = config.dendritic.local-ai;
+      ollamaHost = "${cfg.host}:${toString cfg.port}";
+      pullModels = pkgs.writeShellScript "ollama-pull-models" ''
+        set -euo pipefail
+        export OLLAMA_HOST=${lib.escapeShellArg ollamaHost}
+        export PATH=${lib.makeBinPath [ pkgs.ollama pkgs.coreutils ]}:$PATH
+        for i in $(seq 1 60); do
+          if ollama list >/dev/null 2>&1; then
+            break
+          fi
+          sleep 1
+        done
+        ${lib.concatMapStringsSep "\n" (m: ''
+          ollama pull ${lib.escapeShellArg m} || true
+        '') cfg.loadModels}
+      '';
+    in
+    {
+      options.dendritic.local-ai = {
+        enable = lib.mkEnableOption "Local LLM serving (Ollama) + CLI agent packages";
+
+        loadModels = lib.mkOption {
+          type = lib.types.listOf lib.types.str;
+          default = [ ];
+          description = "Ollama model tags to pull after ollama starts.";
+        };
+
+        host = lib.mkOption {
+          type = lib.types.str;
+          default = "127.0.0.1";
+        };
+
+        port = lib.mkOption {
+          type = lib.types.port;
+          default = 11434;
+        };
+      };
+
+      config = lib.mkIf cfg.enable {
+        environment.systemPackages = with pkgs; [
+          ollama
+          llama-cpp
+        ]
+        ++ lib.optionals (pkgs ? aider-chat) [ aider-chat ]
+        ++ lib.optionals (pkgs ? opencode) [ opencode ]
+        ++ lib.optionals (pkgs ? oterm) [ oterm ];
+
+        launchd.user.agents.ollama = {
+          serviceConfig = {
+            Label = "com.aspaulding.ollama";
+            ProgramArguments = [
+              "${pkgs.ollama}/bin/ollama"
+              "serve"
+            ];
+            EnvironmentVariables = {
+              OLLAMA_HOST = ollamaHost;
+              OLLAMA_MAX_LOADED_MODELS = "1";
+              OLLAMA_KEEP_ALIVE = "5m";
+            };
+            RunAtLoad = true;
+            KeepAlive = true;
+            StandardOutPath = "/tmp/ollama.log";
+            StandardErrorPath = "/tmp/ollama.err.log";
+          };
+        };
+
+        launchd.user.agents.ollama-model-loader = lib.mkIf (cfg.loadModels != [ ]) {
+          serviceConfig = {
+            Label = "com.aspaulding.ollama-model-loader";
+            ProgramArguments = [ "${pullModels}" ];
+            RunAtLoad = true;
+            KeepAlive = false;
+            StandardOutPath = "/tmp/ollama-model-loader.log";
+            StandardErrorPath = "/tmp/ollama-model-loader.err.log";
+          };
+        };
+      };
+    };
+
   flake.modules.homeManager.dendritic =
     {
       pkgs,
@@ -107,7 +195,7 @@
       };
 
       config = lib.mkIf cfg.enable {
-        # Rust CLI (ai-local / ai-chat-local). OpenCode has no HM module in our pin.
+        # Rust CLI (ai-local / ai-chat-local). Same package on NixOS + Darwin.
         home.packages = [
           localAiCli
         ]

@@ -39,6 +39,15 @@
         # macrdp + socat :3389→13389 (Bonjour `_rdp._tcp` via HM agent).
         dendritic.apps.macrdp.enable = true;
 
+        # Local Ollama (Metal) + same Rust CLI as sliceanddice (ai-local / ai-chat-local).
+        dendritic.local-ai.enable = true;
+        dendritic.local-ai.loadModels = [
+          "gemma3:1b"
+          "llama3.2:3b"
+          "qwen2.5-coder:3b"
+          "qwen2.5-coder:7b"
+        ];
+
         documentation.enable = lib.mkForce false;
         documentation.man.enable = lib.mkForce false;
         documentation.doc.enable = lib.mkForce false;
@@ -213,6 +222,10 @@
           dendritic.apps.macrdp.enable = true;
           dendritic.apps.macrdp.bonjourName = "mba";
           dendritic.python.enable = true;
+
+          # Same Rust helpers as sliceanddice (scoped OPENAI_* only when wrapping).
+          dendritic.local-ai.enable = true;
+          dendritic.local-ai.defaultLocalModel = "qwen2.5-coder:3b";
 
           # programs.zsh.shellAliases = {
           #   microvm-run = "${inputs.self.nixosConfigurations.microvm.config.microvm.runner.vfkit}/bin/microvm-run";
