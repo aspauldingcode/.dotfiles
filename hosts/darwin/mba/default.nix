@@ -221,6 +221,8 @@
           dendritic.fleet.hostId = "mba";
           dendritic.fleet.dotfilesRoot = "/etc/nix-darwin/.dotfiles";
           dendritic.mobile.enable = true;
+          # Always-on nix-android converge (shared with sliceanddice; phone lease).
+          dendritic.androidConverge.enable = true;
           dendritic.wallpaper.enable = true;
           dendritic.profilePhoto.enable = true;
           dendritic.apps.macrdp.enable = true;

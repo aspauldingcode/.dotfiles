@@ -302,6 +302,8 @@
         dendritic.fleet.enable = true;
         dendritic.fleet.hostId = "sliceanddice";
         dendritic.fleet.dotfilesRoot = "/etc/nixos/.dotfiles";
+        # Always-on nix-android converge (shared with mba; phone lease).
+        dendritic.androidConverge.enable = true;
         dendritic.python.enable = true;
         dendritic.wallpaper.enable = true;
         dendritic.profilePhoto.enable = true;

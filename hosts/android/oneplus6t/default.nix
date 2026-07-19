@@ -23,20 +23,25 @@
 
   apps = {
     # Main f-droid.org repository — pins resolved into apps.lock.json.
-    # Add packages here, then run `android-rebuild update` (see docs/nix-android.md).
-    # Useful LineageOS picks: org.mozilla.fennec_fdroid, org.schabi.newpipe,
-    # com.aurora.store.
     fdroid.packages = [
       "org.fdroid.fdroid"
       "com.termux"
+    ];
+
+    # Sideloaded / non-Play keepers (presence assertions).
+    # Wawona: com.aspauldingcode.wawona
+    attended = [
+      "com.aspauldingcode.wawona"
     ];
 
     # release."org.thoughtcrime.securesms".updateJson =
     #   "https://updates.signal.org/android/latest.json";
     # play = [ "com.spotify.music" ];
 
-    # Additive default: undeclared user apps are left alone.
-    cleanup = "none";
+    # Remove undeclared third-party owner apps. System packages are never
+    # cleanup candidates (use android.packages.disabled for those).
+    # ALWAYS review `plan` uninstall lines before `switch`.
+    cleanup = "uninstall";
   };
 
   android = {

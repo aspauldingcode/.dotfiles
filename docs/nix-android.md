@@ -5,15 +5,41 @@ Declarative Android apps and reachable device state via
 for your phone**. Converge over authorized `adb` shell; no root, no replacing
 the OS, no Nix on the device.
 
-| Piece                             | Path / attr                                               |
-| --------------------------------- | --------------------------------------------------------- |
-| Device module                     | [`hosts/android/oneplus6t/`](../hosts/android/oneplus6t/) |
-| APK lock                          | `hosts/android/oneplus6t/apps.lock.json`                  |
-| Flake wiring                      | [`modules/nix-android.nix`](../modules/nix-android.nix)   |
-| Config (Apple Silicon controller) | `.#oneplus6t-darwin`                                      |
-| Config (x86_64 Linux controller)  | `.#oneplus6t-linux`                                       |
-| CLI                               | `nix run .#android-rebuild -- …`                          |
-| Wireless adb                      | `nix run .#adb-wireless -- …` / `scripts/adb-wireless.sh` |
+| Piece                             | Path / attr                                                      |
+| --------------------------------- | ---------------------------------------------------------------- |
+| Device module                     | [`hosts/android/oneplus6t/`](../hosts/android/oneplus6t/)        |
+| APK lock                          | `hosts/android/oneplus6t/apps.lock.json`                         |
+| Flake wiring                      | [`modules/nix-android.nix`](../modules/nix-android.nix)          |
+| Config (Apple Silicon controller) | `.#oneplus6t-darwin`                                             |
+| Config (x86_64 Linux controller)  | `.#oneplus6t-linux`                                              |
+| CLI                               | `nix run .#android-rebuild -- …`                                 |
+| Wireless adb                      | `nix run .#adb-wireless -- …` / `scripts/adb-wireless.sh`        |
+| Always-on agent                   | `dendritic.androidConverge` (mba launchd + sliceanddice systemd) |
+
+## Always-on converge agent
+
+Shared Home Manager module [`modules/apps/android-converge.nix`](../modules/apps/android-converge.nix)
+installs the same agent on **mba** (launchd) and **sliceanddice** (systemd user
+timer). Default interval is 15 minutes; `RunAtLoad` / `OnBootSec` so it is
+always on when the host is up.
+
+**No duplicate apply:** before `switch`, the agent writes a short lease on the
+phone (`/data/local/tmp/nix-android-<device>.lease`) with `hostId` + expiry.
+If the other controller holds a valid lease, this host skips. A local
+`~/.cache/android-converge.lock` also prevents overlapping runs on one machine.
+
+```bash
+# Logs
+tail -f ~/.cache/android-converge.log      # mba
+journalctl --user -u android-converge -f # sliceanddice
+
+# Manual kick
+launchctl kickstart -k gui/$(id -u)/com.aspaulding.android-converge  # mba
+systemctl --user start android-converge.service                      # sliceanddice
+```
+
+Enabled with `dendritic.androidConverge.enable = true` on both controllers
+(`hostId` defaults from `dendritic.fleet.hostId`).
 
 ## Support boundary
 
@@ -131,8 +157,13 @@ Paste the generated module into `hosts/android/oneplus6t/default.nix`, then
 
 ## Defaults in this repo
 
-- Additive cleanup (`apps.cleanup = "none"`) — undeclared apps stay installed.
-- Starter F-Droid set: F-Droid client + Termux (expand in the device module).
+- **Cleanup on** (`apps.cleanup = "uninstall"`) — undeclared third-party owner
+  apps are removed after a successful apply. System packages are never cleanup
+  candidates; disable those with `android.packages.disabled`.
+- Keepers today: F-Droid + Termux (managed) and **Wawona**
+  (`com.aspauldingcode.wawona` under `apps.attended`). Add anything else you
+  want to keep under `apps.play` / `apps.attended` / `apps.fdroid` /
+  `apps.release` **before** the next `switch`, or it will be uninstalled.
 - Dark mode + opportunistic Private DNS; Termux notification permission and
   background/battery exemptions.
 
