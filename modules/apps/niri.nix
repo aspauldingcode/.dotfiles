@@ -323,7 +323,10 @@
       '';
       appearanceBin = lib.getExe (pkgs.callPackage ./dendritic-appearance/_package.nix { });
       wallpaperFallback = if wallpaper == null then "" else toString wallpaper;
-      lock = "${pkgs.writeShellScript "gtklock-auth" ''
+      # Shared CSS/wallpaper prep for gtklock (timeout lock + before-sleep).
+      # Prints css path on stdout; sets XDG_* in the calling shell via eval-friendly
+      # side effect — callers source this and read CSS_PATH.
+      gtklockPrep = pkgs.writeShellScript "gtklock-prep-css" ''
         set -euo pipefail
         export XDG_DATA_DIRS=${lib.escapeShellArg "${pkgs.adwaita-icon-theme}/share"}''${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}
         export XDG_CONFIG_HOME=${lib.escapeShellArg gtklockGtkConfig}
@@ -341,7 +344,6 @@
           fi
         fi
         if [ -z "''${image:-}" ] || [ ! -f "$image" ]; then
-          # Pack/daemon unavailable — fall back to stylix.image if present.
           image=${lib.escapeShellArg wallpaperFallback}
           blur="$image"
         fi
@@ -353,18 +355,80 @@
           -e "s|__DENDRITIC_AUTH_WALLPAPER__|file://''${image}|g" \
           -e "s|__DENDRITIC_AUTH_WALLPAPER_BLUR__|file://''${blur}|g" \
           ${gtklockStyleTemplate} > "$css"
+        printf '%s\n' "$css"
+      '';
 
-        # Block sleep while locked — gtklock is invisible to Wayland idle, so
-        # swayidle would otherwise queue suspend during the password prompt.
+      # Idle-timeout lock: hold sleep:block from gtklock start through post-unlock
+      # grace with no gap (avoids unlock→instant-suspend bounce).
+      lock = "${pkgs.writeShellScript "gtklock-auth" ''
+        set -euo pipefail
+        export XDG_DATA_DIRS=${lib.escapeShellArg "${pkgs.adwaita-icon-theme}/share"}''${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}
+        export XDG_CONFIG_HOME=${lib.escapeShellArg gtklockGtkConfig}
+        # Already locked (timeout + before-sleep can race).
+        if ${pkgs.procps}/bin/pgrep -x gtklock >/dev/null 2>&1; then
+          exit 0
+        fi
+        css="$(${gtklockPrep})"
+        runtime="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}"
+        graceSec=180
+        # Export for gtklock child (icons / config).
+        export XDG_DATA_DIRS XDG_CONFIG_HOME
         exec ${pkgs.systemd}/bin/systemd-inhibit \
-          --what=sleep --who=gtklock --why='session locked' --mode=block \
-          ${lib.getExe pkgs.gtklock} -s "$css" "$@"
+          --what=sleep --who=gtklock --why='session locked + post-unlock grace' --mode=block \
+          ${pkgs.bash}/bin/bash -c '
+            set -euo pipefail
+            export XDG_DATA_DIRS="$4"
+            export XDG_CONFIG_HOME="$5"
+            ${lib.getExe pkgs.gtklock} -s "$1" || true
+            ${pkgs.coreutils}/bin/date +%s >"$2/dendritic-suspend-grace"
+            ${lib.getExe pkgs.niri} msg action power-on-monitors >/dev/null 2>&1 || true
+            exec ${pkgs.coreutils}/bin/sleep "$3"
+          ' bash "$css" "$runtime" "$graceSec" "$XDG_DATA_DIRS" "$XDG_CONFIG_HOME"
       ''}";
+
+      # before-sleep: daemonize so swayidle -w can return before InhibitDelayMaxSec;
+      # do not hold sleep:block here (that would fight logind suspend).
+      lockBeforeSleep = "${pkgs.writeShellScript "gtklock-before-sleep" ''
+        set -euo pipefail
+        export XDG_DATA_DIRS=${lib.escapeShellArg "${pkgs.adwaita-icon-theme}/share"}''${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}
+        export XDG_CONFIG_HOME=${lib.escapeShellArg gtklockGtkConfig}
+        if ${pkgs.procps}/bin/pgrep -x gtklock >/dev/null 2>&1; then
+          exit 0
+        fi
+        css="$(${gtklockPrep})"
+        exec ${lib.getExe pkgs.gtklock} -d -s "$css"
+      ''}";
+
+      # Waybar NixOS logo → fuzzel session menu (lock / logout / power).
+      sessionMenu = pkgs.writeShellScript "dendritic-session-menu" ''
+        set -euo pipefail
+        fuzzel=${lib.escapeShellArg (lib.getExe pkgs.fuzzel)}
+        niri=${lib.escapeShellArg (lib.getExe pkgs.niri)}
+        systemctl=${lib.escapeShellArg "${pkgs.systemd}/bin/systemctl"}
+        choice="$(
+          printf '%s\n' \
+            '󰌾  Lock' \
+            '󰍃  Logout' \
+            '󰤄  Suspend' \
+            '󰜉  Reboot' \
+            '󰐥  Shut down' \
+            | "$fuzzel" --dmenu --prompt 'Session  ' --lines 5
+        )" || exit 0
+        [ -n "$choice" ] || exit 0
+        case "$choice" in
+          *Lock*) exec ${lock} ;;
+          *Logout*) exec "$niri" msg action quit --skip-confirmation ;;
+          *Suspend*) exec "$systemctl" suspend ;;
+          *Reboot*) exec "$systemctl" reboot ;;
+          *'Shut down'*) exec "$systemctl" poweroff ;;
+        esac
+      '';
 
       # gtklock does not talk to the Wayland idle protocol, so swayidle keeps
       # counting idle while the lock screen is up. At unlock the 900s timer is
       # often already expired → suspend in the same second as unlock (bounce).
-      # Inhibit sleep for the whole lock; hold a post-unlock inhibit too.
+      # Primary grace is chained inside gtklock-auth; mark is backup for
+      # before-sleep / after-resume paths that use daemonized gtklock.
       idleSuspend =
         let
           graceSec = 180;
@@ -378,8 +442,15 @@
           mark = pkgs.writeShellScript "dendritic-suspend-grace-mark" ''
             set -euo pipefail
             runtime="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}"
+            # Write grace stamp first — idle-suspend may race unlock handlers.
             ${pkgs.coreutils}/bin/date +%s >"$runtime/dendritic-suspend-grace"
             ${lib.getExe pkgs.niri} msg action power-on-monitors >/dev/null 2>&1 || true
+            # Skip if gtklock-auth already holds chained post-unlock inhibit.
+            if ${pkgs.systemd}/bin/systemd-inhibit --list --no-pager 2>/dev/null \
+              | ${pkgs.gnugrep}/bin/grep -E 'gtklock|dendritic' \
+              | ${pkgs.gnugrep}/bin/grep -qi 'block'; then
+              exit 0
+            fi
             ${pkgs.procps}/bin/pkill -f 'dendritic-post-unlock-inhibit' 2>/dev/null || true
             ${postUnlockInhibit} &
           '';
@@ -387,6 +458,12 @@
             set -euo pipefail
             # Never suspend while gtklock is up (idle timer lies during lock).
             if ${pkgs.procps}/bin/pgrep -x gtklock >/dev/null 2>&1; then
+              exit 0
+            fi
+            # Honor any sleep:block inhibitor (chained lock grace / mark).
+            if ${pkgs.systemd}/bin/systemd-inhibit --list --no-pager 2>/dev/null \
+              | ${pkgs.gnugrep}/bin/grep -i sleep \
+              | ${pkgs.gnugrep}/bin/grep -qi block; then
               exit 0
             fi
             runtime="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}"
@@ -560,6 +637,13 @@
         # after Stylix's color definitions).
         stylix.targets.waybar.addCss = false;
 
+        # FreeType stem-darkening (linux-desktop.nix) must reach the waybar
+        # unit even if import-environment races session start — pango/cairo
+        # read FREETYPE_PROPERTIES at process start. Quote: value has spaces.
+        systemd.user.services.waybar.Service.Environment = [
+          ''"FREETYPE_PROPERTIES=cff:no-stem-darkening=0 autofitter:no-stem-darkening=0"''
+        ];
+
         programs.waybar = {
           enable = true;
           # Sole starter — do not also spawn-at-startup (that doubles the bar).
@@ -567,31 +651,40 @@
           settings.mainBar = {
             layer = "top";
             position = "top";
-            # Island margins + box-shadow need ≥56px; 34 triggers waybar min-height warn.
-            height = 56;
+            # Room for per-island box-shadow (GTK clips to the waybar surface).
+            # 34 triggers waybar min-height warn; shadow blur needs bottom margin.
+            height = 64;
             spacing = 4;
-            # Extra chrome so island box-shadows (match niri layout.shadow) are
-            # not clipped by the waybar surface.
             margin-top = 8;
             margin-left = 12;
             margin-right = 12;
 
             modules-left = [
+              "custom/nixos"
               "niri/workspaces"
               "niri/window"
             ];
             modules-center = [ "clock" ];
+            # Network: nm-applet in tray only (no waybar network / iwgtk indicator).
             modules-right = [
               "tray"
               "custom/appearance"
               "custom/power"
               "backlight"
               "pulseaudio"
-              "network"
               "cpu"
               "memory"
               "battery"
             ];
+
+            # Top-left: Unicode snowflake → session menu (clock stays centered).
+            # U+2744 + text presentation (FE0E) — not Nerd Font PUA (uneven bearings).
+            "custom/nixos" = {
+              format = "❄︎";
+              tooltip-format = "Session\nLeft: lock / logout / power\nRight: lock screen";
+              on-click = "${sessionMenu}";
+              on-click-right = "${lock}";
+            };
 
             "niri/workspaces" = {
               format = "{index}";
@@ -601,10 +694,29 @@
               max-length = 60;
             };
             clock = {
-              # Nerd Font (Maple Mono NF) glyphs — not ASCII spaces.
-              format = "󰥔 {:%H:%M}";
-              format-alt = "󰃭 {:%a %d %b}";
+              # Single line. Multiple chrono specs need `{0:%…}` (waybar/fmt);
+              # glyphs/text stay outside the braces.
+              format = "<span color=\"${c.base0D}\">󰥔 {0:%H:%M}</span>  <span color=\"${c.base05}\">{0:%a · %d %b}</span>";
+              format-alt = "<span color=\"${c.base0D}\">󰥔 {0:%H:%M:%S}</span>  <span color=\"${c.base05}\">{0:%Y-%m-%d}</span>";
               tooltip-format = "<tt><small>{calendar}</small></tt>";
+              calendar = {
+                mode = "month";
+                mode-mon-col = 3;
+                weeks-pos = "right";
+                on-scroll = 1;
+                format = {
+                  months = "<span color='${c.base0D}'><b>{}</b></span>";
+                  days = "<span color='${c.base05}'>{}</span>";
+                  weeks = "<span color='${c.base04}'><b>W{}</b></span>";
+                  weekdays = "<span color='${c.base0A}'><b>{}</b></span>";
+                  today = "<span color='${c.base0B}'><b><u>{}</u></b></span>";
+                };
+              };
+              actions = {
+                on-click-right = "mode";
+                on-scroll-up = "shift_up";
+                on-scroll-down = "shift_down";
+              };
             };
             cpu = {
               format = "󰍛 {usage}%";
@@ -630,16 +742,6 @@
                 "󰁹"
               ];
               interval = 10;
-            };
-            network = {
-              format-wifi = "󰤨 {essid}";
-              format-ethernet = "󰈀 {ifname}";
-              format-disconnected = "󰤭 offline";
-              tooltip-format = "{ifname}: {ipaddr}\nClick: iwgtk (connect / manage Wi-Fi)";
-              interval = 5;
-              # nm-connection-editor only edits profiles (no Connect).
-              # iwgtk talks to iwd/NM and can scan + connect.
-              on-click = lib.getExe pkgs.iwgtk;
             };
             backlight = {
               format = "{icon} {percent}%";
@@ -731,16 +833,39 @@
               tooltipPad = 6;
               tooltipLabelRadius = lib.max 0 (tooltipRadius - tooltipPad);
               islandPadX = 12;
-              # Match niri layout.shadow (see windowShadow above).
-              # CSS: offset-x offset-y blur spread color
-              islandShadow = "${toString windowShadow.offsetX}px ${toString windowShadow.offsetY}px ${toString windowShadow.softness}px ${toString windowShadow.spread}px ${windowShadow.color}";
-              # Room under/around islands so GTK doesn't clip the soft shadow.
-              islandMargin = "6px 6px 18px 6px";
+              # Per-module drop shadow. GTK3: (1) no 8-digit hex — use rgba;
+              # (2) blur+offset must fit inside module margin or it is clipped
+              # to the waybar surface (shadows cannot paint outside the bar).
+              # Niri window shadows stay on windowShadow (compositor-side).
+              shadowBlur = 10;
+              shadowSpread = 1;
+              shadowOffsetY = 3;
+              islandShadow = "0 ${toString shadowOffsetY}px ${toString shadowBlur}px ${toString shadowSpread}px rgba(0, 0, 0, 0.42)";
+              # bottom ≥ blur + offset + spread so each island's shadow is visible
+              islandMargin = "5px 6px ${toString (shadowBlur + shadowOffsetY + shadowSpread + 2)}px 6px";
               px = n: "${toString n}px";
+              # Match Stylix desktop size + linux-desktop fontconfig (grayscale
+              # AA, slight hinting). Sans for UI; Maple Mono NF for glyphs.
+              fontSans = config.stylix.fonts.sansSerif.name;
+              fontMono = config.stylix.fonts.monospace.name;
+              fontDesktopPt = toString config.stylix.fonts.sizes.desktop;
             in
             lib.mkAfter ''
+              /* Override Stylix's monospace-only * rule (mkAfter → wins).
+                 pt tracks output scale; px does not under Wayland scaling. */
+              * {
+                  font-family: "${fontSans}", "${fontMono}", sans-serif;
+                  font-size: ${fontDesktopPt}pt;
+              }
+
+              /* Never shadow the whole bar — only module islands below. */
               window#waybar {
                   background: transparent;
+                  box-shadow: none;
+              }
+              window#waybar > box {
+                  background: transparent;
+                  box-shadow: none;
               }
 
               tooltip {
@@ -760,23 +885,58 @@
                   border-radius: ${px tooltipLabelRadius};
               }
 
+              /* Drop shadow on each island (label.module + box.module), not the bar. */
+              #custom-nixos,
               #workspaces,
               #window,
               #clock,
               #cpu,
               #memory,
               #battery,
-              #network,
               #backlight,
               #pulseaudio,
               #custom-power,
               #custom-appearance,
-              #tray {
+              #tray,
+              label.module,
+              box.module {
                   background-color: alpha(@base01, 0.92);
                   padding: 0 ${px islandPadX};
                   margin: ${islandMargin};
                   border-radius: ${px islandRadius};
                   box-shadow: ${islandShadow};
+              }
+
+              /* Snowflake island: identical L/R pad as sibling modules (islandPadX).
+                 No nested label pad / min-width — those skewed the NF glyph. */
+              #custom-nixos {
+                  color: ${c.base0D};
+                  font-size: 1.15em;
+                  font-family: "Noto Sans Symbols 2", "${fontSans}", "DejaVu Sans", sans-serif;
+                  padding: 0 ${px islandPadX};
+                  min-width: 0;
+              }
+              #custom-nixos,
+              #custom-nixos label,
+              #custom-nixos decoration {
+                  border-radius: ${px islandRadius};
+              }
+              #custom-nixos label {
+                  padding: 0;
+                  margin: 0;
+              }
+              #custom-nixos:hover {
+                  color: ${c.base0C};
+              }
+
+              #clock {
+                  color: @base05;
+                  font-weight: 600;
+              }
+              #clock,
+              #clock label,
+              #clock decoration {
+                  border-radius: ${px islandRadius};
               }
 
               /* Nested chips: gap is parent padding only (uniform on all sides)
@@ -818,18 +978,11 @@
                   box-shadow: none;
               }
 
-              #clock {
-                  color: @base0D;
-                  font-weight: bold;
-              }
               #cpu {
                   color: @base0C;
               }
               #memory {
                   color: @base0E;
-              }
-              #network {
-                  color: @base0D;
               }
               #backlight {
                   color: @base0A;
@@ -854,6 +1007,8 @@
 
         # ── fuzzel (launcher) ─────────────────────────────────────────
         # Colors + font come from Stylix; we set the layout/geometry.
+        # icon-theme=hicolor: HM's `default` theme is the X cursor theme
+        # (Bibata), not an app-icon theme — fuzzel would miss packag icons.
         programs.fuzzel.enable = true;
         programs.fuzzel.settings = {
           main = {
@@ -864,6 +1019,7 @@
             vertical-pad = 18;
             inner-pad = 10;
             prompt = "\"  \"";
+            icon-theme = "hicolor";
           };
           border = {
             width = 2;
@@ -893,20 +1049,19 @@
           nightToggle
           retinaScale
           pkgs.gtklock
-          pkgs.networkmanagerapplet # waybar network → nm-connection-editor
+          # nm-applet (tray) is the sole network UI — see linux-desktop.nix.
+          pkgs.networkmanagerapplet
           pkgs.pavucontrol
         ];
         # Style is written at lock time by gtklock-auth (placeholders → desktop current).
 
         # ── night light (wlsunset) ────────────────────────────────────
-        # Auto colour-temperature schedule based on location (America/
-        # Los_Angeles ≈ 34.05, -118.24). Toggle from the keyboard with the
-        # night-toggle script (Mod+Shift+N). Bound to the niri graphical
-        # session so it starts/stops with the compositor.
+        # Sunrise/sunset for Spokane, WA (≈ 47.66°N, 117.43°W). Toggle with
+        # night-toggle (Mod+Shift+N). Tied to the niri graphical session.
         services.wlsunset = {
           enable = true;
-          latitude = 34.05;
-          longitude = -118.24;
+          latitude = 47.66;
+          longitude = -117.43;
           temperature = {
             day = 6500;
             night = 3800;
@@ -919,7 +1074,7 @@
         services.swayidle = {
           enable = true;
           events = {
-            before-sleep = lock;
+            before-sleep = lockBeforeSleep;
             after-resume = "${idleSuspend.mark}";
             unlock = "${idleSuspend.mark}";
           };
@@ -1055,6 +1210,7 @@
               Mod+Return { spawn "${cfg.terminal}"; }
               Mod+T { spawn "${cfg.terminal}"; }
               Mod+D { spawn "${cfg.launcher}"; }
+              Mod+Escape { spawn "${sessionMenu}"; }
               Mod+V { spawn "sh" "-c" "cliphist list | ${pkgs.fuzzel}/bin/fuzzel --dmenu | cliphist decode | wl-copy"; }
               Mod+Q { close-window; }
 

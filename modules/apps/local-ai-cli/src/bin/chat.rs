@@ -2,23 +2,28 @@ use anyhow::{bail, Result};
 use clap::Parser;
 use dendritic_local_ai::{
     base_url, chat, default_model, list_models_numbered, list_models_raw, looks_like_model_spec,
-    resolve_model,
+    resolve_model, tui,
 };
 
 #[derive(Debug, Parser)]
 #[command(
     name = "chat",
-    about = "One-shot chat against local Ollama",
+    about = "Chat against local Ollama (interactive TUI or one-shot)",
     after_help = "Examples:\n  \
+        chat\n  \
+        chat -m gemma3:1b\n  \
         chat 'explain this error'\n  \
         chat -m 1 'summarize in one line'\n  \
-        chat -m gemma3:1b 'summarize in one line'\n  \
         chat --model=qwen2.5-coder:7b -- fix this function"
 )]
 struct Args {
     /// Model tag or 1-based list index
     #[arg(short, long)]
     model: Option<String>,
+
+    /// Force interactive TUI (default when no prompt is given)
+    #[arg(short = 'i', long)]
+    interactive: bool,
 
     /// List installed models (numbered)
     #[arg(short = 'l', long)]
@@ -28,7 +33,8 @@ struct Args {
     #[arg(long, hide = true)]
     list_raw: bool,
 
-    /// Prompt words (optional leading MODEL when it looks like a tag/index)
+    /// Prompt words (optional leading MODEL when it looks like a tag/index).
+    /// Omit for the interactive TUI.
     #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
     prompt: Vec<String>,
 }
@@ -53,19 +59,13 @@ fn main() -> Result<()> {
         model_spec = args.prompt.remove(0);
     }
 
-    if args.prompt.is_empty() {
-        // clap --help already exists; bare run shows usage-ish list like the shell tool.
-        eprintln!("usage: chat [options] [--] <prompt...>");
-        eprintln!("       chat --list");
-        eprintln!();
-        eprintln!("default model: {}", default_model());
-        eprintln!();
-        eprintln!("available models:");
-        list_models_numbered(&base)?;
-        std::process::exit(1);
+    let model = resolve_model(&base, &model_spec)?;
+
+    // Interactive TUI: bare `chat`, `chat -m …`, or explicit `-i`.
+    if args.interactive || args.prompt.is_empty() {
+        return tui::run(model);
     }
 
-    let model = resolve_model(&base, &model_spec)?;
     let prompt = args.prompt.join(" ");
     if prompt.trim().is_empty() {
         bail!("empty prompt");

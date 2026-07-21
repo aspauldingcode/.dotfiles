@@ -315,12 +315,7 @@ in
 
   /* ── Nested controls (concentric with panel) ──────────────────────── */
   entry,
-  #input-field,
-  #command-selector,
-  combobox,
-  combobox > box,
-  combobox button,
-  combobox entry {
+  #input-field {
     ${controlReset}
     background-color: ${rgba "base00" "0.62"};
     color: ${hex "base05"};
@@ -332,10 +327,56 @@ in
     caret-color: ${hex "base0D"};
   }
 
+  /*
+   * gtkgreet environment selector is a GtkComboBox:
+   *   combobox > box.linked > button.combo > box > cellview + arrow
+   * Chrome only on the outer node — styling box/button too double-nests.
+   */
+  #command-selector,
+  combobox {
+    ${controlReset}
+    background-color: ${rgba "base00" "0.62"};
+    color: ${hex "base05"};
+    border: 1px solid ${rgba "base05" "0.14"};
+    border-radius: ${px controlRadius};
+    border-style: solid;
+    padding: 0;
+    min-height: 22px;
+  }
+
+  #command-selector > box,
+  #command-selector button,
+  #command-selector entry,
+  #command-selector cellview,
+  combobox > box,
+  combobox button,
+  combobox entry,
+  combobox cellview {
+    ${controlReset}
+    background-color: transparent;
+    background-image: none;
+    color: inherit;
+    border: none;
+    border-radius: ${px controlRadius};
+    border-style: none;
+    padding: 12px 16px;
+    margin: 0;
+    min-height: 22px;
+    box-shadow: none;
+    text-shadow: none;
+    -gtk-icon-shadow: none;
+  }
+
+  /* Arrow chip: keep padding on the button; don't re-pad the inner box. */
+  #command-selector button > box,
+  combobox button > box {
+    padding: 0;
+  }
+
   entry decoration,
   #input-field decoration,
-  combobox decoration,
-  combobox button decoration {
+  #command-selector decoration,
+  combobox decoration {
     border-radius: ${px controlRadius};
     box-shadow: none;
     background-image: none;
@@ -357,12 +398,24 @@ in
 
   entry:focus,
   #input-field:focus,
-  #command-selector:focus,
+  #command-selector:focus-within,
   combobox:focus-within {
     ${controlReset}
     background-color: ${rgba "base00" "0.82"};
     border-color: ${hex "base0D"};
     border-radius: ${px controlRadius};
+  }
+
+  #command-selector:focus-within > box,
+  #command-selector:focus-within button,
+  #command-selector:focus-within entry,
+  combobox:focus-within > box,
+  combobox:focus-within button,
+  combobox:focus-within entry {
+    background-color: transparent;
+    background-image: none;
+    border: none;
+    box-shadow: none;
   }
 
   entry selection,
@@ -392,14 +445,15 @@ in
     opacity: 0.75;
   }
 
-  /* Kill Adwaita gradient chrome — background-image must stay none. */
-  button,
-  button.default,
-  button.suggested-action,
-  button.destructive-action,
+  /* Kill Adwaita gradient chrome — background-image must stay none.
+   * Exclude .combo (GtkComboBox internals) — those are flattened above. */
+  button:not(.combo),
+  button.default:not(.combo),
+  button.suggested-action:not(.combo),
+  button.destructive-action:not(.combo),
   #unlock-button,
-  box#body button,
-  #window-box button {
+  box#body button:not(.combo),
+  #window-box button:not(.combo) {
     ${controlReset}
     background-color: ${hex "base0D"};
     background-image: none;
@@ -417,24 +471,24 @@ in
     -gtk-icon-shadow: none;
   }
 
-  button decoration,
-  button.default decoration,
-  button.suggested-action decoration,
+  button:not(.combo) decoration,
+  button.default:not(.combo) decoration,
+  button.suggested-action:not(.combo) decoration,
   #unlock-button decoration,
-  box#body button decoration,
-  #window-box button decoration {
+  box#body button:not(.combo) decoration,
+  #window-box button:not(.combo) decoration {
     border-radius: ${px controlRadius};
     box-shadow: none;
     background-image: none;
     border-image: none;
   }
 
-  button label,
-  button.default label,
-  button.suggested-action label,
+  button:not(.combo) label,
+  button.default:not(.combo) label,
+  button.suggested-action:not(.combo) label,
   #unlock-button label,
-  box#body button label,
-  #window-box button label {
+  box#body button:not(.combo) label,
+  #window-box button:not(.combo) label {
     color: inherit;
     background: none;
     background-image: none;
@@ -443,12 +497,12 @@ in
     text-shadow: none;
   }
 
-  button:hover,
-  button.default:hover,
-  button.suggested-action:hover,
+  button:not(.combo):hover,
+  button.default:not(.combo):hover,
+  button.suggested-action:not(.combo):hover,
   #unlock-button:hover,
-  box#body button:hover,
-  #window-box button:hover {
+  box#body button:not(.combo):hover,
+  #window-box button:not(.combo):hover {
     ${controlReset}
     background-color: ${hex "base0C"};
     background-image: none;
@@ -458,12 +512,12 @@ in
     box-shadow: none;
   }
 
-  button:active,
-  button.default:active,
-  button.suggested-action:active,
+  button:not(.combo):active,
+  button.default:not(.combo):active,
+  button.suggested-action:not(.combo):active,
   #unlock-button:active,
-  box#body button:active,
-  #window-box button:active {
+  box#body button:not(.combo):active,
+  #window-box button:not(.combo):active {
     ${controlReset}
     background-color: ${hex "base0D"};
     background-image: none;
@@ -472,12 +526,12 @@ in
     box-shadow: none;
   }
 
-  button:disabled,
-  button.default:disabled,
-  button.suggested-action:disabled,
+  button:not(.combo):disabled,
+  button.default:not(.combo):disabled,
+  button.suggested-action:not(.combo):disabled,
   #unlock-button:disabled,
-  box#body button:disabled,
-  #window-box button:disabled {
+  box#body button:not(.combo):disabled,
+  #window-box button:not(.combo):disabled {
     ${controlReset}
     background-color: ${rgba "base02" "0.80"};
     background-image: none;

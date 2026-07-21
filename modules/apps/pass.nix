@@ -203,6 +203,32 @@
         autoPull=false
         autoPush=false
       '';
+
+      # QtPass's own wrapQtApps QT_PLUGIN_PATH often omits Kvantum/qt5ct when
+      # launched from niri/fuzzel (session may not export HM plugin paths).
+      # Bake Stylix paths into a launcher so style=kvantum always resolves.
+      qtpassThemed =
+        let
+          qt5 = pkgs.libsForQt5;
+          pluginPrefix = qt5.qtbase.qtPluginPrefix;
+          kvantumPlugins = "${qt5.qtstyleplugin-kvantum}/${pluginPrefix}";
+          qt5ctPlugins = "${qt5.qt5ct}/${pluginPrefix}";
+        in
+        pkgs.symlinkJoin {
+          name = "qtpass-stylix";
+          paths = [ pkgs.qtpass ];
+          nativeBuildInputs = [ pkgs.makeWrapper ];
+          postBuild = ''
+            wrapProgram "$out/bin/qtpass" \
+              --set QT_QPA_PLATFORMTHEME qt5ct \
+              --set QT_STYLE_OVERRIDE kvantum \
+              --prefix QT_PLUGIN_PATH : ${lib.escapeShellArg kvantumPlugins} \
+              --prefix QT_PLUGIN_PATH : ${lib.escapeShellArg qt5ctPlugins}
+          '';
+          meta = pkgs.qtpass.meta // {
+            description = "QtPass with Stylix qt5ct/Kvantum plugin path";
+          };
+        };
     in
     {
       options.dendritic.apps.pass = {
@@ -347,7 +373,9 @@
               pwgen
               jq
             ]
-            ++ lib.optionals cfg.gui.enable [ qtpass ]
+            ++ lib.optionals cfg.gui.enable [
+              (if pkgs.stdenv.isLinux then qtpassThemed else pkgs.qtpass)
+            ]
             ++ lib.optionals cfg.tray.enable [ trayPkg ]
             ++ lib.optionals cfg.materialize.enable [
               (pkgs.writeShellScriptBin "pass-materialize" ''
@@ -495,6 +523,7 @@
             name = "QtPass";
             genericName = "Password Manager";
             comment = "GUI for the standard unix password manager (pass)";
+            # Wrapper already sets qt5ct/Kvantum + QT_PLUGIN_PATH.
             exec = "qtpass";
             icon = "qtpass-icon";
             terminal = false;

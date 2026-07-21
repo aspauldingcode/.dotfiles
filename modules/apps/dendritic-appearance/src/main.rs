@@ -13,6 +13,7 @@ mod ide;
 mod machine;
 mod observe;
 mod palette;
+mod qt;
 mod reconcile;
 mod state;
 mod supervise;

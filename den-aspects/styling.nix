@@ -90,7 +90,8 @@ let
           targets.neovide.enable = false;
           targets.nixvim.enable = true;
           targets.spicetify.enable = lib.mkForce true;
-          targets.qt.enable = false;
+          # qtct + Kvantum — QtPass (Qt5) and Dolphin (Qt6/KF) need this, not gtk3.
+          targets.qt.enable = !isDarwin;
           targets.firefox.profileNames = [ "default" ];
         };
 
@@ -1323,10 +1324,8 @@ let
         };
 
         # ── Qt Theming (Linux only) ─────────────────────────────────
-        qt = lib.mkIf (!isDarwin) {
-          enable = lib.mkForce true;
-          platformTheme.name = lib.mkForce "gtk3";
-        };
+        # Owned by stylix.targets.qt (qtct + kvantum Base16Kvantum).
+        # dendritic-appearance refreshes kdeglobals / Kvantum from colors.toml.
 
         # ── Terminal env ────────────────────────────────────────────
         programs.zsh.initContent = ''

@@ -48,9 +48,9 @@
           environment.sessionVariables.FREETYPE_PROPERTIES = "cff:no-stem-darkening=0 autofitter:no-stem-darkening=0";
 
           environment.systemPackages = with pkgs; [
-            # GUIs only — niri masks their tray autostarts; waybar network → iwgtk.
-            networkmanagerapplet # nm-connection-editor (profile editor)
-            iwgtk # connect / manage Wi-Fi (waybar network on-click)
+            # Sole network GUI: nm-applet tray → context menu (connect / VPN / editor).
+            # Do not also ship iwgtk — its indicator autostart triples the tray icons.
+            networkmanagerapplet
           ];
 
           services.printing.enable = true;

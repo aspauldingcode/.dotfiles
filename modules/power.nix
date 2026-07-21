@@ -78,9 +78,24 @@
               "mem_sleep_default=s2idle"
               "pcie_aspm.policy=default"
               "usbcore.autosuspend=-1"
+              # Touchpad / sensor I2C: reduce designware timeout storms around s2idle.
+              "i2c_designware.timeout_ms=5000"
             ];
 
             boot.blacklistedKernelModules = lib.mkIf cfg.blacklistUnusedXe [ "xe" ];
+
+            # Fail loud if a generation regresses to deep S3 (breaks TB4 xHCI here).
+            system.activationScripts."dendritic-s2idle-guard".text = ''
+              if [ -r /sys/power/mem_sleep ]; then
+                mem_sleep="$(${pkgs.coreutils}/bin/cat /sys/power/mem_sleep)"
+                case "$mem_sleep" in
+                  *'[s2idle]'*) ;;
+                  *)
+                    echo "WARNING: dendritic.power expected [s2idle] in /sys/power/mem_sleep, got: $mem_sleep" >&2
+                    ;;
+                esac
+              fi
+            '';
 
             # ── Memory ladder (macOS-like): zswap → disk swap → oomd ──
             boot.zswap = {
@@ -118,24 +133,31 @@
             powerManagement.powertop.enable = false;
 
             # ── Lid → suspend (AC and battery); ignore when docked externally ──
+            # InhibitDelayMaxSec: swayidle before-sleep must finish locking before
+            # logind forces sleep (default 5s is too short for gtklock CSS + start).
             services.logind.settings.Login = {
               HandleLidSwitch = "suspend";
               HandleLidSwitchExternalPower = "suspend";
               HandleLidSwitchDocked = "ignore";
+              InhibitDelayMaxSec = 45;
             };
+            # Ensure logind picks up InhibitDelayMaxSec on switch (not only reboot).
+            systemd.services.systemd-logind.restartTriggers = [
+              (toString config.services.logind.settings.Login.InhibitDelayMaxSec)
+            ];
 
             # NVIDIA resume reliability with systemd >= 256
             systemd.services.systemd-suspend.environment.SYSTEMD_SLEEP_FREEZE_USER_SESSIONS = "false";
             systemd.services.systemd-hibernate.environment.SYSTEMD_SLEEP_FREEZE_USER_SESSIONS = "false";
             systemd.services.systemd-hybrid-sleep.environment.SYSTEMD_SLEEP_FREEZE_USER_SESSIONS = "false";
 
-            # ── Runtime PM: Realtek NIC + SATA ALPM + USB/xHCI keep-awake ──
+            # ── Runtime PM: Realtek NIC + USB/xHCI keep-awake ──
+            # SATA ALPM dropped: host0/host1 expose link_power_management_policy
+            # but reject med_power_with_dipm (ENOTSUP spam every boot).
             services.udev.extraRules = ''
               # RTL8168: allow runtime suspend when link is down; disable WOL
               ACTION=="add|change", SUBSYSTEM=="pci", ATTR{vendor}=="0x10ec", ATTR{device}=="0x8168", ATTR{power/control}="auto"
               ACTION=="add|change", SUBSYSTEM=="net", KERNEL=="enp2s0", RUN+="${pkgs.ethtool}/bin/ethtool -s %k wol d"
-              # SATA ALPM — only hosts that expose the sysfs attribute (avoids ENOTSUP noise).
-              ACTION=="add", SUBSYSTEM=="scsi_host", KERNEL=="host*", TEST=="link_power_management_policy", ATTR{link_power_management_policy}="med_power_with_dipm"
 
               # Tiger Lake-H: keep both xHCI controllers awake across suspend.
               # 8086:9a17 = TB4 USB (00:0d.0) — source of USBSTS 0x401 reinit storms
@@ -151,6 +173,57 @@
               ACTION=="add|change", SUBSYSTEM=="usb", ENV{ID_USB_INTERFACES}=="*:0301*:*", TEST=="power/control", ATTR{power/control}="on"
               ACTION=="add|change", SUBSYSTEM=="usb", ENV{ID_USB_INTERFACES}=="*:0302*:*", TEST=="power/control", ATTR{power/control}="on"
             '';
+
+            # Resume: power-cycle sticky usb4-port6 ("bad cable" red herring on TGL).
+            # Pre: best-effort unmount external disks (e.g. WD easystore) to avoid
+            # Buffer I/O errors when the drive vanishes across s2idle.
+            environment.etc."systemd/system-sleep/dendritic-power-sleep" = {
+              mode = "0755";
+              text = ''
+                #!${pkgs.runtimeShell}
+                set -eu
+                port6_disable() {
+                  # USB 3.2 xHCI (00:14.0) port6 — lid/dock physical location.
+                  for d in /sys/devices/pci0000:00/0000:00:14.0/usb4/*/usb4-port6/disable \
+                           /sys/bus/usb/devices/usb4/*/usb4-port6/disable; do
+                    if [ -w "$d" ]; then
+                      echo "$1" >"$d" || true
+                      return 0
+                    fi
+                  done
+                  # Fallback: any usb4-port6 on the system.
+                  for d in /sys/bus/usb/devices/*/usb4-port6/disable; do
+                    if [ -w "$d" ]; then
+                      echo "$1" >"$d" || true
+                      return 0
+                    fi
+                  done
+                  return 0
+                }
+                case "$1" in
+                  pre)
+                    # Sync + unmount non-root removable mounts (WD easystore, etc.).
+                    ${pkgs.util-linux}/bin/findmnt -nlo TARGET,FSTYPE,SOURCE -t ext4,ntfs,vfat,exfat,btrfs 2>/dev/null \
+                      | while read -r target fstype source; do
+                          case "$target" in
+                            /|/nix|/boot|/boot/*|/var|/var/*|/home|/home/*|/usr|/usr/*|/tmp|/tmp/*) continue ;;
+                          esac
+                          case "$source" in
+                            /dev/sd[b-z]*|/dev/sd[b-z][0-9]*|/dev/nvme[1-9]*|/dev/mapper/*)
+                              ${pkgs.util-linux}/bin/umount -l "$target" 2>/dev/null || true
+                              ;;
+                          esac
+                        done
+                    ${pkgs.coreutils}/bin/sync || true
+                    ;;
+                  post)
+                    port6_disable 0
+                    ${pkgs.coreutils}/bin/sleep 0.3
+                    port6_disable 1
+                    ;;
+                esac
+              '';
+            };
 
             environment.systemPackages = with pkgs; [
               powerd

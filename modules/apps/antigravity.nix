@@ -45,6 +45,18 @@
       config = lib.mkIf cfg.enable {
         home.packages = [
           (if pkgs.stdenv.isDarwin then pkgs.antigravity else pkgs.antigravity-fhs)
+        ]
+        ++ lib.optionals pkgs.stdenv.isLinux [
+          # Same as Cursor: nixpkgs only ships 1024² into hicolor, which fuzzel
+          # skips (no 1024x1024/apps in hicolor's index.theme).
+          (pkgs.runCommand "antigravity-hicolor-icons" { nativeBuildInputs = [ pkgs.imagemagick ]; } ''
+            src=${pkgs.antigravity-fhs}/share/pixmaps/antigravity.png
+            for sz in 16 24 32 48 64 128 256 512; do
+              mkdir -p "$out/share/icons/hicolor/''${sz}x''${sz}/apps"
+              magick "$src" -resize "''${sz}x''${sz}" \
+                "$out/share/icons/hicolor/''${sz}x''${sz}/apps/antigravity.png"
+            done
+          '')
         ];
 
         # Mirror VS Code settings/extensions so Stylix + editor defaults stay in sync.

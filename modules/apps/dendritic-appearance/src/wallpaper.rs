@@ -252,6 +252,7 @@ pub fn apply(variant: Variant, target: &str) -> Result<(), String> {
 
     let _ = ide::patch_from_colors(&colors_dst);
     let _ = crate::tmux::apply_from_colors(&colors_dst);
+    let _ = crate::qt::apply_from_colors(&colors_dst);
     state::write_wallpaper_state(
         &entry.name,
         &entry.image,

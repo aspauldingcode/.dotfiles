@@ -58,11 +58,17 @@
         # Keep the dGPU powered but idle (no finegrained runtime-PM): finegrained
         # aggressively suspends the GPU and has been a black-screen source here.
         # CPU/fan quiet policy lives in dendritic.power (RAPL/EPP), not here.
+        # powerManagement.enable also sets NVreg_PreserveVideoMemoryAllocations=1
+        # and (open ≥595) NVreg_UseKernelSuspendNotifiers=1 via nixpkgs.
         powerManagement.enable = true;
         powerManagement.finegrained = false;
         # dynamicBoost/nvidia-powerd fights quiet EPP/RAPL — leave default (off).
         # Ampere (RTX 30xx) → the open kernel modules are recommended and build
         # cleanly against mainline kernels; the proprietary blob lags new kernels.
+        #
+        # GSP PFM_REQ_HNDLR_STATE_SYNC_CALLBACK asserts on 595.71.05 are fixed in
+        # open modules ≥610.43.02 (NVIDIA/open-gpu-kernel-modules#1145). Stay on
+        # nixpkgs default until that lands; do not local-patch unless a hard freeze.
         open = true;
         nvidiaSettings = true;
         prime = {
@@ -87,6 +93,7 @@
           workstation = true;
         };
       };
+      # Spokane, WA → IANA Pacific (PST/PDT).
       time.timeZone = "America/Los_Angeles";
 
       i18n.defaultLocale = "en_US.UTF-8";
@@ -205,6 +212,10 @@
         options msi-ec firmware=1582EMS1.107
         # Read-only EC dumps only; writes hang this Sword's EC.
         options ec_sys write_support=0
+        # Arch NVIDIA tip: preserve-VRAM staging on disk-backed /var/tmp
+        # (nixpkgs leaves TemporaryFilePath empty → /tmp). Do not re-set
+        # Preserve* / UseKernelSuspendNotifiers — nvidia.nix already owns those.
+        options nvidia NVreg_TemporaryFilePath=/var/tmp
       '';
       # Belt-and-suspenders if an old generation still registers the LED.
       systemd.services."systemd-backlight@leds:msiacpi::kbd_backlight".enable = false;

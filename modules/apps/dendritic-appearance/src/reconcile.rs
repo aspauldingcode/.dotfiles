@@ -122,8 +122,9 @@ fn apply_global(variant: Variant, wallpaper_target: &str) -> Result<(), String> 
             .status();
     }
 
-    // Ensure tmux tracks colors.toml even if wallpaper layer was a no-op.
+    // Ensure tmux / Qt track colors.toml even if wallpaper layer was a no-op.
     let _ = crate::tmux::apply_from_colors(&colors_toml_path());
+    let _ = crate::qt::apply_from_colors(&colors_toml_path());
 
     // Prebuilt / specialisation (best-effort; hot layer already applied)
     if let Err(e) = activate::activate(variant) {

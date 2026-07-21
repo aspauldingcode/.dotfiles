@@ -381,6 +381,21 @@
               fi
             }
           '')
+
+          # ── Yazi `y` wrapper (official + zoxide-safe) ──
+          # HM's enableZshIntegration is off; see programs.yazi notes below.
+          (lib.mkOrder 1200 ''
+            # https://yazi-rs.github.io/docs/quick-start#shell-wrapper
+            # `command yazi` skips aliases; `builtin cd` skips zoxide's cd shim.
+            # Strip trailing NUL so cwd-file works for plain or C-string paths.
+            function y() {
+              local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+              command yazi "$@" --cwd-file="$tmp"
+              cwd="$(tr -d '\0' <"$tmp")"
+              [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
+              command rm -f -- "$tmp"
+            }
+          '')
         ];
       };
 
@@ -476,10 +491,13 @@
         })
       ];
 
-      # Yazi minimal configuration with ANSI inheritance
+      # Yazi: `y` wrapper lives in programs.zsh.initContent (not HM's stock
+      # snippet) so cwd-file NUL handling works with zoxide-as-cd. Pin
+      # shellWrapperName — stateVersion < 26.05 defaults to "yy".
       programs.yazi = {
         enable = true;
-        enableZshIntegration = true;
+        enableZshIntegration = false; # Custom `y` in zsh.initContent above
+        enableBashIntegration = true;
         shellWrapperName = "y";
         settings = {
           mgr = {

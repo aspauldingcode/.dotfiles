@@ -65,8 +65,9 @@ NixOS intentionally does **not** use `ensureProfiles` during `nixos-rebuild`
 GUIs re-prompt and leaves `/var/lib/iwd/*.psk` without a Passphrase — Wi-Fi
 then fails after reboot. `dendritic-wifi-ensure` forces flags=0.
 
-**GUI:** waybar network click opens `iwgtk` (has Connect). `nm-connection-editor`
-only edits profiles.
+**GUI:** waybar tray `nm-applet` only — click for the NetworkManager menu
+(scan / connect / VPN / connection editor). No separate waybar network module
+or `iwgtk` indicator.
 
 Agents: launchd `com.dendritic.wifi-ensure` (macOS), systemd user path/service
 
