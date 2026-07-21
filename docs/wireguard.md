@@ -1,7 +1,7 @@
 # Dendritic WireGuard (mba ↔ sliceanddice)
 
 Private overlay so one host can stay on home **Bubbles** Wi‑Fi while the other
-is away — SSH, RDP (macrdp / lamco), and LAN-style inspection over `10.87.0.0/24`.
+is away — SSH and LAN-style inspection over `10.87.0.0/24`.
 
 Secrets stay in the private **pass** store (SecretSpec). Endpoints / public IPs
 are **never** committed to this flake (same threat model as
@@ -9,10 +9,10 @@ are **never** committed to this flake (same threat model as
 
 ## Addresses (non-secret)
 
-| Peer           | Tunnel address | UDP port | Desktop           |
-| -------------- | -------------- | -------: | ----------------- |
-| `mba`          | `10.87.0.1/24` |    51820 | macrdp `:3389`    |
-| `sliceanddice` | `10.87.0.2/24` |    51820 | lamco RDP `:3389` |
+| Peer           | Tunnel address | UDP port |
+| -------------- | -------------- | -------: |
+| `mba`          | `10.87.0.1/24` |    51820 |
+| `sliceanddice` | `10.87.0.2/24` |    51820 |
 
 Declared in [`home/wireguard-peers.json`](../home/wireguard-peers.json).
 
@@ -68,12 +68,9 @@ Clear remote mode:
 nix run .#pass-wg-set-home -- --clear
 ```
 
-## Remote desktop / inspect
-
-Over the tunnel (not VNC on mba — macrdp replaces Screen Sharing):
+## Inspect over the tunnel
 
 ```bash
-dendritic-wg-rdp                 # peer RDP via freerdp / Microsoft RD
 ssh alex@10.87.0.2               # → sliceanddice
 ssh 8amps@10.87.0.1              # → mba
 ping -c2 10.87.0.2

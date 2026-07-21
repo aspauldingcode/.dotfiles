@@ -148,19 +148,6 @@
           exec bash ${../scripts/dendritic-wg-ensure.sh} "$@"
         '';
       };
-      rdpBin = pkgs.writeShellApplication {
-        name = "dendritic-wg-rdp";
-        runtimeInputs = with pkgs; [
-          python3
-          freerdp
-        ];
-        text = ''
-          set -euo pipefail
-          export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"
-          export WG_PEERS_JSON=${lib.escapeShellArg "${peersJson}"}
-          exec bash ${../scripts/dendritic-wg-rdp.sh} "$@"
-        '';
-      };
       bootstrapBin = pkgs.writeShellApplication {
         name = "pass-wg-bootstrap";
         runtimeInputs = with pkgs; [
@@ -217,7 +204,7 @@
     in
     {
       options.dendritic.wireguard = {
-        enable = lib.mkEnableOption "WireGuard overlay helpers (ensure / RDP / pass rotate)";
+        enable = lib.mkEnableOption "WireGuard overlay helpers (ensure / pass rotate)";
         interface = lib.mkOption {
           type = lib.types.str;
           default = "dendritic";
@@ -233,12 +220,10 @@
         home.packages = [
           dendriticPkg
           ensureBin
-          rdpBin
           bootstrapBin
           rotateBin
           setHomeBin
           pkgs.wireguard-tools
-          pkgs.freerdp
         ];
 
         # Write conf only during activation (no interactive sudo / Touch ID).

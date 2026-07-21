@@ -36,9 +36,6 @@
         # Root launchd enforces Picture + JPEGPhoto across reboot.
         dendritic.profilePhoto.enable = true;
 
-        # macrdp + socat :3389→13389 (Bonjour `_rdp._tcp` via HM agent).
-        dendritic.apps.macrdp.enable = true;
-
         # Root helper: one-time trust for privileged ops (no osascript passwords).
         dendritic.helper.enable = true;
 
@@ -228,8 +225,6 @@
           dendritic.androidConverge.enable = true;
           dendritic.wallpaper.enable = true;
           dendritic.profilePhoto.enable = true;
-          dendritic.apps.macrdp.enable = true;
-          dendritic.apps.macrdp.bonjourName = "mba";
           dendritic.helper.enable = true;
           dendritic.wireguard.enable = true;
           dendritic.wireguard.peerId = "mba";

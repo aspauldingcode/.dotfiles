@@ -141,10 +141,6 @@
       # Immutable account + gtk auth avatar (assets/profile_square.jpg).
       dendritic.profilePhoto.enable = true;
 
-      # Wayland session RDP (lamco) + Bonjour/mDNS `_rdp._tcp` → sliceanddice.local
-      dendritic.apps.rdp.enable = true;
-      dendritic.apps.rdp.bonjourName = "sliceanddice";
-
       # Privileged helper (Unix socket) — same binary as Darwin launchd helper.
       dendritic.helper.enable = true;
 
@@ -337,7 +333,6 @@
         dendritic.python.enable = true;
         dendritic.wallpaper.enable = true;
         dendritic.profilePhoto.enable = true;
-        dendritic.apps.rdp.enable = true;
         dendritic.helper.enable = true;
         dendritic.wireguard.enable = true;
         dendritic.wireguard.peerId = "sliceanddice";

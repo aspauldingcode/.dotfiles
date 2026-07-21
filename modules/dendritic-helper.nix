@@ -35,7 +35,7 @@
         };
 
         system.activationScripts.postActivation.text = lib.mkAfter ''
-          # Drop legacy reverse-DNS labels (pre-aspauldingcode rename).
+          # Drop legacy reverse-DNS labels + retired macrdp daemons/agents.
           for legacy in \
             com.aspaulding.dendritic-helper \
             com.aspaulding.dendritic-appearance-watch \
@@ -43,6 +43,7 @@
             com.aspaulding.macrdp \
             com.aspaulding.macrdp-bonjour \
             com.aspaulding.macrdp-portfwd \
+            com.aspauldingcode.macrdp-portfwd \
             com.aspaulding.ollama \
             com.aspaulding.ollama-model-loader \
             com.dendritic.dendritic-helper
@@ -50,6 +51,19 @@
             /bin/launchctl bootout "system/$legacy" >/dev/null 2>&1 || true
             /bin/rm -f "/Library/LaunchDaemons/$legacy.plist" >/dev/null 2>&1 || true
           done
+          # User agents (GUI session) — retired macrdp stack.
+          uid="$(/usr/bin/id -u 8amps 2>/dev/null || true)"
+          if [ -n "$uid" ]; then
+            for agent in \
+              com.aspaulding.macrdp \
+              com.aspaulding.macrdp-bonjour \
+              com.aspauldingcode.macrdp \
+              com.aspauldingcode.macrdp-bonjour
+            do
+              /bin/launchctl bootout "gui/$uid/$agent" >/dev/null 2>&1 || true
+              /bin/rm -f "/Users/8amps/Library/LaunchAgents/$agent.plist" >/dev/null 2>&1 || true
+            done
+          fi
           /bin/launchctl bootout system/com.aspauldingcode.dendritic-helper >/dev/null 2>&1 || true
           /bin/launchctl bootstrap system /Library/LaunchDaemons/com.aspauldingcode.dendritic-helper.plist >/dev/null 2>&1 \
             || /bin/launchctl load -w /Library/LaunchDaemons/com.aspauldingcode.dendritic-helper.plist >/dev/null 2>&1 \
