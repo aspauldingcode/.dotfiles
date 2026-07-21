@@ -180,9 +180,20 @@ if host:
         me["flake_rev"] = self_rev
     by_host[host] = me
 if peer_id and peer_ok:
-    peer = by_host.get(peer_id) or {"host": peer_id, "platform": "", "flake_rev": "", "status": "online", "seen_at": now}
+    peer = by_host.get(peer_id) or {
+        "host": peer_id,
+        "platform": "",
+        "flake_rev": "",
+        "status": "online",
+        "seen_at": now,
+    }
+    prev_st = peer.get("status") or ""
     peer["status"] = "online"
     peer["seen_at"] = now
+    # WG ping proves liveness only — don't keep an ancient published rev that
+    # would false-positive "peer rev behind" in the tray.
+    if prev_st in ("stale", "offline"):
+        peer["flake_rev"] = ""
     by_host[peer_id] = peer
 fleet = list(by_host.values())
 
