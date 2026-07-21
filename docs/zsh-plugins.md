@@ -234,9 +234,13 @@ Cross-shell prompt with git status, nix-shell indicator, language versions, and 
 
 ### Yazi _(pre-existing)_
 
-Terminal file manager with image preview support. Invoked via `y` wrapper.
+Terminal file manager with image preview support. Invoked via `y` wrapper
+(cd into last dir on `q`; `Q` quits without changing cwd).
 
-- **Package:** `programs.yazi.enable`
+- **Package:** `programs.yazi.enable` with `shellWrapperName = "y"`
+- **Requires:** `programs.zsh.enable = true` (integration only writes into HM-managed zshrc)
+- **Note:** `home.stateVersion < 26.05` defaults the wrapper name to `yy` — we pin `y`
+- **Note:** Wrapper uses `builtin cd` so it works with `zoxide` as `cd`
 
 ---
 

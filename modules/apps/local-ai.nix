@@ -63,6 +63,23 @@
           __GLX_VENDOR_LIBRARY_NAME = "nvidia";
           __VK_LAYER_NV_optimus = "NVIDIA_only";
         };
+
+        # ollama holds CUDA/UVM open across sleep → NV_ERR_NO_MEMORY on suspend.
+        # Stop before sleep, start after resume (idempotent if already stopped).
+        environment.etc."systemd/system-sleep/dendritic-ollama" = {
+          mode = "0755";
+          text = ''
+            #!${pkgs.runtimeShell}
+            case "$1" in
+              pre)
+                ${pkgs.systemd}/bin/systemctl stop ollama.service 2>/dev/null || true
+                ;;
+              post)
+                ${pkgs.systemd}/bin/systemctl start ollama.service 2>/dev/null || true
+                ;;
+            esac
+          '';
+        };
       };
     };
 
@@ -231,6 +248,7 @@
           _dendritic_chat() {
             _arguments -s -S \
               '(-h --help)'{-h,--help}'[show help]' \
+              '(-i --interactive)'{-i,--interactive}'[open interactive TUI]' \
               '(-l --list)'{-l,--list}'[list installed models (numbered)]' \
               '(-m --model)'{-m,--model}'[model tag or list index]:model:_ai_ollama_models' \
               '*:prompt:_message'

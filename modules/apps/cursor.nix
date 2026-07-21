@@ -53,6 +53,19 @@
       config = lib.mkIf cfg.enable {
         home.packages = [
           (if pkgs.stdenv.isLinux then pkgs.code-cursor-fhs else pkgs.code-cursor)
+        ]
+        ++ lib.optionals pkgs.stdenv.isLinux [
+          # nixpkgs only installs the native 1024² PNG into hicolor, but
+          # hicolor's index.theme has no 1024x1024/apps entry — fuzzel (and
+          # other themed launchers) skip it. Ship standard Application sizes.
+          (pkgs.runCommand "cursor-hicolor-icons" { nativeBuildInputs = [ pkgs.imagemagick ]; } ''
+            src=${pkgs.code-cursor-fhs}/share/pixmaps/cursor.png
+            for sz in 16 24 32 48 64 128 256 512; do
+              mkdir -p "$out/share/icons/hicolor/''${sz}x''${sz}/apps"
+              magick "$src" -resize "''${sz}x''${sz}" \
+                "$out/share/icons/hicolor/''${sz}x''${sz}/apps/cursor.png"
+            done
+          '')
         ];
 
         # Link derived extensions (symlinks)

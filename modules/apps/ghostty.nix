@@ -53,6 +53,9 @@
             window-theme = config.dendritic.theme.variant;
             macos-option-as-alt = true;
             shell-integration = "detect";
+            # tmux (and other non-shell children) aren't "at a prompt" for shell
+            # integration, so the default `true` always asks — detach is safe.
+            confirm-close-surface = false;
             # Highlight → system clipboard (and selection clipboard where it exists).
             # `true` alone only fills primary selection on Linux / is flaky on macOS.
             copy-on-select = "clipboard";
