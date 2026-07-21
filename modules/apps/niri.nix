@@ -388,8 +388,15 @@
 
       # before-sleep: daemonize so swayidle -w can return before InhibitDelayMaxSec;
       # do not hold sleep:block here (that would fight logind suspend).
+      # Stop wlsunset first so niri can restore identity gamma while DRM is healthy
+      # (stuck warm LUT after wake is a common hybrid/EVDI failure mode).
       lockBeforeSleep = "${pkgs.writeShellScript "gtklock-before-sleep" ''
         set -euo pipefail
+        runtime="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}"
+        if ${pkgs.systemd}/bin/systemctl --user is-active --quiet wlsunset.service 2>/dev/null; then
+          ${pkgs.coreutils}/bin/touch "$runtime/dendritic-wlsunset-was-active"
+          ${pkgs.systemd}/bin/systemctl --user stop wlsunset.service 2>/dev/null || true
+        fi
         export XDG_DATA_DIRS=${lib.escapeShellArg "${pkgs.adwaita-icon-theme}/share"}''${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}
         export XDG_CONFIG_HOME=${lib.escapeShellArg gtklockGtkConfig}
         if ${pkgs.procps}/bin/pgrep -x gtklock >/dev/null 2>&1; then
@@ -445,6 +452,14 @@
             # Write grace stamp first — idle-suspend may race unlock handlers.
             ${pkgs.coreutils}/bin/date +%s >"$runtime/dendritic-suspend-grace"
             ${lib.getExe pkgs.niri} msg action power-on-monitors >/dev/null 2>&1 || true
+            # Heal night-light gamma: resume path restores from before-sleep stamp;
+            # unlock-only restarts if still active (stuck LUT after DPMS/lock).
+            if [ -f "$runtime/dendritic-wlsunset-was-active" ]; then
+              ${pkgs.coreutils}/bin/rm -f "$runtime/dendritic-wlsunset-was-active"
+              ${pkgs.systemd}/bin/systemctl --user start wlsunset.service 2>/dev/null || true
+            elif ${pkgs.systemd}/bin/systemctl --user is-active --quiet wlsunset.service 2>/dev/null; then
+              ${pkgs.systemd}/bin/systemctl --user try-restart wlsunset.service 2>/dev/null || true
+            fi
             # Skip if gtklock-auth already holds chained post-unlock inhibit.
             if ${pkgs.systemd}/bin/systemd-inhibit --list --no-pager 2>/dev/null \
               | ${pkgs.gnugrep}/bin/grep -E 'gtklock|dendritic' \
@@ -458,6 +473,15 @@
             set -euo pipefail
             # Never suspend while gtklock is up (idle timer lies during lock).
             if ${pkgs.procps}/bin/pgrep -x gtklock >/dev/null 2>&1; then
+              exit 0
+            fi
+            # Skip during logout/shutdown (idle timer can fire into teardown).
+            case "$(${pkgs.systemd}/bin/systemctl is-system-running 2>/dev/null || echo unknown)" in
+              stopping|offline) exit 0 ;;
+            esac
+            # Already suspending/hibernating — avoid "already in progress" spam.
+            if ${pkgs.systemd}/bin/systemctl list-jobs --no-legend 2>/dev/null \
+              | ${pkgs.gnugrep}/bin/grep -qE 'suspend\.service|hibernate\.service|hybrid-sleep\.service'; then
               exit 0
             fi
             # Honor any sleep:block inhibitor (chained lock grace / mark).

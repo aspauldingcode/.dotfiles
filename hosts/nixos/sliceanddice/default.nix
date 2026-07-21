@@ -178,6 +178,10 @@
       # though niri itself is a native Wayland compositor on Intel.
       services.xserver.videoDrivers = [ "nvidia" ];
 
+      # Silicon Motion SM76x InstantView (USB dock display 090c:0768).
+      # Package/module from local nixpkgs checkout until upstream lands.
+      dendritic.apps.instantview.linux.enable = true;
+
       console.keyMap = "us";
       services.xserver.xkb = {
         layout = "us";

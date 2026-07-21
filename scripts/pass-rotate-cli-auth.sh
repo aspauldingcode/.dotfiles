@@ -494,8 +494,14 @@ rotate_vercel() {
     # Prefer single locked mint+atomic auth.json write.
     token="$(vercel_mint_token --refresh --write-auth 2>/dev/null || true)"
     if [[ -z $token ]]; then
-      log "vercel: refresh failed — starting OAuth device flow"
-      token="$(vercel_mint_token --device --write-auth)"
+      # Device flow blocks HM/NixOS activation forever when no TTY (Cursor, systemd).
+      if [[ -t 0 ]]; then
+        log "vercel: refresh failed — starting OAuth device flow"
+        token="$(vercel_mint_token --device --write-auth)"
+      else
+        log "vercel: refresh failed — skip device flow (non-interactive); run: pass-vercel-bootstrap"
+        return 0
+      fi
     fi
     [[ -n $token ]] || die "vercel: mint returned empty token"
     log "vercel: access OK; auth.json rewritten"
