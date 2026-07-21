@@ -484,6 +484,11 @@
               traySyncScript
               traySwitchPeerScript
             ]
+            ++ lib.optionals cfg.autoSync.enable [
+              (pkgs.writeShellScriptBin "pass-store-sync" ''
+                exec ${syncScript}
+              '')
+            ]
             ++ lib.optionals cfg.materialize.enable [
               (pkgs.writeShellScriptBin "pass-materialize" ''
                 exec ${materializeScript}

@@ -194,7 +194,9 @@ pub fn bind_listener(path: &Path) -> Result<UnixListener> {
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;
-        let _ = std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o660));
+        // World-accessible socket; authorize_peer() still gates by peer UID.
+        // 0660 root:root blocked console users from wg-ensure / materialize.
+        let _ = std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o666));
     }
     Ok(listener)
 }
