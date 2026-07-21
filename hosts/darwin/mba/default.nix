@@ -39,6 +39,9 @@
         # macrdp + socat :3389→13389 (Bonjour `_rdp._tcp` via HM agent).
         dendritic.apps.macrdp.enable = true;
 
+        # Root helper: one-time trust for privileged ops (no osascript passwords).
+        dendritic.helper.enable = true;
+
         # WireGuard overlay ↔ sliceanddice (pass/SecretSpec keys; see docs/wireguard.md).
         dendritic.wireguard.enable = true;
 
@@ -143,7 +146,7 @@
           # launchd.agents.wawona = {
           #   enable = true;
           #   config = {
-          #     Label = "com.aspaulding.wawona";
+          #     Label = "com.aspauldingcode.wawona";
           #     ProgramArguments = [ "${pkgs.wawona}/bin/wawona" ];
           #     KeepAlive = true;
           #     RunAtLoad = true;
@@ -156,7 +159,7 @@
           # launchd.agents.waypipe = {
           #   enable = true;
           #   config = {
-          #     Label = "com.aspaulding.waypipe";
+          #     Label = "com.aspauldingcode.waypipe";
           #     ProgramArguments = [
           #       "${inputs.wawona.packages.${pkgs.stdenv.hostPlatform.system}.wawona-macos}/Applications/Wawona.app/Contents/MacOS/waypipe"
           #       "--display"
@@ -180,7 +183,7 @@
           # launchd.agents.waypipe-bridge = {
           #   enable = true;
           #   config = {
-          #     Label = "com.aspaulding.waypipe-bridge";
+          #     Label = "com.aspauldingcode.waypipe-bridge";
           #     ProgramArguments = [
           #       "${pkgs.socat}/bin/socat"
           #       "UNIX-CONNECT:/etc/nix-darwin/.dotfiles/dendritic-vm-vsock.sock"
@@ -227,6 +230,7 @@
           dendritic.profilePhoto.enable = true;
           dendritic.apps.macrdp.enable = true;
           dendritic.apps.macrdp.bonjourName = "mba";
+          dendritic.helper.enable = true;
           dendritic.wireguard.enable = true;
           dendritic.wireguard.peerId = "mba";
           dendritic.python.enable = true;

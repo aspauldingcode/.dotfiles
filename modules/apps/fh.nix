@@ -20,6 +20,7 @@
     }:
     let
       cfg = config.dendritic.apps.fh;
+      dendriticBin = lib.getExe (pkgs.callPackage ../../crates/dendritic/_package.nix { });
       passCfg = config.dendritic.apps.pass;
       secretspecToml = ../../home/secretspec.toml;
       passPackage = pkgs.pass.withExtensions (exts: [ exts.pass-otp ]);
@@ -269,8 +270,14 @@
             {
               enable = true;
               config = {
-                Label = "com.aspaulding.pass-rotate-cli-auth";
-                ProgramArguments = [ (lib.getExe autoRotateCmd) ];
+                Label = "com.aspauldingcode.pass-rotate-cli-auth";
+                ProgramArguments = [
+                  dendriticBin
+                  "auth"
+                  "rotate"
+                  "--auto"
+                  "--yes"
+                ];
                 StartCalendarInterval = {
                   Weekday = 1; # Monday
                   Hour = 10;
@@ -278,6 +285,16 @@
                 };
                 StandardOutPath = "${config.home.homeDirectory}/.cache/pass-rotate-cli-auth.log";
                 StandardErrorPath = "${config.home.homeDirectory}/.cache/pass-rotate-cli-auth.err.log";
+                EnvironmentVariables = {
+                  HOME = config.home.homeDirectory;
+                  PATH = "${
+                    lib.makeBinPath [
+                      autoRotateCmd
+                      rotateCliAuth
+                      pkgs.coreutils
+                    ]
+                  }:/usr/bin:/bin";
+                };
               };
             };
 
@@ -287,7 +304,16 @@
               Unit.Description = "Auto-rotate FlakeHub / GitHub / gcloud / vercel CLI tokens in pass";
               Service = {
                 Type = "oneshot";
-                ExecStart = lib.getExe autoRotateCmd;
+                ExecStart = "${dendriticBin} auth rotate --auto --yes";
+                Environment = [
+                  "PATH=${
+                    lib.makeBinPath [
+                      autoRotateCmd
+                      rotateCliAuth
+                      pkgs.coreutils
+                    ]
+                  }"
+                ];
               };
             };
         systemd.user.timers.pass-rotate-cli-auth =

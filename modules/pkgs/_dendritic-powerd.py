@@ -1,5 +1,9 @@
 """dendritic-powerd — acoustic/thermal feedback controller for laptops.
 
+DEPRECATED: runtime is now `dendritic power` (Rust) via modules/power.nix.
+This file is kept as the reference algorithm for the Rust port in
+crates/dendritic/dendritic/src/powerd.rs.
+
 Policy: stay quiet. Mechanism: converge RAPL PL1/PL2, then EPP, then
 max_perf_pct. Inputs are measured; PL1 is solved for, not hard-coded.
 """

@@ -56,8 +56,14 @@
           completeopt = "menu,menuone,noselect";
           colorcolumn = "80";
           autoread = true;
-          sidescroll = 0;
-          sidescrolloff = 0;
+          # Horizontal scroll: keep a little context, and show « » on the
+          # window edge when more text exists off-screen (nowrap buffers).
+          # render-markdown.nvim breaks when leftcol ≠ 0 — markdown gets
+          # wrap via FileType autocmd / plugin win_options below.
+          sidescroll = 1;
+          sidescrolloff = 4;
+          list = true;
+          listchars = "tab:  ,extends:»,precedes:«,nbsp:␣";
 
           # Convert E37/E162 "No write since last change" hard-errors
           # into an interactive `[Y]es / [N]o / [C]ancel` prompt that
@@ -510,6 +516,25 @@
               end
             '';
           }
+          # Markdown: soft-wrap so horizontal scroll (which breaks
+          # render-markdown virttext) is rarely needed. Toggle with the
+          # existing wrap keymaps if you want nowrap for a wide table.
+          {
+            event = [ "FileType" ];
+            pattern = [
+              "markdown"
+              "markdown.mdx"
+              "quarto"
+            ];
+            callback.__raw = ''
+              function()
+                vim.opt_local.wrap = true
+                vim.opt_local.linebreak = true
+                vim.opt_local.breakindent = true
+                vim.opt_local.sidescrolloff = 0
+              end
+            '';
+          }
         ];
 
         # ── Debugging (DAP) ─────────────────────────────────────────
@@ -775,6 +800,8 @@
         };
 
         # ── UI & Quality of Life ────────────────────────────────────
+        # Horizontal-scroll indicator is injected into lualine in
+        # extraConfigLua (see dendritic_lualine_hscroll below).
         plugins.lualine.enable = true;
         plugins.bufferline.enable = true;
         plugins.which-key.enable = true;
@@ -801,6 +828,8 @@
         };
 
         # ── Better Markdown & Codeblocks (matches VSCode/Cursor) ─────
+        # Horizontal scroll bricks render-markdown virttext (upstream #23).
+        # Soft-wrap while rendered so prose never needs leftcol ≠ 0.
         plugins.render-markdown = {
           enable = true;
           lazyLoad.settings.ft = "markdown";
@@ -821,6 +850,20 @@
                 "󰲩 "
                 "󰲫 "
               ];
+            };
+            win_options = {
+              wrap = {
+                default = false;
+                rendered = true;
+              };
+              linebreak = {
+                default = false;
+                rendered = true;
+              };
+              breakindent = {
+                default = false;
+                rendered = true;
+              };
             };
           };
         };
@@ -1023,7 +1066,7 @@
           if not vim.g.dendritic_hot_reload_initialized then
             vim.g.dendritic_hot_reload_initialized = true
             local init_file = vim.fn.stdpath("config") .. "/init.lua"
-            local palette_file = vim.fn.expand("~/colors.toml")
+            local palette_file = vim.fn.expand("~/.colors.toml")
             local init_poll = (vim.uv and vim.uv.new_fs_poll) and vim.uv.new_fs_poll() or nil
             local palette_poll = (vim.uv and vim.uv.new_fs_poll) and vim.uv.new_fs_poll() or nil
             local uv = vim.uv or vim.loop
@@ -1131,7 +1174,7 @@
               end))
             end
 
-            -- Home Manager switches can swap the colors.toml symlink in a way fs_poll
+            -- Home Manager switches can swap the ~/.colors.toml symlink in a way fs_poll
             -- misses; this focus check catches it and keeps live sessions in sync.
             vim.api.nvim_create_autocmd({ "FocusGained", "VimResume", "BufEnter" }, {
               callback = function()
@@ -1477,7 +1520,7 @@
             if not ok2 then
               return
             end
-            local palette_path = vim.fn.expand("~/colors.toml")
+            local palette_path = vim.fn.expand("~/.colors.toml")
             active_palette = parse_palette_from_colors_toml(palette_path) or fallback_palette
             base16.setup({ palette = active_palette })
             apply_style_overrides()
@@ -1491,6 +1534,34 @@
               apply_stylix_highlights()
             end,
           })
+
+          -- Statusline cue when leftcol ≠ 0 (nowrap buffers / accidental
+          -- trackpad hscroll). render-markdown virttext desyncs in that
+          -- state — « » listchars mark the edges; lualine shows the offset.
+          vim.schedule(function()
+            if _G.dendritic_lualine_hscroll then
+              return
+            end
+            local ok, lualine = pcall(require, "lualine")
+            if not ok then
+              return
+            end
+            local cfg = lualine.get_config()
+            cfg.sections = cfg.sections or {}
+            cfg.sections.lualine_x = cfg.sections.lualine_x or {}
+            table.insert(cfg.sections.lualine_x, 1, {
+              function()
+                local left = vim.fn.winsaveview().leftcol
+                if left <= 0 then
+                  return ""
+                end
+                return string.format("⟸ %d", left + 1)
+              end,
+              color = { fg = "#f5a97f", gui = "bold" },
+            })
+            lualine.setup(cfg)
+            _G.dendritic_lualine_hscroll = true
+          end)
 
           -- Neo-tree should not allow horizontal scrolling.
           vim.api.nvim_create_autocmd("FileType", {
@@ -1541,15 +1612,52 @@
             end,
           })
 
-          -- Highlight color literals in source files.
+          -- Hex / rgb / hsl swatches (catgoose/nvim-colorizer.lua).
+          -- Tuned for ~/.colors.toml, Stylix YAML, CSS, and Nix palettes.
           vim.schedule(function()
             local colorizer_ok, colorizer = pcall(require, "colorizer")
-            if colorizer_ok then
-              colorizer.setup({
-                "*",
-                css = { css = true, css_fn = true, mode = "background" },
-              })
+            if not colorizer_ok then
+              return
             end
+            colorizer.setup({
+              filetypes = {
+                "*",
+                "!lazy",
+                "!neo-tree",
+                "!TelescopePrompt",
+                "!notify",
+                "!noice",
+                "!mason",
+                css = { names = true, css = true, css_fn = true },
+                scss = { names = true, css = true, css_fn = true },
+                html = { names = true, css = true, css_fn = true },
+                toml = { names = false, RGB = true, RRGGBB = true, RRGGBBAA = true },
+                nix = { names = false, RGB = true, RRGGBB = true, RRGGBBAA = true },
+                yaml = { names = false, RGB = true, RRGGBB = true },
+                json = { names = false, RGB = true, RRGGBB = true, RRGGBBAA = true },
+                jsonc = { names = false, RGB = true, RRGGBB = true, RRGGBBAA = true },
+              },
+              user_default_options = {
+                RGB = true,
+                RRGGBB = true,
+                RRGGBBAA = true,
+                AARRGGBB = true,
+                rgb_fn = true,
+                hsl_fn = true,
+                css = true,
+                css_fn = true,
+                names = false,
+                mode = "background",
+                tailwind = false,
+                sass = { enable = false },
+                virtualtext = "■",
+                always_update = true,
+              },
+            })
+            -- Attach immediately to already-open buffers (e.g. colors.toml).
+            pcall(function()
+              require("colorizer").attach_to_buffer(0)
+            end)
           end)
 
           -- Fancy DAP Breakpoint Icons

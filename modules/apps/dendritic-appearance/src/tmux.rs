@@ -75,7 +75,7 @@ set -g @prefix_highlight_bg '{b0e}'
     if let Some(parent) = dest.parent() {
         std::fs::create_dir_all(parent).map_err(|e| format!("mkdir {}: {e}", parent.display()))?;
     }
-    // Replace HM store symlink (same pattern as ~/colors.toml).
+    // Replace HM store symlink (same pattern as ~/.colors.toml).
     let _ = std::fs::remove_file(&dest);
     std::fs::write(&dest, body).map_err(|e| format!("write {}: {e}", dest.display()))?;
     #[cfg(unix)]

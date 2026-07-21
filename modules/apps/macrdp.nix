@@ -69,7 +69,7 @@
         # Privileged bind for standard RDP port → user agent.
         launchd.daemons.macrdp-portfwd = {
           serviceConfig = {
-            Label = "com.aspaulding.macrdp-portfwd";
+            Label = "com.aspauldingcode.macrdp-portfwd";
             ProgramArguments = [ (lib.getExe socatFwd) ];
             RunAtLoad = true;
             KeepAlive = true;
@@ -173,7 +173,7 @@
         launchd.agents.macrdp = {
           enable = true;
           config = {
-            Label = "com.aspaulding.macrdp";
+            Label = "com.aspauldingcode.macrdp";
             ProgramArguments = [ (lib.getExe serverStart) ];
             RunAtLoad = true;
             KeepAlive = true;
@@ -185,7 +185,7 @@
         launchd.agents.macrdp-bonjour = {
           enable = true;
           config = {
-            Label = "com.aspaulding.macrdp-bonjour";
+            Label = "com.aspauldingcode.macrdp-bonjour";
             ProgramArguments = [ (lib.getExe dnsSd) ];
             RunAtLoad = true;
             KeepAlive = true;

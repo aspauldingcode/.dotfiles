@@ -167,6 +167,7 @@
           };
 
           # Same Rust CLI on mba + sliceanddice: `nix run .#ai-local` / `nix run`
+          packages.dendritic = pkgs.callPackage ./crates/dendritic/_package.nix { };
           packages.dendritic-local-ai = pkgs.callPackage ./modules/apps/local-ai-cli/_package.nix { };
           packages.default = config.packages.dendritic-local-ai;
           apps.default = {

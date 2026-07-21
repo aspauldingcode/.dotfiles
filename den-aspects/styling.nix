@@ -90,31 +90,57 @@ let
           targets.neovide.enable = false;
           targets.nixvim.enable = true;
           targets.spicetify.enable = lib.mkForce true;
-          targets.qt.enable = false;
+          # qtct + Kvantum — QtPass (Qt5) and Dolphin (Qt6/KF) need this, not gtk3.
+          # Linux only: kvantum/qt5ct are not packaged for Darwin.
+          targets.qt.enable = !isDarwin;
           targets.firefox.profileNames = [ "default" ];
         };
 
-        home.file."colors.toml".text = ''
-          [stylix]
-          variant = "${paletteVariant}"
+        # Universal live palette for Stylix viewing + hot-reload consumers
+        # (nvim, tmux, IDE patch, macOS tint). Wallpaper module may replace
+        # this with a flavours-derived file of the same shape.
+        home.file.".colors.toml" = {
+          force = true;
+          text = ''
+            # ~/.colors.toml — live Stylix / dendritic palette
+            # Seeded by Home Manager; rewritten by dendritic-appearance on wallpaper/theme flips.
+            # Override path: DENDRITIC_COLORS_FILE
 
-          [palette]
-          base00 = "${colors.base00}"
-          base01 = "${colors.base01}"
-          base02 = "${colors.base02}"
-          base03 = "${colors.base03}"
-          base04 = "${colors.base04}"
-          base05 = "${colors.base05}"
-          base06 = "${colors.base06}"
-          base07 = "${colors.base07}"
-          base08 = "${colors.base08}"
-          base09 = "${colors.base09}"
-          base0A = "${colors.base0A}"
-          base0B = "${colors.base0B}"
-          base0C = "${colors.base0C}"
-          base0D = "${colors.base0D}"
-          base0E = "${colors.base0E}"
-          base0F = "${colors.base0F}"
+            [stylix]
+            system = "base16"
+            polarity = "${paletteVariant}"
+            variant = "${paletteVariant}"
+            scheme = "${schemeName}"
+            name = "${config.dendritic.theme.name}"
+            slug = "stylix"
+            author = "stylix"
+
+            [palette]
+            base00 = "${colors.base00}"
+            base01 = "${colors.base01}"
+            base02 = "${colors.base02}"
+            base03 = "${colors.base03}"
+            base04 = "${colors.base04}"
+            base05 = "${colors.base05}"
+            base06 = "${colors.base06}"
+            base07 = "${colors.base07}"
+            base08 = "${colors.base08}"
+            base09 = "${colors.base09}"
+            base0A = "${colors.base0A}"
+            base0B = "${colors.base0B}"
+            base0C = "${colors.base0C}"
+            base0D = "${colors.base0D}"
+            base0E = "${colors.base0E}"
+            base0F = "${colors.base0F}"
+          '';
+        };
+
+        # Drop legacy ~/colors.toml after migrate to ~/.colors.toml.
+        home.activation.migrateColorsToml = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          legacy="${config.home.homeDirectory}/colors.toml"
+          if [[ -e "$legacy" || -L "$legacy" ]]; then
+            $DRY_RUN_CMD rm -f "$legacy"
+          fi
         '';
 
         # ── Stylix-themed Firefox UI ──────────────────────────────────
@@ -1322,11 +1348,10 @@ let
           enable = lib.mkDefault (!isDarwin);
         };
 
-        # ── Qt Theming (Linux only) ─────────────────────────────────
-        qt = lib.mkIf (!isDarwin) {
-          enable = lib.mkForce true;
-          platformTheme.name = lib.mkForce "gtk3";
-        };
+        # ── Qt Theming ──────────────────────────────────────────────
+        # Linux: owned by stylix.targets.qt (qtct + kvantum Base16Kvantum).
+        # Darwin: Fusion + ~/.config/qtpass/dendritic.qss (dendritic-appearance).
+        # Do not force platformTheme=gtk3 — that fights Stylix qtct/Kvantum.
 
         # ── Terminal env ────────────────────────────────────────────
         programs.zsh.initContent = ''

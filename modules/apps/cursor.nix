@@ -93,7 +93,10 @@
         # Attribution UI toggle is NOT in settings.json — it lives in
         # state.vscdb as cursor/attributeCommitsToAgent + attributePRsToAgent.
         home.activation.cursorDisableAttribution = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          ${pkgs.python3}/bin/python3 ${disableAttributionScript}
+          ${
+            lib.getExe (pkgs.callPackage ../../crates/dendritic/_package.nix { })
+          } ide cursor-disable-attribution \
+            || ${pkgs.python3}/bin/python3 ${disableAttributionScript}
         '';
       };
     };

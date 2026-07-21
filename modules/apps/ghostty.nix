@@ -11,35 +11,19 @@
         name = "ghostty-reload";
         runtimeInputs = [ pkgs.coreutils ];
         text = ''
-                    set -eu
+          set -eu
 
-                    # Only attempt reload when Ghostty is running.
-                    if ! /usr/bin/pgrep -x "Ghostty" >/dev/null 2>&1; then
-                      exit 0
-                    fi
+          # Only attempt reload when Ghostty is running.
+          if ! /usr/bin/pgrep -x "Ghostty" >/dev/null 2>&1; then
+            exit 0
+          fi
 
-                    # Preferred path: Ghostty supports SIGUSR2 config reload on newer builds.
-                    # This is fast and avoids Accessibility/UI scripting dependencies.
-                    if /usr/bin/pkill -USR2 -x "Ghostty" >/dev/null 2>&1; then
-                      exit 0
-                    fi
-
-                    # Fallback for builds that don't yet support signal reload.
-                    /usr/bin/osascript <<'APPLESCRIPT'
-                    tell application "System Events"
-                      if not (exists process "Ghostty") then return
-                      tell process "Ghostty"
-                        try
-                          click menu item "Reload Configuration" of menu "Ghostty" of menu bar item "Ghostty" of menu bar 1
-                        on error
-                          -- Fallback for menu structure differences across versions.
-                          try
-                            click menu item "Reload Configuration" of menu "File" of menu bar item "File" of menu bar 1
-                          end try
-                        end try
-                      end tell
-                    end tell
-          APPLESCRIPT
+          # Ghostty supports SIGUSR2 config reload (no Accessibility / osascript).
+          if /usr/bin/pkill -USR2 -x "Ghostty" >/dev/null 2>&1; then
+            exit 0
+          fi
+          echo "ghostty-reload: SIGUSR2 failed (Ghostty running but signal ignored?)" >&2
+          exit 0
         '';
       };
     in
@@ -79,32 +63,43 @@
             custom-shader = "shaders/cursor_tail.glsl";
             custom-shader-animation = "always";
 
-            # Manually inherit colors from Stylix
-            background = "#${config.lib.stylix.colors.base00}";
-            foreground = "#${config.lib.stylix.colors.base05}";
-            cursor-color = "#${config.lib.stylix.colors.base05}";
-            selection-background = "#${config.lib.stylix.colors.base02}";
-            selection-foreground = "#${config.lib.stylix.colors.base05}";
-
-            palette = [
-              "0=#${config.lib.stylix.colors.base00}"
-              "1=#${config.lib.stylix.colors.base08}"
-              "2=#${config.lib.stylix.colors.base0B}"
-              "3=#${config.lib.stylix.colors.base0A}"
-              "4=#${config.lib.stylix.colors.base0D}"
-              "5=#${config.lib.stylix.colors.base0E}"
-              "6=#${config.lib.stylix.colors.base0C}"
-              "7=#${config.lib.stylix.colors.base05}"
-              "8=#${config.lib.stylix.colors.base03}"
-              "9=#${config.lib.stylix.colors.base08}"
-              "10=#${config.lib.stylix.colors.base0B}"
-              "11=#${config.lib.stylix.colors.base0A}"
-              "12=#${config.lib.stylix.colors.base0D}"
-              "13=#${config.lib.stylix.colors.base0E}"
-              "14=#${config.lib.stylix.colors.base0C}"
-              "15=#${config.lib.stylix.colors.base07}"
-            ];
+            # Wallpaper-hot theme (written by dendritic-appearance on rotate).
+            # Must be a *theme*, not config-file: macOS loads XDG + App Support
+            # (symlink to the same file), and config-file then reports a cycle.
+            theme = "dendritic-wallpaper";
           };
+        };
+
+        # Own Ghostty colors via the live theme file (not Stylix's theme=stylix).
+        stylix.targets.ghostty.enable = lib.mkForce false;
+
+        # Seed theme until first wallpaper apply (same palette as Stylix selected).
+        xdg.configFile."ghostty/themes/dendritic-wallpaper" = {
+          force = true;
+          text = ''
+            # Seeded by HM from Stylix; overwritten by dendritic-appearance on wallpaper change.
+            background = ${config.lib.stylix.colors.base00}
+            foreground = ${config.lib.stylix.colors.base05}
+            cursor-color = ${config.lib.stylix.colors.base05}
+            selection-background = ${config.lib.stylix.colors.base02}
+            selection-foreground = ${config.lib.stylix.colors.base05}
+            palette = 0=#${config.lib.stylix.colors.base00}
+            palette = 1=#${config.lib.stylix.colors.base08}
+            palette = 2=#${config.lib.stylix.colors.base0B}
+            palette = 3=#${config.lib.stylix.colors.base0A}
+            palette = 4=#${config.lib.stylix.colors.base0D}
+            palette = 5=#${config.lib.stylix.colors.base0E}
+            palette = 6=#${config.lib.stylix.colors.base0C}
+            palette = 7=#${config.lib.stylix.colors.base05}
+            palette = 8=#${config.lib.stylix.colors.base03}
+            palette = 9=#${config.lib.stylix.colors.base08}
+            palette = 10=#${config.lib.stylix.colors.base0B}
+            palette = 11=#${config.lib.stylix.colors.base0A}
+            palette = 12=#${config.lib.stylix.colors.base0D}
+            palette = 13=#${config.lib.stylix.colors.base0E}
+            palette = 14=#${config.lib.stylix.colors.base0C}
+            palette = 15=#${config.lib.stylix.colors.base07}
+          '';
         };
 
         # ── Cursor Shader Implementation ───────────────────────────
@@ -274,7 +269,7 @@
         launchd.agents.ghostty-hot-reload = lib.mkIf pkgs.stdenv.isDarwin {
           enable = true;
           config = {
-            Label = "com.dendritic.ghostty-hot-reload";
+            Label = "com.aspauldingcode.ghostty-hot-reload";
             ProgramArguments = [
               "${pkgs.bash}/bin/bash"
               "${ghosttyReloadCommand}/bin/ghostty-reload"

@@ -156,7 +156,7 @@ in
             ${appearanceBin} avatar apply --user "${user}" --image "/etc/dendritic/profile.jpg"
           '';
           serviceConfig = {
-            Label = "com.aspaulding.dendritic-avatar";
+            Label = "com.aspauldingcode.dendritic-avatar";
             RunAtLoad = true;
             StartInterval = 1800;
             StandardOutPath = "/var/log/dendritic-avatar.log";

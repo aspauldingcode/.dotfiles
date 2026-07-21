@@ -194,6 +194,30 @@ sudo_cmd() {
   fi
 }
 
+# Prefer the root dendritic helper (set-and-forget) over sudo/osascript.
+dendritic_bin() {
+  if [[ -n ${DENDRITIC_BIN:-} && -x ${DENDRITIC_BIN} ]]; then
+    printf '%s' "$DENDRITIC_BIN"
+    return 0
+  fi
+  command -v dendritic 2>/dev/null || true
+}
+
+helper_install_conf() {
+  local bin
+  bin="$(dendritic_bin)"
+  [[ -n $bin ]] || return 1
+  "$bin" wg install-conf --iface "$IFACE" "$USER_CONF"
+}
+
+helper_reload_iface() {
+  local bin
+  bin="$(dendritic_bin)"
+  [[ -n $bin ]] || return 1
+  "$bin" wg down --iface "$IFACE" 2>/dev/null || true
+  "$bin" wg up --iface "$IFACE"
+}
+
 # Install system conf (wg-quick unit / launchd).
 install_conf() {
   if [[ -w $CONF_DIR ]] || [[ $(id -u) -eq 0 ]]; then
@@ -201,16 +225,13 @@ install_conf() {
     install -m 0600 "$USER_CONF" "$CONF_PATH"
     return 0
   fi
+  if helper_install_conf; then
+    return 0
+  fi
   if sudo_cmd mkdir -p "$CONF_DIR" && sudo_cmd install -m 0600 "$USER_CONF" "$CONF_PATH"; then
     return 0
   fi
-  if [[ "$(uname -s)" == Darwin ]] && command -v osascript >/dev/null 2>&1; then
-    # Single admin dialog: mkdir + install (agents lack sudo -n / Touch ID TTY).
-    if osascript -e "do shell script \"mkdir -p $(printf '%q' "$CONF_DIR") && install -m 0600 $(printf '%q' "$USER_CONF") $(printf '%q' "$CONF_PATH")\" with administrator privileges" 2>/dev/null; then
-      return 0
-    fi
-  fi
-  log "could not install $CONF_PATH (sudo) — user conf at $USER_CONF"
+  log "could not install $CONF_PATH (helper/sudo) — user conf at $USER_CONF"
   return 1
 }
 
@@ -221,6 +242,9 @@ wg_quick_bin() {
 reload_iface() {
   local wq
   wq="$(wg_quick_bin)"
+  if helper_reload_iface; then
+    return 0
+  fi
   if command -v systemctl >/dev/null 2>&1; then
     if systemctl cat "wg-quick-${IFACE}.service" >/dev/null 2>&1; then
       sudo_cmd systemctl restart "wg-quick-${IFACE}.service" && return 0
@@ -231,10 +255,6 @@ reload_iface() {
   fi
   if sudo_cmd "$wq" up "$IFACE"; then
     return 0
-  fi
-  if [[ "$(uname -s)" == Darwin ]] && command -v osascript >/dev/null 2>&1; then
-    osascript -e "do shell script \"$(printf '%q' "$wq") down $(printf '%q' "$IFACE") 2>/dev/null || true; $(printf '%q' "$wq") up $(printf '%q' "$IFACE")\" with administrator privileges" 2>/dev/null
-    return $?
   fi
   return 1
 }

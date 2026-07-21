@@ -17,6 +17,8 @@
       # pipx is installed) so it applies on every host, not only those importing
       # this overlay.
 
+      dendritic = final.callPackage ../crates/dendritic/_package.nix { };
+
       code-cursor = unstable.code-cursor;
       antigravity = unstable.antigravity;
       spotify = unstable.spotify;
@@ -29,8 +31,16 @@
 
       # macos-instantview 3.24R0004 ([nixpkgs#530053](https://github.com/NixOS/nixpkgs/pull/530053))
       # — 26.05 still has 3.22R0002 (broken Applications symlink + shebang
-      # fixup). No custom derivation; pull the merged upstream package.
-      macos-instantview = unstable.macos-instantview;
+      # fixup). Pull upstream, then strip quarantine/macl so a fresh
+      # build is GC-deletable until Launch Services re-stamps macl
+      # (stripped again on darwin activation — see apps/instantview.nix).
+      macos-instantview = unstable.macos-instantview.overrideAttrs (old: {
+        postFixup = (old.postFixup or "") + ''
+          if [ -d "$out/Applications" ]; then
+            /usr/bin/xattr -cr "$out/Applications" 2>/dev/null || true
+          fi
+        '';
+      });
 
       # ── vimPlugins.blink-cmp: patch upstream "No fuzzy matching
       # library found!" false-positive on Nix ─────────────────────

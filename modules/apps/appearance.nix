@@ -100,7 +100,7 @@
             launchd.agents.dendritic-appearance = {
               enable = true;
               config = {
-                Label = "com.aspaulding.dendritic-appearance";
+                Label = "com.aspauldingcode.dendritic-appearance";
                 ProgramArguments = [
                   appearanceBin
                   "supervise"
@@ -185,7 +185,7 @@
 
         launchd.daemons.dendritic-appearance-watch = {
           serviceConfig = {
-            Label = "com.aspaulding.dendritic-appearance-watch";
+            Label = "com.aspauldingcode.dendritic-appearance-watch";
             ProgramArguments = [
               "/bin/sh"
               "/etc/dendritic-appearance-watch.sh"
@@ -227,9 +227,14 @@
               echo "warning: appearance prebuild failed; keeping previous cache" >&2
             fi
 
-            # Drop legacy org.nixos.* label if present from older generations.
-            /bin/launchctl bootout system/org.nixos.dendritic-appearance-watch >/dev/null 2>&1 || true
-            /bin/launchctl kickstart -k system/com.aspaulding.dendritic-appearance-watch >/dev/null 2>&1 || true
+            # Drop legacy labels from older generations.
+            for legacy in \
+              org.nixos.dendritic-appearance-watch \
+              com.aspaulding.dendritic-appearance-watch
+            do
+              /bin/launchctl bootout "system/$legacy" >/dev/null 2>&1 || true
+            done
+            /bin/launchctl kickstart -k system/com.aspauldingcode.dendritic-appearance-watch >/dev/null 2>&1 || true
             /bin/launchctl asuser "$(${pkgs.coreutils}/bin/id -u ${user})" /usr/bin/sudo -u ${user} \
               /usr/bin/env HOME="/Users/${user}" DENDRITIC_HOME="/Users/${user}" DENDRITIC_USER="${user}" \
               ${lib.getExe appearancePkg} reconcile \

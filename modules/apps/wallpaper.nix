@@ -1,15 +1,12 @@
-# ── Dendritic Wallpaper (macOS + Linux) ─────────────────────────────────
+# ── Dendritic Wallpaper (macOS + Linux, 1:1) ────────────────────────────
 #
 # Architecture:
-#   1. Build-time: flavours extracts base16 from each wallpaper (dark+light).
-#   2. Runtime: pure-Rust `dendritic-appearance wallpaper …` (no bash/python).
-#   3. Hot-reload: ~/colors.toml + IDE settings watchers pick up the palette.
-#   4. Stylix: when themeFromImage, base16Scheme = selected wallpaper's scheme.
-#   5. Auth wallpaper:
-#        Linux  → gtkgreet/gtklock = desktop current (auth-path / current.tsv)
-#        macOS  → Idle ≠ desktop (lock-path); desktop via appearance apply
-#
-# gowall: optional manual tint tool — not used by the daily cycle.
+#   1. Build-time: flavours → full base16 per wallpaper (dark+light) in the pack.
+#      (gowall extract is only ~6 colors; not enough for Stylix — optional manual.)
+#   2. Runtime: `dendritic-appearance wallpaper …` picks pack entry + copies its
+#      colors.toml, then hot-applies IDE / tmux / Ghostty / tint (both OSes).
+#   3. Stylix seed at rebuild: themeFromImage uses `selected` for store packages.
+#   4. Auth: Linux = desktop 1:1; macOS Idle ≠ desktop.
 #
 {
   flake.modules.homeManager.dendritic =
@@ -158,7 +155,7 @@
             stylix.image = lib.mkForce selectedImage;
             stylix.base16Scheme = lib.mkIf cfg.themeFromImage (lib.mkOverride 40 selectedScheme);
 
-            home.file."colors.toml" = lib.mkForce {
+            home.file.".colors.toml" = lib.mkForce {
               source = "${selectedEntry}/colors-${variant}.toml";
               force = true;
             };
@@ -194,7 +191,7 @@
             launchd.agents.dendritic-wallpaper-daily = {
               enable = true;
               config = {
-                Label = "com.aspaulding.dendritic-wallpaper-daily";
+                Label = "com.aspauldingcode.dendritic-wallpaper-daily";
                 ProgramArguments = [
                   appearanceBin
                   "wallpaper"

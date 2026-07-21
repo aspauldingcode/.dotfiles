@@ -11,6 +11,7 @@
     }:
     let
       cfg = config.dendritic.androidConverge;
+      dendriticBin = lib.getExe (pkgs.callPackage ../../crates/dendritic/_package.nix { });
       system = pkgs.stdenv.hostPlatform.system;
       defaultDotfiles =
         if pkgs.stdenv.isDarwin then "/etc/nix-darwin/.dotfiles" else "/etc/nixos/.dotfiles";
@@ -125,14 +126,25 @@
             launchd.agents.android-converge = {
               enable = true;
               config = {
-                Label = "com.aspaulding.android-converge";
-                ProgramArguments = [ (lib.getExe convergeScript) ];
+                Label = "com.aspauldingcode.android-converge";
+                ProgramArguments = [
+                  dendriticBin
+                  "android"
+                  "converge"
+                ];
                 RunAtLoad = true;
                 StartInterval = cfg.intervalSec;
                 StandardOutPath = "${logDir}/android-converge.log";
                 StandardErrorPath = "${logDir}/android-converge.err.log";
                 EnvironmentVariables = {
                   HOME = config.home.homeDirectory;
+                  PATH = "${
+                    lib.makeBinPath [
+                      convergeScript
+                      pkgs.coreutils
+                    ]
+                  }:/usr/bin:/bin";
+                  DENDRITIC_ANDROID_CONVERGE = lib.getExe convergeScript;
                 };
               };
             };
@@ -146,7 +158,8 @@
               };
               Service = {
                 Type = "oneshot";
-                ExecStart = lib.getExe convergeScript;
+                ExecStart = "${dendriticBin} android converge";
+                Environment = [ "DENDRITIC_ANDROID_CONVERGE=${lib.getExe convergeScript}" ];
               };
             };
             systemd.user.timers.android-converge = {

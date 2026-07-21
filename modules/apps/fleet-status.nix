@@ -10,6 +10,7 @@
     }:
     let
       cfg = config.dendritic.fleet;
+      dendriticBin = lib.getExe (pkgs.callPackage ../../crates/dendritic/_package.nix { });
       fleetHosts = import ../../home/fleet-hosts.nix;
       platform =
         if pkgs.stdenv.isDarwin then
@@ -118,8 +119,12 @@
             launchd.agents.fleet-heartbeat = {
               enable = true;
               config = {
-                Label = "com.aspaulding.fleet-heartbeat";
-                ProgramArguments = [ (lib.getExe heartbeatScript) ];
+                Label = "com.aspauldingcode.fleet-heartbeat";
+                ProgramArguments = [
+                  dendriticBin
+                  "fleet"
+                  "heartbeat"
+                ];
                 RunAtLoad = true;
                 StartInterval = cfg.intervalSec;
                 StandardOutPath = "${logDir}/fleet-heartbeat.log";
@@ -127,6 +132,13 @@
                 EnvironmentVariables = {
                   HOME = config.home.homeDirectory;
                   FLEET_STATUS_TOKEN_WAIT_SEC = "120";
+                  PATH = "${
+                    lib.makeBinPath [
+                      heartbeatScript
+                      pkgs.coreutils
+                    ]
+                  }:/usr/bin:/bin";
+                  DENDRITIC_FLEET_HEARTBEAT = lib.getExe heartbeatScript;
                 };
               }
               // lib.optionalAttrs cfg.useSopsToken {
@@ -147,8 +159,11 @@
               };
               Service = {
                 Type = "oneshot";
-                ExecStart = lib.getExe heartbeatScript;
-                Environment = [ "FLEET_STATUS_TOKEN_WAIT_SEC=120" ];
+                ExecStart = "${dendriticBin} fleet heartbeat";
+                Environment = [
+                  "FLEET_STATUS_TOKEN_WAIT_SEC=120"
+                  "DENDRITIC_FLEET_HEARTBEAT=${lib.getExe heartbeatScript}"
+                ];
               };
             };
             systemd.user.timers.fleet-heartbeat = {

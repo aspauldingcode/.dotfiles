@@ -42,7 +42,7 @@ dendritic-eduroam-rotate         # optional: refresh CA from lipfence when onlin
 | macOS       | Preferred WPA2E + upsert Keychain 802.1X (`-T eapolclient`) + import CA PEMs |
 | NixOS/Asahi | Write `eduroam.8021x` (embedded CA, ServerDomainMask) + `iwctl`/`nmcli`      |
 
-Agents: launchd `com.dendritic.eduroam-ensure` (+ weekly rotate);
+Agents: launchd `com.aspauldingcode.eduroam-ensure` (+ weekly rotate);
 systemd user path/service + weekly timer on Linux.
 
 ## Rotation

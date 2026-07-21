@@ -310,8 +310,8 @@ for k in ("device_code","user_code","verification_uri","interval","expires_in"):
 
   log "Authorize this device at: $verify_url"
   log "User code: $user_code"
-  if command -v osascript >/dev/null 2>&1; then
-    osascript -e "display notification \"Code ${user_code} — open ${verify_url}\" with title \"GitHub App device login\"" 2>/dev/null || true
+  if command -v dendritic >/dev/null 2>&1; then
+    dendritic notify "GitHub App device login" "Code ${user_code} — open ${verify_url}" 2>/dev/null || true
   elif command -v notify-send >/dev/null 2>&1; then
     notify-send "GitHub App device login" "Code ${user_code} — ${verify_url}" || true
   fi

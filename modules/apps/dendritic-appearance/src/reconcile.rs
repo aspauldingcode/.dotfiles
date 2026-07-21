@@ -116,14 +116,14 @@ fn apply_global(variant: Variant, wallpaper_target: &str) -> Result<(), String> 
     #[cfg(target_os = "macos")]
     {
         let _ = macos::apply_tint_from_colors_toml(&colors_toml_path());
-        // Soft reloads without AppleScript
-        let _ = std::process::Command::new("pkill")
-            .args(["-USR2", "-x", "Ghostty"])
-            .status();
     }
 
-    // Ensure tmux tracks colors.toml even if wallpaper layer was a no-op.
-    let _ = crate::tmux::apply_from_colors(&colors_toml_path());
+    // Hot theme layer — same on Darwin and NixOS (wallpaper palette → apps).
+    let colors = colors_toml_path();
+    let _ = crate::tmux::apply_from_colors(&colors);
+    let _ = crate::ghostty::apply_from_colors(&colors);
+    let _ = crate::qt::apply_from_colors(&colors);
+    let _ = crate::ide::patch_from_colors(&colors);
 
     // Prebuilt / specialisation (best-effort; hot layer already applied)
     if let Err(e) = activate::activate(variant) {

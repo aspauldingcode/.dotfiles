@@ -59,7 +59,7 @@ Do **not** delete host enrollments when rotating credentials.
 ```bash
 # On a host
 systemctl --user start fleet-heartbeat.service   # Linux
-launchctl kickstart -k gui/$(id -u)/com.aspaulding.fleet-heartbeat  # macOS
+launchctl kickstart -k gui/$(id -u)/com.aspauldingcode.fleet-heartbeat  # macOS
 
 # Public render (needs read token)
 FLEET_STATUS_READ_TOKEN=… ./scripts/fleet-status-render.sh

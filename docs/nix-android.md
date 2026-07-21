@@ -34,7 +34,7 @@ tail -f ~/.cache/android-converge.log      # mba
 journalctl --user -u android-converge -f # sliceanddice
 
 # Manual kick
-launchctl kickstart -k gui/$(id -u)/com.aspaulding.android-converge  # mba
+launchctl kickstart -k gui/$(id -u)/com.aspauldingcode.android-converge  # mba
 systemctl --user start android-converge.service                      # sliceanddice
 ```
 

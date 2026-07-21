@@ -608,8 +608,7 @@ let
           brave_was_running=0
           if /usr/bin/pgrep -x "Brave Browser" >/dev/null 2>&1; then
             brave_was_running=1
-            /bin/launchctl asuser "$uid" /usr/bin/sudo -u "$target_user" \
-              /usr/bin/osascript -e 'tell application "Brave Browser" to quit' >/dev/null 2>&1 || true
+            /usr/bin/killall "Brave Browser" >/dev/null 2>&1 || true
             i=0
             while /usr/bin/pgrep -x "Brave Browser" >/dev/null 2>&1 && [ "$i" -lt 20 ]; do
               /bin/sleep 0.25

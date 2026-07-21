@@ -14,7 +14,7 @@ must never desync.
 | `toggle`                                                       | Flip host + global apply                                    |
 | `apply [--variant V] [--wallpaper current\|daily\|next\|NAME]` | Hot-reload                                                  |
 | `wallpaper <daily\|next\|NAME\|current>`                       | Pack apply in Rust (replaces bash/python)                   |
-| `tint`                                                         | macOS accent/highlight from `~/colors.toml` `base0D`        |
+| `tint`                                                         | macOS accent/highlight from `~/.colors.toml` `base0D`       |
 | `status [--waybar]`                                            | Machine status / Waybar JSON                                |
 | `list-wallpapers`                                              | Pack entries                                                |
 
@@ -22,7 +22,7 @@ must never desync.
 
 After every reconcile:
 
-`host == recorded == colors.toml variant == wallpaper.json variant`
+`host == recorded == ~/.colors.toml variant == wallpaper.json variant`
 
 Phases: `Synced` → idle; `Desynced` → `Applying` → verify (max 3) → `Synced` or `Failed`.
 
@@ -33,14 +33,14 @@ Phases: `Synced` → idle; `Desynced` → `Applying` → verify (max 3) → `Syn
 
 ## Services
 
-- **HM launchd agent** `com.aspaulding.dendritic-appearance` → `supervise`
+- **HM launchd agent** `com.aspauldingcode.dendritic-appearance` → `supervise`
 - **systemd user** `dendritic-appearance.service` → `supervise`
 - **Darwin system watch** (tiny `/etc/dendritic-appearance-watch.sh` shim) → `reconcile` on GlobalPreferences flips
 - Legacy bash `dendritic-appearance-sync` launchd daemon is **force-disabled**
 
 ## No rebuild path
 
-1. **Hot layer**: `colors.toml`, IDE patch (Rust), swaybg / macos-wallpaper, macOS tint
+1. **Hot layer**: `~/.colors.toml`, IDE / tmux / Ghostty live palette, swaybg / macos-wallpaper, macOS tint
 2. **Prebuilt activate** (Darwin): cached light/dark profiles from postActivation
 3. **Specialisation** (NixOS): when present
 

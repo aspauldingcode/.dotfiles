@@ -27,6 +27,8 @@
     }:
     let
       cfg = config.dendritic.apps.pass;
+      dendriticPkg = pkgs.callPackage ../../crates/dendritic/_package.nix { };
+      dendriticBin = lib.getExe dendriticPkg;
       storeDir = "${config.home.homeDirectory}/.password-store";
       passPackage = pkgs.pass.withExtensions (exts: [ exts.pass-otp ]);
       passBin = "${passPackage}/bin/pass";
@@ -203,6 +205,62 @@
         autoPull=false
         autoPush=false
       '';
+
+      # Themed QtPass launcher.
+      # Linux: Stylix qt5ct + Kvantum (plugin paths baked in — niri/fuzzel often
+      # omit HM QT_PLUGIN_PATH). Darwin: Fusion + dendritic.qss (kvantum/qt5ct
+      # are Linux-only); stylesheet is rewritten by dendritic-appearance.
+      qtpassThemed =
+        let
+          qssPath = "${config.home.homeDirectory}/.config/qtpass/dendritic.qss";
+        in
+        if pkgs.stdenv.isLinux then
+          let
+            qt5 = pkgs.libsForQt5;
+            pluginPrefix = qt5.qtbase.qtPluginPrefix;
+            kvantumPlugins = "${qt5.qtstyleplugin-kvantum}/${pluginPrefix}";
+            qt5ctPlugins = "${qt5.qt5ct}/${pluginPrefix}";
+          in
+          pkgs.symlinkJoin {
+            name = "qtpass-stylix";
+            paths = [ pkgs.qtpass ];
+            nativeBuildInputs = [ pkgs.makeWrapper ];
+            postBuild = ''
+              wrapProgram "$out/bin/qtpass" \
+                --set QT_QPA_PLATFORMTHEME qt5ct \
+                --set QT_STYLE_OVERRIDE kvantum \
+                --prefix QT_PLUGIN_PATH : ${lib.escapeShellArg kvantumPlugins} \
+                --prefix QT_PLUGIN_PATH : ${lib.escapeShellArg qt5ctPlugins}
+            '';
+            meta = pkgs.qtpass.meta // {
+              description = "QtPass with Stylix qt5ct/Kvantum plugin path";
+            };
+          }
+        else
+          pkgs.symlinkJoin {
+            name = "qtpass-stylix";
+            paths = [ pkgs.qtpass ];
+            nativeBuildInputs = [ pkgs.makeWrapper ];
+            postBuild = ''
+              wrapProgram "$out/bin/qtpass" \
+                --set QT_STYLE_OVERRIDE Fusion \
+                --add-flags -stylesheet \
+                --add-flags ${lib.escapeShellArg qssPath}
+
+              # Dock / Spotlight open the .app, not bin/qtpass — wrap that too.
+              appQt="$out/Applications/QtPass.app/Contents/MacOS/QtPass"
+              if [ -e "$appQt" ] || [ -L "$appQt" ]; then
+                rm -f "$appQt"
+                makeWrapper ${pkgs.qtpass}/Applications/QtPass.app/Contents/MacOS/QtPass "$appQt" \
+                  --set QT_STYLE_OVERRIDE Fusion \
+                  --add-flags -stylesheet \
+                  --add-flags ${lib.escapeShellArg qssPath}
+              fi
+            '';
+            meta = pkgs.qtpass.meta // {
+              description = "QtPass with Fusion + dendritic.qss (macOS Stylix)";
+            };
+          };
     in
     {
       options.dendritic.apps.pass = {
@@ -347,7 +405,7 @@
               pwgen
               jq
             ]
-            ++ lib.optionals cfg.gui.enable [ qtpass ]
+            ++ lib.optionals cfg.gui.enable [ qtpassThemed ]
             ++ lib.optionals cfg.tray.enable [ trayPkg ]
             ++ lib.optionals cfg.materialize.enable [
               (pkgs.writeShellScriptBin "pass-materialize" ''
@@ -495,6 +553,7 @@
             name = "QtPass";
             genericName = "Password Manager";
             comment = "GUI for the standard unix password manager (pass)";
+            # Wrapper already sets qt5ct/Kvantum + QT_PLUGIN_PATH.
             exec = "qtpass";
             icon = "qtpass-icon";
             terminal = false;
@@ -507,6 +566,7 @@
 
         (lib.mkIf (cfg.enable && cfg.gui.enable && pkgs.stdenv.isDarwin) {
           # Seed native prefs so Spotlight/QtPass open pointed at our store + nix binaries.
+          # QSS at ~/.config/qtpass/dendritic.qss is owned by dendritic-appearance.
           home.activation.configureQtPass = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
             /usr/bin/defaults write com.IJHack.QtPass passStore -string ${lib.escapeShellArg storeDir}
             /usr/bin/defaults write com.IJHack.QtPass passExecutable -string ${lib.escapeShellArg passBin}
@@ -517,6 +577,7 @@
             /usr/bin/defaults write com.IJHack.QtPass useGit -bool true
             /usr/bin/defaults write com.IJHack.QtPass usePwgen -bool true
             /usr/bin/defaults write com.IJHack.QtPass useClipboard -bool true
+            mkdir -p "$HOME/.config/qtpass"
           '';
         })
 
@@ -524,11 +585,12 @@
           launchd.agents.pass-rotate-reminder = {
             enable = true;
             config = {
-              Label = "com.aspaulding.pass-rotate-reminder";
+              Label = "com.aspauldingcode.pass-rotate-reminder";
               ProgramArguments = [
-                "/usr/bin/osascript"
-                "-e"
-                "display notification \"Run: nix run .#pass-rotate (or --status)\" with title \"pass GPG rotation reminder\""
+                (lib.getExe (pkgs.callPackage ../../crates/dendritic/_package.nix { }))
+                "notify"
+                "pass GPG rotation reminder"
+                "Run: nix run .#pass-rotate (or --status)"
               ];
               StartCalendarInterval = {
                 Month = 1;
@@ -566,8 +628,12 @@
           launchd.agents.pass-store-sync = {
             enable = true;
             config = {
-              Label = "com.aspaulding.pass-store-sync";
-              ProgramArguments = [ "${watchScript}" ];
+              Label = "com.aspauldingcode.pass-store-sync";
+              ProgramArguments = [
+                dendriticBin
+                "pass"
+                "watch"
+              ];
               RunAtLoad = true;
               KeepAlive = true;
               ThrottleInterval = 10;
@@ -577,6 +643,7 @@
                 HOME = config.home.homeDirectory;
                 PASSWORD_STORE_DIR = storeDir;
                 PASS_STORE_SYNC_MODE = "full";
+                DENDRITIC_PASS_STORE_WATCH = "${watchScript}";
               };
             };
           };
@@ -589,12 +656,13 @@
               After = [ "default.target" ];
             };
             Service = {
-              ExecStart = "${watchScript}";
+              ExecStart = "${dendriticBin} pass watch";
               Restart = "always";
               RestartSec = 10;
               Environment = [
                 "PASSWORD_STORE_DIR=${storeDir}"
                 "PASS_STORE_SYNC_MODE=full"
+                "DENDRITIC_PASS_STORE_WATCH=${watchScript}"
               ];
             };
             Install.WantedBy = [ "default.target" ];
@@ -609,8 +677,12 @@
             launchd.agents.pass-store-sync-notify = {
               enable = true;
               config = {
-                Label = "com.aspaulding.pass-store-sync-notify";
-                ProgramArguments = [ "${notifyScript}" ];
+                Label = "com.aspauldingcode.pass-store-sync-notify";
+                ProgramArguments = [
+                  dendriticBin
+                  "pass"
+                  "notify"
+                ];
                 RunAtLoad = true;
                 KeepAlive = true;
                 # Back off while waiting for sops; WatchPaths covers late decrypt.
@@ -625,6 +697,7 @@
                   PASSWORD_STORE_DIR = storeDir;
                   PASS_STORE_NTFY_TOPIC_FILE = config.sops.secrets.pass_store_ntfy_topic.path;
                   PASS_STORE_NTFY_WAIT_SEC = "120";
+                  DENDRITIC_PASS_STORE_SYNC_NOTIFY = "${notifyScript}";
                 };
               };
             };
@@ -640,7 +713,7 @@
               Wants = [ "sops-nix.service" ];
             };
             Service = {
-              ExecStart = "${notifyScript}";
+              ExecStart = "${dendriticBin} pass notify";
               Restart = "always";
               RestartSec = 15;
               # Fail fast into Restart if topic still missing after script wait.
@@ -648,6 +721,7 @@
                 "PASSWORD_STORE_DIR=${storeDir}"
                 "PASS_STORE_NTFY_TOPIC_FILE=${config.sops.secrets.pass_store_ntfy_topic.path}"
                 "PASS_STORE_NTFY_WAIT_SEC=120"
+                "DENDRITIC_PASS_STORE_SYNC_NOTIFY=${notifyScript}"
               ];
             };
             Install.WantedBy = [ "default.target" ];
@@ -660,8 +734,12 @@
           launchd.agents.gpg-preset-from-sops = {
             enable = true;
             config = {
-              Label = "com.dendritic.gpg-preset-from-sops";
-              ProgramArguments = [ "${gpgPresetScript}" ];
+              Label = "com.aspauldingcode.gpg-preset-from-sops";
+              ProgramArguments = [
+                dendriticBin
+                "gpg"
+                "preset"
+              ];
               RunAtLoad = true;
               # Re-preset after sleep / agent restart; cheap idempotent op.
               StartInterval = 300;
@@ -673,6 +751,7 @@
               EnvironmentVariables = {
                 HOME = config.home.homeDirectory;
                 PATH = "/usr/bin:/bin:/usr/sbin:/sbin";
+                DENDRITIC_GPG_PRESET = "${gpgPresetScript}";
               };
             };
           };
@@ -693,7 +772,8 @@
             Service = {
               Type = "oneshot";
               TimeoutStartSec = "60";
-              ExecStart = "${gpgPresetScript}";
+              ExecStart = "${dendriticBin} gpg preset";
+              Environment = [ "DENDRITIC_GPG_PRESET=${gpgPresetScript}" ];
             };
           };
           systemd.user.timers.gpg-preset-from-sops = {
@@ -723,7 +803,7 @@
           launchd.agents.pass-store-tray = {
             enable = true;
             config = {
-              Label = "com.aspaulding.pass-store-tray";
+              Label = "com.aspauldingcode.pass-store-tray";
               ProgramArguments = [ "${trayPkg}/bin/pass-store-tray" ];
               RunAtLoad = true;
               KeepAlive = true;
@@ -760,6 +840,7 @@
     };
 
   # Dock pin for QtPass on macOS (order 145 — after Ghostty, before JetBrains).
+  # Prefer HM-linked themed app (Fusion + dendritic.qss) when present.
   flake.modules.darwin.dendritic =
     {
       lib,
@@ -768,15 +849,25 @@
       ...
     }:
     let
-      qtpassApp = "${pkgs.qtpass}/Applications/QtPass.app";
-      anyPassGui = lib.any (
+      passUsers = lib.filter (
         u:
         (config.home-manager.users.${u}.dendritic.apps.pass.enable or false)
         && (config.home-manager.users.${u}.dendritic.apps.pass.gui.enable or true)
       ) (lib.attrNames (config.home-manager.users or { }));
+      # Fall back to store qtpass; HM linkApps installs the themed wrapper into
+      # ~/Applications/Home Manager Apps when gui.enable.
+      qtpassApp =
+        if passUsers != [ ] then
+          let
+            u = lib.head passUsers;
+            home = config.home-manager.users.${u}.home.homeDirectory;
+          in
+          "${home}/Applications/Home Manager Apps/QtPass.app"
+        else
+          "${pkgs.qtpass}/Applications/QtPass.app";
     in
     {
-      config = lib.mkIf anyPassGui {
+      config = lib.mkIf (passUsers != [ ]) {
         dendritic.dock.apps = lib.mkOrder 145 [ qtpassApp ];
       };
     };

@@ -351,8 +351,8 @@ rotate_flakehub() {
       log "FlakeHub: non-interactive — need admin elevate once:"
       log "  nix run .#pass-flakehub-bootstrap"
       log "  or: pass-rotate-cli-auth --flakehub  (TTY)"
-      if command -v osascript >/dev/null 2>&1; then
-        osascript -e 'display notification "Run pass-flakehub-bootstrap to remint device token" with title "FlakeHub token"' 2>/dev/null || true
+      if command -v dendritic >/dev/null 2>&1; then
+        dendritic notify "FlakeHub token" "Run pass-flakehub-bootstrap to remint device token" 2>/dev/null || true
       elif command -v notify-send >/dev/null 2>&1; then
         notify-send "FlakeHub token" "pass-flakehub-bootstrap" || true
       fi
@@ -477,8 +477,8 @@ rotate_gcloud() {
   if gcloud_sa_configured; then
     log "gcloud: SA key present — OAuth mint not configured."
     log "  Prefer: nix run .#pass-gcloud-bootstrap"
-    if command -v osascript >/dev/null 2>&1; then
-      osascript -e 'display notification "Run pass-gcloud-bootstrap for OAuth minting" with title "gcloud SA mode"' 2>/dev/null || true
+    if command -v dendritic >/dev/null 2>&1; then
+      dendritic notify "gcloud SA mode" "Run pass-gcloud-bootstrap for OAuth minting" 2>/dev/null || true
     elif command -v notify-send >/dev/null 2>&1; then
       notify-send "gcloud SA mode" "pass-gcloud-bootstrap" || true
     fi
@@ -488,29 +488,24 @@ rotate_gcloud() {
 }
 
 rotate_vercel() {
-  local token auth_path auth_dir
+  local token
   if vercel_configured; then
     log "vercel: refreshing OAuth access via API (pass-backed)…"
-    token="$(vercel_mint_token --refresh 2>/dev/null || true)"
+    # Prefer single locked mint+atomic auth.json write.
+    token="$(vercel_mint_token --refresh --write-auth 2>/dev/null || true)"
     if [[ -z $token ]]; then
       log "vercel: refresh failed — starting OAuth device flow"
-      token="$(vercel_mint_token --device)"
+      token="$(vercel_mint_token --device --write-auth)"
     fi
     [[ -n $token ]] || die "vercel: mint returned empty token"
-    auth_path="$(vercel_auth_json_path)"
-    auth_dir="$(dirname "$auth_path")"
-    mkdir -p "$auth_dir"
-    umask 077
-    vercel_mint_token --auth-json >"$auth_path"
-    chmod 0600 "$auth_path"
     log "vercel: access OK; auth.json rewritten"
     return 0
   fi
   if vercel_static_configured; then
     log "vercel: static PAT present — OAuth mint not configured."
     log "  Prefer: nix run .#pass-vercel-bootstrap"
-    if command -v osascript >/dev/null 2>&1; then
-      osascript -e 'display notification "Run pass-vercel-bootstrap for OAuth minting" with title "vercel PAT mode"' 2>/dev/null || true
+    if command -v dendritic >/dev/null 2>&1; then
+      dendritic notify "vercel PAT mode" "Run pass-vercel-bootstrap for OAuth minting" 2>/dev/null || true
     elif command -v notify-send >/dev/null 2>&1; then
       notify-send "vercel PAT mode" "pass-vercel-bootstrap" || true
     fi
@@ -569,8 +564,8 @@ if $DO_AUTO; then
       else
         log "GitHub: classic PAT due — prefer App minting:"
         log "  pass-github-app-bootstrap"
-        if command -v osascript >/dev/null 2>&1; then
-          osascript -e 'display notification "Run pass-github-app-bootstrap for API token minting" with title "GitHub token expiring"' 2>/dev/null || true
+        if command -v dendritic >/dev/null 2>&1; then
+          dendritic notify "GitHub token expiring" "Run pass-github-app-bootstrap for API token minting" 2>/dev/null || true
         elif command -v notify-send >/dev/null 2>&1; then
           notify-send "GitHub token expiring" "pass-github-app-bootstrap" || true
         fi

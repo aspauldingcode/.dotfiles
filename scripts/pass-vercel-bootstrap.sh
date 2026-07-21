@@ -71,7 +71,13 @@ need pass
 need python3
 need git
 
-pass_get() { pass show "$1" 2>/dev/null | head -n1 | tr -d '[:space:]' || true; }
+pass_get() {
+  if command -v timeout >/dev/null 2>&1; then
+    timeout 15 pass show "$1" 2>/dev/null | head -n1 | tr -d '[:space:]' || true
+  else
+    pass show "$1" 2>/dev/null | head -n1 | tr -d '[:space:]' || true
+  fi
+}
 pass_put() {
   printf '%s\n' "$2" | pass insert -e -f "$1" >/dev/null
   log "pass: wrote $1"
@@ -96,14 +102,25 @@ mint() {
 }
 
 write_auth_json_file() {
-  local path dir
+  # Prefer atomic --write-auth (mint once under lock). Fall back to --auth-json
+  # via temp+mv so a failed mint never truncates an existing auth.json.
+  if mint --write-auth >/dev/null; then
+    return 0
+  fi
+  local path dir tmp
   path="$(default_auth_json_path)"
   dir="$(dirname "$path")"
   mkdir -p "$dir"
   umask 077
-  mint --auth-json >"$path"
-  chmod 0600 "$path"
-  log "wrote auth.json: $path"
+  tmp="$(mktemp "$dir/.auth.json.XXXXXX")"
+  if mint --auth-json >"$tmp"; then
+    chmod 0600 "$tmp"
+    mv -f "$tmp" "$path"
+    log "wrote auth.json: $path"
+  else
+    rm -f "$tmp"
+    die "failed to write auth.json — mint unsuccessful"
+  fi
 }
 
 store_team() {

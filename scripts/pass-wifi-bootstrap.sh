@@ -128,8 +128,10 @@ PY
 
 if [[ "$(uname -s)" == Darwin ]] && ! $FROM_CLIPBOARD; then
   log "Keychain export: for each missing SSID, click Always Allow (timeout ${KEYCHAIN_TIMEOUT}s)."
-  if command -v osascript >/dev/null 2>&1; then
-    osascript -e 'display notification "Approve Keychain Access: Always Allow for each Wi-Fi PSK" with title "pass-wifi-bootstrap"' 2>/dev/null || true
+  if command -v dendritic >/dev/null 2>&1; then
+    dendritic notify "pass-wifi-bootstrap" "Approve Keychain Access: Always Allow for each Wi-Fi PSK" 2>/dev/null || true
+  elif command -v notify-send >/dev/null 2>&1; then
+    notify-send "pass-wifi-bootstrap" "Approve Keychain Access: Always Allow for each Wi-Fi PSK" 2>/dev/null || true
   fi
 fi
 

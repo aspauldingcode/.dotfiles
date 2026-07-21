@@ -49,7 +49,7 @@ tab strip — they’re a badge + picker (same idea as browser profiles vs tabs)
 
 Status colors come from Stylix’s wallpaper-derived base16 (`stylix.base16Scheme`),
 seeded into `~/.config/tmux/theme.conf`. Wallpaper / light–dark flips rewrite that
-file from `~/colors.toml` and reload live tmux servers.
+file from `~/.colors.toml` and reload live tmux servers.
 
 | Action             | How                                                     |
 | ------------------ | ------------------------------------------------------- |

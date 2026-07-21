@@ -277,6 +277,19 @@
 
         initContent = lib.mkMerge [
 
+          # ── Guard nix-darwin HM profile on PATH (before tmux auto-exec) ──
+          # Ghostty→tmux can inject a PATH that only has ~/.nix-profile/bin,
+          # where nixvim/nvim is NOT installed (it lives under /etc/profiles).
+          (lib.mkOrder 40 ''
+            typeset -U path
+            _dendritic_hm_bin="/etc/profiles/per-user/${config.home.username}/bin"
+            _dendritic_sw_bin="/run/current-system/sw/bin"
+            [[ -d $_dendritic_hm_bin ]] && path=("$_dendritic_hm_bin" $path)
+            [[ -d $_dendritic_sw_bin ]] && path=("$_dendritic_sw_bin" $path)
+            unset _dendritic_hm_bin _dendritic_sw_bin
+            export PATH
+          '')
+
           # ── zsh-defer (must be loaded incredibly early) ──
           (lib.mkOrder 100 ''
             source ${pkgs.zsh-defer}/share/zsh-defer/zsh-defer.plugin.zsh

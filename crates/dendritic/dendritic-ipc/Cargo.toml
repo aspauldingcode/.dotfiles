@@ -1,0 +1,12 @@
+[package]
+name = "dendritic-ipc"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Unix-socket IPC protocol for the dendritic privileged helper"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+libc = { workspace = true }

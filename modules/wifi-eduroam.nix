@@ -75,6 +75,7 @@
     }:
     let
       cfg = config.dendritic.eduroam;
+      dendriticBin = lib.getExe (pkgs.callPackage ../crates/dendritic/_package.nix { });
       baseRel = ".config/dendritic/wifi/eduroam";
       basePath = "${config.home.homeDirectory}/${baseRel}";
       watchPaths = [
@@ -198,12 +199,18 @@
         launchd.agents.dendritic-eduroam-ensure = lib.mkIf pkgs.stdenv.isDarwin {
           enable = true;
           config = {
-            Label = "com.dendritic.eduroam-ensure";
-            ProgramArguments = [ "${ensureBin}/bin/dendritic-eduroam-ensure" ];
+            Label = "com.aspauldingcode.eduroam-ensure";
+            ProgramArguments = [
+              dendriticBin
+              "eduroam"
+              "ensure"
+            ];
             RunAtLoad = true;
             WatchPaths = watchPaths;
             EnvironmentVariables = {
               DENDRITIC_EDUROAM_DIR = basePath;
+              HOME = config.home.homeDirectory;
+              PATH = "${ensureBin}/bin:/usr/bin:/bin";
             };
             StandardOutPath = "${config.home.homeDirectory}/.cache/dendritic-eduroam-ensure.log";
             StandardErrorPath = "${config.home.homeDirectory}/.cache/dendritic-eduroam-ensure.err.log";
@@ -213,8 +220,12 @@
         launchd.agents.dendritic-eduroam-rotate = lib.mkIf (pkgs.stdenv.isDarwin && cfg.rotate.enable) {
           enable = true;
           config = {
-            Label = "com.dendritic.eduroam-rotate";
-            ProgramArguments = [ "${rotateBin}/bin/dendritic-eduroam-rotate" ];
+            Label = "com.aspauldingcode.eduroam-rotate";
+            ProgramArguments = [
+              dendriticBin
+              "eduroam"
+              "rotate"
+            ];
             StartCalendarInterval = [
               {
                 Weekday = 1;
@@ -222,6 +233,10 @@
                 Minute = 15;
               }
             ];
+            EnvironmentVariables = {
+              HOME = config.home.homeDirectory;
+              PATH = "${rotateBin}/bin:/usr/bin:/bin";
+            };
             StandardOutPath = "${config.home.homeDirectory}/.cache/dendritic-eduroam-rotate.log";
             StandardErrorPath = "${config.home.homeDirectory}/.cache/dendritic-eduroam-rotate.err.log";
           };

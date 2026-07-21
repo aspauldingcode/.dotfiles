@@ -1,5 +1,9 @@
 # Hot-patch IDE settings.json workbench colors from a dendritic colors.toml.
 # settings.json is watched live by Cursor / VS Code / Antigravity.
+#
+# HM often installs settings.json as a nix-store symlink (immutable). We
+# materialize it (read → unlink → write) so wallpaper rotates can update
+# Cursor without Reload Window — same pattern as Ghostty themes.
 import json
 import pathlib
 import re
@@ -9,7 +13,7 @@ import sys
 def load_palette(colors_path: str) -> dict[str, str]:
     palette: dict[str, str] = {}
     for line in pathlib.Path(colors_path).read_text().splitlines():
-        m = re.match(r'(base0[0-9A-F])\s*=\s*"?(#?[0-9a-fA-F]{6})"?', line)
+        m = re.match(r'(base0[0-9A-F])\s*=\s*"?(#?[0-9a-fA-F]{6})"?', line, re.I)
         if not m:
             continue
         val = m.group(2)
@@ -19,12 +23,42 @@ def load_palette(colors_path: str) -> dict[str, str]:
     return palette
 
 
+def normalize_rgb(hex_color: str) -> str:
+    return hex_color.strip().lstrip("#")[:6].lower()
+
+
+def remap_hex(val: str, old_to_new: dict[str, str]) -> str | None:
+    if not isinstance(val, str) or not val.startswith("#") or len(val) < 7:
+        return None
+    body = val[1:]
+    rgb, alpha = body[:6].lower(), body[6:]
+    new = old_to_new.get(rgb)
+    if not new:
+        return None
+    return f"#{new}{alpha}"
+
+
+def is_nix_store_symlink(path: pathlib.Path) -> bool:
+    try:
+        return path.is_symlink() and "/nix/store/" in str(path.readlink())
+    except OSError:
+        return False
+
+
 def main() -> None:
     if len(sys.argv) < 2:
-        print("usage: dendritic-wallpaper-patch-ide <colors.toml>", file=sys.stderr)
+        print("usage: dendritic-wallpaper-patch-ide <colors.toml> [prev-colors.toml]", file=sys.stderr)
         sys.exit(2)
 
     palette = load_palette(sys.argv[1])
+    prev = load_palette(sys.argv[2]) if len(sys.argv) > 2 else {}
+    old_to_new: dict[str, str] = {}
+    for i in range(16):
+        key = f"base{i:02X}"
+        if key in prev and key in palette:
+            o, n = normalize_rgb(prev[key]), normalize_rgb(palette[key])
+            if o != n:
+                old_to_new[o] = n
 
     def g(key: str, fallback: str = "base05") -> str:
         return palette.get(key, palette.get(fallback, "#ffffff"))
@@ -71,7 +105,7 @@ def main() -> None:
     ]
 
     for path in candidates:
-        if not path.is_file():
+        if not path.exists() and not path.is_symlink():
             continue
         try:
             data = json.loads(path.read_text())
@@ -81,15 +115,23 @@ def main() -> None:
         existing = data.get("workbench.colorCustomizations") or {}
         if not isinstance(existing, dict):
             existing = {}
+        if old_to_new:
+            for k, v in list(existing.items()):
+                mapped = remap_hex(v, old_to_new) if isinstance(v, str) else None
+                if mapped:
+                    existing[k] = mapped
         existing.update(patch)
         data["workbench.colorCustomizations"] = existing
         try:
-            path.chmod(path.stat().st_mode | 0o200)
+            materialized = is_nix_store_symlink(path)
+            if materialized:
+                path.unlink()
+            else:
+                path.chmod(path.stat().st_mode | 0o200)
             path.write_text(json.dumps(data, indent=2) + "\n")
-            print(f"dendritic-wallpaper: patched {path}")
+            suffix = " (materialized HM symlink)" if materialized else ""
+            print(f"dendritic-wallpaper: patched {path}{suffix}")
         except PermissionError:
-            # HM/nix often leaves IDE settings read-only; palette still applies
-            # via colors.toml. Don't abort the wallpaper apply.
             print(f"dendritic-wallpaper: skip {path}: permission denied")
         except Exception as exc:
             print(f"dendritic-wallpaper: skip {path}: {exc}")

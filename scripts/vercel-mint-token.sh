@@ -17,6 +17,7 @@
 #   vercel-mint-token.sh --device     # force OAuth device re-auth
 #   vercel-mint-token.sh --status     # show cache / pass state (no secrets)
 #   vercel-mint-token.sh --auth-json  # print auth.json body to stdout
+#   vercel-mint-token.sh --write-auth # mint once + atomically write auth.json; print token
 set -euo pipefail
 
 PASSWORD_STORE_DIR="${PASSWORD_STORE_DIR:-$HOME/.password-store}"
@@ -24,6 +25,9 @@ DOTFILES_ROOT="${DOTFILES_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 CACHE_DIR="${VERCEL_CACHE_DIR:-$HOME/.cache/dendritic}"
 CACHE_FILE="${CACHE_DIR}/vercel-token.json"
 LOCK_DIR="${CACHE_DIR}/vercel-mint.lock"
+LOCK_STALE_SECS="${VERCEL_MINT_LOCK_STALE_SECS:-120}"
+CURL_CONNECT_SECS="${VERCEL_MINT_CURL_CONNECT:-10}"
+CURL_MAX_SECS="${VERCEL_MINT_CURL_MAX:-30}"
 REFRESH_PATH="secretspec/shared/default/VERCEL_REFRESH_TOKEN"
 TEAM_PATH="secretspec/shared/default/VERCEL_TEAM_ID"
 # Public OAuth client shipped with Vercel CLI (packages/cli oauth.ts).
@@ -34,6 +38,7 @@ FORCE_REFRESH=false
 FORCE_DEVICE=false
 DO_STATUS=false
 DO_AUTH_JSON=false
+DO_WRITE_AUTH=false
 SKEW_SECS=300
 
 export PASSWORD_STORE_DIR
@@ -51,8 +56,9 @@ while [[ $# -gt 0 ]]; do
   --device) FORCE_DEVICE=true ;;
   --status) DO_STATUS=true ;;
   --auth-json) DO_AUTH_JSON=true ;;
+  --write-auth) DO_WRITE_AUTH=true ;;
   -h | --help)
-    sed -n '2,22p' "$0" | sed 's/^# //; s/^#//'
+    sed -n '2,23p' "$0" | sed 's/^# //; s/^#//'
     exit 0
     ;;
   *) die "unknown arg: $1" ;;
@@ -66,7 +72,13 @@ need python3
 need git
 
 pass_get() {
-  pass show "$1" 2>/dev/null | head -n1 | tr -d '[:space:]' || true
+  # Bound `pass`/`gpg` — pinentry or a stuck agent used to hang every `vercel`
+  # invoke forever (especially under Cursor/IDE with no TTY).
+  if command -v timeout >/dev/null 2>&1; then
+    timeout 15 pass show "$1" 2>/dev/null | head -n1 | tr -d '[:space:]' || true
+  else
+    pass show "$1" 2>/dev/null | head -n1 | tr -d '[:space:]' || true
+  fi
 }
 
 pass_put() {
@@ -101,33 +113,78 @@ auth_json_path() {
   fi
 }
 
+lock_mtime() {
+  # Portable mtime (Darwin stat -f, GNU stat -c).
+  stat -f %m "$LOCK_DIR" 2>/dev/null || stat -c %Y "$LOCK_DIR" 2>/dev/null || echo 0
+}
+
+reclaim_stale_lock() {
+  [[ -d $LOCK_DIR ]] || return 1
+  local now age pid
+  now="$(date +%s)"
+  age=$((now - $(lock_mtime)))
+  if [[ $age -gt $LOCK_STALE_SECS ]]; then
+    pid="$(cat "$LOCK_DIR/pid" 2>/dev/null || true)"
+    log "removing stale mint lock (${age}s > ${LOCK_STALE_SECS}s)${pid:+ pid=$pid} at $LOCK_DIR"
+    rm -rf "$LOCK_DIR"
+    return 0
+  fi
+  return 1
+}
+
 with_lock() {
   mkdir -p "$CACHE_DIR"
   local i=0
   while ! mkdir "$LOCK_DIR" 2>/dev/null; do
+    reclaim_stale_lock || true
+    if mkdir "$LOCK_DIR" 2>/dev/null; then
+      break
+    fi
     i=$((i + 1))
-    [[ $i -lt 100 ]] || die "lock busy at $LOCK_DIR"
+    # ~15s of waits + stale reclaim; hung CLIs used to leave this forever.
+    [[ $i -lt 150 ]] || die "lock busy at $LOCK_DIR (another mint <${LOCK_STALE_SECS}s old)"
     sleep 0.1
   done
-  trap 'rmdir "$LOCK_DIR" 2>/dev/null || true' EXIT
+  printf '%s\n' "$$" >"$LOCK_DIR/pid" 2>/dev/null || true
+  trap 'rm -rf "$LOCK_DIR" 2>/dev/null || true' EXIT INT TERM HUP
+}
+
+refresh_gpg_path() {
+  printf '%s/%s.gpg' "$PASSWORD_STORE_DIR" "$REFRESH_PATH"
+}
+
+refresh_gpg_stamp() {
+  # mtime + size — detects peer pass-store sync without decrypting (no pinentry).
+  local gpg
+  gpg="$(refresh_gpg_path)"
+  [[ -f $gpg ]] || {
+    echo ""
+    return 0
+  }
+  python3 - "$gpg" <<'PY'
+import os, sys
+st = os.stat(sys.argv[1])
+print(f"{int(st.st_mtime)}:{st.st_size}")
+PY
 }
 
 cache_valid() {
   [[ -f $CACHE_FILE ]] || return 1
-  # Drop local access cache when pass refresh_token moved (peer host rotated).
-  # Serving a pre-rotation access token races with Vercel refresh-token reuse.
-  local pass_refresh cache_refresh
-  pass_refresh="$(pass_get "$REFRESH_PATH")"
-  cache_refresh="$(
+  # Drop local access cache when pass refresh .gpg changed (peer host rotated).
+  # Do NOT decrypt pass on the hot path — that hung every `vercel` invoke on
+  # gpg/pinentry (esp. IDE/agent with no TTY).
+  local stamp cache_stamp
+  stamp="$(refresh_gpg_stamp)"
+  cache_stamp="$(
     python3 - "$CACHE_FILE" <<'PY' 2>/dev/null || true
 import json, sys
 try:
-    print(json.load(open(sys.argv[1])).get("refresh_token") or "")
+    print(json.load(open(sys.argv[1])).get("refresh_gpg_stamp") or "")
 except Exception:
     pass
 PY
   )"
-  if [[ -n $pass_refresh && -n $cache_refresh && $pass_refresh != "$cache_refresh" ]]; then
+  if [[ -n $stamp && -n $cache_stamp && $stamp != "$cache_stamp" ]]; then
     rm -f "$CACHE_FILE"
     return 1
   fi
@@ -147,16 +204,23 @@ PY
 }
 
 write_cache() {
-  local access="$1" expires_in="$2" refresh="${3:-}"
+  local access="$1" expires_in="$2" refresh="${3:-}" stamp
   mkdir -p "$CACHE_DIR"
   umask 077
-  # Always pin the refresh_token we minted with so peers can detect drift.
+  # Pin refresh_token + .gpg stamp so peers can detect drift without decrypt.
   if [[ -z $refresh ]]; then
     refresh="$(pass_get "$REFRESH_PATH")"
   fi
-  python3 - "$CACHE_FILE" "$access" "$expires_in" "$refresh" <<'PY'
+  stamp="$(refresh_gpg_stamp)"
+  python3 - "$CACHE_FILE" "$access" "$expires_in" "$refresh" "$stamp" <<'PY'
 import json, sys, time
-path, access, exp_in, refresh = sys.argv[1], sys.argv[2], int(sys.argv[3] or 28800), sys.argv[4]
+path, access, exp_in, refresh, stamp = (
+    sys.argv[1],
+    sys.argv[2],
+    int(sys.argv[3] or 28800),
+    sys.argv[4],
+    sys.argv[5],
+)
 payload = {
     "access_token": access,
     "token": access,
@@ -165,20 +229,36 @@ payload = {
 }
 if refresh:
     payload["refresh_token"] = refresh
+if stamp:
+    payload["refresh_gpg_stamp"] = stamp
 json.dump(payload, open(path, "w"))
+PY
+}
+
+cache_refresh_token() {
+  python3 - "$CACHE_FILE" <<'PY' 2>/dev/null || true
+import json, sys
+try:
+    print(json.load(open(sys.argv[1])).get("refresh_token") or "")
+except Exception:
+    pass
 PY
 }
 
 print_auth_json() {
   local access refresh expires_at
-  refresh="$(pass_get "$REFRESH_PATH")"
+  # Hot path: reuse cache refresh_token — decrypt pass only on miss/rotate.
+  refresh="$(cache_refresh_token)"
+  if [[ -z $refresh ]]; then
+    refresh="$(pass_get "$REFRESH_PATH")"
+  fi
   [[ -n $refresh ]] || die "missing $REFRESH_PATH — run: nix run .#pass-vercel-bootstrap"
   access="$(cache_valid 2>/dev/null || true)"
   if [[ -z $access ]]; then
     access="$(refresh_access)" || die "could not mint access token for auth.json"
+    refresh="$(cache_refresh_token)"
+    [[ -n $refresh ]] || refresh="$(pass_get "$REFRESH_PATH")"
   fi
-  # Prefer refreshed refresh_token from pass after apply_token_response.
-  refresh="$(pass_get "$REFRESH_PATH")"
   expires_at="$(
     python3 - "$CACHE_FILE" <<'PY'
 import json,sys,time
@@ -204,14 +284,21 @@ print()
 PY
 }
 
-oauth_json() {
-  local body="$1"
-  curl -fsS -X POST \
+curl_oauth() {
+  # Always bound network waits — macOS has no `timeout(1)` by default, and a
+  # hung mint blocks every `vercel` invoke (wrapper held the lock).
+  curl -sS -X POST \
+    --connect-timeout "$CURL_CONNECT_SECS" \
+    --max-time "$CURL_MAX_SECS" \
     -H "Accept: application/json" \
     -H "Content-Type: application/x-www-form-urlencoded" \
     -H "User-Agent: dendritic-vercel-mint" \
-    --data "$body" \
-    "$TOKEN_ENDPOINT"
+    "$@"
+}
+
+oauth_json() {
+  local body="$1"
+  curl_oauth --fail --data "$body" "$TOKEN_ENDPOINT"
 }
 
 parse_token_response() {
@@ -247,24 +334,42 @@ apply_token_response() {
   done < <(parse_token_response "$json")
 
   [[ -n $access ]] || return 1
-  write_cache "$access" "$expires" "$refresh"
+  # Write pass first so refresh_gpg_stamp matches the post-rotate .gpg mtime.
   if [[ -n $refresh ]]; then
     pass_put "$REFRESH_PATH" "$refresh"
     pass_commit "rotate: VERCEL_REFRESH_TOKEN"
     log "updated $REFRESH_PATH in pass"
   fi
+  write_cache "$access" "$expires" "$refresh"
   printf '%s\n' "$access"
 }
 
 refresh_access() {
-  local cid refresh body json
+  local cid refresh body json http_body http_code
   cid="$(client_id)"
   refresh="$(pass_get "$REFRESH_PATH")"
   [[ -n $refresh ]] || die "missing $REFRESH_PATH — run: nix run .#pass-vercel-bootstrap"
 
   body="client_id=${cid}&grant_type=refresh_token&refresh_token=${refresh}"
-  if ! json="$(oauth_json "$body")"; then
-    log "refresh HTTP request failed"
+  # Capture body+status so HTTP 400 invalid_grant is visible (curl --fail alone
+  # just exits 22 with an empty message when stderr is discarded by wrappers).
+  http_body="$(mktemp "${TMPDIR:-/tmp}/vercel-mint.XXXXXX")"
+  http_code="$(
+    curl_oauth -o "$http_body" -w '%{http_code}' --data "$body" "$TOKEN_ENDPOINT" || true
+  )"
+  json="$(cat "$http_body" 2>/dev/null || true)"
+  rm -f "$http_body"
+
+  if [[ -z $http_code || $http_code == 000 ]]; then
+    log "refresh HTTP request failed (timeout/network)"
+    return 1
+  fi
+  if [[ $http_code -lt 200 || $http_code -ge 300 ]]; then
+    log "refresh HTTP $http_code: $(printf '%s' "$json" | head -c 240)"
+    # Revoked/expired refresh: drop local access cache so we don't keep serving it.
+    if [[ $http_code -eq 400 || $http_code -eq 401 ]]; then
+      rm -f "$CACHE_FILE"
+    fi
     return 1
   fi
   if ! apply_token_response "$json"; then
@@ -287,10 +392,7 @@ device_flow() {
   cid="$(client_id)"
   log "Starting Vercel OAuth device flow (browser once)…"
   json="$(
-    curl -fsS -X POST \
-      -H "Accept: application/json" \
-      -H "Content-Type: application/x-www-form-urlencoded" \
-      -H "User-Agent: dendritic-vercel-mint" \
+    curl_oauth --fail \
       --data "client_id=${cid}&scope=openid%20offline_access" \
       "$DEVICE_ENDPOINT"
   )" || die "device authorization request failed"
@@ -329,10 +431,7 @@ for k,out in (
     fi
     sleep "$interval"
     json="$(
-      curl -sS -X POST \
-        -H "Accept: application/json" \
-        -H "Content-Type: application/x-www-form-urlencoded" \
-        -H "User-Agent: dendritic-vercel-mint" \
+      curl_oauth \
         --data "client_id=${cid}&grant_type=urn:ietf:params:oauth:grant-type:device_code&device_code=${device_code}" \
         "$TOKEN_ENDPOINT"
     )" || true
@@ -368,13 +467,32 @@ if not d.get("access_token"):
 }
 
 write_auth_json_file() {
-  local path dir
+  local path dir tmp
   path="$(auth_json_path)"
   dir="$(dirname "$path")"
   mkdir -p "$dir"
+  chmod 0700 "$dir" 2>/dev/null || true
   umask 077
-  print_auth_json >"$path"
-  chmod 0600 "$path"
+  # Atomic replace — never truncate auth.json before mint succeeds
+  # (`cmd >auth.json` was wiping the file when mint failed).
+  tmp="$(mktemp "$dir/.auth.json.XXXXXX")"
+  if ! print_auth_json >"$tmp"; then
+    rm -f "$tmp"
+    return 1
+  fi
+  # Reject empty / non-JSON payloads before replacing a good file.
+  if ! python3 - "$tmp" <<'PY'; then
+import json, sys
+d = json.load(open(sys.argv[1]))
+tok = d.get("token") or d.get("access_token") or ""
+if not tok:
+    raise SystemExit("empty token in auth.json payload")
+PY
+    rm -f "$tmp"
+    return 1
+  fi
+  chmod 0600 "$tmp"
+  mv -f "$tmp" "$path"
   log "wrote auth.json: $path"
 }
 
@@ -382,9 +500,10 @@ status() {
   local has_refresh has_team cache_left team path
   has_refresh=false
   has_team=false
-  [[ -n $(pass_get "$REFRESH_PATH") ]] && has_refresh=true
-  team="$(pass_get "$TEAM_PATH")"
-  [[ -n $team ]] && has_team=true
+  # Status must stay decrypt-free by default (gpg hang under agents).
+  [[ -f $(refresh_gpg_path) ]] && has_refresh=true
+  [[ -f $PASSWORD_STORE_DIR/$TEAM_PATH.gpg ]] && has_team=true
+  team=""
   path="$(auth_json_path)"
   cache_left="$(
     python3 - "$CACHE_FILE" <<'PY' 2>/dev/null || echo none
@@ -398,13 +517,68 @@ except Exception:
   print("none")
 PY
   )"
+  local auth_bytes lock_state stamp
+  auth_bytes=0
+  [[ -f $path ]] && auth_bytes="$(wc -c <"$path" | tr -d ' ')"
+  lock_state=absent
+  if [[ -d $LOCK_DIR ]]; then
+    lock_state="held age=$(($(date +%s) - $(lock_mtime)))s"
+  fi
+  stamp="$(refresh_gpg_stamp)"
   echo "vercel (pass-backed OAuth)"
   echo "  refresh_token in pass: $has_refresh"
-  echo "  team_id in pass: $has_team${team:+ ($team)}"
+  echo "  team_id in pass: $has_team"
   echo "  access cache: $cache_left"
-  echo "  auth.json: $path"
+  echo "  auth.json: $path (${auth_bytes} bytes)"
+  echo "  mint lock: $lock_state"
+  echo "  refresh .gpg stamp: ${stamp:-none}"
   echo "  client_id: $(client_id | sed 's/\(.\{12\}\).*/\1…/')"
   echo "  paths: $REFRESH_PATH / $TEAM_PATH"
+}
+
+backfill_cache_stamp() {
+  # Legacy caches lack refresh_gpg_stamp; pin it without decrypting pass.
+  [[ -f $CACHE_FILE ]] || return 0
+  local stamp
+  stamp="$(refresh_gpg_stamp)"
+  [[ -n $stamp ]] || return 0
+  python3 - "$CACHE_FILE" "$stamp" <<'PY'
+import json, sys
+path, stamp = sys.argv[1], sys.argv[2]
+d = json.load(open(path))
+if d.get("refresh_gpg_stamp") == stamp:
+    raise SystemExit(0)
+d["refresh_gpg_stamp"] = stamp
+json.dump(d, open(path, "w"))
+PY
+}
+
+mint_access_token() {
+  # Assumes with_lock already held.
+  local tok=""
+  if ! $FORCE_REFRESH && ! $FORCE_DEVICE; then
+    if tok="$(cache_valid)"; then
+      backfill_cache_stamp || true
+      printf '%s\n' "$tok"
+      return 0
+    fi
+  fi
+
+  if $FORCE_DEVICE; then
+    device_flow
+    return 0
+  fi
+
+  if refresh_access; then
+    return 0
+  fi
+
+  log "refresh failed; trying OAuth device flow"
+  if [[ -t 0 ]] || [[ -t 2 ]]; then
+    device_flow
+    return 0
+  fi
+  die "refresh failed and no TTY — run: pass-vercel-bootstrap or vercel-mint-token --device"
 }
 
 if $DO_STATUS; then
@@ -418,27 +592,13 @@ if $DO_AUTH_JSON; then
   exit 0
 fi
 
+if $DO_WRITE_AUTH; then
+  with_lock
+  tok="$(mint_access_token)"
+  write_auth_json_file || die "failed to write auth.json"
+  printf '%s\n' "$tok"
+  exit 0
+fi
+
 with_lock
-
-if ! $FORCE_REFRESH && ! $FORCE_DEVICE; then
-  if tok="$(cache_valid)"; then
-    printf '%s\n' "$tok"
-    exit 0
-  fi
-fi
-
-if $FORCE_DEVICE; then
-  device_flow
-  exit 0
-fi
-
-if refresh_access; then
-  exit 0
-fi
-
-log "refresh failed; trying OAuth device flow"
-if [[ -t 0 ]] || [[ -t 2 ]]; then
-  device_flow
-else
-  die "refresh failed and no TTY — run: pass-vercel-bootstrap or vercel-mint-token --device"
-fi
+mint_access_token

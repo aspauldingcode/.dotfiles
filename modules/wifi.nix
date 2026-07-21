@@ -198,6 +198,7 @@
     }:
     let
       cfg = config.dendritic.wifi;
+      dendriticBin = lib.getExe (pkgs.callPackage ../crates/dendritic/_package.nix { });
 
       # Shared fleet defaults — SSIDs/UUIDs/pass keys (never PSKs) live in JSON.
       defaultNetworksList = builtins.fromJSON (builtins.readFile ../home/wifi-networks.json);
@@ -559,12 +560,20 @@
         launchd.agents.dendritic-wifi-ensure = lib.mkIf pkgs.stdenv.isDarwin {
           enable = true;
           config = {
-            Label = "com.dendritic.wifi-ensure";
-            ProgramArguments = [ "${ensureBin}/bin/dendritic-wifi-ensure" ];
+            Label = "com.aspauldingcode.wifi-ensure";
+            ProgramArguments = [
+              dendriticBin
+              "wifi"
+              "ensure"
+            ];
             RunAtLoad = true;
             WatchPaths = [ "${wifiDir}/.ready" ];
             StandardOutPath = "${config.home.homeDirectory}/.cache/dendritic-wifi-ensure.log";
             StandardErrorPath = "${config.home.homeDirectory}/.cache/dendritic-wifi-ensure.err.log";
+            EnvironmentVariables = {
+              HOME = config.home.homeDirectory;
+              PATH = "${ensureBin}/bin:/usr/bin:/bin";
+            };
           };
         };
       };

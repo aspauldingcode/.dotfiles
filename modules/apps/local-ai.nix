@@ -132,7 +132,7 @@
 
         launchd.user.agents.ollama = {
           serviceConfig = {
-            Label = "com.aspaulding.ollama";
+            Label = "com.aspauldingcode.ollama";
             ProgramArguments = [
               "${pkgs.ollama}/bin/ollama"
               "serve"
@@ -151,7 +151,7 @@
 
         launchd.user.agents.ollama-model-loader = lib.mkIf (cfg.loadModels != [ ]) {
           serviceConfig = {
-            Label = "com.aspaulding.ollama-model-loader";
+            Label = "com.aspauldingcode.ollama-model-loader";
             ProgramArguments = [ (lib.getExe pullModels) ];
             RunAtLoad = true;
             KeepAlive = false;

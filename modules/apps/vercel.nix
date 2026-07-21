@@ -30,7 +30,7 @@
       mintBin = pkgs.writeShellApplication {
         name = "vercel-mint-token";
         runtimeInputs = with pkgs; [
-          coreutils
+          coreutils # timeout(1) for pass/gpg + curl bounds
           curl
           gnugrep
           gnupg
@@ -44,6 +44,8 @@
           export PASSWORD_STORE_DIR=${lib.escapeShellArg storeDir}
           export DOTFILES_ROOT="''${DOTFILES_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null || true)}"
           export VERCEL_AUTH_JSON=${lib.escapeShellArg authJsonPath}
+          # Prefer nix coreutils timeout on PATH (macOS /usr/bin has none).
+          export PATH="${pkgs.coreutils}/bin:$PATH"
           exec bash ${../../scripts/vercel-mint-token.sh} "$@"
         '';
       };
@@ -71,7 +73,7 @@
         passPackage
         pkgs.gnupg
         pkgs.secretspec
-        pkgs.coreutils
+        pkgs.coreutils # timeout(1) — macOS /usr/bin has none
         pkgs.curl
         pkgs.git
         pkgs.python3
@@ -84,15 +86,19 @@
         export VERCEL_AUTH_JSON=${lib.escapeShellArg authJsonPath}
 
         _auth=${lib.escapeShellArg authJsonPath}
+        _store=${lib.escapeShellArg storeDir}
         mkdir -p "$(dirname "$_auth")"
         chmod 0700 "$(dirname "$_auth")" 2>/dev/null || true
 
-        if pass show secretspec/shared/default/VERCEL_REFRESH_TOKEN >/dev/null 2>&1; then
-          umask 077
-          ${mintBin}/bin/vercel-mint-token --auth-json >"$_auth" 2>/dev/null || true
-          chmod 0600 "$_auth" 2>/dev/null || true
-          echo "vercel-auth: auth.json from pass OAuth"
-        elif pass show secretspec/shared/default/VERCEL_TOKEN >/dev/null 2>&1; then
+        # Existence via .gpg — never `pass show` here (gpg/pinentry can hang activation).
+        if [ -f "$_store/secretspec/shared/default/VERCEL_REFRESH_TOKEN.gpg" ]; then
+          # One shot: mint + atomic auth.json (never truncate on failure).
+          if ${pkgs.coreutils}/bin/timeout 60 ${mintBin}/bin/vercel-mint-token --write-auth >/dev/null; then
+            echo "vercel-auth: auth.json from pass OAuth"
+          else
+            echo "vercel-auth: mint failed — run: pass-vercel-bootstrap or vercel-mint-token --device" >&2
+          fi
+        elif [ -f "$_store/secretspec/shared/default/VERCEL_TOKEN.gpg" ]; then
           echo "vercel-auth: static VERCEL_TOKEN in pass (wrapper exports on invoke)"
         else
           echo "vercel-auth: no VERCEL_REFRESH_TOKEN / VERCEL_TOKEN in pass; skip" >&2
@@ -106,13 +112,20 @@
             export PATH="${passPath}:$PATH"
             export VERCEL_AUTH_JSON=${lib.escapeShellArg authJsonPath}
             _token=""
-            if pass show secretspec/shared/default/VERCEL_REFRESH_TOKEN >/dev/null 2>&1; then
-              _token="$(${mintBin}/bin/vercel-mint-token 2>/dev/null || true)"
-              # Keep auth.json fresh for OIDC / linked-project tooling.
-              umask 077
-              ${mintBin}/bin/vercel-mint-token --auth-json >${lib.escapeShellArg authJsonPath} 2>/dev/null || true
-              chmod 0600 ${lib.escapeShellArg authJsonPath} 2>/dev/null || true
+            _mint_err="$(${pkgs.coreutils}/bin/mktemp)"
+            _store=${lib.escapeShellArg storeDir}
+            # .gpg probe only — decrypt happens inside mint under timeout.
+            if [ -f "$_store/secretspec/shared/default/VERCEL_REFRESH_TOKEN.gpg" ]; then
+              # Single mint under lock + atomic auth.json. Bound wait so a hung
+              # curl/pass never blocks `vercel` forever (macOS has no system timeout).
+              _token="$(${pkgs.coreutils}/bin/timeout 60 ${mintBin}/bin/vercel-mint-token --write-auth 2>"$_mint_err" || true)"
+              if [ -z "$_token" ] && [ -s "$_mint_err" ]; then
+                echo "vercel-wrapper: mint failed:" >&2
+                ${pkgs.coreutils}/bin/sed 's/^/  /' "$_mint_err" >&2 || true
+                echo "vercel-wrapper: re-auth: pass-vercel-bootstrap  (or: vercel-mint-token --device)" >&2
+              fi
             fi
+            rm -f "$_mint_err"
             if [ -z "$_token" ]; then
               _token="$(${pkgs.secretspec}/bin/secretspec get -f ${secretspecToml} VERCEL_TOKEN 2>/dev/null || true)"
             fi

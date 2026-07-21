@@ -68,7 +68,7 @@ then fails after reboot. `dendritic-wifi-ensure` forces flags=0.
 **GUI:** waybar network click opens `iwgtk` (has Connect). `nm-connection-editor`
 only edits profiles.
 
-Agents: launchd `com.dendritic.wifi-ensure` (macOS), systemd user path/service
+Agents: launchd `com.aspauldingcode.wifi-ensure` (macOS), systemd user path/service
 
 - `dendritic-wifi-radio` oneshot (NixOS boot radio on).
 

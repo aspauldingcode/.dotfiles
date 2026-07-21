@@ -12,15 +12,13 @@
     }:
     let
       cfg = config.dendritic.power;
-      powerd = pkgs.writers.writePython3Bin "dendritic-powerd" {
-        libraries = [ ];
-        flakeIgnore = [
-          "E501"
-          "W503"
-          "E265"
-          "E402"
-        ];
-      } (builtins.readFile ./pkgs/_dendritic-powerd.py);
+      dendritic = pkgs.callPackage ../crates/dendritic/_package.nix { };
+      powerd = pkgs.writeShellApplication {
+        name = "dendritic-powerd";
+        text = ''
+          exec ${lib.getExe dendritic} power "$@"
+        '';
+      };
     in
     {
       options.dendritic.power = {
@@ -185,7 +183,7 @@
                 Type = "simple";
                 # RAPL / intel_pstate / backlight sysfs writes require root.
                 User = "root";
-                ExecStart = "${lib.getExe powerd}";
+                ExecStart = "${lib.getExe dendritic} power";
                 Restart = "always";
                 RestartSec = 2;
               };

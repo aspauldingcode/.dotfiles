@@ -24,11 +24,11 @@
       whichKeySrc = "${pkgs.tmuxPlugins.tmux-which-key}/share/tmux-plugins/tmux-which-key";
 
       # Seed theme from Stylix (wallpaper-derived base16). Runtime wallpaper /
-      # appearance flips rewrite ~/.config/tmux/theme.conf from ~/colors.toml.
+      # appearance flips rewrite ~/.config/tmux/theme.conf from ~/.colors.toml.
       c = config.lib.stylix.colors.withHashtag;
       themeConf = ''
         # Seeded by HM from stylix.base16Scheme; overwritten at runtime by
-        # dendritic-appearance from ~/colors.toml (same palette as wallpaper).
+        # dendritic-appearance from ~/.colors.toml (same palette as wallpaper).
         set -g status-style "fg=${c.base05},bg=${c.base00}"
         set -g message-style "fg=${c.base06},bg=${c.base02}"
         set -g message-command-style "fg=${c.base06},bg=${c.base02}"
@@ -222,7 +222,11 @@
             set -as terminal-features '*:extkeys'
 
             # Ghostty/macOS hands tmux a tiny PATH; run-shell needs Nix bins.
-            set-environment -g PATH "${config.home.profileDirectory}/bin:/nix/var/nix/profiles/default/bin:${
+            # On nix-darwin, HM packages (nvim/nixvim, etc.) live in
+            # /etc/profiles/per-user/<user>/bin — NOT ~/.nix-profile/bin.
+            # Omitting that path makes `nvim` vanish inside tmux panes.
+            set-environment -g SHELL "${pkgs.zsh}/bin/zsh"
+            set-environment -g PATH "/etc/profiles/per-user/${config.home.username}/bin:${config.home.profileDirectory}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:${
               lib.makeBinPath [
                 pkgs.tmux
                 pkgs.bash
@@ -309,6 +313,15 @@
             bind -N "Which-key menu" ? show-wk-menu-root
             bind -N "Interactive tmux tutorial" T display-popup -w 90% -h 90% -E "${tutorialBin}/bin/tmux-tutorial"
             bind -N "Interactive tmux tutorial" F1 display-popup -w 90% -h 90% -E "${tutorialBin}/bin/tmux-tutorial"
+
+            # Last: override tmux-sensible's default-command (it picks launchd's
+            # $SHELL=/bin/zsh and can orphan panes from the HM profile PATH).
+            ${
+              if pkgs.stdenv.isDarwin then
+                ''set -g default-command "${pkgs.reattach-to-user-namespace}/bin/reattach-to-user-namespace -l ${pkgs.zsh}/bin/zsh"''
+              else
+                ''set -g default-command "${pkgs.zsh}/bin/zsh"''
+            }
           '';
         };
 

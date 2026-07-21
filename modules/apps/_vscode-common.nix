@@ -118,6 +118,176 @@ in
       };
       "tinymist.preview.refresh" = "onType";
 
+      # ── Hex / CSS color swatches (Color Highlight + Color Info) ──
+      # In-buffer backgrounds + hover conversions for ~/.colors.toml,
+      # Stylix schemes, CSS, and Nix/JSON palettes.
+      "editor.colorDecorators" = true;
+      "color-highlight.enable" = true;
+      "color-highlight.markerType" = "background";
+      "color-highlight.markRuler" = true;
+      "color-highlight.matchWords" = false;
+      "color-highlight.useARGB" = false;
+      "color-highlight.matchRgbWithNoFunction" = true;
+      "color-highlight.matchHslWithNoFunction" = true;
+      "color-highlight.languages" = [
+        "*"
+        "!Log"
+        "!log"
+        "!terminal"
+      ];
+      "color-highlight.rgbWithNoFunctionLanguages" = [
+        "toml"
+        "nix"
+        "json"
+        "jsonc"
+        "yaml"
+        "css"
+        "scss"
+        "less"
+        "sass"
+      ];
+      "color-highlight.hslWithNoFunctionLanguages" = [
+        "toml"
+        "css"
+        "scss"
+        "less"
+        "sass"
+      ];
+      # Color Info defaults to CSS-only — extend to palette / config files.
+      "colorInfo.fields" = [
+        "preview-square-xl"
+        "hex"
+        "rgb"
+        "hsl"
+        "hsv"
+        "css-color-name"
+        "alpha"
+      ];
+      "colorInfo.languages" = [
+        {
+          selector = "toml";
+          colors = [
+            "hex"
+            "hex+alpha"
+            "rgb"
+            "hsl"
+          ];
+        }
+        {
+          selector = "nix";
+          colors = [
+            "hex"
+            "hex+alpha"
+            "rgb"
+            "hsl"
+            "css"
+          ];
+        }
+        {
+          selector = "json";
+          colors = [
+            "hex"
+            "hex+alpha"
+            "rgb"
+            "hsl"
+          ];
+        }
+        {
+          selector = "jsonc";
+          colors = [
+            "hex"
+            "hex+alpha"
+            "rgb"
+            "hsl"
+          ];
+        }
+        {
+          selector = "yaml";
+          colors = [
+            "hex"
+            "hex+alpha"
+            "rgb"
+            "hsl"
+          ];
+        }
+        {
+          selector = "javascript";
+          colors = [
+            "hex"
+            "hex+alpha"
+            "rgb"
+            "hsl"
+            "css"
+          ];
+        }
+        {
+          selector = "javascriptreact";
+          colors = [
+            "hex"
+            "hex+alpha"
+            "rgb"
+            "hsl"
+            "css"
+          ];
+        }
+        {
+          selector = "typescript";
+          colors = [
+            "hex"
+            "hex+alpha"
+            "rgb"
+            "hsl"
+            "css"
+          ];
+        }
+        {
+          selector = "typescriptreact";
+          colors = [
+            "hex"
+            "hex+alpha"
+            "rgb"
+            "hsl"
+            "css"
+          ];
+        }
+        {
+          selector = "lua";
+          colors = [
+            "hex"
+            "hex+alpha"
+            "rgb"
+            "hsl"
+          ];
+        }
+        {
+          selector = "rust";
+          colors = [
+            "hex"
+            "hex+alpha"
+          ];
+        }
+        {
+          selector = "css";
+          colors = "css";
+        }
+        {
+          selector = "scss";
+          colors = "css";
+        }
+        {
+          selector = "sass";
+          colors = "css";
+        }
+        {
+          selector = "less";
+          colors = "css";
+        }
+        {
+          selector = "html";
+          colors = "css";
+        }
+      ];
+
       # ── Clangd / C++ ─────────────────────────────────────────────
       "C_cpp.intelliSenseEngine" = "disabled";
     };
@@ -142,6 +312,10 @@ in
       modern-pdf-preview
       myriad-dreamin.tinymist
       treefmt-vscode
+      # Hex/rgb/hsl swatches in every language (incl. toml/nix)
+      naumovs.color-highlight
+      # Hover: RGB/HSL/hex conversions for the color under cursor
+      bierner.color-info
     ];
   };
 

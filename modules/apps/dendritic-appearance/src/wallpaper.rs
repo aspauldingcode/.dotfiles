@@ -225,6 +225,9 @@ pub fn apply(variant: Variant, target: &str) -> Result<(), String> {
     }
 
     let colors_dst = colors_toml_path();
+    // Capture prior palette before overwrite so IDE colorCustomizations can
+    // remap every Stylix hex slot (not just the chrome subset).
+    let prev_palette = crate::palette::load_palette(&colors_dst).ok();
     let _ = std::fs::remove_file(&colors_dst);
     std::fs::copy(colors_src, &colors_dst).map_err(|e| format!("copy colors: {e}"))?;
     #[cfg(unix)]
@@ -250,8 +253,11 @@ pub fn apply(variant: Variant, target: &str) -> Result<(), String> {
         }
     };
 
-    let _ = ide::patch_from_colors(&colors_dst);
+    // Hot theme layer (1:1 Darwin + NixOS): palette consumers follow wallpaper.
+    let _ = ide::patch_from_colors_remap(&colors_dst, prev_palette.as_ref());
     let _ = crate::tmux::apply_from_colors(&colors_dst);
+    let _ = crate::ghostty::apply_from_colors(&colors_dst);
+    let _ = crate::qt::apply_from_colors(&colors_dst);
     state::write_wallpaper_state(
         &entry.name,
         &entry.image,

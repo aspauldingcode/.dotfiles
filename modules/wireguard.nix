@@ -96,7 +96,7 @@
 
         launchd.daemons.dendritic-wireguard = {
           serviceConfig = {
-            Label = "com.aspaulding.dendritic-wireguard";
+            Label = "com.aspauldingcode.dendritic-wireguard";
             ProgramArguments = [ (lib.getExe wgQuickUp) ];
             RunAtLoad = true;
             KeepAlive = false;
@@ -120,6 +120,7 @@
       peersJson = ../home/wireguard-peers.json;
       secretspecToml = ../home/secretspec.toml;
       passPackage = pkgs.pass.withExtensions (exts: [ exts.pass-otp ]);
+      dendriticPkg = pkgs.callPackage ../crates/dendritic/_package.nix { };
       ensureBin = pkgs.writeShellApplication {
         name = "dendritic-wg-ensure";
         runtimeInputs = with pkgs; [
@@ -132,6 +133,7 @@
           python3
           passPackage
           secretspec
+          dendriticPkg
         ];
         text = ''
           set -euo pipefail
@@ -141,6 +143,8 @@
           export SECRETSPEC_TOML=${lib.escapeShellArg "${secretspecToml}"}
           export WG_IFACE=${lib.escapeShellArg cfg.interface}
           export WG_PEER_ID=${lib.escapeShellArg cfg.peerId}
+          export DENDRITIC_BIN=${lib.getExe dendriticPkg}
+          export WG_PREFER_DENDRITIC_HELPER=1
           exec bash ${../scripts/dendritic-wg-ensure.sh} "$@"
         '';
       };
@@ -227,6 +231,7 @@
 
       config = lib.mkIf cfg.enable {
         home.packages = [
+          dendriticPkg
           ensureBin
           rdpBin
           bootstrapBin
@@ -237,13 +242,12 @@
         ];
 
         # Write conf only during activation (no interactive sudo / Touch ID).
-        # Bring-up: NixOS wg-quick unit or Darwin launchd after conf exists;
-        # or run `dendritic-wg-ensure` in a real terminal.
+        # Bring-up via root helper IPC / NixOS wg-quick / Darwin launchd.
         home.activation.dendriticWireguard = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
           if [ -d "$HOME/.password-store" ]; then
-            WG_ENSURE_NO_UP=1 WG_SUDO_INTERACTIVE=0 \
-              ${ensureBin}/bin/dendritic-wg-ensure || \
-              echo "dendritic.wireguard: ensure skipped (bootstrap keys?)" >&2
+            ${lib.getExe dendriticPkg} wg ensure --no-up \
+              || WG_ENSURE_NO_UP=1 WG_SUDO_INTERACTIVE=0 ${ensureBin}/bin/dendritic-wg-ensure \
+              || echo "dendritic.wireguard: ensure skipped (bootstrap keys?)" >&2
           fi
         '';
       };

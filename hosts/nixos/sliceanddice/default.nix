@@ -138,6 +138,9 @@
       dendritic.apps.rdp.enable = true;
       dendritic.apps.rdp.bonjourName = "sliceanddice";
 
+      # Privileged helper (Unix socket) — same binary as Darwin launchd helper.
+      dendritic.helper.enable = true;
+
       # WireGuard overlay ↔ mba (pass/SecretSpec keys; see docs/wireguard.md).
       dendritic.wireguard.enable = true;
 
@@ -324,6 +327,7 @@
         dendritic.wallpaper.enable = true;
         dendritic.profilePhoto.enable = true;
         dendritic.apps.rdp.enable = true;
+        dendritic.helper.enable = true;
         dendritic.wireguard.enable = true;
         dendritic.wireguard.peerId = "sliceanddice";
 

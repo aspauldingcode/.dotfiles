@@ -6,14 +6,22 @@ use crate::machine::Observation;
 use crate::palette::load_palette;
 use crate::state::{self, Variant};
 
+/// Canonical live palette: `~/.colors.toml` (universal Stylix view file).
+/// Override with `DENDRITIC_COLORS_FILE`. Falls back to legacy `~/colors.toml`.
 pub fn colors_toml_path() -> PathBuf {
-    std::env::var_os("DENDRITIC_COLORS_FILE")
-        .map(PathBuf::from)
-        .unwrap_or_else(|| {
-            state::home_dir()
-                .map(|h| h.join("colors.toml"))
-                .unwrap_or_else(|| PathBuf::from("colors.toml"))
-        })
+    if let Some(p) = std::env::var_os("DENDRITIC_COLORS_FILE") {
+        return PathBuf::from(p);
+    }
+    let home = state::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    let dot = home.join(".colors.toml");
+    if dot.is_file() {
+        return dot;
+    }
+    let legacy = home.join("colors.toml");
+    if legacy.is_file() {
+        return legacy;
+    }
+    dot
 }
 
 pub fn read_colors_variant() -> Option<Variant> {
