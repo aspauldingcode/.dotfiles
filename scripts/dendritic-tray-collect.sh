@@ -5,7 +5,7 @@ set -euo pipefail
 
 STATUS="${DENDRITIC_TRAY_STATUS:-${HOME}/.cache/dendritic-tray.status}"
 DOTFILES="${DOTFILES_ROOT:-${DENDRITIC_DOTFILES:-}}"
-if [[ -z "$DOTFILES" ]]; then
+if [[ -z $DOTFILES ]]; then
   if [[ -d /etc/nix-darwin/.dotfiles/.git ]]; then
     DOTFILES=/etc/nix-darwin/.dotfiles
   elif [[ -d /etc/nixos/.dotfiles/.git ]]; then
@@ -28,7 +28,8 @@ THEME_PHASE=""
 THEME_WALLPAPER=""
 if command -v dendritic-appearance >/dev/null 2>&1; then
   if dendritic-appearance status >/tmp/dendritic-appearance-status.json 2>/dev/null; then
-    eval "$(python3 - <<'PY'
+    eval "$(
+      python3 - <<'PY'
 import json
 d=json.load(open("/tmp/dendritic-appearance-status.json"))
 phase=d.get("phase")
@@ -43,10 +44,10 @@ print(f'THEME_PHASE="{esc(name)}"')
 print(f'THEME_VARIANT="{esc(o.get("colors_variant") or o.get("wallpaper_variant"))}"')
 print(f'THEME_WALLPAPER="{esc(o.get("wallpaper_name"))}"')
 PY
-)"
+    )"
   fi
 fi
-if [[ -z "$THEME_VARIANT" && -f "${HOME}/.colors.toml" ]]; then
+if [[ -z $THEME_VARIANT && -f "${HOME}/.colors.toml" ]]; then
   THEME_VARIANT="$(awk -F= '/^(variant|polarity)/{gsub(/[ "]/,"",$2); print $2; exit}' "${HOME}/.colors.toml" || true)"
 fi
 export THEME_VARIANT THEME_PHASE THEME_WALLPAPER
@@ -67,13 +68,13 @@ WG_PEER_IP=""
 if command -v wg >/dev/null 2>&1 && wg show "$WG_IFACE" >/dev/null 2>&1; then
   WG_UP=1
 fi
-if [[ -f "$PEERS_JSON" ]]; then
+if [[ -f $PEERS_JSON ]]; then
   WG_PEER_IP="$(python3 -c 'import json,sys; peers=json.load(open(sys.argv[1])); me=sys.argv[2]
 for p in peers:
   if p.get("id")!=me:
     print(p.get("address","").split("/")[0]); break' "$PEERS_JSON" "$HOST" 2>/dev/null || true)"
 fi
-if [[ -n "$WG_PEER_IP" ]]; then
+if [[ -n $WG_PEER_IP ]]; then
   if ping -c1 -W2 "$WG_PEER_IP" >/dev/null 2>&1 || ping -c1 -t2 "$WG_PEER_IP" >/dev/null 2>&1; then
     WG_PEER_OK=1
   fi

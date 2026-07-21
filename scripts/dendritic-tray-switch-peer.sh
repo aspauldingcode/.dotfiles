@@ -7,9 +7,11 @@ STATUS="${DENDRITIC_TRAY_STATUS:-${HOME}/.cache/dendritic-tray.status}"
 LOCK="${HOME}/.cache/dendritic-tray.lock"
 LOG="${HOME}/.cache/dendritic-tray-sync.log"
 DOTFILES="${DOTFILES_ROOT:-${DENDRITIC_DOTFILES:-}}"
-if [[ -z "$DOTFILES" ]]; then
-  if [[ -d /etc/nix-darwin/.dotfiles/.git ]]; then DOTFILES=/etc/nix-darwin/.dotfiles
-  elif [[ -d /etc/nixos/.dotfiles/.git ]]; then DOTFILES=/etc/nixos/.dotfiles
+if [[ -z $DOTFILES ]]; then
+  if [[ -d /etc/nix-darwin/.dotfiles/.git ]]; then
+    DOTFILES=/etc/nix-darwin/.dotfiles
+  elif [[ -d /etc/nixos/.dotfiles/.git ]]; then
+    DOTFILES=/etc/nixos/.dotfiles
   else DOTFILES="$(git rev-parse --show-toplevel 2>/dev/null || true)"; fi
 fi
 PEERS_JSON="${WG_PEERS_JSON:-${DOTFILES}/home/wireguard-peers.json}"
@@ -58,8 +60,8 @@ peer_ip="$(python3 -c 'import json,sys
 peers=json.load(open(sys.argv[1])); me=sys.argv[2]
 for p in peers:
   if p.get("id")!=me: print(p.get("address","").split("/")[0]); break' "$PEERS_JSON" "$HOST")"
-ssh_user="$([[ "$peer_id" == "mba" ]] && echo 8amps || echo alex)"
-remote_root="$([[ "$peer_id" == "mba" ]] && echo /etc/nix-darwin/.dotfiles || echo /etc/nixos/.dotfiles)"
+ssh_user="$([[ $peer_id == "mba" ]] && echo 8amps || echo alex)"
+remote_root="$([[ $peer_id == "mba" ]] && echo /etc/nix-darwin/.dotfiles || echo /etc/nixos/.dotfiles)"
 
 write_job "switching" "ping $peer_id ($peer_ip)"
 if ! ping -c1 -W3 "$peer_ip" >/dev/null 2>&1 && ! ping -c1 -t3 "$peer_ip" >/dev/null 2>&1; then

@@ -9,9 +9,11 @@ STATUS="${DENDRITIC_TRAY_STATUS:-${HOME}/.cache/dendritic-tray.status}"
 LOCK="${HOME}/.cache/dendritic-tray.lock"
 LOG="${HOME}/.cache/dendritic-tray-sync.log"
 DOTFILES="${DOTFILES_ROOT:-${DENDRITIC_DOTFILES:-}}"
-if [[ -z "$DOTFILES" ]]; then
-  if [[ -d /etc/nix-darwin/.dotfiles/.git ]]; then DOTFILES=/etc/nix-darwin/.dotfiles
-  elif [[ -d /etc/nixos/.dotfiles/.git ]]; then DOTFILES=/etc/nixos/.dotfiles
+if [[ -z $DOTFILES ]]; then
+  if [[ -d /etc/nix-darwin/.dotfiles/.git ]]; then
+    DOTFILES=/etc/nix-darwin/.dotfiles
+  elif [[ -d /etc/nixos/.dotfiles/.git ]]; then
+    DOTFILES=/etc/nixos/.dotfiles
   else DOTFILES="$(git rev-parse --show-toplevel 2>/dev/null || true)"; fi
 fi
 HOST="$(hostname -s 2>/dev/null || hostname | cut -d. -f1)"
@@ -46,7 +48,7 @@ acquire_lock() {
   fi
   local old
   old="$(cat "$LOCK/pid" 2>/dev/null || true)"
-  if [[ -n "$old" ]] && ! kill -0 "$old" 2>/dev/null; then
+  if [[ -n $old ]] && ! kill -0 "$old" 2>/dev/null; then
     rm -rf "$LOCK"
     mkdir "$LOCK" && echo "$$" >"$LOCK/pid" && return 0
   fi
@@ -63,14 +65,19 @@ changelog_msg() {
   stat="$(git -C "$DOTFILES" diff --stat HEAD 2>/dev/null | head -40 || true)"
   diff="$(git -C "$DOTFILES" diff HEAD 2>/dev/null | head -c 4000 || true)"
   if ! command -v curl >/dev/null 2>&1; then
-    echo "$fallback"; return
+    echo "$fallback"
+    return
   fi
   if ! curl -fsS --max-time 1 http://127.0.0.1:11434/api/tags >/dev/null 2>&1; then
-    echo "$fallback"; return
+    echo "$fallback"
+    return
   fi
   local model
   model="$(curl -fsS --max-time 2 http://127.0.0.1:11434/api/tags | python3 -c 'import json,sys; ms=json.load(sys.stdin).get("models") or []; print(ms[0]["name"] if ms else "")' 2>/dev/null || true)"
-  [[ -z "$model" ]] && { echo "$fallback"; return; }
+  [[ -z $model ]] && {
+    echo "$fallback"
+    return
+  }
   local prompt
   prompt="Write a single Conventional Commit subject line (<=72 chars) for this .dotfiles nix flake change. No body. No markdown. No quotes.
 stat:
@@ -91,7 +98,7 @@ line=r.strip().splitlines()[0] if r.strip() else ""
 line=line.strip().strip("`").strip("\"")
 line=re.sub(r"^(Commit|Subject):\s*","",line,flags=re.I)
 print(line[:72] if line else "")' 2>/dev/null || true)"
-  if [[ -z "$msg" || "$msg" == *"Cursor"* ]]; then
+  if [[ -z $msg || $msg == *"Cursor"* ]]; then
     echo "$fallback"
   else
     echo "$msg"
@@ -107,7 +114,10 @@ cleanup() {
 }
 trap cleanup EXIT
 
-[[ -n "$DOTFILES" && -d "$DOTFILES/.git" ]] || { write_job "error" "no dotfiles checkout"; exit 1; }
+[[ -n $DOTFILES && -d "$DOTFILES/.git" ]] || {
+  write_job "error" "no dotfiles checkout"
+  exit 1
+}
 acquire_lock || exit 0
 
 write_job "syncing" "fetch development"
