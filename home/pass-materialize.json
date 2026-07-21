@@ -21,6 +21,7 @@
   "EDUROAM_PROFILE": ".config/dendritic/wifi/eduroam/profile.json",
   "WG_PUBLIC_KEY_MBA": ".config/dendritic/wireguard/keys/mba.public",
   "WG_PUBLIC_KEY_SLICEANDDICE": ".config/dendritic/wireguard/keys/sliceanddice.public",
+  "WG_PUBLIC_KEY_IPHONE": ".config/dendritic/wireguard/keys/iphone.public",
   "WG_PSK": ".config/dendritic/wireguard/psk",
   "WG_ENDPOINT_MBA": ".config/dendritic/wireguard/endpoints/mba",
   "WG_ENDPOINT_SLICEANDDICE": ".config/dendritic/wireguard/endpoints/sliceanddice",

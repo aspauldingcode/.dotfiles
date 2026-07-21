@@ -10,4 +10,8 @@
     platform = "nixos";
     description = "NixOS laptop";
   };
+  oneplus6t = {
+    platform = "android";
+    description = "OnePlus 6T (LineageOS / nix-android)";
+  };
 }

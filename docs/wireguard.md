@@ -1,7 +1,8 @@
-# Dendritic WireGuard (mba ↔ sliceanddice)
+# Dendritic WireGuard (mba ↔ sliceanddice + clients)
 
 Private overlay so one host can stay on home **Bubbles** Wi‑Fi while the other
-is away — SSH and LAN-style inspection over `10.87.0.0/24`.
+is away — SSH and LAN-style inspection over `10.87.0.0/24`. Optional **client**
+peers (iPhone, …) dial a host via the WireGuard app.
 
 Secrets stay in the private **pass** store (SecretSpec). Endpoints / public IPs
 are **never** committed to this flake (same threat model as
@@ -9,12 +10,15 @@ are **never** committed to this flake (same threat model as
 
 ## Addresses (non-secret)
 
-| Peer           | Tunnel address | UDP port |
-| -------------- | -------------- | -------: |
-| `mba`          | `10.87.0.1/24` |    51820 |
-| `sliceanddice` | `10.87.0.2/24` |    51820 |
+| Peer           | Role   | Tunnel address | UDP port |
+| -------------- | ------ | -------------- | -------: |
+| `mba`          | host   | `10.87.0.1/24` |    51820 |
+| `sliceanddice` | host   | `10.87.0.2/24` |    51820 |
+| `iphone`       | client | `10.87.0.3/24` |        — |
 
-Declared in [`home/wireguard-peers.json`](../home/wireguard-peers.json).
+Declared in [`home/wireguard-peers.json`](../home/wireguard-peers.json). Enroll
+the phone from the menubar **Connect device → WireGuard for iPhone…** (see
+[`connect-device.md`](connect-device.md)).
 
 ## SecretSpec keys (pass)
 

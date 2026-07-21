@@ -23,6 +23,13 @@ installs the same agent on **mba** (launchd) and **sliceanddice** (systemd user
 timer). Default interval is 15 minutes; `RunAtLoad` / `OnBootSec` so it is
 always on when the host is up.
 
+Each run writes `~/.cache/android-converge.status` (reachable, transport, state,
+lease, config tip). Controllers also heartbeat `hosts/oneplus6t.json` into the
+private fleet repo when the phone is up — that drives the README
+`oneplus6t` shield ([fleet-status.md](./fleet-status.md)). The menubar tray
+surfaces the same status via `dendritic-tray-collect`
+([dendritic-tray.md](./dendritic-tray.md)).
+
 **No duplicate apply:** before `switch`, the agent writes a short lease on the
 phone (`/data/local/tmp/nix-android-<device>.lease`) with `hostId` + expiry.
 If the other controller holds a valid lease, this host skips. A local

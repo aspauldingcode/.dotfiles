@@ -15,6 +15,13 @@
       "flake_rev": "50c8b953",
       "status": "offline",
       "seen_at": "2026-07-17T21:33:29Z"
+    },
+    {
+      "host": "oneplus6t",
+      "platform": "android",
+      "flake_rev": "—",
+      "status": "offline",
+      "seen_at": null
     }
   ]
 }

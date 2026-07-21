@@ -47,7 +47,7 @@ while IFS= read -r name; do
   if ! printf '%s' "$raw" | jq -e '
       .schema == 1
       and (.host | type == "string")
-      and (.platform == "darwin" or .platform == "nixos" or .platform == "linux")
+      and (.platform == "darwin" or .platform == "nixos" or .platform == "linux" or .platform == "android")
       and (.flake_rev | test("^[0-9a-f]{7,40}$"))
       and (.seen_at | test("^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"))
       and ((keys | sort) == ["flake_rev","host","platform","schema","seen_at"])
@@ -135,7 +135,9 @@ block = "\n".join(
         "",
         "Host presence via private heartbeats (no public IPs). "
         "Badges: online ≤30m · stale ≤24h · else offline. "
-        "See [docs/fleet-status.md](docs/fleet-status.md).",
+        "Phone (`oneplus6t`) reports when a controller can reach it over adb. "
+        "See [docs/fleet-status.md](docs/fleet-status.md) and "
+        "[docs/nix-android.md](docs/nix-android.md).",
         "",
     ]
 )

@@ -22,6 +22,7 @@
       ];
       androidRebuild = if hasControllerPkgs then inputs.self.packages.${system}.android-rebuild else null;
       adbWireless = if hasControllerPkgs then inputs.self.packages.${system}.adb-wireless else null;
+      fleetCfg = config.dendritic.fleet or { };
       convergeScript = pkgs.writeShellScriptBin "android-converge" ''
         export PATH="${
           lib.makeBinPath [
@@ -29,6 +30,9 @@
             pkgs.gnused
             pkgs.gnugrep
             pkgs.android-tools
+            pkgs.python3
+            pkgs.gh
+            pkgs.jq
           ]
         }:$PATH"
         export ANDROID_CONVERGE_HOST_ID=${lib.escapeShellArg cfg.hostId}
@@ -40,6 +44,12 @@
         }
         export ANDROID_CONVERGE_LEASE_TTL=${lib.escapeShellArg (toString cfg.leaseTtlSec)}
         export ANDROID_CONVERGE_APPLY=${if cfg.apply then "1" else "0"}
+        export ANDROID_CONVERGE_STATUS=${lib.escapeShellArg "${config.home.homeDirectory}/.cache/android-converge.status"}
+        export FLEET_STATUS_OWNER=${lib.escapeShellArg (fleetCfg.owner or "aspauldingcode")}
+        export FLEET_STATUS_REPO=${lib.escapeShellArg (fleetCfg.repo or "dendritic-fleet-status")}
+        ${lib.optionalString ((fleetCfg.enable or false) && (fleetCfg.useSopsToken or false)) ''
+          export FLEET_STATUS_TOKEN_FILE=${lib.escapeShellArg config.sops.secrets.fleet_status_github_token.path}
+        ''}
         exec ${pkgs.bash}/bin/bash ${../../scripts/android-converge-agent.sh}
       '';
       logDir = "${config.home.homeDirectory}/.cache";

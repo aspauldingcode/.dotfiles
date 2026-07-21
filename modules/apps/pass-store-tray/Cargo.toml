@@ -1,6 +1,6 @@
 [package]
 name = "pass-store-tray"
-version = "0.4.1"
+version = "0.4.3"
 edition = "2021"
 description = "Pass store sync native tray applet (tray-icon / muda)"
 license = "MIT"

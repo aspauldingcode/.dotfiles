@@ -179,6 +179,11 @@ enum TrayCmd {
     Sync,
     /// SSH to peer over WG and nh switch
     SwitchPeer,
+    /// Guided 3rd-party device setup (WireGuard QR / pass-for-iOS guide)
+    ConnectDevice {
+        #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
+        args: Vec<String>,
+    },
 }
 
 fn main() -> Result<()> {
@@ -227,6 +232,7 @@ fn main() -> Result<()> {
             TrayCmd::Collect => agent::tray_collect(),
             TrayCmd::Sync => agent::tray_sync(),
             TrayCmd::SwitchPeer => agent::tray_switch_peer(),
+            TrayCmd::ConnectDevice { args } => agent::tray_connect_device(&args),
         },
     }
 }

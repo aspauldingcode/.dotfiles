@@ -107,30 +107,47 @@ PEER_ID="$(host_id)"
 mkdir -p "$STATE_DIR" "$(dirname "$USER_CONF")"
 chmod 700 "$(dirname "$USER_CONF")" 2>/dev/null || true
 
+# Host peers (mba/sliceanddice) + optional clients (iphone, …).
+# Controllers peer with every other host and every enrolled client.
+PEER_TABLE_FILE="${STATE_DIR}/peers.tsv"
 eval "$(
-  python3 - "$PEERS_JSON" "$PEER_ID" <<'PY'
+  python3 - "$PEERS_JSON" "$PEER_ID" "$PEER_TABLE_FILE" <<'PY'
 import json, sys, shlex
 peers = json.load(open(sys.argv[1]))
 me_id = sys.argv[2]
+table_path = sys.argv[3]
 by = {p["id"]: p for p in peers}
 if me_id not in by:
     raise SystemExit(f"peer id {me_id!r} not in peers JSON")
-others = [p for p in peers if p["id"] != me_id]
-if len(others) != 1:
-    raise SystemExit("dendritic-wg currently expects exactly two peers")
-me, peer = by[me_id], others[0]
+me = by[me_id]
+role = me.get("role") or "host"
+if role == "client":
+    raise SystemExit(f"{me_id!r} is a client — use dendritic-connect-device wireguard")
+hosts = [p for p in peers if (p.get("role") or "host") != "client"]
+clients = [p for p in peers if (p.get("role") or "host") == "client"]
+if me_id not in {p["id"] for p in hosts}:
+    raise SystemExit(f"{me_id!r} must be a host peer")
+others = [p for p in hosts if p["id"] != me_id]
+if not others:
+    raise SystemExit("need at least one other host peer")
+primary = others[0]
+
 def emit(k, v):
     print(f"{k}={shlex.quote(str(v))}")
+
 emit("ME_ID", me["id"])
 emit("ME_ADDR", me["address"])
 emit("ME_PORT", me["listenPort"])
-emit("PEER_ID", peer["id"])
-emit("PEER_ADDR", peer["address"])
-emit("PEER_PORT", peer["listenPort"])
-emit("PEER_MDNS", peer.get("mdns") or f"{peer['id']}.local")
-# AllowedIPs = peer host route only (not full tunnel)
-peer_ip = peer["address"].split("/")[0]
-emit("PEER_ALLOWED", f"{peer_ip}/32")
+emit("PEER_ID", primary["id"])
+emit("PEER_COUNT", str(len(others) + len(clients)))
+# TSV: id role addr port mdns
+with open(table_path, "w", encoding="utf-8") as fh:
+    for p in others + clients:
+        r = p.get("role") or "host"
+        mdns = p.get("mdns") or (f"{p['id']}.local" if r != "client" else "")
+        port = p.get("listenPort") or ""
+        fh.write(f"{p['id']}\t{r}\t{p['address']}\t{port}\t{mdns}\n")
+emit("PEER_TABLE_FILE", table_path)
 PY
 )"
 
@@ -138,45 +155,54 @@ PY
 PRIV_KEY="$(normalize_opt "$(pass_get "WG_PRIVATE_KEY_$(printf '%s' "$ME_ID" | tr '[:lower:]' '[:upper:]')")")"
 [[ -n $PRIV_KEY ]] || die "missing WG_PRIVATE_KEY for $ME_ID — run: nix run .#pass-wg-bootstrap"
 
-PEER_PUB="$(file_get "${XDG_CONFIG_HOME:-$HOME/.config}/dendritic/wireguard/keys/${PEER_ID}.public")"
-[[ -n $PEER_PUB ]] || PEER_PUB="$(normalize_opt "$(pass_get "WG_PUBLIC_KEY_$(printf '%s' "$PEER_ID" | tr '[:lower:]' '[:upper:]')")")"
-[[ -n $PEER_PUB ]] || die "missing WG_PUBLIC_KEY for $PEER_ID — run pass-wg-bootstrap + pass-materialize"
-
 PSK="$(file_get "${XDG_CONFIG_HOME:-$HOME/.config}/dendritic/wireguard/psk")"
 [[ -n $PSK ]] || PSK="$(normalize_opt "$(pass_get WG_PSK)")"
-
-ENDPOINT_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/dendritic/wireguard/endpoints/${PEER_ID}"
-ENDPOINT="$(file_get "$ENDPOINT_FILE")"
-[[ -n $ENDPOINT ]] || ENDPOINT="$(normalize_opt "$(pass_get "WG_ENDPOINT_$(printf '%s' "$PEER_ID" | tr '[:lower:]' '[:upper:]')")")"
-
-if [[ -z $ENDPOINT ]]; then
-  mdns_ip="$(resolve_mdns "$PEER_MDNS" || true)"
-  if [[ -n ${mdns_ip:-} ]]; then
-    ENDPOINT="${mdns_ip}:${PEER_PORT}"
-    log "peer endpoint via mDNS/LAN (${PEER_MDNS})"
-  else
-    log "no remote endpoint + peer mDNS unresolved — omit Endpoint (keepalive only)"
-  fi
-else
-  log "peer endpoint from pass WG_ENDPOINT_${PEER_ID}"
-fi
 
 {
   echo "[Interface]"
   echo "Address = ${ME_ADDR}"
   echo "ListenPort = ${ME_PORT}"
   echo "PrivateKey = ${PRIV_KEY}"
-  echo ""
-  echo "[Peer]"
-  echo "PublicKey = ${PEER_PUB}"
-  if [[ -n $PSK ]]; then
-    echo "PresharedKey = ${PSK}"
-  fi
-  echo "AllowedIPs = ${PEER_ALLOWED}"
-  if [[ -n ${ENDPOINT:-} ]]; then
-    echo "Endpoint = ${ENDPOINT}"
-  fi
-  echo "PersistentKeepalive = ${KEEPALIVE}"
+  while IFS=$'\t' read -r pid prole paddr pport pmdns; do
+    [[ -n $pid ]] || continue
+    up="$(printf '%s' "$pid" | tr '[:lower:]' '[:upper:]')"
+    pub="$(file_get "${XDG_CONFIG_HOME:-$HOME/.config}/dendritic/wireguard/keys/${pid}.public")"
+    [[ -n $pub ]] || pub="$(normalize_opt "$(pass_get "WG_PUBLIC_KEY_${up}")")"
+    if [[ -z $pub ]]; then
+      if [[ $prole == "client" ]]; then
+        log "skip client $pid — no public key yet (Connect device… → WireGuard)"
+        continue
+      fi
+      die "missing WG_PUBLIC_KEY for $pid — run pass-wg-bootstrap + pass-materialize"
+    fi
+    peer_ip="${paddr%%/*}"
+    echo ""
+    echo "[Peer]"
+    echo "PublicKey = ${pub}"
+    if [[ -n $PSK ]]; then
+      echo "PresharedKey = ${PSK}"
+    fi
+    echo "AllowedIPs = ${peer_ip}/32"
+    if [[ $prole != "client" ]]; then
+      endpoint="$(file_get "${XDG_CONFIG_HOME:-$HOME/.config}/dendritic/wireguard/endpoints/${pid}")"
+      [[ -n $endpoint ]] || endpoint="$(normalize_opt "$(pass_get "WG_ENDPOINT_${up}")")"
+      if [[ -z $endpoint && -n $pmdns ]]; then
+        mdns_ip="$(resolve_mdns "$pmdns" || true)"
+        if [[ -n ${mdns_ip:-} && -n $pport ]]; then
+          endpoint="${mdns_ip}:${pport}"
+          log "peer $pid endpoint via mDNS/LAN (${pmdns})"
+        fi
+      elif [[ -n $endpoint ]]; then
+        log "peer $pid endpoint from pass WG_ENDPOINT_${pid}"
+      else
+        log "peer $pid — omit Endpoint (keepalive only)"
+      fi
+      if [[ -n ${endpoint:-} ]]; then
+        echo "Endpoint = ${endpoint}"
+      fi
+      echo "PersistentKeepalive = ${KEEPALIVE}"
+    fi
+  done <"$PEER_TABLE_FILE"
 } >"${USER_CONF}.tmp"
 chmod 0600 "${USER_CONF}.tmp"
 mv -f "${USER_CONF}.tmp" "$USER_CONF"
@@ -266,6 +292,6 @@ if [[ ${WG_ENSURE_NO_UP:-0} == 1 ]]; then
 fi
 
 reload_iface
-log "interface $IFACE up (peer=$PEER_ID)"
+log "interface $IFACE up (primary=$PEER_ID peers=${PEER_COUNT:-?})"
 echo "$PEER_ID" >"${STATE_DIR}/peer"
 date -u +%Y-%m-%dT%H:%M:%SZ >"${STATE_DIR}/last-ensure"

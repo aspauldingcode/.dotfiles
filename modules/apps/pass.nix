@@ -148,6 +148,7 @@
               pkgs.python3
               pkgs.wireguard-tools
               pkgs.git
+              pkgs.android-tools
               (pkgs.callPackage ./dendritic-appearance/_package.nix { })
             ]
             ++ lib.optionals pkgs.stdenv.isLinux [
@@ -163,6 +164,7 @@
         fi
         export WG_PEERS_JSON=${lib.escapeShellArg "${../../home/wireguard-peers.json}"}
         export DENDRITIC_TRAY_STATUS=${lib.escapeShellArg "${config.home.homeDirectory}/.cache/dendritic-tray.status"}
+        export ANDROID_CONVERGE_STATUS=${lib.escapeShellArg "${config.home.homeDirectory}/.cache/android-converge.status"}
         exec ${pkgs.bash}/bin/bash ${../../scripts/dendritic-tray-collect.sh}
       '';
       traySyncScript = pkgs.writeShellScriptBin "dendritic-tray-sync" ''
@@ -203,9 +205,33 @@
         export DENDRITIC_TRAY_COLLECT=${lib.getExe trayCollectScript}
         exec ${pkgs.bash}/bin/bash ${../../scripts/dendritic-tray-switch-peer.sh}
       '';
+      trayConnectDeviceScript = pkgs.writeShellScriptBin "dendritic-connect-device" ''
+        export PATH=${
+          lib.makeBinPath (
+            [
+              pkgs.bash
+              pkgs.coreutils
+              pkgs.python3
+              pkgs.git
+              passPackage
+              pkgs.wireguard-tools
+              pkgs.qrencode
+              (pkgs.callPackage ../../crates/dendritic/_package.nix { })
+            ]
+            ++ lib.optionals pkgs.stdenv.isLinux [ pkgs.libnotify ]
+          )
+        }:/usr/sbin:/sbin:/usr/bin:/bin''${PATH:+:$PATH}
+        if [ -d /etc/nix-darwin/.dotfiles/.git ]; then export DOTFILES_ROOT=/etc/nix-darwin/.dotfiles
+        elif [ -d /etc/nixos/.dotfiles/.git ]; then export DOTFILES_ROOT=/etc/nixos/.dotfiles
+        fi
+        export WG_PEERS_JSON=${lib.escapeShellArg "${../../home/wireguard-peers.json}"}
+        export PASSWORD_STORE_DIR=${lib.escapeShellArg "${config.home.homeDirectory}/.password-store"}
+        export DENDRITIC_TRAY_STATUS=${lib.escapeShellArg "${config.home.homeDirectory}/.cache/dendritic-tray.status"}
+        exec ${pkgs.bash}/bin/bash ${../../scripts/dendritic-connect-device.sh} "$@"
+      '';
       trayPkg = pkgs.rustPlatform.buildRustPackage {
         pname = "pass-store-tray";
-        version = "0.4.1";
+        version = "0.4.3";
         src = ./pass-store-tray;
         cargoLock.lockFile = ./pass-store-tray/Cargo.lock;
         nativeBuildInputs = [
@@ -242,6 +268,7 @@
               --set DENDRITIC_TRAY_COLLECT ${lib.getExe trayCollectScript} \
               --set DENDRITIC_TRAY_SYNC ${lib.getExe traySyncScript} \
               --set DENDRITIC_TRAY_SWITCH_PEER ${lib.getExe traySwitchPeerScript} \
+              --set DENDRITIC_TRAY_CONNECT_DEVICE ${lib.getExe trayConnectDeviceScript} \
               --prefix PATH : ${
                 lib.makeBinPath [
                   pkgs.procps
@@ -250,6 +277,7 @@
                   trayCollectScript
                   traySyncScript
                   traySwitchPeerScript
+                  trayConnectDeviceScript
                 ]
               } \
               ${wrapLibPath}
@@ -483,6 +511,7 @@
               trayCollectScript
               traySyncScript
               traySwitchPeerScript
+              trayConnectDeviceScript
             ]
             ++ lib.optionals cfg.autoSync.enable [
               (pkgs.writeShellScriptBin "pass-store-sync" ''

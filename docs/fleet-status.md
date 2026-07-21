@@ -19,6 +19,8 @@ signal; CI updates them about every 30 minutes when status changes.
 | `online` / `stale` / `offline` | MAC, home paths            |
 
 “Online” means the host agent can reach GitHub — not LAN reachability.
+Exception: `oneplus6t` (`platform: android`) is heartbeated by a controller
+when the phone is reachable over adb (see [nix-android.md](./nix-android.md)).
 
 ## Thresholds
 

@@ -123,6 +123,34 @@ if [[ -n $WG_PEER_IP ]]; then
 fi
 export WG_UP WG_PEER_OK WG_PEER_IP WG_PEER_ID WG_SELF_IP
 
+# android / oneplus6t — live adb + converge status file
+ANDROID_STATUS="${ANDROID_CONVERGE_STATUS:-${HOME}/.cache/android-converge.status}"
+ANDROID_LIVE=0
+ANDROID_SERIAL=""
+ANDROID_TRANSPORT=""
+if command -v adb >/dev/null 2>&1; then
+  eval "$(
+    python3 - <<'PY'
+import subprocess
+r = subprocess.run(["adb", "devices"], capture_output=True, text=True)
+serial = ""
+transport = ""
+for line in (r.stdout or "").splitlines()[1:]:
+    parts = line.split()
+    if len(parts) >= 2 and parts[1] == "device":
+        serial = parts[0]
+        transport = "wireless" if ":" in serial else "usb"
+        break
+def esc(s):
+    return str(s or "").replace("\\", "\\\\").replace('"', '\\"').replace("$", "\\$").replace("`", "\\`")
+print(f'ANDROID_LIVE={"1" if serial else "0"}')
+print(f'ANDROID_SERIAL="{esc(serial)}"')
+print(f'ANDROID_TRANSPORT="{esc(transport)}"')
+PY
+  )"
+fi
+export ANDROID_STATUS ANDROID_LIVE ANDROID_SERIAL ANDROID_TRANSPORT
+
 python3 <<'PY'
 import json, os, subprocess, time
 from datetime import datetime, timezone
@@ -203,6 +231,84 @@ if peer_id and peer_ok:
     by_host[peer_id] = peer
 fleet = list(by_host.values())
 
+# Android / OnePlus 6T converge + reachability
+android_path = Path(os.environ.get("ANDROID_STATUS") or "")
+android = {
+    "device": "oneplus6t",
+    "reachable": False,
+    "transport": "",
+    "serial": "",
+    "state": "",
+    "message": "",
+    "lease_holder": "",
+    "last_ok_at": "",
+    "config_rev": "",
+    "controller": "",
+    "updated_at": "",
+    "status_age_secs": None,
+    "present": False,
+}
+if android_path.is_file():
+    try:
+        ad = json.loads(android_path.read_text())
+        android.update({
+            "device": ad.get("device") or android["device"],
+            "reachable": bool(ad.get("reachable")),
+            "transport": ad.get("transport") or "",
+            "serial": ad.get("serial") or "",
+            "state": ad.get("state") or "",
+            "message": ad.get("message") or "",
+            "lease_holder": ad.get("lease_holder") or "",
+            "last_ok_at": ad.get("last_ok_at") or "",
+            "config_rev": ad.get("config_rev") or "",
+            "controller": ad.get("controller") or "",
+            "updated_at": ad.get("updated_at") or "",
+            "present": True,
+        })
+        try:
+            age = max(0, int(time.time() - android_path.stat().st_mtime))
+            android["status_age_secs"] = age
+        except Exception:
+            pass
+    except Exception:
+        pass
+if os.environ.get("ANDROID_LIVE") == "1":
+    android["reachable"] = True
+    android["present"] = True
+    if os.environ.get("ANDROID_SERIAL"):
+        android["serial"] = os.environ["ANDROID_SERIAL"]
+    if os.environ.get("ANDROID_TRANSPORT"):
+        android["transport"] = os.environ["ANDROID_TRANSPORT"]
+# Live phone → overlay fleet badge host online
+phone = android.get("device") or "oneplus6t"
+if phone in by_host:
+    android["present"] = True
+if android.get("reachable"):
+    ph = by_host.get(phone) or {
+        "host": phone,
+        "platform": "android",
+        "flake_rev": "",
+        "status": "online",
+        "seen_at": now,
+    }
+    ph["status"] = "online"
+    ph["seen_at"] = now
+    ph["platform"] = "android"
+    if android.get("config_rev"):
+        ph["flake_rev"] = android["config_rev"]
+    by_host[phone] = ph
+    android["present"] = True
+    fleet = list(by_host.values())
+elif phone not in by_host and android.get("present"):
+    by_host[phone] = {
+        "host": phone,
+        "platform": "android",
+        "flake_rev": android.get("config_rev") or "",
+        "status": "offline",
+        "seen_at": android.get("updated_at") or "",
+    }
+    fleet = list(by_host.values())
+
 flake = {
     "root": dotfiles,
     "rev": "",
@@ -264,6 +370,7 @@ out = {
         "peer_ok": os.environ.get("WG_PEER_OK") == "1",
     },
     "fleet": fleet,
+    "android": android,
     "flake": flake,
     "job": job,
 }

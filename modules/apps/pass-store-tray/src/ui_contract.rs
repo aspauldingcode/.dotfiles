@@ -24,6 +24,11 @@ pub const MAX_PATH_ROWS: usize = 6;
 pub enum Action {
     OpenQtPass,
     OpenSyncLog,
+    /// Submenu parent label (not a click target by itself).
+    ConnectDevice,
+    ConnectWireGuard,
+    ConnectPassGuide,
+    ConnectSetupGuide,
     SyncFlake,
     SwitchPeer,
     Quit,
@@ -34,19 +39,30 @@ impl Action {
         match self {
             Self::OpenQtPass => "Open QtPass",
             Self::OpenSyncLog => "Open sync log",
+            Self::ConnectDevice => "Connect device",
+            Self::ConnectWireGuard => "WireGuard for iPhone…",
+            Self::ConnectPassGuide => "Pass store for iPhone…",
+            Self::ConnectSetupGuide => "Setup guide…",
             Self::SyncFlake => "Sync flake…",
             Self::SwitchPeer => "Switch peer…",
             Self::Quit => "Quit",
         }
     }
 
-    /// Ordered action rows after the status block + separators.
+    /// Top-level actions (Connect device is a submenu; children listed separately).
     pub const ALL: &[Action] = &[
         Self::OpenQtPass,
         Self::OpenSyncLog,
+        Self::ConnectDevice,
         Self::SyncFlake,
         Self::SwitchPeer,
         Self::Quit,
+    ];
+
+    pub const CONNECT_CHILDREN: &[Action] = &[
+        Self::ConnectWireGuard,
+        Self::ConnectPassGuide,
+        Self::ConnectSetupGuide,
     ];
 }
 
@@ -263,7 +279,7 @@ pub fn build_status_lines(
     StatusLines { rows, tooltip }
 }
 
-/// Dendritic tray extras (theme / llm / wg / fleet / flake / job).
+/// Dendritic tray extras (theme / llm / wg / fleet / android / flake / job).
 #[derive(Debug, Clone, Default)]
 pub struct DendriticFacts {
     pub job_state: String,
@@ -281,6 +297,14 @@ pub struct DendriticFacts {
     pub flake_behind: u32,
     pub nixpkgs_age_days: Option<u32>,
     pub peer_flake_behind: Vec<String>,
+    /// oneplus6t / nix-android converge snapshot
+    pub android_device: String,
+    pub android_reachable: bool,
+    pub android_state: String,
+    pub android_message: String,
+    pub android_lease_holder: String,
+    pub android_status_age_secs: Option<u64>,
+    pub android_present: bool,
 }
 
 pub fn build_dendritic_rows(f: &DendriticFacts) -> Vec<String> {
@@ -334,10 +358,46 @@ pub fn build_dendritic_rows(f: &DendriticFacts) -> Vec<String> {
         rows.push(ellipsize(&format!("theme {}", f.theme_phase), MENU_COLS));
     }
     for h in &f.fleet_offline {
+        // Phone has dedicated android rows; skip duplicate fleet offline.
+        if !f.android_device.is_empty() && h == &f.android_device {
+            continue;
+        }
         rows.push(ellipsize(&format!("{h} offline"), MENU_COLS));
     }
     for h in &f.fleet_stale {
+        if !f.android_device.is_empty() && h == &f.android_device {
+            continue;
+        }
         rows.push(ellipsize(&format!("{h} stale"), MENU_COLS));
+    }
+    if f.android_present {
+        let dev = if f.android_device.is_empty() {
+            "oneplus6t"
+        } else {
+            f.android_device.as_str()
+        };
+        if !f.android_reachable {
+            rows.push(ellipsize(&format!("{dev} unreachable"), MENU_COLS));
+        } else if f.android_state == "error" {
+            let msg = if f.android_message.is_empty() {
+                "error".into()
+            } else {
+                f.android_message.clone()
+            };
+            rows.push(ellipsize(&format!("{dev} {msg}"), MENU_COLS));
+        } else if f.android_state == "running" {
+            rows.push(ellipsize(&format!("{dev} converging…"), MENU_COLS));
+        } else if f.android_state == "skipped" && !f.android_lease_holder.is_empty() {
+            rows.push(ellipsize(
+                &format!("{dev} leased by {}", f.android_lease_holder),
+                MENU_COLS,
+            ));
+        } else if let Some(age) = f.android_status_age_secs {
+            // Converge agent should refresh ~15m; stale file while phone is up.
+            if age > 45 * 60 {
+                rows.push(ellipsize(&format!("{dev} status stale"), MENU_COLS));
+            }
+        }
     }
     rows
 }
@@ -411,9 +471,27 @@ mod tests {
     }
 
     #[test]
+    fn android_unreachable_row() {
+        let f = DendriticFacts {
+            llm_ok: true,
+            wg_up: true,
+            wg_peer_ok: true,
+            theme_phase: "synced".into(),
+            android_present: true,
+            android_device: "oneplus6t".into(),
+            android_reachable: false,
+            ..Default::default()
+        };
+        let rows = build_dendritic_rows(&f);
+        assert!(rows.iter().any(|r| r.contains("oneplus6t unreachable")));
+    }
+
+    #[test]
     fn actions_include_sync() {
         assert!(Action::ALL.contains(&Action::SyncFlake));
         assert!(Action::ALL.contains(&Action::SwitchPeer));
-        assert_eq!(Action::ALL.len(), 5);
+        assert!(Action::ALL.contains(&Action::ConnectDevice));
+        assert_eq!(Action::ALL.len(), 6);
+        assert_eq!(Action::CONNECT_CHILDREN.len(), 3);
     }
 }

@@ -9,7 +9,7 @@ use std::process::Command;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
-use tray_icon::menu::{Menu, MenuEvent, MenuItem, PredefinedMenuItem};
+use tray_icon::menu::{Menu, MenuEvent, MenuItem, PredefinedMenuItem, Submenu};
 use tray_icon::{Icon, TrayIcon, TrayIconBuilder};
 use ui_contract::{
     Action, DendriticFacts, TOOLTIP_IDLE, build_dendritic_rows, build_status_lines,
@@ -74,6 +74,7 @@ struct Env {
     collect_bin: Option<PathBuf>,
     sync_bin: Option<PathBuf>,
     switch_peer_bin: Option<PathBuf>,
+    connect_device_bin: Option<PathBuf>,
 }
 
 impl Env {
@@ -96,6 +97,7 @@ impl Env {
             collect_bin: opt_bin("DENDRITIC_TRAY_COLLECT"),
             sync_bin: opt_bin("DENDRITIC_TRAY_SYNC"),
             switch_peer_bin: opt_bin("DENDRITIC_TRAY_SWITCH_PEER"),
+            connect_device_bin: opt_bin("DENDRITIC_TRAY_CONNECT_DEVICE"),
         }
     }
 }
@@ -159,6 +161,11 @@ fn icon_kind(status: &SyncStatus, rebuilding: bool, lock: bool, facts: &Dendriti
     if !status.materialize_warnings.is_empty() {
         return IconKind::Error;
     }
+    if facts.android_present
+        && (!facts.android_reachable || facts.android_state == "error")
+    {
+        return IconKind::Error;
+    }
     if facts.flake_dirty || facts.flake_behind > 0 || !facts.wg_up || !facts.fleet_offline.is_empty()
     {
         return IconKind::Error;
@@ -191,6 +198,8 @@ struct DendriticStatusFile {
     wg: DendriticWg,
     #[serde(default)]
     fleet: Vec<DendriticFleetHost>,
+    #[serde(default)]
+    android: DendriticAndroid,
     #[serde(default)]
     flake: DendriticFlake,
     #[serde(default)]
@@ -234,6 +243,26 @@ struct DendriticFleetHost {
     status: String,
     #[serde(default)]
     flake_rev: String,
+}
+
+#[derive(Debug, Clone, Default, Deserialize)]
+struct DendriticAndroid {
+    #[serde(default)]
+    device: String,
+    #[serde(default)]
+    reachable: bool,
+    #[serde(default)]
+    state: String,
+    #[serde(default)]
+    message: String,
+    #[serde(default)]
+    lease_holder: String,
+    #[serde(default)]
+    status_age_secs: Option<u64>,
+    #[serde(default)]
+    updated_at: String,
+    #[serde(default)]
+    present: bool,
 }
 
 #[derive(Debug, Clone, Default, Deserialize)]
@@ -286,6 +315,11 @@ fn dendritic_facts(d: &DendriticStatusFile) -> DendriticFacts {
             peer_behind.push(h.host.clone());
         }
     }
+    let android_present = d.android.present
+        || d.android.reachable
+        || !d.android.state.is_empty()
+        || !d.android.updated_at.is_empty()
+        || d.android.status_age_secs.is_some();
     DendriticFacts {
         job_state: d.job.state.clone(),
         job_message: d.job.message.clone(),
@@ -302,6 +336,17 @@ fn dendritic_facts(d: &DendriticStatusFile) -> DendriticFacts {
         flake_behind: d.flake.behind,
         nixpkgs_age_days: d.flake.nixpkgs_age_days,
         peer_flake_behind: peer_behind,
+        android_device: if d.android.device.is_empty() {
+            "oneplus6t".into()
+        } else {
+            d.android.device.clone()
+        },
+        android_reachable: d.android.reachable,
+        android_state: d.android.state.clone(),
+        android_message: d.android.message.clone(),
+        android_lease_holder: d.android.lease_holder.clone(),
+        android_status_age_secs: d.android.status_age_secs,
+        android_present,
     }
 }
 
@@ -313,10 +358,15 @@ fn status_stale(path: &Path, max_secs: u64) -> bool {
 }
 
 fn spawn_bin(bin: &Option<PathBuf>) {
+    spawn_bin_args(bin, &[]);
+}
+
+fn spawn_bin_args(bin: &Option<PathBuf>, args: &[&str]) {
     let Some(path) = bin else {
         return;
     };
     let _ = Command::new(path)
+        .args(args)
         .stdin(std::process::Stdio::null())
         .stdout(std::process::Stdio::null())
         .stderr(std::process::Stdio::null())
@@ -479,6 +529,9 @@ fn open_sync_log(path: &Path) {
 struct MenuActions {
     qtpass: MenuItem,
     log: MenuItem,
+    connect_wg: MenuItem,
+    connect_pass: MenuItem,
+    connect_guide: MenuItem,
     sync_flake: MenuItem,
     switch_peer: MenuItem,
     quit: MenuItem,
@@ -505,10 +558,19 @@ impl NativeTray {
         let actions = MenuActions {
             qtpass: MenuItem::new(Action::OpenQtPass.label(), true, None),
             log: MenuItem::new(Action::OpenSyncLog.label(), true, None),
+            connect_wg: MenuItem::new(Action::ConnectWireGuard.label(), true, None),
+            connect_pass: MenuItem::new(Action::ConnectPassGuide.label(), true, None),
+            connect_guide: MenuItem::new(Action::ConnectSetupGuide.label(), true, None),
             sync_flake: MenuItem::new(Action::SyncFlake.label(), true, None),
             switch_peer: MenuItem::new(Action::SwitchPeer.label(), true, None),
             quit: MenuItem::new(Action::Quit.label(), true, None),
         };
+
+        let connect = Submenu::new(Action::ConnectDevice.label(), true);
+        let _ = connect.append(&actions.connect_wg);
+        let _ = connect.append(&actions.connect_pass);
+        let _ = connect.append(&PredefinedMenuItem::separator());
+        let _ = connect.append(&actions.connect_guide);
 
         let menu = Menu::new();
         for row in &status_rows {
@@ -517,9 +579,11 @@ impl NativeTray {
         if !status_rows.is_empty() {
             let _ = menu.append(&PredefinedMenuItem::separator());
         }
-        debug_assert_eq!(Action::ALL.len(), 5);
+        debug_assert_eq!(Action::ALL.len(), 6);
+        debug_assert_eq!(Action::CONNECT_CHILDREN.len(), 3);
         let _ = menu.append(&actions.qtpass);
         let _ = menu.append(&actions.log);
+        let _ = menu.append(&connect);
         let _ = menu.append(&PredefinedMenuItem::separator());
         let _ = menu.append(&actions.sync_flake);
         let _ = menu.append(&actions.switch_peer);
@@ -623,6 +687,12 @@ impl NativeTray {
                 open_qtpass();
             } else if id == self.actions.log.id() {
                 open_sync_log(&self.env.sync_log);
+            } else if id == self.actions.connect_wg.id() {
+                spawn_bin_args(&self.env.connect_device_bin, &["wireguard", "--device", "iphone"]);
+            } else if id == self.actions.connect_pass.id() {
+                spawn_bin_args(&self.env.connect_device_bin, &["pass-guide"]);
+            } else if id == self.actions.connect_guide.id() {
+                spawn_bin_args(&self.env.connect_device_bin, &["guide"]);
             } else if id == self.actions.sync_flake.id() {
                 spawn_bin(&self.env.sync_bin);
             } else if id == self.actions.switch_peer.id() {

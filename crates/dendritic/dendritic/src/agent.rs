@@ -112,3 +112,12 @@ pub fn tray_sync() -> Result<()> {
 pub fn tray_switch_peer() -> Result<()> {
     run_script_env("DENDRITIC_TRAY_SWITCH_PEER", "dendritic-tray-switch-peer", &[])
 }
+
+pub fn tray_connect_device(args: &[String]) -> Result<()> {
+    let owned: Vec<&str> = args.iter().map(String::as_str).collect();
+    run_script_env(
+        "DENDRITIC_TRAY_CONNECT_DEVICE",
+        "dendritic-connect-device",
+        &owned,
+    )
+}

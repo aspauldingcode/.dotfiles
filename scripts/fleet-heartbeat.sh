@@ -19,7 +19,7 @@ PATH_IN_REPO="hosts/${HOST_ID}.json"
 DOTFILES_ROOT="${FLEET_DOTFILES_ROOT:-}"
 
 case "$PLATFORM" in
-darwin | nixos | linux) ;;
+darwin | nixos | linux | android) ;;
 *) die "invalid FLEET_PLATFORM=$PLATFORM" ;;
 esac
 
