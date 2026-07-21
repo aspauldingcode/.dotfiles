@@ -81,6 +81,11 @@ enum Commands {
         #[command(subcommand)]
         cmd: IdeCmd,
     },
+    /// Menubar tray helpers (collect / sync / switch-peer)
+    Tray {
+        #[command(subcommand)]
+        cmd: TrayCmd,
+    },
 }
 
 #[derive(Subcommand)]
@@ -166,6 +171,16 @@ enum IdeCmd {
     CursorDisableAttribution,
 }
 
+#[derive(Subcommand)]
+enum TrayCmd {
+    /// Refresh ~/.cache/dendritic-tray.status
+    Collect,
+    /// Local flake sync (git + flake update + nh switch)
+    Sync,
+    /// SSH to peer over WG and nh switch
+    SwitchPeer,
+}
+
 fn main() -> Result<()> {
     let cli = Cli::parse();
     match cli.cmd {
@@ -207,6 +222,11 @@ fn main() -> Result<()> {
         Commands::Power { status } => powerd::status_or_run(status),
         Commands::Ide { cmd } => match cmd {
             IdeCmd::CursorDisableAttribution => ide::cursor_disable_attribution(),
+        },
+        Commands::Tray { cmd } => match cmd {
+            TrayCmd::Collect => agent::tray_collect(),
+            TrayCmd::Sync => agent::tray_sync(),
+            TrayCmd::SwitchPeer => agent::tray_switch_peer(),
         },
     }
 }

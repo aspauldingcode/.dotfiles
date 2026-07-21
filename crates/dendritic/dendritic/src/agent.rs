@@ -100,3 +100,15 @@ pub fn auth_rotate(auto: bool, yes: bool, extra: &[String]) -> Result<()> {
 pub fn android_converge() -> Result<()> {
     run_script_env("DENDRITIC_ANDROID_CONVERGE", "android-converge", &[])
 }
+
+pub fn tray_collect() -> Result<()> {
+    run_script_env("DENDRITIC_TRAY_COLLECT", "dendritic-tray-collect", &[])
+}
+
+pub fn tray_sync() -> Result<()> {
+    run_script_env("DENDRITIC_TRAY_SYNC", "dendritic-tray-sync", &[])
+}
+
+pub fn tray_switch_peer() -> Result<()> {
+    run_script_env("DENDRITIC_TRAY_SWITCH_PEER", "dendritic-tray-switch-peer", &[])
+}

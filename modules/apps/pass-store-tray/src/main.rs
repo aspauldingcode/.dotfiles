@@ -11,7 +11,10 @@ use std::sync::Arc;
 use std::time::Duration;
 use tray_icon::menu::{Menu, MenuEvent, MenuItem, PredefinedMenuItem};
 use tray_icon::{Icon, TrayIcon, TrayIconBuilder};
-use ui_contract::{Action, TOOLTIP_IDLE, build_status_lines};
+use ui_contract::{
+    Action, DendriticFacts, TOOLTIP_IDLE, build_dendritic_rows, build_status_lines,
+    merge_status_lines,
+};
 
 #[cfg(target_os = "macos")]
 use winit::application::ApplicationHandler;
@@ -31,6 +34,7 @@ struct SyncStatus {
     #[serde(default)]
     message: String,
     #[serde(default)]
+    #[allow(dead_code)]
     updated_at: Option<String>,
     #[serde(default)]
     ahead_behind: Option<String>,
@@ -65,12 +69,18 @@ struct Env {
     status_file: PathBuf,
     lock_dir: PathBuf,
     sync_log: PathBuf,
+    dendritic_status: PathBuf,
+    dendritic_lock: PathBuf,
+    collect_bin: Option<PathBuf>,
+    sync_bin: Option<PathBuf>,
+    switch_peer_bin: Option<PathBuf>,
 }
 
 impl Env {
     fn from_env() -> Self {
         let home = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
         let cache = home.join(".cache");
+        let opt_bin = |key: &str| std::env::var_os(key).map(PathBuf::from);
         Self {
             status_file: std::env::var_os("PASS_STORE_SYNC_STATUS")
                 .map(PathBuf::from)
@@ -79,6 +89,13 @@ impl Env {
                 .map(PathBuf::from)
                 .unwrap_or_else(|| cache.join("pass-store-sync.lock")),
             sync_log: cache.join("pass-store-sync.log"),
+            dendritic_status: std::env::var_os("DENDRITIC_TRAY_STATUS")
+                .map(PathBuf::from)
+                .unwrap_or_else(|| cache.join("dendritic-tray.status")),
+            dendritic_lock: cache.join("dendritic-tray.lock"),
+            collect_bin: opt_bin("DENDRITIC_TRAY_COLLECT"),
+            sync_bin: opt_bin("DENDRITIC_TRAY_SYNC"),
+            switch_peer_bin: opt_bin("DENDRITIC_TRAY_SWITCH_PEER"),
         }
     }
 }
@@ -122,16 +139,26 @@ fn rebuild_running() -> bool {
     false
 }
 
-fn icon_kind(status: &SyncStatus, rebuilding: bool, lock: bool) -> IconKind {
+fn icon_kind(status: &SyncStatus, rebuilding: bool, lock: bool, facts: &DendriticFacts) -> IconKind {
     if rebuilding {
         return IconKind::Rebuild;
     }
     if status.error.as_ref().is_some_and(|e| !e.is_empty()) || status.state == "error" {
         return IconKind::Error;
     }
+    if facts.job_state == "error" {
+        return IconKind::Error;
+    }
     // Missing/stale materialize secrets — same attention glyph as error (no amber on template icons).
     if !status.materialize_warnings.is_empty() {
         return IconKind::Error;
+    }
+    if facts.flake_dirty || facts.flake_behind > 0 || !facts.wg_up || !facts.fleet_offline.is_empty()
+    {
+        return IconKind::Error;
+    }
+    if facts.job_state == "syncing" || facts.job_state == "switching" {
+        return IconKind::Up;
     }
     if status.state == "uploading" || (lock && status.direction == "up") {
         return IconKind::Up;
@@ -146,6 +173,148 @@ fn icon_kind(status: &SyncStatus, rebuilding: bool, lock: bool) -> IconKind {
         return IconKind::Down;
     }
     IconKind::Idle
+}
+
+#[derive(Debug, Clone, Default, Deserialize)]
+struct DendriticStatusFile {
+    #[serde(default)]
+    theme: DendriticTheme,
+    #[serde(default)]
+    llm: DendriticLlm,
+    #[serde(default)]
+    wg: DendriticWg,
+    #[serde(default)]
+    fleet: Vec<DendriticFleetHost>,
+    #[serde(default)]
+    flake: DendriticFlake,
+    #[serde(default)]
+    job: DendriticJob,
+    #[serde(default)]
+    #[allow(dead_code)]
+    updated_at: Option<String>,
+    #[serde(default)]
+    host: String,
+}
+
+#[derive(Debug, Clone, Default, Deserialize)]
+struct DendriticTheme {
+    #[serde(default)]
+    variant: String,
+    #[serde(default)]
+    phase: String,
+}
+
+#[derive(Debug, Clone, Default, Deserialize)]
+struct DendriticLlm {
+    #[serde(default)]
+    ok: bool,
+    #[serde(default)]
+    models: u32,
+}
+
+#[derive(Debug, Clone, Default, Deserialize)]
+struct DendriticWg {
+    #[serde(default)]
+    up: bool,
+    #[serde(default)]
+    peer_ok: bool,
+}
+
+#[derive(Debug, Clone, Default, Deserialize)]
+struct DendriticFleetHost {
+    #[serde(default)]
+    host: String,
+    #[serde(default)]
+    status: String,
+    #[serde(default)]
+    flake_rev: String,
+}
+
+#[derive(Debug, Clone, Default, Deserialize)]
+struct DendriticFlake {
+    #[serde(default)]
+    rev: String,
+    #[serde(default)]
+    dirty: bool,
+    #[serde(default)]
+    ahead: u32,
+    #[serde(default)]
+    behind: u32,
+    #[serde(default)]
+    nixpkgs_age_days: Option<u32>,
+}
+
+#[derive(Debug, Clone, Default, Deserialize)]
+struct DendriticJob {
+    #[serde(default = "default_state")]
+    state: String,
+    #[serde(default)]
+    message: String,
+}
+
+fn load_dendritic(path: &Path) -> DendriticStatusFile {
+    match std::fs::read_to_string(path) {
+        Ok(raw) => serde_json::from_str(&raw).unwrap_or_default(),
+        Err(_) => DendriticStatusFile::default(),
+    }
+}
+
+fn dendritic_facts(d: &DendriticStatusFile) -> DendriticFacts {
+    let mut offline = Vec::new();
+    let mut stale = Vec::new();
+    let mut peer_behind = Vec::new();
+    for h in &d.fleet {
+        if h.host.is_empty() || h.host == d.host {
+            continue;
+        }
+        match h.status.as_str() {
+            "offline" => offline.push(h.host.clone()),
+            "stale" => stale.push(h.host.clone()),
+            _ => {}
+        }
+        if !d.flake.rev.is_empty()
+            && !h.flake_rev.is_empty()
+            && h.flake_rev != d.flake.rev
+            && h.status != "offline"
+        {
+            peer_behind.push(h.host.clone());
+        }
+    }
+    DendriticFacts {
+        job_state: d.job.state.clone(),
+        job_message: d.job.message.clone(),
+        theme_variant: d.theme.variant.clone(),
+        theme_phase: d.theme.phase.clone(),
+        llm_ok: d.llm.ok,
+        llm_models: d.llm.models,
+        wg_up: d.wg.up,
+        wg_peer_ok: d.wg.peer_ok,
+        fleet_offline: offline,
+        fleet_stale: stale,
+        flake_dirty: d.flake.dirty,
+        flake_ahead: d.flake.ahead,
+        flake_behind: d.flake.behind,
+        nixpkgs_age_days: d.flake.nixpkgs_age_days,
+        peer_flake_behind: peer_behind,
+    }
+}
+
+fn status_stale(path: &Path, max_secs: u64) -> bool {
+    match std::fs::metadata(path).and_then(|m| m.modified()) {
+        Ok(t) => t.elapsed().map(|d| d.as_secs() > max_secs).unwrap_or(true),
+        Err(_) => true,
+    }
+}
+
+fn spawn_bin(bin: &Option<PathBuf>) {
+    let Some(path) = bin else {
+        return;
+    };
+    let _ = Command::new(path)
+        .stdin(std::process::Stdio::null())
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .spawn();
 }
 
 fn make_icon(kind: IconKind) -> Icon {
@@ -301,30 +470,39 @@ fn open_sync_log(path: &Path) {
     }
 }
 
+struct MenuActions {
+    qtpass: MenuItem,
+    log: MenuItem,
+    sync_flake: MenuItem,
+    switch_peer: MenuItem,
+    quit: MenuItem,
+}
+
 struct NativeTray {
     env: Env,
     tray: TrayIcon,
     status_rows: Vec<MenuItem>,
-    item_qtpass: MenuItem,
-    item_log: MenuItem,
-    item_quit: MenuItem,
+    actions: MenuActions,
     icon_kind: IconKind,
     /// Rebuild when status row set changes (omit zero/ok rows).
     rows_fp: String,
     quit: Arc<AtomicBool>,
+    last_collect: std::time::Instant,
 }
 
 impl NativeTray {
-    fn compose_menu(
-        status_texts: &[String],
-    ) -> (Menu, Vec<MenuItem>, MenuItem, MenuItem, MenuItem) {
+    fn compose_menu(status_texts: &[String]) -> (Menu, Vec<MenuItem>, MenuActions) {
         let status_rows: Vec<MenuItem> = status_texts
             .iter()
             .map(|t| MenuItem::new(t, false, None))
             .collect();
-        let item_qtpass = MenuItem::new(Action::OpenQtPass.label(), true, None);
-        let item_log = MenuItem::new(Action::OpenSyncLog.label(), true, None);
-        let item_quit = MenuItem::new(Action::Quit.label(), true, None);
+        let actions = MenuActions {
+            qtpass: MenuItem::new(Action::OpenQtPass.label(), true, None),
+            log: MenuItem::new(Action::OpenSyncLog.label(), true, None),
+            sync_flake: MenuItem::new(Action::SyncFlake.label(), true, None),
+            switch_peer: MenuItem::new(Action::SwitchPeer.label(), true, None),
+            quit: MenuItem::new(Action::Quit.label(), true, None),
+        };
 
         let menu = Menu::new();
         for row in &status_rows {
@@ -333,19 +511,20 @@ impl NativeTray {
         if !status_rows.is_empty() {
             let _ = menu.append(&PredefinedMenuItem::separator());
         }
-        debug_assert_eq!(Action::ALL[0], Action::OpenQtPass);
-        debug_assert_eq!(Action::ALL[1], Action::OpenSyncLog);
-        debug_assert_eq!(Action::ALL[2], Action::Quit);
-        let _ = menu.append(&item_qtpass);
-        let _ = menu.append(&item_log);
+        debug_assert_eq!(Action::ALL.len(), 5);
+        let _ = menu.append(&actions.qtpass);
+        let _ = menu.append(&actions.log);
         let _ = menu.append(&PredefinedMenuItem::separator());
-        let _ = menu.append(&item_quit);
+        let _ = menu.append(&actions.sync_flake);
+        let _ = menu.append(&actions.switch_peer);
+        let _ = menu.append(&PredefinedMenuItem::separator());
+        let _ = menu.append(&actions.quit);
 
-        (menu, status_rows, item_qtpass, item_log, item_quit)
+        (menu, status_rows, actions)
     }
 
     fn build(env: Env, quit: Arc<AtomicBool>) -> Self {
-        let (menu, status_rows, item_qtpass, item_log, item_quit) = Self::compose_menu(&[]);
+        let (menu, status_rows, actions) = Self::compose_menu(&[]);
 
         let tray = TrayIconBuilder::new()
             .with_menu(Box::new(menu))
@@ -359,12 +538,13 @@ impl NativeTray {
             env,
             tray,
             status_rows,
-            item_qtpass,
-            item_log,
-            item_quit,
+            actions,
             icon_kind: IconKind::Idle,
             rows_fp: String::new(),
             quit,
+            last_collect: std::time::Instant::now()
+                .checked_sub(Duration::from_secs(60))
+                .unwrap_or_else(std::time::Instant::now),
         };
         app.refresh();
         app
@@ -373,12 +553,9 @@ impl NativeTray {
     fn apply_lines(&mut self, lines: &ui_contract::StatusLines) {
         let fp = ui_contract::rows_fingerprint(&lines.rows);
         if fp != self.rows_fp {
-            let (menu, status_rows, item_qtpass, item_log, item_quit) =
-                Self::compose_menu(&lines.rows);
+            let (menu, status_rows, actions) = Self::compose_menu(&lines.rows);
             self.status_rows = status_rows;
-            self.item_qtpass = item_qtpass;
-            self.item_log = item_log;
-            self.item_quit = item_quit;
+            self.actions = actions;
             self.rows_fp = fp;
             self.tray.set_menu(Some(Box::new(menu)));
         } else {
@@ -389,19 +566,35 @@ impl NativeTray {
         let _ = self.tray.set_tooltip(Some(lines.tooltip.clone()));
     }
 
+    fn maybe_collect(&mut self) {
+        if !status_stale(&self.env.dendritic_status, 45)
+            && self.last_collect.elapsed() < Duration::from_secs(30)
+        {
+            return;
+        }
+        if self.last_collect.elapsed() < Duration::from_secs(10) {
+            return;
+        }
+        self.last_collect = std::time::Instant::now();
+        spawn_bin(&self.env.collect_bin);
+    }
+
     fn refresh(&mut self) {
+        self.maybe_collect();
         let status = load_status(&self.env.status_file);
+        let dendritic = load_dendritic(&self.env.dendritic_status);
+        let facts = dendritic_facts(&dendritic);
         let rebuilding = rebuild_running();
-        let lock = self.env.lock_dir.exists();
-        let kind = icon_kind(&status, rebuilding, lock);
+        let lock = self.env.lock_dir.exists() || self.env.dendritic_lock.exists();
+        let kind = icon_kind(&status, rebuilding, lock, &facts);
         if kind != self.icon_kind {
             self.icon_kind = kind;
             apply_icon(&self.tray, kind);
         }
 
-        let lines = build_status_lines(
+        let pass_lines = build_status_lines(
             rebuilding,
-            lock,
+            self.env.lock_dir.exists(),
             &status.state,
             &status.direction,
             &status.message,
@@ -412,17 +605,23 @@ impl NativeTray {
             status.last_materialize_at.as_deref(),
             &status.materialize_warnings,
         );
+        let drows = build_dendritic_rows(&facts);
+        let lines = merge_status_lines(pass_lines, &drows);
         self.apply_lines(&lines);
     }
 
     fn handle_menu(&mut self) {
         while let Ok(ev) = MenuEvent::receiver().try_recv() {
             let id = ev.id;
-            if id == self.item_qtpass.id() {
+            if id == self.actions.qtpass.id() {
                 open_qtpass();
-            } else if id == self.item_log.id() {
+            } else if id == self.actions.log.id() {
                 open_sync_log(&self.env.sync_log);
-            } else if id == self.item_quit.id() {
+            } else if id == self.actions.sync_flake.id() {
+                spawn_bin(&self.env.sync_bin);
+            } else if id == self.actions.switch_peer.id() {
+                spawn_bin(&self.env.switch_peer_bin);
+            } else if id == self.actions.quit.id() {
                 self.quit.store(true, Ordering::SeqCst);
             }
         }

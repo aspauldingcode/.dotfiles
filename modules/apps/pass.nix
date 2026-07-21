@@ -138,9 +138,67 @@
         # PASS_STORE_NTFY_TOPIC_FILE must be set by the agent (sops path).
         exec ${pkgs.bash}/bin/bash ${../../scripts/pass-store-sync-notify.sh}
       '';
+      trayCollectScript = pkgs.writeShellScriptBin "dendritic-tray-collect" ''
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.bash
+            pkgs.coreutils
+            pkgs.curl
+            pkgs.python3
+            pkgs.wireguard-tools
+            pkgs.git
+          ]
+        }:/usr/sbin:/sbin:/usr/bin:/bin''${PATH:+:$PATH}
+        export DOTFILES_ROOT=''${DOTFILES_ROOT:-${lib.escapeShellArg config.home.homeDirectory}/.dotfiles-link}
+        # Prefer flake-source / host checkout when present.
+        if [ -d /etc/nix-darwin/.dotfiles/.git ]; then export DOTFILES_ROOT=/etc/nix-darwin/.dotfiles
+        elif [ -d /etc/nixos/.dotfiles/.git ]; then export DOTFILES_ROOT=/etc/nixos/.dotfiles
+        fi
+        export WG_PEERS_JSON=${lib.escapeShellArg "${../../home/wireguard-peers.json}"}
+        export DENDRITIC_TRAY_STATUS=${lib.escapeShellArg "${config.home.homeDirectory}/.cache/dendritic-tray.status"}
+        exec ${pkgs.bash}/bin/bash ${../../scripts/dendritic-tray-collect.sh}
+      '';
+      traySyncScript = pkgs.writeShellScriptBin "dendritic-tray-sync" ''
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.bash
+            pkgs.coreutils
+            pkgs.curl
+            pkgs.python3
+            pkgs.git
+            pkgs.nh
+            pkgs.nix
+          ]
+        }''${PATH:+:$PATH}
+        if [ -d /etc/nix-darwin/.dotfiles/.git ]; then export DOTFILES_ROOT=/etc/nix-darwin/.dotfiles
+        elif [ -d /etc/nixos/.dotfiles/.git ]; then export DOTFILES_ROOT=/etc/nixos/.dotfiles
+        fi
+        export DENDRITIC_TRAY_STATUS=${lib.escapeShellArg "${config.home.homeDirectory}/.cache/dendritic-tray.status"}
+        export DENDRITIC_TRAY_COLLECT=${lib.getExe trayCollectScript}
+        exec ${pkgs.bash}/bin/bash ${../../scripts/dendritic-tray-sync.sh}
+      '';
+      traySwitchPeerScript = pkgs.writeShellScriptBin "dendritic-tray-switch-peer" ''
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.bash
+            pkgs.coreutils
+            pkgs.python3
+            pkgs.openssh
+            pkgs.wireguard-tools
+            pkgs.git
+          ]
+        }:/usr/sbin:/sbin:/usr/bin:/bin''${PATH:+:$PATH}
+        if [ -d /etc/nix-darwin/.dotfiles/.git ]; then export DOTFILES_ROOT=/etc/nix-darwin/.dotfiles
+        elif [ -d /etc/nixos/.dotfiles/.git ]; then export DOTFILES_ROOT=/etc/nixos/.dotfiles
+        fi
+        export WG_PEERS_JSON=${lib.escapeShellArg "${../../home/wireguard-peers.json}"}
+        export DENDRITIC_TRAY_STATUS=${lib.escapeShellArg "${config.home.homeDirectory}/.cache/dendritic-tray.status"}
+        export DENDRITIC_TRAY_COLLECT=${lib.getExe trayCollectScript}
+        exec ${pkgs.bash}/bin/bash ${../../scripts/dendritic-tray-switch-peer.sh}
+      '';
       trayPkg = pkgs.rustPlatform.buildRustPackage {
         pname = "pass-store-tray";
-        version = "0.3.5";
+        version = "0.4.0";
         src = ./pass-store-tray;
         cargoLock.lockFile = ./pass-store-tray/Cargo.lock;
         nativeBuildInputs = [
@@ -173,17 +231,24 @@
               --set PASSWORD_STORE_DIR ${lib.escapeShellArg storeDir} \
               --set PASS_STORE_SYNC_STATUS ${lib.escapeShellArg "${config.home.homeDirectory}/.cache/pass-store-sync.status"} \
               --set PASS_STORE_SYNC_LOCK ${lib.escapeShellArg "${config.home.homeDirectory}/.cache/pass-store-sync.lock"} \
+              --set DENDRITIC_TRAY_STATUS ${lib.escapeShellArg "${config.home.homeDirectory}/.cache/dendritic-tray.status"} \
+              --set DENDRITIC_TRAY_COLLECT ${lib.getExe trayCollectScript} \
+              --set DENDRITIC_TRAY_SYNC ${lib.getExe traySyncScript} \
+              --set DENDRITIC_TRAY_SWITCH_PEER ${lib.getExe traySwitchPeerScript} \
               --prefix PATH : ${
                 lib.makeBinPath [
                   pkgs.procps
                   pkgs.bash
                   pkgs.coreutils
+                  trayCollectScript
+                  traySyncScript
+                  traySwitchPeerScript
                 ]
               } \
               ${wrapLibPath}
           '';
         meta = {
-          description = "Pass store sync native tray applet (Rust)";
+          description = "Dendritic menubar: pass sync + fleet/wg/llm/theme/flake status";
           mainProgram = "pass-store-tray";
         };
       };
@@ -406,7 +471,12 @@
               jq
             ]
             ++ lib.optionals cfg.gui.enable [ qtpassThemed ]
-            ++ lib.optionals cfg.tray.enable [ trayPkg ]
+            ++ lib.optionals cfg.tray.enable [
+              trayPkg
+              trayCollectScript
+              traySyncScript
+              traySwitchPeerScript
+            ]
             ++ lib.optionals cfg.materialize.enable [
               (pkgs.writeShellScriptBin "pass-materialize" ''
                 exec ${materializeScript}

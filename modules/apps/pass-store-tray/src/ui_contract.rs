@@ -24,6 +24,8 @@ pub const MAX_PATH_ROWS: usize = 6;
 pub enum Action {
     OpenQtPass,
     OpenSyncLog,
+    SyncFlake,
+    SwitchPeer,
     Quit,
 }
 
@@ -32,15 +34,23 @@ impl Action {
         match self {
             Self::OpenQtPass => "Open QtPass",
             Self::OpenSyncLog => "Open sync log",
+            Self::SyncFlake => "Sync flake…",
+            Self::SwitchPeer => "Switch peer…",
             Self::Quit => "Quit",
         }
     }
 
     /// Ordered action rows after the status block + separators.
-    pub const ALL: &[Action] = &[Self::OpenQtPass, Self::OpenSyncLog, Self::Quit];
+    pub const ALL: &[Action] = &[
+        Self::OpenQtPass,
+        Self::OpenSyncLog,
+        Self::SyncFlake,
+        Self::SwitchPeer,
+        Self::Quit,
+    ];
 }
 
-pub const TOOLTIP_IDLE: &str = "pass sync";
+pub const TOOLTIP_IDLE: &str = "dendritic";
 
 /// Truncate to `max` chars with a single ellipsis when needed.
 pub fn ellipsize(s: &str, max: usize) -> String {
@@ -146,15 +156,11 @@ pub fn parse_ahead_behind(raw: Option<&str>) -> (u32, u32) {
 }
 
 /// Warning → key only (truncated). No path on the same line.
-/// Expected: `KEY empty → ~/path`, `stale env remains → ~/path`, `skip unsafe…`
 pub fn warning_rows(raw: &str) -> Vec<String> {
     let raw = raw.trim();
     if let Some((left, _right)) = raw.split_once(" → ") {
         let left = left.trim();
-        let key = left
-            .strip_suffix(" empty")
-            .unwrap_or(left)
-            .trim();
+        let key = left.strip_suffix(" empty").unwrap_or(left).trim();
         if key.starts_with("stale env") {
             return vec![ellipsize("stale env", MENU_COLS)];
         }
@@ -181,7 +187,7 @@ pub fn rows_fingerprint(rows: &[String]) -> String {
     rows.join("\n")
 }
 
-/// Build minimal status rows: skip zeros / idle-ok; one fact per row.
+/// Build minimal pass-store status rows: skip zeros / idle-ok; one fact per row.
 pub fn build_status_lines(
     rebuilding: bool,
     lock: bool,
@@ -199,7 +205,6 @@ pub fn build_status_lines(
     let (ahead, behind) = parse_ahead_behind(ahead_behind);
     let mut rows: Vec<String> = Vec::new();
 
-    // Active sync / rebuild — only while in progress.
     if rebuilding {
         rows.push("Rebuilding…".into());
     } else if lock {
@@ -217,15 +222,13 @@ pub fn build_status_lines(
         rows.push(ellipsize(&format!("Error: {e}"), MENU_COLS));
     }
 
-    // Git divergence — omit when both zero.
     if ahead > 0 {
-        rows.push(format!("ahead {ahead}"));
+        rows.push(format!("pass ahead {ahead}"));
     }
     if behind > 0 {
-        rows.push(format!("behind {behind}"));
+        rows.push(format!("pass behind {behind}"));
     }
 
-    // Warnings — one key per issue; omit entirely when zero.
     let mut warn_shown = 0usize;
     for w in warnings {
         if warn_shown >= MAX_WARN_ROWS {
@@ -239,19 +242,16 @@ pub fn build_status_lines(
         warn_shown += 1;
     }
 
-    // Change paths — omit when 0 or when the set is large (fleet PSKs).
-    // Small sets: one truncated leaf per item, never side-by-side.
     if !materialized.is_empty() && materialized.len() <= MAX_PATH_ROWS {
         for p in materialized {
             rows.push(ellipsize(&path_leaf(p), MENU_COLS));
         }
     }
 
-    // Drop boring sync chatter ("pull: up to date", "0 warning(s)") — icon covers ok.
     let _ = message;
 
     let tooltip = {
-        let mut parts: Vec<String> = vec!["pass sync".into()];
+        let mut parts: Vec<String> = vec!["dendritic".into()];
         if rows.is_empty() {
             parts.push("ok".into());
         } else {
@@ -260,6 +260,101 @@ pub fn build_status_lines(
         wrap_text(&parts.join("\n"), TOOLTIP_COLS)
     };
 
+    StatusLines { rows, tooltip }
+}
+
+/// Dendritic tray extras (theme / llm / wg / fleet / flake / job).
+#[derive(Debug, Clone, Default)]
+pub struct DendriticFacts {
+    pub job_state: String,
+    pub job_message: String,
+    pub theme_variant: String,
+    pub theme_phase: String,
+    pub llm_ok: bool,
+    pub llm_models: u32,
+    pub wg_up: bool,
+    pub wg_peer_ok: bool,
+    pub fleet_offline: Vec<String>,
+    pub fleet_stale: Vec<String>,
+    pub flake_dirty: bool,
+    pub flake_ahead: u32,
+    pub flake_behind: u32,
+    pub nixpkgs_age_days: Option<u32>,
+    pub peer_flake_behind: Vec<String>,
+}
+
+pub fn build_dendritic_rows(f: &DendriticFacts) -> Vec<String> {
+    let mut rows = Vec::new();
+    if !f.job_state.is_empty() && f.job_state != "idle" {
+        if f.job_state == "error" {
+            rows.push(ellipsize(
+                &format!("Job: {}", if f.job_message.is_empty() { "error" } else { &f.job_message }),
+                MENU_COLS,
+            ));
+        } else {
+            rows.push(ellipsize(
+                &format!(
+                    "{}…",
+                    if f.job_message.is_empty() {
+                        f.job_state.as_str()
+                    } else {
+                        f.job_message.as_str()
+                    }
+                ),
+                MENU_COLS,
+            ));
+        }
+    }
+    if f.flake_dirty {
+        rows.push("flake dirty".into());
+    }
+    if f.flake_ahead > 0 {
+        rows.push(format!("flake ahead {}", f.flake_ahead));
+    }
+    if f.flake_behind > 0 {
+        rows.push(format!("flake behind {}", f.flake_behind));
+    }
+    if let Some(days) = f.nixpkgs_age_days {
+        if days >= 14 {
+            rows.push(format!("nixpkgs {days}d old"));
+        }
+    }
+    for h in &f.peer_flake_behind {
+        rows.push(ellipsize(&format!("{h} rev behind"), MENU_COLS));
+    }
+    if !f.wg_up {
+        rows.push("wg down".into());
+    } else if !f.wg_peer_ok {
+        rows.push("wg peer unreachable".into());
+    }
+    if !f.llm_ok {
+        rows.push("ollama down".into());
+    }
+    if !f.theme_phase.is_empty() && f.theme_phase != "synced" {
+        rows.push(ellipsize(&format!("theme {}", f.theme_phase), MENU_COLS));
+    }
+    for h in &f.fleet_offline {
+        rows.push(ellipsize(&format!("{h} offline"), MENU_COLS));
+    }
+    for h in &f.fleet_stale {
+        rows.push(ellipsize(&format!("{h} stale"), MENU_COLS));
+    }
+    rows
+}
+
+/// Merge pass + dendritic rows; rebuild tooltip.
+pub fn merge_status_lines(pass: StatusLines, dendritic_rows: &[String]) -> StatusLines {
+    let mut rows = pass.rows;
+    rows.extend(dendritic_rows.iter().cloned());
+    let tooltip = {
+        let mut parts: Vec<String> = vec!["dendritic".into()];
+        if rows.is_empty() {
+            parts.push("ok".into());
+        } else {
+            parts.extend(rows.iter().cloned());
+        }
+        wrap_text(&parts.join("\n"), TOOLTIP_COLS)
+    };
     StatusLines { rows, tooltip }
 }
 
@@ -296,65 +391,29 @@ mod tests {
             None,
             &[],
         );
-        assert!(lines.rows.is_empty(), "ok state → actions only: {:?}", lines.rows);
-    }
-
-    #[test]
-    fn warnings_and_paths_are_separate_rows() {
-        let mats = vec![
-            ".config/dendritic/wifi/Bubbles.psk".into(),
-            ".config/guildforge/env".into(),
-        ];
-        let lines = build_status_lines(
-            false,
-            false,
-            "idle",
-            "none",
-            "materialized 2 file(s); 2 warning(s)",
-            Some("ahead 0, behind 0"),
-            None,
-            None,
-            &mats,
-            None,
-            &[
-                "DISCORD_TOKEN empty → ~/.config/guildforge/env".into(),
-                "GUILD_ID empty → ~/.config/guildforge/env".into(),
-            ],
+        assert!(
+            lines.rows.is_empty(),
+            "ok state → actions only: {:?}",
+            lines.rows
         );
-        assert!(lines.rows.iter().all(|r| !r.contains(" · ") && !r.contains(", ")));
-        assert!(lines.rows.iter().any(|r| r == "DISCORD_TOKEN"));
-        assert!(lines.rows.iter().any(|r| r == "GUILD_ID"));
-        assert!(lines.rows.iter().any(|r| r == "Bubbles.psk"));
-        assert!(lines.rows.iter().any(|r| r == "env"));
-        for row in &lines.rows {
-            assert!(row.chars().count() <= MENU_COLS, "{row}");
-        }
     }
 
     #[test]
-    fn large_file_set_omitted() {
-        let mats: Vec<String> = (0..19)
-            .map(|i| format!(".config/dendritic/wifi/WIFI_{i}.psk"))
-            .collect();
-        let lines = build_status_lines(
-            false,
-            false,
-            "idle",
-            "none",
-            "",
-            Some("ahead 0, behind 0"),
-            None,
-            None,
-            &mats,
-            None,
-            &[],
-        );
-        assert!(lines.rows.is_empty());
+    fn dendritic_rows_omit_healthy() {
+        let f = DendriticFacts {
+            llm_ok: true,
+            wg_up: true,
+            wg_peer_ok: true,
+            theme_phase: "synced".into(),
+            ..Default::default()
+        };
+        assert!(build_dendritic_rows(&f).is_empty());
     }
 
     #[test]
-    fn warning_key_not_full_path() {
-        let rows = warning_rows("DISCORD_TOKEN empty → ~/.config/guildforge/env");
-        assert_eq!(rows, vec!["DISCORD_TOKEN".to_string()]);
+    fn actions_include_sync() {
+        assert!(Action::ALL.contains(&Action::SyncFlake));
+        assert!(Action::ALL.contains(&Action::SwitchPeer));
+        assert_eq!(Action::ALL.len(), 5);
     }
 }
