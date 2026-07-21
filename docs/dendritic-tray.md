@@ -6,10 +6,10 @@ unchanged; dendritic fleet/theme/llm/wg/flake status is layered on top.
 
 ## Status files
 
-| File | Writer |
-|------|--------|
-| `~/.cache/pass-store-sync.status` | `pass-store-sync` (existing) |
-| `~/.cache/dendritic-tray.status` | `dendritic-tray-collect` / `dendritic tray collect` |
+| File                              | Writer                                              |
+| --------------------------------- | --------------------------------------------------- |
+| `~/.cache/pass-store-sync.status` | `pass-store-sync` (existing)                        |
+| `~/.cache/dendritic-tray.status`  | `dendritic-tray-collect` / `dendritic tray collect` |
 
 Tray polls both ~2s. Collect runs when dendritic status is older than ~45s.
 
