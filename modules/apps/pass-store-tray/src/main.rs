@@ -120,16 +120,22 @@ fn rebuild_running() -> bool {
         return false;
     };
     let text = String::from_utf8_lossy(&out.stdout);
+    // Match real rebuild invocations only — bare "nh os" false-positives on
+    // diagnostic shells / ssh heredocs that merely mention the strings.
     const PATS: &[&str] = &[
-        "nh darwin",
-        "nh os",
-        "darwin-rebuild",
-        "nixos-rebuild",
-        "nix-darwin-rebuild",
+        "nh darwin switch",
+        "nh os switch",
+        "darwin-rebuild switch",
+        "nixos-rebuild switch",
+        "nix-darwin-rebuild switch",
     ];
     for line in text.lines() {
         let low = line.to_lowercase();
-        if low.contains("pass-store-tray") {
+        if low.contains("pass-store-tray")
+            || low.contains("grep")
+            || low.contains("rg ")
+            || low.contains("cursor")
+        {
             continue;
         }
         if PATS.iter().any(|p| low.contains(p)) {

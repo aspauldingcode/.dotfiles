@@ -187,12 +187,18 @@ if peer_id and peer_ok:
         "status": "online",
         "seen_at": now,
     }
-    prev_st = peer.get("status") or ""
+    # Only trust a published flake_rev when the heartbeat itself is fresh.
+    # JSON may still say status=online with an old seen_at; age that explicitly.
+    seen = peer.get("seen_at") or ""
+    heartbeat_fresh = False
+    try:
+        ts = datetime.fromisoformat(seen.replace("Z", "+00:00"))
+        heartbeat_fresh = (now_dt - ts).total_seconds() <= 1800
+    except Exception:
+        pass
     peer["status"] = "online"
     peer["seen_at"] = now
-    # WG ping proves liveness only — don't keep an ancient published rev that
-    # would false-positive "peer rev behind" in the tray.
-    if prev_st in ("stale", "offline"):
+    if not heartbeat_fresh:
         peer["flake_rev"] = ""
     by_host[peer_id] = peer
 fleet = list(by_host.values())
