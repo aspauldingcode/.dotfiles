@@ -140,14 +140,21 @@
       '';
       trayCollectScript = pkgs.writeShellScriptBin "dendritic-tray-collect" ''
         export PATH=${
-          lib.makeBinPath [
-            pkgs.bash
-            pkgs.coreutils
-            pkgs.curl
-            pkgs.python3
-            pkgs.wireguard-tools
-            pkgs.git
-          ]
+          lib.makeBinPath (
+            [
+              pkgs.bash
+              pkgs.coreutils
+              pkgs.curl
+              pkgs.python3
+              pkgs.wireguard-tools
+              pkgs.git
+              (pkgs.callPackage ./dendritic-appearance/_package.nix { })
+            ]
+            ++ lib.optionals pkgs.stdenv.isLinux [
+              pkgs.iproute2
+              pkgs.iputils
+            ]
+          )
         }:/usr/sbin:/sbin:/usr/bin:/bin''${PATH:+:$PATH}
         export DOTFILES_ROOT=''${DOTFILES_ROOT:-${lib.escapeShellArg config.home.homeDirectory}/.dotfiles-link}
         # Prefer flake-source / host checkout when present.

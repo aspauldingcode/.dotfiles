@@ -76,6 +76,14 @@ done < <(jq -r 'keys[]' "$MAP_FILE")
 # Create the status file if missing so tray can still see warnings.
 now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 warn_count="$(jq -nr --argjson w "$warnings" '$w | length')"
+# Refresh ahead/behind so tray does not keep a stale "pass ahead N" after push.
+ahead_behind="unknown"
+if [[ -d ${PASSWORD_STORE_DIR:-}/.git ]]; then
+  ab="$(git -C "$PASSWORD_STORE_DIR" rev-list --left-right --count HEAD...origin/HEAD 2>/dev/null || true)"
+  if [[ -n $ab ]]; then
+    ahead_behind="$(printf 'ahead %s, behind %s' "$(printf '%s' "$ab" | cut -f1)" "$(printf '%s' "$ab" | cut -f2)")"
+  fi
+fi
 mkdir -p "$(dirname "$STATUS_FILE")"
 if [[ ! -f $STATUS_FILE ]]; then
   printf '%s\n' '{"state":"idle","direction":"none","message":"materialize only"}' >"$STATUS_FILE"
@@ -87,6 +95,7 @@ if jq -nc \
   --argjson materialize_warnings "$warnings" \
   --arg now "$now" \
   --arg msg "materialized ${count} file(s); ${warn_count} warning(s)" \
+  --arg ahead_behind "$ahead_behind" \
   '
     ($prev[0] // {})
     + {
@@ -94,7 +103,8 @@ if jq -nc \
         materialized: $materialized,
         materialize_warnings: $materialize_warnings,
         updated_at: $now,
-        message: $msg
+        message: $msg,
+        ahead_behind: $ahead_behind
       }
   ' >"$tmp" 2>/dev/null; then
   mv "$tmp" "$STATUS_FILE"
@@ -117,7 +127,9 @@ if [[ -n $ENV_MAP_FILE && -f $ENV_MAP_FILE ]]; then
     esac
     out="${HOME_DIR}/${rel}"
     missing=0
+    found=0
     body=""
+    missing_keys=()
     while IFS= read -r env_name; do
       [[ -n $env_name ]] || continue
       key="$(jq -r --arg p "$rel" --arg e "$env_name" '.[$p][$e] // empty' "$ENV_MAP_FILE")"
@@ -125,12 +137,10 @@ if [[ -n $ENV_MAP_FILE && -f $ENV_MAP_FILE ]]; then
       val="$(secretspec get -f "$SECRETSPEC_TOML" "$key" 2>/dev/null || true)"
       if [[ -z $val ]]; then
         missing=1
-        # Short, scannable: tray wraps/caps width; keep key + target obvious.
-        w="${key} empty → ~/${rel}"
-        warn "$w"
-        warnings="$(jq -nc --argjson arr "$warnings" --arg w "$w" '$arr + [$w]')"
+        missing_keys+=("$key")
         continue
       fi
+      found=1
       # Escape for shell env files: quote if needed.
       body+="${env_name}=${val}"$'\n'
     done < <(jq -r --arg p "$rel" '.[$p] | keys[]' "$ENV_MAP_FILE")
@@ -142,15 +152,32 @@ if [[ -n $ENV_MAP_FILE && -f $ENV_MAP_FILE ]]; then
       materialized="$(jq -nc --argjson arr "$materialized" --arg p "$rel" '$arr + [$p]')"
       count=$((count + 1))
       log "wrote env $out"
-    elif [[ $missing -ne 0 && -e $out ]]; then
-      w="stale env remains → ~/${rel}"
-      warn "$w"
-      warnings="$(jq -nc --argjson arr "$warnings" --arg w "$w" '$arr + [$w]')"
+    elif [[ $found -eq 0 && $missing -ne 0 && ! -e $out ]]; then
+      # Optional feature not bootstrapped (e.g. guildforge) — keep tray quiet.
+      log "skip optional env ~/${rel} (no secrets yet)"
+    elif [[ $missing -ne 0 ]]; then
+      for key in "${missing_keys[@]}"; do
+        w="${key} empty → ~/${rel}"
+        warn "$w"
+        warnings="$(jq -nc --argjson arr "$warnings" --arg w "$w" '$arr + [$w]')"
+      done
+      if [[ -e $out ]]; then
+        w="stale env remains → ~/${rel}"
+        warn "$w"
+        warnings="$(jq -nc --argjson arr "$warnings" --arg w "$w" '$arr + [$w]')"
+      fi
     fi
   done < <(jq -r 'keys[]' "$ENV_MAP_FILE")
 
   # Refresh status after env materialize.
   warn_count="$(jq -nr --argjson w "$warnings" '$w | length')"
+  ahead_behind="unknown"
+  if [[ -d ${PASSWORD_STORE_DIR:-}/.git ]]; then
+    ab="$(git -C "$PASSWORD_STORE_DIR" rev-list --left-right --count HEAD...origin/HEAD 2>/dev/null || true)"
+    if [[ -n $ab ]]; then
+      ahead_behind="$(printf 'ahead %s, behind %s' "$(printf '%s' "$ab" | cut -f1)" "$(printf '%s' "$ab" | cut -f2)")"
+    fi
+  fi
   tmp="$(mktemp "${STATUS_FILE}.XXXXXX")"
   if jq -nc \
     --slurpfile prev "$STATUS_FILE" \
@@ -158,6 +185,7 @@ if [[ -n $ENV_MAP_FILE && -f $ENV_MAP_FILE ]]; then
     --argjson materialize_warnings "$warnings" \
     --arg now "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
     --arg msg "materialized ${count} file(s); ${warn_count} warning(s)" \
+    --arg ahead_behind "$ahead_behind" \
     '
       ($prev[0] // {})
       + {
@@ -165,7 +193,8 @@ if [[ -n $ENV_MAP_FILE && -f $ENV_MAP_FILE ]]; then
           materialized: $materialized,
           materialize_warnings: $materialize_warnings,
           updated_at: $now,
-          message: $msg
+          message: $msg,
+          ahead_behind: $ahead_behind
         }
     ' >"$tmp" 2>/dev/null; then
     mv "$tmp" "$STATUS_FILE"

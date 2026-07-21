@@ -61,25 +61,67 @@ if curl -fsS --max-time 2 http://127.0.0.1:11434/api/tags -o /tmp/dendritic-olla
 fi
 export LLM_OK LLM_MODELS
 
-# wg
+# wg — detect without root. `wg show` needs privileges; Darwin names the
+# interface utunN, not "dendritic". Prefer: own WG addr assigned, sysfs/ip link,
+# then privileged wg show as last resort.
 WG_UP=0
 WG_PEER_OK=0
 WG_PEER_IP=""
-if command -v wg >/dev/null 2>&1 && wg show "$WG_IFACE" >/dev/null 2>&1; then
-  WG_UP=1
-fi
+WG_SELF_IP=""
+WG_PEER_ID=""
 if [[ -f $PEERS_JSON ]]; then
-  WG_PEER_IP="$(python3 -c 'import json,sys; peers=json.load(open(sys.argv[1])); me=sys.argv[2]
+  eval "$(
+    python3 -c 'import json,sys
+peers=json.load(open(sys.argv[1])); me=sys.argv[2]
+self_ip=""; peer_ip=""; peer_id=""
 for p in peers:
-  if p.get("id")!=me:
-    print(p.get("address","").split("/")[0]); break' "$PEERS_JSON" "$HOST" 2>/dev/null || true)"
+  pid=p.get("id") or ""
+  ip=(p.get("address") or "").split("/")[0]
+  if pid==me: self_ip=ip
+  elif not peer_ip:
+    peer_ip=ip; peer_id=pid
+def esc(s):
+  return str(s or "").replace("\\","\\\\").replace("\"","\\\"").replace("$","\\$").replace("`","\\`")
+print(f"WG_SELF_IP=\"{esc(self_ip)}\"")
+print(f"WG_PEER_IP=\"{esc(peer_ip)}\"")
+print(f"WG_PEER_ID=\"{esc(peer_id)}\"")
+' "$PEERS_JSON" "$HOST" 2>/dev/null || true
+  )"
+fi
+wg_iface_up() {
+  local iface="$1"
+  [[ -n $iface ]] || return 1
+  if [[ -d /sys/class/net/$iface ]]; then
+    # Linux: present + IFF_UP (ip/sysfs work unprivileged)
+    if command -v ip >/dev/null 2>&1; then
+      ip -o link show "$iface" 2>/dev/null | grep -q '<[^>]*\bUP\b' && return 0
+    fi
+    [[ -e /sys/class/net/$iface/flags ]] && return 0
+  fi
+  return 1
+}
+wg_addr_present() {
+  local ip="$1"
+  [[ -n $ip ]] || return 1
+  if command -v ip >/dev/null 2>&1; then
+    ip -br addr 2>/dev/null | grep -Fq "$ip" && return 0
+  fi
+  if command -v ifconfig >/dev/null 2>&1; then
+    ifconfig 2>/dev/null | grep -Eq "inet (addr:)?${ip}([[:space:]]|$)" && return 0
+  fi
+  return 1
+}
+if wg_iface_up "$WG_IFACE" || wg_addr_present "$WG_SELF_IP"; then
+  WG_UP=1
+elif command -v wg >/dev/null 2>&1 && wg show "$WG_IFACE" >/dev/null 2>&1; then
+  WG_UP=1
 fi
 if [[ -n $WG_PEER_IP ]]; then
   if ping -c1 -W2 "$WG_PEER_IP" >/dev/null 2>&1 || ping -c1 -t2 "$WG_PEER_IP" >/dev/null 2>&1; then
     WG_PEER_OK=1
   fi
 fi
-export WG_UP WG_PEER_OK WG_PEER_IP
+export WG_UP WG_PEER_OK WG_PEER_IP WG_PEER_ID WG_SELF_IP
 
 python3 <<'PY'
 import json, os, subprocess, time
@@ -117,6 +159,32 @@ if fleet_json and Path(fleet_json).is_file():
             "status": st,
             "seen_at": seen,
         })
+
+# Live overlays: mark self online at local HEAD; mark WG-reachable peer online.
+peer_id = os.environ.get("WG_PEER_ID") or ""
+peer_ok = os.environ.get("WG_PEER_OK") == "1"
+self_rev = ""
+if dotfiles and (Path(dotfiles) / ".git").exists():
+    r = subprocess.run(
+        ["git", "-C", dotfiles, "rev-parse", "--short=8", "HEAD"],
+        capture_output=True, text=True,
+    )
+    if r.returncode == 0:
+        self_rev = r.stdout.strip()
+by_host = {h["host"]: h for h in fleet if h.get("host")}
+if host:
+    me = by_host.get(host) or {"host": host, "platform": "", "flake_rev": "", "status": "online", "seen_at": now}
+    me["status"] = "online"
+    me["seen_at"] = now
+    if self_rev:
+        me["flake_rev"] = self_rev
+    by_host[host] = me
+if peer_id and peer_ok:
+    peer = by_host.get(peer_id) or {"host": peer_id, "platform": "", "flake_rev": "", "status": "online", "seen_at": now}
+    peer["status"] = "online"
+    peer["seen_at"] = now
+    by_host[peer_id] = peer
+fleet = list(by_host.values())
 
 flake = {
     "root": dotfiles,
