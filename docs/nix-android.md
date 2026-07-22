@@ -167,10 +167,9 @@ Paste the generated module into `hosts/android/oneplus6t/default.nix`, then
 - **Cleanup on** (`apps.cleanup = "uninstall"`) — undeclared third-party owner
   apps are removed after a successful apply. System packages are never cleanup
   candidates; disable those with `android.packages.disabled`.
-- Keepers today: F-Droid + Termux (managed) and **Wawona**
-  (`com.aspauldingcode.wawona` under `apps.attended`). Add anything else you
-  want to keep under `apps.play` / `apps.attended` / `apps.fdroid` /
-  `apps.release` **before** the next `switch`, or it will be uninstalled.
+- Keepers today: F-Droid + Termux (managed). Add anything else you want to keep
+  under `apps.play` / `apps.attended` / `apps.fdroid` / `apps.release`
+  **before** the next `switch`, or it will be uninstalled.
 - Dark mode + opportunistic Private DNS; Termux notification permission and
   background/battery exemptions.
 

@@ -29,10 +29,7 @@
     ];
 
     # Sideloaded / non-Play keepers (presence assertions).
-    # Wawona: com.aspauldingcode.wawona
-    attended = [
-      "com.aspauldingcode.wawona"
-    ];
+    attended = [ ];
 
     # release."org.thoughtcrime.securesms".updateJson =
     #   "https://updates.signal.org/android/latest.json";

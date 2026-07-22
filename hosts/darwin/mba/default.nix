@@ -135,68 +135,35 @@
       ];
       home-manager.extraSpecialArgs = { inherit inputs; };
       home-manager.users."8amps" =
-        { config, ... }:
+        {
+          config,
+          lib,
+          pkgs,
+          ...
+        }:
         {
           gtk.gtk4.theme = null;
           manual.manpages.enable = false;
           manual.html.enable = false;
           manual.json.enable = false;
 
-          # Wawona LaunchAgent
-          # launchd.agents.wawona = {
-          #   enable = true;
-          #   config = {
-          #     Label = "com.aspauldingcode.wawona";
-          #     ProgramArguments = [ "${pkgs.wawona}/bin/wawona" ];
-          #     KeepAlive = true;
-          #     RunAtLoad = true;
-          #     StandardOutPath = "${config.home.homeDirectory}/.cache/wawona.log";
-          #     StandardErrorPath = "${config.home.homeDirectory}/.cache/wawona.err";
-          #   };
-          # };
-
-          # Waypipe LaunchAgent (Host-side proxy for Wawona)
-          # launchd.agents.waypipe = {
-          #   enable = true;
-          #   config = {
-          #     Label = "com.aspauldingcode.waypipe";
-          #     ProgramArguments = [
-          #       "${inputs.wawona.packages.${pkgs.stdenv.hostPlatform.system}.wawona-macos}/Applications/Wawona.app/Contents/MacOS/waypipe"
-          #       "--display"
-          #       "/tmp/wawona-503/wayland-0"
-          #       "-s"
-          #       "/etc/nix-darwin/.dotfiles/waypipe-wawona.sock"
-          #       "client"
-          #     ];
-          #     EnvironmentVariables = {
-          #       WAYLAND_DISPLAY = "wayland-0";
-          #       XDG_RUNTIME_DIR = "/tmp/wawona-503";
-          #     };
-          #     KeepAlive = true;
-          #     RunAtLoad = true;
-          #     StandardOutPath = "${config.home.homeDirectory}/.cache/waypipe.log";
-          #     StandardErrorPath = "${config.home.homeDirectory}/.cache/waypipe.err";
-          #   };
-          # };
-
-          # Bridge LaunchAgent: connects the VSOCK socket from vfkit to the Waypipe socket
-          # launchd.agents.waypipe-bridge = {
-          #   enable = true;
-          #   config = {
-          #     Label = "com.aspauldingcode.waypipe-bridge";
-          #     ProgramArguments = [
-          #       "${pkgs.socat}/bin/socat"
-          #       "UNIX-CONNECT:/etc/nix-darwin/.dotfiles/dendritic-vm-vsock.sock"
-          #       "UNIX-CONNECT:/etc/nix-darwin/.dotfiles/waypipe-wawona.sock"
-          #     ];
-          #     KeepAlive = {
-          #       SuccessfulExit = false;
-          #     };
-          #     RunAtLoad = true;
-          #     StandardOutPath = "${config.home.homeDirectory}/.cache/waypipe-bridge.log";
-          #     StandardErrorPath = "${config.home.homeDirectory}/.cache/waypipe-bridge.err";
-          #   };
-          # };
+          # Wawona login agents (compositorhost/menubar) were KeepAlive crash loops
+          # from Xcode Debug installs. Keep them unloaded across rebuilds.
+          home.activation.disableWawonaAgents = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+            uid="$(${pkgs.coreutils}/bin/id -u)"
+            domain="gui/$uid"
+            agentsDir="${config.home.homeDirectory}/Library/LaunchAgents"
+            for agent in \
+              com.aspauldingcode.wawona.compositorhost \
+              com.aspauldingcode.wawona.menubar \
+              com.aspauldingcode.wawona.applaunch \
+              com.aspauldingcode.wawona \
+              com.aspaulding.wawona
+            do
+              /bin/launchctl bootout "$domain/$agent" >/dev/null 2>&1 || true
+              /bin/rm -f "$agentsDir/$agent.plist" >/dev/null 2>&1 || true
+            done
+          '';
 
           imports = [
             inputs.self.modules.homeManager.dendritic
