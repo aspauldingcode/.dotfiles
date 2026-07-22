@@ -358,8 +358,11 @@
         printf '%s\n' "$css"
       '';
 
-      # Idle-timeout lock: hold sleep:block from gtklock start through post-unlock
-      # grace with no gap (avoids unlock→instant-suspend bounce).
+      # Idle-timeout lock.
+      # Do NOT hold sleep:block for the whole gtklock lifetime — if gtklock dies
+      # (Wayland protocol error) niri stays session-locked with no UI while the
+      # inhibitor also blocks lid/logind suspend (orange cursor-only brick).
+      # Post-unlock grace is started after gtklock exits (same as unlock mark).
       lock = "${pkgs.writeShellScript "gtklock-auth" ''
         set -euo pipefail
         export XDG_DATA_DIRS=${lib.escapeShellArg "${pkgs.adwaita-icon-theme}/share"}''${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}
@@ -370,33 +373,30 @@
         fi
         css="$(${gtklockPrep})"
         runtime="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}"
-        graceSec=180
-        # Export for gtklock child (icons / config).
-        export XDG_DATA_DIRS XDG_CONFIG_HOME
-        exec ${pkgs.systemd}/bin/systemd-inhibit \
-          --what=sleep --who=gtklock --why='session locked + post-unlock grace' --mode=block \
-          ${pkgs.bash}/bin/bash -c '
-            set -euo pipefail
-            export XDG_DATA_DIRS="$4"
-            export XDG_CONFIG_HOME="$5"
-            ${lib.getExe pkgs.gtklock} -s "$1" || true
-            ${pkgs.coreutils}/bin/date +%s >"$2/dendritic-suspend-grace"
-            ${lib.getExe pkgs.niri} msg action power-on-monitors >/dev/null 2>&1 || true
-            exec ${pkgs.coreutils}/bin/sleep "$3"
-          ' bash "$css" "$runtime" "$graceSec" "$XDG_DATA_DIRS" "$XDG_CONFIG_HOME"
+        ${lib.getExe pkgs.gtklock} -s "$css" || true
+        ${pkgs.coreutils}/bin/date +%s >"$runtime/dendritic-suspend-grace"
+        ${lib.getExe pkgs.niri} msg action power-on-monitors >/dev/null 2>&1 || true
+        # Heal gamma after unlock (wlsunset/EVDI often leaves a warm LUT).
+        if ${pkgs.systemd}/bin/systemctl --user is-active --quiet wlsunset.service 2>/dev/null; then
+          ${pkgs.systemd}/bin/systemctl --user try-restart wlsunset.service 2>/dev/null || true
+        fi
+        if ${pkgs.systemd}/bin/systemd-inhibit --list --no-pager 2>/dev/null \
+          | ${pkgs.gnugrep}/bin/grep -E 'gtklock|dendritic' \
+          | ${pkgs.gnugrep}/bin/grep -qi 'block'; then
+          exit 0
+        fi
+        ${pkgs.procps}/bin/pkill -f 'dendritic-post-unlock-inhibit' 2>/dev/null || true
+        ${pkgs.systemd}/bin/systemd-inhibit \
+          --what=sleep --who=dendritic --why='post-unlock grace' --mode=block \
+          ${pkgs.coreutils}/bin/sleep 180 &
       ''}";
 
       # before-sleep: daemonize so swayidle -w can return before InhibitDelayMaxSec;
       # do not hold sleep:block here (that would fight logind suspend).
-      # Stop wlsunset first so niri can restore identity gamma while DRM is healthy
-      # (stuck warm LUT after wake is a common hybrid/EVDI failure mode).
+      # Do not stop wlsunset here — tearing gamma down mid-lock races niri and
+      # contributed to dead-lock + stuck orange LUT; resume mark heals instead.
       lockBeforeSleep = "${pkgs.writeShellScript "gtklock-before-sleep" ''
         set -euo pipefail
-        runtime="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}"
-        if ${pkgs.systemd}/bin/systemctl --user is-active --quiet wlsunset.service 2>/dev/null; then
-          ${pkgs.coreutils}/bin/touch "$runtime/dendritic-wlsunset-was-active"
-          ${pkgs.systemd}/bin/systemctl --user stop wlsunset.service 2>/dev/null || true
-        fi
         export XDG_DATA_DIRS=${lib.escapeShellArg "${pkgs.adwaita-icon-theme}/share"}''${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}
         export XDG_CONFIG_HOME=${lib.escapeShellArg gtklockGtkConfig}
         if ${pkgs.procps}/bin/pgrep -x gtklock >/dev/null 2>&1; then
@@ -446,29 +446,45 @@
           '';
         in
         {
-          mark = pkgs.writeShellScript "dendritic-suspend-grace-mark" ''
-            set -euo pipefail
-            runtime="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}"
-            # Write grace stamp first — idle-suspend may race unlock handlers.
-            ${pkgs.coreutils}/bin/date +%s >"$runtime/dendritic-suspend-grace"
-            ${lib.getExe pkgs.niri} msg action power-on-monitors >/dev/null 2>&1 || true
-            # Heal night-light gamma: resume path restores from before-sleep stamp;
-            # unlock-only restarts if still active (stuck LUT after DPMS/lock).
-            if [ -f "$runtime/dendritic-wlsunset-was-active" ]; then
-              ${pkgs.coreutils}/bin/rm -f "$runtime/dendritic-wlsunset-was-active"
-              ${pkgs.systemd}/bin/systemctl --user start wlsunset.service 2>/dev/null || true
-            elif ${pkgs.systemd}/bin/systemctl --user is-active --quiet wlsunset.service 2>/dev/null; then
-              ${pkgs.systemd}/bin/systemctl --user try-restart wlsunset.service 2>/dev/null || true
-            fi
-            # Skip if gtklock-auth already holds chained post-unlock inhibit.
-            if ${pkgs.systemd}/bin/systemd-inhibit --list --no-pager 2>/dev/null \
-              | ${pkgs.gnugrep}/bin/grep -E 'gtklock|dendritic' \
-              | ${pkgs.gnugrep}/bin/grep -qi 'block'; then
-              exit 0
-            fi
-            ${pkgs.procps}/bin/pkill -f 'dendritic-post-unlock-inhibit' 2>/dev/null || true
-            ${postUnlockInhibit} &
-          '';
+          # Shared post-unlock / post-resume grace + gamma heal.
+          # `recoverLock=1` only on after-resume — on unlock gtklock has just
+          # exited and must not be relaunched.
+          mark =
+            let
+              mkMark =
+                recoverLock:
+                pkgs.writeShellScript "dendritic-suspend-grace-mark${if recoverLock then "-resume" else ""}" ''
+                  set -euo pipefail
+                  runtime="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}"
+                  ${pkgs.coreutils}/bin/date +%s >"$runtime/dendritic-suspend-grace"
+                  ${lib.getExe pkgs.niri} msg action power-on-monitors >/dev/null 2>&1 || true
+                  ${lib.optionalString recoverLock ''
+                    # Resume recovery: niri can keep ext-session-lock after gtklock
+                    # died ("replacing existing dead lock") → orange cursor-only UI.
+                    if ! ${pkgs.procps}/bin/pgrep -x gtklock >/dev/null 2>&1; then
+                      export XDG_DATA_DIRS=${lib.escapeShellArg "${pkgs.adwaita-icon-theme}/share"}''${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}
+                      export XDG_CONFIG_HOME=${lib.escapeShellArg gtklockGtkConfig}
+                      css="$(${gtklockPrep})"
+                      ${lib.getExe pkgs.gtklock} -d -s "$css" || true
+                    fi
+                  ''}
+                  ${pkgs.coreutils}/bin/rm -f "$runtime/dendritic-wlsunset-was-active"
+                  if ${pkgs.systemd}/bin/systemctl --user is-active --quiet wlsunset.service 2>/dev/null; then
+                    ${pkgs.systemd}/bin/systemctl --user try-restart wlsunset.service 2>/dev/null || true
+                  fi
+                  if ${pkgs.systemd}/bin/systemd-inhibit --list --no-pager 2>/dev/null \
+                    | ${pkgs.gnugrep}/bin/grep -E 'gtklock|dendritic' \
+                    | ${pkgs.gnugrep}/bin/grep -qi 'block'; then
+                    exit 0
+                  fi
+                  ${pkgs.procps}/bin/pkill -f 'dendritic-post-unlock-inhibit' 2>/dev/null || true
+                  ${postUnlockInhibit} &
+                '';
+            in
+            {
+              unlock = mkMark false;
+              resume = mkMark true;
+            };
           suspend = pkgs.writeShellScript "dendritic-idle-suspend" ''
             set -euo pipefail
             # Never suspend while gtklock is up (idle timer lies during lock).
@@ -1099,8 +1115,8 @@
           enable = true;
           events = {
             before-sleep = lockBeforeSleep;
-            after-resume = "${idleSuspend.mark}";
-            unlock = "${idleSuspend.mark}";
+            after-resume = "${idleSuspend.mark.resume}";
+            unlock = "${idleSuspend.mark.unlock}";
           };
           timeouts = [
             {

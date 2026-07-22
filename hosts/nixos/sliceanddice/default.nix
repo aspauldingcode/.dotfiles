@@ -178,8 +178,17 @@
       # though niri itself is a native Wayland compositor on Intel.
       services.xserver.videoDrivers = [ "nvidia" ];
 
-      # Silicon Motion SM76x InstantView (USB dock display 090c:0768).
-      # Package/module from local nixpkgs checkout until upstream lands.
+      # USB video on Sword 15 A11UD (MS-1582):
+      # - Host USB-C is data-only (USB 3.2 Gen1). No Thunderbolt, no UCSI ACPI
+      #   (PNP0CA0), no i915 DP connectors — DP Alt Mode cannot work here.
+      # - AlgolTek 25a4:9311 "USB C Video Adaptor" is a USB Billboard stub
+      #   (class 0x11). It is NOT a GUD device; GUD only matches 16D0:10A9 /
+      #   1D50:614D. Billboard appears when a DP-Alt dongle fails negotiation
+      #   (or is hubbed — Alt Mode never works through a USB hub).
+      # - Working USB display path: Silicon Motion InstantView 090c:0768 via
+      #   EVDI + SMIUSBDisplayManager (dendritic.apps.instantview.linux).
+      # - Native external video: HDMI (i915 HDMI-A-1). Preload gud for any
+      #   real GUD-protocol panel; it will not bind the AlgolTek billboard.
       dendritic.apps.instantview.linux.enable = true;
 
       console.keyMap = "us";
@@ -210,7 +219,12 @@
           ];
         }))
       ];
-      boot.kernelModules = [ "msi-ec" ];
+      # gud: in-tree DRM USB display (autoloads on matching VIDs; harmless no-op
+      # for InstantView / AlgolTek Billboard — see USB video notes above).
+      boot.kernelModules = [
+        "msi-ec"
+        "gud"
+      ];
       boot.extraModprobeConfig = ''
         options msi-ec firmware=1582EMS1.107
         # Read-only EC dumps only; writes hang this Sword's EC.
