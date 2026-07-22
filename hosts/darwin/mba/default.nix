@@ -39,6 +39,9 @@
         # Root helper: one-time trust for privileged ops (no osascript passwords).
         dendritic.helper.enable = true;
 
+        # Apple Screen Sharing (VNC :5900) + Bonjour `_rfb._tcp` (mba.local).
+        dendritic.apps.vnc.enable = true;
+
         # WireGuard overlay ↔ sliceanddice (pass/SecretSpec keys; see docs/wireguard.md).
         dendritic.wireguard.enable = true;
 
@@ -226,6 +229,8 @@
           dendritic.wallpaper.enable = true;
           dendritic.profilePhoto.enable = true;
           dendritic.helper.enable = true;
+          dendritic.apps.vnc.enable = true;
+          dendritic.apps.vnc.bonjourName = "mba";
           dendritic.wireguard.enable = true;
           dendritic.wireguard.peerId = "mba";
           dendritic.python.enable = true;

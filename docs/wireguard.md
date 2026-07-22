@@ -1,8 +1,9 @@
 # Dendritic WireGuard (mba ↔ sliceanddice + clients)
 
 Private overlay so one host can stay on home **Bubbles** Wi‑Fi while the other
-is away — SSH and LAN-style inspection over `10.87.0.0/24`. Optional **client**
-peers (iPhone, …) dial a host via the WireGuard app.
+is away — SSH, VNC (mba Screen Sharing), and LAN-style inspection over
+`10.87.0.0/24`. Optional **client** peers (iPhone, …) dial a host via the
+WireGuard app.
 
 Secrets stay in the private **pass** store (SecretSpec). Endpoints / public IPs
 are **never** committed to this flake (same threat model as
@@ -10,11 +11,11 @@ are **never** committed to this flake (same threat model as
 
 ## Addresses (non-secret)
 
-| Peer           | Role   | Tunnel address | UDP port |
-| -------------- | ------ | -------------- | -------: |
-| `mba`          | host   | `10.87.0.1/24` |    51820 |
-| `sliceanddice` | host   | `10.87.0.2/24` |    51820 |
-| `iphone`       | client | `10.87.0.3/24` |        — |
+| Peer           | Role   | Tunnel address | UDP port | Desktop               |
+| -------------- | ------ | -------------- | -------: | --------------------- |
+| `mba`          | host   | `10.87.0.1/24` |    51820 | VNC `:5900` (Bonjour) |
+| `sliceanddice` | host   | `10.87.0.2/24` |    51820 | —                     |
+| `iphone`       | client | `10.87.0.3/24` |        — | —                     |
 
 Declared in [`home/wireguard-peers.json`](../home/wireguard-peers.json). Enroll
 the phone from the menubar **Connect device → WireGuard for iPhone…** (see
@@ -77,9 +78,14 @@ nix run .#pass-wg-set-home -- --clear
 ```bash
 ssh alex@10.87.0.2               # → sliceanddice
 ssh 8amps@10.87.0.1              # → mba
+open vnc://mba.local             # → mba Screen Sharing (LAN / Bonjour)
+open vnc://10.87.0.1             # → mba over WireGuard
 ping -c2 10.87.0.2
 sudo wg show
 ```
+
+mba advertises `_rfb._tcp` as **mba** (`dendritic.apps.vnc`). Auth is the
+macOS login for `8amps`.
 
 ## Rotate pairing tokens
 
