@@ -1330,10 +1330,11 @@
               // Night light toggle
               Mod+Shift+N { spawn "${nightToggle}/bin/night-toggle"; }
 
-              // Screenshots
+              // Screenshots (niri built-in) + annotate region (grim→satty)
               Print { screenshot; }
               Ctrl+Print { screenshot-screen; }
               Alt+Print { screenshot-window; }
+              Mod+Shift+S { spawn "dendritic-annotate"; }
 
               // Session (wrapper sets bold reveal icons + style)
               Super+Alt+L { spawn "${lock}"; }
