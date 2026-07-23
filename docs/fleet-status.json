@@ -1,19 +1,19 @@
 {
   "schema": 1,
-  "generated_at": "2026-07-23T00:04:11Z",
+  "generated_at": "2026-07-23T03:55:34Z",
   "hosts": [
     {
       "host": "mba",
       "platform": "darwin",
       "flake_rev": "ba50575a",
       "status": "online",
-      "seen_at": "2026-07-23T00:03:29Z"
+      "seen_at": "2026-07-23T03:46:38Z"
     },
     {
       "host": "sliceanddice",
       "platform": "nixos",
       "flake_rev": "2eeffde7",
-      "status": "stale",
+      "status": "offline",
       "seen_at": "2026-07-22T02:56:27Z"
     },
     {
@@ -21,7 +21,7 @@
       "platform": "android",
       "flake_rev": "ba50575a",
       "status": "online",
-      "seen_at": "2026-07-22T23:53:42Z"
+      "seen_at": "2026-07-23T03:54:37Z"
     }
   ]
 }
