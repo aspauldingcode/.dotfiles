@@ -102,12 +102,14 @@ fn wallpaper_scale() -> String {
 /// Explicit light↔dark image pairs in the curated pack.
 fn counterpart(name: &str) -> Option<&'static str> {
     match name {
-        "catppuccin-latte" => Some("catppuccin-mocha"),
-        "catppuccin-mocha" => Some("catppuccin-latte"),
-        "nineish-solarized-light" => Some("nineish-solarized-dark"),
-        "nineish-solarized-dark" => Some("nineish-solarized-light"),
-        "simple-light-gray" => Some("simple-dark-gray"),
-        "simple-dark-gray" => Some("simple-light-gray"),
+        "sonoma-light" => Some("sonoma-dark"),
+        "sonoma-dark" => Some("sonoma-light"),
+        "ventura-light" => Some("ventura-dark"),
+        "ventura-dark" => Some("ventura-light"),
+        "monterey-light" => Some("monterey-dark"),
+        "monterey-dark" => Some("monterey-light"),
+        "big-sur-light" => Some("big-sur-dark"),
+        "big-sur-dark" => Some("big-sur-light"),
         _ => None,
     }
 }

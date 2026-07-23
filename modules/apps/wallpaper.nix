@@ -40,26 +40,54 @@
         value = localWallpapersDir + "/${name}";
       }) localImages;
 
-      # Clean minimal rice wallpapers from nixos-artwork (no network API).
-      artwork = pkgs.nixos-artwork.wallpapers;
+      externalWallpapersDir = ../../external-wallpapers;
+      externalFiles =
+        if builtins.pathExists externalWallpapersDir then builtins.readDir externalWallpapersDir else { };
+      externalImages = lib.filterAttrs (name: type: type == "regular" && isImage name) externalFiles;
+      externalDatabase = lib.mapAttrs' (name: _: {
+        name = lib.removeSuffix ".webp" (
+          lib.removeSuffix ".jpeg" (lib.removeSuffix ".jpg" (lib.removeSuffix ".png" name))
+        );
+        value = externalWallpapersDir + "/${name}";
+      }) externalImages;
+
+      # Curated database of high-quality macOS wallpapers (fetched from public source).
       curatedDatabase = {
-        nineish = artwork.nineish.gnomeFilePath;
-        nineish-dark-gray = artwork.nineish-dark-gray.gnomeFilePath;
-        nineish-solarized-dark = artwork.nineish-solarized-dark.gnomeFilePath;
-        nineish-solarized-light = artwork.nineish-solarized-light.gnomeFilePath;
-        simple-dark-gray = artwork.simple-dark-gray.gnomeFilePath;
-        simple-light-gray = artwork.simple-light-gray.gnomeFilePath;
-        mosaic-blue = artwork.mosaic-blue.gnomeFilePath;
-        stripes = artwork.stripes.gnomeFilePath;
-        gradient-grey = artwork.gradient-grey.gnomeFilePath;
-        waterfall = artwork.waterfall.gnomeFilePath;
-        moonscape = artwork.moonscape.gnomeFilePath;
-        catppuccin-mocha = artwork.catppuccin-mocha.gnomeFilePath;
-        catppuccin-latte = artwork.catppuccin-latte.gnomeFilePath;
-        dracula = artwork.dracula.gnomeFilePath;
+        sonoma-light = pkgs.fetchurl {
+          url = "https://raw.githubusercontent.com/vinceliuice/WhiteSur-wallpapers/main/4k/Sonoma-light.jpg";
+          sha256 = "0dv6j9kki34d9zkmwm1hihg8lhrka9dvwv5rbjilcl7harhyvvj1";
+        };
+        sonoma-dark = pkgs.fetchurl {
+          url = "https://raw.githubusercontent.com/vinceliuice/WhiteSur-wallpapers/main/4k/Sonoma-dark.jpg";
+          sha256 = "1d5dsqpps5byzc5zkzkfqgy5mwil909n0wkvf317wnw39s32iv9s";
+        };
+        ventura-light = pkgs.fetchurl {
+          url = "https://raw.githubusercontent.com/vinceliuice/WhiteSur-wallpapers/main/4k/Ventura-light.jpg";
+          sha256 = "0bnxbi31cizxrc3dj8yk4k2lza35j8sxialq0kz3jh68qcavlcrn";
+        };
+        ventura-dark = pkgs.fetchurl {
+          url = "https://raw.githubusercontent.com/vinceliuice/WhiteSur-wallpapers/main/4k/Ventura-dark.jpg";
+          sha256 = "0x5if27r77xzsvy2c0bfz67crfs41mnlxckmqqd49zyzkn2hv24a";
+        };
+        monterey-light = pkgs.fetchurl {
+          url = "https://raw.githubusercontent.com/vinceliuice/WhiteSur-wallpapers/main/4k/Monterey-light.jpg";
+          sha256 = "04hc2iaxn1zq9iki0g94ymqjn828z04b561i4j4ksd07k6y00mqq";
+        };
+        monterey-dark = pkgs.fetchurl {
+          url = "https://raw.githubusercontent.com/vinceliuice/WhiteSur-wallpapers/main/4k/Monterey-dark.jpg";
+          sha256 = "19g36bzn3kr0b7g2k2h2d5rfa2ipd22m05pf197pxd5n9qcgmpbn";
+        };
+        big-sur-light = pkgs.fetchurl {
+          url = "https://raw.githubusercontent.com/vinceliuice/WhiteSur-wallpapers/main/4k/WhiteSur-light.jpg";
+          sha256 = "1bm74plsr6ggwaw5gy43ncfq3k8pvjp9wsw7aj6w0h31ha9gxrd7";
+        };
+        big-sur-dark = pkgs.fetchurl {
+          url = "https://raw.githubusercontent.com/vinceliuice/WhiteSur-wallpapers/main/4k/WhiteSur-dark.jpg";
+          sha256 = "0dcxsw1nf0r32r7sl3dvf297mc0shlsig0wj4ic6g48503xics6z";
+        };
       };
 
-      database = curatedDatabase // localDatabase // cfg.extraDatabase;
+      database = curatedDatabase // localDatabase // externalDatabase // cfg.extraDatabase;
 
       pack = import ./_wallpaper-pack.nix {
         inherit pkgs lib;
@@ -80,7 +108,7 @@
 
         selected = lib.mkOption {
           type = lib.types.str;
-          default = "moonscape";
+          default = "sonoma-dark";
           description = ''
             Wallpaper used for Stylix build-time scheme injection (themeFromImage).
             Daily cycle still rotates the full pack at runtime. Lockscreen picks a
@@ -288,25 +316,53 @@
         value = localWallpapersDir + "/${name}";
       }) localImages;
 
-      artwork = pkgs.nixos-artwork.wallpapers;
+      externalWallpapersDir = ../../external-wallpapers;
+      externalFiles =
+        if builtins.pathExists externalWallpapersDir then builtins.readDir externalWallpapersDir else { };
+      externalImages = lib.filterAttrs (name: type: type == "regular" && isImage name) externalFiles;
+      externalDatabase = lib.mapAttrs' (name: _: {
+        name = lib.removeSuffix ".webp" (
+          lib.removeSuffix ".jpeg" (lib.removeSuffix ".jpg" (lib.removeSuffix ".png" name))
+        );
+        value = externalWallpapersDir + "/${name}";
+      }) externalImages;
+
       curatedDatabase = {
-        nineish = artwork.nineish.gnomeFilePath;
-        nineish-dark-gray = artwork.nineish-dark-gray.gnomeFilePath;
-        nineish-solarized-dark = artwork.nineish-solarized-dark.gnomeFilePath;
-        nineish-solarized-light = artwork.nineish-solarized-light.gnomeFilePath;
-        simple-dark-gray = artwork.simple-dark-gray.gnomeFilePath;
-        simple-light-gray = artwork.simple-light-gray.gnomeFilePath;
-        mosaic-blue = artwork.mosaic-blue.gnomeFilePath;
-        stripes = artwork.stripes.gnomeFilePath;
-        gradient-grey = artwork.gradient-grey.gnomeFilePath;
-        waterfall = artwork.waterfall.gnomeFilePath;
-        moonscape = artwork.moonscape.gnomeFilePath;
-        catppuccin-mocha = artwork.catppuccin-mocha.gnomeFilePath;
-        catppuccin-latte = artwork.catppuccin-latte.gnomeFilePath;
-        dracula = artwork.dracula.gnomeFilePath;
+        sonoma-light = pkgs.fetchurl {
+          url = "https://raw.githubusercontent.com/vinceliuice/WhiteSur-wallpapers/main/4k/Sonoma-light.jpg";
+          sha256 = "0dv6j9kki34d9zkmwm1hihg8lhrka9dvwv5rbjilcl7harhyvvj1";
+        };
+        sonoma-dark = pkgs.fetchurl {
+          url = "https://raw.githubusercontent.com/vinceliuice/WhiteSur-wallpapers/main/4k/Sonoma-dark.jpg";
+          sha256 = "1d5dsqpps5byzc5zkzkfqgy5mwil909n0wkvf317wnw39s32iv9s";
+        };
+        ventura-light = pkgs.fetchurl {
+          url = "https://raw.githubusercontent.com/vinceliuice/WhiteSur-wallpapers/main/4k/Ventura-light.jpg";
+          sha256 = "0bnxbi31cizxrc3dj8yk4k2lza35j8sxialq0kz3jh68qcavlcrn";
+        };
+        ventura-dark = pkgs.fetchurl {
+          url = "https://raw.githubusercontent.com/vinceliuice/WhiteSur-wallpapers/main/4k/Ventura-dark.jpg";
+          sha256 = "0x5if27r77xzsvy2c0bfz67crfs41mnlxckmqqd49zyzkn2hv24a";
+        };
+        monterey-light = pkgs.fetchurl {
+          url = "https://raw.githubusercontent.com/vinceliuice/WhiteSur-wallpapers/main/4k/Monterey-light.jpg";
+          sha256 = "04hc2iaxn1zq9iki0g94ymqjn828z04b561i4j4ksd07k6y00mqq";
+        };
+        monterey-dark = pkgs.fetchurl {
+          url = "https://raw.githubusercontent.com/vinceliuice/WhiteSur-wallpapers/main/4k/Monterey-dark.jpg";
+          sha256 = "19g36bzn3kr0b7g2k2h2d5rfa2ipd22m05pf197pxd5n9qcgmpbn";
+        };
+        big-sur-light = pkgs.fetchurl {
+          url = "https://raw.githubusercontent.com/vinceliuice/WhiteSur-wallpapers/main/4k/WhiteSur-light.jpg";
+          sha256 = "1bm74plsr6ggwaw5gy43ncfq3k8pvjp9wsw7aj6w0h31ha9gxrd7";
+        };
+        big-sur-dark = pkgs.fetchurl {
+          url = "https://raw.githubusercontent.com/vinceliuice/WhiteSur-wallpapers/main/4k/WhiteSur-dark.jpg";
+          sha256 = "0dcxsw1nf0r32r7sl3dvf297mc0shlsig0wj4ic6g48503xics6z";
+        };
       };
 
-      database = curatedDatabase // localDatabase // cfg.extraDatabase;
+      database = curatedDatabase // localDatabase // externalDatabase // cfg.extraDatabase;
 
       pack = import ./_wallpaper-pack.nix {
         inherit pkgs lib;
@@ -324,7 +380,7 @@
 
         selected = lib.mkOption {
           type = lib.types.str;
-          default = "moonscape";
+          default = "sonoma-dark";
           description = "Wallpaper for system Stylix / gtkgreet (from wallpaper pack).";
         };
 

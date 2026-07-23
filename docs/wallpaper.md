@@ -5,7 +5,7 @@ Unified declarative wallpaper + daily base16 theming across nix-darwin and NixOS
 ## How it works
 
 1. **Build-time pack** (`modules/apps/_wallpaper-pack.nix`)
-   - Merges optional local `./wallpapers/` with curated `nixos-artwork` images
+   - Merges optional local `./wallpapers/` with curated macOS stock images
    - Normalizes each image to PNG + prebuilds `auth-blur.png` for gtk auth glass
    - Runs **flavours** (`flavours generate dark|light`) → full base16 YAML + `colors-{dark,light}.toml`
    - Why flavours (not gowall)? `gowall extract` only returns ~6 pywal-style colors.
@@ -14,7 +14,7 @@ Unified declarative wallpaper + daily base16 theming across nix-darwin and NixOS
 
 2. **Stylix seed** (`themeFromImage`, default on)
    - At rebuild, `stylix.image` + `stylix.base16Scheme` come from
-     `dendritic.wallpaper.selected` (default `moonscape`)
+     `dendritic.wallpaper.selected` (default `sonoma-dark`)
    - That seeds packages that only theme at build time (gtk, some chrome)
 
 3. **Runtime wallpaper change** (`dendritic-appearance wallpaper …` — pure Rust)
