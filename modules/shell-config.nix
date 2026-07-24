@@ -492,7 +492,7 @@
 
       home.sessionVariables = lib.mkMerge [
         {
-          NH_FLAKE = (
+          NH_FLAKE = lib.mkDefault (
             if pkgs.stdenv.isDarwin then
               "/etc/nix-darwin/.dotfiles#mba"
             else
@@ -500,7 +500,7 @@
           );
         }
         (lib.optionalAttrs (!pkgs.stdenv.isDarwin) {
-          NH_OS_FLAKE = "/etc/nixos/.dotfiles#sliceanddice";
+          NH_OS_FLAKE = lib.mkDefault "/etc/nixos/.dotfiles#sliceanddice";
         })
       ];
 

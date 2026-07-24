@@ -6,6 +6,10 @@
     platform = "darwin";
     description = "MacBook Air (nix-darwin)";
   };
+  mba-asahi = {
+    platform = "nixos";
+    description = "MacBook Air (NixOS Asahi)";
+  };
   sliceanddice = {
     platform = "nixos";
     description = "NixOS laptop";

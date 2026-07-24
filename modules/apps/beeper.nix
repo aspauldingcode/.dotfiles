@@ -602,7 +602,7 @@
       };
 
       config = lib.mkIf cfg.enable {
-        home.packages = [ pkgs.beeper ];
+        home.packages = lib.optional (builtins.elem pkgs.stdenv.hostPlatform.system pkgs.beeper.meta.platforms) pkgs.beeper;
 
         home.file =
           lib.optionalAttrs pkgs.stdenv.isDarwin {
