@@ -92,7 +92,7 @@ max_attempts=3
 attempt=1
 success=false
 
-while (( attempt <= max_attempts )); do
+while ((attempt <= max_attempts)); do
   log "Attempting heartbeat upload (attempt ${attempt}/${max_attempts})..."
 
   # Fetch latest SHA, bypassing CDN cache
