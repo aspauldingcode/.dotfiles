@@ -85,32 +85,59 @@ printf '%s\n' "$payload" >"$tmp"
 
 # Create or update via Contents API (no full clone).
 api="repos/${OWNER}/${REPO}/contents/${PATH_IN_REPO}"
-sha=""
-if meta="$(gh api "$api" 2>/dev/null)"; then
-  sha="$(printf '%s' "$meta" | jq -r '.sha // empty')"
-fi
-
 b64="$(base64 <"$tmp" | tr -d '\n')"
 rm -f "$tmp"
 
-body="$(jq -nc \
-  --arg msg "heartbeat: ${HOST_ID} ${seen_at}" \
-  --arg content "$b64" \
-  --arg sha "$sha" \
-  'if $sha != "" then {message:$msg, content:$content, sha:$sha} else {message:$msg, content:$content} end')"
+max_attempts=3
+attempt=1
+success=false
 
-put_err="$(mktemp)"
-if ! printf '%s' "$body" | gh api --method PUT "$api" --input - >/dev/null 2>"$put_err"; then
+while (( attempt <= max_attempts )); do
+  log "Attempting heartbeat upload (attempt ${attempt}/${max_attempts})..."
+
+  # Fetch latest SHA, bypassing CDN cache
+  sha=""
+  if meta="$(gh api -H "Cache-Control: no-cache" -H "Pragma: no-cache" "${api}?t=$(date +%s)" 2>/dev/null)"; then
+    sha="$(printf '%s' "$meta" | jq -r '.sha // empty')"
+  fi
+
+  body="$(jq -nc \
+    --arg msg "heartbeat: ${HOST_ID} ${seen_at}" \
+    --arg content "$b64" \
+    --arg sha "$sha" \
+    'if $sha != "" then {message:$msg, content:$content, sha:$sha} else {message:$msg, content:$content} end')"
+
+  put_err="$(mktemp)"
+  if printf '%s' "$body" | gh api --method PUT "$api" --input - >/dev/null 2>"$put_err"; then
+    success=true
+    rm -f "$put_err"
+    break
+  fi
+
+  # Check failure reason
   if grep -qiE 'rate limit|API rate limit|HTTP 403' "$put_err"; then
     warn "GitHub API rate-limited; skipping PUT ${PATH_IN_REPO}"
     rm -f "$put_err"
     exit 0
   fi
+
+  # Check if conflict (HTTP 409)
+  if grep -qiE 'conflict|HTTP 409|is at .* but expected' "$put_err"; then
+    warn "Conflict updating ${PATH_IN_REPO} (HTTP 409). Retrying in 2s..."
+    rm -f "$put_err"
+    sleep 2
+    attempt=$((attempt + 1))
+    continue
+  fi
+
   cat "$put_err" >&2 || true
   rm -f "$put_err"
   die "failed to PUT ${PATH_IN_REPO}"
+done
+
+if [[ $success != true ]]; then
+  die "failed to PUT ${PATH_IN_REPO} after ${max_attempts} attempts"
 fi
-rm -f "$put_err"
 
 log "ok ${HOST_ID} tip=${flake_rev} seen_at=${seen_at}"
 exit 0
