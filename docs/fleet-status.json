@@ -1,13 +1,13 @@
 {
   "schema": 1,
-  "generated_at": "2026-08-09T16:48:24Z",
+  "generated_at": "2026-08-09T17:35:15Z",
   "hosts": [
     {
       "host": "mba",
       "platform": "darwin",
       "flake_rev": "484128ba",
       "status": "online",
-      "seen_at": "2026-08-09T16:37:27Z"
+      "seen_at": "2026-08-09T17:22:34Z"
     },
     {
       "host": "sliceanddice",
