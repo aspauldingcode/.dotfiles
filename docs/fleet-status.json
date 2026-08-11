@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "generated_at": "2026-08-11T13:56:23Z",
+  "generated_at": "2026-08-11T15:06:22Z",
   "hosts": [
     {
       "host": "mba",
       "platform": "darwin",
       "flake_rev": "484128ba",
-      "status": "online",
+      "status": "stale",
       "seen_at": "2026-08-11T13:51:59Z"
     },
     {
