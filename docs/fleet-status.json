@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-08-14T17:01:34Z",
+  "generated_at": "2026-08-14T18:26:07Z",
   "hosts": [
     {
       "host": "mba",
@@ -20,7 +20,7 @@
       "host": "oneplus6t",
       "platform": "android",
       "flake_rev": "484128ba",
-      "status": "stale",
+      "status": "offline",
       "seen_at": "2026-08-13T17:16:58Z"
     }
   ]
