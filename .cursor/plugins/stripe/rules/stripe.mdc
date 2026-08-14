@@ -1,0 +1,21 @@
+---
+description: Stripe Checkout, Billing, Invoicing, API keys, MCP, and wawona.io donations
+globs:
+  - "**/download_cards.html"
+  - "**/stripe/**"
+  - "**/*stripe*"
+alwaysApply: false
+---
+
+# Stripe (Wawona + Cursor)
+
+When the user mentions Stripe, Checkout, donations, invoicing, Ko-fi vs Stripe,
+publishable/secret keys, or `mcp.stripe.com`:
+
+1. Read `~/.cursor/skills/stripe-best-practices/SKILL.md` and its
+   `references/payments.md`, `billing.md`, `security.md`.
+2. Read `~/.cursor/skills/stripe-wawona/SKILL.md` for this machine's pass/SecretSpec paths.
+3. Prefer Stripe MCP (`stripe_implementation_planner`, `stripe_api_write`) when authenticated.
+   Skills also live in `~/.cursor/plugins/local/stripe` (nix-darwin `modules/apps/stripe.nix`).
+4. Never write `sk_` / `rk_` into the repo. Publishable `pk_` keys may live in `config.toml`.
+5. Ko-fi is a hosted donation page + webhooks, not a Checkout Session API.

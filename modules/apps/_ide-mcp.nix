@@ -167,10 +167,6 @@ let
     args = nixRunPrefix ++ [
       "run"
       "${cfg.wwnMcpFlake}#wwn-mcp"
-      "--"
-      "serve"
-      "--transport"
-      "stdio"
     ];
     env = {
       WWN_MCP_DATA_DIR = "${home}/.local/share/wwn-mcp";
@@ -263,10 +259,20 @@ let
   // xcodebuildMcpServer
   // lib.optionalAttrs cfg.guildforge.enable { guildforge = guildforgeMcpServer; };
 
+  # Stripe remote MCP (OAuth in Cursor). HTTP URL, no secret key in mcp.json.
+  # https://docs.stripe.com/mcp.md — authenticate via Cursor MCP consent.
+  stripeMcpServer = {
+    type = "http";
+    url = "https://mcp.stripe.com";
+  };
+
   # Full set for Cursor / VS Code (higher tool budgets).
   heavyMcpServers =
     leanMcpServers
     // instrumentsMcpServer
+    // {
+      stripe = stripeMcpServer;
+    }
     // lib.optionalAttrs cfg.lldb.enable { lldb = lldbMcpServer; }
     // lib.optionalAttrs cfg.agentDevice.enable { agent-device = agentDeviceMcpServer; }
     // lib.optionalAttrs cfg.ghidra.enable {
