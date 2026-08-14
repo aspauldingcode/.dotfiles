@@ -165,10 +165,7 @@ let
   # Prefer the home-manager package (programs.wwn-mcp) — same shape as
   # `uvx mcp-nixos`. Fall back to `nix run` only if the module is off.
   wwnMcpPkg =
-    if (config.programs.wwn-mcp.enable or false) then
-      config.programs.wwn-mcp.package
-    else
-      null;
+    if (config.programs.wwn-mcp.enable or false) then config.programs.wwn-mcp.package else null;
 
   wwnMcpServer =
     if wwnMcpPkg != null then
