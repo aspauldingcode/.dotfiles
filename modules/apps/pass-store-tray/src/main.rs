@@ -5,7 +5,7 @@ mod ui_contract;
 
 use serde::Deserialize;
 use std::path::{Path, PathBuf};
-use std::process::Command;
+use std::process::{Child, Command, Stdio};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
@@ -357,20 +357,46 @@ fn status_stale(path: &Path, max_secs: u64) -> bool {
     }
 }
 
-fn spawn_bin(bin: &Option<PathBuf>) {
-    spawn_bin_args(bin, &[]);
+/// Reap spawned helpers. Fire-and-forget `Command::spawn` without `wait`
+/// leaves zombies; on macOS that eventually hits `kern.maxprocperuid` and
+/// other apps fail with "Resource temporarily unavailable" (EAGAIN).
+#[derive(Default)]
+struct ChildReaper {
+    children: Vec<Child>,
 }
 
-fn spawn_bin_args(bin: &Option<PathBuf>, args: &[&str]) {
-    let Some(path) = bin else {
-        return;
-    };
-    let _ = Command::new(path)
-        .args(args)
-        .stdin(std::process::Stdio::null())
-        .stdout(std::process::Stdio::null())
-        .stderr(std::process::Stdio::null())
-        .spawn();
+impl ChildReaper {
+    fn reap(&mut self) {
+        self.children.retain_mut(|child| match child.try_wait() {
+            Ok(None) => true,
+            Ok(Some(_)) | Err(_) => false,
+        });
+    }
+
+    fn spawn_cmd(&mut self, mut cmd: Command) {
+        self.reap();
+        if let Ok(child) = cmd
+            .stdin(Stdio::null())
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .spawn()
+        {
+            self.children.push(child);
+        }
+    }
+
+    fn spawn_bin(&mut self, bin: &Option<PathBuf>) {
+        self.spawn_bin_args(bin, &[]);
+    }
+
+    fn spawn_bin_args(&mut self, bin: &Option<PathBuf>, args: &[&str]) {
+        let Some(path) = bin else {
+            return;
+        };
+        let mut cmd = Command::new(path);
+        cmd.args(args);
+        self.spawn_cmd(cmd);
+    }
 }
 
 fn make_icon(kind: IconKind) -> Icon {
@@ -496,33 +522,32 @@ fn apply_icon(tray: &TrayIcon, kind: IconKind) {
     }
 }
 
-fn open_qtpass() {
+fn open_qtpass(reaper: &mut ChildReaper) {
     #[cfg(target_os = "macos")]
     {
-        let _ = Command::new("open").args(["-a", "QtPass"]).spawn();
+        let mut cmd = Command::new("open");
+        cmd.args(["-a", "QtPass"]);
+        reaper.spawn_cmd(cmd);
     }
     #[cfg(not(target_os = "macos"))]
-        let _ = Command::new("qtpass")
-            .stdin(std::process::Stdio::null())
-            .stdout(std::process::Stdio::null())
-            .stderr(std::process::Stdio::null())
-            .spawn();
+    {
+        reaper.spawn_cmd(Command::new("qtpass"));
+    }
 }
 
-fn open_sync_log(path: &Path) {
+fn open_sync_log(reaper: &mut ChildReaper, path: &Path) {
     let path = path.display().to_string();
     #[cfg(target_os = "macos")]
     {
-        let _ = Command::new("open").args(["-t", &path]).spawn();
+        let mut cmd = Command::new("open");
+        cmd.args(["-t", &path]);
+        reaper.spawn_cmd(cmd);
     }
     #[cfg(not(target_os = "macos"))]
     {
-        let _ = Command::new("xdg-open")
-            .arg(&path)
-            .stdin(std::process::Stdio::null())
-            .stdout(std::process::Stdio::null())
-            .stderr(std::process::Stdio::null())
-            .spawn();
+        let mut cmd = Command::new("xdg-open");
+        cmd.arg(&path);
+        reaper.spawn_cmd(cmd);
     }
 }
 
@@ -547,6 +572,9 @@ struct NativeTray {
     rows_fp: String,
     quit: Arc<AtomicBool>,
     last_collect: std::time::Instant,
+    children: ChildReaper,
+    /// Separate from `children` so we can refuse overlapping collects.
+    collect_child: Option<Child>,
 }
 
 impl NativeTray {
@@ -615,6 +643,8 @@ impl NativeTray {
             last_collect: std::time::Instant::now()
                 .checked_sub(Duration::from_secs(60))
                 .unwrap_or_else(std::time::Instant::now),
+            children: ChildReaper::default(),
+            collect_child: None,
         };
         app.refresh();
         app
@@ -636,7 +666,23 @@ impl NativeTray {
         let _ = self.tray.set_tooltip(Some(lines.tooltip.clone()));
     }
 
+    fn collect_in_flight(&mut self) -> bool {
+        match self.collect_child.as_mut() {
+            None => false,
+            Some(child) => match child.try_wait() {
+                Ok(None) => true,
+                Ok(Some(_)) | Err(_) => {
+                    self.collect_child = None;
+                    false
+                }
+            },
+        }
+    }
+
     fn maybe_collect(&mut self) {
+        if self.collect_in_flight() {
+            return;
+        }
         if !status_stale(&self.env.dendritic_status, 45)
             && self.last_collect.elapsed() < Duration::from_secs(30)
         {
@@ -645,11 +691,24 @@ impl NativeTray {
         if self.last_collect.elapsed() < Duration::from_secs(10) {
             return;
         }
+        let Some(path) = &self.env.collect_bin else {
+            return;
+        };
         self.last_collect = std::time::Instant::now();
-        spawn_bin(&self.env.collect_bin);
+        match Command::new(path)
+            .stdin(Stdio::null())
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .spawn()
+        {
+            Ok(child) => self.collect_child = Some(child),
+            Err(_) => self.collect_child = None,
+        }
     }
 
     fn refresh(&mut self) {
+        self.children.reap();
+        let _ = self.collect_in_flight();
         self.maybe_collect();
         let status = load_status(&self.env.status_file);
         let dendritic = load_dendritic(&self.env.dendritic_status);
@@ -684,19 +743,24 @@ impl NativeTray {
         while let Ok(ev) = MenuEvent::receiver().try_recv() {
             let id = ev.id;
             if id == self.actions.qtpass.id() {
-                open_qtpass();
+                open_qtpass(&mut self.children);
             } else if id == self.actions.log.id() {
-                open_sync_log(&self.env.sync_log);
+                open_sync_log(&mut self.children, &self.env.sync_log);
             } else if id == self.actions.connect_wg.id() {
-                spawn_bin_args(&self.env.connect_device_bin, &["wireguard", "--device", "iphone"]);
+                self.children.spawn_bin_args(
+                    &self.env.connect_device_bin,
+                    &["wireguard", "--device", "iphone"],
+                );
             } else if id == self.actions.connect_pass.id() {
-                spawn_bin_args(&self.env.connect_device_bin, &["pass-guide"]);
+                self.children
+                    .spawn_bin_args(&self.env.connect_device_bin, &["pass-guide"]);
             } else if id == self.actions.connect_guide.id() {
-                spawn_bin_args(&self.env.connect_device_bin, &["guide"]);
+                self.children
+                    .spawn_bin_args(&self.env.connect_device_bin, &["guide"]);
             } else if id == self.actions.sync_flake.id() {
-                spawn_bin(&self.env.sync_bin);
+                self.children.spawn_bin(&self.env.sync_bin);
             } else if id == self.actions.switch_peer.id() {
-                spawn_bin(&self.env.switch_peer_bin);
+                self.children.spawn_bin(&self.env.switch_peer_bin);
             } else if id == self.actions.quit.id() {
                 self.quit.store(true, Ordering::SeqCst);
             }
@@ -779,5 +843,59 @@ fn main() {
             eprintln!("pass-store-tray: event loop error: {err:?}");
             std::process::exit(1);
         }
+    }
+}
+
+#[cfg(test)]
+mod reap_tests {
+    use super::*;
+
+    fn true_bin() -> &'static str {
+        if cfg!(target_os = "macos") {
+            "/usr/bin/true"
+        } else {
+            "true"
+        }
+    }
+
+    fn sleep_bin() -> &'static str {
+        if cfg!(target_os = "macos") {
+            "/bin/sleep"
+        } else {
+            "sleep"
+        }
+    }
+
+    #[test]
+    fn reaps_exited_child() {
+        let mut reaper = ChildReaper::default();
+        reaper.spawn_cmd(Command::new(true_bin()));
+        assert_eq!(reaper.children.len(), 1);
+        let deadline = std::time::Instant::now() + Duration::from_secs(2);
+        while !reaper.children.is_empty() && std::time::Instant::now() < deadline {
+            std::thread::sleep(Duration::from_millis(20));
+            reaper.reap();
+        }
+        assert!(
+            reaper.children.is_empty(),
+            "exited helper must be wait()'d so it cannot zombie"
+        );
+    }
+
+    #[test]
+    fn try_wait_sees_running_helper() {
+        let mut child = Command::new(sleep_bin())
+            .arg("2")
+            .stdin(Stdio::null())
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .spawn()
+            .expect("sleep");
+        match child.try_wait() {
+            Ok(None) => {}
+            other => panic!("sleep should still be running: {other:?}"),
+        }
+        let _ = child.kill();
+        let _ = child.wait();
     }
 }

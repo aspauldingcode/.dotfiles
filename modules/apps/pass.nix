@@ -231,7 +231,7 @@
       '';
       trayPkg = pkgs.rustPlatform.buildRustPackage {
         pname = "pass-store-tray";
-        version = "0.4.3";
+        version = "0.4.4";
         src = ./pass-store-tray;
         cargoLock.lockFile = ./pass-store-tray/Cargo.lock;
         nativeBuildInputs = [

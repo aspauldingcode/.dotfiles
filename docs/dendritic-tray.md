@@ -12,7 +12,9 @@ unchanged; dendritic fleet/theme/llm/wg/android/flake status is layered on top.
 | `~/.cache/dendritic-tray.status`   | `dendritic-tray-collect` / `dendritic tray collect` |
 | `~/.cache/android-converge.status` | `android-converge` (OnePlus 6T / nix-android)       |
 
-Tray polls both ~2s. Collect runs when dendritic status is older than ~45s.
+Tray polls both ~2s. Collect runs when dendritic status is older than ~45s
+(and never overlaps a still-running collect). Spawned helpers are `wait`'d
+on each poll so they cannot accumulate as zombies.
 Collect also probes `adb` live and merges `android-converge.status` into the
 `android` section (device reachability, converge state, lease holder).
 
