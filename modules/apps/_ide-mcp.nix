@@ -162,17 +162,36 @@ let
     "false"
   ];
 
-  wwnMcpServer = {
-    command = nixExe;
-    args = nixRunPrefix ++ [
-      "run"
-      "${cfg.wwnMcpFlake}#wwn-mcp"
-    ];
-    env = {
-      WWN_MCP_DATA_DIR = "${home}/.local/share/wwn-mcp";
-      WWN_MCP_CORPUS_TOML = "${cfg.wwnMcpFlake}/corpus.toml";
-    };
-  };
+  # Prefer the home-manager package (programs.wwn-mcp) — same shape as
+  # `uvx mcp-nixos`. Fall back to `nix run` only if the module is off.
+  wwnMcpPkg =
+    if (config.programs.wwn-mcp.enable or false) then
+      config.programs.wwn-mcp.package
+    else
+      null;
+
+  wwnMcpServer =
+    if wwnMcpPkg != null then
+      {
+        command = lib.getExe wwnMcpPkg;
+        args = [ ];
+        env = {
+          WWN_MCP_DATA_DIR = "${home}/.local/share/wwn-mcp";
+          WWN_MCP_CORPUS_TOML = "${cfg.wwnMcpFlake}/corpus.toml";
+        };
+      }
+    else
+      {
+        command = nixExe;
+        args = nixRunPrefix ++ [
+          "run"
+          "${cfg.wwnMcpFlake}#wwn-mcp"
+        ];
+        env = {
+          WWN_MCP_DATA_DIR = "${home}/.local/share/wwn-mcp";
+          WWN_MCP_CORPUS_TOML = "${cfg.wwnMcpFlake}/corpus.toml";
+        };
+      };
 
   nixosMcpServer = {
     command = uvxExe;

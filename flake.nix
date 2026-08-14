@@ -87,6 +87,10 @@
       url = "github:aspauldingcode/nix-darwin/plugin-playground";
     };
 
+    # WWN-MCP: stdio RAG for the Wawona org (mcp-nixos host model).
+    # Local checkout so mba picks up corpus.toml sibling paths + tip WIP.
+    wwn-mcp.url = "path:/Users/8amps/Wawona/wwn-mcp";
+
   };
 
   outputs =
@@ -136,6 +140,8 @@
               "*.xpi"
               "*.json"
               "flake_*.json"
+              ".cursor/plugins/**"
+              ".cursor/skills/**"
             ];
             programs = {
               nixfmt.enable = true; # *.nix

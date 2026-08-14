@@ -19,11 +19,15 @@
 
       dendritic = final.callPackage ../crates/dendritic/_package.nix { };
 
+      # Stdio WWN-MCP (RAG); also installed via programs.wwn-mcp.
+      wwn-mcp = inputs.wwn-mcp.packages.${prev.stdenv.hostPlatform.system}.default;
+
       code-cursor = unstable.code-cursor;
       antigravity = unstable.antigravity;
       spotify = unstable.spotify;
       vesktop = unstable.vesktop;
       firefox = unstable.firefox;
+      herdr = unstable.herdr;
 
       # mas 7.x (JSON CLI, App Store management) — programs.mas needs this;
       # 26.05 still ships 6.x.
