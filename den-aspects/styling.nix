@@ -97,7 +97,7 @@ let
         };
 
         # Universal live palette for Stylix viewing + hot-reload consumers
-        # (nvim, tmux, IDE patch, macOS tint). Wallpaper module may replace
+        # (nvim, IDE patch, macOS tint). Wallpaper module may replace
         # this with a flavours-derived file of the same shape.
         home.file.".colors.toml" = {
           force = true;

@@ -257,7 +257,6 @@ pub fn apply(variant: Variant, target: &str) -> Result<(), String> {
 
     // Hot theme layer (1:1 Darwin + NixOS): palette consumers follow wallpaper.
     let _ = ide::patch_from_colors_remap(&colors_dst, prev_palette.as_ref());
-    let _ = crate::tmux::apply_from_colors(&colors_dst);
     let _ = crate::ghostty::apply_from_colors(&colors_dst);
     let _ = crate::qt::apply_from_colors(&colors_dst);
     state::write_wallpaper_state(

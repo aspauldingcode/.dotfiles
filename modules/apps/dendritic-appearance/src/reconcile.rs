@@ -120,7 +120,6 @@ fn apply_global(variant: Variant, wallpaper_target: &str) -> Result<(), String> 
 
     // Hot theme layer — same on Darwin and NixOS (wallpaper palette → apps).
     let colors = colors_toml_path();
-    let _ = crate::tmux::apply_from_colors(&colors);
     let _ = crate::ghostty::apply_from_colors(&colors);
     let _ = crate::qt::apply_from_colors(&colors);
     let _ = crate::ide::patch_from_colors(&colors);

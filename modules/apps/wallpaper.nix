@@ -4,7 +4,7 @@
 #   1. Build-time: flavours → full base16 per wallpaper (dark+light) in the pack.
 #      (gowall extract is only ~6 colors; not enough for Stylix — optional manual.)
 #   2. Runtime: `dendritic-appearance wallpaper …` picks pack entry + copies its
-#      colors.toml, then hot-applies IDE / tmux / Ghostty / tint (both OSes).
+#      colors.toml, then hot-applies IDE / Ghostty / tint (both OSes).
 #   3. Stylix seed at rebuild: themeFromImage uses `selected` for store packages.
 #   4. Auth: Linux = desktop 1:1; macOS Idle ≠ desktop.
 #

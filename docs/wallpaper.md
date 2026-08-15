@@ -24,7 +24,6 @@ Unified declarative wallpaper + daily base16 theming across nix-darwin and NixOS
    - Copies that wallpaper’s prebuilt palette → `~/.colors.toml`
    - **Hot theme layer (follows the wallpaper, both OSes):**
      - IDE `workbench.colorCustomizations` (Cursor / VS Code / Antigravity)
-     - tmux `~/.config/tmux/theme.conf`
      - Ghostty theme `~/.config/ghostty/themes/dendritic-wallpaper` + SIGUSR2
        (theme file, not `config-file` — macOS double-loads config and cycles includes)
      - macOS accent tint from `base0D`
@@ -42,10 +41,10 @@ Unified declarative wallpaper + daily base16 theming across nix-darwin and NixOS
 
 ## Theme vs rebuild
 
-| Layer                                                             | When it updates                                      |
-| ----------------------------------------------------------------- | ---------------------------------------------------- |
-| Desktop wallpaper + `~/.colors.toml` + Ghostty/tmux/IDE/nvim/tint | **On every wallpaper change** (daily / next / named) |
-| Full Stylix store packages (gtk theme, etc.)                      | **On `nh darwin/os switch`** from `selected`         |
+| Layer                                                              | When it updates                                      |
+| ------------------------------------------------------------------ | ---------------------------------------------------- |
+| Desktop wallpaper + `~/.colors.toml` + Ghostty/IDE/nvim/tint | **On every wallpaper change** (daily / next / named) |
+| Full Stylix store packages (gtk theme, etc.)                       | **On `nh darwin/os switch`** from `selected`         |
 
 So: rotating wallpaper **does** change the live theme to that image’s build-time palette.
 It does **not** rebuild every Stylix package derivation each morning.

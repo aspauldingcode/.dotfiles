@@ -18,7 +18,6 @@ mod qt;
 mod reconcile;
 mod state;
 mod supervise;
-mod tmux;
 mod wallpaper;
 
 use std::process::ExitCode;

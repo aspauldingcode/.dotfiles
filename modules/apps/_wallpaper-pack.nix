@@ -4,7 +4,7 @@
 # flavours (colorthief → full base16) is the build-time extractor. gowall's
 # `extract` only prints ~6 colors; `convert` tints toward a named theme — neither
 # produces a Stylix-ready scheme. Runtime wallpaper changes copy these prebuilt
-# palettes into ~/.colors.toml and hot-apply Ghostty/tmux/IDE (Darwin = NixOS).
+# palettes into ~/.colors.toml and hot-apply Ghostty/IDE (Darwin = NixOS).
 {
   pkgs,
   lib,
@@ -83,7 +83,7 @@ let
         to_stylix_scheme "$out/flavours-light.yaml" "$out/scheme-light.yaml" light
         rm -f "$out/flavours-dark.yaml" "$out/flavours-light.yaml"
 
-        # Universal ~/.colors.toml fragments (neovim, tmux, IDE, tint, viewing).
+        # Universal ~/.colors.toml fragments (neovim, IDE, tint, viewing).
         for variant in dark light; do
           scheme="$out/scheme-$variant.yaml"
           {

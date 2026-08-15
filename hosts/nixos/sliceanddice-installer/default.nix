@@ -134,7 +134,6 @@ in
     e2fsprogs
     ntfs3g
     vim
-    tmux
     curl
     jq
     networkmanager # nmtui + nmcli

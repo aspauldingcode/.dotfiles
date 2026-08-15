@@ -40,7 +40,7 @@ Phases: `Synced` → idle; `Desynced` → `Applying` → verify (max 3) → `Syn
 
 ## No rebuild path
 
-1. **Hot layer**: `~/.colors.toml`, IDE / tmux / Ghostty live palette, swaybg / macos-wallpaper, macOS tint
+1. **Hot layer**: `~/.colors.toml`, IDE / Ghostty live palette, swaybg / macos-wallpaper, macOS tint
 2. **Prebuilt activate** (Darwin): cached light/dark profiles from postActivation
 3. **Specialisation** (NixOS): when present
 
