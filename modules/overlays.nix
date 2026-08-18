@@ -4,6 +4,11 @@
 }:
 
 {
+  # Every dendritic NixOS/Darwin host gets the same overlay (phoon, zed,
+  # vesktop, …). Hosts that already list it are concatenated, not replaced.
+  flake.modules.nixos.dendritic.nixpkgs.overlays = [ inputs.self.overlays.default ];
+  flake.modules.darwin.dendritic.nixpkgs.overlays = [ inputs.self.overlays.default ];
+
   flake.overlays.default =
     final: prev:
     let
@@ -28,8 +33,10 @@
         let
           wwnPhoon = inputs.wwn-phoon-rs.packages.${prev.stdenv.hostPlatform.system};
         in
-        wwnPhoon.phoon
-          or (if prev.stdenv.hostPlatform.isDarwin then wwnPhoon.phoon-macos else wwnPhoon.phoon-linux);
+        if prev.stdenv.hostPlatform.isDarwin then
+          wwnPhoon.phoon-macos or wwnPhoon.phoon
+        else
+          wwnPhoon.phoon-linux or wwnPhoon.phoon;
 
       code-cursor = unstable.code-cursor;
       # nixpkgs renamed antigravity → antigravity-ide (2.x, Antigravity IDE.app).
@@ -103,10 +110,13 @@
       vimPlugins = prev.vimPlugins // {
         blink-cmp = prev.vimPlugins.blink-cmp.overrideAttrs (old: {
           postPatch = (old.postPatch or "") + ''
-            substituteInPlace lua/blink/cmp/fuzzy/download/git.lua \
-              --replace-fail \
-                'if not repo_dir then resolve() end' \
-                'if not repo_dir then resolve(); return end'
+            gitlua=lua/blink/cmp/fuzzy/download/git.lua
+            if [ -f "$gitlua" ] && grep -q 'if not repo_dir then resolve() end$' "$gitlua"; then
+              substituteInPlace "$gitlua" \
+                --replace-fail \
+                  'if not repo_dir then resolve() end' \
+                  'if not repo_dir then resolve(); return end'
+            fi
           '';
         });
       };

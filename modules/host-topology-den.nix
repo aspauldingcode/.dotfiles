@@ -53,7 +53,7 @@ in
     instantiate = nixosSystemWithInputs;
   };
 
-  den.hosts.aarch64-linux.nixos-test = {
+  den.hosts.x86_64-linux.nixos-test = {
     instantiate = nixosSystemWithInputs;
   };
 
@@ -158,6 +158,7 @@ in
 
         nixpkgs.hostPlatform = "aarch64-linux";
         nixpkgs.config.allowUnfree = true;
+        nixpkgs.overlays = [ inputs.self.overlays.default ];
 
         networking.hostName = "dendritic-vm";
         system.stateVersion = "24.11";

@@ -23,18 +23,39 @@ jobs:
           - name: "mba (Darwin)"
             os: macos-14
             attr: "darwinConfigurations.mba.system"
+          - name: "mba-dark (Darwin)"
+            os: macos-14
+            attr: "darwinConfigurations.mba-dark.system"
           - name: "nixos-test (NixOS)"
             os: ubuntu-latest
             attr: "nixosConfigurations.nixos-test.config.system.build.toplevel"
           - name: "mba-asahi (NixOS ARM)"
             os: ubuntu-22.04-arm
             attr: "nixosConfigurations.mba-asahi.config.system.build.toplevel"
+          - name: "orb-wawona (NixOS ARM guest)"
+            os: ubuntu-22.04-arm
+            attr: "nixosConfigurations.orb-wawona.config.system.build.toplevel"
           - name: "sliceanddice (NixOS x86_64)"
             os: ubuntu-latest
             attr: "nixosConfigurations.sliceanddice.config.system.build.toplevel"
+          - name: "sliceanddice-installer (NixOS x86_64)"
+            os: ubuntu-latest
+            attr: "nixosConfigurations.sliceanddice-installer.config.system.build.toplevel"
           - name: "8amps-linux (Home Manager)"
             os: ubuntu-latest
             attr: "homeConfigurations.8amps-linux.activationPackage"
+          - name: "packages.dendritic (Darwin)"
+            os: macos-14
+            attr: "packages.aarch64-darwin.dendritic"
+          - name: "packages.dendritic-local-ai (Darwin)"
+            os: macos-14
+            attr: "packages.aarch64-darwin.dendritic-local-ai"
+          - name: "checks.treefmt (Darwin)"
+            os: macos-14
+            attr: "checks.aarch64-darwin.treefmt"
+          - name: "checks.hosts-eval (Darwin)"
+            os: macos-14
+            attr: "checks.aarch64-darwin.hosts-eval"
 
     steps:
       - name: Checkout repository
