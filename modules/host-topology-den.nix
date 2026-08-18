@@ -57,6 +57,10 @@ in
     instantiate = nixosSystemWithInputs;
   };
 
+  den.hosts.aarch64-linux.orb-wawona = {
+    instantiate = nixosSystemWithInputs;
+  };
+
   den.hosts.aarch64-linux.microvm = {
     instantiate = nixosSystemWithInputs;
   };
@@ -111,6 +115,15 @@ in
     includes = [ config.den.aspects.styling ];
     nixos = {
       imports = [ ../hosts/nixos/nixos-test ];
+    };
+  };
+
+  den.aspects.orb-wawona = {
+    # No styling aspect: this guest is a Wayland client farm for Wawona,
+    # not a workstation. Stylix pulled local perl-env/nh builds that fail
+    # in the OrbStack store after a disk-full truncation.
+    nixos = {
+      imports = [ ../hosts/nixos/orb-wawona ];
     };
   };
 

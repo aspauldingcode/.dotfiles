@@ -170,9 +170,11 @@ fn candidate_settings() -> Vec<PathBuf> {
     };
     vec![
         home.join("Library/Application Support/Cursor/User/settings.json"),
+        home.join("Library/Application Support/Antigravity IDE/User/settings.json"),
         home.join("Library/Application Support/Antigravity/User/settings.json"),
         home.join("Library/Application Support/Code/User/settings.json"),
         home.join(".config/Cursor/User/settings.json"),
+        home.join(".config/Antigravity IDE/User/settings.json"),
         home.join(".config/Antigravity/User/settings.json"),
         home.join(".config/Code/User/settings.json"),
     ]

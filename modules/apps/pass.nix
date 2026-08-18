@@ -337,25 +337,35 @@
             };
           }
         else
-          pkgs.symlinkJoin {
-            name = "qtpass-stylix";
-            paths = [ pkgs.qtpass ];
-            nativeBuildInputs = [ pkgs.makeWrapper ];
-            postBuild = ''
-              wrapProgram "$out/bin/qtpass" \
+          # Copy a real .app (not symlinkJoin). Dock/LaunchServices classify a
+          # symlink salad as a folder (file-type 12) and show a "?" tile.
+          pkgs.stdenvNoCC.mkDerivation {
+            pname = "qtpass-stylix";
+            inherit (pkgs.qtpass) version;
+            dontUnpack = true;
+            nativeBuildInputs = [
+              pkgs.makeWrapper
+              pkgs.makeBinaryWrapper
+            ];
+            installPhase = ''
+              runHook preInstall
+              mkdir -p "$out/bin" "$out/Applications"
+              cp -R ${pkgs.qtpass}/Applications/QtPass.app "$out/Applications/"
+              chmod -R u+w "$out/Applications/QtPass.app"
+
+              makeWrapper ${pkgs.qtpass}/bin/qtpass "$out/bin/qtpass" \
                 --set QT_STYLE_OVERRIDE Fusion \
                 --add-flags -stylesheet \
                 --add-flags ${lib.escapeShellArg qssPath}
 
-              # Dock / Spotlight open the .app, not bin/qtpass — wrap that too.
-              appQt="$out/Applications/QtPass.app/Contents/MacOS/QtPass"
-              if [ -e "$appQt" ] || [ -L "$appQt" ]; then
-                rm -f "$appQt"
-                makeWrapper ${pkgs.qtpass}/Applications/QtPass.app/Contents/MacOS/QtPass "$appQt" \
-                  --set QT_STYLE_OVERRIDE Fusion \
-                  --add-flags -stylesheet \
-                  --add-flags ${lib.escapeShellArg qssPath}
-              fi
+              rm -f "$out/Applications/QtPass.app/Contents/MacOS/QtPass"
+              makeBinaryWrapper \
+                ${pkgs.qtpass}/Applications/QtPass.app/Contents/MacOS/QtPass \
+                "$out/Applications/QtPass.app/Contents/MacOS/QtPass" \
+                --set QT_STYLE_OVERRIDE Fusion \
+                --add-flags -stylesheet \
+                --add-flags ${lib.escapeShellArg qssPath}
+              runHook postInstall
             '';
             meta = pkgs.qtpass.meta // {
               description = "QtPass with Fusion + dendritic.qss (macOS Stylix)";
@@ -951,7 +961,8 @@
     };
 
   # Dock pin for QtPass on macOS (order 145 — after Ghostty, before JetBrains).
-  # Prefer HM-linked themed app (Fusion + dendritic.qss) when present.
+  # Pin the store .app, same as Vesktop/Ghostty. The HM Apps symlink was
+  # classified as a folder (Dock file-type 12) and rendered as "?".
   flake.modules.darwin.dendritic =
     {
       lib,
@@ -965,21 +976,12 @@
         (config.home-manager.users.${u}.dendritic.apps.pass.enable or false)
         && (config.home-manager.users.${u}.dendritic.apps.pass.gui.enable or true)
       ) (lib.attrNames (config.home-manager.users or { }));
-      # Fall back to store qtpass; HM linkApps installs the themed wrapper into
-      # ~/Applications/Home Manager Apps when gui.enable.
-      qtpassApp =
-        if passUsers != [ ] then
-          let
-            u = lib.head passUsers;
-            home = config.home-manager.users.${u}.home.homeDirectory;
-          in
-          "${home}/Applications/Home Manager Apps/QtPass.app"
-        else
-          "${pkgs.qtpass}/Applications/QtPass.app";
     in
     {
       config = lib.mkIf (passUsers != [ ]) {
-        dendritic.dock.apps = lib.mkOrder 145 [ qtpassApp ];
+        dendritic.dock.apps = lib.mkOrder 145 [
+          "${pkgs.qtpass}/Applications/QtPass.app"
+        ];
       };
     };
 }

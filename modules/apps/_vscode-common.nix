@@ -56,6 +56,21 @@ let
 in
 {
   # ── Shared settings & extensions for VSCode, Cursor, and Antigravity ──
+  # Force overwrite settings.json to prevent Home Manager .backup clobbering.
+  # programs.vscode keys home.file with an *absolute* path
+  # (${home}/Library/... on Darwin, ${xdg.configHome}/... on Linux). A relative
+  # key for the same target trips "Conflicting managed target files". Wrap the
+  # whole home.file attr (not just .force) in mkIf — a force-only stub with no
+  # source still registers a target and breaks activation.
+  home.file = lib.mkMerge [
+    (lib.mkIf pkgs.stdenv.isDarwin {
+      "${config.home.homeDirectory}/Library/Application Support/Code/User/settings.json".force = true;
+    })
+    (lib.mkIf pkgs.stdenv.isLinux {
+      "${config.xdg.configHome}/Code/User/settings.json".force = true;
+    })
+  ];
+
   programs.vscode = {
     enable = true;
     # Avoid Home Manager's onChange hook that shells out to `code --list-extensions`
@@ -335,7 +350,8 @@ in
         for EXT_DIR in \
           "$HOME/.vscode/extensions" \
           "$HOME/.cursor/extensions" \
-          "$HOME/.antigravity/extensions"
+          "$HOME/.antigravity/extensions" \
+          "$HOME/.antigravity-ide/extensions"
         do
           [ -d "$EXT_DIR" ] || continue
 
@@ -370,6 +386,7 @@ in
       $HOME/.vscode/extensions
       $HOME/.cursor/extensions
       $HOME/.antigravity/extensions
+      $HOME/.antigravity-ide/extensions
     "
 
     for EXT_DIR in $MANAGED_EXTENSION_DIRS; do
@@ -387,6 +404,7 @@ in
       $HOME/.vscode/extensions
       $HOME/.cursor/extensions
       $HOME/.antigravity/extensions
+      $HOME/.antigravity-ide/extensions
     "
 
     for EXT_DIR in $MANAGED_EXTENSION_DIRS; do

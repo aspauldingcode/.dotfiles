@@ -21,10 +21,12 @@
       #   110  Brave (`apps/brave.nix`)
       #   120  Spotify (`apps/spotify.nix`)
       #   130  Vesktop (`apps/vesktop.nix`)
+      #   135  Prism Launcher (`apps/prismlauncher.nix`)
       #   140  Ghostty (`apps/ghostty.nix`)
       #   145  QtPass (`apps/pass.nix`)
       #   150  JetBrains IDEs (`apps/jetbrains.nix`)
       #   160  Cursor (`apps/cursor.nix`)
+      #   165  Zed (`apps/zed.nix`)
       #   170  Antigravity (`apps/antigravity.nix`)
 
       config = {

@@ -95,28 +95,14 @@
             highlight.enable = true;
             indent.enable = true;
             ensure_installed = [
-              "bash"
               "c"
-              "cpp"
-              "css"
-              "html"
               "java"
-              "javascript"
-              "json"
-              "lua"
-              "markdown"
-              "markdown_inline"
+              "kotlin"
               "nix"
               "python"
               "rust"
-              "toml"
+              "swift"
               "typescript"
-              "tsx"
-              "vim"
-              "vimdoc"
-              "yaml"
-              "objc"
-              "typst"
             ];
           };
         };
@@ -127,45 +113,29 @@
           inlayHints = false; # Disabled globally to prevent SourceKit-LSP crashes
           servers = {
             # Nix
-            nil_ls.enable = true;
+            nixd.enable = true;
             # Python
             pyright.enable = true;
-            # TypeScript / JavaScript
+            # TypeScript
             ts_ls.enable = true;
-            # C / C++ / Objective-C
+            # Kotlin
+            kotlin_language_server.enable = true;
+            # C
             clangd.enable = true;
-            # Rust (handled by rustaceanvim, do NOT enable rust_analyzer here)
-            # Java — jdtls with DAP debug support enabled on attach
+            # Java
             jdtls = {
               enable = true;
-              # Pass the java-debug plugin JAR so jdtls can handle vscode.java.startDebugSession
               extraOptions.init_options.bundles = [
                 "${pkgs.vscode-extensions.vscjava.vscode-java-debug}/share/vscode/extensions/vscjava.vscode-java-debug/server/com.microsoft.java.debug.plugin-0.53.2.jar"
               ];
-              # After jdtls attaches: register DAP + auto-discover main classes
               onAttach.function = ''
                 require('jdtls').setup_dap({ hotcodereplace = 'auto' })
                 require('jdtls.dap').setup_dap_main_class_configs()
               '';
             };
-            # Typst
-            tinymist.enable = true;
-            # Lua
-            lua_ls.enable = true;
-            # HTML / CSS / JSON
-            html.enable = true;
-            cssls.enable = true;
-            jsonls.enable = true;
-            # YAML
-            yamlls.enable = true;
-            # Bash
-            bashls.enable = true;
-            # Assembly (ARMv7 support)
-            asm_lsp.enable = true;
             # Swift
             sourcekit = {
               enable = true;
-              # Aggressively disable inlay hints to prevent the -32001 crash
               onAttach.function = ''
                 client.server_capabilities.inlayHintProvider = false
               '';
@@ -432,23 +402,36 @@
           };
         };
 
-        # Formatting is intentionally delegated to project-local `treefmt`.
+        # ── Formatting (conform-nvim) ───────────────────────────────
+        plugins.conform-nvim = {
+          enable = true;
+          settings = {
+            format_on_save = {
+              lsp_fallback = true;
+              timeout_ms = 500;
+            };
+            formatters_by_ft = {
+              python = [ "black" ];
+              nix = [ "alejandra" ];
+              typescript = [ "prettier" ];
+              kotlin = [ "ktlint" ];
+              swift = [ "swiftformat" ];
+              c = [ "clang-format" ];
+              rust = [ "rustfmt" ];
+            };
+          };
+        };
 
         # ── Linting (nvim-lint) ─────────────────────────────────────
         plugins.lint = {
           enable = true;
           lintersByFt = {
             python = [ "ruff" ];
-            javascript = [ "eslint_d" ];
             typescript = [ "eslint_d" ];
-            nix = [
-              "statix"
-              "deadnix"
-            ];
-            sh = [ "shellcheck" ];
-            bash = [ "shellcheck" ];
-            zsh = [ "shellcheck" ];
+            nix = [ "statix" ];
             swift = [ "swiftlint" ];
+            kotlin = [ "ktlint" ];
+            c = [ "clangtidy" ];
           };
         };
 
@@ -661,14 +644,14 @@
                 cwd = "\${workspaceFolder}";
               }
             ];
-            cpp = [
+            swift = [
               {
                 name = "Launch (${if isDarwin then "LLDB" else "GDB"})";
                 type = if isDarwin then "lldb" else "gdb";
                 request = "launch";
                 program.__raw = ''
                   function()
-                    return vim.fn.input('Path to file: ', vim.fn.getcwd() .. '/', 'file')
+                    return vim.fn.input('Path to file: ', vim.fn.getcwd() .. '/.build/debug/', 'file')
                   end
                 '';
                 cwd = "\${workspaceFolder}";
@@ -2061,15 +2044,19 @@
         with pkgs;
         [
           treefmt # Project formatter multiplexer
-          typst # Typst compiler
-          tinymist # Typst LSP
-          ruff # Python linting
-          # Linters
-          statix # Nix
-          shellcheck # Shell
-          eslint_d # JS/TS
-          asmfmt # Assembly formatter
-          asm-lsp # Assembly LSP (ARM support)
+          # Python
+          ruff
+          black
+          # Nix
+          statix
+          alejandra
+          # TypeScript
+          eslint_d
+          prettier
+          # Kotlin
+          ktlint
+          # C/C++
+          clang-tools
           # VSCode Extensions (available in PATH/store)
           vscode-extensions.bbenoist.nix
           vscode-extensions.jnoortheen.nix-ide

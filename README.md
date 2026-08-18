@@ -74,7 +74,7 @@ nh os switch /etc/nixos -H my-nixos-host
 - **[Den — Deep Reference](docs/den.md)** — Detailed documentation on Den: aspects, hosts, policies, classes, pipeline, and how this flake uses them.
 - **[sops-nix Documentation Suite](docs/sops-nix/README.md)** — Full multi-file reference for sops-nix: architecture, key management, authoring, templates, operations, and troubleshooting.
 - **[Zsh Plugins & Shell Extensions](docs/zsh-plugins.md)** — Full reference of all curated zsh plugins, CLI tools, and Nix-specific integrations.
-- **[Tmux Master Guide](docs/tmux.md)** — Learn how to use your optimized terminal multiplexer with interactive hints.
+
 - **[nix-android (OnePlus 6T)](docs/nix-android.md)** — Declarative LineageOS apps/settings over adb via nix-android.
 
 ## Uninstallation

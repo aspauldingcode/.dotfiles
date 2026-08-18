@@ -59,14 +59,18 @@
             }
           );
           default = {
-            mba = {
+            # OpenSSH Host matching is case-sensitive; include caps so
+            # `ssh alex@SLICEANDDICE` hits the same block as `ssh sliceanddice`.
+            "mba MBA" = {
               hostname = "mba.local";
               user = "8amps";
             };
-            sliceanddice = {
+            "sliceanddice SLICEANDDICE sliceanddice.local SLICEANDDICE.local" = {
               hostname = "sliceanddice.local";
               user = "alex";
             };
+            # OrbStack guests are wired in modules/apps/orbstack.nix
+            # (127.0.0.1:32222 + OrbStack Helper proxy — not *.orb.local:22).
           };
           description = "programs.ssh Host blocks for peer machines.";
         };

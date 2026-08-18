@@ -149,6 +149,7 @@
         dendritic.apps.ghostty.enable = true;
         dendritic.apps.cursor.enable = true;
         dendritic.apps.antigravity.enable = true;
+        dendritic.apps.zed.enable = true;
         dendritic.apps.beeper.enable = true;
         dendritic.apps.pass.enable = true;
         dendritic.apps.pass.fingerprint = "80AB4D8EFE29CE2ABD3BD0445C04154FC8950A8B";

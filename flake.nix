@@ -91,6 +91,11 @@
     # Local checkout so mba picks up corpus.toml sibling paths + tip WIP.
     wwn-mcp.url = "path:/Users/8amps/Wawona/wwn-mcp";
 
+    # Clean-room Rust `phoon` CLI (ASCII moon phase). Own nixpkgs +
+    # wwn-toolchain — do not follow 26.05; the recipe targets the
+    # toolchain's rust-overlay / SDK floor.
+    wwn-phoon-rs.url = "github:Wawona/wwn-phoon-rs";
+
   };
 
   outputs =

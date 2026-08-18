@@ -45,6 +45,9 @@
         # WireGuard overlay ↔ sliceanddice (pass/SecretSpec keys; see docs/wireguard.md).
         dendritic.wireguard.enable = true;
 
+        # OrbStack from nixpkgs (retires vendor OrbStack.app and UTM.app).
+        dendritic.apps.orbstack.enable = true;
+
         # Local Ollama (Metal) + same Rust CLI as sliceanddice (ai-local / chat).
         dendritic.local-ai.enable = true;
         # From scripts/local-ai-bench (mba Metal Ollama, 2026-07-19).
@@ -54,6 +57,14 @@
           "gemma3:1b" # fastest
           "llama3.2:1b" # ultra-light
         ];
+        # llama-server for Zed Agent (Metal, :8080). Local GGUF (HF -hf 401s with
+        # bad cached hub creds on this machine — prefer modelFile).
+        dendritic.local-ai.llamaCpp.enable = true;
+        dendritic.local-ai.llamaCpp.modelFile = "/Users/8amps/.cache/llama.cpp/models/qwen2.5-0.5b-instruct-q4_k_m.gguf";
+        dendritic.local-ai.llamaCpp.alias = "qwen2.5-0.5b";
+        dendritic.local-ai.llamaCpp.hfRepo = null;
+        # Cap KV / Zed packing — Agent was sending 67k into 32k n_ctx.
+        dendritic.local-ai.llamaCpp.ctxSize = 8192;
 
         documentation.enable = lib.mkForce false;
         documentation.man.enable = lib.mkForce false;
@@ -180,6 +191,13 @@
           dendritic.apps.ghostty.enable = true;
           dendritic.apps.antigravity.enable = true;
           dendritic.apps.cursor.enable = true;
+          dendritic.apps.zed.enable = true;
+          # Zed Agent → llama.cpp (launchd com.aspauldingcode.llama-cpp :8080).
+          dendritic.apps.zed.localAgent.enable = true;
+          dendritic.apps.zed.localAgent.provider = "llama.cpp";
+          dendritic.apps.zed.localAgent.apiUrl = "http://127.0.0.1:8080";
+          dendritic.apps.zed.localAgent.model = "qwen2.5-0.5b";
+          dendritic.apps.zed.localAgent.contextWindow = 8192;
           dendritic.apps.beeper.enable = true;
           dendritic.apps.jetbrains.enable = true;
           dendritic.apps.pass.enable = true;
@@ -200,6 +218,7 @@
           dendritic.apps.vnc.bonjourName = "mba";
           dendritic.wireguard.enable = true;
           dendritic.wireguard.peerId = "mba";
+          dendritic.apps.orbstack.enable = true;
           dendritic.python.enable = true;
 
           # Same Rust helpers as sliceanddice (scoped OPENAI_* only when wrapping).

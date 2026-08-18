@@ -97,9 +97,11 @@ def main() -> None:
     home = pathlib.Path.home()
     candidates = [
         home / "Library/Application Support/Cursor/User/settings.json",
+        home / "Library/Application Support/Antigravity IDE/User/settings.json",
         home / "Library/Application Support/Antigravity/User/settings.json",
         home / "Library/Application Support/Code/User/settings.json",
         home / ".config/Cursor/User/settings.json",
+        home / ".config/Antigravity IDE/User/settings.json",
         home / ".config/Antigravity/User/settings.json",
         home / ".config/Code/User/settings.json",
     ]

@@ -1,4 +1,4 @@
-# Shared MCP server definitions for Cursor, Antigravity, and VS Code.
+# Shared MCP server definitions for Cursor, Antigravity, VS Code, and Zed.
 #
 # Antigravity enforces a hard ~100-tool ceiling across ALL MCP servers.
 # Heavy servers (instruments≈29, lldb≈28, agent-device≈40, xcodebuild≈24,
@@ -16,7 +16,19 @@ let
   cursorEnabled = config.dendritic.apps.cursor.enable or false;
   antigravityEnabled = config.dendritic.apps.antigravity.enable or false;
   vscodeEnabled = config.dendritic.apps.vscode.enable or false;
-  ideMcpEnabled = cursorEnabled || antigravityEnabled || vscodeEnabled;
+  zedEnabled = config.dendritic.apps.zed.enable or false;
+  ideMcpEnabled = cursorEnabled || antigravityEnabled || vscodeEnabled || zedEnabled;
+
+  toZedContextServer =
+    server:
+    if (server.type or null) == "http" then
+      { url = server.url; }
+    else
+      {
+        command = server.command;
+        args = server.args or [ ];
+      }
+      // lib.optionalAttrs (server ? env) { env = server.env; };
 
   lldbMcpPkg = import ../pkgs/_lldb-mcp.nix { inherit pkgs; };
   lldbMcpExe = lib.getExe lldbMcpPkg;
@@ -305,6 +317,9 @@ let
 
   userMcpServers = heavyMcpServers;
 
+  zedContextServers = lib.mapAttrs (_: toZedContextServer) userMcpServers;
+  zedWawonaContextServers = lib.mapAttrs (_: toZedContextServer) wawonaMcpServers;
+
   antigravityMcpServers = if cfg.antigravity.includeHeavy then heavyMcpServers else leanMcpServers;
 
   mcpJson = servers: {
@@ -319,7 +334,7 @@ let
     "${lib.removePrefix "${home}/" wawonaRepoRoot}/${prefix}/mcp.json" = mcpJson wawonaMcpServers;
   };
 
-  # Antigravity reads Gemini paths, not ~/.antigravity/mcp.json.
+  # Antigravity reads Gemini paths, not ~/.antigravity-ide/mcp.json.
   # Live IDE path observed: ~/.gemini/antigravity/mcp_config.json
   antigravityMcpFiles =
     let
@@ -430,10 +445,25 @@ in
         pkgs.nodejs
       ];
 
+    programs.zed-editor.userSettings.context_servers = lib.mkIf zedEnabled zedContextServers;
+
     home.file =
       lib.optionalAttrs cursorEnabled (ideMcpFiles ".cursor")
       // lib.optionalAttrs antigravityEnabled antigravityMcpFiles
       // lib.optionalAttrs vscodeEnabled (ideMcpFiles ".vscode")
+      // lib.optionalAttrs zedEnabled (
+        let
+          wawonaRel = lib.removePrefix "${home}/" wawonaRepoRoot;
+          zedSettings = {
+            force = true;
+            text = builtins.toJSON { context_servers = zedWawonaContextServers; };
+          };
+        in
+        {
+          "Wawona/.zed/settings.json" = zedSettings;
+          "${wawonaRel}/.zed/settings.json" = zedSettings;
+        }
+      )
       // lib.optionalAttrs (cursorEnabled && cfg.agentDevice.enable && cfg.agentDevice.cursorRule) {
         ".cursor/rules/agent-device.mdc" = {
           force = true;

@@ -22,12 +22,27 @@
       # Stdio WWN-MCP (RAG); also installed via programs.wwn-mcp.
       wwn-mcp = inputs.wwn-mcp.packages.${prev.stdenv.hostPlatform.system}.default;
 
+      # Host-native `phoon` CLI from Wawona/wwn-phoon-rs.
+      # GH tip (8feacf8) exposes phoon-macos / phoon-linux, not `phoon`.
+      phoon =
+        let
+          wwnPhoon = inputs.wwn-phoon-rs.packages.${prev.stdenv.hostPlatform.system};
+        in
+        wwnPhoon.phoon
+          or (if prev.stdenv.hostPlatform.isDarwin then wwnPhoon.phoon-macos else wwnPhoon.phoon-linux);
+
       code-cursor = unstable.code-cursor;
-      antigravity = unstable.antigravity;
+      # nixpkgs renamed antigravity → antigravity-ide (2.x, Antigravity IDE.app).
+      antigravity-ide = unstable.antigravity-ide;
+      antigravity-ide-fhs =
+        if prev.stdenv.isLinux then unstable.antigravity-ide-fhs else unstable.antigravity-ide;
+      antigravity = final.antigravity-ide;
+      antigravity-fhs = final.antigravity-ide-fhs;
+      zed-editor = unstable.zed-editor;
+      zed-editor-fhs = if prev.stdenv.isLinux then unstable.zed-editor-fhs else unstable.zed-editor;
       spotify = unstable.spotify;
       vesktop = unstable.vesktop;
       firefox = unstable.firefox;
-      herdr = unstable.herdr;
 
       # mas 7.x (JSON CLI, App Store management) — programs.mas needs this;
       # 26.05 still ships 6.x.

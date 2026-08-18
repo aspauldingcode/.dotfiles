@@ -16,6 +16,8 @@ excludes = [
   "*.xpi",
   "*.json",        # managed programmatically; don't auto-format
   "flake_*.json",
+  ".cursor/plugins/**",
+  ".cursor/skills/**",
 ]
 
 # ── Nix ──────────────────────────────────────────────────────────

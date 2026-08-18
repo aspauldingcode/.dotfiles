@@ -1,6 +1,7 @@
 # Dual-mode local AI: free Ollama alongside existing cloud OpenAI.
 # Same Rust CLI (ai-local / chat) on NixOS + Darwin.
 # NixOS: CUDA ollama. Darwin: Metal ollama via launchd (ANE ranking is separate).
+# Optional llama.cpp OpenAI-compatible HTTP server (:8080) for Zed Agent.
 {
   flake.modules.nixos.dendritic =
     {
@@ -11,6 +12,36 @@
     }:
     let
       cfg = config.dendritic.local-ai;
+      llamaCfg = cfg.llamaCpp;
+      llamaServerArgs = [
+        "${pkgs.llama-cpp}/bin/llama-server"
+        "--host"
+        llamaCfg.host
+        "--port"
+        (toString llamaCfg.port)
+      ]
+      ++ lib.optionals llamaCfg.jinja [ "--jinja" ]
+      ++ [
+        "-ngl"
+        (toString llamaCfg.nGpuLayers)
+      ]
+      ++ lib.optionals (llamaCfg.ctxSize != null) [
+        "-c"
+        (toString llamaCfg.ctxSize)
+      ]
+      ++ lib.optionals (llamaCfg.hfRepo != null) [
+        "-hf"
+        llamaCfg.hfRepo
+      ]
+      ++ lib.optionals (llamaCfg.modelFile != null) [
+        "-m"
+        llamaCfg.modelFile
+      ]
+      ++ lib.optionals (llamaCfg.alias != null) [
+        "-a"
+        llamaCfg.alias
+      ]
+      ++ llamaCfg.extraArgs;
     in
     {
       options.dendritic.local-ai = {
@@ -31,6 +62,75 @@
         port = lib.mkOption {
           type = lib.types.port;
           default = 11434;
+        };
+
+        llamaCpp = {
+          enable = lib.mkEnableOption "llama.cpp HTTP server (OpenAI-compatible) for Zed Agent";
+
+          host = lib.mkOption {
+            type = lib.types.str;
+            default = "127.0.0.1";
+            description = "llama-server bind address.";
+          };
+
+          port = lib.mkOption {
+            type = lib.types.port;
+            default = 8080;
+            description = "llama-server port (Zed language_models.\"llama.cpp\".api_url).";
+          };
+
+          user = lib.mkOption {
+            type = lib.types.str;
+            default = "alex";
+            description = "System user that owns ~/.cache/llama.cpp (HF downloads).";
+          };
+
+          hfRepo = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            example = "unsloth/Qwen2.5-Coder-3B-Instruct-GGUF:Q4_K_M";
+            description = ''
+              Optional Hugging Face GGUF repo passed as `-hf`. Null starts router /
+              cache-only mode (load models on demand from the llama.cpp cache).
+            '';
+          };
+
+          modelFile = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = "Optional local GGUF path (`-m`). Mutually exclusive with hfRepo in practice.";
+          };
+
+          alias = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = "Optional model alias (`-a`) — use this as Zed agent.default_model.model.";
+          };
+
+          ctxSize = lib.mkOption {
+            type = lib.types.nullOr lib.types.ints.positive;
+            default = null;
+            example = 8192;
+            description = "llama-server context size (`-c`). Keep ≤ model train ctx; pair with Zed context_window.";
+          };
+
+          nGpuLayers = lib.mkOption {
+            type = lib.types.int;
+            default = -1;
+            description = "GPU offload layers (`-ngl`). -1 = all (CUDA/Metal).";
+          };
+
+          jinja = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = "Enable `--jinja` (tool-calling templates for agent use).";
+          };
+
+          extraArgs = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [ ];
+            description = "Extra argv appended to llama-server.";
+          };
         };
       };
 
@@ -73,12 +173,31 @@
             case "$1" in
               pre)
                 ${pkgs.systemd}/bin/systemctl stop ollama.service 2>/dev/null || true
+                ${pkgs.systemd}/bin/systemctl stop dendritic-llama-cpp.service 2>/dev/null || true
                 ;;
               post)
                 ${pkgs.systemd}/bin/systemctl start ollama.service 2>/dev/null || true
+                ${pkgs.systemd}/bin/systemctl start dendritic-llama-cpp.service 2>/dev/null || true
                 ;;
             esac
           '';
+        };
+
+        systemd.services.dendritic-llama-cpp = lib.mkIf llamaCfg.enable {
+          description = "llama.cpp OpenAI-compatible server (Zed Agent)";
+          wantedBy = [ "multi-user.target" ];
+          after = [ "network.target" ];
+          serviceConfig = {
+            Type = "simple";
+            User = llamaCfg.user;
+            ExecStart = lib.escapeShellArgs llamaServerArgs;
+            Restart = "on-failure";
+            RestartSec = 3;
+            # HF / GGUF cache under the user's home.
+            Environment = [
+              "HOME=/home/${llamaCfg.user}"
+            ];
+          };
         };
       };
     };
@@ -92,7 +211,39 @@
     }:
     let
       cfg = config.dendritic.local-ai;
+      llamaCfg = cfg.llamaCpp;
       ollamaHost = "${cfg.host}:${toString cfg.port}";
+      primary = config.system.primaryUser;
+      primaryHome = config.users.users.${primary}.home;
+      llamaServerArgs = [
+        "${pkgs.llama-cpp}/bin/llama-server"
+        "--host"
+        llamaCfg.host
+        "--port"
+        (toString llamaCfg.port)
+      ]
+      ++ lib.optionals llamaCfg.jinja [ "--jinja" ]
+      ++ [
+        "-ngl"
+        (toString llamaCfg.nGpuLayers)
+      ]
+      ++ lib.optionals (llamaCfg.ctxSize != null) [
+        "-c"
+        (toString llamaCfg.ctxSize)
+      ]
+      ++ lib.optionals (llamaCfg.hfRepo != null) [
+        "-hf"
+        llamaCfg.hfRepo
+      ]
+      ++ lib.optionals (llamaCfg.modelFile != null) [
+        "-m"
+        llamaCfg.modelFile
+      ]
+      ++ lib.optionals (llamaCfg.alias != null) [
+        "-a"
+        llamaCfg.alias
+      ]
+      ++ llamaCfg.extraArgs;
       # writeShellScriptBin → ProgramArguments basename is `ollama-pull-models`
       # (bare writeShellScript shows as HASH-ollama-pull-models in Login Items).
       pullModels = pkgs.writeShellScriptBin "ollama-pull-models" ''
@@ -134,6 +285,63 @@
           type = lib.types.port;
           default = 11434;
         };
+
+        llamaCpp = {
+          enable = lib.mkEnableOption "llama.cpp HTTP server (OpenAI-compatible) for Zed Agent";
+
+          host = lib.mkOption {
+            type = lib.types.str;
+            default = "127.0.0.1";
+          };
+
+          port = lib.mkOption {
+            type = lib.types.port;
+            default = 8080;
+          };
+
+          hfRepo = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            example = "unsloth/Qwen2.5-Coder-3B-Instruct-GGUF:Q4_K_M";
+            description = ''
+              Optional Hugging Face GGUF repo (`-hf`). Null = router / cache-only
+              (no download on activate).
+            '';
+          };
+
+          modelFile = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+          };
+
+          alias = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+          };
+
+          ctxSize = lib.mkOption {
+            type = lib.types.nullOr lib.types.ints.positive;
+            default = null;
+            example = 8192;
+            description = "llama-server context size (`-c`). Pair with Zed localAgent.contextWindow.";
+          };
+
+          nGpuLayers = lib.mkOption {
+            type = lib.types.int;
+            default = -1;
+            description = "Metal GPU layers (`-ngl`). -1 = all.";
+          };
+
+          jinja = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+          };
+
+          extraArgs = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [ ];
+          };
+        };
       };
 
       config = lib.mkIf cfg.enable {
@@ -174,6 +382,20 @@
             KeepAlive = false;
             StandardOutPath = "/tmp/ollama-model-loader.log";
             StandardErrorPath = "/tmp/ollama-model-loader.err.log";
+          };
+        };
+
+        launchd.user.agents.llama-cpp = lib.mkIf llamaCfg.enable {
+          serviceConfig = {
+            Label = "com.aspauldingcode.llama-cpp";
+            ProgramArguments = llamaServerArgs;
+            EnvironmentVariables = {
+              HOME = primaryHome;
+            };
+            RunAtLoad = true;
+            KeepAlive = true;
+            StandardOutPath = "/tmp/llama-cpp.log";
+            StandardErrorPath = "/tmp/llama-cpp.err.log";
           };
         };
       };
