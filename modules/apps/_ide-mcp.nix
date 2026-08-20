@@ -46,8 +46,46 @@ let
     else
       "${pkgs.nix}/bin/nix";
   uvxExe = lib.getExe' pkgs.uv "uvx";
+  uvExe = lib.getExe' pkgs.uv "uv";
   npxExe = "${pkgs.nodejs}/bin/npx";
   wawonaRepoRoot = cfg.wawonaRepoRoot;
+
+  # GhidraVibe MCP bridges live under #ghidra-vibe (share/ghidra-mcp/).
+  # Old GhidraMCP_Vibe_RSE #server attr is gone; resolve at runtime from the
+  # local checkout so tip WIP does not need a flake input lock.
+  ghidraVibeRootExpr = ''root="$(dirname "$(dirname "$(command -v ghidra-vibe-rag-mcp)")")" '';
+
+  ghidraVibeShell =
+    name: innerText:
+    let
+      inner = pkgs.writeShellScript "${name}-inner" ''
+        set -euo pipefail
+        ${innerText}
+      '';
+    in
+    pkgs.writeShellScriptBin name ''
+      set -euo pipefail
+      exec ${nixExe} ${lib.escapeShellArgs nixRunPrefix} shell \
+        --no-write-lock-file "${cfg.ghidra.flake}#ghidra-vibe" -c ${inner} "$@"
+    '';
+
+  cursorGhidraMcpPkg = ghidraVibeShell "cursor-ghidra-mcp" ''
+    ${ghidraVibeRootExpr}
+    export GHIDRA_MCP_URL="${cfg.ghidra.serverUrl}"
+    exec ${uvExe} run "$root/share/ghidra-mcp/bridge_mcp_ghidra.py" "$@"
+  '';
+
+  cursorGhidraVibeMcpPkg = ghidraVibeShell "cursor-ghidra-vibe-mcp" ''
+    ${ghidraVibeRootExpr}
+    export GHIDRA_MCP_URL="${cfg.ghidra.serverUrl}"
+    export GHIDRA_VIBE_MCP_EXT_URL="${cfg.ghidra.extUrl}"
+    exec ${uvExe} run "$root/share/ghidra-mcp/bridge_mcp_vibe.py" "$@"
+  '';
+
+  cursorGhidraVibeRagMcpPkg = ghidraVibeShell "cursor-ghidra-vibe-rag-mcp" ''
+    export GHIDRA_MCP_URL="${cfg.ghidra.serverUrl}"
+    exec ghidra-vibe-rag-mcp "$@"
+  '';
 
   agentDevicePath =
     lib.makeBinPath (
@@ -230,28 +268,32 @@ let
     };
   };
 
+  # uv + GhidraVibe bridges (see ~/GhidraVibe/docs/CURSOR.md). Engine must
+  # already be up on GHIDRA_MCP_URL (gui or ghidra-vibe-mcp-headless).
   ghidraMcpServer = {
-    command = nixExe;
-    args = nixRunPrefix ++ [
-      "run"
-      "--no-write-lock-file"
-      "${cfg.ghidra.flake}#server"
-      "--"
-      "--ghidra-server"
-      cfg.ghidra.serverUrl
-    ];
+    command = lib.getExe cursorGhidraMcpPkg;
+    args = [ ];
+    env = {
+      GHIDRA_MCP_URL = cfg.ghidra.serverUrl;
+    };
+  };
+
+  ghidraVibeMcpServer = {
+    command = lib.getExe cursorGhidraVibeMcpPkg;
+    args = [ ];
+    env = {
+      GHIDRA_MCP_URL = cfg.ghidra.serverUrl;
+      GHIDRA_VIBE_MCP_EXT_URL = cfg.ghidra.extUrl;
+    };
   };
 
   # Rust JSpace RAG MCP (discover/search/index) — Cursor heavy set.
   ghidraVibeRagMcpServer = {
-    command = nixExe;
-    args = [
-      "shell"
-      "--no-write-lock-file"
-      "${cfg.ghidra.flake}#ghidra-vibe-tools"
-      "-c"
-      "ghidra-vibe-rag-mcp"
-    ];
+    command = lib.getExe cursorGhidraVibeRagMcpPkg;
+    args = [ ];
+    env = {
+      GHIDRA_MCP_URL = cfg.ghidra.serverUrl;
+    };
   };
 
   guildforgeMcpServer = {
@@ -305,6 +347,7 @@ let
     // lib.optionalAttrs cfg.agentDevice.enable { agent-device = agentDeviceMcpServer; }
     // lib.optionalAttrs cfg.ghidra.enable {
       ghidra = ghidraMcpServer;
+      ghidra-vibe = ghidraVibeMcpServer;
       ghidra-vibe-rag = ghidraVibeRagMcpServer;
     }
     // lib.optionalAttrs cfg.guildforge.enable { guildforge = guildforgeMcpServer; };
@@ -372,12 +415,22 @@ in
       enable = lib.mkEnableOption "Ghidra MCP server in user-global IDE mcp.json";
       flake = lib.mkOption {
         type = lib.types.str;
-        default = "${config.home.homeDirectory}/GhidraMCP_Vibe_RSE";
+        default = "${config.home.homeDirectory}/GhidraVibe";
+        description = ''
+          Local GhidraVibe flake checkout. MCP bridges use
+          `#ghidra-vibe` (share/ghidra-mcp + ghidra-vibe-rag-mcp).
+          Replaces the retired GhidraMCP_Vibe_RSE path.
+        '';
       };
       serverUrl = lib.mkOption {
         type = lib.types.str;
-        # GhidraMCP HTTP plugin default in GhidraVibe docs
-        default = "http://127.0.0.1:8089/";
+        # GhidraVibe engine default (no trailing slash)
+        default = "http://127.0.0.1:8089";
+      };
+      extUrl = lib.mkOption {
+        type = lib.types.str;
+        default = "http://127.0.0.1:8092";
+        description = "GhidraVibe MCP extension URL (dyld / Malimite / nav).";
       };
     };
 
@@ -443,6 +496,12 @@ in
       ]
       ++ lib.optionals cursorEnabled [
         pkgs.nodejs
+      ]
+      ++ lib.optionals (cursorEnabled && cfg.ghidra.enable) [
+        cursorGhidraMcpPkg
+        cursorGhidraVibeMcpPkg
+        cursorGhidraVibeRagMcpPkg
+        pkgs.uv
       ];
 
     programs.zed-editor.userSettings.context_servers = lib.mkIf zedEnabled zedContextServers;

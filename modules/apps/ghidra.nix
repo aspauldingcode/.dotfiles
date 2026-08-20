@@ -7,22 +7,29 @@
       ...
     }:
     let
-      vibeFlake = "${config.home.homeDirectory}/GhidraMCP_Vibe_RSE";
+      # Local GhidraVibe checkout (replaces retired GhidraMCP_Vibe_RSE).
+      vibeFlake = "${config.home.homeDirectory}/GhidraVibe";
+      nixExe =
+        if builtins.pathExists "/nix/var/nix/profiles/default/bin/nix" then
+          "/nix/var/nix/profiles/default/bin/nix"
+        else
+          "${pkgs.nix}/bin/nix";
+      nixRun = ''${nixExe} --extra-experimental-features "nix-command flakes"'';
     in
     {
       # Prefer GhidraVibe (headless + native UI + Rust JSpace) over stock pkgs.ghidra.
       home.packages = [
         (pkgs.writeShellScriptBin "ghidra-vibe" ''
-          exec ${pkgs.nix}/bin/nix --extra-experimental-features "nix-command flakes" run --no-write-lock-file "${vibeFlake}#default" -- "$@"
+          exec ${nixRun} run --no-write-lock-file "${vibeFlake}#default" -- "$@"
         '')
         (pkgs.writeShellScriptBin "ghidra-vibe-jspace" ''
-          exec ${pkgs.nix}/bin/nix --extra-experimental-features "nix-command flakes" shell --no-write-lock-file "${vibeFlake}#ghidra-vibe-tools" -c ghidra-vibe-jspace "$@"
+          exec ${nixRun} shell --no-write-lock-file "${vibeFlake}#ghidra-vibe-tools" -c ghidra-vibe-jspace "$@"
         '')
         (pkgs.writeShellScriptBin "ghidra-vibe-dyld" ''
-          exec ${pkgs.nix}/bin/nix --extra-experimental-features "nix-command flakes" shell --no-write-lock-file "${vibeFlake}#ghidra-vibe" -c ghidra-vibe-dyld "$@"
+          exec ${nixRun} shell --no-write-lock-file "${vibeFlake}#ghidra-vibe" -c ghidra-vibe-dyld "$@"
         '')
         (pkgs.writeShellScriptBin "ghidra-vibe-mcp-headless" ''
-          exec ${pkgs.nix}/bin/nix --extra-experimental-features "nix-command flakes" shell --no-write-lock-file "${vibeFlake}#mcp-headless" -c ghidra-vibe-mcp-headless "$@"
+          exec ${nixRun} shell --no-write-lock-file "${vibeFlake}#mcp-headless" -c ghidra-vibe-mcp-headless "$@"
         '')
       ];
 
@@ -32,6 +39,7 @@
         # GHIDRA_VIBE_MAXMEM = "8G";
         GHIDRA_MCP_URL = "http://127.0.0.1:8089";
         GHIDRA_VIBE_GUI_URL = "http://127.0.0.1:8091";
+        GHIDRA_VIBE_MCP_EXT_URL = "http://127.0.0.1:8092";
       };
     };
 }
