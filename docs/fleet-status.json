@@ -1,27 +1,27 @@
 {
   "schema": 1,
-  "generated_at": "2026-08-23T01:41:30Z",
+  "generated_at": "2026-08-23T03:06:56Z",
   "hosts": [
     {
       "host": "mba",
-      "platform": "darwin",
-      "flake_rev": "eac3febd",
-      "status": "online",
-      "seen_at": "2026-08-23T01:29:44Z"
+      "platform": "unknown",
+      "flake_rev": "\u2014",
+      "status": "offline",
+      "seen_at": null
     },
     {
       "host": "sliceanddice",
-      "platform": "nixos",
-      "flake_rev": "2eeffde7",
+      "platform": "unknown",
+      "flake_rev": "\u2014",
       "status": "offline",
-      "seen_at": "2026-07-22T02:56:27Z"
+      "seen_at": null
     },
     {
       "host": "oneplus6t",
-      "platform": "android",
-      "flake_rev": "6e015fc9",
+      "platform": "unknown",
+      "flake_rev": "\u2014",
       "status": "offline",
-      "seen_at": "2026-08-20T17:54:15Z"
+      "seen_at": null
     }
   ]
 }
