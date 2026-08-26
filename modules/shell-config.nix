@@ -186,6 +186,11 @@
       security.sudo.extraConfig = ''
         # 120 min: authenticate once, then reuse for a long session.
         Defaults timestamp_timeout=120
+
+        # Passwordless sudo for CLI / Cursor agents (no tty for Touch ID).
+        # Matches NixOS security.sudo.wheelNeedsPassword = false.
+        Defaults:8amps !requiretty
+        8amps ALL=(ALL) NOPASSWD: ALL
       '';
     };
 
