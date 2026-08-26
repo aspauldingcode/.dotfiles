@@ -134,16 +134,34 @@ pub fn read_recorded_variant() -> Option<Variant> {
     None
 }
 
-pub fn read_wallpaper_name() -> Option<String> {
+fn wallpaper_state_json() -> Option<serde_json::Value> {
     let raw = std::fs::read_to_string(wallpaper_state_path()).ok()?;
-    let v: serde_json::Value = serde_json::from_str(&raw).ok()?;
-    v.get("name")?.as_str().map(|s| s.to_string())
+    serde_json::from_str(&raw).ok()
+}
+
+pub fn read_wallpaper_name() -> Option<String> {
+    wallpaper_state_json()?
+        .get("name")?
+        .as_str()
+        .map(|s| s.to_string())
 }
 
 pub fn read_wallpaper_variant() -> Option<Variant> {
-    let raw = std::fs::read_to_string(wallpaper_state_path()).ok()?;
-    let v: serde_json::Value = serde_json::from_str(&raw).ok()?;
-    Variant::parse(v.get("variant")?.as_str()?)
+    Variant::parse(wallpaper_state_json()?.get("variant")?.as_str()?)
+}
+
+pub fn read_theme_name() -> Option<String> {
+    wallpaper_state_json()?
+        .get("theme")?
+        .as_str()
+        .map(|s| s.to_string())
+}
+
+pub fn read_pair_id() -> Option<String> {
+    wallpaper_state_json()?
+        .get("pair")?
+        .as_str()
+        .map(|s| s.to_string())
 }
 
 pub fn write_wallpaper_state(
@@ -154,6 +172,8 @@ pub fn write_wallpaper_state(
     index: usize,
     lock_name: Option<&str>,
     lock_image: Option<&str>,
+    theme: Option<&str>,
+    pair: Option<&str>,
 ) {
     let _ = std::fs::create_dir_all(user_state_dir());
     let mut obj = serde_json::json!({
@@ -169,6 +189,12 @@ pub fn write_wallpaper_state(
     }
     if let Some(i) = lock_image {
         obj["lock_image"] = serde_json::json!(i);
+    }
+    if let Some(t) = theme {
+        obj["theme"] = serde_json::json!(t);
+    }
+    if let Some(p) = pair {
+        obj["pair"] = serde_json::json!(p);
     }
     let _ = std::fs::write(
         wallpaper_state_path(),

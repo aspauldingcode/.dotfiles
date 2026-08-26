@@ -24,6 +24,11 @@
 
       dendritic = final.callPackage ../crates/dendritic/_package.nix { };
 
+      lutgen = unstable.lutgen;
+      # Latest packaged gowall (v0.2.4, current GitHub release). Recolor uses
+      # lutgen-rs (Gaussian Hald CLUT); gowall's Go port stays for the CLI.
+      gowall = unstable.gowall;
+
       # Stdio WWN-MCP (RAG); also installed via programs.wwn-mcp.
       wwn-mcp = inputs.wwn-mcp.packages.${prev.stdenv.hostPlatform.system}.default;
 
@@ -171,6 +176,16 @@
           unstable.beeper;
 
       # ── Wallpaper Tools ──────────────────────────────────────────
+      # Native Tahoe WallpaperAgent apply (Show on all Spaces + catalog).
+      macos-wallpaper-daemon-rse =
+        if prev.stdenv.isDarwin then
+          prev.callPackage ./pkgs/_macos-wallpaper-daemon-rse.nix {
+            src = inputs.macos-wallpaper-daemon-rse;
+            generated = prev.swiftpm2nix.helpers ./macos-wallpaper-daemon-rse-deps;
+          }
+        else
+          null;
+
       # Sindre Sorhus's wallpaper CLI for macOS (compiled from upstream)
       macos-wallpaper =
         if prev.stdenv.isDarwin then

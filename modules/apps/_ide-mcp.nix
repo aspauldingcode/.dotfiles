@@ -50,42 +50,16 @@ let
   npxExe = "${pkgs.nodejs}/bin/npx";
   wawonaRepoRoot = cfg.wawonaRepoRoot;
 
-  # GhidraVibe MCP bridges live under #ghidra-vibe (share/ghidra-mcp/).
-  # Old GhidraMCP_Vibe_RSE #server attr is gone; resolve at runtime from the
-  # local checkout so tip WIP does not need a flake input lock.
-  ghidraVibeRootExpr = ''root="$(dirname "$(dirname "$(command -v ghidra-vibe-rag-mcp)")")" '';
-
-  ghidraVibeShell =
-    name: innerText:
-    let
-      inner = pkgs.writeShellScript "${name}-inner" ''
-        set -euo pipefail
-        ${innerText}
-      '';
-    in
-    pkgs.writeShellScriptBin name ''
-      set -euo pipefail
-      exec ${nixExe} ${lib.escapeShellArgs nixRunPrefix} shell \
-        --no-write-lock-file "${cfg.ghidra.flake}#ghidra-vibe" -c ${inner} "$@"
-    '';
-
-  cursorGhidraMcpPkg = ghidraVibeShell "cursor-ghidra-mcp" ''
-    ${ghidraVibeRootExpr}
-    export GHIDRA_MCP_URL="${cfg.ghidra.serverUrl}"
-    exec ${uvExe} run "$root/share/ghidra-mcp/bridge_mcp_ghidra.py" "$@"
-  '';
-
-  cursorGhidraVibeMcpPkg = ghidraVibeShell "cursor-ghidra-vibe-mcp" ''
-    ${ghidraVibeRootExpr}
-    export GHIDRA_MCP_URL="${cfg.ghidra.serverUrl}"
-    export GHIDRA_VIBE_MCP_EXT_URL="${cfg.ghidra.extUrl}"
-    exec ${uvExe} run "$root/share/ghidra-mcp/bridge_mcp_vibe.py" "$@"
-  '';
-
-  cursorGhidraVibeRagMcpPkg = ghidraVibeShell "cursor-ghidra-vibe-rag-mcp" ''
-    export GHIDRA_MCP_URL="${cfg.ghidra.serverUrl}"
-    exec ghidra-vibe-rag-mcp "$@"
-  '';
+  # GhidraVibe local stdio MCP (same host model as mcp-nixos / wwn-mcp).
+  # Prefer home-manager `programs.ghidra-vibe.mcpPackage`; fall back to nix
+  # shell of `#ghidra-vibe-mcp` only if that module is off.
+  ghidraVibeMcpPkg =
+    if
+      (config.programs.ghidra-vibe.enable or false) && (config.programs.ghidra-vibe.mcp.enable or false)
+    then
+      config.programs.ghidra-vibe.mcpPackage
+    else
+      null;
 
   agentDevicePath =
     lib.makeBinPath (
@@ -268,33 +242,60 @@ let
     };
   };
 
-  # uv + GhidraVibe bridges (see ~/GhidraVibe/docs/CURSOR.md). Engine must
-  # already be up on GHIDRA_MCP_URL (gui or ghidra-vibe-mcp-headless).
-  ghidraMcpServer = {
-    command = lib.getExe cursorGhidraMcpPkg;
-    args = [ ];
-    env = {
-      GHIDRA_MCP_URL = cfg.ghidra.serverUrl;
-    };
-  };
+  # Local stdio GhidraVibe MCP (no public URL; vibe auto-starts mcp-ext).
+  ghidraMcpServer =
+    if ghidraVibeMcpPkg != null then
+      {
+        command = "${ghidraVibeMcpPkg}/bin/ghidra-mcp";
+        args = [ ];
+      }
+    else
+      {
+        command = nixExe;
+        args = nixRunPrefix ++ [
+          "shell"
+          "--no-write-lock-file"
+          "${cfg.ghidra.flake}#ghidra-vibe-mcp"
+          "-c"
+          "ghidra-mcp"
+        ];
+      };
 
-  ghidraVibeMcpServer = {
-    command = lib.getExe cursorGhidraVibeMcpPkg;
-    args = [ ];
-    env = {
-      GHIDRA_MCP_URL = cfg.ghidra.serverUrl;
-      GHIDRA_VIBE_MCP_EXT_URL = cfg.ghidra.extUrl;
-    };
-  };
+  ghidraVibeMcpServer =
+    if ghidraVibeMcpPkg != null then
+      {
+        command = "${ghidraVibeMcpPkg}/bin/ghidra-vibe-mcp";
+        args = [ ];
+      }
+    else
+      {
+        command = nixExe;
+        args = nixRunPrefix ++ [
+          "shell"
+          "--no-write-lock-file"
+          "${cfg.ghidra.flake}#ghidra-vibe-mcp"
+          "-c"
+          "ghidra-vibe-mcp"
+        ];
+      };
 
-  # Rust JSpace RAG MCP (discover/search/index) — Cursor heavy set.
-  ghidraVibeRagMcpServer = {
-    command = lib.getExe cursorGhidraVibeRagMcpPkg;
-    args = [ ];
-    env = {
-      GHIDRA_MCP_URL = cfg.ghidra.serverUrl;
-    };
-  };
+  ghidraVibeRagMcpServer =
+    if ghidraVibeMcpPkg != null then
+      {
+        command = "${ghidraVibeMcpPkg}/bin/ghidra-vibe-rag-mcp";
+        args = [ ];
+      }
+    else
+      {
+        command = nixExe;
+        args = nixRunPrefix ++ [
+          "shell"
+          "--no-write-lock-file"
+          "${cfg.ghidra.flake}#ghidra-vibe-mcp"
+          "-c"
+          "ghidra-vibe-rag-mcp"
+        ];
+      };
 
   guildforgeMcpServer = {
     command = lib.getExe guildforgeMcpPkg;
@@ -417,20 +418,20 @@ in
         type = lib.types.str;
         default = "${config.home.homeDirectory}/GhidraVibe";
         description = ''
-          Local GhidraVibe flake checkout. MCP bridges use
-          `#ghidra-vibe` (share/ghidra-mcp + ghidra-vibe-rag-mcp).
-          Replaces the retired GhidraMCP_Vibe_RSE path.
+          Local GhidraVibe flake checkout. Prefer `programs.ghidra-vibe`
+          (`#ghidra-vibe-mcp` stdio bins). Fallback: `nix shell …#ghidra-vibe-mcp`.
         '';
       };
+      # Kept for docs/compat; Cursor mcp.json no longer injects these URLs.
       serverUrl = lib.mkOption {
         type = lib.types.str;
-        # GhidraVibe engine default (no trailing slash)
         default = "http://127.0.0.1:8089";
+        description = "Optional engine URL for manual headless (not required by mcp.json).";
       };
       extUrl = lib.mkOption {
         type = lib.types.str;
         default = "http://127.0.0.1:8092";
-        description = "GhidraVibe MCP extension URL (dyld / Malimite / nav).";
+        description = "Optional fixed mcp-ext URL (ghidra-vibe-mcp auto-binds ephemeral).";
       };
     };
 
@@ -497,11 +498,8 @@ in
       ++ lib.optionals cursorEnabled [
         pkgs.nodejs
       ]
-      ++ lib.optionals (cursorEnabled && cfg.ghidra.enable) [
-        cursorGhidraMcpPkg
-        cursorGhidraVibeMcpPkg
-        cursorGhidraVibeRagMcpPkg
-        pkgs.uv
+      ++ lib.optionals (cursorEnabled && cfg.ghidra.enable && ghidraVibeMcpPkg != null) [
+        ghidraVibeMcpPkg
       ];
 
     programs.zed-editor.userSettings.context_servers = lib.mkIf zedEnabled zedContextServers;

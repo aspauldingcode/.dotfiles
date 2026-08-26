@@ -16,7 +16,8 @@ must never desync.
 | `wallpaper <daily\|next\|NAME\|current>`                       | Pack apply in Rust (replaces bash/python)                   |
 | `tint`                                                         | macOS accent/highlight from `~/.colors.toml` `base0D`       |
 | `status [--waybar]`                                            | Machine status / Waybar JSON                                |
-| `list-wallpapers`                                              | Pack entries                                                |
+| `list-wallpapers`                                              | Pack pairs + entries                                        |
+| `list-themes`                                                  | Daily-rotation base16 families                              |
 
 ## Invariant
 
@@ -40,7 +41,7 @@ Phases: `Synced` → idle; `Desynced` → `Applying` → verify (max 3) → `Syn
 
 ## No rebuild path
 
-1. **Hot layer**: `~/.colors.toml`, IDE / Ghostty live palette, swaybg / macos-wallpaper, macOS tint
+1. **Hot layer**: `~/.colors.toml`, IDE / Ghostty live palette, swaybg / WallpaperKit, macOS tint
 2. **Prebuilt activate** (Darwin): cached light/dark profiles from postActivation
 3. **Specialisation** (NixOS): when present
 

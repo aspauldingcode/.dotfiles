@@ -97,8 +97,8 @@ let
         };
 
         # Universal live palette for Stylix viewing + hot-reload consumers
-        # (nvim, IDE patch, macOS tint). Wallpaper module may replace
-        # this with a flavours-derived file of the same shape.
+        # (nvim, IDE patch, macOS tint). dendritic-appearance overwrites this
+        # on wallpaper/theme rotation from official base16 families.
         home.file.".colors.toml" = {
           force = true;
           text = ''

@@ -91,6 +91,13 @@
     # Local checkout so mba picks up corpus.toml sibling paths + tip WIP.
     wwn-mcp.url = "path:/Users/8amps/Wawona/wwn-mcp";
 
+    # GhidraVibe: local stdio MCP (ghidra / vibe / rag). No public URL.
+    ghidra-vibe.url = "path:/Users/8amps/GhidraVibe";
+
+    # WallpaperKit (Tahoe allDisplays + Your Photos catalog). Local checkout
+    # so mba picks up the C ABI dylib without waiting on a GitHub fetch.
+    macos-wallpaper-daemon-rse.url = "path:/Users/8amps/src/macos-wallpaper-daemon-rse";
+
     # Clean-room Rust `phoon` CLI (ASCII moon phase). Own nixpkgs +
     # wwn-toolchain — do not follow 26.05; the recipe targets the
     # toolchain's rust-overlay / SDK floor.
