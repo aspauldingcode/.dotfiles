@@ -139,21 +139,23 @@
           ForwardAgent = true;
         };
 
-        launchd.agents.dendritic-orbstack = {
-          enable = true;
-          config = {
-            Label = "com.aspauldingcode.dendritic-orbstack";
-            ProgramArguments = [
-              "/usr/bin/open"
-              "-a"
-              "${pkgs.orbstack}/Applications/OrbStack.app"
-            ];
-            RunAtLoad = true;
-            KeepAlive = false;
-            StandardOutPath = "${config.home.homeDirectory}/.cache/dendritic-orbstack.log";
-            StandardErrorPath = "${config.home.homeDirectory}/.cache/dendritic-orbstack.err.log";
-          };
-        };
+        # Do NOT open OrbStack.app at login — the GUI is unwanted. The
+        # privileged helper (dev.orbstack.OrbStack.privhelper) already runs
+        # as a system daemon for VMs/SSH; use `orb`/`orbctl` or open the
+        # app manually when needed.
+        #
+        # A previous generation shipped launchd.agents.dendritic-orbstack
+        # (`open -a OrbStack.app` at RunAtLoad). HM does not always delete
+        # retired agent plists, so scrub it on every activate.
+        home.activation.dendriticOrbstackNoLoginGui = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          uid="$(${pkgs.coreutils}/bin/id -u)"
+          domain="gui/$uid"
+          label="com.aspauldingcode.dendritic-orbstack"
+          plist="${config.home.homeDirectory}/Library/LaunchAgents/$label.plist"
+          /bin/launchctl bootout "$domain/$label" >/dev/null 2>&1 || true
+          /bin/launchctl disable "$domain/$label" >/dev/null 2>&1 || true
+          $DRY_RUN_CMD ${pkgs.coreutils}/bin/rm -f "$plist"
+        '';
       };
     };
 }
