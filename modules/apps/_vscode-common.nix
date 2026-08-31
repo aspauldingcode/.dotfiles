@@ -56,6 +56,21 @@ let
 in
 {
   # ── Shared settings & extensions for VSCode, Cursor, and Antigravity ──
+  # Force overwrite settings.json to prevent Home Manager .backup clobbering.
+  # programs.vscode keys home.file with an *absolute* path
+  # (${home}/Library/... on Darwin, ${xdg.configHome}/... on Linux). A relative
+  # key for the same target trips "Conflicting managed target files". Wrap the
+  # whole home.file attr (not just .force) in mkIf — a force-only stub with no
+  # source still registers a target and breaks activation.
+  home.file = lib.mkMerge [
+    (lib.mkIf pkgs.stdenv.isDarwin {
+      "${config.home.homeDirectory}/Library/Application Support/Code/User/settings.json".force = true;
+    })
+    (lib.mkIf pkgs.stdenv.isLinux {
+      "${config.xdg.configHome}/Code/User/settings.json".force = true;
+    })
+  ];
+
   programs.vscode = {
     enable = true;
     # Avoid Home Manager's onChange hook that shells out to `code --list-extensions`
@@ -92,6 +107,12 @@ in
       # Fork-specific toggle used by Cursor/Antigravity builds.
       "workspaceValidation" = false;
       "workspaceValidation.enabled" = false;
+
+      # Nix-managed Electron forks: ShipIt updates fail code-signing and
+      # thrash startup. Pin via nixpkgs; never self-update in-app.
+      "update.mode" = "none";
+      "extensions.autoUpdate" = false;
+      "extensions.autoCheckUpdates" = false;
 
       # ── treefmt: global default formatter ────────────────────────
       "treefmt.path" = "${pkgs.treefmt}/bin/treefmt";
@@ -319,20 +340,38 @@ in
     ];
   };
 
-  # Force-remove extensions that must not be installed in any VSCode fork.
-  # This runs after the extension dirs are unlocked and before they are relocked,
-  # so a deleted extension cannot survive the activation cycle.
+  # Force-remove extensions that must not be installed in any VSCode fork,
+  # plus marketplace leftovers that accumulate beside HM symlinks (read-only
+  # dirs make in-app installs EACCES; duplicates + Java indexes freeze AG).
+  # Runs after unlock and before relock so deletions stick.
   home.activation.purgeBlockedVscodeExtensions =
     lib.hm.dag.entryBetween [ "lockManagedVscodeExtensionDirs" ] [ "unlockManagedVscodeExtensionDirs" ]
       ''
         for EXT_DIR in \
           "$HOME/.vscode/extensions" \
           "$HOME/.cursor/extensions" \
-          "$HOME/.antigravity/extensions"
+          "$HOME/.antigravity/extensions" \
+          "$HOME/.antigravity-ide/extensions"
         do
+          [ -d "$EXT_DIR" ] || continue
+
           # Remove jnoortheen.nix-ide — conflicts with bbenoist.nix (already managed).
           for MATCH in "$EXT_DIR"/jnoortheen.nix-ide-*; do
             [ -e "$MATCH" ] && rm -rf "$MATCH" || true
+          done
+
+          # Drop non-symlink entries (versioned marketplace copies / staging dirs).
+          # HM owns publisher.name symlinks only; keep extensions.json + .obsolete.
+          for ENTRY in "$EXT_DIR"/* "$EXT_DIR"/.[!.]*; do
+            [ -e "$ENTRY" ] || continue
+            base="$(basename "$ENTRY")"
+            case "$base" in
+              extensions.json|.obsolete) continue ;;
+            esac
+            if [ -L "$ENTRY" ]; then
+              continue
+            fi
+            rm -rf "$ENTRY" || true
           done
         done
       '';
@@ -340,15 +379,21 @@ in
   # Keep nix-managed extension directories immutable in all VSCode forks.
   # Unlock before HM link checks so generation updates can apply, then
   # relock after links are materialized so in-app uninstall/remove fails.
+  # Skip store symlinks (programs.vscode mutableExtensionsDir=false makes
+  # ~/.vscode/extensions → nix store; chmod there is EPERM noise).
   home.activation.unlockManagedVscodeExtensionDirs = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
     MANAGED_EXTENSION_DIRS="
       $HOME/.vscode/extensions
       $HOME/.cursor/extensions
       $HOME/.antigravity/extensions
+      $HOME/.antigravity-ide/extensions
     "
 
     for EXT_DIR in $MANAGED_EXTENSION_DIRS; do
-      if [ -e "$EXT_DIR" ]; then
+      if [ -L "$EXT_DIR" ]; then
+        continue
+      fi
+      if [ -d "$EXT_DIR" ]; then
         chmod u+rwx "$EXT_DIR" || true
       fi
     done
@@ -359,9 +404,13 @@ in
       $HOME/.vscode/extensions
       $HOME/.cursor/extensions
       $HOME/.antigravity/extensions
+      $HOME/.antigravity-ide/extensions
     "
 
     for EXT_DIR in $MANAGED_EXTENSION_DIRS; do
+      if [ -L "$EXT_DIR" ]; then
+        continue
+      fi
       if [ -d "$EXT_DIR" ]; then
         chmod a-w "$EXT_DIR" || true
       fi

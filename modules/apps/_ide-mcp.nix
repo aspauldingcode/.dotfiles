@@ -1,4 +1,4 @@
-# Shared MCP server definitions for Cursor, Antigravity, and VS Code.
+# Shared MCP server definitions for Cursor, Antigravity, VS Code, and Zed.
 #
 # Antigravity enforces a hard ~100-tool ceiling across ALL MCP servers.
 # Heavy servers (instruments≈29, lldb≈28, agent-device≈40, xcodebuild≈24,
@@ -16,7 +16,19 @@ let
   cursorEnabled = config.dendritic.apps.cursor.enable or false;
   antigravityEnabled = config.dendritic.apps.antigravity.enable or false;
   vscodeEnabled = config.dendritic.apps.vscode.enable or false;
-  ideMcpEnabled = cursorEnabled || antigravityEnabled || vscodeEnabled;
+  zedEnabled = config.dendritic.apps.zed.enable or false;
+  ideMcpEnabled = cursorEnabled || antigravityEnabled || vscodeEnabled || zedEnabled;
+
+  toZedContextServer =
+    server:
+    if (server.type or null) == "http" then
+      { url = server.url; }
+    else
+      {
+        command = server.command;
+        args = server.args or [ ];
+      }
+      // lib.optionalAttrs (server ? env) { env = server.env; };
 
   lldbMcpPkg = import ../pkgs/_lldb-mcp.nix { inherit pkgs; };
   lldbMcpExe = lib.getExe lldbMcpPkg;
@@ -34,8 +46,20 @@ let
     else
       "${pkgs.nix}/bin/nix";
   uvxExe = lib.getExe' pkgs.uv "uvx";
+  uvExe = lib.getExe' pkgs.uv "uv";
   npxExe = "${pkgs.nodejs}/bin/npx";
   wawonaRepoRoot = cfg.wawonaRepoRoot;
+
+  # GhidraVibe local stdio MCP (same host model as mcp-nixos / wwn-mcp).
+  # Prefer home-manager `programs.ghidra-vibe.mcpPackage`; fall back to nix
+  # shell of `#ghidra-vibe-mcp` only if that module is off.
+  ghidraVibeMcpPkg =
+    if
+      (config.programs.ghidra-vibe.enable or false) && (config.programs.ghidra-vibe.mcp.enable or false)
+    then
+      config.programs.ghidra-vibe.mcpPackage
+    else
+      null;
 
   agentDevicePath =
     lib.makeBinPath (
@@ -162,21 +186,33 @@ let
     "false"
   ];
 
-  wwnMcpServer = {
-    command = nixExe;
-    args = nixRunPrefix ++ [
-      "run"
-      "${cfg.wwnMcpFlake}#wwn-mcp"
-      "--"
-      "serve"
-      "--transport"
-      "stdio"
-    ];
-    env = {
-      WWN_MCP_DATA_DIR = "${home}/.local/share/wwn-mcp";
-      WWN_MCP_CORPUS_TOML = "${cfg.wwnMcpFlake}/corpus.toml";
-    };
-  };
+  # Prefer the home-manager package (programs.wwn-mcp) — same shape as
+  # `uvx mcp-nixos`. Fall back to `nix run` only if the module is off.
+  wwnMcpPkg =
+    if (config.programs.wwn-mcp.enable or false) then config.programs.wwn-mcp.package else null;
+
+  wwnMcpServer =
+    if wwnMcpPkg != null then
+      {
+        command = lib.getExe wwnMcpPkg;
+        args = [ ];
+        env = {
+          WWN_MCP_DATA_DIR = "${home}/.local/share/wwn-mcp";
+          WWN_MCP_CORPUS_TOML = "${cfg.wwnMcpFlake}/corpus.toml";
+        };
+      }
+    else
+      {
+        command = nixExe;
+        args = nixRunPrefix ++ [
+          "run"
+          "${cfg.wwnMcpFlake}#wwn-mcp"
+        ];
+        env = {
+          WWN_MCP_DATA_DIR = "${home}/.local/share/wwn-mcp";
+          WWN_MCP_CORPUS_TOML = "${cfg.wwnMcpFlake}/corpus.toml";
+        };
+      };
 
   nixosMcpServer = {
     command = uvxExe;
@@ -206,29 +242,60 @@ let
     };
   };
 
-  ghidraMcpServer = {
-    command = nixExe;
-    args = nixRunPrefix ++ [
-      "run"
-      "--no-write-lock-file"
-      "${cfg.ghidra.flake}#server"
-      "--"
-      "--ghidra-server"
-      cfg.ghidra.serverUrl
-    ];
-  };
+  # Local stdio GhidraVibe MCP (no public URL; vibe auto-starts mcp-ext).
+  ghidraMcpServer =
+    if ghidraVibeMcpPkg != null then
+      {
+        command = "${ghidraVibeMcpPkg}/bin/ghidra-mcp";
+        args = [ ];
+      }
+    else
+      {
+        command = nixExe;
+        args = nixRunPrefix ++ [
+          "shell"
+          "--no-write-lock-file"
+          "${cfg.ghidra.flake}#ghidra-vibe-mcp"
+          "-c"
+          "ghidra-mcp"
+        ];
+      };
 
-  # Rust JSpace RAG MCP (discover/search/index) — Cursor heavy set.
-  ghidraVibeRagMcpServer = {
-    command = nixExe;
-    args = [
-      "shell"
-      "--no-write-lock-file"
-      "${cfg.ghidra.flake}#ghidra-vibe-tools"
-      "-c"
-      "ghidra-vibe-rag-mcp"
-    ];
-  };
+  ghidraVibeMcpServer =
+    if ghidraVibeMcpPkg != null then
+      {
+        command = "${ghidraVibeMcpPkg}/bin/ghidra-vibe-mcp";
+        args = [ ];
+      }
+    else
+      {
+        command = nixExe;
+        args = nixRunPrefix ++ [
+          "shell"
+          "--no-write-lock-file"
+          "${cfg.ghidra.flake}#ghidra-vibe-mcp"
+          "-c"
+          "ghidra-vibe-mcp"
+        ];
+      };
+
+  ghidraVibeRagMcpServer =
+    if ghidraVibeMcpPkg != null then
+      {
+        command = "${ghidraVibeMcpPkg}/bin/ghidra-vibe-rag-mcp";
+        args = [ ];
+      }
+    else
+      {
+        command = nixExe;
+        args = nixRunPrefix ++ [
+          "shell"
+          "--no-write-lock-file"
+          "${cfg.ghidra.flake}#ghidra-vibe-mcp"
+          "-c"
+          "ghidra-vibe-rag-mcp"
+        ];
+      };
 
   guildforgeMcpServer = {
     command = lib.getExe guildforgeMcpPkg;
@@ -263,14 +330,25 @@ let
   // xcodebuildMcpServer
   // lib.optionalAttrs cfg.guildforge.enable { guildforge = guildforgeMcpServer; };
 
+  # Stripe remote MCP (OAuth in Cursor). HTTP URL, no secret key in mcp.json.
+  # https://docs.stripe.com/mcp.md — authenticate via Cursor MCP consent.
+  stripeMcpServer = {
+    type = "http";
+    url = "https://mcp.stripe.com";
+  };
+
   # Full set for Cursor / VS Code (higher tool budgets).
   heavyMcpServers =
     leanMcpServers
     // instrumentsMcpServer
+    // {
+      stripe = stripeMcpServer;
+    }
     // lib.optionalAttrs cfg.lldb.enable { lldb = lldbMcpServer; }
     // lib.optionalAttrs cfg.agentDevice.enable { agent-device = agentDeviceMcpServer; }
     // lib.optionalAttrs cfg.ghidra.enable {
       ghidra = ghidraMcpServer;
+      ghidra-vibe = ghidraVibeMcpServer;
       ghidra-vibe-rag = ghidraVibeRagMcpServer;
     }
     // lib.optionalAttrs cfg.guildforge.enable { guildforge = guildforgeMcpServer; };
@@ -282,6 +360,9 @@ let
     // lib.optionalAttrs cfg.agentDevice.enable { agent-device = agentDeviceMcpServer; };
 
   userMcpServers = heavyMcpServers;
+
+  zedContextServers = lib.mapAttrs (_: toZedContextServer) userMcpServers;
+  zedWawonaContextServers = lib.mapAttrs (_: toZedContextServer) wawonaMcpServers;
 
   antigravityMcpServers = if cfg.antigravity.includeHeavy then heavyMcpServers else leanMcpServers;
 
@@ -297,7 +378,7 @@ let
     "${lib.removePrefix "${home}/" wawonaRepoRoot}/${prefix}/mcp.json" = mcpJson wawonaMcpServers;
   };
 
-  # Antigravity reads Gemini paths, not ~/.antigravity/mcp.json.
+  # Antigravity reads Gemini paths, not ~/.antigravity-ide/mcp.json.
   # Live IDE path observed: ~/.gemini/antigravity/mcp_config.json
   antigravityMcpFiles =
     let
@@ -335,12 +416,22 @@ in
       enable = lib.mkEnableOption "Ghidra MCP server in user-global IDE mcp.json";
       flake = lib.mkOption {
         type = lib.types.str;
-        default = "${config.home.homeDirectory}/GhidraMCP_Vibe_RSE";
+        default = "${config.home.homeDirectory}/GhidraVibe";
+        description = ''
+          Local GhidraVibe flake checkout. Prefer `programs.ghidra-vibe`
+          (`#ghidra-vibe-mcp` stdio bins). Fallback: `nix shell …#ghidra-vibe-mcp`.
+        '';
       };
+      # Kept for docs/compat; Cursor mcp.json no longer injects these URLs.
       serverUrl = lib.mkOption {
         type = lib.types.str;
-        # GhidraMCP HTTP plugin default in GhidraVibe docs
-        default = "http://127.0.0.1:8089/";
+        default = "http://127.0.0.1:8089";
+        description = "Optional engine URL for manual headless (not required by mcp.json).";
+      };
+      extUrl = lib.mkOption {
+        type = lib.types.str;
+        default = "http://127.0.0.1:8092";
+        description = "Optional fixed mcp-ext URL (ghidra-vibe-mcp auto-binds ephemeral).";
       };
     };
 
@@ -406,12 +497,30 @@ in
       ]
       ++ lib.optionals cursorEnabled [
         pkgs.nodejs
+      ]
+      ++ lib.optionals (cursorEnabled && cfg.ghidra.enable && ghidraVibeMcpPkg != null) [
+        ghidraVibeMcpPkg
       ];
+
+    programs.zed-editor.userSettings.context_servers = lib.mkIf zedEnabled zedContextServers;
 
     home.file =
       lib.optionalAttrs cursorEnabled (ideMcpFiles ".cursor")
       // lib.optionalAttrs antigravityEnabled antigravityMcpFiles
       // lib.optionalAttrs vscodeEnabled (ideMcpFiles ".vscode")
+      // lib.optionalAttrs zedEnabled (
+        let
+          wawonaRel = lib.removePrefix "${home}/" wawonaRepoRoot;
+          zedSettings = {
+            force = true;
+            text = builtins.toJSON { context_servers = zedWawonaContextServers; };
+          };
+        in
+        {
+          "Wawona/.zed/settings.json" = zedSettings;
+          "${wawonaRel}/.zed/settings.json" = zedSettings;
+        }
+      )
       // lib.optionalAttrs (cursorEnabled && cfg.agentDevice.enable && cfg.agentDevice.cursorRule) {
         ".cursor/rules/agent-device.mdc" = {
           force = true;

@@ -12,7 +12,7 @@
     {
       nixpkgs.hostPlatform = "x86_64-linux";
       nixpkgs.config.allowUnfree = true;
-      nixpkgs.overlays = [ ];
+      nixpkgs.overlays = [ inputs.self.overlays.default ];
       system.stateVersion = "24.11";
 
       users.users."8amps" = {

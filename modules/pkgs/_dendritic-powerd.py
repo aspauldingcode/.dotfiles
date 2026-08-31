@@ -361,6 +361,7 @@ def classify_workload(gpu_active: bool) -> str:
         "code",
         "cursor",
         "antigravity",
+        "antigravity-ide",
         "Discord",
         "vesktop",
         "slack",

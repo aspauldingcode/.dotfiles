@@ -6,6 +6,8 @@
 mod linux;
 #[cfg(target_os = "macos")]
 mod macos;
+#[cfg(target_os = "macos")]
+mod wallpaperkit;
 
 mod activate;
 mod avatar;
@@ -16,9 +18,11 @@ mod observe;
 mod palette;
 mod qt;
 mod reconcile;
+mod spotify;
 mod state;
 mod supervise;
-mod tmux;
+mod tinted;
+mod vesktop;
 mod wallpaper;
 
 use std::process::ExitCode;
@@ -155,6 +159,10 @@ fn run() -> Result<(), i32> {
             eprintln!("{e}");
             1
         }),
+        "list-themes" => wallpaper::list_themes().map_err(|e| {
+            eprintln!("{e}");
+            1
+        }),
         "avatar" => {
             let sub = args.next().unwrap_or_else(|| "apply".into());
             if sub != "apply" {
@@ -242,6 +250,7 @@ dendritic-appearance — pure Rust light/dark state machine (no desync)
   tint                   macOS accent/highlight from colors.toml
   status [--waybar]
   list-wallpapers
+  list-themes
 "
     );
 }

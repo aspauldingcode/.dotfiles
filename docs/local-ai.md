@@ -49,6 +49,69 @@ CodeCompanion defaults to **openai** (sops). Switch to local with adapter `ollam
 
 Default: Cursor cloud. Optional: Settings → Models → Override OpenAI Base URL → `http://127.0.0.1:11434/v1` (Tab stays cloud).
 
+### Zed Agent (llama.cpp)
+
+Declarative Nix wires Zed’s native `llama.cpp` provider to a local `llama-server`
+on `127.0.0.1:8080` (Ollama stays on `:11434` for CLI / Cursor).
+
+**System** (nix-darwin / NixOS):
+
+```nix
+dendritic.local-ai.enable = true;
+dendritic.local-ai.llamaCpp.enable = true;
+# optional pin (downloads on first start):
+# dendritic.local-ai.llamaCpp.hfRepo = "unsloth/Qwen2.5-Coder-3B-Instruct-GGUF:Q4_K_M";
+# dendritic.local-ai.llamaCpp.alias = "qwen2.5-coder-3b";
+```
+
+**Home Manager** (Zed settings):
+
+```nix
+dendritic.apps.zed.enable = true;
+dendritic.apps.zed.localAgent.enable = true;
+dendritic.apps.zed.localAgent.provider = "llama.cpp";
+dendritic.apps.zed.localAgent.apiUrl = "http://127.0.0.1:8080";
+# optional once alias/hfRepo is set:
+# dendritic.apps.zed.localAgent.model = "qwen2.5-coder-3b";
+```
+
+That seeds:
+
+```json
+{
+  "language_models": {
+    "llama.cpp": {
+      "api_url": "http://127.0.0.1:8080",
+      "auto_discover": true
+    }
+  }
+}
+```
+
+Darwin agent: `com.aspauldingcode.llama-cpp` → `/tmp/llama-cpp.log`.
+NixOS: `systemctl status dendritic-llama-cpp`. Prefer `provider = "ollama"` +
+`apiUrl = "http://127.0.0.1:11434"` if you want Zed on Ollama instead.
+
+On mba, `-hf` hit Hugging Face `401 Invalid username or password` (bad hub
+creds / xet cache). Smoke path uses a local GGUF instead:
+
+```nix
+dendritic.local-ai.llamaCpp.modelFile =
+  "/Users/8amps/.cache/llama.cpp/models/qwen2.5-0.5b-instruct-q4_k_m.gguf";
+dendritic.local-ai.llamaCpp.alias = "qwen2.5-0.5b";
+dendritic.local-ai.llamaCpp.ctxSize = 8192;
+dendritic.apps.zed.localAgent.contextWindow = 8192;
+```
+
+**Context overflow (~67k tokens):** `context_window` alone does not help.
+Zed injects **every enabled MCP server’s tool schemas** into Agent requests
+(agent-device, xcodebuild, ghidra, wwn-mcp, …). With `localAgent.enable`, Nix
+sets `agent.default_profile = "local"` with `enable_all_context_servers =
+false`. Start a **new** thread and pick profile **Local (no MCP)**. Use the
+built-in **Write** profile when you want full MCP on a cloud model.
+
+Download once with curl (anonymous) if missing, then `nh darwin switch`.
+
 ### Aider / OpenCode
 
 ```bash

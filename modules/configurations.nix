@@ -15,6 +15,7 @@
       config = {
         allowUnfree = true;
       };
+      overlays = [ inputs.self.overlays.default ];
     };
     extraSpecialArgs = { inherit inputs; };
     modules = [

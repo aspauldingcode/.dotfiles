@@ -87,9 +87,15 @@ def candidate_db_paths():
     if sys.platform == "darwin":
         yield os.path.join(
             home,
+            "Library/Application Support/Antigravity IDE/User/globalStorage/state.vscdb",
+        )
+        yield os.path.join(
+            home,
             "Library/Application Support/Antigravity/User/globalStorage/state.vscdb",
         )
+    yield os.path.join(home, ".config/Antigravity IDE/User/globalStorage/state.vscdb")
     yield os.path.join(home, ".config/Antigravity/User/globalStorage/state.vscdb")
+    yield os.path.join(home, ".antigravity-ide/User/globalStorage/state.vscdb")
     yield os.path.join(home, ".antigravity/User/globalStorage/state.vscdb")
 
 

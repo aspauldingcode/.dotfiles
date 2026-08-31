@@ -1,12 +1,13 @@
 # ── Dendritic Wallpaper (macOS + Linux, 1:1) ────────────────────────────
 #
 # Architecture:
-#   1. Build-time: flavours → full base16 per wallpaper (dark+light) in the pack.
-#      (gowall extract is only ~6 colors; not enough for Stylix — optional manual.)
-#   2. Runtime: `dendritic-appearance wallpaper …` picks pack entry + copies its
-#      colors.toml, then hot-applies IDE / tmux / Ghostty / tint (both OSes).
-#   3. Stylix seed at rebuild: themeFromImage uses `selected` for store packages.
-#   4. Auth: Linux = desktop 1:1; macOS Idle ≠ desktop.
+#   1. Build-time pack: scenic light/dark wallpaper pairs + official base16
+#      families (colors.toml + lutgen palette names). No flavours extraction.
+#   2. Runtime: `dendritic-appearance wallpaper …` picks today's family + pair
+#      from day-of-year, uses host appearance for light vs dark, copies
+#      colors.toml, lutgen-recolors the photo, hot-applies IDE / Ghostty / tint.
+#   3. Stylix rebuild seed stays theme-selection.nix (gtk store packages).
+#   4. Auth: Linux = desktop 1:1; macOS Idle = next pair, same polarity.
 #
 {
   flake.modules.homeManager.dendritic =
@@ -19,7 +20,8 @@
     let
       cfg = config.dendritic.wallpaper;
       isDarwin = pkgs.stdenv.isDarwin;
-      variant = config.dendritic.theme.variant;
+
+      catalog = import ./_wallpaper-catalog.nix { inherit pkgs; };
 
       localWallpapersDir = ../../wallpapers;
       localFiles =
@@ -40,39 +42,42 @@
         value = localWallpapersDir + "/${name}";
       }) localImages;
 
-      # Clean minimal rice wallpapers from nixos-artwork (no network API).
-      artwork = pkgs.nixos-artwork.wallpapers;
-      curatedDatabase = {
-        nineish = artwork.nineish.gnomeFilePath;
-        nineish-dark-gray = artwork.nineish-dark-gray.gnomeFilePath;
-        nineish-solarized-dark = artwork.nineish-solarized-dark.gnomeFilePath;
-        nineish-solarized-light = artwork.nineish-solarized-light.gnomeFilePath;
-        simple-dark-gray = artwork.simple-dark-gray.gnomeFilePath;
-        simple-light-gray = artwork.simple-light-gray.gnomeFilePath;
-        mosaic-blue = artwork.mosaic-blue.gnomeFilePath;
-        stripes = artwork.stripes.gnomeFilePath;
-        gradient-grey = artwork.gradient-grey.gnomeFilePath;
-        waterfall = artwork.waterfall.gnomeFilePath;
-        moonscape = artwork.moonscape.gnomeFilePath;
-        catppuccin-mocha = artwork.catppuccin-mocha.gnomeFilePath;
-        catppuccin-latte = artwork.catppuccin-latte.gnomeFilePath;
-        dracula = artwork.dracula.gnomeFilePath;
-      };
+      externalWallpapersDir = ../../external-wallpapers;
+      externalFiles =
+        if builtins.pathExists externalWallpapersDir then builtins.readDir externalWallpapersDir else { };
+      externalImages = lib.filterAttrs (name: type: type == "regular" && isImage name) externalFiles;
+      externalDatabase = lib.mapAttrs' (name: _: {
+        name = lib.removeSuffix ".webp" (
+          lib.removeSuffix ".jpeg" (lib.removeSuffix ".jpg" (lib.removeSuffix ".png" name))
+        );
+        value = externalWallpapersDir + "/${name}";
+      }) externalImages;
 
-      database = curatedDatabase // localDatabase // cfg.extraDatabase;
+      database = catalog.images // localDatabase // externalDatabase // cfg.extraDatabase;
 
       pack = import ./_wallpaper-pack.nix {
         inherit pkgs lib;
         wallpapers = database;
+        inherit (catalog) themes pairs;
         effects = cfg.effects;
       };
 
       selectedEntry = "${pack}/wallpapers/${cfg.selected}";
-      selectedScheme = "${selectedEntry}/scheme-${variant}.yaml";
       selectedImage = "${selectedEntry}/wallpaper.png";
 
-      # Binary owned by appearance.nix; wallpaper only supplies pack + timers.
       appearanceBin = lib.getExe (pkgs.callPackage ./dendritic-appearance/_package.nix { });
+      applyPath = lib.makeBinPath (
+        [
+          pkgs.lutgen
+          pkgs.gowall
+          pkgs.imagemagick
+        ]
+        ++ lib.optionals isDarwin [ pkgs.macos-wallpaper-daemon-rse ]
+        ++ lib.optionals (!isDarwin) [
+          pkgs.swaybg
+          pkgs.procps
+        ]
+      );
     in
     {
       options.dendritic.wallpaper = {
@@ -80,11 +85,10 @@
 
         selected = lib.mkOption {
           type = lib.types.str;
-          default = "moonscape";
+          default = "alpine-dark";
           description = ''
-            Wallpaper used for Stylix build-time scheme injection (themeFromImage).
-            Daily cycle still rotates the full pack at runtime. Lockscreen picks a
-            different pack entry via dendritic-appearance (not the desktop current).
+            Wallpaper used as Stylix.image at rebuild (greeter seed). Daily cycle
+            still rotates pairs + theme families at runtime via dendritic-appearance.
           '';
         };
 
@@ -102,16 +106,7 @@
             "center"
           ];
           default = "fill";
-          description = "Wallpaper scaling mode (macos-wallpaper / swaybg).";
-        };
-
-        themeFromImage = lib.mkOption {
-          type = lib.types.bool;
-          default = true;
-          description = ''
-            When true, Stylix base16Scheme is generated from `selected` via flavours
-            (replacing the static theme-selection.nix scheme for themed packages).
-          '';
+          description = "Wallpaper scaling mode (WallpaperKit Fill Screen / swaybg).";
         };
 
         cycle = {
@@ -135,10 +130,6 @@
             description = "ImageMagick -vignette geometry.";
           };
         };
-
-        gowall = {
-          enable = lib.mkEnableOption "Install gowall for manual tint/effects (not used by daily cycle)";
-        };
       };
 
       config = lib.mkIf cfg.enable (
@@ -151,20 +142,13 @@
               }
             ];
 
-            # Build-time Stylix: wallpaper-derived scheme + image.
             stylix.image = lib.mkForce selectedImage;
-            stylix.base16Scheme = lib.mkIf cfg.themeFromImage (lib.mkOverride 40 selectedScheme);
-
-            home.file.".colors.toml" = lib.mkForce {
-              source = "${selectedEntry}/colors-${variant}.toml";
-              force = true;
-            };
 
             home.packages = [
-              pkgs.flavours
+              pkgs.lutgen
+              pkgs.gowall
             ]
-            ++ lib.optionals cfg.gowall.enable [ pkgs.gowall ]
-            ++ lib.optionals isDarwin [ pkgs.macos-wallpaper ]
+            ++ lib.optionals isDarwin [ pkgs.macos-wallpaper-daemon-rse ]
             ++ lib.optionals (!isDarwin) [ pkgs.swaybg ];
 
             xdg.configFile."dendritic/wallpaper-pack".source = pack;
@@ -175,12 +159,12 @@
                 export DENDRITIC_HOME="${config.home.homeDirectory}"
                 export DENDRITIC_WALLPAPER_PACK="${pack}"
                 export DENDRITIC_WALLPAPER_SCALE="${cfg.scale}"
+                export DENDRITIC_LUTGEN_BIN="${pkgs.lutgen}/bin/lutgen"
+                export DENDRITIC_GOWALL_BIN="${pkgs.gowall}/bin/gowall"
+                export PATH="${applyPath}:$PATH"
                 ${lib.optionalString isDarwin ''
-                  export DENDRITIC_MACOS_WALLPAPER_BIN="${pkgs.macos-wallpaper}/bin/wallpaper"
-                  export PATH="${pkgs.macos-wallpaper}/bin:$PATH"
-                ''}
-                ${lib.optionalString (!isDarwin) ''
-                  export PATH="${pkgs.swaybg}/bin:${pkgs.procps}/bin:$PATH"
+                  export DENDRITIC_WALLPAPERKIT_LIB="${pkgs.macos-wallpaper-daemon-rse}/lib/libWallpaperKit.dylib"
+                  export DENDRITIC_MACOS_WALLPAPERD_BIN="${pkgs.macos-wallpaper-daemon-rse}/bin/macos-wallpaperd"
                 ''}
                 $DRY_RUN_CMD ${appearanceBin} wallpaper daily
               ''
@@ -211,8 +195,11 @@
                   DENDRITIC_HOME = config.home.homeDirectory;
                   DENDRITIC_WALLPAPER_PACK = toString pack;
                   DENDRITIC_WALLPAPER_SCALE = cfg.scale;
-                  DENDRITIC_MACOS_WALLPAPER_BIN = "${pkgs.macos-wallpaper}/bin/wallpaper";
-                  PATH = "${pkgs.macos-wallpaper}/bin:/usr/bin:/bin";
+                  DENDRITIC_LUTGEN_BIN = "${pkgs.lutgen}/bin/lutgen";
+                  DENDRITIC_GOWALL_BIN = "${pkgs.gowall}/bin/gowall";
+                  DENDRITIC_WALLPAPERKIT_LIB = "${pkgs.macos-wallpaper-daemon-rse}/lib/libWallpaperKit.dylib";
+                  DENDRITIC_MACOS_WALLPAPERD_BIN = "${pkgs.macos-wallpaper-daemon-rse}/bin/macos-wallpaperd";
+                  PATH = "${applyPath}:/usr/bin:/bin";
                 };
               };
             };
@@ -231,7 +218,9 @@
                   "DENDRITIC_HOME=${config.home.homeDirectory}"
                   "DENDRITIC_WALLPAPER_PACK=${toString pack}"
                   "DENDRITIC_WALLPAPER_SCALE=${cfg.scale}"
-                  "PATH=${pkgs.swaybg}/bin:${pkgs.procps}/bin"
+                  "DENDRITIC_LUTGEN_BIN=${pkgs.lutgen}/bin/lutgen"
+                  "DENDRITIC_GOWALL_BIN=${pkgs.gowall}/bin/gowall"
+                  "PATH=${applyPath}"
                 ];
               };
             };
@@ -249,13 +238,9 @@
       );
     };
 
-  # Host-level: sync Stylix image+scheme (chrome tokens) from the pack.
-  # Linux gtkgreet/gtklock use desktop-current wallpaper at runtime (auth-path).
   flake.modules.darwin.dendritic =
     { lib, ... }:
     {
-      # Option mirror only — HM `dendritic.wallpaper.enable` owns pack, daily
-      # desktop (macos-wallpaper), and lock (Idle Index.plist) on Darwin.
       options.dendritic.wallpaper.enable = lib.mkEnableOption "Wallpaper management (desktop + lock)";
     };
   flake.modules.nixos.dendritic =
@@ -267,7 +252,7 @@
     }:
     let
       cfg = config.dendritic.wallpaper;
-      variant = config.dendritic.theme.variant;
+      catalog = import ./_wallpaper-catalog.nix { inherit pkgs; };
 
       localWallpapersDir = ../../wallpapers;
       localFiles =
@@ -288,34 +273,27 @@
         value = localWallpapersDir + "/${name}";
       }) localImages;
 
-      artwork = pkgs.nixos-artwork.wallpapers;
-      curatedDatabase = {
-        nineish = artwork.nineish.gnomeFilePath;
-        nineish-dark-gray = artwork.nineish-dark-gray.gnomeFilePath;
-        nineish-solarized-dark = artwork.nineish-solarized-dark.gnomeFilePath;
-        nineish-solarized-light = artwork.nineish-solarized-light.gnomeFilePath;
-        simple-dark-gray = artwork.simple-dark-gray.gnomeFilePath;
-        simple-light-gray = artwork.simple-light-gray.gnomeFilePath;
-        mosaic-blue = artwork.mosaic-blue.gnomeFilePath;
-        stripes = artwork.stripes.gnomeFilePath;
-        gradient-grey = artwork.gradient-grey.gnomeFilePath;
-        waterfall = artwork.waterfall.gnomeFilePath;
-        moonscape = artwork.moonscape.gnomeFilePath;
-        catppuccin-mocha = artwork.catppuccin-mocha.gnomeFilePath;
-        catppuccin-latte = artwork.catppuccin-latte.gnomeFilePath;
-        dracula = artwork.dracula.gnomeFilePath;
-      };
+      externalWallpapersDir = ../../external-wallpapers;
+      externalFiles =
+        if builtins.pathExists externalWallpapersDir then builtins.readDir externalWallpapersDir else { };
+      externalImages = lib.filterAttrs (name: type: type == "regular" && isImage name) externalFiles;
+      externalDatabase = lib.mapAttrs' (name: _: {
+        name = lib.removeSuffix ".webp" (
+          lib.removeSuffix ".jpeg" (lib.removeSuffix ".jpg" (lib.removeSuffix ".png" name))
+        );
+        value = externalWallpapersDir + "/${name}";
+      }) externalImages;
 
-      database = curatedDatabase // localDatabase // cfg.extraDatabase;
+      database = catalog.images // localDatabase // externalDatabase // cfg.extraDatabase;
 
       pack = import ./_wallpaper-pack.nix {
         inherit pkgs lib;
         wallpapers = database;
+        inherit (catalog) themes pairs;
         effects = cfg.effects;
       };
 
       selectedEntry = "${pack}/wallpapers/${cfg.selected}";
-      selectedScheme = "${selectedEntry}/scheme-${variant}.yaml";
       selectedImage = "${selectedEntry}/wallpaper.png";
     in
     {
@@ -324,18 +302,13 @@
 
         selected = lib.mkOption {
           type = lib.types.str;
-          default = "moonscape";
+          default = "alpine-dark";
           description = "Wallpaper for system Stylix / gtkgreet (from wallpaper pack).";
         };
 
         extraDatabase = lib.mkOption {
           type = lib.types.attrsOf lib.types.path;
           default = { };
-        };
-
-        themeFromImage = lib.mkOption {
-          type = lib.types.bool;
-          default = true;
         };
 
         effects = {
@@ -355,9 +328,7 @@
           }
         ];
 
-        # Same pack image + flavours scheme as HM → gtkgreet theming.
         stylix.image = lib.mkForce selectedImage;
-        stylix.base16Scheme = lib.mkIf cfg.themeFromImage (lib.mkOverride 40 selectedScheme);
       };
     };
 }

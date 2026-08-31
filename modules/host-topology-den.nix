@@ -53,7 +53,11 @@ in
     instantiate = nixosSystemWithInputs;
   };
 
-  den.hosts.aarch64-linux.nixos-test = {
+  den.hosts.x86_64-linux.nixos-test = {
+    instantiate = nixosSystemWithInputs;
+  };
+
+  den.hosts.aarch64-linux.orb-wawona = {
     instantiate = nixosSystemWithInputs;
   };
 
@@ -114,6 +118,15 @@ in
     };
   };
 
+  den.aspects.orb-wawona = {
+    # No styling aspect: this guest is a Wayland client farm for Wawona,
+    # not a workstation. Stylix pulled local perl-env/nh builds that fail
+    # in the OrbStack store after a disk-full truncation.
+    nixos = {
+      imports = [ ../hosts/nixos/orb-wawona ];
+    };
+  };
+
   den.aspects.sliceanddice = {
     includes = [ config.den.aspects.styling ];
     nixos = {
@@ -145,6 +158,7 @@ in
 
         nixpkgs.hostPlatform = "aarch64-linux";
         nixpkgs.config.allowUnfree = true;
+        nixpkgs.overlays = [ inputs.self.overlays.default ];
 
         networking.hostName = "dendritic-vm";
         system.stateVersion = "24.11";

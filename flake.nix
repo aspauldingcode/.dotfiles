@@ -87,6 +87,30 @@
       url = "github:aspauldingcode/nix-darwin/plugin-playground";
     };
 
+    # WWN-MCP: stdio RAG for the Wawona org (mcp-nixos host model).
+    # Local checkout so mba picks up corpus.toml sibling paths + tip WIP.
+    wwn-mcp.url = "path:/Users/8amps/Wawona/wwn-mcp";
+
+    # GhidraVibe: local stdio MCP (ghidra / vibe / rag). No public URL.
+    ghidra-vibe.url = "path:/Users/8amps/GhidraVibe";
+
+    # WallpaperKit (Tahoe allDisplays + Your Photos catalog). Local checkout
+    # so mba picks up the C ABI dylib without waiting on a GitHub fetch.
+    macos-wallpaper-daemon-rse.url = "path:/Users/8amps/src/macos-wallpaper-daemon-rse";
+
+    # Clean-room Rust `phoon` CLI (ASCII moon phase). Own nixpkgs +
+    # wwn-toolchain — do not follow 26.05; the recipe targets the
+    # toolchain's rust-overlay / SDK floor.
+    wwn-phoon-rs.url = "github:Wawona/wwn-phoon-rs";
+
+    # Channel-update desktop notifier (NixOS + nix-darwin). Darwin support is
+    # on our fork until https://github.com/erichelgeson/nixos-update-notify/pulls
+    # lands — pin the darwin branch.
+    nixos-update-notify = {
+      url = "github:aspauldingcode/nixos-update-notify/darwin";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
+    };
+
   };
 
   outputs =
@@ -136,6 +160,10 @@
               "*.xpi"
               "*.json"
               "flake_*.json"
+              ".cursor/plugins/**"
+              ".cursor/skills/**"
+              # Vendored TintedBrowse LUT TS — keep 1:1 with upstream style.
+              "modules/apps/tinted-inject/src/**"
             ];
             programs = {
               nixfmt.enable = true; # *.nix

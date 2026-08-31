@@ -4,6 +4,11 @@
 }:
 
 {
+  # Every dendritic NixOS/Darwin host gets the same overlay (phoon, zed,
+  # vesktop, …). Hosts that already list it are concatenated, not replaced.
+  flake.modules.nixos.dendritic.nixpkgs.overlays = [ inputs.self.overlays.default ];
+  flake.modules.darwin.dendritic.nixpkgs.overlays = [ inputs.self.overlays.default ];
+
   flake.overlays.default =
     final: prev:
     let
@@ -11,6 +16,22 @@
         system = prev.stdenv.hostPlatform.system;
         config.allowUnfree = true;
       };
+      # 2026.2 JetBrains DMGs are LZFSE/lzvn; nixpkgs `undmg` cannot unpack
+      # them (empty unpackPhase, builder exit 1). 7zz can.
+      unpackJetbrainsLzfseDmg =
+        pkg:
+        pkg.overrideAttrs (_old: {
+          nativeBuildInputs = [ final._7zz ];
+          unpackPhase = ''
+            runHook preUnpack
+            7zz x -y -snld "$src"
+            shopt -s nullglob
+            for app in */*.app; do
+              mv "$app" .
+            done
+            runHook postUnpack
+          '';
+        });
     in
     {
       # NOTE: the pipx 26.05 checkPhase fix lives in modules/python.nix (where
@@ -19,8 +40,34 @@
 
       dendritic = final.callPackage ../crates/dendritic/_package.nix { };
 
+      lutgen = unstable.lutgen;
+      # Latest packaged gowall (v0.2.4, current GitHub release). Recolor uses
+      # lutgen-rs (Gaussian Hald CLUT); gowall's Go port stays for the CLI.
+      gowall = unstable.gowall;
+
+      # Stdio WWN-MCP (RAG); also installed via programs.wwn-mcp.
+      wwn-mcp = inputs.wwn-mcp.packages.${prev.stdenv.hostPlatform.system}.default;
+
+      # Host-native `phoon` CLI from Wawona/wwn-phoon-rs.
+      # GH tip (8feacf8) exposes phoon-macos / phoon-linux, not `phoon`.
+      phoon =
+        let
+          wwnPhoon = inputs.wwn-phoon-rs.packages.${prev.stdenv.hostPlatform.system};
+        in
+        if prev.stdenv.hostPlatform.isDarwin then
+          wwnPhoon.phoon-macos or wwnPhoon.phoon
+        else
+          wwnPhoon.phoon-linux or wwnPhoon.phoon;
+
       code-cursor = unstable.code-cursor;
-      antigravity = unstable.antigravity;
+      # nixpkgs renamed antigravity → antigravity-ide (2.x, Antigravity IDE.app).
+      antigravity-ide = unstable.antigravity-ide;
+      antigravity-ide-fhs =
+        if prev.stdenv.isLinux then unstable.antigravity-ide-fhs else unstable.antigravity-ide;
+      antigravity = final.antigravity-ide;
+      antigravity-fhs = final.antigravity-ide-fhs;
+      zed-editor = unstable.zed-editor;
+      zed-editor-fhs = if prev.stdenv.isLinux then unstable.zed-editor-fhs else unstable.zed-editor;
       spotify = unstable.spotify;
       vesktop = unstable.vesktop;
       firefox = unstable.firefox;
@@ -41,6 +88,12 @@
           fi
         '';
       });
+
+      jetbrains =
+        prev.jetbrains
+        // prev.lib.optionalAttrs prev.stdenv.isDarwin {
+          idea = unpackJetbrainsLzfseDmg prev.jetbrains.idea;
+        };
 
       # ── vimPlugins.blink-cmp: patch upstream "No fuzzy matching
       # library found!" false-positive on Nix ─────────────────────
@@ -84,10 +137,13 @@
       vimPlugins = prev.vimPlugins // {
         blink-cmp = prev.vimPlugins.blink-cmp.overrideAttrs (old: {
           postPatch = (old.postPatch or "") + ''
-            substituteInPlace lua/blink/cmp/fuzzy/download/git.lua \
-              --replace-fail \
-                'if not repo_dir then resolve() end' \
-                'if not repo_dir then resolve(); return end'
+            gitlua=lua/blink/cmp/fuzzy/download/git.lua
+            if [ -f "$gitlua" ] && grep -q 'if not repo_dir then resolve() end$' "$gitlua"; then
+              substituteInPlace "$gitlua" \
+                --replace-fail \
+                  'if not repo_dir then resolve() end' \
+                  'if not repo_dir then resolve(); return end'
+            fi
           '';
         });
       };
@@ -142,6 +198,16 @@
           unstable.beeper;
 
       # ── Wallpaper Tools ──────────────────────────────────────────
+      # Native Tahoe WallpaperAgent apply (Show on all Spaces + catalog).
+      macos-wallpaper-daemon-rse =
+        if prev.stdenv.isDarwin then
+          prev.callPackage ./pkgs/_macos-wallpaper-daemon-rse.nix {
+            src = inputs.macos-wallpaper-daemon-rse;
+            generated = prev.swiftpm2nix.helpers ./macos-wallpaper-daemon-rse-deps;
+          }
+        else
+          null;
+
       # Sindre Sorhus's wallpaper CLI for macOS (compiled from upstream)
       macos-wallpaper =
         if prev.stdenv.isDarwin then

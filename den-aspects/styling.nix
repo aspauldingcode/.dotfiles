@@ -89,7 +89,8 @@ let
           targets.neovim.enable = false;
           targets.neovide.enable = false;
           targets.nixvim.enable = true;
-          targets.spicetify.enable = lib.mkForce true;
+          # Spotify chrome stays native; TintedBrowse LUT rewriter tints it.
+          targets.spicetify.enable = lib.mkForce false;
           # qtct + Kvantum — QtPass (Qt5) and Dolphin (Qt6/KF) need this, not gtk3.
           # Linux only: kvantum/qt5ct are not packaged for Darwin.
           targets.qt.enable = !isDarwin;
@@ -97,8 +98,8 @@ let
         };
 
         # Universal live palette for Stylix viewing + hot-reload consumers
-        # (nvim, tmux, IDE patch, macOS tint). Wallpaper module may replace
-        # this with a flavours-derived file of the same shape.
+        # (nvim, IDE patch, macOS tint). dendritic-appearance overwrites this
+        # on wallpaper/theme rotation from official base16 families.
         home.file.".colors.toml" = {
           force = true;
           text = ''

@@ -6,7 +6,7 @@ Personal, declarative system configuration built by **Alex Spaulding (aspaulding
 
 ## Fleet
 
-[![mba](https://img.shields.io/badge/mba-offline-lightgrey)](docs/fleet-status.md) [![sliceanddice](https://img.shields.io/badge/sliceanddice-offline-lightgrey)](docs/fleet-status.md) [![oneplus6t](https://img.shields.io/badge/oneplus6t-offline-lightgrey)](docs/fleet-status.md)
+[![mba](https://img.shields.io/badge/mba-offline-lightgrey)](docs/fleet-status.md) [![mba-asahi](https://img.shields.io/badge/mba-asahi-offline-lightgrey)](docs/fleet-status.md) [![sliceanddice](https://img.shields.io/badge/sliceanddice-offline-lightgrey)](docs/fleet-status.md) [![oneplus6t](https://img.shields.io/badge/oneplus6t-offline-lightgrey)](docs/fleet-status.md)
 
 Host presence via private heartbeats (no public IPs). Badges: online ≤30m · stale ≤24h · else offline. Phone (`oneplus6t`) reports when a controller can reach it over adb. See [docs/fleet-status.md](docs/fleet-status.md) and [docs/nix-android.md](docs/nix-android.md).
 
@@ -74,7 +74,7 @@ nh os switch /etc/nixos -H my-nixos-host
 - **[Den — Deep Reference](docs/den.md)** — Detailed documentation on Den: aspects, hosts, policies, classes, pipeline, and how this flake uses them.
 - **[sops-nix Documentation Suite](docs/sops-nix/README.md)** — Full multi-file reference for sops-nix: architecture, key management, authoring, templates, operations, and troubleshooting.
 - **[Zsh Plugins & Shell Extensions](docs/zsh-plugins.md)** — Full reference of all curated zsh plugins, CLI tools, and Nix-specific integrations.
-- **[Tmux Master Guide](docs/tmux.md)** — Learn how to use your optimized terminal multiplexer with interactive hints.
+
 - **[nix-android (OnePlus 6T)](docs/nix-android.md)** — Declarative LineageOS apps/settings over adb via nix-android.
 
 ## Uninstallation

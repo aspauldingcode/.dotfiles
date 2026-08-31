@@ -12,6 +12,7 @@
 
   imports = [
     inputs.determinate-nix.darwinModules.default
+    inputs.nixos-update-notify.darwinModules.default
     "${inputs.nix-darwin-fork}/modules/services/plugin-playground"
     {
       config = {
@@ -36,6 +37,14 @@
         # Root launchd enforces Picture + JPEGPhoto across reboot.
         dendritic.profilePhoto.enable = true;
 
+        # Notify when nixos-26.05 (this flake's nixpkgs-darwin input) moves
+        # past the running system. Prometheus `nixpkgs-26.05-darwin` is a
+        # different commit stream than `nixos-26.05`.
+        services.nixos-update-notify = {
+          enable = true;
+          channel = "nixos-26.05";
+        };
+
         # Root helper: one-time trust for privileged ops (no osascript passwords).
         dendritic.helper.enable = true;
 
@@ -44,6 +53,9 @@
 
         # WireGuard overlay ↔ sliceanddice (pass/SecretSpec keys; see docs/wireguard.md).
         dendritic.wireguard.enable = true;
+
+        # OrbStack retired — no Linux guests on this Mac.
+        dendritic.apps.orbstack.enable = false;
 
         # Local Ollama (Metal) + same Rust CLI as sliceanddice (ai-local / chat).
         dendritic.local-ai.enable = true;
@@ -54,6 +66,14 @@
           "gemma3:1b" # fastest
           "llama3.2:1b" # ultra-light
         ];
+        # llama-server (Metal, :8080) for local agents. Local GGUF (HF -hf 401s with
+        # bad cached hub creds on this machine — prefer modelFile).
+        dendritic.local-ai.llamaCpp.enable = true;
+        dendritic.local-ai.llamaCpp.modelFile = "/Users/8amps/.cache/llama.cpp/models/qwen2.5-0.5b-instruct-q4_k_m.gguf";
+        dendritic.local-ai.llamaCpp.alias = "qwen2.5-0.5b";
+        dendritic.local-ai.llamaCpp.hfRepo = null;
+        # Cap KV packing — Agent was sending 67k into 32k n_ctx.
+        dendritic.local-ai.llamaCpp.ctxSize = 8192;
 
         documentation.enable = lib.mkForce false;
         documentation.man.enable = lib.mkForce false;
@@ -100,6 +120,51 @@
         system.activationScripts.disableGatekeeper.text = ''
           echo "Disabling Gatekeeper..."
           /usr/sbin/spctl --master-disable
+        '';
+
+        # Vendor copies (not Nix) the user asked gone. Re-run on every switch
+        # so they stay deleted if something drops them back in /Applications.
+        system.activationScripts.purgeUnwantedApps.text = ''
+          echo "purging unwanted vendor apps"
+          /usr/bin/killall \
+            CrystalFetch Kiru krita Linear "Muse Hub" Obsidian okular Okular \
+            Wireshark RustRover CLion Zed OrbStack 2>/dev/null || true
+          for app in \
+            CrystalFetch Kiru krita Linear "Muse Hub" Obsidian okular Okular \
+            Wireshark RustRover CLion Zed OrbStack
+          do
+            rm -rf "/Applications/$app.app" "/Users/8amps/Applications/$app.app" || true
+          done
+          rm -rf /Applications/TeX /usr/local/texlive /Library/TeX || true
+          rm -f /etc/paths.d/TeX /etc/manpaths.d/TeX || true
+          /bin/launchctl bootout system/org.wireshark.ChmodBPF >/dev/null 2>&1 || true
+          /bin/launchctl bootout system/com.muse.authservice >/dev/null 2>&1 || true
+          rm -f /Library/LaunchDaemons/org.wireshark.ChmodBPF.plist || true
+          rm -f /Library/LaunchDaemons/com.muse.authservice.plist || true
+          rm -f /Library/PrivilegedHelperTools/com.muse.authservice || true
+          rm -rf "/Library/Application Support/Wireshark" || true
+          rm -rf \
+            /Users/8amps/.orbstack \
+            /Users/8amps/.config/zed \
+            /Users/8amps/.zed \
+            "/Users/8amps/Library/Application Support/Kiru" \
+            "/Users/8amps/Library/Application Support/krita" \
+            "/Users/8amps/Library/Application Support/Krita" \
+            "/Users/8amps/Library/Application Support/Muse Hub" \
+            "/Users/8amps/Library/Application Support/obsidian" \
+            "/Users/8amps/Library/Application Support/Obsidian" \
+            "/Users/8amps/Library/Application Support/Linear" \
+            "/Users/8amps/Library/Application Support/Wireshark" \
+            "/Users/8amps/Library/Application Support/Zed" \
+            /Users/8amps/Library/Caches/Zed \
+            /Users/8amps/Library/Logs/Zed \
+            /Users/8amps/Library/Application\ Support/JetBrains/CLion* \
+            /Users/8amps/Library/Application\ Support/JetBrains/RustRover* \
+            /Users/8amps/Library/Caches/JetBrains/CLion* \
+            /Users/8amps/Library/Caches/JetBrains/RustRover* \
+            /Users/8amps/Library/Logs/JetBrains/CLion* \
+            /Users/8amps/Library/Logs/JetBrains/RustRover* \
+            || true
         '';
 
         users.users."8amps" = {
@@ -180,6 +245,7 @@
           dendritic.apps.ghostty.enable = true;
           dendritic.apps.antigravity.enable = true;
           dendritic.apps.cursor.enable = true;
+          dendritic.apps.zed.enable = false;
           dendritic.apps.beeper.enable = true;
           dendritic.apps.jetbrains.enable = true;
           dendritic.apps.pass.enable = true;
@@ -200,6 +266,7 @@
           dendritic.apps.vnc.bonjourName = "mba";
           dendritic.wireguard.enable = true;
           dendritic.wireguard.peerId = "mba";
+          dendritic.apps.orbstack.enable = false;
           dendritic.python.enable = true;
 
           # Same Rust helpers as sliceanddice (scoped OPENAI_* only when wrapping).

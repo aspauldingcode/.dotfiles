@@ -343,9 +343,7 @@
         # the HM-managed binaries match the dock entries declared in the
         # Darwin half below.
         home.packages = with pkgs; [
-          jetbrains.clion
           jetbrains.idea
-          jetbrains.rust-rover
         ];
 
         # Auto-discover all JetBrains product directories and deploy theme files.
@@ -406,8 +404,6 @@
     lib.mkIf jetbrainsEnabled {
       dendritic.dock.apps = lib.mkOrder 150 [
         "${pkgs.jetbrains.idea}/Applications/IntelliJ IDEA.app"
-        "${pkgs.jetbrains.clion}/Applications/CLion.app"
-        "${pkgs.jetbrains.rust-rover}/Applications/RustRover.app"
       ];
     };
 }

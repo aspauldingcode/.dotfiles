@@ -18,8 +18,11 @@
       raw = pkgs.callPackage ./dendritic-appearance/_package.nix { };
       pathBins = [
         pkgs.coreutils
+        pkgs.lutgen
+        pkgs.gowall
+        pkgs.imagemagick
       ]
-      ++ lib.optionals isDarwin [ pkgs.macos-wallpaper ]
+      ++ lib.optionals isDarwin [ pkgs.macos-wallpaper-daemon-rse ]
       ++ lib.optionals (!isDarwin) [
         pkgs.swaybg
         pkgs.procps
@@ -44,10 +47,21 @@
               "DENDRITIC_WALLPAPER_PACK"
               (toString packPath)
             ]
+            ++ [
+              "--set-default"
+              "DENDRITIC_LUTGEN_BIN"
+              "${pkgs.lutgen}/bin/lutgen"
+              "--set-default"
+              "DENDRITIC_GOWALL_BIN"
+              "${pkgs.gowall}/bin/gowall"
+            ]
             ++ lib.optionals isDarwin [
               "--set-default"
-              "DENDRITIC_MACOS_WALLPAPER_BIN"
-              "${pkgs.macos-wallpaper}/bin/wallpaper"
+              "DENDRITIC_WALLPAPERKIT_LIB"
+              "${pkgs.macos-wallpaper-daemon-rse}/lib/libWallpaperKit.dylib"
+              "--set-default"
+              "DENDRITIC_MACOS_WALLPAPERD_BIN"
+              "${pkgs.macos-wallpaper-daemon-rse}/bin/macos-wallpaperd"
             ];
           in
           ''
@@ -79,12 +93,15 @@
               DENDRITIC_WALLPAPER_SCALE = scale;
             };
 
-            # Login reconcile — catch desync before the long-running supervisor attaches.
+            # After HM re-links store symlinks (and Vesktop/Spotify materialize)
+            # so live QuickCSS / xpui colours are not clobbered by the seed theme.
             home.activation.dendriticAppearanceReconcile =
               lib.hm.dag.entryAfter
                 (
-                  [ "writeBoundary" ]
+                  [ "linkGeneration" ]
                   ++ lib.optional (config.dendritic.wallpaper.enable or false) "dendriticWallpaper"
+                  ++ [ "vesktopMaterializeConfig" ]
+                  ++ lib.optional isDarwin "dendriticSpotifyClone"
                 )
                 ''
                   echo "dendritic-appearance: reconcile"
@@ -122,7 +139,8 @@
                   DENDRITIC_WALLPAPER_PACK = toString packPath;
                 }
                 // lib.optionalAttrs isDarwin {
-                  DENDRITIC_MACOS_WALLPAPER_BIN = "${pkgs.macos-wallpaper}/bin/wallpaper";
+                  DENDRITIC_WALLPAPERKIT_LIB = "${pkgs.macos-wallpaper-daemon-rse}/lib/libWallpaperKit.dylib";
+                  DENDRITIC_MACOS_WALLPAPERD_BIN = "${pkgs.macos-wallpaper-daemon-rse}/bin/macos-wallpaperd";
                 };
                 StandardOutPath = "${config.home.homeDirectory}/.local/state/dendritic/appearance-supervise.log";
                 StandardErrorPath = "${config.home.homeDirectory}/.local/state/dendritic/appearance-supervise.err.log";
@@ -169,17 +187,30 @@
       user = config.system.primaryUser;
       host = config.networking.hostName;
       appearancePkg = pkgs.callPackage ./dendritic-appearance/_package.nix { };
+      recolorPath = lib.makeBinPath [
+        pkgs.lutgen
+        pkgs.gowall
+        pkgs.imagemagick
+        pkgs.coreutils
+        pkgs.macos-wallpaper-daemon-rse
+      ];
+      recolorEnv = ''HOME="/Users/${user}" DENDRITIC_HOME="/Users/${user}" DENDRITIC_USER="${user}" PATH="${recolorPath}:$PATH" DENDRITIC_LUTGEN_BIN="${pkgs.lutgen}/bin/lutgen" DENDRITIC_GOWALL_BIN="${pkgs.gowall}/bin/gowall" DENDRITIC_WALLPAPERKIT_LIB="${pkgs.macos-wallpaper-daemon-rse}/lib/libWallpaperKit.dylib" DENDRITIC_MACOS_WALLPAPERD_BIN="${pkgs.macos-wallpaper-daemon-rse}/bin/macos-wallpaperd"'';
     in
     {
       config = lib.mkIf (config.home-manager.users ? ${user}) {
-        environment.systemPackages = [ appearancePkg ];
+        environment.systemPackages = [
+          appearancePkg
+          pkgs.lutgen
+          pkgs.gowall
+          pkgs.macos-wallpaper-daemon-rse
+        ];
 
         environment.etc."dendritic-appearance-watch.sh".source =
           pkgs.writeShellScript "dendritic-appearance-watch" ''
             # Minimal launchd shim only: asuser + env (plist cannot express this).
             uid="$(${pkgs.coreutils}/bin/id -u ${user})"
             exec /bin/launchctl asuser "$uid" /usr/bin/sudo -u ${user} \
-              /usr/bin/env HOME="/Users/${user}" DENDRITIC_HOME="/Users/${user}" DENDRITIC_USER="${user}" \
+              /usr/bin/env ${recolorEnv} \
               ${lib.getExe appearancePkg} reconcile
           '';
 
@@ -236,7 +267,7 @@
             done
             /bin/launchctl kickstart -k system/com.aspauldingcode.dendritic-appearance-watch >/dev/null 2>&1 || true
             /bin/launchctl asuser "$(${pkgs.coreutils}/bin/id -u ${user})" /usr/bin/sudo -u ${user} \
-              /usr/bin/env HOME="/Users/${user}" DENDRITIC_HOME="/Users/${user}" DENDRITIC_USER="${user}" \
+              /usr/bin/env ${recolorEnv} \
               ${lib.getExe appearancePkg} reconcile \
               >>/var/log/dendritic-appearance-sync.log 2>&1 || true
           fi
@@ -256,7 +287,11 @@
     in
     {
       config = lib.mkIf (config.dendritic.apps.niri.enable or false) {
-        environment.systemPackages = [ appearancePkg ];
+        environment.systemPackages = [
+          appearancePkg
+          pkgs.lutgen
+          pkgs.gowall
+        ];
       };
     };
 }

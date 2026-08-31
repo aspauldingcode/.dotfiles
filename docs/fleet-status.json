@@ -10,6 +10,13 @@
       "seen_at": null
     },
     {
+      "host": "mba-asahi",
+      "platform": "unknown",
+      "flake_rev": "\u2014",
+      "status": "offline",
+      "seen_at": null
+    },
+    {
       "host": "sliceanddice",
       "platform": "unknown",
       "flake_rev": "\u2014",

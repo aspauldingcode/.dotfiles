@@ -92,6 +92,19 @@
           domain = true;
           workstation = true;
         };
+        # Bonjour `_ssh._tcp` so mba can find the host as sliceanddice.local
+        # (and `ssh alex@SLICEANDDICE` via the dendritic SSH Host aliases).
+        extraServiceFiles.ssh = ''
+          <?xml version="1.0" standalone='no'?>
+          <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+          <service-group>
+            <name replace-wildcards="yes">%h</name>
+            <service>
+              <type>_ssh._tcp</type>
+              <port>22</port>
+            </service>
+          </service-group>
+        '';
       };
       # Spokane, WA → IANA Pacific (PST/PDT).
       time.timeZone = "America/Los_Angeles";
@@ -127,6 +140,9 @@
         "qwen2.5-coder:3b" # coder specialist
         "qwen2.5-coder:7b" # quality coder (usable; role diversity over llama3.2:1b)
       ];
+      # llama-server for Zed Agent (CUDA, :8080). Cache under user alex.
+      dendritic.local-ai.llamaCpp.enable = true;
+      dendritic.local-ai.llamaCpp.user = "alex";
 
       # On-disk NixOS installer (nixinstall) + vault. See docs/nixinstall.md.
       dendritic.nixinstall.enable = true;
@@ -271,7 +287,6 @@
       environment.systemPackages = with pkgs; [
         heroic
         vesktop
-        prismlauncher
         git
         android-tools
         waypipe
@@ -335,6 +350,10 @@
         dendritic.apps.ghostty.enable = true;
         dendritic.apps.cursor.enable = true;
         dendritic.apps.antigravity.enable = true;
+        dendritic.apps.zed.enable = true;
+        dendritic.apps.zed.localAgent.enable = true;
+        dendritic.apps.zed.localAgent.provider = "llama.cpp";
+        dendritic.apps.zed.localAgent.apiUrl = "http://127.0.0.1:8080";
         dendritic.apps.beeper.enable = true;
         dendritic.apps.pass.enable = true;
         dendritic.apps.pass.fingerprint = "80AB4D8EFE29CE2ABD3BD0445C04154FC8950A8B";
