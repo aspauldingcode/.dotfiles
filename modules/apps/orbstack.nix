@@ -22,58 +22,80 @@
         enable = lib.mkEnableOption "OrbStack from nixpkgs (replaces vendor /Applications copy)";
       };
 
-      config = lib.mkIf cfg.enable {
-        environment.systemPackages = [ pkgs.orbstack ];
+      config = lib.mkMerge [
+        (lib.mkIf cfg.enable {
+          environment.systemPackages = [ pkgs.orbstack ];
 
-        system.activationScripts.dendriticOrbstack.text = ''
-          echo "dendritic.orbstack: retiring vendor /Applications/OrbStack.app if present"
-          vendor="/Applications/OrbStack.app"
-          if [ -e "$vendor" ]; then
-            dest="$(readlink "$vendor" 2>/dev/null || true)"
-            case "$dest" in
-            /nix/store/*orbstack*) ;;
-            *)
-              /usr/bin/killall OrbStack "OrbStack Helper" 2>/dev/null || true
-              rm -rf "$vendor"
-              ;;
-            esac
-          fi
-          for b in orb orbctl; do
-            link="/usr/local/bin/$b"
-            if [ -L "$link" ]; then
-              t="$(readlink "$link" 2>/dev/null || true)"
-              case "$t" in
-              /Applications/OrbStack.app/*)
-                rm -f "$link"
+          system.activationScripts.dendriticOrbstack.text = ''
+            echo "dendritic.orbstack: retiring vendor /Applications/OrbStack.app if present"
+            vendor="/Applications/OrbStack.app"
+            if [ -e "$vendor" ]; then
+              dest="$(readlink "$vendor" 2>/dev/null || true)"
+              case "$dest" in
+              /nix/store/*orbstack*) ;;
+              *)
+                /usr/bin/killall OrbStack "OrbStack Helper" 2>/dev/null || true
+                rm -rf "$vendor"
                 ;;
               esac
             fi
-          done
-
-          echo "dendritic.orbstack: retiring UTM.app leftovers (OrbStack owns Linux guests)"
-          /usr/bin/killall UTM utmctl 2>/dev/null || true
-          for utm in /Applications/UTM.app "${userHome}/Applications/UTM.app"; do
-            if [ -e "$utm" ]; then
-              rm -rf "$utm"
-            fi
-          done
-          for b in utmctl; do
-            for link in "/usr/local/bin/$b" "/opt/homebrew/bin/$b"; do
-              if [ -e "$link" ] || [ -L "$link" ]; then
-                rm -f "$link"
+            for b in orb orbctl; do
+              link="/usr/local/bin/$b"
+              if [ -L "$link" ]; then
+                t="$(readlink "$link" 2>/dev/null || true)"
+                case "$t" in
+                /Applications/OrbStack.app/*)
+                  rm -f "$link"
+                  ;;
+                esac
               fi
             done
-          done
-          rm -rf \
-            "${userHome}/Library/Containers/com.utmapp.UTM" \
-            "${userHome}/Library/Containers/com.utmapp.QEMUHelper" \
-            "${userHome}/Library/Containers/com.utmapp.UTM-SE" \
-            "${userHome}/Library/Preferences/com.utmapp.UTM.plist" \
-            "${userHome}/Library/Application Support/com.utmapp.UTM" \
-            "${userHome}/Library/Caches/com.utmapp.UTM" \
-            || true
-        '';
-      };
+
+            echo "dendritic.orbstack: retiring UTM.app leftovers (OrbStack owns Linux guests)"
+            /usr/bin/killall UTM utmctl 2>/dev/null || true
+            for utm in /Applications/UTM.app "${userHome}/Applications/UTM.app"; do
+              if [ -e "$utm" ]; then
+                rm -rf "$utm"
+              fi
+            done
+            for b in utmctl; do
+              for link in "/usr/local/bin/$b" "/opt/homebrew/bin/$b"; do
+                if [ -e "$link" ] || [ -L "$link" ]; then
+                  rm -f "$link"
+                fi
+              done
+            done
+            rm -rf \
+              "${userHome}/Library/Containers/com.utmapp.UTM" \
+              "${userHome}/Library/Containers/com.utmapp.QEMUHelper" \
+              "${userHome}/Library/Containers/com.utmapp.UTM-SE" \
+              "${userHome}/Library/Preferences/com.utmapp.UTM.plist" \
+              "${userHome}/Library/Application Support/com.utmapp.UTM" \
+              "${userHome}/Library/Caches/com.utmapp.UTM" \
+              || true
+          '';
+        })
+
+        # When disabled: drop leftover app, helper, and GUI login agent.
+        (lib.mkIf (!cfg.enable) {
+          system.activationScripts.dendriticOrbstackOff.text = ''
+            echo "dendritic.orbstack: disabled — removing leftover app + helper"
+            /usr/bin/killall OrbStack "OrbStack Helper" 2>/dev/null || true
+            rm -rf /Applications/OrbStack.app "${userHome}/Applications/OrbStack.app" || true
+            for b in orb orbctl; do
+              rm -f "/usr/local/bin/$b" "/opt/homebrew/bin/$b" || true
+            done
+            /bin/launchctl bootout system/dev.orbstack.OrbStack.privhelper >/dev/null 2>&1 || true
+            rm -f /Library/LaunchDaemons/dev.orbstack.OrbStack.privhelper.plist || true
+            rm -f /Library/PrivilegedHelperTools/dev.orbstack.OrbStack.privhelper || true
+            uid="$(id -u ${config.system.primaryUser} 2>/dev/null || true)"
+            if [ -n "$uid" ]; then
+              /bin/launchctl bootout "gui/$uid/com.aspauldingcode.dendritic-orbstack" >/dev/null 2>&1 || true
+            fi
+            rm -f "${userHome}/Library/LaunchAgents/com.aspauldingcode.dendritic-orbstack.plist" || true
+          '';
+        })
+      ];
     };
 
   flake.modules.homeManager.dendritic =

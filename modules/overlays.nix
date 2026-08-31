@@ -16,6 +16,22 @@
         system = prev.stdenv.hostPlatform.system;
         config.allowUnfree = true;
       };
+      # 2026.2 JetBrains DMGs are LZFSE/lzvn; nixpkgs `undmg` cannot unpack
+      # them (empty unpackPhase, builder exit 1). 7zz can.
+      unpackJetbrainsLzfseDmg =
+        pkg:
+        pkg.overrideAttrs (_old: {
+          nativeBuildInputs = [ final._7zz ];
+          unpackPhase = ''
+            runHook preUnpack
+            7zz x -y -snld "$src"
+            shopt -s nullglob
+            for app in */*.app; do
+              mv "$app" .
+            done
+            runHook postUnpack
+          '';
+        });
     in
     {
       # NOTE: the pipx 26.05 checkPhase fix lives in modules/python.nix (where
@@ -72,6 +88,12 @@
           fi
         '';
       });
+
+      jetbrains =
+        prev.jetbrains
+        // prev.lib.optionalAttrs prev.stdenv.isDarwin {
+          idea = unpackJetbrainsLzfseDmg prev.jetbrains.idea;
+        };
 
       # ── vimPlugins.blink-cmp: patch upstream "No fuzzy matching
       # library found!" false-positive on Nix ─────────────────────

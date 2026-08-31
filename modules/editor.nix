@@ -873,10 +873,12 @@
           })
           (pkgs.vimUtils.buildVimPlugin {
             pname = "eagle.nvim";
-            version = "latest";
-            src = pkgs.fetchzip {
-              url = "https://github.com/soulis-1256/eagle.nvim/archive/HEAD.tar.gz";
-              sha256 = "1l131sv72mklizpa6yp8dbc52blcvcchmjmbbwm0y4bvl3rk9s0s";
+            version = "0-unstable-2026-08-13";
+            src = pkgs.fetchFromGitHub {
+              owner = "soulis-1256";
+              repo = "eagle.nvim";
+              rev = "e99f4e36eaf2b5da076ff4e3e8ee7559127aa9e2";
+              hash = "sha256-Hp15PXQ62fYm9cTtt4m3i3R31RlW6HicEbY+3rzgPxU=";
             };
             doCheck = false;
           })

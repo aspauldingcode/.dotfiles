@@ -18,10 +18,14 @@ pub fn reconcile() -> Result<MachineStatus, String> {
     for attempt in 1..=MAX_ATTEMPTS {
         let obs = observe::observe();
         if obs.synced() {
+            // Store-baked clients (Vesktop, Spotify) stay on the nh-switch
+            // seed unless we rewrite them even while appearance is already
+            // synced. Writers no-op when bytes match (no Ghostty USR2).
+            let colors = colors_toml_path();
+            let _ = crate::vesktop::apply_from_colors(&colors);
+            let _ = crate::spotify::apply_from_colors(&colors);
             let status = MachineStatus {
-                phase: Phase::Synced {
-                    variant: obs.host,
-                },
+                phase: Phase::Synced { variant: obs.host },
                 observation: obs,
             };
             state::write_phase_snapshot(&status);
@@ -118,11 +122,7 @@ fn apply_global(variant: Variant, wallpaper_target: &str) -> Result<(), String> 
         let _ = macos::apply_tint_from_colors_toml(&colors_toml_path());
     }
 
-    // Hot theme layer — same on Darwin and NixOS (wallpaper palette → apps).
-    let colors = colors_toml_path();
-    let _ = crate::ghostty::apply_from_colors(&colors);
-    let _ = crate::qt::apply_from_colors(&colors);
-    let _ = crate::ide::patch_from_colors(&colors);
+    apply_hot_colors();
 
     // Prebuilt / specialisation (best-effort; hot layer already applied)
     if let Err(e) = activate::activate(variant) {
@@ -131,4 +131,15 @@ fn apply_global(variant: Variant, wallpaper_target: &str) -> Result<(), String> 
 
     state::write_applied_variant(variant)?;
     Ok(())
+}
+
+/// CSS/config that Stylix bakes at `nh switch` (store symlinks on Darwin).
+/// Safe to call on the synced poll: writers no-op when bytes are unchanged.
+fn apply_hot_colors() {
+    let colors = colors_toml_path();
+    let _ = crate::ghostty::apply_from_colors(&colors);
+    let _ = crate::qt::apply_from_colors(&colors);
+    let _ = crate::ide::patch_from_colors(&colors);
+    let _ = crate::vesktop::apply_from_colors(&colors);
+    let _ = crate::spotify::apply_from_colors(&colors);
 }

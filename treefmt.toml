@@ -18,6 +18,7 @@ excludes = [
   "flake_*.json",
   ".cursor/plugins/**",
   ".cursor/skills/**",
+  "modules/apps/tinted-inject/src/**",
 ]
 
 # ── Nix ──────────────────────────────────────────────────────────

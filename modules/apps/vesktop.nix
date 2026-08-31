@@ -1,204 +1,48 @@
 {
-  # ── Vesktop (Discord replacement) ─────────────────────────────
-  # Replaces vanilla Discord entirely with Vesktop (Vencord-powered client).
-  # Stylix auto-generates a base16 CSS theme and injects it via Vencord's
-  # theme loader using `stylix.targets.vesktop`.
-  #
-  # Stylix wiring (discord/vesktop.nix target):
-  #   stylix.targets.vesktop.enable = true
-  #   → programs.vesktop.vencord.themes.stylix = <generated-css>
-  #   → programs.vesktop.vencord.settings.enabledThemes = [ "stylix.css" ]
-  #
-  # Vesktop is supported on both Linux and Darwin (macOS).
-  # Reference: https://github.com/nix-community/stylix/blob/master/modules/discord/vesktop.nix
+  # Vesktop: Discord stays native. TintedBrowse LUT rewriter (Chrome
+  # extension loaded into Electron) walks authored CSS colors through
+  # OKLab Gaussian RBF. QuickCSS only exposes --tb-baseXX tokens.
 
   flake.modules.homeManager.dendritic =
     {
       pkgs,
       lib,
-      inputs,
       config,
       ...
     }:
     let
-      # Shared with themes/ + QuickCSS. QuickCSS injects as style textContent
-      # (reliable); local themes use @import vencord:/// which can no-op.
-      dendriticOverridesCss = ''
-        :root,
-        .theme-dark,
-        .theme-light,
-        .theme-darker,
-        .theme-midnight,
-        .visual-refresh {
-          --base00: #${config.lib.stylix.colors.base00};
-          --base01: #${config.lib.stylix.colors.base01};
-          --base02: #${config.lib.stylix.colors.base02};
-          --base03: #${config.lib.stylix.colors.base03};
-          --base04: #${config.lib.stylix.colors.base04};
-          --base05: #${config.lib.stylix.colors.base05};
-          --base06: #${config.lib.stylix.colors.base06};
-          --base07: #${config.lib.stylix.colors.base07};
-          --base08: #${config.lib.stylix.colors.base08};
-          --base0D: #${config.lib.stylix.colors.base0D};
-
-          --font-primary: "Inter", "Maple Mono NF", "SF Pro Text", "Helvetica Neue", sans-serif !important;
-          --font-display: "Inter", "Maple Mono NF", "SF Pro Text", "Helvetica Neue", sans-serif !important;
-          --font-headline: "Inter", "Maple Mono NF", "SF Pro Text", "Helvetica Neue", sans-serif !important;
-          --font-code: "Maple Mono NF", "JetBrains Mono", ui-monospace, monospace !important;
-
-          --background-primary: var(--base00) !important;
-          --background-secondary: var(--base01) !important;
-          --background-secondary-alt: var(--base01) !important;
-          --background-tertiary: var(--base01) !important;
-          --background-accent: var(--base02) !important;
-          --background-floating: var(--base01) !important;
-          --background-mobile-primary: var(--base00) !important;
-          --background-mobile-secondary: var(--base01) !important;
-          --chat-background-default: var(--base00) !important;
-          --channeltextarea-background: var(--base01) !important;
-          --modal-background: var(--base01) !important;
-          --modal-footer-background: var(--base01) !important;
-
-          --text-normal: var(--base05) !important;
-          --text-default: var(--base05) !important;
-          --text-primary: var(--base05) !important;
-          --text-secondary: var(--base04) !important;
-          --text-muted: var(--base04) !important;
-          --text-muted-on-default: var(--base04) !important;
-          --text-low-contrast: var(--base04) !important;
-          --text-link: var(--base0D) !important;
-          --text-link-low-saturation: var(--base0C) !important;
-          --text-brand: var(--base0D) !important;
-          --text-danger: var(--base08) !important;
-          --text-positive: var(--base0D) !important;
-          --text-warning: var(--base08) !important;
-          --header-primary: var(--base06) !important;
-          --header-secondary: var(--base04) !important;
-          --interactive-normal: var(--base04) !important;
-          --interactive-hover: var(--base06) !important;
-          --interactive-active: var(--base07) !important;
-          --interactive-muted: var(--base03) !important;
-          --channels-default: var(--base04) !important;
-          --channel-icon: var(--base04) !important;
-          --channel-text-area-placeholder: var(--base04) !important;
-          --icon-primary: var(--base05) !important;
-          --icon-secondary: var(--base04) !important;
-          --icon-muted: var(--base03) !important;
-          --control-brand-foreground: var(--base0D) !important;
-          --control-brand-foreground-new: var(--base0D) !important;
-
-          --button-danger-background: var(--base08) !important;
-          --button-danger-background-hover: color-mix(in srgb, var(--base08) 88%, black) !important;
-          --button-danger-text: var(--base00) !important;
-          --button-filled-brand-background: var(--base0D) !important;
-          --button-filled-brand-background-hover: color-mix(in srgb, var(--base0D) 88%, black) !important;
-          --button-filled-brand-text: var(--base00) !important;
-          --button-secondary-background: var(--base02) !important;
-          --button-secondary-background-hover: var(--base03) !important;
-          --button-secondary-background-active: var(--base03) !important;
-          --button-secondary-text: var(--base05) !important;
-          --button-outline-primary-text: var(--base05) !important;
-          --button-outline-primary-text-hover: var(--base06) !important;
-          --button-outline-primary-text-active: var(--base06) !important;
-          --redesign-button-primary-text: var(--base00) !important;
-          --redesign-button-secondary-text: var(--base05) !important;
-          --redesign-button-secondary-alt-text: var(--base05) !important;
-          --redesign-button-secondary-alt-pressed-text: var(--base06) !important;
-          --redesign-button-danger-text: var(--base00) !important;
-          --redesign-button-positive-text: var(--base00) !important;
-
-          --input-background: var(--base01) !important;
-          --input-placeholder-text: var(--base04) !important;
-          --profile-gradient-primary-color: var(--base01) !important;
-          --profile-gradient-secondary-color: var(--base01) !important;
-        }
-
-        /* Sidebar surfaces */
-        [class*="sidebar_"],
-        [class*="privateChannels_"],
-        [class*="guilds_"],
-        [class*="membersWrap_"],
-        [class*="panels_"] {
-          background-color: var(--base01) !important;
-        }
-
-        /* Main chat/content surfaces */
-        [class*="chat_"],
-        [class*="chatContent_"],
-        [class*="content_"],
-        [class*="messagesWrapper_"],
-        [class*="scroller_"],
-        [class*="container_"] {
-          background-color: var(--base00) !important;
-          color: var(--base05) !important;
-        }
-
-        /* Force text color across Discord UI text-bearing elements. */
-        [class*="text_"],
-        [class*="name_"],
-        [class*="username_"],
-        [class*="messageContent_"],
-        [class*="markup_"],
-        [class*="title_"],
-        [class*="subtitle_"],
-        [class*="description_"],
-        [class*="channelName_"],
-        [class*="topic_"],
-        [class*="placeholder_"],
-        [class*="defaultColor_"],
-        [class*="contents_"],
-        span,
-        p,
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6,
-        label {
-          color: var(--base05) !important;
-        }
-
-        [class*="textMuted_"],
-        [class*="subtext_"],
-        [class*="hint_"],
-        [class*="meta_"],
-        [class*="timestamp_"] {
-          color: var(--base04) !important;
-        }
-
-        /* Titlebar */
-        [class*="titleBar_"],
-        [class*="bar_"][class*="titleBar"],
-        [class*="typeWindows_"],
-        [class*="winButton_"] {
-          background-color: var(--base00) !important;
-          color: var(--base05) !important;
-        }
-
-        /* Buttons + controls */
-        button,
-        [role="button"],
-        [class*="lookFilled_"],
-        [class*="lookOutlined_"],
-        [class*="lookLink_"],
-        [class*="input_"],
-        [class*="select_"],
-        [class*="option_"],
-        [class*="item_"],
-        [class*="bd-select"],
-        [class*="bd-button"] {
-          color: var(--base05) !important;
+      tintedInject = pkgs.callPackage ./tinted-inject { };
+      vesktopPkg = import ./tinted-inject/_wrap-vesktop.nix {
+        inherit pkgs tintedInject;
+      };
+      c = config.lib.stylix.colors;
+      # Auxiliary palette sheet only (TintedBrowse `buildThemeCss`). Not a
+      # Discord chrome remap — appearance overwrites this from colors.toml.
+      paletteCss = ''
+        :root, :host {
+          --tb-base00: #${c.base00};
+          --tb-base01: #${c.base01};
+          --tb-base02: #${c.base02};
+          --tb-base03: #${c.base03};
+          --tb-base04: #${c.base04};
+          --tb-base05: #${c.base05};
+          --tb-base06: #${c.base06};
+          --tb-base07: #${c.base07};
+          --tb-base08: #${c.base08};
+          --tb-base09: #${c.base09};
+          --tb-base0A: #${c.base0A};
+          --tb-base0B: #${c.base0B};
+          --tb-base0C: #${c.base0C};
+          --tb-base0D: #${c.base0D};
+          --tb-base0E: #${c.base0E};
+          --tb-base0F: #${c.base0F};
         }
       '';
     in
     {
       config = {
-        # ── Stylix: enable the vesktop colourscheme target ───────────
-        stylix.targets.vesktop.enable = true;
+        stylix.targets.vesktop.enable = lib.mkForce false;
 
-        # Adhoc-sign Vesktop when it is a writable local bundle. Store
-        # symlinks are already signed at build time; `--deep` fails on them.
         home.activation.signVesktopApp = lib.mkIf pkgs.stdenv.isDarwin (
           lib.hm.dag.entryAfter [ "linkGeneration" ] ''
             _app="$HOME/Applications/Home Manager Apps/Vesktop.app"
@@ -218,34 +62,52 @@
           ''
         );
 
-        # HM installs store symlinks; Vesktop then fails to write settings
-        # (EROFS) and theme @import via vencord:// can silently no-op.
-        # Materialize real files after linking so the client can load + save.
-        home.activation.vesktopMaterializeConfig = lib.mkIf pkgs.stdenv.isLinux (
-          lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-            cfg="${config.xdg.configHome}/vesktop"
-            $DRY_RUN_CMD mkdir -p "$cfg/settings" "$cfg/themes"
-            for f in \
-              "$cfg/settings.json" \
-              "$cfg/settings/settings.json" \
-              "$cfg/settings/quickCss.css" \
-              "$cfg/themes/stylix.css" \
-              "$cfg/themes/dendritic-overrides.css"
-            do
-              if [ -L "$f" ]; then
-                target="$(${pkgs.coreutils}/bin/readlink -f "$f")"
-                $DRY_RUN_CMD ${pkgs.coreutils}/bin/rm -f "$f"
-                $DRY_RUN_CMD ${pkgs.coreutils}/bin/cp -f "$target" "$f"
-                $DRY_RUN_CMD ${pkgs.coreutils}/bin/chmod u+w "$f"
-              fi
-            done
-          ''
-        );
+        home.activation.vesktopClearManagedCss = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+          cfg="${
+            if pkgs.stdenv.isDarwin then
+              "${config.home.homeDirectory}/Library/Application Support/vesktop"
+            else
+              "${config.xdg.configHome}/vesktop"
+          }"
+          $DRY_RUN_CMD ${pkgs.coreutils}/bin/rm -f \
+            "$cfg/settings.json.backup" \
+            "$cfg/settings/settings.json.backup" \
+            "$cfg/settings/quickCss.css" \
+            "$cfg/settings/quickCss.css.backup" \
+            "$cfg/themes/stylix.css" \
+            "$cfg/themes/stylix.css.backup" \
+            "$cfg/themes/dendritic-overrides.css" \
+            "$cfg/themes/dendritic-overrides.css.backup" || true
+        '';
 
-        # ── Vesktop application ──────────────────────────────────────
+        home.activation.vesktopMaterializeConfig = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+          cfg="${
+            if pkgs.stdenv.isDarwin then
+              "${config.home.homeDirectory}/Library/Application Support/vesktop"
+            else
+              "${config.xdg.configHome}/vesktop"
+          }"
+          $DRY_RUN_CMD mkdir -p "$cfg/settings" "$cfg/themes"
+          for f in \
+            "$cfg/settings.json" \
+            "$cfg/settings/settings.json" \
+            "$cfg/settings/quickCss.css"
+          do
+            if [ -L "$f" ]; then
+              target="$(${pkgs.coreutils}/bin/readlink -f "$f")"
+              $DRY_RUN_CMD ${pkgs.coreutils}/bin/rm -f "$f"
+              $DRY_RUN_CMD ${pkgs.coreutils}/bin/cp -f "$target" "$f"
+              $DRY_RUN_CMD ${pkgs.coreutils}/bin/chmod u+w "$f"
+            fi
+          done
+          $DRY_RUN_CMD ${pkgs.coreutils}/bin/rm -f \
+            "$cfg/themes/stylix.css" \
+            "$cfg/themes/dendritic-overrides.css" || true
+        '';
+
         programs.vesktop = {
           enable = true;
-          package = lib.mkForce pkgs.vesktop;
+          package = lib.mkForce vesktopPkg;
 
           settings = {
             arRPC = true;
@@ -256,8 +118,8 @@
             splashTheming = true;
             staticTitle = true;
             discordBranch = "stable";
-            splashBackground = "#${config.lib.stylix.colors.base00}";
-            splashColor = "#${config.lib.stylix.colors.base0D}; --fg-semi-trans: transparent";
+            splashBackground = "#${c.base00}";
+            splashColor = "#${c.base0D}; --fg-semi-trans: transparent";
           };
 
           vencord.settings = {
@@ -265,10 +127,7 @@
             autoUpdateNotification = false;
             notifyAboutUpdates = false;
             useQuickCss = true;
-            enabledThemes = lib.mkForce [
-              "stylix.css"
-              "dendritic-overrides.css"
-            ];
+            enabledThemes = lib.mkForce [ ];
 
             plugins = {
               MessageLogger = {
@@ -281,28 +140,26 @@
             };
           };
 
-          # Inject Stylix + overrides via QuickCSS (style textContent) so
-          # theming still works if local theme @import fails.
-          vencord.extraQuickCss = lib.mkAfter (
-            (config.programs.vesktop.vencord.themes.stylix or "") + "\n" + dendriticOverridesCss
-          );
-
-          # Do not include ".css" in the key: HM appends it to the filename.
-          vencord.themes."dendritic-overrides" = dendriticOverridesCss;
+          vencord.extraQuickCss = lib.mkForce paletteCss;
         };
       };
     };
 
-  # Dock registration: Vesktop owns its dock entry (order 130 in `dock.nix`).
   flake.modules.darwin.dendritic =
     {
       pkgs,
       lib,
       ...
     }:
+    let
+      tintedInject = pkgs.callPackage ./tinted-inject { };
+      vesktopPkg = import ./tinted-inject/_wrap-vesktop.nix {
+        inherit pkgs tintedInject;
+      };
+    in
     {
       dendritic.dock.apps = lib.mkOrder 130 [
-        "${pkgs.vesktop}/Applications/Vesktop.app"
+        "${vesktopPkg}/Applications/Vesktop.app"
       ];
     };
 }

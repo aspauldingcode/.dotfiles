@@ -18,8 +18,11 @@ mod observe;
 mod palette;
 mod qt;
 mod reconcile;
+mod spotify;
 mod state;
 mod supervise;
+mod tinted;
+mod vesktop;
 mod wallpaper;
 
 use std::process::ExitCode;

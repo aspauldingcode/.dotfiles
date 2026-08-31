@@ -93,12 +93,15 @@
               DENDRITIC_WALLPAPER_SCALE = scale;
             };
 
-            # Login reconcile — catch desync before the long-running supervisor attaches.
+            # After HM re-links store symlinks (and Vesktop/Spotify materialize)
+            # so live QuickCSS / xpui colours are not clobbered by the seed theme.
             home.activation.dendriticAppearanceReconcile =
               lib.hm.dag.entryAfter
                 (
-                  [ "writeBoundary" ]
+                  [ "linkGeneration" ]
                   ++ lib.optional (config.dendritic.wallpaper.enable or false) "dendriticWallpaper"
+                  ++ [ "vesktopMaterializeConfig" ]
+                  ++ lib.optional isDarwin "dendriticSpotifyClone"
                 )
                 ''
                   echo "dendritic-appearance: reconcile"

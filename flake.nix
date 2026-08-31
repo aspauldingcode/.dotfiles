@@ -103,6 +103,14 @@
     # toolchain's rust-overlay / SDK floor.
     wwn-phoon-rs.url = "github:Wawona/wwn-phoon-rs";
 
+    # Channel-update desktop notifier (NixOS + nix-darwin). Darwin support is
+    # on our fork until https://github.com/erichelgeson/nixos-update-notify/pulls
+    # lands — pin the darwin branch.
+    nixos-update-notify = {
+      url = "github:aspauldingcode/nixos-update-notify/darwin";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
+    };
+
   };
 
   outputs =
@@ -154,6 +162,8 @@
               "flake_*.json"
               ".cursor/plugins/**"
               ".cursor/skills/**"
+              # Vendored TintedBrowse LUT TS — keep 1:1 with upstream style.
+              "modules/apps/tinted-inject/src/**"
             ];
             programs = {
               nixfmt.enable = true; # *.nix
