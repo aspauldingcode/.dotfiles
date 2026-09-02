@@ -1,7 +1,10 @@
 { pkgs }:
 
 let
-  version = "0.18.3";
+  # Wawona fork (vphone + Mode B tipa). Rebuild local tree first:
+  #   cd ~/Wawona/agent-device && nix shell nixpkgs#pnpm -c pnpm build
+  version = "0.18.3-wawona.1";
+  srcRoot = /Users/8amps/Wawona/agent-device;
 
   yamlNpm = pkgs.stdenvNoCC.mkDerivation {
     pname = "yaml-npm";
@@ -23,35 +26,56 @@ pkgs.stdenvNoCC.mkDerivation {
   inherit version;
   pname = "agent-device";
 
-  src = pkgs.fetchurl {
-    url = "https://registry.npmjs.org/agent-device/-/agent-device-${version}.tgz";
-    hash = "sha256-AWi9g9ax8+0JA9GWhr4aSxaVsLuuVVKV5fD82aqB5AU=";
+  # Local checkout with prebuilt dist/ (rslib). Avoid shipping node_modules.
+  src = pkgs.lib.cleanSourceWith {
+    src = srcRoot;
+    filter =
+      path: type:
+      let
+        base = baseNameOf path;
+      in
+      !(
+        base == "node_modules"
+        || base == ".git"
+        || base == ".tmp"
+        || base == "coverage"
+        || base == "test"
+      );
   };
 
   nativeBuildInputs = [ pkgs.makeWrapper ];
   buildInputs = [ pkgs.nodejs_24 ];
 
-  sourceRoot = "package";
+  # Fail closed if the fork was not built.
+  preConfigure = ''
+    test -f dist/src/cli.js || {
+      echo "agent-device dist/ missing. Run: cd ${toString srcRoot} && nix shell nixpkgs#pnpm -c pnpm build" >&2
+      exit 1
+    }
+  '';
 
   installPhase = ''
     runHook preInstall
 
     mkdir -p "$out/lib/agent-device" "$out/bin"
-    cp -r . "$out/lib/agent-device/"
+    cp -R dist bin package.json server.json "$out/lib/agent-device/" 2>/dev/null || \
+      cp -R dist bin package.json "$out/lib/agent-device/"
 
     mkdir -p "$out/lib/agent-device/node_modules"
     ln -s ${yamlNpm}/lib/node_modules/yaml "$out/lib/agent-device/node_modules/yaml"
 
     makeWrapper ${pkgs.nodejs_24}/bin/node "$out/bin/agent-device" \
       --add-flags "$out/lib/agent-device/bin/agent-device.mjs" \
-      --prefix NODE_PATH : "$out/lib/agent-device/node_modules"
+      --prefix NODE_PATH : "$out/lib/agent-device/node_modules" \
+      --prefix PATH : "${pkgs.lib.makeBinPath [ pkgs.sshpass ]}" \
+      --set-default WAWONA_ROOT /Users/8amps/Wawona/Wawona
 
     runHook postInstall
   '';
 
   meta = with pkgs.lib; {
-    description = "Agent-native CLI for AI app automation across iOS, Android, tvOS, macOS, and web";
-    homepage = "https://github.com/callstack/agent-device";
+    description = "Wawona fork of agent-device with vphone (jailbroken research VM) automation";
+    homepage = "https://github.com/Wawona/agent-device";
     license = licenses.mit;
     platforms = platforms.unix;
     mainProgram = "agent-device";
