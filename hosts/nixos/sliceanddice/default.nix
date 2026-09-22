@@ -34,11 +34,13 @@
       # manual / `man configuration.nix` is dropped.
       documentation.nixos.enable = false;
 
-      # Bootloader — 511M EFI; each generation can add ~50MB initrd when it
-      # changes. Cap generations so /boot cannot fill and block switches.
+      # systemd-boot, no menu (timeout 0). Hold space at the loader for
+      # generations. 511M ESP — cap entries. GRUB theme dropped: AMI kept
+      # leftover Linux Boot Manager first and ignored NixOS-boot.
+      boot.loader.efi.canTouchEfiVariables = true;
+      boot.loader.timeout = 0;
       boot.loader.systemd-boot.enable = true;
       boot.loader.systemd-boot.configurationLimit = 5;
-      boot.loader.efi.canTouchEfiVariables = true;
 
       # Latest mainline kernel from nixpkgs 26.05 (>= 7.0). The NVIDIA open
       # kernel modules track new kernels closely, so this builds cleanly on
@@ -108,6 +110,7 @@
       };
       # Spokane, WA → IANA Pacific (PST/PDT).
       time.timeZone = "America/Los_Angeles";
+      services.timesyncd.enable = true;
 
       i18n.defaultLocale = "en_US.UTF-8";
       i18n.extraLocaleSettings = {
@@ -125,24 +128,17 @@
       # ── Dendritic desktop features ─────────────────────────────────────
       dendritic.apps.niri.enable = true;
       dendritic.apps.linux-desktop.enable = true;
+      # Heroic + Proton-GE DLSS/NVAPI + PRIME offload (RTX 3050 Ti Laptop).
+      dendritic.apps.heroic.enable = true;
 
       # Quiet-first power: RAPL/EPP feedback controller, zswap, lid/idle suspend.
       # Owns CPU power policy — do not enable TLP / auto-cpufreq / PPD alongside.
       # NVIDIA finegrained stays off (black-screen history); dGPU already runtime-suspends.
       dendritic.power.enable = true;
 
-      # Local free LLMs (Ollama CUDA). Models from scripts/local-ai-bench winners.
-      # Cloud OpenAI / Cursor stay available; helpers never force OPENAI_API_BASE globally.
-      dendritic.local-ai.enable = true;
-      dendritic.local-ai.loadModels = [
-        "gemma3:1b" # fastest (outperform)
-        "llama3.2:3b" # best coding among fast (outperform)
-        "qwen2.5-coder:3b" # coder specialist
-        "qwen2.5-coder:7b" # quality coder (usable; role diversity over llama3.2:1b)
-      ];
-      # llama-server for Zed Agent (CUDA, :8080). Cache under user alex.
-      dendritic.local-ai.llamaCpp.enable = true;
-      dendritic.local-ai.llamaCpp.user = "alex";
+      # Fast cold boot: greetd autologin (no gtkgreet), HM/NM off the
+      # graphical critical path. Not firmware.
+      dendritic.bootSpeed.enable = true;
 
       # On-disk NixOS installer (nixinstall) + vault. See docs/nixinstall.md.
       dendritic.nixinstall.enable = true;
@@ -151,7 +147,10 @@
       # After dendritic-reinstall (btrfs). Keep true only while still on live ext4.
       dendritic.disk.liveExt4Compat = false;
 
-      # System Stylix ← wallpaper pack (gtkgreet). gtklock picks a different pack entry at lock time.
+      # Stylix polarity + scheme from theme-selection.nix. Specialisations
+      # `light` / `dark` (den-aspects/styling.nix) keep darkmode/lightmode
+      # on the matching store packages; runtime wallpaper follows the pole.
+      dendritic.theme.variant = lib.mkDefault "dark";
       dendritic.wallpaper.enable = true;
 
       # Immutable account + gtk auth avatar (assets/profile_square.jpg).
@@ -168,27 +167,10 @@
       dendritic.identity.username = "alex";
       dendritic.identity.passwordFile = "/home/alex/.config/dendritic/identity/login.password";
 
-      # Windows dual-boot: IoT Enterprise LTSC (bloatless). Partitions already
-      # carved (ESP→nixos→windows→wininstall→swap→nixinstall). Bootstrap
-      # downloads ISO → wininstall → BootNext silent Setup → LBA windows part.
-      dendritic.windows.enable = true;
-      dendritic.windows.autoBootstrap = true;
-      # Sword 15 A11UD: pin NVIDIA notebook INF tree; drop Intel/MSI packs into
-      # /var/cache/dendritic-windows/drivers-extra when CDN fetchurl is blocked.
-      dendritic.windows.drivers.enable = true;
-      dendritic.windows.drivers.packs = [
-        {
-          name = "nvidia-notebook";
-          url = "https://us.download.nvidia.com/Windows/572.60/572.60-notebook-win10-win11-64bit-international-dch-whql.exe";
-          sha256 = "1c6i92x71ygz7g9677xaxby2rbha60hk1xf7pyg293953yf8wkvw";
-        }
-        # MSI Sword keyboard backlight: ACPI MSI0007 (ssps2.inf) + SteelSeries Engine /S.
-        {
-          name = "steelseries-engine";
-          url = "https://download.msi.com/uti_exe/nb/SteelSeriesEngine3.19.2Setup_3.19.2_0xeec30749.zip";
-          sha256 = "1w5x3p8ly685983xvll0wwz1ndcg8fgbc9m638vabiaw7qkm7kqs";
-        }
-      ];
+      # Windows dual-boot retired. NTFS windows/wininstall partitions stay
+      # until a later disko/reinstall grow of nixos. finalize must not run
+      # (it re-pinned leftover Linux Boot Manager every boot of gen 108).
+      dendritic.windows.enable = false;
 
       # NVIDIA drm for Xwayland/offload. videoDrivers pulls in the driver even
       # though niri itself is a native Wayland compositor on Intel.
@@ -285,7 +267,6 @@
       '';
 
       environment.systemPackages = with pkgs; [
-        heroic
         vesktop
         git
         android-tools
@@ -302,9 +283,8 @@
         kdePackages.partitionmanager # full partition manager
         # Interactive Yes/No for keyboard-backlight probe cycles.
         (import ./kbd-bl-ask.nix { inherit pkgs; })
-        # NOTE: cursor + antigravity are installed via Home Manager
-        # (dendritic.apps.cursor/antigravity → the FHS builds on Linux), so they
-        # are intentionally NOT listed here to avoid a non-FHS PATH duplicate.
+        # NOTE: cursor is installed via Home Manager (dendritic.apps.cursor).
+        # Do not list it here — a second PATH entry would shadow HM.
         # niri plumbing pkgs come from modules/apps/niri.nix.
       ];
 
@@ -349,11 +329,6 @@
 
         dendritic.apps.ghostty.enable = true;
         dendritic.apps.cursor.enable = true;
-        dendritic.apps.antigravity.enable = true;
-        dendritic.apps.zed.enable = true;
-        dendritic.apps.zed.localAgent.enable = true;
-        dendritic.apps.zed.localAgent.provider = "llama.cpp";
-        dendritic.apps.zed.localAgent.apiUrl = "http://127.0.0.1:8080";
         dendritic.apps.beeper.enable = true;
         dendritic.apps.pass.enable = true;
         dendritic.apps.pass.fingerprint = "80AB4D8EFE29CE2ABD3BD0445C04154FC8950A8B";
@@ -377,9 +352,7 @@
         # niri user config: terminal → ghostty, launcher → fuzzel.
         dendritic.apps.niri.enable = true;
         dendritic.apps.niri.terminal = "ghostty";
-
-        dendritic.local-ai.enable = true;
-        dendritic.local-ai.defaultLocalModel = "qwen2.5-coder:3b";
+        dendritic.apps.heroic.enable = true;
 
         programs.nh = {
           enable = true;

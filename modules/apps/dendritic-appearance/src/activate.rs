@@ -5,18 +5,24 @@ use std::process::Command;
 
 use crate::state::{self, Variant};
 
-pub fn activate(variant: Variant) -> Result<(), String> {
+/// Fast-activate a prebuilt profile / NixOS specialisation.
+///
+/// `specialise` is only true for explicit `set` / `toggle` / `apply`.
+/// Supervise reconcile stays on the hot layer so it cannot loop
+/// `switch-to-configuration` every poll.
+pub fn activate(variant: Variant, specialise: bool) -> Result<(), String> {
     #[cfg(target_os = "macos")]
     {
+        let _ = specialise;
         return activate_darwin_prebuilt(variant);
     }
     #[cfg(target_os = "linux")]
     {
-        return activate_nixos_specialisation(variant);
+        return activate_nixos_specialisation(variant, specialise);
     }
     #[cfg(not(any(target_os = "macos", target_os = "linux")))]
     {
-        let _ = variant;
+        let _ = (variant, specialise);
         Ok(())
     }
 }
@@ -68,7 +74,11 @@ fn activate_darwin_prebuilt(variant: Variant) -> Result<(), String> {
 }
 
 #[cfg(target_os = "linux")]
-fn activate_nixos_specialisation(variant: Variant) -> Result<(), String> {
+fn activate_nixos_specialisation(variant: Variant, specialise: bool) -> Result<(), String> {
+    if !specialise {
+        return Ok(());
+    }
+
     let uid = Command::new("id")
         .arg("-u")
         .output()
@@ -76,23 +86,35 @@ fn activate_nixos_specialisation(variant: Variant) -> Result<(), String> {
         .and_then(|o| String::from_utf8(o.stdout).ok())
         .and_then(|s| s.trim().parse::<u32>().ok())
         .unwrap_or(1);
-    if uid != 0 {
-        return Ok(());
-    }
 
     let name = variant.as_str();
+    // Prefer the default system profile so we always switch the *base*
+    // generation's light/dark specs (not a nested spec of the current one).
     let candidates = [
-        format!("/run/current-system/specialisation/{name}/bin/switch-to-configuration"),
         format!("/nix/var/nix/profiles/system/specialisation/{name}/bin/switch-to-configuration"),
+        format!("/run/current-system/specialisation/{name}/bin/switch-to-configuration"),
     ];
     for bin in candidates {
         let p = Path::new(&bin);
         if p.is_file() {
             eprintln!("dendritic-appearance: specialisation {name} (no rebuild)");
-            let st = Command::new(p).arg("test").status().map_err(|e| e.to_string())?;
+            let st = if uid == 0 {
+                Command::new(p).arg("test").status()
+            } else {
+                Command::new("sudo")
+                    .arg("-n")
+                    .arg(p)
+                    .arg("test")
+                    .status()
+            }
+            .map_err(|e| e.to_string())?;
             if st.success() {
                 return Ok(());
             }
+            eprintln!(
+                "dendritic-appearance: specialisation {name} failed ({})",
+                st.code().unwrap_or(-1)
+            );
         }
     }
     Ok(())

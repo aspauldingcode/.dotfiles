@@ -26,7 +26,19 @@
       ++ lib.optionals (!isDarwin) [
         pkgs.swaybg
         pkgs.procps
+        pkgs.sudo
       ];
+      mkMode =
+        variant:
+        pkgs.writeShellApplication {
+          name = "${variant}mode";
+          runtimeInputs = [ appearancePkg ];
+          text = ''
+            exec ${appearanceBin} set ${variant}
+          '';
+        };
+      darkmode = mkMode "dark";
+      lightmode = mkMode "light";
       appearancePkg = pkgs.symlinkJoin {
         name = "dendritic-appearance";
         paths = [ raw ];
@@ -43,7 +55,8 @@
               scale
             ]
             ++ lib.optionals (packPath != null) [
-              "--set-default"
+              # --set so a stale login env cannot keep the previous pack.
+              "--set"
               "DENDRITIC_WALLPAPER_PACK"
               (toString packPath)
             ]
@@ -87,7 +100,11 @@
       config = lib.mkIf cfg.enable (
         lib.mkMerge [
           {
-            home.packages = [ appearancePkg ];
+            home.packages = [
+              appearancePkg
+              darkmode
+              lightmode
+            ];
             home.sessionVariables = {
               DENDRITIC_WALLPAPER_PACK = lib.mkIf (packPath != null) (toString packPath);
               DENDRITIC_WALLPAPER_SCALE = scale;
@@ -291,6 +308,28 @@
           appearancePkg
           pkgs.lutgen
           pkgs.gowall
+          (pkgs.writeShellApplication {
+            name = "darkmode";
+            runtimeInputs = [ appearancePkg ];
+            text = ''
+              wrapped="/etc/profiles/per-user/''${USER:-alex}/bin/dendritic-appearance"
+              if [ -x "$wrapped" ]; then
+                exec "$wrapped" set dark
+              fi
+              exec ${lib.getExe appearancePkg} set dark
+            '';
+          })
+          (pkgs.writeShellApplication {
+            name = "lightmode";
+            runtimeInputs = [ appearancePkg ];
+            text = ''
+              wrapped="/etc/profiles/per-user/''${USER:-alex}/bin/dendritic-appearance"
+              if [ -x "$wrapped" ]; then
+                exec "$wrapped" set light
+              fi
+              exec ${lib.getExe appearancePkg} set light
+            '';
+          })
         ];
       };
     };

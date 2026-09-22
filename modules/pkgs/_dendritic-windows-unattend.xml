@@ -178,7 +178,7 @@
         <SynchronousCommand wcm:action="add">
           <Order>9</Order>
           <CommandLine>shutdown /r /t 15 /f /c "dendritic: specialize done, returning to NixOS"</CommandLine>
-          <Description>Reboot to NixOS (BootOrder stays systemd-boot-first)</Description>
+          <Description>Reboot to NixOS (BootOrder stays NixOS-bootloader-first)</Description>
         </SynchronousCommand>
       </FirstLogonCommands>
     </component>

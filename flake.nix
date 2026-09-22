@@ -89,14 +89,19 @@
 
     # WWN-MCP: stdio RAG for the Wawona org (mcp-nixos host model).
     # Local checkout so mba picks up corpus.toml sibling paths + tip WIP.
-    wwn-mcp.url = "path:/Users/8amps/Wawona/wwn-mcp";
+    wwn-mcp.url = "path:/home/alex/src/wwn-mcp";
 
     # GhidraVibe: local stdio MCP (ghidra / vibe / rag). No public URL.
-    ghidra-vibe.url = "path:/Users/8amps/GhidraVibe";
+    # sliceanddice uses a stub; mba keeps ~/GhidraVibe.
+    ghidra-vibe.url = "path:/home/alex/src/ghidra-vibe-stub";
 
     # WallpaperKit (Tahoe allDisplays + Your Photos catalog). Local checkout
     # so mba picks up the C ABI dylib without waiting on a GitHub fetch.
-    macos-wallpaper-daemon-rse.url = "path:/Users/8amps/src/macos-wallpaper-daemon-rse";
+    # Linux only needs the input to exist (overlay is Darwin-only).
+    macos-wallpaper-daemon-rse = {
+      url = "path:/home/alex/src/macos-wallpaper-daemon-rse-stub";
+      flake = false;
+    };
 
     # Clean-room Rust `phoon` CLI (ASCII moon phase). Own nixpkgs +
     # wwn-toolchain — do not follow 26.05; the recipe targets the
