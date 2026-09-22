@@ -7,9 +7,8 @@
 # muddy.
 #
 # Rocket League (Epic `Sugar`) has no in-game DLSS. Do NOT wrap it with
-# gamescope: Heroic nests gamescope + gamemoderun + umu-run and gamescope
-# dies with `invalid option -- 'A'` before the game starts. Use in-game
-# render scale for FPS on RL; keep PRIME so it still hits the 3050 Ti.
+# gamescope on niri: nested gamescope-wl ABRTs the compositor (status=6).
+# Scale via TASystemSettings ResX/ResY + ScreenPercentage; keep PRIME.
 #
 # Heroic rewrites ~/.config/heroic/config.json. Merge keys only — never
 # home.file force-replace. Leave Heroic's own GE-Proton tree in place;

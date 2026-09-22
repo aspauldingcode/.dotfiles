@@ -21,6 +21,23 @@
         (final: prev: {
           electron_39 = prev.electron-bin;
         })
+        # nvidia-open 610.57.04 on mainline (Linux 7.2 strncpy + GSP sync fixes).
+        (final: prev: {
+          linuxPackages_latest = prev.linuxPackages_latest.extend (
+            _self: super: {
+              nvidiaPackages = super.nvidiaPackages // {
+                open_610 = super.nvidiaPackages.mkDriver {
+                  version = "610.57.04";
+                  sha256_64bit = "sha256-suk1xmuDuwDAyFe8jg7g/VLekoa0DJzB7sKafOfrEW0=";
+                  sha256_aarch64 = "sha256-QCefrMBCmpOwuOyXv1k5Gj0iB2CYlPgnG3JToUw/j54=";
+                  openSha256 = "sha256-rQHOOOY4KL92Ww3KDwh+j4eGU7oNAH8LutZC5wmFnPo=";
+                  settingsSha256 = "sha256-ZEMo8I8Zc2Tq6RVDNYpAH+f094dUaZiBqO+5f6lIjRI=";
+                  persistencedSha256 = "sha256-aXmD2VY1RLlgAnlHhOUMWzvMyhI6JTClcFLm4imF/mA=";
+                };
+              };
+            }
+          );
+        })
       ];
       system.stateVersion = "24.11";
 
@@ -42,10 +59,7 @@
       boot.loader.systemd-boot.enable = true;
       boot.loader.systemd-boot.configurationLimit = 5;
 
-      # Latest mainline kernel from nixpkgs 26.05 (>= 7.0). The NVIDIA open
-      # kernel modules track new kernels closely, so this builds cleanly on
-      # Ampere; if a future bump ever breaks the nvidia module, pin back to
-      # `pkgs.linuxPackages`.
+      # Mainline kernel; nvidia package comes from open_610 overlay above.
       boot.kernelPackages = pkgs.linuxPackages_latest;
 
       # Hybrid graphics: Intel Tiger Lake UHD (PCI:0:2:0) + NVIDIA RTX 3050 Ti
@@ -65,12 +79,7 @@
         powerManagement.enable = true;
         powerManagement.finegrained = false;
         # dynamicBoost/nvidia-powerd fights quiet EPP/RAPL — leave default (off).
-        # Ampere (RTX 30xx) → the open kernel modules are recommended and build
-        # cleanly against mainline kernels; the proprietary blob lags new kernels.
-        #
-        # GSP PFM_REQ_HNDLR_STATE_SYNC_CALLBACK asserts on 595.71.05 are fixed in
-        # open modules ≥610.43.02 (NVIDIA/open-gpu-kernel-modules#1145). Stay on
-        # nixpkgs default until that lands; do not local-patch unless a hard freeze.
+        package = config.boot.kernelPackages.nvidiaPackages.open_610;
         open = true;
         nvidiaSettings = true;
         prime = {
@@ -183,11 +192,11 @@
       #   (class 0x11). It is NOT a GUD device; GUD only matches 16D0:10A9 /
       #   1D50:614D. Billboard appears when a DP-Alt dongle fails negotiation
       #   (or is hubbed — Alt Mode never works through a USB hub).
-      # - Working USB display path: Silicon Motion InstantView 090c:0768 via
-      #   EVDI + SMIUSBDisplayManager (dendritic.apps.instantview.linux).
+      # - InstantView (090c:0768 / EVDI) disabled: nixpkgs EVDI 1.14.15 does not
+      #   build against Linux 7.2. Re-enable after EVDI ≥1.15.0 lands in lock.
       # - Native external video: HDMI (i915 HDMI-A-1). Preload gud for any
       #   real GUD-protocol panel; it will not bind the AlgolTek billboard.
-      dendritic.apps.instantview.linux.enable = true;
+      dendritic.apps.instantview.linux.enable = false;
 
       console.keyMap = "us";
       services.xserver.xkb = {

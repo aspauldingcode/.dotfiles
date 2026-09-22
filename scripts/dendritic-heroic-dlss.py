@@ -6,8 +6,8 @@ only the keys this module owns. GlobalConfig reads config.json
 `defaultSettings`; setSetting also mirrors into electron-store
 store/config.json `settings`. Per-game overrides live under GamesConfig/.
 
-Do not inject gamescope wrappers: Heroic nests gamescope with gamemoderun
-and umu-run, which breaks argv parsing (`invalid option -- 'A'`).
+Do not inject gamescope wrappers on niri: nested gamescope-wl has ABRTed
+the compositor. Strip bare gamescope entries from Rocket League instead.
 """
 from __future__ import annotations
 
@@ -103,7 +103,8 @@ def strip_gamescope(options: Any) -> list[dict[str, str]]:
         existing_exe = item.get("exe")
         if not isinstance(existing_exe, str) or not existing_exe:
             continue
-        if Path(existing_exe).name == "gamescope":
+        name = Path(existing_exe).name
+        if name in ("gamescope", "dendritic-rl-fsr", "dendritic-rl-fsr.sh"):
             continue
         existing_args = item.get("args", "")
         out.append({"exe": existing_exe, "args": str(existing_args)})
@@ -168,7 +169,7 @@ def main() -> int:
     parser.add_argument(
         "--strip-gamescope",
         action="store_true",
-        help="Remove gamescope entries from wrapperOptions (Rocket League).",
+        help="Remove gamescope / dendritic-rl-fsr from wrapperOptions (Rocket League).",
     )
     args = parser.parse_args()
 
