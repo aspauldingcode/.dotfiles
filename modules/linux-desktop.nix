@@ -54,6 +54,8 @@
           ];
 
           services.printing.enable = true;
+          services.printing.startWhenNeeded = lib.mkDefault true;
+          services.printing.browsed.enable = lib.mkDefault false;
           security.rtkit.enable = true;
           services.pipewire = {
             enable = true;
@@ -64,7 +66,7 @@
 
           # WirePlumber expects BlueZ when the adapter is present.
           hardware.bluetooth.enable = true;
-          hardware.bluetooth.powerOnBoot = true;
+          hardware.bluetooth.powerOnBoot = lib.mkDefault false;
           services.blueman.enable = true;
 
           services.openssh.enable = lib.mkDefault true;

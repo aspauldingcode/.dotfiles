@@ -236,6 +236,9 @@ let
     env = {
       PATH = agentDevicePath;
       AGENT_DEVICE_NO_UPDATE_NOTIFIER = "1";
+      # vphone lab profile + guest-ip resolution
+      WAWONA_ROOT = "${home}/Wawona/Wawona";
+      SSH_ASKPASS_REQUIRE = "never";
     }
     // lib.optionalAttrs pkgs.stdenv.isDarwin {
       DEVELOPER_DIR = "/Applications/Xcode.app/Contents/Developer";
@@ -353,11 +356,13 @@ let
     }
     // lib.optionalAttrs cfg.guildforge.enable { guildforge = guildforgeMcpServer; };
 
+  # No agent-device here: Cursor merges User (~/.cursor/mcp.json) + project
+  # mcp.json. Listing it in both shows two "agent-device" rows (User + Wawona).
+  # Global heavy set already installs it once via userMcpServers.
   wawonaMcpServers =
     leanMcpServers
     // instrumentsMcpServer
-    // lib.optionalAttrs cfg.lldb.enable { lldb = lldbMcpServer; }
-    // lib.optionalAttrs cfg.agentDevice.enable { agent-device = agentDeviceMcpServer; };
+    // lib.optionalAttrs cfg.lldb.enable { lldb = lldbMcpServer; };
 
   userMcpServers = heavyMcpServers;
 

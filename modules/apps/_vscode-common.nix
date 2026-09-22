@@ -79,9 +79,13 @@ in
     profiles.default.userSettings = {
       "cursor.composer.enabled" = false;
       "cursor.composer.shouldChimeAfterChatFinishes" = true;
-      # Prefer allowlist/approval path over agent sandbox. Electron still sets
-      # NoNewPrivs (sudo stays broken); use `dendritic-os-switch` for rebuilds.
+      # Prefer allowlist/approval over Cursor's terminal sandbox helper.
       "cursor.terminal.useLegacyTerminalTool" = true;
+      # NixOS setuid sudo is /run/wrappers/bin/sudo. Cursor/Electron PATH
+      # often puts /run/current-system/sw/bin first (store sudo, no setuid).
+      "terminal.integrated.env.linux" = {
+        PATH = "/run/wrappers/bin:\${env:PATH}";
+      };
       "files.readonlyFromPermissions" = true;
       "window.titleBarStyle" = "custom";
       "window.autoDetectColorScheme" = true;

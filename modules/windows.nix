@@ -282,7 +282,7 @@
           description = ''
             After extracting Setup media to wininstall, reboot once via EFI
             BootNext into silent Windows Setup (no USB). Setup installs to the
-            windows partition; FirstLogon then reboots back to systemd-boot.
+            windows partition; FirstLogon then reboots back to the NixOS bootloader.
             Retries (media already ready) do not auto-reboot.
           '';
         };
