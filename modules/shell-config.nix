@@ -393,6 +393,10 @@
       # hot-writes ~/.config/starship.toml from ~/.colors.toml via
       # dendritic-appearance — same live path as Ghostty + Yazi.
       stylix.targets.starship.enable = lib.mkForce false;
+      # Live writers replace the HM symlink with a regular file; force so the
+      # next switch can re-seed, then appearance reconcile rewrites the palette.
+      xdg.configFile."starship.toml".force = true;
+      xdg.configFile."yazi/theme.toml".force = true;
 
       programs.starship = {
         enable = true;
