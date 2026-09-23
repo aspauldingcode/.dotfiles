@@ -6,6 +6,7 @@
 
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::palette::load_palette;
 use crate::state;
@@ -17,6 +18,12 @@ fn theme_path() -> PathBuf {
     state::home_dir()
         .map(|h| h.join(".config/ghostty/themes/dendritic-wallpaper"))
         .unwrap_or_else(|| PathBuf::from("dendritic-wallpaper"))
+}
+
+fn reload_tickle_path() -> PathBuf {
+    state::home_dir()
+        .map(|h| h.join(".config/ghostty/dendritic-reload"))
+        .unwrap_or_else(|| PathBuf::from("dendritic-reload"))
 }
 
 fn req<'a>(map: &'a std::collections::HashMap<String, String>, key: &str) -> Result<&'a str, String> {
@@ -84,25 +91,46 @@ palette = 15=#{b07}
     if let Some(parent) = dest.parent() {
         std::fs::create_dir_all(parent).map_err(|e| format!("mkdir {}: {e}", parent.display()))?;
     }
-    // Replace HM store symlink if present (same pattern as ~/.colors.toml).
-    let _ = std::fs::remove_file(&dest);
-    std::fs::write(&dest, body).map_err(|e| format!("write {}: {e}", dest.display()))?;
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::PermissionsExt;
-        let _ = std::fs::set_permissions(&dest, std::fs::Permissions::from_mode(0o644));
+    let unchanged = std::fs::read_to_string(&dest).map(|e| e == body).unwrap_or(false);
+    if !unchanged {
+        // Replace HM store symlink if present (same pattern as ~/.colors.toml).
+        let _ = std::fs::remove_file(&dest);
+        std::fs::write(&dest, body).map_err(|e| format!("write {}: {e}", dest.display()))?;
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            let _ = std::fs::set_permissions(&dest, std::fs::Permissions::from_mode(0o644));
+        }
     }
     Ok(dest)
 }
 
+fn tickle_reload_watch() {
+    let tickle = reload_tickle_path();
+    if let Some(parent) = tickle.parent() {
+        let _ = std::fs::create_dir_all(parent);
+    }
+    let ts = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|d| d.as_millis())
+        .unwrap_or(0);
+    let _ = std::fs::write(&tickle, format!("{ts}\n"));
+}
+
 pub fn reload() {
-    // Ghostty (macOS app + Linux) reloads config on SIGUSR2.
-    let _ = Command::new("pkill")
-        .args(["-USR2", "-x", "Ghostty"])
-        .status();
-    let _ = Command::new("pkill")
+    tickle_reload_watch();
+    // Prefer absolute macOS pkill; Nix Ghostty.app binary is lowercase `ghostty`.
+    let _ = Command::new("/usr/bin/pkill")
         .args(["-USR2", "-x", "ghostty"])
         .status();
+    let _ = Command::new("/usr/bin/pkill")
+        .args(["-USR2", "-x", "Ghostty"])
+        .status();
+    let _ = Command::new("/usr/bin/pkill")
+        .args(["-USR2", "-f", "/MacOS/ghostty$"])
+        .status();
+    // Linux binary name.
+    let _ = Command::new("pkill").args(["-USR2", "-x", "ghostty"]).status();
 }
 
 pub fn apply_from_colors(colors_path: &Path) -> Result<(), String> {

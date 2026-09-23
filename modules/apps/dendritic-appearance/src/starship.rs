@@ -10,20 +10,22 @@ use std::path::{Path, PathBuf};
 use crate::palette::load_palette;
 use crate::state;
 
-fn config_path() -> PathBuf {
+fn config_paths() -> Vec<PathBuf> {
+    let mut out = Vec::new();
     if let Ok(p) = std::env::var("DENDRITIC_STARSHIP_LIVE") {
-        return PathBuf::from(p);
+        out.push(PathBuf::from(p));
+        return out;
     }
-    // Prefer STARSHIP_CONFIG when it already points at the live dendritic path.
-    if let Ok(p) = std::env::var("STARSHIP_CONFIG") {
-        let pb = PathBuf::from(&p);
-        if p.contains("dendritic") {
-            return pb;
-        }
+    if let Some(home) = state::home_dir() {
+        // Primary: STARSHIP_CONFIG (dendritic live path).
+        out.push(home.join(".config/dendritic/starship.toml"));
+        // Also refresh the HM default path so shells without STARSHIP_CONFIG
+        // (opened before the last switch) still pick up light/dark flips.
+        out.push(home.join(".config/starship.toml"));
+    } else {
+        out.push(PathBuf::from("starship.toml"));
     }
-    state::home_dir()
-        .map(|h| h.join(".config/dendritic/starship.toml"))
-        .unwrap_or_else(|| PathBuf::from("starship.toml"))
+    out
 }
 
 fn req<'a>(map: &'a std::collections::HashMap<String, String>, key: &str) -> Result<&'a str, String> {
@@ -130,24 +132,27 @@ yellow = "{b0a}"
 "##
     );
 
-    let dest = config_path();
-    if let Some(parent) = dest.parent() {
-        std::fs::create_dir_all(parent).map_err(|e| format!("mkdir {}: {e}", parent.display()))?;
-    }
-    // Skip rewrite when unchanged (supervise poll).
-    if let Ok(existing) = std::fs::read_to_string(&dest) {
-        if existing == body {
-            return Ok(dest);
+    let paths = config_paths();
+    let primary = paths[0].clone();
+    for dest in &paths {
+        if let Some(parent) = dest.parent() {
+            std::fs::create_dir_all(parent)
+                .map_err(|e| format!("mkdir {}: {e}", parent.display()))?;
+        }
+        if let Ok(existing) = std::fs::read_to_string(dest) {
+            if existing == body {
+                continue;
+            }
+        }
+        let _ = std::fs::remove_file(dest);
+        std::fs::write(dest, &body).map_err(|e| format!("write {}: {e}", dest.display()))?;
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            let _ = std::fs::set_permissions(dest, std::fs::Permissions::from_mode(0o644));
         }
     }
-    let _ = std::fs::remove_file(&dest);
-    std::fs::write(&dest, body).map_err(|e| format!("write {}: {e}", dest.display()))?;
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::PermissionsExt;
-        let _ = std::fs::set_permissions(&dest, std::fs::Permissions::from_mode(0o644));
-    }
-    Ok(dest)
+    Ok(primary)
 }
 
 pub fn apply_from_colors(colors_path: &Path) -> Result<(), String> {

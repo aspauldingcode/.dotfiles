@@ -25,6 +25,7 @@ pub fn reconcile() -> Result<MachineStatus, String> {
             let _ = crate::ghostty::apply_from_colors(&colors);
             let _ = crate::yazi::apply_from_colors(&colors);
             let _ = crate::starship::apply_from_colors(&colors);
+            let _ = crate::fastfetch::apply_from_colors(&colors);
             let _ = crate::vesktop::apply_from_colors(&colors);
             let _ = crate::spotify::apply_from_colors(&colors);
             let status = MachineStatus {
@@ -127,10 +128,12 @@ fn apply_global(variant: Variant, wallpaper_target: &str, specialise: bool) -> R
 
     apply_hot_colors();
 
-    // Prebuilt / specialisation (best-effort; hot layer already applied)
+    // Prebuilt / specialisation (best-effort). Darwin root prebuilt swaps can
+    // restore store-seeded Ghostty/Starship files — re-apply hot layer after.
     if let Err(e) = activate::activate(variant, specialise) {
         eprintln!("dendritic-appearance: activate warning: {e}");
     }
+    apply_hot_colors();
 
     state::write_applied_variant(variant)?;
     Ok(())
@@ -143,6 +146,7 @@ fn apply_hot_colors() {
     let _ = crate::ghostty::apply_from_colors(&colors);
     let _ = crate::yazi::apply_from_colors(&colors);
     let _ = crate::starship::apply_from_colors(&colors);
+    let _ = crate::fastfetch::apply_from_colors(&colors);
     let _ = crate::qt::apply_from_colors(&colors);
     let _ = crate::ide::patch_from_colors(&colors);
     let _ = crate::vesktop::apply_from_colors(&colors);

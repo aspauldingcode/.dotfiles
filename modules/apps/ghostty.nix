@@ -13,16 +13,19 @@
         text = ''
           set -eu
 
-          # Only attempt reload when Ghostty is running.
-          if ! /usr/bin/pgrep -x "Ghostty" >/dev/null 2>&1; then
+          # Nix Ghostty.app binary is `ghostty` (lowercase); older builds used `Ghostty`.
+          running=0
+          /usr/bin/pgrep -x ghostty >/dev/null 2>&1 && running=1
+          /usr/bin/pgrep -x Ghostty >/dev/null 2>&1 && running=1
+          /usr/bin/pgrep -f '/MacOS/ghostty$' >/dev/null 2>&1 && running=1
+          if [ "$running" -eq 0 ]; then
             exit 0
           fi
 
-          # Ghostty supports SIGUSR2 config reload (no Accessibility / osascript).
-          if /usr/bin/pkill -USR2 -x "Ghostty" >/dev/null 2>&1; then
-            exit 0
-          fi
-          echo "ghostty-reload: SIGUSR2 failed (Ghostty running but signal ignored?)" >&2
+          # SIGUSR2 reloads config + theme files.
+          /usr/bin/pkill -USR2 -x ghostty >/dev/null 2>&1 || true
+          /usr/bin/pkill -USR2 -x Ghostty >/dev/null 2>&1 || true
+          /usr/bin/pkill -USR2 -f '/MacOS/ghostty$' >/dev/null 2>&1 || true
           exit 0
         '';
       };
@@ -281,6 +284,8 @@
             WatchPaths = [
               "${config.xdg.configHome}/ghostty/config"
               "${config.home.homeDirectory}/Library/Application Support/com.mitchellh.ghostty/config"
+              "${config.xdg.configHome}/ghostty/themes/dendritic-wallpaper"
+              "${config.xdg.configHome}/ghostty/dendritic-reload"
               "${config.xdg.configHome}/ghostty/shaders/cursor_tail.glsl"
             ];
             StandardOutPath = "${config.home.homeDirectory}/.cache/ghostty-hot-reload.log";

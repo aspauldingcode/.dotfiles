@@ -531,6 +531,7 @@ pub fn apply(variant: Variant, target: &str) -> Result<(), String> {
     let _ = crate::ghostty::apply_from_colors(&colors_dst);
     let _ = crate::yazi::apply_from_colors(&colors_dst);
     let _ = crate::starship::apply_from_colors(&colors_dst);
+    let _ = crate::fastfetch::apply_from_colors(&colors_dst);
     let _ = crate::qt::apply_from_colors(&colors_dst);
     let _ = crate::vesktop::apply_from_colors(&colors_dst);
     let _ = crate::spotify::apply_from_colors(&colors_dst);

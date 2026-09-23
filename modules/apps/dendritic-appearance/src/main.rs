@@ -11,6 +11,7 @@ mod wallpaperkit;
 
 mod activate;
 mod avatar;
+mod fastfetch;
 mod ghostty;
 mod ide;
 mod machine;

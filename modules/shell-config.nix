@@ -395,9 +395,11 @@
       # points at that file so HM's seed never fights the live writer.
       stylix.targets.starship.enable = lib.mkForce false;
 
-      # Drop live yazi theme before HM link checks (appearance rewrites after).
-      home.activation.dendriticClearLiveYaziTheme = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
-        $DRY_RUN_CMD rm -f "${config.xdg.configHome}/yazi/theme.toml"
+      # Drop live writers before HM link checks (appearance rewrites after).
+      home.activation.dendriticClearLiveThemes = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+        $DRY_RUN_CMD rm -f \
+          "${config.xdg.configHome}/yazi/theme.toml" \
+          "${config.xdg.configHome}/starship.toml"
       '';
 
       programs.starship = {
