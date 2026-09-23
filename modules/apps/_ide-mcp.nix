@@ -394,7 +394,7 @@ in
             ghidraVibeMcpPkg
           ];
 
-      programs.zed-editor.userSettings.context_servers = lib.mkIf zedEnabled zedContextServers;
+    programs.zed-editor.userSettings.context_servers = lib.mkIf zedEnabled zedContextServers;
 
     home.file =
       lib.optionalAttrs cursorEnabled (ideMcpFiles ".cursor")
