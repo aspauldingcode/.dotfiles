@@ -387,13 +387,14 @@ in
       ++ lib.optionals cursorEnabled [
         pkgs.nodejs
       ]
-      ++ lib.optionals (
-        (cursorEnabled || antigravityEnabled) && cfg.ghidra.enable && ghidraVibeMcpPkg != null
-      ) [
-        ghidraVibeMcpPkg
-      ];
+      ++
+        lib.optionals
+          ((cursorEnabled || antigravityEnabled) && cfg.ghidra.enable && ghidraVibeMcpPkg != null)
+          [
+            ghidraVibeMcpPkg
+          ];
 
-    programs.zed-editor.userSettings.context_servers = lib.mkIf zedEnabled zedContextServers;
+      programs.zed-editor.userSettings.context_servers = lib.mkIf zedEnabled zedContextServers;
 
     home.file =
       lib.optionalAttrs cursorEnabled (ideMcpFiles ".cursor")
