@@ -22,6 +22,8 @@ pub fn reconcile() -> Result<MachineStatus, String> {
             // seed unless we rewrite them even while appearance is already
             // synced. Writers no-op when bytes match (no Ghostty USR2).
             let colors = colors_toml_path();
+            let _ = crate::ghostty::apply_from_colors(&colors);
+            let _ = crate::yazi::apply_from_colors(&colors);
             let _ = crate::vesktop::apply_from_colors(&colors);
             let _ = crate::spotify::apply_from_colors(&colors);
             let status = MachineStatus {
@@ -138,6 +140,7 @@ fn apply_global(variant: Variant, wallpaper_target: &str) -> Result<(), String> 
 fn apply_hot_colors() {
     let colors = colors_toml_path();
     let _ = crate::ghostty::apply_from_colors(&colors);
+    let _ = crate::yazi::apply_from_colors(&colors);
     let _ = crate::qt::apply_from_colors(&colors);
     let _ = crate::ide::patch_from_colors(&colors);
     let _ = crate::vesktop::apply_from_colors(&colors);

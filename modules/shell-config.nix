@@ -57,6 +57,8 @@
           pkgs.nh
           pkgs.yazi
           pkgs.fh # FlakeHub CLI (Determinate Systems)
+          pkgs.jflap
+          pkgs.texliveFull
           sudoAskpass
           dendriticOsSwitch
         ];
@@ -172,6 +174,8 @@
         pkgs.nh
         pkgs.yazi
         pkgs.fh # FlakeHub CLI (Determinate Systems)
+        pkgs.jflap
+        pkgs.texliveFull
         inputs.determinate-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
       ];
 
@@ -416,6 +420,11 @@
       # Yazi: `y` wrapper lives in programs.zsh.initContent (not HM's stock
       # snippet) so cwd-file NUL handling works with zoxide-as-cd. Pin
       # shellWrapperName — stateVersion < 26.05 defaults to "yy".
+      # Own the theme (not stylix.targets.yazi): wallpaper rotation hot-writes
+      # ~/.config/yazi/theme.toml from ~/.colors.toml via dendritic-appearance,
+      # same pattern as Ghostty's dendritic-wallpaper theme.
+      stylix.targets.yazi.enable = lib.mkForce false;
+
       programs.yazi = {
         enable = true;
         enableZshIntegration = false; # Custom `y` in zsh.initContent above
@@ -427,6 +436,169 @@
             sort_by = "natural";
           };
         };
+        # Seed until first wallpaper apply (matches live colors.toml palette).
+        theme =
+          let
+            c = config.lib.stylix.colors.withHashtag;
+          in
+          {
+            mgr = {
+              overall = {
+                bg = c.base00;
+              };
+              cwd = {
+                fg = c.base0C;
+              };
+              find_keyword = {
+                fg = c.base0B;
+                bold = true;
+              };
+              find_position = {
+                fg = c.base0E;
+              };
+              marker_copied = {
+                fg = c.base0B;
+                bg = c.base0B;
+              };
+              marker_cut = {
+                fg = c.base08;
+                bg = c.base08;
+              };
+              marker_selected = {
+                fg = c.base0A;
+                bg = c.base0A;
+              };
+              border_style = {
+                fg = c.base04;
+              };
+              count_copied = {
+                fg = c.base00;
+                bg = c.base0B;
+              };
+              count_cut = {
+                fg = c.base00;
+                bg = c.base08;
+              };
+              count_selected = {
+                fg = c.base00;
+                bg = c.base0A;
+              };
+            };
+            indicator = {
+              current = {
+                bg = c.base02;
+                bold = true;
+              };
+              preview = {
+                bg = c.base02;
+                bold = true;
+              };
+            };
+            tabs = {
+              active = {
+                fg = c.base00;
+                bg = c.base0D;
+                bold = true;
+              };
+              inactive = {
+                fg = c.base0D;
+                bg = c.base01;
+              };
+            };
+            mode = {
+              normal_main = {
+                fg = c.base00;
+                bg = c.base0D;
+                bold = true;
+              };
+              normal_alt = {
+                fg = c.base0D;
+                bg = c.base00;
+              };
+              select_main = {
+                fg = c.base00;
+                bg = c.base0B;
+                bold = true;
+              };
+              select_alt = {
+                fg = c.base0B;
+                bg = c.base00;
+              };
+              unset_main = {
+                fg = c.base00;
+                bg = c.base0F;
+                bold = true;
+              };
+              unset_alt = {
+                fg = c.base0F;
+                bg = c.base00;
+              };
+            };
+            status = {
+              overall = {
+                bg = c.base01;
+                fg = c.base05;
+              };
+              progress_label = {
+                fg = c.base05;
+                bg = c.base00;
+              };
+              progress_normal = {
+                fg = c.base05;
+                bg = c.base00;
+              };
+              progress_error = {
+                fg = c.base08;
+                bg = c.base00;
+              };
+              perm_type = {
+                fg = c.base0D;
+              };
+              perm_read = {
+                fg = c.base0A;
+              };
+              perm_write = {
+                fg = c.base08;
+              };
+              perm_exec = {
+                fg = c.base0B;
+              };
+              perm_sep = {
+                fg = c.base0C;
+              };
+            };
+            filetype.rules = [
+              {
+                mime = "image/*";
+                fg = c.base0C;
+              }
+              {
+                mime = "video/*";
+                fg = c.base0A;
+              }
+              {
+                mime = "audio/*";
+                fg = c.base0A;
+              }
+              {
+                mime = "application/{zip,gzip,tar,bzip,bzip2,7z-compressed,rar,xz}";
+                fg = c.base0E;
+              }
+              {
+                mime = "application/{doc,pdf,rtf,vnd.*}";
+                fg = c.base0B;
+              }
+              {
+                url = "*/";
+                fg = c.base0D;
+                bold = true;
+              }
+              {
+                mime = "*";
+                fg = c.base05;
+              }
+            ];
+          };
         # Use the nixpkgs-packaged plugin instead of fetching the yazi-rs
         # `main` branch tarball, whose hash drifts and broke every HM build.
         plugins = {
@@ -461,6 +633,8 @@
         comma
         manix
         fd
+        jflap
+        texliveFull
       ];
     };
 }

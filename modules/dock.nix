@@ -3,10 +3,19 @@
     {
       config,
       lib,
-      pkgs,
       ...
     }:
     {
+      options.dendritic.macosSettings.enable =
+        lib.mkEnableOption ''
+          Apply nix-darwin Dock/Finder defaults and let dendritic-appearance
+          drive wallpaper, light/dark, accent tint, and lock-screen Idle.
+          Set false to experiment in System Settings without being overwritten.
+        ''
+        // {
+          default = true;
+        };
+
       options.dendritic.dock.apps = lib.mkOption {
         type = lib.types.listOf lib.types.str;
         default = [ ];
@@ -29,46 +38,49 @@
       #   165  Zed (`apps/zed.nix`)
       #   170  Antigravity (`apps/antigravity.nix`)
 
-      config = {
-        # System apps appear first in the dock.
-        dendritic.dock.apps = lib.mkOrder 0 [
-          "/System/Applications/Apps.app"
-          "/System/Applications/System Settings.app"
-        ];
+      config = lib.mkMerge [
+        {
+          # System apps appear first in the dock.
+          dendritic.dock.apps = lib.mkOrder 0 [
+            "/System/Applications/Apps.app"
+            "/System/Applications/System Settings.app"
+          ];
 
-        system = {
-          defaults.dock = {
-            autohide = false;
-            expose-animation-duration = 0.1;
-            minimize-to-application = true;
-            orientation = "bottom";
-            show-recents = false;
-            showhidden = true;
-            wvous-bl-corner = 1;
-            wvous-br-corner = 1;
-            wvous-tl-corner = 1;
-            wvous-tr-corner = 1;
-            show-process-indicators = true;
-            tilesize = 40;
-            persistent-apps = config.dendritic.dock.apps;
+          networking.applicationFirewall = {
+            allowSignedApp = true;
+            allowSigned = true;
           };
+        }
+        (lib.mkIf config.dendritic.macosSettings.enable {
+          system = {
+            defaults.dock = {
+              autohide = false;
+              expose-animation-duration = 0.1;
+              minimize-to-application = true;
+              orientation = "bottom";
+              show-recents = false;
+              showhidden = true;
+              wvous-bl-corner = 1;
+              wvous-br-corner = 1;
+              wvous-tl-corner = 1;
+              wvous-tr-corner = 1;
+              show-process-indicators = true;
+              tilesize = 40;
+              persistent-apps = config.dendritic.dock.apps;
+            };
 
-          startup.chime = false;
-          defaults = {
-            LaunchServices.LSQuarantine = false;
-            finder.CreateDesktop = false;
+            startup.chime = false;
+            defaults = {
+              LaunchServices.LSQuarantine = false;
+              finder.CreateDesktop = false;
 
-            CustomUserPreferences = {
-              "NSGlobalDomain".ApplePersistence = false;
-              "com.apple.sidebarlists".systemitems.ShowAirDrop = true;
+              CustomUserPreferences = {
+                "NSGlobalDomain".ApplePersistence = false;
+                "com.apple.sidebarlists".systemitems.ShowAirDrop = true;
+              };
             };
           };
-        };
-
-        networking.applicationFirewall = {
-          allowSignedApp = true;
-          allowSigned = true;
-        };
-      };
+        })
+      ];
     };
 }

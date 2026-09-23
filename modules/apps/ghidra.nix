@@ -27,11 +27,15 @@
       programs.ghidra-vibe = {
         enable = true;
         # MCP bins only in the profile; GUI still via nix run below.
+        # Analysis JVM is still kept up (LaunchAgent + MCP ensure).
         installEngine = false;
         mcp.enable = true;
+        mcp.keepAnalysisAlive = true;
       };
 
       # Prefer GhidraVibe GUI / helpers over stock pkgs.ghidra.
+      # Do not wrap ghidra-vibe-analysis-ensure here — programs.ghidra-vibe
+      # already puts that bin on PATH (conflicts in home-manager-path).
       home.packages = [
         (pkgs.writeShellScriptBin "ghidra-vibe" ''
           exec ${nixRun} run --no-write-lock-file "${vibeFlake}#default" -- "$@"

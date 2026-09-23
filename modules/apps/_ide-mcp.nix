@@ -1,10 +1,8 @@
 # Shared MCP server definitions for Cursor, Antigravity, VS Code, and Zed.
 #
-# Antigravity enforces a hard ~100-tool ceiling across ALL MCP servers.
-# Heavy servers (instruments≈29, lldb≈28, agent-device≈40, xcodebuild≈24,
-# ghidra≈20) cannot all be enabled there at once. Cursor tolerates more;
-# Antigravity therefore gets a lean default set unless
-# `dendritic.ide.mcp.antigravity.includeHeavy = true`.
+# Cursor and Antigravity share one canonical MCP server map. Keep their
+# generated configurations identical so IDE-specific drift cannot silently
+# remove tools or change commands, paths, or environment variables.
 {
   pkgs,
   lib,
@@ -87,16 +85,6 @@ let
     )
     + ":/usr/bin:/bin:/usr/sbin:/sbin";
 
-  # @guildforge/mcp requires Node >= 24.
-  guildforgePath =
-    lib.makeBinPath [
-      pkgs.nodejs_24
-      pkgs.coreutils
-    ]
-    + ":/usr/bin:/bin";
-
-  npx24Exe = "${pkgs.nodejs_24}/bin/npx";
-
   # macOS-only Xcode MCP wrappers (xctrace / xcodebuild). Not built on Linux.
   xcodebuildMcpPkg =
     if pkgs.stdenv.isDarwin then
@@ -118,57 +106,6 @@ let
       ''
     else
       null;
-
-  # Loads DISCORD_TOKEN + GUILD_ID from (in order):
-  #   1. process env
-  #   2. ~/.config/guildforge/env (pass-materialize)
-  #   3. secretspec / pass (shared vault)
-  guildforgeMcpPkg = pkgs.writeShellScriptBin "guildforge-mcp" ''
-    export PATH="${guildforgePath}:${pkgs.pass}/bin:${pkgs.secretspec}/bin:${pkgs.coreutils}/bin:$PATH"
-    envFile="${cfg.guildforge.envFile}"
-    secretspecToml="${../../home/secretspec.toml}"
-    if [ -r "$envFile" ]; then
-      set -a
-      # shellcheck disable=SC1090
-      . "$envFile"
-      set +a
-    fi
-    if [ -z "''${DISCORD_TOKEN:-}" ] && command -v secretspec >/dev/null 2>&1; then
-      DISCORD_TOKEN="$(secretspec get -f "$secretspecToml" DISCORD_TOKEN 2>/dev/null || true)"
-      export DISCORD_TOKEN
-    fi
-    if [ -z "''${GUILD_ID:-}" ] && command -v secretspec >/dev/null 2>&1; then
-      GUILD_ID="$(secretspec get -f "$secretspecToml" GUILD_ID 2>/dev/null || true)"
-      export GUILD_ID
-    fi
-    if [ -z "''${DISCORD_TOKEN:-}" ] && command -v pass >/dev/null 2>&1; then
-      DISCORD_TOKEN="$(pass show secretspec/shared/default/DISCORD_TOKEN 2>/dev/null | head -n1 | tr -d '[:space:]' || true)"
-      export DISCORD_TOKEN
-    fi
-    if [ -z "''${GUILD_ID:-}" ] && command -v pass >/dev/null 2>&1; then
-      GUILD_ID="$(pass show secretspec/shared/default/GUILD_ID 2>/dev/null | head -n1 | tr -d '[:space:]' || true)"
-      export GUILD_ID
-    fi
-    if [ -z "''${DISCORD_TOKEN:-}" ] || [ -z "''${GUILD_ID:-}" ]; then
-      echo "guildforge-mcp: missing DISCORD_TOKEN/GUILD_ID — run: pass-guildforge-bootstrap" >&2
-      exit 1
-    fi
-    exec ${npx24Exe} -y @guildforge/mcp "$@"
-  '';
-
-  guildforgeBootstrap = pkgs.writeShellApplication {
-    name = "pass-guildforge-bootstrap";
-    runtimeInputs = [
-      pkgs.coreutils
-      pkgs.git
-      pkgs.pass
-      pkgs.gnupg
-      pkgs.bash
-    ];
-    text = ''
-      exec ${pkgs.bash}/bin/bash ${../../scripts/pass-guildforge-bootstrap.sh} "$@"
-    '';
-  };
 
   xcodeMcpEnv = {
     PATH = mcpPath;
@@ -246,29 +183,25 @@ let
   };
 
   # Local stdio GhidraVibe MCP (no public URL; vibe auto-starts mcp-ext).
-  ghidraMcpServer =
-    if ghidraVibeMcpPkg != null then
-      {
-        command = "${ghidraVibeMcpPkg}/bin/ghidra-mcp";
-        args = [ ];
-      }
+  ghidraAnalysisEnsure =
+    if (config.programs.ghidra-vibe.enable or false) then
+      "${config.programs.ghidra-vibe.analysisPackage}/bin/ghidra-vibe-analysis-ensure"
     else
-      {
-        command = nixExe;
-        args = nixRunPrefix ++ [
-          "shell"
-          "--no-write-lock-file"
-          "${cfg.ghidra.flake}#ghidra-vibe-mcp"
-          "-c"
-          "ghidra-mcp"
-        ];
-      };
+      null;
+
+  ghidraMcpEnv = {
+    GHIDRA_MCP_URL = "http://127.0.0.1:8089";
+  }
+  // lib.optionalAttrs (ghidraAnalysisEnsure != null) {
+    GHIDRA_VIBE_ANALYSIS_ENSURE = ghidraAnalysisEnsure;
+  };
 
   ghidraVibeMcpServer =
     if ghidraVibeMcpPkg != null then
       {
         command = "${ghidraVibeMcpPkg}/bin/ghidra-vibe-mcp";
         args = [ ];
+        env = ghidraMcpEnv;
       }
     else
       {
@@ -280,6 +213,7 @@ let
           "-c"
           "ghidra-vibe-mcp"
         ];
+        env = ghidraMcpEnv;
       };
 
   ghidraVibeRagMcpServer =
@@ -300,14 +234,6 @@ let
         ];
       };
 
-  guildforgeMcpServer = {
-    command = lib.getExe guildforgeMcpPkg;
-    args = [ ];
-    env = {
-      PATH = guildforgePath;
-    };
-  };
-
   xcodebuildMcpServer = lib.optionalAttrs pkgs.stdenv.isDarwin {
     xcodebuild = {
       command = lib.getExe xcodebuildMcpPkg;
@@ -325,36 +251,23 @@ let
   };
 
   # Lean set that stays under Antigravity's ~100 tool ceiling.
-  # nixos≈2 + xcodebuild≈24 + wwn (small) + guildforge≈12 ≪ 100.
+  # nixos≈2 + xcodebuild≈24 + wwn (small) ≪ 100.
   leanMcpServers = {
     wwn-mcp = wwnMcpServer;
     nixos = nixosMcpServer;
   }
-  // xcodebuildMcpServer
-  // lib.optionalAttrs cfg.guildforge.enable { guildforge = guildforgeMcpServer; };
+  // xcodebuildMcpServer;
 
-  # Stripe remote MCP (OAuth in Cursor). HTTP URL, no secret key in mcp.json.
-  # https://docs.stripe.com/mcp.md — authenticate via Cursor MCP consent.
-  stripeMcpServer = {
-    type = "http";
-    url = "https://mcp.stripe.com";
-  };
-
-  # Full set for Cursor / VS Code (higher tool budgets).
+  # Shared Cursor / Antigravity set.
   heavyMcpServers =
     leanMcpServers
     // instrumentsMcpServer
-    // {
-      stripe = stripeMcpServer;
-    }
     // lib.optionalAttrs cfg.lldb.enable { lldb = lldbMcpServer; }
     // lib.optionalAttrs cfg.agentDevice.enable { agent-device = agentDeviceMcpServer; }
     // lib.optionalAttrs cfg.ghidra.enable {
-      ghidra = ghidraMcpServer;
       ghidra-vibe = ghidraVibeMcpServer;
       ghidra-vibe-rag = ghidraVibeRagMcpServer;
-    }
-    // lib.optionalAttrs cfg.guildforge.enable { guildforge = guildforgeMcpServer; };
+    };
 
   # No agent-device here: Cursor merges User (~/.cursor/mcp.json) + project
   # mcp.json. Listing it in both shows two "agent-device" rows (User + Wawona).
@@ -369,7 +282,10 @@ let
   zedContextServers = lib.mapAttrs (_: toZedContextServer) userMcpServers;
   zedWawonaContextServers = lib.mapAttrs (_: toZedContextServer) wawonaMcpServers;
 
-  antigravityMcpServers = if cfg.antigravity.includeHeavy then heavyMcpServers else leanMcpServers;
+  # Cursor and Antigravity must remain in lockstep. The canonical user map is
+  # deliberately reused rather than copied, which makes future additions and
+  # removals apply to both IDEs atomically.
+  antigravityMcpServers = userMcpServers;
 
   mcpJson = servers: {
     force = true;
@@ -410,13 +326,6 @@ in
       description = "Wawona app repo root (Xcode workspace).";
     };
 
-    antigravity = {
-      includeHeavy = lib.mkEnableOption ''
-        Include instruments/lldb/ghidra/agent-device/guildforge in Antigravity MCP.
-        Off by default: Antigravity rejects configs that would exceed ~100 tools.
-      '';
-    };
-
     ghidra = {
       enable = lib.mkEnableOption "Ghidra MCP server in user-global IDE mcp.json";
       flake = lib.mkOption {
@@ -440,23 +349,6 @@ in
       };
     };
 
-    guildforge = {
-      enable = lib.mkEnableOption ''
-        GuildForge Discord MCP (@guildforge/mcp) in IDE mcp.json.
-        Credentials: pass SecretSpec keys DISCORD_TOKEN + GUILD_ID
-        (materialized to ~/.config/guildforge/env). Bootstrap with
-        `pass-guildforge-bootstrap`.
-      '';
-      envFile = lib.mkOption {
-        type = lib.types.str;
-        default = "${config.home.homeDirectory}/.config/guildforge/env";
-        description = ''
-          Env file written by pass-materialize from SecretSpec. Sourced by
-          guildforge-mcp; also falls back to `secretspec get` / `pass show`.
-        '';
-      };
-    };
-
     lldb = {
       enable = lib.mkEnableOption "LLDB MCP server in user-global IDE mcp.json";
     };
@@ -477,12 +369,10 @@ in
   };
 
   config = lib.mkIf ideMcpEnabled {
-    # Cursor defaults: heavy tooling on. Antigravity uses leanMcpServers unless
-    # includeHeavy — do not enable guildforge until secrets exist.
+    # Shared Cursor and Antigravity defaults.
     dendritic.ide.mcp.ghidra.enable = lib.mkDefault pkgs.stdenv.isDarwin;
     dendritic.ide.mcp.lldb.enable = lib.mkDefault pkgs.stdenv.isDarwin;
     dendritic.ide.mcp.instruments.enable = lib.mkDefault pkgs.stdenv.isDarwin;
-    dendritic.ide.mcp.guildforge.enable = lib.mkDefault true;
     dendritic.ide.mcp.agentDevice.enable = lib.mkDefault (
       pkgs.stdenv.isDarwin && (config.dendritic.mobile.enable or false)
     );
@@ -494,16 +384,12 @@ in
       ++ lib.optionals cfg.agentDevice.enable [
         agentDevicePkg
       ]
-      ++ lib.optionals cfg.guildforge.enable [
-        guildforgeMcpPkg
-        guildforgeBootstrap
-        pkgs.nodejs_24
-        pkgs.secretspec
-      ]
       ++ lib.optionals cursorEnabled [
         pkgs.nodejs
       ]
-      ++ lib.optionals (cursorEnabled && cfg.ghidra.enable && ghidraVibeMcpPkg != null) [
+      ++ lib.optionals (
+        (cursorEnabled || antigravityEnabled) && cfg.ghidra.enable && ghidraVibeMcpPkg != null
+      ) [
         ghidraVibeMcpPkg
       ];
 

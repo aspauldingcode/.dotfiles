@@ -101,7 +101,9 @@
                   [ "linkGeneration" ]
                   ++ lib.optional (config.dendritic.wallpaper.enable or false) "dendriticWallpaper"
                   ++ [ "vesktopMaterializeConfig" ]
-                  ++ lib.optional isDarwin "dendriticSpotifyClone"
+                  ++ lib.optional (
+                    isDarwin && (config.dendritic.apps.spotify.enable or false)
+                  ) "dendriticSpotifyClone"
                 )
                 ''
                   echo "dendritic-appearance: reconcile"
@@ -197,82 +199,89 @@
       recolorEnv = ''HOME="/Users/${user}" DENDRITIC_HOME="/Users/${user}" DENDRITIC_USER="${user}" PATH="${recolorPath}:$PATH" DENDRITIC_LUTGEN_BIN="${pkgs.lutgen}/bin/lutgen" DENDRITIC_GOWALL_BIN="${pkgs.gowall}/bin/gowall" DENDRITIC_WALLPAPERKIT_LIB="${pkgs.macos-wallpaper-daemon-rse}/lib/libWallpaperKit.dylib" DENDRITIC_MACOS_WALLPAPERD_BIN="${pkgs.macos-wallpaper-daemon-rse}/bin/macos-wallpaperd"'';
     in
     {
-      config = lib.mkIf (config.home-manager.users ? ${user}) {
-        environment.systemPackages = [
-          appearancePkg
-          pkgs.lutgen
-          pkgs.gowall
-          pkgs.macos-wallpaper-daemon-rse
-        ];
-
-        environment.etc."dendritic-appearance-watch.sh".source =
-          pkgs.writeShellScript "dendritic-appearance-watch" ''
-            # Minimal launchd shim only: asuser + env (plist cannot express this).
-            uid="$(${pkgs.coreutils}/bin/id -u ${user})"
-            exec /bin/launchctl asuser "$uid" /usr/bin/sudo -u ${user} \
-              /usr/bin/env ${recolorEnv} \
-              ${lib.getExe appearancePkg} reconcile
-          '';
-
-        launchd.daemons.dendritic-appearance-watch = {
-          serviceConfig = {
-            Label = "com.aspauldingcode.dendritic-appearance-watch";
-            ProgramArguments = [
-              "/bin/sh"
-              "/etc/dendritic-appearance-watch.sh"
+      config =
+        lib.mkIf
+          (
+            (config.home-manager.users ? ${user})
+            && (config.dendritic.macosSettings.enable or true)
+            && (config.dendritic.wallpaper.enable or false)
+          )
+          {
+            environment.systemPackages = [
+              appearancePkg
+              pkgs.lutgen
+              pkgs.gowall
+              pkgs.macos-wallpaper-daemon-rse
             ];
-            RunAtLoad = true;
-            WatchPaths = [ "/Users/${user}/Library/Preferences/.GlobalPreferences.plist" ];
-            StandardOutPath = "/var/log/dendritic-appearance-sync.log";
-            StandardErrorPath = "/var/log/dendritic-appearance-sync.err.log";
+
+            environment.etc."dendritic-appearance-watch.sh".source =
+              pkgs.writeShellScript "dendritic-appearance-watch" ''
+                # Minimal launchd shim only: asuser + env (plist cannot express this).
+                uid="$(${pkgs.coreutils}/bin/id -u ${user})"
+                exec /bin/launchctl asuser "$uid" /usr/bin/sudo -u ${user} \
+                  /usr/bin/env ${recolorEnv} \
+                  ${lib.getExe appearancePkg} reconcile
+              '';
+
+            launchd.daemons.dendritic-appearance-watch = {
+              serviceConfig = {
+                Label = "com.aspauldingcode.dendritic-appearance-watch";
+                ProgramArguments = [
+                  "/bin/sh"
+                  "/etc/dendritic-appearance-watch.sh"
+                ];
+                RunAtLoad = true;
+                WatchPaths = [ "/Users/${user}/Library/Preferences/.GlobalPreferences.plist" ];
+                StandardOutPath = "/var/log/dendritic-appearance-sync.log";
+                StandardErrorPath = "/var/log/dendritic-appearance-sync.err.log";
+              };
+            };
+
+            system.activationScripts.postActivation.text = lib.mkAfter ''
+              mkdir -p /var/lib/dendritic
+              state_dir="/var/lib/dendritic"
+              skip_prebuild=0
+              if [ -f "$state_dir/fast-activate" ]; then
+                skip_prebuild=1
+              fi
+
+              if [ "$skip_prebuild" -eq 0 ]; then
+                # Prebuild light+dark profiles for activation-only toggles.
+                src_real="/private/etc/nix-darwin/.dotfiles"
+                src_mirror="/private/var/lib/dendritic/flake-source"
+                nix_bin="${pkgs.nix}/bin/nix"
+                dark_attr="path:$src_mirror#darwinConfigurations.${host}-dark.config.system.build.toplevel"
+                light_attr="path:$src_mirror#darwinConfigurations.${host}.config.system.build.toplevel"
+                mkdir -p "$src_mirror"
+                if /usr/bin/rsync -a --delete --delete-excluded \
+                  --exclude=".git/" --exclude=".cache/" --exclude=".cursor/" \
+                  --exclude="result" \
+                  "$src_real/" "$src_mirror/" \
+                  && dark_out="$("$nix_bin" build --no-link --print-out-paths "$dark_attr")" \
+                  && light_out="$("$nix_bin" build --no-link --print-out-paths "$light_attr")"
+                then
+                  printf '%s\n' "$dark_out" > "$state_dir/prebuilt-dark-path"
+                  printf '%s\n' "$light_out" > "$state_dir/prebuilt-light-path"
+                  chmod 644 "$state_dir/prebuilt-dark-path" "$state_dir/prebuilt-light-path"
+                else
+                  echo "warning: appearance prebuild failed; keeping previous cache" >&2
+                fi
+
+                # Drop legacy labels from older generations.
+                for legacy in \
+                  org.nixos.dendritic-appearance-watch \
+                  com.aspaulding.dendritic-appearance-watch
+                do
+                  /bin/launchctl bootout "system/$legacy" >/dev/null 2>&1 || true
+                done
+                /bin/launchctl kickstart -k system/com.aspauldingcode.dendritic-appearance-watch >/dev/null 2>&1 || true
+                /bin/launchctl asuser "$(${pkgs.coreutils}/bin/id -u ${user})" /usr/bin/sudo -u ${user} \
+                  /usr/bin/env ${recolorEnv} \
+                  ${lib.getExe appearancePkg} reconcile \
+                  >>/var/log/dendritic-appearance-sync.log 2>&1 || true
+              fi
+            '';
           };
-        };
-
-        system.activationScripts.postActivation.text = lib.mkAfter ''
-          mkdir -p /var/lib/dendritic
-          state_dir="/var/lib/dendritic"
-          skip_prebuild=0
-          if [ -f "$state_dir/fast-activate" ]; then
-            skip_prebuild=1
-          fi
-
-          if [ "$skip_prebuild" -eq 0 ]; then
-            # Prebuild light+dark profiles for activation-only toggles.
-            src_real="/private/etc/nix-darwin/.dotfiles"
-            src_mirror="/private/var/lib/dendritic/flake-source"
-            nix_bin="${pkgs.nix}/bin/nix"
-            dark_attr="path:$src_mirror#darwinConfigurations.${host}-dark.config.system.build.toplevel"
-            light_attr="path:$src_mirror#darwinConfigurations.${host}.config.system.build.toplevel"
-            mkdir -p "$src_mirror"
-            if /usr/bin/rsync -a --delete --delete-excluded \
-              --exclude=".git/" --exclude=".cache/" --exclude=".cursor/" \
-              --exclude="result" \
-              "$src_real/" "$src_mirror/" \
-              && dark_out="$("$nix_bin" build --no-link --print-out-paths "$dark_attr")" \
-              && light_out="$("$nix_bin" build --no-link --print-out-paths "$light_attr")"
-            then
-              printf '%s\n' "$dark_out" > "$state_dir/prebuilt-dark-path"
-              printf '%s\n' "$light_out" > "$state_dir/prebuilt-light-path"
-              chmod 644 "$state_dir/prebuilt-dark-path" "$state_dir/prebuilt-light-path"
-            else
-              echo "warning: appearance prebuild failed; keeping previous cache" >&2
-            fi
-
-            # Drop legacy labels from older generations.
-            for legacy in \
-              org.nixos.dendritic-appearance-watch \
-              com.aspaulding.dendritic-appearance-watch
-            do
-              /bin/launchctl bootout "system/$legacy" >/dev/null 2>&1 || true
-            done
-            /bin/launchctl kickstart -k system/com.aspauldingcode.dendritic-appearance-watch >/dev/null 2>&1 || true
-            /bin/launchctl asuser "$(${pkgs.coreutils}/bin/id -u ${user})" /usr/bin/sudo -u ${user} \
-              /usr/bin/env ${recolorEnv} \
-              ${lib.getExe appearancePkg} reconcile \
-              >>/var/log/dendritic-appearance-sync.log 2>&1 || true
-          fi
-        '';
-      };
     };
 
   flake.modules.nixos.dendritic =

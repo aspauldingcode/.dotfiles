@@ -606,7 +606,7 @@ function serializeRule(
   out: string[],
 ): void {
   if (isStyleRule(rule)) {
-    const decls = collectColorDecls(rule.style, mapColor)
+    const decls = collectColorDecls(rule.style, mapColor, rule.cssText)
     if (decls.length === 0) return
     out.push(`${rule.selectorText} { ${decls.join('; ')} }`)
     return
@@ -617,7 +617,7 @@ function serializeRule(
     for (let i = 0; i < rule.cssRules.length; i += 1) {
       const k = rule.cssRules[i]
       if (!k || !isKeyframeRule(k)) continue
-      const decls = collectColorDecls(k.style, mapColor)
+      const decls = collectColorDecls(k.style, mapColor, k.cssText)
       if (decls.length === 0) continue
       inner.push(`${k.keyText} { ${decls.join('; ')} }`)
     }
@@ -710,28 +710,78 @@ function atRuleHeader(rule: CSSRule): string {
   return open > 0 ? text.slice(0, open).trim() : ''
 }
 
+const CUSTOM_PROP_RE = /(--[A-Za-z0-9_-]+)\s*:\s*([^;}]+)/g
+const RGB_TRIPLE_RE = /^\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*$/
+
+/**
+ * Map a declaration value through the LUT. Also handles Spicetify's
+ * `--spice-rgb-*` triples (`18, 18, 18`) which are not valid CSS
+ * color tokens — they are spliced into `rgb(var(--spice-rgb-main))`.
+ */
+function rewriteDeclValue(
+  value: string,
+  mapColor: ColorMapper,
+): string | null {
+  const trimmed = value.trim()
+  const triple = RGB_TRIPLE_RE.exec(trimmed)
+  if (triple) {
+    const rgb: [number, number, number] = [
+      Number(triple[1]),
+      Number(triple[2]),
+      Number(triple[3]),
+    ]
+    if (rgb.every((n) => n <= 255)) {
+      const mapped = mapColor(rgb)
+      const next = `${mapped[0]}, ${mapped[1]}, ${mapped[2]}`
+      return next === trimmed ? null : next
+    }
+  }
+  if (!hasColorToken(value)) return null
+  const rewritten = rewriteColorsInValue(value, mapColor)
+  return rewritten === value ? null : rewritten
+}
+
 function collectColorDecls(
   decl: CSSStyleDeclaration,
   mapColor: ColorMapper,
+  ruleCssText = '',
 ): string[] {
   const out: string[] = []
-  for (let i = 0; i < decl.length; i += 1) {
-    const name = decl.item(i)
-    if (!name) continue
-    const value = decl.getPropertyValue(name)
-    // Fast probe first — cheap regex test that rejects layout-only
-    // values (`12px solid`, `auto`, `inset 0 0 / 100%`) in a single
-    // pass and lets the heavier `rewriteColorsInValue` handle only
-    // the small fraction of declarations that actually mention a
-    // color. This is what makes "rewrite EVERY property without an
-    // allow-list" affordable on huge sites.
-    if (!value || !hasColorToken(value)) continue
-    const rewritten = rewriteColorsInValue(value, mapColor)
-    if (rewritten === value) continue
-    const priority = decl.getPropertyPriority(name)
+  const seen = new Set<string>()
+
+  const consider = (name: string, value: string, priority: string) => {
+    if (seen.has(name) || !value) return
+    seen.add(name)
+    const rewritten = rewriteDeclValue(value, mapColor)
+    if (!rewritten) return
     out.push(
       `${name}: ${rewritten}${priority ? ` !${priority}` : ''}`,
     )
   }
+
+  for (let i = 0; i < decl.length; i += 1) {
+    const name = decl.item(i)
+    if (!name) continue
+    consider(name, decl.getPropertyValue(name), decl.getPropertyPriority(name))
+  }
+
+  // Chromium/CEF omit CSS custom properties from the indexed
+  // CSSStyleDeclaration iterator AND often from `style.cssText`.
+  // `CSSStyleRule.cssText` still includes `--spice-*: #hex` /
+  // `--spice-rgb-*: 18, 18, 18`. Without this, Spotify's Default
+  // theme (almost entirely tokens) never reaches the LUT.
+  CUSTOM_PROP_RE.lastIndex = 0
+  const cssText = `${decl.cssText ?? ''}\n${ruleCssText}`
+  for (
+    let m = CUSTOM_PROP_RE.exec(cssText);
+    m !== null;
+    m = CUSTOM_PROP_RE.exec(cssText)
+  ) {
+    const name = m[1]
+    const value = m[2]?.trim()
+    if (!name || !value) continue
+    consider(name, value, '')
+  }
+
   return out
 }

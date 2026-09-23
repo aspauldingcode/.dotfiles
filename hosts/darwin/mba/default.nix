@@ -27,15 +27,17 @@
         system.primaryUser = "8amps";
         networking.hostName = "mba";
         system.stateVersion = 5;
-        system.defaults.dock.show-recents = false;
-        system.defaults.finder.AppleShowAllFiles = true;
-        system.defaults.finder.ShowPathbar = true;
-        system.defaults.finder.ShowStatusBar = true;
+        dendritic.macosSettings.enable = true;
         dendritic.theme.variant = lib.mkDefault "dark";
-        # HM owns apply; system flag documents intent (darwin wallpaper module is a stub).
         dendritic.wallpaper.enable = true;
-        # Root launchd enforces Picture + JPEGPhoto across reboot.
         dendritic.profilePhoto.enable = true;
+
+        system.defaults = lib.mkIf config.dendritic.macosSettings.enable {
+          dock.show-recents = false;
+          finder.AppleShowAllFiles = true;
+          finder.ShowPathbar = true;
+          finder.ShowStatusBar = true;
+        };
 
         # Notify when nixos-26.05 (this flake's nixpkgs-darwin input) moves
         # past the running system. Prometheus `nixpkgs-26.05-darwin` is a
@@ -57,22 +59,18 @@
         # OrbStack retired — no Linux guests on this Mac.
         dendritic.apps.orbstack.enable = false;
 
-        # Local Ollama (Metal) + same Rust CLI as sliceanddice (ai-local / chat).
-        dendritic.local-ai.enable = true;
-        # From scripts/local-ai-bench (mba Metal Ollama, 2026-07-19).
+        # Local AI paused for disk cleanup — re-enable + switch to restore.
+        dendritic.local-ai.enable = false;
         dendritic.local-ai.loadModels = [
           "qwen2.5-coder:3b" # best overall (outperform)
           "llama3.2:3b" # general / coding (outperform)
           "gemma3:1b" # fastest
           "llama3.2:1b" # ultra-light
         ];
-        # llama-server (Metal, :8080) for local agents. Local GGUF (HF -hf 401s with
-        # bad cached hub creds on this machine — prefer modelFile).
-        dendritic.local-ai.llamaCpp.enable = true;
+        dendritic.local-ai.llamaCpp.enable = false;
         dendritic.local-ai.llamaCpp.modelFile = "/Users/8amps/.cache/llama.cpp/models/qwen2.5-0.5b-instruct-q4_k_m.gguf";
         dendritic.local-ai.llamaCpp.alias = "qwen2.5-0.5b";
         dendritic.local-ai.llamaCpp.hfRepo = null;
-        # Cap KV packing — Agent was sending 67k into 32k n_ctx.
         dendritic.local-ai.llamaCpp.ctxSize = 8192;
 
         documentation.enable = lib.mkForce false;
@@ -120,6 +118,21 @@
         system.activationScripts.disableGatekeeper.text = ''
           echo "Disabling Gatekeeper..."
           /usr/sbin/spctl --master-disable
+        '';
+
+        # Keep HotSpot/JBR usable on Apple Silicon while SIP and AMFI are
+        # deliberately disabled.  Without this companion boot argument, macOS
+        # rejects the JVM's writable/executable code-cache pages and Java apps
+        # abort in CodeHeap::allocate during startup.
+        system.activationScripts.jvmWithDisabledSip.text = ''
+          current_boot_args="$(/usr/sbin/nvram boot-args 2>/dev/null | /usr/bin/sed 's/^boot-args[[:space:]]*//')"
+          case " $current_boot_args " in
+            *" ipc_control_port_options=0 "*) ;;
+            *)
+              /usr/sbin/nvram boot-args="$current_boot_args ipc_control_port_options=0"
+              echo "Added ipc_control_port_options=0 for JVM compatibility with disabled SIP."
+              ;;
+          esac
         '';
 
         # Vendor copies (not Nix) the user asked gone. Re-run on every switch
@@ -245,9 +258,14 @@
           dendritic.apps.ghostty.enable = true;
           dendritic.apps.antigravity.enable = true;
           dendritic.apps.cursor.enable = true;
+          dendritic.apps.android-studio.enable = true;
           dendritic.apps.zed.enable = false;
-          dendritic.apps.beeper.enable = true;
+          dendritic.apps.beeper.enable = false;
           dendritic.apps.jetbrains.enable = true;
+          dendritic.apps.brave.enable = false;
+          dendritic.apps.firefox.enable = false;
+          dendritic.apps.spotify.enable = false;
+          dendritic.apps.prismlauncher.enable = false;
           dendritic.apps.pass.enable = true;
           dendritic.apps.pass.fingerprint = "80AB4D8EFE29CE2ABD3BD0445C04154FC8950A8B";
           dendritic.wifi.enable = true;
@@ -267,10 +285,10 @@
           dendritic.wireguard.enable = true;
           dendritic.wireguard.peerId = "mba";
           dendritic.apps.orbstack.enable = false;
-          dendritic.python.enable = true;
+          dendritic.python.enable = false;
 
-          # Same Rust helpers as sliceanddice (scoped OPENAI_* only when wrapping).
-          dendritic.local-ai.enable = true;
+          # Local AI paused for disk cleanup (matches darwin dendritic.local-ai).
+          dendritic.local-ai.enable = false;
           dendritic.local-ai.defaultLocalModel = "qwen2.5-coder:3b";
 
           # programs.zsh.shellAliases = {

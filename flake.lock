@@ -627,7 +627,7 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "narHash": "sha256-rPAxlAwfo99+evbNr58BYybKzYhRV/9tQpJ6wihxTP0=",
+        "narHash": "sha256-MydlRPA75jN6E7CwqkbMTDvJYi19Y37eVnVy9jbo1rk=",
         "path": "/Users/8amps/GhidraVibe",
         "type": "path"
       },

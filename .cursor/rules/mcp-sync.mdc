@@ -1,0 +1,17 @@
+---
+description: Keep Cursor and Antigravity MCP and IDE configuration synchronized
+alwaysApply: true
+---
+
+# Cursor–AntiGravity configuration parity
+
+When changing `.dotfiles` IDE, MCP, agent, or related configuration:
+
+1. Treat Cursor and AntiGravity as a synchronized pair. Additions, removals,
+   command changes, arguments, environment variables, paths, and enablement
+   changes must be applied to both generated configurations in the same change.
+2. Prefer a single shared Nix definition or server map over duplicated JSON.
+3. Validate the generated Cursor and AntiGravity JSON after a switch. Their
+   shared MCP server definitions must be identical.
+4. Do not introduce an IDE-specific difference unless the user explicitly
+   requests it and the reason is documented next to the configuration.

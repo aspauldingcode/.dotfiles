@@ -24,6 +24,7 @@ mod supervise;
 mod tinted;
 mod vesktop;
 mod wallpaper;
+mod yazi;
 
 use std::process::ExitCode;
 
