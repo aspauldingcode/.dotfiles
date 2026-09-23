@@ -389,19 +389,90 @@
         enableZshIntegration = false; # Too heavy to run synchronously
       };
 
+      # Own Starship palette (not stylix.targets.starship): wallpaper / light-dark
+      # hot-writes ~/.config/starship.toml from ~/.colors.toml via
+      # dendritic-appearance — same live path as Ghostty + Yazi.
+      stylix.targets.starship.enable = lib.mkForce false;
+
       programs.starship = {
         enable = true;
         enableZshIntegration = true;
-        settings = {
-          add_newline = false;
-          command_timeout = 1000;
-          scan_timeout = 100;
-          format = "$directory$git_branch$git_status$nix_shell$character";
-          directory = {
-            truncation_length = 3;
-            truncate_to_repo = true;
+        settings =
+          let
+            c = config.lib.stylix.colors.withHashtag;
+          in
+          {
+            add_newline = false;
+            command_timeout = 1000;
+            scan_timeout = 100;
+            format = "$directory$git_branch$git_status$nix_shell$character";
+            palette = "base16";
+            character = {
+              success_symbol = "[❯](bold green)";
+              error_symbol = "[❯](bold red)";
+            };
+            directory = {
+              truncation_length = 3;
+              truncate_to_repo = true;
+              style = "bold cyan";
+            };
+            git_branch = {
+              style = "bold purple";
+            };
+            git_status = {
+              style = "bold yellow";
+            };
+            nix_shell = {
+              style = "bold blue";
+            };
+            # Seed until first wallpaper / appearance apply.
+            palettes.base16 = {
+              black = c.base00;
+              bright-black = c.base03;
+              white = c.base05;
+              bright-white = c.base07;
+              red = c.base08;
+              bright-red = c.base08;
+              orange = c.base09;
+              yellow = c.base0A;
+              bright-yellow = c.base0A;
+              green = c.base0B;
+              bright-green = c.base0B;
+              cyan = c.base0C;
+              bright-cyan = c.base0C;
+              blue = c.base0D;
+              bright-blue = c.base0D;
+              purple = c.base0E;
+              magenta = c.base0E;
+              bright-magenta = c.base0E;
+              bright-purple = c.base0E;
+              brown = c.base0F;
+              base00 = c.base00;
+              base01 = c.base01;
+              base02 = c.base02;
+              base03 = c.base03;
+              base04 = c.base04;
+              base05 = c.base05;
+              base06 = c.base06;
+              base07 = c.base07;
+              base08 = c.base08;
+              base09 = c.base09;
+              base0A = c.base0A;
+              base0B = c.base0B;
+              base0C = c.base0C;
+              base0D = c.base0D;
+              base0E = c.base0E;
+              base0F = c.base0F;
+              base10 = c.base00;
+              base11 = c.base00;
+              base12 = c.base08;
+              base13 = c.base0A;
+              base14 = c.base0B;
+              base15 = c.base0C;
+              base16 = c.base0D;
+              base17 = c.base0E;
+            };
           };
-        };
       };
 
       home.sessionVariables = lib.mkMerge [

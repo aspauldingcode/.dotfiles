@@ -24,6 +24,7 @@ pub fn reconcile() -> Result<MachineStatus, String> {
             let colors = colors_toml_path();
             let _ = crate::ghostty::apply_from_colors(&colors);
             let _ = crate::yazi::apply_from_colors(&colors);
+            let _ = crate::starship::apply_from_colors(&colors);
             let _ = crate::vesktop::apply_from_colors(&colors);
             let _ = crate::spotify::apply_from_colors(&colors);
             let status = MachineStatus {
@@ -141,6 +142,7 @@ fn apply_hot_colors() {
     let colors = colors_toml_path();
     let _ = crate::ghostty::apply_from_colors(&colors);
     let _ = crate::yazi::apply_from_colors(&colors);
+    let _ = crate::starship::apply_from_colors(&colors);
     let _ = crate::qt::apply_from_colors(&colors);
     let _ = crate::ide::patch_from_colors(&colors);
     let _ = crate::vesktop::apply_from_colors(&colors);

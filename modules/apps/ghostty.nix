@@ -50,7 +50,9 @@
             # Ensure macOS titlebar tint follows terminal background (base00),
             # and text contrast follows the active Stylix dark/light variant.
             macos-titlebar-style = "transparent";
-            window-theme = config.dendritic.theme.variant;
+            # Follow host appearance (dendritic-appearance toggles light/dark).
+            # Palette still comes from themes/dendritic-wallpaper (hot-written).
+            window-theme = "auto";
             macos-option-as-alt = true;
             shell-integration = "detect";
             confirm-close-surface = false;

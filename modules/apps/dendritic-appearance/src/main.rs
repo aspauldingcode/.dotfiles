@@ -20,6 +20,7 @@ mod qt;
 mod reconcile;
 mod spotify;
 mod state;
+mod starship;
 mod supervise;
 mod tinted;
 mod vesktop;
