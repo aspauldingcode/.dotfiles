@@ -17,7 +17,8 @@
           --title "Authenticate"
       '';
 
-      # Elevates via systemd when PR_SET_NO_NEW_PRIVS blocks sudo (Cursor/Electron).
+      # Elevates via systemd when PR_SET_NO_NEW_PRIVS blocks sudo (legacy
+      # code-cursor-fhs session, or any parent that set the flag).
       dendriticOsSwitch = pkgs.writeShellScriptBin "dendritic-os-switch" ''
         set -euo pipefail
         host="''${1:-$(${pkgs.coreutils}/bin/hostname -s)}"
@@ -91,13 +92,10 @@
       # NOPASSWD on switch-to-configuration alone never matches — env is the argv0.
       security.sudo.wheelNeedsPassword = false;
 
-      # ── Cursor / IDE NoNewPrivs escape hatch ────────────────────────────
-      # Electron (Cursor) sets PR_SET_NO_NEW_PRIVS on its process tree, so
-      # `sudo`/`nh` elevation is impossible from integrated or agent terminals
-      # even with wheelNeedsPassword=false. systemctl→systemd (root) does not
-      # need setuid in the client — verified workable under Cursor's sandbox.
-      # After one external activate of this unit, agents use:
-      #   dendritic-os-switch [host]
+      # ── NoNewPrivs escape hatch ────────────────────────────────────────
+      # If this process still has PR_SET_NO_NEW_PRIVS (old FHS Cursor, or a
+      # parent set the flag), sudo/nh cannot elevate. systemctl→systemd does
+      # not need setuid in the client. Agents use: dendritic-os-switch [host]
       systemd.services."dendritic-os-switch@" = {
         description = "NixOS switch for flake host %i (NoNewPrivs / Cursor safe)";
         # Manual only — never restart/stop mid-activation (nested switch deadlock).
@@ -130,7 +128,7 @@
             --print-out-paths --no-link \
             "''${flake}#nixosConfigurations.''${host}.config.system.build.toplevel")"
           # switch-to-configuration alone does NOT advance /nix/var/nix/profiles/system
-          # or systemd-boot's default entry — without this, the next reboot falls back
+          # or the bootloader default entry — without this, the next reboot falls back
           # to an older generation (seen after Windows Setup BootNext).
           echo "dendritic-os-switch: setting system profile → $out"
           ${pkgs.nix}/bin/nix-env --profile /nix/var/nix/profiles/system --set "$out"
@@ -213,31 +211,29 @@
         force = true;
         text = ''
           ---
-          description: Rebuild NixOS from Cursor without sudo (NoNewPrivs)
+          description: Rebuild NixOS from Cursor (sudo or dendritic-os-switch)
           alwaysApply: true
           ---
 
           # NixOS switch from Cursor
 
-          Cursor/Electron sets `PR_SET_NO_NEW_PRIVS`, so `sudo` and `nh os switch` fail in agent and integrated terminals (`sudo: The "no new privileges" flag is set`).
+          Linux Cursor is the patchelf'd `code-cursor` package (not FHS/bwrap), so `sudo` and `nh os switch` should work in the agent and integrated terminal.
 
-          **Do not** tell the user to use an external terminal for routine switches.
-
-          Use the systemd-backed wrapper (runs `nh` as root via `systemctl`, no setuid in the client):
-
-          ```bash
-          dendritic-os-switch sliceanddice
-          ```
-
-          Host defaults to `hostname -s` if omitted. Flake path defaults to `/etc/nixos/.dotfiles` (`DENDRITIC_FLAKE` overrides).
-
-          If the unit is missing (`Unit … not found`), the machine still needs **one** external bootstrap:
+          Prefer:
 
           ```bash
           nh os switch /etc/nixos/.dotfiles#sliceanddice
           ```
 
-          After that, prefer `dendritic-os-switch` for all subsequent rebuilds from Cursor.
+          Host defaults to `hostname -s`. Flake path defaults to `/etc/nixos/.dotfiles`.
+
+          If `/proc/self/status` still has `NoNewPrivs: 1` (old FHS session, or a parent set the flag), `sudo` fails with *The "no new privileges" flag is set*. Then use:
+
+          ```bash
+          dendritic-os-switch sliceanddice
+          ```
+
+          That starts a systemd unit so elevation happens outside this process tree. **Do not** tell the user to open an external terminal for routine switches.
         '';
       };
 
@@ -280,7 +276,12 @@
             _dendritic_sw_bin="/run/current-system/sw/bin"
             [[ -d $_dendritic_hm_bin ]] && path=("$_dendritic_hm_bin" $path)
             [[ -d $_dendritic_sw_bin ]] && path=("$_dendritic_sw_bin" $path)
-            unset _dendritic_hm_bin _dendritic_sw_bin
+            # NixOS setuid sudo lives in wrappers. Prepending sw/bin above
+            # would otherwise shadow it and Cursor agents get:
+            #   sudo must be owned by uid 0 and have the setuid bit set
+            _dendritic_wrappers="/run/wrappers/bin"
+            [[ -d $_dendritic_wrappers ]] && path=("$_dendritic_wrappers" $path)
+            unset _dendritic_hm_bin _dendritic_sw_bin _dendritic_wrappers
             export PATH
           '')
 
@@ -304,10 +305,12 @@
             zle -N _sudo_toggle
 
             sudo() {
+              local sudo_bin=/run/wrappers/bin/sudo
+              [[ -x $sudo_bin ]] || sudo_bin=sudo
               if [[ ! -t 0 ]] && [[ -n "''${SUDO_ASKPASS:-}" ]]; then
-                command sudo -A "$@"
+                command "$sudo_bin" -A "$@"
               else
-                command sudo "$@"
+                command "$sudo_bin" "$@"
               fi
             }
 

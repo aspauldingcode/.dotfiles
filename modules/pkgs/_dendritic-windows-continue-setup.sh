@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # After Setup's downlevel phase, firmware must boot Windows Boot Manager (not
-# systemd-boot) so specialize/OOBE/FirstLogon can finish.
+# the NixOS bootloader) so specialize/OOBE/FirstLogon can finish.
 #
 # Do NOT WantedBy=multi-user during os-switch — that reboots mid-activation and
 # leaves /nix/var/nix/profiles/system on an old generation. Prefer a boot timer.

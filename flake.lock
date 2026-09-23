@@ -740,8 +740,9 @@
       }
     },
     "macos-wallpaper-daemon-rse": {
+      "flake": false,
       "locked": {
-        "narHash": "sha256-g4QkztQ6Pl24rsYmjUgQsEeWv/gyOJt+Xtysxg9dpv4=",
+        "narHash": "sha256-lCAB7lRTb6VnhQjGt7saBkp3gunQ+1914SEjxN+34sQ=",
         "path": "/Users/8amps/src/macos-wallpaper-daemon-rse",
         "type": "path"
       },
@@ -1741,7 +1742,7 @@
         "nixpkgs": "nixpkgs_11"
       },
       "locked": {
-        "narHash": "sha256-PgrFntCiJheN54FcjVTItP1kY5ZZEdUjOrlX/uEHdC4=",
+        "narHash": "sha256-ysBU6wJ35X8fi6/LFFIyUJFmDErVv38FtZvyPYzzjh8=",
         "path": "/Users/8amps/Wawona/wwn-mcp",
         "type": "path"
       },

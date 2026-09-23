@@ -243,8 +243,8 @@ dendritic-appearance — pure Rust light/dark state machine (no desync)
   detect                 Print host appearance
   reconcile | sync       Observe → apply until host==layers
   supervise [SECS]       Daemon: poll+reconcile forever (default 2s)
-  set <light|dark>       Force host + global apply
-  toggle                 Flip host + global apply
+  set <light|dark>       Force host + global apply (+ NixOS specialisation)
+  toggle                 Flip host + global apply (+ NixOS specialisation)
   apply [--variant V] [--wallpaper current|daily|next|NAME]
   wallpaper <daily|next|NAME|current|lock|lock-path|auth-path>
   avatar apply [--user NAME] [--image PATH]

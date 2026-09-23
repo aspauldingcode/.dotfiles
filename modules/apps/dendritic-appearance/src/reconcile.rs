@@ -46,7 +46,7 @@ pub fn reconcile() -> Result<MachineStatus, String> {
         };
         state::write_phase_snapshot(&applying);
 
-        match apply_global(target, "current") {
+        match apply_global(target, "current", false) {
             Ok(()) => {
                 let again = observe::observe();
                 if again.synced() {
@@ -91,7 +91,7 @@ pub fn force(variant: Variant, wallpaper_target: &str) -> Result<MachineStatus, 
     {
         crate::linux::set(variant).map_err(|c| format!("linux set failed ({c})"))?;
     }
-    apply_global(variant, wallpaper_target)?;
+    apply_global(variant, wallpaper_target, true)?;
     // Re-observe; if host didn't flip yet, still ensure our layers match requested.
     let mut obs = observe::observe();
     if obs.host != variant {
@@ -100,7 +100,7 @@ pub fn force(variant: Variant, wallpaper_target: &str) -> Result<MachineStatus, 
             "dendritic-appearance: host still {:?}, locking layers to {variant}",
             obs.host
         );
-        apply_global(variant, wallpaper_target)?;
+        apply_global(variant, wallpaper_target, true)?;
         obs = observe::observe();
     }
     if obs.synced() && obs.host == variant {
@@ -115,7 +115,7 @@ pub fn force(variant: Variant, wallpaper_target: &str) -> Result<MachineStatus, 
     reconcile()
 }
 
-fn apply_global(variant: Variant, wallpaper_target: &str) -> Result<(), String> {
+fn apply_global(variant: Variant, wallpaper_target: &str, specialise: bool) -> Result<(), String> {
     state::write_appearance_variant(variant)?;
     wallpaper::apply(variant, wallpaper_target)?;
 
@@ -127,7 +127,7 @@ fn apply_global(variant: Variant, wallpaper_target: &str) -> Result<(), String> 
     apply_hot_colors();
 
     // Prebuilt / specialisation (best-effort; hot layer already applied)
-    if let Err(e) = activate::activate(variant) {
+    if let Err(e) = activate::activate(variant, specialise) {
         eprintln!("dendritic-appearance: activate warning: {e}");
     }
 

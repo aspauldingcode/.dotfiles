@@ -92,11 +92,16 @@
     wwn-mcp.url = "path:/Users/8amps/Wawona/wwn-mcp";
 
     # GhidraVibe: local stdio MCP (ghidra / vibe / rag). No public URL.
+    # sliceanddice uses a stub; mba keeps ~/GhidraVibe.
     ghidra-vibe.url = "path:/Users/8amps/GhidraVibe";
 
     # WallpaperKit (Tahoe allDisplays + Your Photos catalog). Local checkout
     # so mba picks up the C ABI dylib without waiting on a GitHub fetch.
-    macos-wallpaper-daemon-rse.url = "path:/Users/8amps/src/macos-wallpaper-daemon-rse";
+    # Linux only needs the input to exist (overlay is Darwin-only).
+    macos-wallpaper-daemon-rse = {
+      url = "path:/Users/8amps/src/macos-wallpaper-daemon-rse";
+      flake = false;
+    };
 
     # Clean-room Rust `phoon` CLI (ASCII moon phase). Own nixpkgs +
     # wwn-toolchain — do not follow 26.05; the recipe targets the

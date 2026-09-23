@@ -436,8 +436,14 @@ rotate_github() {
     log "GitHub: refreshing App user token via API (pass-backed)…"
     token="$(gh_mint_token --refresh 2>/dev/null || true)"
     if [[ -z $token ]]; then
-      log "GitHub: refresh failed — starting device flow"
-      token="$(gh_mint_token --device)"
+      # Device flow blocks HM/NixOS activation forever when no TTY (Cursor, systemd).
+      if [[ -t 0 ]]; then
+        log "GitHub: refresh failed — starting device flow"
+        token="$(gh_mint_token --device)"
+      else
+        log "GitHub: refresh failed — skip device flow (non-interactive); run: pass-github-app-bootstrap"
+        return 0
+      fi
     fi
     login="$(GH_TOKEN="$token" gh api /user -q .login 2>/dev/null || true)"
     [[ -n $login ]] || die "GitHub: minted token rejected"
@@ -462,8 +468,14 @@ rotate_gcloud() {
     log "gcloud: refreshing OAuth access via API (pass-backed)…"
     token="$(gcloud_mint_token --refresh 2>/dev/null || true)"
     if [[ -z $token ]]; then
-      log "gcloud: refresh failed — starting localhost OAuth"
-      token="$(gcloud_mint_token --device)"
+      # Localhost OAuth blocks HM/NixOS activation forever when no TTY (Cursor, systemd).
+      if [[ -t 0 ]]; then
+        log "gcloud: refresh failed — starting localhost OAuth"
+        token="$(gcloud_mint_token --device)"
+      else
+        log "gcloud: refresh failed — skip localhost OAuth (non-interactive); run: pass-gcloud-bootstrap"
+        return 0
+      fi
     fi
     [[ -n $token ]] || die "gcloud: mint returned empty token"
     adc_dir="${CLOUDSDK_CONFIG:-$HOME/.config/gcloud}"

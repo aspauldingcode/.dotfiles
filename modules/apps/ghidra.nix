@@ -14,6 +14,8 @@
     }:
     let
       vibeFlake = "${config.home.homeDirectory}/GhidraVibe";
+      haveCheckout = builtins.pathExists "${vibeFlake}/flake.nix";
+      haveModule = (inputs ? ghidra-vibe) && (inputs.ghidra-vibe ? homeModules);
       nixExe =
         if builtins.pathExists "/nix/var/nix/profiles/default/bin/nix" then
           "/nix/var/nix/profiles/default/bin/nix"
@@ -22,9 +24,9 @@
       nixRun = ''${nixExe} --extra-experimental-features "nix-command flakes"'';
     in
     {
-      imports = [ inputs.ghidra-vibe.homeModules.default ];
+      imports = lib.optionals haveModule [ inputs.ghidra-vibe.homeModules.default ];
 
-      programs.ghidra-vibe = {
+      programs.ghidra-vibe = lib.mkIf (haveModule && haveCheckout) {
         enable = true;
         # MCP bins only in the profile; GUI still via nix run below.
         # Analysis JVM is still kept up (LaunchAgent + MCP ensure).
@@ -36,7 +38,7 @@
       # Prefer GhidraVibe GUI / helpers over stock pkgs.ghidra.
       # Do not wrap ghidra-vibe-analysis-ensure here — programs.ghidra-vibe
       # already puts that bin on PATH (conflicts in home-manager-path).
-      home.packages = [
+      home.packages = lib.mkIf haveCheckout [
         (pkgs.writeShellScriptBin "ghidra-vibe" ''
           exec ${nixRun} run --no-write-lock-file "${vibeFlake}#default" -- "$@"
         '')
@@ -51,7 +53,7 @@
         '')
       ];
 
-      home.sessionVariables = {
+      home.sessionVariables = lib.mkIf haveCheckout {
         GHIDRA_VIBE_SWING = "0";
       };
     };

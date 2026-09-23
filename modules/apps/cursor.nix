@@ -52,14 +52,18 @@
 
       config = lib.mkIf cfg.enable {
         home.packages = [
-          (if pkgs.stdenv.isLinux then pkgs.code-cursor-fhs else pkgs.code-cursor)
+          # Linux: patchelf'd `code-cursor`, not `code-cursor-fhs`.
+          # buildFHSEnv/bwrap sets PR_SET_NO_NEW_PRIVS on the whole tree, so
+          # sudo/nh from the agent or integrated terminal fail. Native
+          # extension .so files still resolve via programs.nix-ld.
+          pkgs.code-cursor
         ]
         ++ lib.optionals pkgs.stdenv.isLinux [
           # nixpkgs only installs the native 1024² PNG into hicolor, but
           # hicolor's index.theme has no 1024x1024/apps entry — fuzzel (and
           # other themed launchers) skip it. Ship standard Application sizes.
           (pkgs.runCommand "cursor-hicolor-icons" { nativeBuildInputs = [ pkgs.imagemagick ]; } ''
-            src=${pkgs.code-cursor-fhs}/share/pixmaps/cursor.png
+            src=${pkgs.code-cursor}/share/pixmaps/cursor.png
             for sz in 16 24 32 48 64 128 256 512; do
               mkdir -p "$out/share/icons/hicolor/''${sz}x''${sz}/apps"
               magick "$src" -resize "''${sz}x''${sz}" \
@@ -128,7 +132,7 @@
     in
     lib.mkIf cursorEnabled {
       dendritic.dock.apps = lib.mkOrder 160 [
-        "${if pkgs.stdenv.isDarwin then pkgs.code-cursor else pkgs.code-cursor-fhs}/Applications/Cursor.app"
+        "${pkgs.code-cursor}/Applications/Cursor.app"
       ];
     };
 }

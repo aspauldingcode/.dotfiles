@@ -67,14 +67,6 @@
           instantview = pkgs.callPackage ./instantview-linux/pkg { inherit evdi; };
         in
         {
-          nixpkgs.overlays = [
-            (final: prev: {
-              instantview = final.callPackage ./instantview-linux/pkg {
-                inherit (final.linuxPackages) evdi;
-              };
-            })
-          ];
-
           boot.extraModulePackages = [ evdi ];
           boot.kernelModules = [ "evdi" ];
           # One virtual DRM card is enough for a single SM76x panel; 4 caused
