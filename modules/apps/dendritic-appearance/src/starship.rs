@@ -14,8 +14,15 @@ fn config_path() -> PathBuf {
     if let Ok(p) = std::env::var("DENDRITIC_STARSHIP_LIVE") {
         return PathBuf::from(p);
     }
+    // Prefer STARSHIP_CONFIG when it already points at the live dendritic path.
+    if let Ok(p) = std::env::var("STARSHIP_CONFIG") {
+        let pb = PathBuf::from(&p);
+        if p.contains("dendritic") {
+            return pb;
+        }
+    }
     state::home_dir()
-        .map(|h| h.join(".config/starship.toml"))
+        .map(|h| h.join(".config/dendritic/starship.toml"))
         .unwrap_or_else(|| PathBuf::from("starship.toml"))
 }
 

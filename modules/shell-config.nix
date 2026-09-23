@@ -390,13 +390,15 @@
       };
 
       # Own Starship palette (not stylix.targets.starship): wallpaper / light-dark
-      # hot-writes ~/.config/starship.toml from ~/.colors.toml via
-      # dendritic-appearance — same live path as Ghostty + Yazi.
+      # hot-writes ~/.config/dendritic/starship.toml from ~/.colors.toml via
+      # dendritic-appearance — same live path as Ghostty + Yazi. STARSHIP_CONFIG
+      # points at that file so HM's seed never fights the live writer.
       stylix.targets.starship.enable = lib.mkForce false;
-      # Live writers replace the HM symlink with a regular file; force so the
-      # next switch can re-seed, then appearance reconcile rewrites the palette.
-      xdg.configFile."starship.toml".force = true;
-      xdg.configFile."yazi/theme.toml".force = true;
+
+      # Drop live yazi theme before HM link checks (appearance rewrites after).
+      home.activation.dendriticClearLiveYaziTheme = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+        $DRY_RUN_CMD rm -f "${config.xdg.configHome}/yazi/theme.toml"
+      '';
 
       programs.starship = {
         enable = true;
@@ -483,6 +485,8 @@
         {
           # Never let starship [WARN] hit the TTY during prompt render.
           STARSHIP_LOG = "error";
+          # Live palette written by dendritic-appearance (tracks wallpaper / light-dark).
+          STARSHIP_CONFIG = "${config.xdg.configHome}/dendritic/starship.toml";
           NH_FLAKE = lib.mkDefault (
             if pkgs.stdenv.isDarwin then
               "/etc/nix-darwin/.dotfiles#mba"
@@ -494,6 +498,17 @@
           NH_OS_FLAKE = lib.mkDefault "/etc/nixos/.dotfiles#sliceanddice";
         })
       ];
+
+      # Seed live Starship path until first appearance apply (STARSHIP_CONFIG).
+      # Own text (do not reference programs.starship's xdg file — it may be .source).
+      xdg.configFile."dendritic/starship.toml" = {
+        force = true;
+        text =
+          let
+            toml = pkgs.formats.toml { };
+          in
+          builtins.readFile (toml.generate "starship-seed.toml" config.programs.starship.settings);
+      };
 
       # Yazi: `y` wrapper lives in programs.zsh.initContent (not HM's stock
       # snippet) so cwd-file NUL handling works with zoxide-as-cd. Pin
