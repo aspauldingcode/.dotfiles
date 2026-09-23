@@ -486,7 +486,7 @@
           # Never let starship [WARN] hit the TTY during prompt render.
           STARSHIP_LOG = "error";
           # Live palette written by dendritic-appearance (tracks wallpaper / light-dark).
-          STARSHIP_CONFIG = "${config.xdg.configHome}/dendritic/starship.toml";
+          STARSHIP_CONFIG = lib.mkForce "${config.xdg.configHome}/dendritic/starship.toml";
           NH_FLAKE = lib.mkDefault (
             if pkgs.stdenv.isDarwin then
               "/etc/nix-darwin/.dotfiles#mba"
