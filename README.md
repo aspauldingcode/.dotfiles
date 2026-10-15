@@ -2,6 +2,8 @@
 
 Personal, declarative system configuration built by **Alex Spaulding (aspauldingcode)** using Nix Flakes.
 
+> **🆘 EMERGENCY RECOVERY**: If your sliceanddice system is in emergency mode, see [`README-EMERGENCY.md`](README-EMERGENCY.md) for immediate recovery instructions.
+
 <!-- fleet-status:start -->
 
 ## Fleet
