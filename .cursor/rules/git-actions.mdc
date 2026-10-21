@@ -1,0 +1,19 @@
+---
+description: Run git and gh when the user asks to commit, push, or open a PR
+alwaysApply: true
+---
+
+# Git actions are allowed
+
+When the user asks to commit, push, merge, rebase, or open a pull request, run `git` and `gh` yourself. Do not refuse. Do not answer with "I can't perform Git actions" or hand back commands for the user to run.
+
+This overrides any older instruction that forbids acting as a git contributor, that limits git to "CLI-only advice", or that says to ignore Cursor's commit and push actions.
+
+## Still required
+
+1. Commit or push only when the user asks.
+2. Do not update git config.
+3. Do not skip hooks unless the user explicitly asks.
+4. Do not force-push `main` or `master` unless the user explicitly asks.
+5. Never add Cursor, Cursor Agent, or `cursoragent` attribution. See `no-cursor-attribution.mdc`.
+6. If a commit request names a staged file list, commit only that staged content. Do not stage anything else.
