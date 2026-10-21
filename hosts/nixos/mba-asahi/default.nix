@@ -172,6 +172,10 @@
 
         programs.git = {
           enable = true;
+          settings.user = {
+            name = "aspauldingcode";
+            email = "aspauldingcode@gmail.com";
+          };
           settings.url."git@github.com:" = {
             insteadOf = "https://github.com/";
             pushInsteadOf = "https://github.com/";

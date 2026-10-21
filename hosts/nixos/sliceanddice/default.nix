@@ -340,6 +340,10 @@
 
         dendritic.apps.ghostty.enable = true;
         dendritic.apps.cursor.enable = true;
+        # Same Antigravity module as mba (shared VS Code settings, extensions, MCP).
+        dendritic.apps.antigravity.enable = true;
+        dendritic.apps.zed.enable = true;
+        dendritic.apps.trae.enable = true;
         dendritic.apps.beeper.enable = true;
         dendritic.apps.pass.enable = true;
         dendritic.apps.pass.fingerprint = "80AB4D8EFE29CE2ABD3BD0445C04154FC8950A8B";
@@ -373,6 +377,10 @@
 
         programs.git = {
           enable = true;
+          settings.user = {
+            name = "aspauldingcode";
+            email = "aspauldingcode@gmail.com";
+          };
           settings.url."git@github.com:" = {
             insteadOf = "https://github.com/";
             pushInsteadOf = "https://github.com/";

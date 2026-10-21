@@ -809,6 +809,11 @@
         systemd.user.services.waybar.Service.Environment = [
           ''"FREETYPE_PROPERTIES=cff:no-stem-darkening=0 autofitter:no-stem-darkening=0"''
         ];
+        # Waybar normally sits under 100M. On 2026-10-20 it reached 7.8G and
+        # 8.9G of shmem, and the global OOM killer took Cursor with it. Cap it
+        # so a leak restarts the bar instead. Restart=on-failure brings it back.
+        systemd.user.services.waybar.Service.MemoryHigh = "768M";
+        systemd.user.services.waybar.Service.MemoryMax = "1G";
 
         programs.waybar = {
           enable = true;
