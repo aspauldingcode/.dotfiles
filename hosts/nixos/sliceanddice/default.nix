@@ -378,7 +378,7 @@
         programs.git = {
           enable = true;
           settings.user = {
-            name = "aspauldingcode";
+            name = "Alex Spaulding";
             email = "aspauldingcode@gmail.com";
           };
           settings.url."git@github.com:" = {
