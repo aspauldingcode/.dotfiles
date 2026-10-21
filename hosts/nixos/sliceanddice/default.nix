@@ -139,6 +139,8 @@
       dendritic.apps.linux-desktop.enable = true;
       # Heroic + Proton-GE DLSS/NVAPI + PRIME offload (RTX 3050 Ti Laptop).
       dendritic.apps.heroic.enable = true;
+      # Steam + the same Proton-GE / PRIME path. No gamescope session (niri).
+      dendritic.apps.steam.enable = true;
 
       # Quiet-first power: RAPL/EPP feedback controller, zswap, lid/idle suspend.
       # Owns CPU power policy — do not enable TLP / auto-cpufreq / PPD alongside.
