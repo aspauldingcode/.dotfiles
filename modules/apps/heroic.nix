@@ -15,6 +15,17 @@
 # will render Rocket League there (0% dGPU, ~35 MiB). The merge sets
 # DXVK_FILTER_DEVICE_NAME=NVIDIA, turns off Wine FSR and verboseLogs
 # (WINEDEBUG=+fixme), and does not wrap Heroic games with GameMode.
+# Every Heroic game gets PROTON_ENABLE_WAYLAND=1, WINE_GRAPHICS_DRIVER=wayland,
+# and WINEDLLOVERRIDES=winex11.drv=d. GE-Proton would otherwise keep the X11
+# driver for per-process fallback and can start Xwayland from the runtime.
+# DISPLAY is cleared so a Heroic process that still inherited :0 cannot
+# hand it to the game. This session does not start XWayland.
+# When the Proton EAC runtime and the laptop panel are present, the merge
+# also sets PROTON_EAC_RUNTIME and PROTON_WAYLAND_MONITOR=eDP-1. The EAC
+# module page-faults without the runtime, and without a monitor name the
+# game exclusive-fullscreens 640x480 and the Wayland surface dies.
+# Nouveau/NVK is not used: DLSS and NVAPI need this open-kernel
+# NVIDIA driver, and NVK's DLSS path is still experimental.
 #
 # Heroic rewrites ~/.config/heroic/config.json. Merge keys only — never
 # home.file force-replace. Leave Heroic's own GE-Proton tree in place;

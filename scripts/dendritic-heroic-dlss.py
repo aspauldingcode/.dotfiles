@@ -33,6 +33,16 @@ DLSS_ENV = (
     ("DXVK_ENABLE_NVAPI", "1"),
     ("PROTON_DLSS_UPGRADE", "1"),
     ("DXVK_FILTER_DEVICE_NAME", "NVIDIA"),
+    # This session has no X11 socket. Proton must use the Wine Wayland driver.
+    ("PROTON_ENABLE_WAYLAND", "1"),
+    ("WINE_GRAPHICS_DRIVER", "wayland"),
+    # GE-Proton keeps winex11.drv available for "compatibility fallbacks"
+    # and will use an XWayland from the Steam runtime if DISPLAY is set.
+    # `d` disables that driver. Proton appends its own overrides after this.
+    ("WINEDLLOVERRIDES", "winex11.drv=d"),
+    # Heroic's GUI may still have inherited DISPLAY=:0. An empty value
+    # overwrites that for the game process. Proton does not clear DISPLAY.
+    ("DISPLAY", ""),
 )
 
 BOOL_KEYS = {
@@ -50,6 +60,8 @@ BOOL_KEYS = {
     # VKD3D_DEBUG=fixme when this is true. The fixme spam runs on the
     # game thread.
     "verboseLogs": False,
+    # Heroic maps this to PROTON_ENABLE_WAYLAND=1 for Proton.
+    "enableWineWayland": True,
 }
 
 
@@ -87,7 +99,37 @@ def atomic_write(path: Path, data: dict[str, Any], indent: str | None) -> None:
     os.replace(tmp, path)
 
 
-def upsert_env(options: Any) -> list[dict[str, str]]:
+def host_env() -> tuple[tuple[str, str], ...]:
+    """Machine facts Heroic cannot see. Absent on a host that lacks them."""
+    extra: list[tuple[str, str]] = []
+    eac = Path.home() / ".config" / "heroic" / "tools" / "runtimes" / "eac_runtime"
+    bridge = eac / "v2" / "lib64" / "easyanticheat_x64.so"
+    if bridge.is_file():
+        # ntdll loads this directory when rocketleague_eac starts. Without
+        # it that module page-faults a few seconds after the window opens.
+        extra.append(("PROTON_EAC_RUNTIME", str(eac)))
+    egl = Path("/run/opengl-driver/share/glvnd/egl_vendor.d/10_nvidia.json")
+    if egl.is_file():
+        # Pressure-vessel otherwise reports the NVIDIA PCI id with a null
+        # EGL driver and the Wayland surface never finishes presenting.
+        extra.append(("__EGL_VENDOR_LIBRARY_FILENAMES", str(egl)))
+    drm = Path("/sys/class/drm")
+    if drm.is_dir():
+        for status in sorted(drm.glob("card*-eDP-1/status")):
+            try:
+                connected = status.read_text(encoding="utf-8").strip() == "connected"
+            except OSError:
+                continue
+            if connected:
+                # xrandr is not installed. Proton then leaves the Wayland
+                # driver without a monitor, and the game exclusive-fullscreens
+                # a 640x480 VGA mode, which drops the surface.
+                extra.append(("PROTON_WAYLAND_MONITOR", "eDP-1"))
+                break
+    return tuple(extra)
+
+
+def upsert_env(options: Any, extra: tuple[tuple[str, str], ...] = ()) -> list[dict[str, str]]:
     out: list[dict[str, str]] = []
     seen: set[str] = set()
     if isinstance(options, list):
@@ -100,7 +142,7 @@ def upsert_env(options: Any) -> list[dict[str, str]]:
             value = item.get("value", "")
             out.append({"key": key, "value": str(value)})
             seen.add(key)
-    for key, value in DLSS_ENV:
+    for key, value in (*DLSS_ENV, *extra):
         if key in seen:
             for item in out:
                 if item["key"] == key:
@@ -136,7 +178,7 @@ def apply_settings(
     strip_wrappers: bool,
 ) -> None:
     settings.update(BOOL_KEYS)
-    settings["enviromentOptions"] = upsert_env(settings.get("enviromentOptions"))
+    settings["enviromentOptions"] = upsert_env(settings.get("enviromentOptions"), host_env())
     if proton is not None and proton.is_file():
         settings["wineVersion"] = {
             "bin": str(proton),
@@ -212,6 +254,15 @@ def self_check() -> None:
             for flag in ("enableFSR", "useGameMode", "verboseLogs"):
                 if settings.get(flag) is not False:
                     raise SystemExit(f"{path.name}: {flag}={settings.get(flag)}")
+            if env.get("PROTON_ENABLE_WAYLAND") != "1" or settings.get("enableWineWayland") is not True:
+                raise SystemExit(f"{path.name}: Wine Wayland not forced on")
+            if env.get("WINE_GRAPHICS_DRIVER") != "wayland" or env.get("WINEDLLOVERRIDES") != "winex11.drv=d":
+                raise SystemExit(f"{path.name}: X11 Wine driver not disabled: {env}")
+            if env.get("DISPLAY") != "":
+                raise SystemExit(f"{path.name}: DISPLAY not cleared: {env.get('DISPLAY')!r}")
+            for key, value in host_env():
+                if env.get(key) != value:
+                    raise SystemExit(f"{path.name}: {key}={env.get(key)!r}")
         sugar = json.loads(game.read_text(encoding="utf-8"))["Sugar"]
         wrappers = sugar["wrapperOptions"]
         if wrappers != [{"exe": "/usr/bin/true", "args": "--keep"}]:

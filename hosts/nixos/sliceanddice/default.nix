@@ -183,8 +183,9 @@
       # (it re-pinned leftover Linux Boot Manager every boot of gen 108).
       dendritic.windows.enable = false;
 
-      # NVIDIA drm for Xwayland/offload. videoDrivers pulls in the driver even
-      # though niri itself is a native Wayland compositor on Intel.
+      # No X server. videoDrivers still selects the NVIDIA DRM/KMS module for
+      # PRIME offload under niri. xkb is the keymap niri reads, not an X session.
+      services.xserver.enable = false;
       services.xserver.videoDrivers = [ "nvidia" ];
 
       # USB video on Sword 15 A11UD (MS-1582):

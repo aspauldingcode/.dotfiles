@@ -89,28 +89,6 @@
         '';
       });
 
-      # 0.8.2 focuses X11 override-redirect popups, so Steam's top-bar menus
-      # (View/Friends/Games/Help) unmap the instant they open under niri.
-      # 0.8.3 (add2795) fixes it. Drop once the pinned nixpkgs ships ≥ 0.8.3.
-      xwayland-satellite =
-        if prev.lib.versionOlder prev.xwayland-satellite.version "0.8.3" then
-          prev.xwayland-satellite.overrideAttrs (old: rec {
-            version = "0.8.3";
-            src = prev.fetchFromGitHub {
-              owner = "Supreeeme";
-              repo = "xwayland-satellite";
-              tag = "v${version}";
-              hash = "sha256-eFEjCCniMCKeWU0PcZNv+tDYe08SLFPjRplyPY8OFt4=";
-            };
-            cargoDeps = final.rustPlatform.fetchCargoVendor {
-              inherit (old) pname;
-              inherit version src;
-              hash = "sha256-gMGFvnbxM3hD5fmkSimaFd87GEf6BXFe/MGjoS6VNVU=";
-            };
-          })
-        else
-          prev.xwayland-satellite;
-
       jetbrains =
         prev.jetbrains
         // prev.lib.optionalAttrs prev.stdenv.isDarwin {

@@ -26,6 +26,13 @@
         corpusManifest = localCorpus;
       };
 
+      # The daily reindex is a oneshot with no CPU cap. Unbounded, it pegs
+      # every core, the package hits ~94°C, and powerd then pins PL1 at 22 W.
+      systemd.user.services.wwn-mcp-reindex.Service = lib.mkIf wwnMcpOk {
+        CPUQuota = "400%";
+        Nice = 15;
+      };
+
       # Darwin has no systemd user timers; seed knowledge index after switch
       # without blocking on a full sibling fetch.
       home.activation.wwnMcpEnsureIndex = lib.mkIf wwnMcpOk (

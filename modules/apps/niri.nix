@@ -122,6 +122,13 @@
 
       config = lib.mkIf cfg.enable {
         programs.niri.enable = true;
+        # No system keyring. nixpkgs programs.niri mkDefaults gnome-keyring on,
+        # and greetd autologin never unlocks login.keyring, so every Secret
+        # Service client (Zed sign-in, remmina) blocks on an unlock prompt.
+        services.gnome.gnome-keyring.enable = lib.mkForce false;
+        xdg.portal.config.niri."org.freedesktop.impl.portal.Secret" = lib.mkForce "none";
+        # gcr-ssh-agent follows gnome-keyring; plain OpenSSH agent replaces it.
+        programs.ssh.startAgent = true;
         # Desktop sway off; greeter still uses pkgs.sway as a kiosk binary.
         programs.sway.enable = lib.mkForce false;
 
@@ -181,7 +188,21 @@
 
         security.pam.services.gtklock = { };
 
-        environment.variables.NIXOS_OZONE_WL = "1";
+        environment.variables = {
+          NIXOS_OZONE_WL = "1";
+          # No X11 socket on this session. Toolkits must not fall back to XWayland.
+          GDK_BACKEND = "wayland";
+          QT_QPA_PLATFORM = "wayland";
+          SDL_VIDEODRIVER = "wayland";
+          CLUTTER_BACKEND = "wayland";
+          MOZ_ENABLE_WAYLAND = "1";
+          ELECTRON_OZONE_PLATFORM_HINT = "wayland";
+          PROTON_ENABLE_WAYLAND = "1";
+          # GE-Proton otherwise keeps winex11.drv for fallback and can start
+          # the Steam runtime's own Xwayland against WAYLAND_DISPLAY.
+          WINE_GRAPHICS_DRIVER = "wayland";
+          WINEDLLOVERRIDES = "winex11.drv=d";
+        };
 
         environment.systemPackages = with pkgs; [
           libnotify
@@ -193,7 +214,6 @@
           pavucontrol
           grim
           slurp
-          xwayland-satellite
           foot
         ];
       };
@@ -386,13 +406,33 @@
         printf '%s\n' "$css"
       '';
 
+      # Supervisor daemon: watches dendritic-session-locked while gtklock is up.
+      # If gtklock crashes, dies from GPU reset, or gets killed, relaunch it
+      # so niri never stays trapped in a dead lock with only wallpaper and cursor.
+      watchdogScript = pkgs.writeShellScript "dendritic-lock-watchdog" ''
+        set -euo pipefail
+        runtime="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}"
+        lockMarker="$runtime/dendritic-session-locked"
+        exec 8>"$runtime/dendritic-lock-watchdog.lock"
+        ${pkgs.util-linux}/bin/flock -n 8 || exit 0
+        while [ -f "$lockMarker" ]; do
+          ${pkgs.coreutils}/bin/sleep 1
+          if [ -f "$lockMarker" ] && ! ${pkgs.procps}/bin/pgrep -x gtklock >/dev/null 2>&1; then
+            export XDG_DATA_DIRS=${lib.escapeShellArg "${pkgs.adwaita-icon-theme}/share"}''${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}
+            export XDG_CONFIG_HOME=${lib.escapeShellArg gtklockGtkConfig}
+            css="$(${gtklockPrep})"
+            ${lib.getExe pkgs.gtklock} -d -s "$css" ${gtklockClockArgs} -U "${pkgs.coreutils}/bin/rm -f '$lockMarker'" || true
+          fi
+        done
+      '';
+
       # Idle-timeout lock.
       # gtklock does not speak ext-idle-notify. While it is up, swayidle keeps
       # counting idle, so the 300s timeout is already expired at unlock and
       # the next command runs immediately (unlock → lock → unlock → lock).
       # A second gtklock then hits niri "already locked" (Failed to lock session).
       # Fix: flock + post-unlock grace + restart swayidle to reset idle clocks.
-      # Do NOT hold sleep:block for the whole gtklock lifetime — if gtklock dies
+      # Do NOT hold sleep:block for the whole gtklock lifetime: if gtklock dies
       # (Wayland protocol error) niri stays session-locked with no UI while the
       # inhibitor also blocks lid/logind suspend (orange cursor-only brick).
       lock = "${pkgs.writeShellScript "gtklock-auth" ''
@@ -414,8 +454,20 @@
             exit 0
           fi
         fi
+        lockMarker="$runtime/dendritic-session-locked"
+        ${pkgs.coreutils}/bin/touch "$lockMarker"
+        ${watchdogScript} >/dev/null 2>&1 &
         css="$(${gtklockPrep})"
-        ${lib.getExe pkgs.gtklock} -s "$css" ${gtklockClockArgs} || true
+        while [ -f "$lockMarker" ]; do
+          if ${lib.getExe pkgs.gtklock} -s "$css" ${gtklockClockArgs} -U "${pkgs.coreutils}/bin/rm -f '$lockMarker'"; then
+            ${pkgs.coreutils}/bin/rm -f "$lockMarker"
+            break
+          fi
+          if [ -f "$lockMarker" ]; then
+            ${pkgs.coreutils}/bin/sleep 0.5
+          fi
+        done
+        ${pkgs.coreutils}/bin/rm -f "$lockMarker"
         ${pkgs.coreutils}/bin/date +%s >"$grace"
         ${lib.getExe pkgs.niri} msg action power-on-monitors >/dev/null 2>&1 || true
         # Heal gamma after unlock (wlsunset/EVDI often leaves a warm LUT).
@@ -441,7 +493,7 @@
 
       # before-sleep: daemonize so swayidle -w can return before InhibitDelayMaxSec;
       # do not hold sleep:block here (that would fight logind suspend).
-      # Do not stop wlsunset here — tearing gamma down mid-lock races niri and
+      # Do not stop wlsunset here: tearing gamma down mid-lock races niri and
       # contributed to dead-lock + stuck orange LUT; resume mark heals instead.
       lockBeforeSleep = "${pkgs.writeShellScript "gtklock-before-sleep" ''
         set -euo pipefail
@@ -449,13 +501,16 @@
         export XDG_CONFIG_HOME=${lib.escapeShellArg gtklockGtkConfig}
         runtime="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}"
         ${pkgs.coreutils}/bin/mkdir -p "$runtime"
+        lockMarker="$runtime/dendritic-session-locked"
+        ${pkgs.coreutils}/bin/touch "$lockMarker"
+        ${watchdogScript} >/dev/null 2>&1 &
         exec 9>"$runtime/dendritic-gtklock.lock"
         ${pkgs.util-linux}/bin/flock -n 9 || exit 0
         if ${pkgs.procps}/bin/pgrep -x gtklock >/dev/null 2>&1; then
           exit 0
         fi
         css="$(${gtklockPrep})"
-        exec ${lib.getExe pkgs.gtklock} -d -s "$css" ${gtklockClockArgs}
+        exec ${lib.getExe pkgs.gtklock} -d -s "$css" ${gtklockClockArgs} -U "${pkgs.coreutils}/bin/rm -f '$lockMarker'"
       ''}";
 
       # Waybar NixOS logo → fuzzel session menu (lock / logout / power).
@@ -499,7 +554,7 @@
         in
         {
           # Shared post-unlock / post-resume grace + gamma heal.
-          # `recoverLock=1` only on after-resume — on unlock gtklock has just
+          # `recoverLock=1` only on after-resume: on unlock gtklock has just
           # exited and must not be relaunched.
           mark =
             let
@@ -508,20 +563,34 @@
                 pkgs.writeShellScript "dendritic-suspend-grace-mark${if recoverLock then "-resume" else ""}" ''
                   set -euo pipefail
                   runtime="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}"
+                  lockMarker="$runtime/dendritic-session-locked"
+                  ${
+                    if !recoverLock then
+                      ''
+                        ${pkgs.coreutils}/bin/rm -f "$lockMarker"
+                      ''
+                    else
+                      ""
+                  }
                   ${pkgs.coreutils}/bin/date +%s >"$runtime/dendritic-suspend-grace"
                   ${lib.getExe pkgs.niri} msg action power-on-monitors >/dev/null 2>&1 || true
                   ${lib.optionalString recoverLock ''
-                    # Resume recovery only for a *dead* lock: niri still holds
+                    # Resume recovery for a dead lock: niri still holds
                     # ext-session-lock but gtklock is gone (orange cursor-only).
                     # Do not lock a healthy unlocked session on every resume.
-                    if ! ${pkgs.procps}/bin/pgrep -x gtklock >/dev/null 2>&1; then
-                      locked="$(${pkgs.systemd}/bin/loginctl show-session "''${XDG_SESSION_ID:-}" -p LockedHint --value 2>/dev/null || true)"
-                      if [ "$locked" = yes ]; then
+                    if [ -f "$lockMarker" ]; then
+                      if ! ${pkgs.procps}/bin/pgrep -x gtklock >/dev/null 2>&1; then
                         export XDG_DATA_DIRS=${lib.escapeShellArg "${pkgs.adwaita-icon-theme}/share"}''${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}
                         export XDG_CONFIG_HOME=${lib.escapeShellArg gtklockGtkConfig}
                         css="$(${gtklockPrep})"
-                        ${lib.getExe pkgs.gtklock} -d -s "$css" ${gtklockClockArgs} || true
+                        for _ in 1 2 3; do
+                          if ${lib.getExe pkgs.gtklock} -d -s "$css" ${gtklockClockArgs} -U "${pkgs.coreutils}/bin/rm -f '$lockMarker'"; then
+                            break
+                          fi
+                          ${pkgs.coreutils}/bin/sleep 0.5
+                        done
                       fi
+                      ${watchdogScript} >/dev/null 2>&1 &
                     fi
                   ''}
                   ${pkgs.coreutils}/bin/rm -f "$runtime/dendritic-wlsunset-was-active"
@@ -551,7 +620,7 @@
             case "$(${pkgs.systemd}/bin/systemctl is-system-running 2>/dev/null || echo unknown)" in
               stopping|offline) exit 0 ;;
             esac
-            # Already suspending/hibernating — avoid "already in progress" spam.
+            # Already suspending/hibernating: avoid "already in progress" spam.
             if ${pkgs.systemd}/bin/systemctl list-jobs --no-legend 2>/dev/null \
               | ${pkgs.gnugrep}/bin/grep -qE 'suspend\.service|hibernate\.service|hybrid-sleep\.service'; then
               exit 0
@@ -850,6 +919,7 @@
               "custom/power"
               "backlight"
               "pulseaudio"
+              "custom/gpu"
               "cpu"
               "memory"
               "battery"
@@ -962,6 +1032,14 @@
               interval = 5;
               on-click = "dendritic-appearance toggle";
               on-click-right = "dendritic-appearance apply --wallpaper next";
+            };
+            "custom/gpu" = {
+              exec = pkgs.writeShellScript "waybar-gpu" ''
+                exec ${pkgs.python3}/bin/python3 ${../../scripts/waybar-gpu.py}
+              '';
+              return-type = "json";
+              interval = 2;
+              tooltip = true;
             };
             "custom/power" = {
               exec = pkgs.writeShellScript "waybar-dendritic-power" ''
@@ -1081,6 +1159,7 @@
               #backlight,
               #pulseaudio,
               #custom-power,
+              #custom-gpu,
               #custom-appearance,
               #tray,
               label.module,
@@ -1105,6 +1184,7 @@
               #backlight:hover,
               #pulseaudio:hover,
               #custom-power:hover,
+              #custom-gpu:hover,
               #custom-appearance:hover,
               #tray:hover,
               label.module:hover,
@@ -1405,7 +1485,6 @@
           spawn-at-startup "mako"
           spawn-at-startup "dendritic-retina-scale"
           spawn-at-startup "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
-          spawn-at-startup "xwayland-satellite" ":0"
           spawn-at-startup "sh" "-c" "wl-paste --watch cliphist store"
           // When dendritic.wallpaper manages the desktop, its apply script owns
           // swaybg (daily cycle). Otherwise fall back to stylix.image.
@@ -1415,9 +1494,24 @@
           ${lib.optionalString (config.dendritic.wallpaper.enable or false
           ) ''spawn-at-startup "dendritic-appearance" "wallpaper" "daily"''}
 
-          // xwayland-satellite provides X11 support; point X clients at it.
+          // Wayland only. `off` stops niri from creating an X11 socket, exporting
+          // DISPLAY, or spawning xwayland-satellite when an X client connects.
+          // The environment block is what niri-spawned processes inherit.
+          // /etc/set-environment covers login and systemd, not these spawns.
+          xwayland-satellite {
+              off
+          }
+
           environment {
-              DISPLAY ":0"
+              GDK_BACKEND "wayland"
+              QT_QPA_PLATFORM "wayland"
+              SDL_VIDEODRIVER "wayland"
+              CLUTTER_BACKEND "wayland"
+              MOZ_ENABLE_WAYLAND "1"
+              ELECTRON_OZONE_PLATFORM_HINT "wayland"
+              PROTON_ENABLE_WAYLAND "1"
+              WINE_GRAPHICS_DRIVER "wayland"
+              WINEDLLOVERRIDES "winex11.drv=d"
           }
 
           screenshot-path "~/Pictures/Screenshots/Screenshot-%Y-%m-%d-%H-%M-%S.png"
@@ -1430,6 +1524,26 @@
           window-rule {
               geometry-corner-radius 10
               clip-to-geometry true
+          }
+
+          // Rocket League's borderless 1920x1080 surface is the full panel.
+          // Tiling it into the gapped view shifts pointer coordinates, so
+          // clicks, keys, and the controller UI never land on the menu.
+          // Fullscreen maps that surface onto eDP-1. The rounded clip would
+          // also shrink the input region under the game's own buffer.
+          window-rule {
+              match app-id="rocketleague.exe"
+              open-fullscreen true
+              open-focused true
+              clip-to-geometry false
+              geometry-corner-radius 0
+          }
+          window-rule {
+              match app-id="rocketleague_eac.exe"
+              open-fullscreen true
+              open-focused true
+              clip-to-geometry false
+              geometry-corner-radius 0
           }
 
           // Float the audio mixer.

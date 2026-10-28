@@ -32,6 +32,17 @@
           # need the name filter or they can render on Intel.
           __VK_LAYER_NV_optimus = "NVIDIA_only";
           DXVK_FILTER_DEVICE_NAME = "NVIDIA";
+        }
+        // {
+          # The session has no X11 socket. Steam and Proton must speak Wayland.
+          PROTON_ENABLE_WAYLAND = "1";
+          WINE_GRAPHICS_DRIVER = "wayland";
+          # Disables Wine's X11 driver. Proton appends its own DLL overrides
+          # after this value, and does not put winex11.drv back.
+          WINEDLLOVERRIDES = "winex11.drv=d";
+          ELECTRON_OZONE_PLATFORM_HINT = "wayland";
+          GDK_BACKEND = "wayland";
+          SDL_VIDEODRIVER = "wayland";
         };
     in
     {
@@ -44,8 +55,7 @@
       config = lib.mkIf cfg.enable {
         programs.steam = {
           enable = true;
-          # Wayland (niri): Steam Input needs X11 events translated to uinput.
-          extest.enable = config.dendritic.apps.niri.enable or false;
+          # extest is an X11 XTest preload. This session has no X server.
           remotePlay.openFirewall = true;
           localNetworkGameTransfers.openFirewall = true;
           extraCompatPackages = [ pkgs.proton-ge-bin ];
