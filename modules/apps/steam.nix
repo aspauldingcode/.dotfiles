@@ -28,7 +28,10 @@
           __NV_PRIME_RENDER_OFFLOAD = "1";
           __NV_PRIME_RENDER_OFFLOAD_PROVIDER = "NVIDIA-G0";
           __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+          # 610.57 still enumerates the iGPU with NVIDIA_only. DXVK games
+          # need the name filter or they can render on Intel.
           __VK_LAYER_NV_optimus = "NVIDIA_only";
+          DXVK_FILTER_DEVICE_NAME = "NVIDIA";
         };
     in
     {

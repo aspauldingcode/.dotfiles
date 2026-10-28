@@ -19,19 +19,37 @@ from pathlib import Path
 from typing import Any
 
 
+# nvidiaPrime only exports DRI_PRIME / __NV_PRIME_RENDER_OFFLOAD /
+# __GLX_VENDOR_LIBRARY_NAME. On driver 610.57 that enables VK_LAYER_NV_optimus
+# and still enumerates Intel UHD and llvmpipe; __VK_LAYER_NV_optimus=NVIDIA_only
+# does not remove them. Rocket League's DXVK then builds a D3D11 device on the
+# iGPU and the RTX 3050 Ti stays idle. DXVK_FILTER_DEVICE_NAME is read by the
+# DXVK in GE-Proton (d3d11.dll) and drops every device whose name lacks the
+# substring. It is not a Vulkan ICD path, so pressure-vessel cannot strand it
+# the way VK_DRIVER_FILES can.
 DLSS_ENV = (
     ("PROTON_ENABLE_NVAPI", "1"),
     ("PROTON_HIDE_NVIDIA_GPU", "0"),
     ("DXVK_ENABLE_NVAPI", "1"),
     ("PROTON_DLSS_UPGRADE", "1"),
+    ("DXVK_FILTER_DEVICE_NAME", "NVIDIA"),
 )
 
 BOOL_KEYS = {
     "nvidiaPrime": True,
-    "useGameMode": True,
+    # gamemoderun preloads libgamemodeauto.so.0; libgamemode.so is not in
+    # umu's pressure-vessel, so the preload fails on every launch.
+    "useGameMode": False,
     "autoInstallDxvk": True,
     "autoInstallVkd3d": True,
     "autoInstallDxvkNvapi": True,
+    # Wine fullscreen FSR (WINE_FULLSCREEN_FSR=1) presented Rocket League
+    # at 864x486. Scale with the game's resolution settings instead.
+    "enableFSR": False,
+    # Heroic injects WINEDEBUG=+fixme, DXVK_LOG_LEVEL=info and
+    # VKD3D_DEBUG=fixme when this is true. The fixme spam runs on the
+    # game thread.
+    "verboseLogs": False,
 }
 
 
@@ -159,7 +177,53 @@ def merge_nested(
     return True
 
 
+def self_check() -> None:
+    """Merge a fixture and assert the Rocket League GPU/log settings."""
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        config = root / "config.json"
+        store = root / "store.json"
+        game = root / "Sugar.json"
+        config.write_text('{\n  "defaultSettings": {\n    "verboseLogs": true\n  }\n}\n', encoding="utf-8")
+        store.write_text(
+            '{\n  "settings": {\n    "enableFSR": true,\n    "useGameMode": true,\n    "enviromentOptions": [\n      {"key": "PROTON_ENABLE_NVAPI", "value": "0"}\n    ]\n  }\n}\n',
+            encoding="utf-8",
+        )
+        game.write_text(
+            '{\n  "Sugar": {\n    "enableFSR": true,\n    "verboseLogs": true,\n    "useGameMode": true,\n    "wrapperOptions": [\n      {"exe": "/usr/bin/gamescope", "args": ""},\n      {"exe": "/usr/bin/true", "args": "--keep"}\n    ]\n  }\n}\n',
+            encoding="utf-8",
+        )
+        merge_nested(config, "defaultSettings", create=True, proton=None, strip_wrappers=False, extra={"version": "v0"})
+        merge_nested(store, "settings", create=False, proton=None, strip_wrappers=False)
+        merge_nested(game, "Sugar", create=False, proton=None, strip_wrappers=True)
+
+        def env_map(settings: dict[str, Any]) -> dict[str, str]:
+            return {item["key"]: item["value"] for item in settings["enviromentOptions"]}
+
+        for path, key in ((config, "defaultSettings"), (store, "settings"), (game, "Sugar")):
+            settings = json.loads(path.read_text(encoding="utf-8"))[key]
+            env = env_map(settings)
+            if env.get("DXVK_FILTER_DEVICE_NAME") != "NVIDIA":
+                raise SystemExit(f"{path.name}: DXVK filter missing: {env}")
+            if env.get("PROTON_ENABLE_NVAPI") != "1":
+                raise SystemExit(f"{path.name}: NVAPI not forced on")
+            for flag in ("enableFSR", "useGameMode", "verboseLogs"):
+                if settings.get(flag) is not False:
+                    raise SystemExit(f"{path.name}: {flag}={settings.get(flag)}")
+        sugar = json.loads(game.read_text(encoding="utf-8"))["Sugar"]
+        wrappers = sugar["wrapperOptions"]
+        if wrappers != [{"exe": "/usr/bin/true", "args": "--keep"}]:
+            raise SystemExit(f"gamescope strip failed: {wrappers}")
+    log("self-check ok")
+
+
 def main() -> int:
+    if "--self-check" in sys.argv:
+        self_check()
+        return 0
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", required=True, type=Path)
     parser.add_argument("--store-config", type=Path)

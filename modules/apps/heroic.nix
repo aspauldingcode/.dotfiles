@@ -8,7 +8,13 @@
 #
 # Rocket League (Epic `Sugar`) has no in-game DLSS. Do NOT wrap it with
 # gamescope on niri: nested gamescope-wl ABRTs the compositor (status=6).
-# Scale via TASystemSettings ResX/ResY + ScreenPercentage; keep PRIME.
+# Scale via TASystemSettings ResX/ResY + ScreenPercentage.
+#
+# nvidiaPrime does not hide the iGPU from Vulkan. On 610.57,
+# __VK_LAYER_NV_optimus=NVIDIA_only still enumerates Intel UHD, and DXVK
+# will render Rocket League there (0% dGPU, ~35 MiB). The merge sets
+# DXVK_FILTER_DEVICE_NAME=NVIDIA, turns off Wine FSR and verboseLogs
+# (WINEDEBUG=+fixme), and does not wrap Heroic games with GameMode.
 #
 # Heroic rewrites ~/.config/heroic/config.json. Merge keys only — never
 # home.file force-replace. Leave Heroic's own GE-Proton tree in place;
@@ -27,7 +33,7 @@
     {
       options.dendritic.apps.heroic = {
         enable = lib.mkEnableOption ''
-          Heroic + GameMode, with Proton-GE DLSS/NVAPI + PRIME defaults.
+          Heroic, with Proton-GE DLSS/NVAPI and the NVIDIA DXVK device filter.
         '';
       };
 
@@ -70,7 +76,8 @@
     {
       options.dendritic.apps.heroic = {
         enable = lib.mkEnableOption ''
-          Merge Heroic Proton-GE DLSS/NVAPI + PRIME settings on activation.
+          Merge Heroic Proton-GE DLSS/NVAPI, the NVIDIA DXVK device filter,
+          and the FSR / verbose-log / GameMode overrides on activation.
         '';
       };
 
