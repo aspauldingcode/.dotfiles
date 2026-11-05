@@ -745,11 +745,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1793847457,
-        "narHash": "sha256-Nq78Wa1xcb15mTuXt0Tq9QelYI33zoPUXxh9y/6UMCc=",
+        "lastModified": 1793854781,
+        "narHash": "sha256-k/OjPRRJxNdtMzDLf0v5agpphAvqIYI3k3ind5N5sJQ=",
         "owner": "aspauldingcode",
         "repo": "macOS-kvm-nix",
-        "rev": "cf962807099cf0c9557ea7f8e1e969630c0d8839",
+        "rev": "02d0c4b7bc300c00a2924c215d31d0b8cc928aa1",
         "type": "github"
       },
       "original": {
