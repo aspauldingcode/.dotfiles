@@ -12,6 +12,7 @@
     ./disko.nix
 
     inputs.determinate-nix.nixosModules.default
+    inputs.macos-kvm.nixosModules.default
 
     {
       nixpkgs.hostPlatform = "x86_64-linux";
@@ -141,6 +142,17 @@
       dendritic.apps.heroic.enable = true;
       # Steam + the same Proton-GE / PRIME path. No gamescope session (niri).
       dendritic.apps.steam.enable = true;
+
+      # macOS 26 Tahoe guest. Reims vGPU on the RTX 3050 Ti (PRIME); niri stays
+      # on the Intel panel. Retina 1920x1080, resizable window. The user
+      # service creates the VM on the graphical session if it is missing.
+      macos-kvm.enable = true;
+      macos-kvm.user = "alex";
+      macos-kvm.accountName = "alex";
+      macos-kvm.loginWindow = false;
+      macos-kvm.primeOffload = true;
+      macos-kvm.hidpi = true;
+      macos-kvm.borderless = false;
 
       # Quiet-first power: RAPL/EPP feedback controller, zswap, lid/idle suspend.
       # Owns CPU power policy — do not enable TLP / auto-cpufreq / PPD alongside.

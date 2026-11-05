@@ -116,6 +116,10 @@
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
 
+    # macOS 26 guest on KVM with Reims vGPU. Its own nixpkgs pin: the QEMU
+    # build depends on that stdenv, and the binaries carry their libraries.
+    macos-kvm.url = "github:aspauldingcode/macOS-kvm-nix";
+
   };
 
   outputs =
