@@ -4,6 +4,10 @@ Native menubar applet (macOS NSStatusItem / Linux StatusNotifier). Same binary
 and launchd/systemd labels as before (`pass-store-tray`) — pass sync status is
 unchanged; dendritic fleet/theme/llm/wg/android/flake status is layered on top.
 
+**macOS tooltips are disabled.** Status lives only in the menubar menu. A
+multi-line `NSStatusItem` tooltip was painting a floating overlay that followed
+the pointer; Linux StatusNotifier tips remain enabled.
+
 ## Status files
 
 | File                               | Writer                                              |

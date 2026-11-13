@@ -12,9 +12,10 @@ use std::time::Duration;
 use tray_icon::menu::{Menu, MenuEvent, MenuItem, PredefinedMenuItem, Submenu};
 use tray_icon::{Icon, TrayIcon, TrayIconBuilder};
 use ui_contract::{
-    Action, DendriticFacts, TOOLTIP_IDLE, build_dendritic_rows, build_status_lines,
-    merge_status_lines,
+    Action, DendriticFacts, build_dendritic_rows, build_status_lines, merge_status_lines,
 };
+#[cfg(not(target_os = "macos"))]
+use ui_contract::TOOLTIP_IDLE;
 
 #[cfg(target_os = "macos")]
 use winit::application::ApplicationHandler;
@@ -624,13 +625,15 @@ impl NativeTray {
     fn build(env: Env, quit: Arc<AtomicBool>) -> Self {
         let (menu, status_rows, actions) = Self::compose_menu(&[]);
 
-        let tray = TrayIconBuilder::new()
+        // macOS: never set a tray tooltip. tray-icon's multi-line tip paints a
+        // floating overlay that follows the pointer; status belongs in the menu.
+        let builder = TrayIconBuilder::new()
             .with_menu(Box::new(menu))
-            .with_tooltip(TOOLTIP_IDLE)
             .with_icon(make_icon(IconKind::Idle))
-            .with_icon_as_template(cfg!(target_os = "macos"))
-            .build()
-            .expect("create tray icon");
+            .with_icon_as_template(cfg!(target_os = "macos"));
+        #[cfg(not(target_os = "macos"))]
+        let builder = builder.with_tooltip(TOOLTIP_IDLE);
+        let tray = builder.build().expect("create tray icon");
 
         let mut app = Self {
             env,
@@ -663,6 +666,10 @@ impl NativeTray {
                 item.set_text(text.clone());
             }
         }
+        // macOS: keep tip cleared every refresh (see build() comment).
+        #[cfg(target_os = "macos")]
+        let _ = self.tray.set_tooltip(None);
+        #[cfg(not(target_os = "macos"))]
         let _ = self.tray.set_tooltip(Some(lines.tooltip.clone()));
     }
 
